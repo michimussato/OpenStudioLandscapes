@@ -1,0 +1,385 @@
+# mongodb-10-2            | Traceback (most recent call last):
+# mongodb-10-2            |   File "/usr/local/bin/docker-entrypoint.py", line 637, in <module>
+# mongodb-10-2            |     subprocess.run(get_final_command_line_args(), check=True)
+# mongodb-10-2            |   File "/usr/lib/python3.8/subprocess.py", line 516, in run
+# mongodb-10-2            |     raise CalledProcessError(retcode, process.args,
+# mongodb-10-2            | subprocess.CalledProcessError: Command '['/usr/bin/mongod', '--dbpath', '/opt/Thinkbox/DeadlineDatabase10/mongo/data', '--bind_ip_all', '--noauth', '--storageEngine', 'wiredTiger', '--tlsMode', 'disabled']' returned non-zero exit status 100.
+# mongodb-10-2 exited with code 1
+
+## user mongodb has id 101
+
+# data_NAMED
+# test_data/opt/Thinkbox/DeadlineDatabase10/mongo/data_NAMED
+#
+# cd /var/lib/docker/volumes/102_mongo-data-10-2-test
+# mv _data _data.bak
+# cp -rf /home/michael/git/repos/deadline-setup/deadline-setup-docker/10.2/test_data/opt/Thinkbox/DeadlineDatabase10/mongo/data_NAMED _data
+# chown -R 101:nobody _data
+# - mongo-data-10-2-test:/opt/Thinkbox/DeadlineDatabase10/mongo/data
+
+
+# data_LOCAL
+# sudo chown -R 101:nobody test_data/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL
+# - ./test_data/opt/Thinkbox/DeadlineDatabase10/mongo/data_NAMED:/opt/Thinkbox/DeadlineDatabase10/mongo/data
+
+
+# DHCP
+# https://github.com/devplayer0/docker-net-dhcp
+
+
+# docker-compose build
+# docker compose -f docker-compose.yaml build
+# docker compose up
+
+
+# Volumes
+# docker volume ls | grep mongo-data-10-2-test
+
+
+services:
+  mongodb-10-2:
+    container_name: mongodb-10-2
+    hostname: mongodb-10-2
+    domainname: farm.evil
+    # https://hub.docker.com/layers/mongodb/mongodb-community-server/4.4-ubuntu2004/images/sha256-e2fd10d7979ee1c5565e5b37ad1ae62056dc5c0df8adb7fbff3b8a3409b55dad?context=explore
+    image: mongodb/mongodb-community-server:4.4-ubuntu2004
+    # https://docs.docker.com/reference/compose-file/services/#command
+    networks:
+      - mongodb
+      - repository
+    command: >
+      --dbpath /opt/Thinkbox/DeadlineDatabase10/mongo/data
+      --bind_ip_all
+      --noauth
+      --storageEngine wiredTiger
+      --tlsMode disabled
+    ports:
+      - "27017:27017"
+    # environment:
+    #   - MONGO_INITDB_ROOT_USERNAME=admin
+    #   - MONGO_INITDB_ROOT_PASSWORD=password
+    volumes:
+      # # NAMED
+      # - mongo-data-10-2-test:/opt/Thinkbox/DeadlineDatabase10/mongo/data
+      # LOCAL
+      - ./test_data/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data
+
+
+  mongo-express:
+    container_name: mongo-express-10-2
+    hostname: mongo-express-10-2
+    domainname: farm.evil
+    depends_on:
+      - mongodb-10-2
+    # https://hub.docker.com/_/mongo-express
+    # https://github.com/mongo-express/mongo-express
+    image: mongo-express
+    networks:
+      - mongodb
+    restart: always  # fixes MongoNetworkError when mongodb is not ready when mongo-express starts
+    ports:
+      - "8080:8081"
+    environment:
+      - ME_CONFIG_BASICAUTH_USERNAME=web
+      - ME_CONFIG_BASICAUTH_PASSWORD=web
+      - ME_CONFIG_OPTIONS_EDITORTHEME=darcula
+      - ME_CONFIG_MONGODB_SERVER=mongodb-10-2
+      # - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
+      # - ME_CONFIG_MONGODB_ADMINPASSWORD=password
+    volumes:
+      # # /var/lib/docker/volumes/mongodb_mongo-data-10-2/_data
+      # - mongo-data-10-2-test:/opt/Thinkbox/DeadlineDatabase10/mongo/data
+      - ./test_data/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data
+
+
+  # https://github.com/hurlenko/filebrowser-docker
+  # https://filebrowser.org/cli/filebrowser#options
+  filebrowser:
+    container_name: mongo-filebrowser-10-2
+    hostname: mongo-filebrowser-10-2
+    domainname: farm.evil
+    image: filebrowser/filebrowser
+    restart: always
+    networks:
+      - repository
+    depends_on:
+      - mongodb-10-2
+    volumes:
+      # - mongo-data-10-2-test:/opt/Thinkbox/DeadlineDatabase10/mongo/data:ro
+      - ./test_data/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data:ro
+      - /nfs:/nfs:ro
+      # By default, we already have a configuration file with some
+      # defaults so you can just mount the root and the database.
+      # Although you can overwrite by mounting a directory with a
+      # new config file. If you don't already have a database file,
+      # make sure to create a new empty file under the path you specified.
+      # Otherwise, Docker will create an empty folder instead of an
+      # empty file, resulting in an error when mounting the database
+      - ./filebrowser/filebrowser.db:/filebrowser.db
+      - ./filebrowser/filebrowser.json:/.filebrowser.json
+    ports:
+      - "80:80"
+
+
+  deadline-repository-installer-10-2  :
+    restart: "no"
+    container_name: deadline-repository-installer-10-2
+    hostname: deadline-repository-installer10-2
+    domainname: farm.evil
+    depends_on:
+      - mongodb-10-2
+    networks:
+      - mongodb
+      - repository
+    build:
+      context: .
+      dockerfile: ./DeadlineRepository/Dockerfile
+      target: repo_installer
+      args:
+        - DEADLINE_VERSION=$DEADLINE_VERSION
+        # - DEADLINE_INSTALLER_BASE=$DEADLINE_INSTALLER_BASE
+        # - SECRETS_USERNAME=$SECRETS_USERNAME
+        # - SECRETS_PASSWORD=$SECRETS_PASSWORD
+        # - DB_CERT_PASS=$DB_CERT_PASS
+        # - DB_HOST=$DB_HOST
+        # - CERT_ORG=$CERT_ORG
+        # - CERT_OU=$CERT_OU
+        # - GOOGLE_API_KEY=$GOOGLE_API_KEY
+        # - GOOGLE_ID=$GOOGLE_ID
+        # - MONGO_VERSION=$MONGO_VERSION
+        - PYTHON_VERSION=$PYTHON_VERSION
+        - FORCE_REINSTALL=$FORCE_REINSTALL
+    volumes:
+#      - certs:/client_certs
+#      - repo:/repo
+#      - db_data:/opt/Thinkbox/DeadlineDatabase10/mongo/data
+      - ./deadline_installer:/deadline_installer:ro
+      - ./DeadlineRepositoryInstall:/opt/Thinkbox/DeadlineRepository10
+#    ports:
+#      - 27100:27100
+
+
+
+  deadline-rcs-installer-10-2:
+    restart: "no"
+    container_name: rcs-installer-10-2
+    hostname: rcs-installer-10-2
+    domainname: farm.evil
+    depends_on:
+      deadline-repository-installer-10-2:
+        condition: service_completed_successfully
+    networks:
+      - mongodb
+      - repository
+    build:
+      context: .
+      dockerfile: ./DeadlineRepository/Dockerfile
+      target: rcs_installer
+      args:
+        - DEADLINE_VERSION=$DEADLINE_VERSION
+        # - DEADLINE_INSTALLER_BASE=$DEADLINE_INSTALLER_BASE
+        # - SECRETS_USERNAME=$SECRETS_USERNAME
+        # - SECRETS_PASSWORD=$SECRETS_PASSWORD
+        # - DB_CERT_PASS=$DB_CERT_PASS
+        # - DB_HOST=$DB_HOST
+        # - CERT_ORG=$CERT_ORG
+        # - CERT_OU=$CERT_OU
+        # - GOOGLE_API_KEY=$GOOGLE_API_KEY
+        # - GOOGLE_ID=$GOOGLE_ID
+        # - MONGO_VERSION=$MONGO_VERSION
+        - PYTHON_VERSION=$PYTHON_VERSION
+        - FORCE_REINSTALL=$FORCE_REINSTALL
+    volumes:
+#      - certs:/client_certs
+#      - repo:/repo
+#      - db_data:/opt/Thinkbox/DeadlineDatabase10/mongo/data
+      - ./deadline_installer:/deadline_installer:ro
+      - ./DeadlineRepositoryInstall:/opt/Thinkbox/DeadlineRepository10  # ro?
+      - ./DeadlineClientInstall:/opt/Thinkbox/Deadline10
+#      - ./DeadlineRepositoryInstall:/opt/Thinkbox/Deadline10
+#    ports:
+#      - 27100:27100
+
+
+  deadline-rcs-runner:
+    restart: always
+    build:
+      context: .
+      dockerfile: ./DeadlineRepository/Dockerfile
+      args:
+        - DEADLINE_VERSION=$DEADLINE_VERSION
+        # - DEADLINE_INSTALLER_BASE=$DEADLINE_INSTALLER_BASE
+        # - SECRETS_USERNAME=$SECRETS_USERNAME
+        # - SECRETS_PASSWORD=$SECRETS_PASSWORD
+        # - DB_CERT_PASS=$DB_CERT_PASS
+        # - DB_HOST=$DB_HOST
+        # - CERT_ORG=$CERT_ORG
+        # - CERT_OU=$CERT_OU
+        # - GOOGLE_API_KEY=$GOOGLE_API_KEY
+        # - GOOGLE_ID=$GOOGLE_ID
+        # - MONGO_VERSION=$MONGO_VERSION
+        - PYTHON_VERSION=$PYTHON_VERSION
+        - FORCE_REINSTALL=$FORCE_REINSTALL
+      target: rcs_runner
+    container_name: rcs-runner-10-2
+    hostname: rcs-runner-10-2
+    domainname: farm.evil
+    depends_on:
+      deadline-rcs-installer-10-2:
+        condition: service_completed_successfully
+    networks:
+      - mongodb
+      - repository
+#    build:
+#      context: .
+#      dockerfile: ./DeadlineRepository/Dockerfile
+#      target: rcs_runner
+#      args:
+#        - DEADLINE_VERSION=$DEADLINE_VERSION
+#        # - DEADLINE_INSTALLER_BASE=$DEADLINE_INSTALLER_BASE
+#        # - SECRETS_USERNAME=$SECRETS_USERNAME
+#        # - SECRETS_PASSWORD=$SECRETS_PASSWORD
+#        # - DB_CERT_PASS=$DB_CERT_PASS
+#        # - DB_HOST=$DB_HOST
+#        # - CERT_ORG=$CERT_ORG
+#        # - CERT_OU=$CERT_OU
+#        # - GOOGLE_API_KEY=$GOOGLE_API_KEY
+#        # - GOOGLE_ID=$GOOGLE_ID
+#        # - MONGO_VERSION=$MONGO_VERSION
+#        - PYTHON_VERSION=$PYTHON_VERSION
+#        - FORCE_REINSTALL=$FORCE_REINSTALL
+    volumes:
+#      - certs:/client_certs
+#      - repo:/repo
+#      - db_data:/opt/Thinkbox/DeadlineDatabase10/mongo/data
+#      - ./deadline_installer:/deadline_installer
+      - ./DeadlineRepositoryInstall:/opt/Thinkbox/DeadlineRepository10
+      - ./DeadlineClientInstall:/opt/Thinkbox/Deadline10
+      - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/deadline.ini:/var/lib/Thinkbox/Deadline10/deadline.ini:ro
+      - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:ro
+    ports:
+      - "8888:8888"
+
+
+
+  deadline-webservice-installer-10-2:
+    restart: "no"
+    container_name: webservice-installer-10-2
+    hostname: webservice-installer-10-2
+    domainname: farm.evil
+    depends_on:
+      deadline-repository-installer-10-2:
+        condition: service_completed_successfully
+    networks:
+      - mongodb
+      - repository
+    build:
+      context: .
+      dockerfile: ./DeadlineRepository/Dockerfile
+      target: webservice_installer
+      args:
+        - DEADLINE_VERSION=$DEADLINE_VERSION
+        # - DEADLINE_INSTALLER_BASE=$DEADLINE_INSTALLER_BASE
+        # - SECRETS_USERNAME=$SECRETS_USERNAME
+        # - SECRETS_PASSWORD=$SECRETS_PASSWORD
+        # - DB_CERT_PASS=$DB_CERT_PASS
+        # - DB_HOST=$DB_HOST
+        # - CERT_ORG=$CERT_ORG
+        # - CERT_OU=$CERT_OU
+        # - GOOGLE_API_KEY=$GOOGLE_API_KEY
+        # - GOOGLE_ID=$GOOGLE_ID
+        # - MONGO_VERSION=$MONGO_VERSION
+        - PYTHON_VERSION=$PYTHON_VERSION
+        - FORCE_REINSTALL=$FORCE_REINSTALL
+    volumes:
+#      - certs:/client_certs
+#      - repo:/repo
+#      - db_data:/opt/Thinkbox/DeadlineDatabase10/mongo/data
+      - ./deadline_installer:/deadline_installer:ro
+      - ./DeadlineClientWebserviceInstall:/opt/Thinkbox/Deadline10
+      - ./DeadlineRepositoryInstall:/opt/Thinkbox/DeadlineRepository10  # ro?
+#    ports:
+#      - 27100:27100
+
+
+  deadline-webservice-runner:
+    restart: always
+    build:
+      context: .
+      dockerfile: ./DeadlineRepository/Dockerfile
+      args:
+        - DEADLINE_VERSION=$DEADLINE_VERSION
+        # - DEADLINE_INSTALLER_BASE=$DEADLINE_INSTALLER_BASE
+        # - SECRETS_USERNAME=$SECRETS_USERNAME
+        # - SECRETS_PASSWORD=$SECRETS_PASSWORD
+        # - DB_CERT_PASS=$DB_CERT_PASS
+        # - DB_HOST=$DB_HOST
+        # - CERT_ORG=$CERT_ORG
+        # - CERT_OU=$CERT_OU
+        # - GOOGLE_API_KEY=$GOOGLE_API_KEY
+        # - GOOGLE_ID=$GOOGLE_ID
+        # - MONGO_VERSION=$MONGO_VERSION
+        - PYTHON_VERSION=$PYTHON_VERSION
+        - FORCE_REINSTALL=$FORCE_REINSTALL
+      target: webservice_runner
+    container_name: webservice-runner-10-2
+    hostname: webservice-runner-10-2
+    domainname: farm.evil
+    depends_on:
+      deadline-webservice-installer-10-2:
+        condition: service_completed_successfully
+    networks:
+      - mongodb
+      - repository
+#    build:
+#      context: .
+#      dockerfile: ./DeadlineRepository/Dockerfile
+#      target: rcs_runner
+#      args:
+#        - DEADLINE_VERSION=$DEADLINE_VERSION
+#        # - DEADLINE_INSTALLER_BASE=$DEADLINE_INSTALLER_BASE
+#        # - SECRETS_USERNAME=$SECRETS_USERNAME
+#        # - SECRETS_PASSWORD=$SECRETS_PASSWORD
+#        # - DB_CERT_PASS=$DB_CERT_PASS
+#        # - DB_HOST=$DB_HOST
+#        # - CERT_ORG=$CERT_ORG
+#        # - CERT_OU=$CERT_OU
+#        # - GOOGLE_API_KEY=$GOOGLE_API_KEY
+#        # - GOOGLE_ID=$GOOGLE_ID
+#        # - MONGO_VERSION=$MONGO_VERSION
+#        - PYTHON_VERSION=$PYTHON_VERSION
+#        - FORCE_REINSTALL=$FORCE_REINSTALL
+    volumes:
+#      - certs:/client_certs
+#      - repo:/repo
+#      - db_data:/opt/Thinkbox/DeadlineDatabase10/mongo/data
+#      - ./deadline_installer:/deadline_installer
+      - ./DeadlineRepositoryInstall:/opt/Thinkbox/DeadlineRepository10
+      - ./DeadlineClientWebserviceInstall:/opt/Thinkbox/Deadline10
+      - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/deadline.ini:/var/lib/Thinkbox/Deadline10/deadline.ini:ro
+      - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:ro
+    ports:
+      - "8899:8899"
+
+
+
+
+
+volumes:
+  mongo-data-10-2-test:
+    driver: local
+
+
+
+# If you fire the docker-compose from /src/docker/myapp folder
+#volumes:
+#  - ${PWD}/upload:/var/www/html/upload
+#  - ${PWD}/upload/config.php:/var/www/html/config.php
+
+
+# https://www.warp.dev/terminus/docker-compose-networks
+networks:
+  mongodb:
+    name: network_mongodb-10-2
+  repository:
+    name: network_repository-10-2
