@@ -64,7 +64,8 @@ LABEL authors="michael"
 
 WORKDIR /nfs/installers/Deadline-${DEADLINE_VERSION}-linux-installers
 
-ENTRYPOINT  \
+ENTRYPOINT ["top","-b"]
+#ENTRYPOINT  \
     deadline-wrapper  \
     -vv  \
     --force-reinstall  \
