@@ -98,8 +98,8 @@ ENTRYPOINT  \
     --force-reinstall  \
     install-rcs  \
     --deadline-version ${DEADLINE_VERSION}  \
-    --prefix /opt/Thinkbox/Deadline10  \
-    --repositorydir /opt/Thinkbox/DeadlineRepository10  \
+    --prefix "/opt/Thinkbox/Deadline10"  \
+    --repositorydir "/opt/Thinkbox/DeadlineRepository10"  \
     --httpport 8888
 
 
@@ -148,8 +148,8 @@ ENTRYPOINT  \
     --force-reinstall  \
     install-webservice  \
     --deadline-version ${DEADLINE_VERSION}  \
-    --prefix /opt/Thinkbox/Deadline10  \
-    --repositorydir /opt/Thinkbox/DeadlineRepository10  \
+    --prefix "/opt/Thinkbox/Deadline10"  \
+    --repositorydir "/opt/Thinkbox/DeadlineRepository10"  \
     --webservice-httpport 8899
 
 
