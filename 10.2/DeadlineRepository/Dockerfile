@@ -131,7 +131,7 @@ ENTRYPOINT  \
 
 
 
-FROM rcs_installer AS pulse_runner
+FROM rcs_installer AS worker_runner
 
 LABEL authors="michael"
 

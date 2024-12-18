@@ -251,7 +251,7 @@ services:
     volumes:
       - /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10
       # Read Only
-      - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository:/opt/Thinkbox/DeadlineRepository10:ro  # ro?
+      - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10:ro  # ro?
       - /data/share/nfs:/data/share/nfs:ro
       - /data/share/nfs:/nfs:ro
 
