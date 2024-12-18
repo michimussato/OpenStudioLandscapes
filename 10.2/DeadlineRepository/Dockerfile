@@ -97,7 +97,7 @@ ENTRYPOINT [  \
     "-vv",  \
     "--force-reinstall",  \
     "install-rcs",  \
-    "--deadline-version", "${DEADLINE_VERSION}",  \
+    "--deadline-version", "DEADLINE_VERSION",  \
     "--prefix", "/opt/Thinkbox/Deadline10",  \
     "--repositorydir", "/opt/Thinkbox/DeadlineRepository10",  \
     "--httpport", "8888"  \
