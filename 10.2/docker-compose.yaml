@@ -187,7 +187,7 @@ services:
       - ./DeadlineRepositoryInstall:/opt/Thinkbox/DeadlineRepository10
       - ./DeadlineClientInstall:/opt/Thinkbox/Deadline10
       - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/deadline.ini:/var/lib/Thinkbox/Deadline10/deadline.ini:ro
-      - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:ro
+#      - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:ro
       - /data/share/nfs:/data/share/nfs:ro
       - /data/share/nfs:/nfs:ro
     ports:
