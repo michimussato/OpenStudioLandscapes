@@ -7,6 +7,10 @@
 
 ---
 
+# `deadline.ini`
+
+https://docs.thinkboxsoftware.com/products/deadline/10.2/1_User%20Manual/manual/client-config.html#client-config-conn-server-ref-label
+
 # Deadline Docker 10.2
 
 ```
