@@ -134,7 +134,8 @@ services:
         - DEADLINE_VERSION=$DEADLINE_VERSION
         - PYTHON_VERSION=$PYTHON_VERSION
     volumes:
-      - ./DeadlineRepositoryInstall:/opt/Thinkbox/DeadlineRepository10
+#      - ./DeadlineRepositoryInstall:/opt/Thinkbox/DeadlineRepository10
+      - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
       - /data/share/nfs:/data/share/nfs:ro
       - /data/share/nfs:/nfs:ro
 
@@ -159,8 +160,9 @@ services:
         - DEADLINE_VERSION=$DEADLINE_VERSION
         - PYTHON_VERSION=$PYTHON_VERSION
     volumes:
-      - ./DeadlineRepositoryInstall:/opt/Thinkbox/DeadlineRepository10  # ro?
-      - ./DeadlineClientInstall:/opt/Thinkbox/Deadline10
+      - /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10
+      # Read Only
+      - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10:ro  # ro?
       - /data/share/nfs:/data/share/nfs:ro
       - /data/share/nfs:/nfs:ro
 
@@ -184,14 +186,47 @@ services:
       - mongodb
       - repository
     volumes:
-      - ./DeadlineRepositoryInstall:/opt/Thinkbox/DeadlineRepository10
-      - ./DeadlineClientInstall:/opt/Thinkbox/Deadline10
+      # Config
       - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/deadline.ini:/var/lib/Thinkbox/Deadline10/deadline.ini:ro
-#      - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:ro
+      # Data
+      - /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10:ro
+      - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10:ro
       - /data/share/nfs:/data/share/nfs:ro
       - /data/share/nfs:/nfs:ro
+#      - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:ro
     ports:
       - "8888:8888"
+
+
+  deadline-pulse-runner:
+    restart: always
+    build:
+      context: .
+      dockerfile: ./DeadlineRepository/Dockerfile
+      args:
+        - DEADLINE_VERSION=$DEADLINE_VERSION
+        - PYTHON_VERSION=$PYTHON_VERSION
+      target: pulse_runner
+    container_name: pulse-runner-10-2
+    hostname: pulse-runner-10-2
+    domainname: farm.evil
+    depends_on:
+      deadline-rcs-installer-10-2:
+        condition: service_completed_successfully
+    networks:
+      - mongodb
+      - repository
+    volumes:
+      # Config
+      - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/deadline.ini:/var/lib/Thinkbox/Deadline10/deadline.ini:ro
+      # Data
+      - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10:ro
+      - /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10:ro
+      - /data/share/nfs:/data/share/nfs:ro
+      - /data/share/nfs:/nfs:ro
+#      - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:ro
+#    ports:
+#      - "8888:8888"
 
 
 
@@ -214,8 +249,9 @@ services:
         - DEADLINE_VERSION=$DEADLINE_VERSION
         - PYTHON_VERSION=$PYTHON_VERSION
     volumes:
-      - ./DeadlineClientWebserviceInstall:/opt/Thinkbox/Deadline10
-      - ./DeadlineRepositoryInstall:/opt/Thinkbox/DeadlineRepository10  # ro?
+      - /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10
+      # Read Only
+      - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository:/opt/Thinkbox/DeadlineRepository10:ro  # ro?
       - /data/share/nfs:/data/share/nfs:ro
       - /data/share/nfs:/nfs:ro
 
@@ -239,10 +275,12 @@ services:
       - mongodb
       - repository
     volumes:
-      - ./DeadlineRepositoryInstall:/opt/Thinkbox/DeadlineRepository10
-      - ./DeadlineClientWebserviceInstall:/opt/Thinkbox/Deadline10
+      # Config
+#      - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:ro
       - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/deadline.ini:/var/lib/Thinkbox/Deadline10/deadline.ini:ro
-      - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:ro
+      # Data
+      - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10:ro
+      - /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10:ro
       - /data/share/nfs:/data/share/nfs:ro
       - /data/share/nfs:/nfs:ro
     ports:
