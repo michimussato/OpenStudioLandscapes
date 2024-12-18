@@ -1,12 +1,12 @@
 %%{init: {'theme': 'default'}}%%
 flowchart TB
-  VtestdataoptThinkboxDeadlineDatabase10mongodataLOCAL{{"./test_data/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL"}} x-. /opt/Thinkbox/DeadlineDatabase10/mongo/data .-x mongodb102[mongodb-10-2]
+  Vdatasharenfstestdata102optThinkboxDeadlineDatabase10mongodataLOCAL{{"/data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL"}} x-. /opt/Thinkbox/DeadlineDatabase10/mongo/data .-x mongodb102[mongodb-10-2]
   Vdatasharenfs{{/data/share/nfs}} -. /data/share/nfs .-x mongodb102
   Vdatasharenfs -. /nfs .-x mongodb102
-  VtestdataoptThinkboxDeadlineDatabase10mongodataLOCAL x-. /opt/Thinkbox/DeadlineDatabase10/mongo/data .-x mongoexpress[mongo-express]
+  Vdatasharenfstestdata102optThinkboxDeadlineDatabase10mongodataLOCAL x-. /opt/Thinkbox/DeadlineDatabase10/mongo/data .-x mongoexpress[mongo-express]
   Vdatasharenfs -. /data/share/nfs .-x mongoexpress
   Vdatasharenfs -. /nfs .-x mongoexpress
-  VtestdataoptThinkboxDeadlineDatabase10mongodataLOCAL -. /opt/Thinkbox/DeadlineDatabase10/mongo/data .-x filebrowser
+  Vdatasharenfstestdata102optThinkboxDeadlineDatabase10mongodataLOCAL -. /opt/Thinkbox/DeadlineDatabase10/mongo/data .-x filebrowser
   Vnfs{{/nfs}} -. /nfs .-x filebrowser
   Vfilebrowserfilebrowserdb{{"./filebrowser/filebrowser.db"}} x-. "/filebrowser.db" .-x filebrowser
   Vfilebrowserfilebrowserjson{{"./filebrowser/filebrowser.json"}} x-. "/.filebrowser.json" .-x filebrowser
@@ -58,6 +58,6 @@ flowchart TB
   deadlinewebservicerunner -.- repository
 
   classDef volumes fill:#fdfae4,stroke:#867a22
-  class VtestdataoptThinkboxDeadlineDatabase10mongodataLOCAL,Vdatasharenfs,Vdatasharenfs,VtestdataoptThinkboxDeadlineDatabase10mongodataLOCAL,Vdatasharenfs,Vdatasharenfs,VtestdataoptThinkboxDeadlineDatabase10mongodataLOCAL,Vnfs,Vfilebrowserfilebrowserdb,Vfilebrowserfilebrowserjson,Vdatasharenfs,Vdatasharenfs,VDeadlineRepositoryInstall,Vdatasharenfs,Vdatasharenfs,VDeadlineRepositoryInstall,VDeadlineClientInstall,Vdatasharenfs,Vdatasharenfs,VDeadlineRepositoryInstall,VDeadlineClientInstall,VDeadlineRepositoryrcsvarlibThinkboxDeadline10deadlineini,VDeadlineRepositoryrcsvarlibThinkboxDeadline10certcacertificatescrt,Vdatasharenfs,Vdatasharenfs,VDeadlineClientWebserviceInstall,VDeadlineRepositoryInstall,Vdatasharenfs,Vdatasharenfs,VDeadlineRepositoryInstall,VDeadlineClientWebserviceInstall,VDeadlineRepositoryrcsvarlibThinkboxDeadline10deadlineini,VDeadlineRepositoryrcsvarlibThinkboxDeadline10certcacertificatescrt,Vdatasharenfs,Vdatasharenfs volumes
+  class Vdatasharenfstestdata102optThinkboxDeadlineDatabase10mongodataLOCAL,Vdatasharenfs,Vdatasharenfs,Vdatasharenfstestdata102optThinkboxDeadlineDatabase10mongodataLOCAL,Vdatasharenfs,Vdatasharenfs,Vdatasharenfstestdata102optThinkboxDeadlineDatabase10mongodataLOCAL,Vnfs,Vfilebrowserfilebrowserdb,Vfilebrowserfilebrowserjson,Vdatasharenfs,Vdatasharenfs,VDeadlineRepositoryInstall,Vdatasharenfs,Vdatasharenfs,VDeadlineRepositoryInstall,VDeadlineClientInstall,Vdatasharenfs,Vdatasharenfs,VDeadlineRepositoryInstall,VDeadlineClientInstall,VDeadlineRepositoryrcsvarlibThinkboxDeadline10deadlineini,VDeadlineRepositoryrcsvarlibThinkboxDeadline10certcacertificatescrt,Vdatasharenfs,Vdatasharenfs,VDeadlineClientWebserviceInstall,VDeadlineRepositoryInstall,Vdatasharenfs,Vdatasharenfs,VDeadlineRepositoryInstall,VDeadlineClientWebserviceInstall,VDeadlineRepositoryrcsvarlibThinkboxDeadline10deadlineini,VDeadlineRepositoryrcsvarlibThinkboxDeadline10certcacertificatescrt,Vdatasharenfs,Vdatasharenfs volumes
   classDef nets fill:#fbfff7,stroke:#8bc34a
   class mongodb,repository nets

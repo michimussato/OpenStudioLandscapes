@@ -1,4 +1,5 @@
 <!-- TOC -->
+* [Dependencies](#dependencies)
 * [Docker](#docker)
   * [docker compose](#docker-compose)
 <!-- TOC -->
