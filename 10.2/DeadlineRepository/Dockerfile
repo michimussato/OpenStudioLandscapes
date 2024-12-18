@@ -89,11 +89,6 @@ ENV FORCE_REINSTALL=$FORCE_REINSTALL
 
 LABEL authors="michael"
 
-WORKDIR /ENTRYPOINT
-
-ADD ./DeadlineRepository/entry_point_install_rcs.sh /ENTRYPOINT
-RUN chmod u+x /ENTRYPOINT/entry_point_install_rcs.sh
-
 WORKDIR /nfs/installers/Deadline-${DEADLINE_VERSION}-linux-installers
 
 # deadline-wrapper --force-reinstall install-rcs --deadline-version 10.2.1.1 --prefix /opt/Thinkbox/Deadline10 --repositorydir /opt/Thinkbox/DeadlineRepository10 --httpport 8888
@@ -102,7 +97,7 @@ ENTRYPOINT [  \
     "-vv",  \
     "--force-reinstall",  \
     "install-rcs",  \
-    "--deadline-version", "${PYTHON_VERSION}",  \
+    "--deadline-version", "${DEADLINE_VERSION}",  \
     "--prefix", "/opt/Thinkbox/Deadline10",  \
     "--repositorydir", "/opt/Thinkbox/DeadlineRepository10",  \
     "--httpport", "8888"  \
@@ -145,11 +140,6 @@ ENV FORCE_REINSTALL=$FORCE_REINSTALL
 
 LABEL authors="michael"
 
-WORKDIR /ENTRYPOINT
-
-ADD ./DeadlineRepository/entry_point_install_webservice.sh /ENTRYPOINT
-RUN chmod u+x /ENTRYPOINT/entry_point_install_webservice.sh
-
 WORKDIR /nfs/installers/Deadline-${DEADLINE_VERSION}-linux-installers
 
 ENTRYPOINT [  \
@@ -157,7 +147,7 @@ ENTRYPOINT [  \
     "-vv",  \
     "--force-reinstall",  \
     "install-webservice",  \
-    "--deadline-version", "${PYTHON_VERSION}",  \
+    "--deadline-version", "DEADLINE_VERSION",  \
     "--prefix", "/opt/Thinkbox/Deadline10",  \
     "--repositorydir", "/opt/Thinkbox/DeadlineRepository10",  \
     "--webservice-httpport", "8899"  \

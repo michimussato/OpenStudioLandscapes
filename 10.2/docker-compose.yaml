@@ -63,6 +63,8 @@ services:
       # - mongo-data-10-2-test:/opt/Thinkbox/DeadlineDatabase10/mongo/data
       # LOCAL
       - ./test_data/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data
+      - /data/share/nfs:/data/share/nfs:ro
+      - /data/share/nfs:/nfs:ro
 
 
   mongo-express:
@@ -90,6 +92,8 @@ services:
       # # /var/lib/docker/volumes/mongodb_mongo-data-10-2/_data
       # - mongo-data-10-2-test:/opt/Thinkbox/DeadlineDatabase10/mongo/data
       - ./test_data/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data
+      - /data/share/nfs:/data/share/nfs:ro
+      - /data/share/nfs:/nfs:ro
 
 
   # https://github.com/hurlenko/filebrowser-docker
@@ -117,6 +121,8 @@ services:
       # empty file, resulting in an error when mounting the database
       - ./filebrowser/filebrowser.db:/filebrowser.db
       - ./filebrowser/filebrowser.json:/.filebrowser.json
+      - /data/share/nfs:/data/share/nfs:ro
+      - /data/share/nfs:/nfs:ro
     ports:
       - "80:80"
 
@@ -153,8 +159,10 @@ services:
 #      - certs:/client_certs
 #      - repo:/repo
 #      - db_data:/opt/Thinkbox/DeadlineDatabase10/mongo/data
-      - ./deadline_installer:/deadline_installer:ro
+#      - ./deadline_installer:/deadline_installer:ro
       - ./DeadlineRepositoryInstall:/opt/Thinkbox/DeadlineRepository10
+      - /data/share/nfs:/data/share/nfs:ro
+      - /data/share/nfs:/nfs:ro
 #    ports:
 #      - 27100:27100
 
@@ -193,9 +201,11 @@ services:
 #      - certs:/client_certs
 #      - repo:/repo
 #      - db_data:/opt/Thinkbox/DeadlineDatabase10/mongo/data
-      - ./deadline_installer:/deadline_installer:ro
+#      - ./deadline_installer:/deadline_installer:ro
       - ./DeadlineRepositoryInstall:/opt/Thinkbox/DeadlineRepository10  # ro?
       - ./DeadlineClientInstall:/opt/Thinkbox/Deadline10
+      - /data/share/nfs:/data/share/nfs:ro
+      - /data/share/nfs:/nfs:ro
 #      - ./DeadlineRepositoryInstall:/opt/Thinkbox/Deadline10
 #    ports:
 #      - 27100:27100
@@ -257,6 +267,8 @@ services:
       - ./DeadlineClientInstall:/opt/Thinkbox/Deadline10
       - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/deadline.ini:/var/lib/Thinkbox/Deadline10/deadline.ini:ro
       - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:ro
+      - /data/share/nfs:/data/share/nfs:ro
+      - /data/share/nfs:/nfs:ro
     ports:
       - "8888:8888"
 
@@ -295,9 +307,11 @@ services:
 #      - certs:/client_certs
 #      - repo:/repo
 #      - db_data:/opt/Thinkbox/DeadlineDatabase10/mongo/data
-      - ./deadline_installer:/deadline_installer:ro
+#      - ./deadline_installer:/deadline_installer:ro
       - ./DeadlineClientWebserviceInstall:/opt/Thinkbox/Deadline10
       - ./DeadlineRepositoryInstall:/opt/Thinkbox/DeadlineRepository10  # ro?
+      - /data/share/nfs:/data/share/nfs:ro
+      - /data/share/nfs:/nfs:ro
 #    ports:
 #      - 27100:27100
 
@@ -358,6 +372,8 @@ services:
       - ./DeadlineClientWebserviceInstall:/opt/Thinkbox/Deadline10
       - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/deadline.ini:/var/lib/Thinkbox/Deadline10/deadline.ini:ro
       - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:ro
+      - /data/share/nfs:/data/share/nfs:ro
+      - /data/share/nfs:/nfs:ro
     ports:
       - "8899:8899"
 

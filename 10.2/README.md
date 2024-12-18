@@ -13,6 +13,10 @@ sudo rm -rf /home/michael/git/repos/deadline-setup/deadline-setup-docker/10.2/De
 sudo rm -rf /home/michael/git/repos/deadline-setup/deadline-setup-docker/10.2/DeadlineClientInstall/*
 ```
 
+## Symlinks
+
+> In general, symlinks do not work inside docker. I found this the hard way.
+
 ## Automated
 
 - https://derlin.github.io/docker-compose-viz-mermaid/
