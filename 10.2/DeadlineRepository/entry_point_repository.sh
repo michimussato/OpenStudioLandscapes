@@ -1,13 +1,13 @@
 #!/bin/bash
 
 
-if [ ! -d /deadline_installer ]; then
-    echo "Directory /deadline_installer not found.";
+if [ ! -d /nfs/installers/Deadline-${DEADLINE_VERSION}-linux-installers ]; then
+    echo "Directory /nfs/installers/Deadline-${DEADLINE_VERSION}-linux-installers not found.";
     exit 1;
 fi;
 
 
-if [ ! -f /deadline_installer/DeadlineRepository-${DEADLINE_VERSION}-linux-x64-installer.run ]; then
+if [ ! -f /nfs/installers/Deadline-${PYTHON_VERSION}-linux-installers/DeadlineRepository-${DEADLINE_VERSION}-linux-x64-installer.run ]; then
     echo "DeadlineRepository installer not found.";
     exit 1;
 fi;

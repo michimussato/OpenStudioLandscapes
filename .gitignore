@@ -2,3 +2,4 @@
 /sesi/
 .idea
 /installers/
+**.env

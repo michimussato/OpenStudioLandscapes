@@ -69,7 +69,7 @@ WORKDIR /ENTRYPOINT
 ADD ./DeadlineRepository/entry_point_repository.sh /ENTRYPOINT
 RUN chmod u+x /ENTRYPOINT/entry_point_repository.sh
 
-WORKDIR /deadline_installer
+WORKDIR /nfs/installers/Deadline-${DEADLINE_VERSION}-linux-installers
 
 ENTRYPOINT [  \
     "/ENTRYPOINT/entry_point_repository.sh",  \
@@ -94,7 +94,7 @@ WORKDIR /ENTRYPOINT
 ADD ./DeadlineRepository/entry_point_install_rcs.sh /ENTRYPOINT
 RUN chmod u+x /ENTRYPOINT/entry_point_install_rcs.sh
 
-WORKDIR /deadline_installer
+WORKDIR /nfs/installers/Deadline-${DEADLINE_VERSION}-linux-installers
 
 # deadline-wrapper --force-reinstall install-rcs --deadline-version 10.2.1.1 --prefix /opt/Thinkbox/Deadline10 --repositorydir /opt/Thinkbox/DeadlineRepository10 --httpport 8888
 ENTRYPOINT [  \
@@ -102,7 +102,7 @@ ENTRYPOINT [  \
     "-vv",  \
     "--force-reinstall",  \
     "install-rcs",  \
-    "--deadline-version", "10.2.1.1",  \
+    "--deadline-version", "${PYTHON_VERSION}",  \
     "--prefix", "/opt/Thinkbox/Deadline10",  \
     "--repositorydir", "/opt/Thinkbox/DeadlineRepository10",  \
     "--httpport", "8888"  \
@@ -126,7 +126,7 @@ WORKDIR /ENTRYPOINT
 ADD ./DeadlineRepository/entry_point_rcs_runner.sh /ENTRYPOINT
 RUN chmod u+x /ENTRYPOINT/entry_point_rcs_runner.sh
 
-WORKDIR /deadline_installer
+WORKDIR /nfs/installers/Deadline-${DEADLINE_VERSION}-linux-installers
 
 ENTRYPOINT [  \
     "/ENTRYPOINT/entry_point_rcs_runner.sh"  \
@@ -150,14 +150,14 @@ WORKDIR /ENTRYPOINT
 ADD ./DeadlineRepository/entry_point_install_webservice.sh /ENTRYPOINT
 RUN chmod u+x /ENTRYPOINT/entry_point_install_webservice.sh
 
-WORKDIR /deadline_installer
+WORKDIR /nfs/installers/Deadline-${DEADLINE_VERSION}-linux-installers
 
 ENTRYPOINT [  \
     "deadline-wrapper",  \
     "-vv",  \
     "--force-reinstall",  \
     "install-webservice",  \
-    "--deadline-version", "10.2.1.1",  \
+    "--deadline-version", "${PYTHON_VERSION}",  \
     "--prefix", "/opt/Thinkbox/Deadline10",  \
     "--repositorydir", "/opt/Thinkbox/DeadlineRepository10",  \
     "--webservice-httpport", "8899"  \
@@ -181,7 +181,7 @@ WORKDIR /ENTRYPOINT
 ADD ./DeadlineRepository/entry_point_webservice_runner.sh /ENTRYPOINT
 RUN chmod u+x /ENTRYPOINT/entry_point_webservice_runner.sh
 
-WORKDIR /deadline_installer
+WORKDIR /nfs/installers/Deadline-${DEADLINE_VERSION}-linux-installers
 
 ENTRYPOINT [  \
     "/ENTRYPOINT/entry_point_webservice_runner.sh"  \
