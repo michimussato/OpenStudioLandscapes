@@ -24,7 +24,7 @@ sudo rm -rf /home/michael/git/repos/deadline-setup/deadline-setup-docker/10.2/De
 
 ```
 cd ~/git/repos/deadline-docker
-java -jar ./10.2/docker-compose-viz-mermaid_no_local-1.3.0.jar docker-compose.yaml --volumes --networks --format TEXT --dir TB --out graph.mermaid
+java -jar docker-compose-viz-mermaid_no_local-1.3.0.jar ./10.2/docker-compose.yaml --volumes --networks --format TEXT --dir TB --out ./10.2/graph.mermaid
 ```
 
 ## Manual

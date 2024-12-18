@@ -1,27 +1,40 @@
 %%{init: {'theme': 'default'}}%%
 flowchart TB
   VtestdataoptThinkboxDeadlineDatabase10mongodataLOCAL{{"./test_data/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL"}} x-. /opt/Thinkbox/DeadlineDatabase10/mongo/data .-x mongodb102[mongodb-10-2]
+  Vdatasharenfs{{/data/share/nfs}} -. /data/share/nfs .-x mongodb102
+  Vdatasharenfs -. /nfs .-x mongodb102
   VtestdataoptThinkboxDeadlineDatabase10mongodataLOCAL x-. /opt/Thinkbox/DeadlineDatabase10/mongo/data .-x mongoexpress[mongo-express]
+  Vdatasharenfs -. /data/share/nfs .-x mongoexpress
+  Vdatasharenfs -. /nfs .-x mongoexpress
   VtestdataoptThinkboxDeadlineDatabase10mongodataLOCAL -. /opt/Thinkbox/DeadlineDatabase10/mongo/data .-x filebrowser
   Vnfs{{/nfs}} -. /nfs .-x filebrowser
   Vfilebrowserfilebrowserdb{{"./filebrowser/filebrowser.db"}} x-. "/filebrowser.db" .-x filebrowser
   Vfilebrowserfilebrowserjson{{"./filebrowser/filebrowser.json"}} x-. "/.filebrowser.json" .-x filebrowser
-  Vdeadlineinstaller{{"./deadline_installer"}} -. /deadline_installer .-x deadlinerepositoryinstaller102[deadline-repository-installer-10-2]
-  VDeadlineRepositoryInstall{{"./DeadlineRepositoryInstall"}} x-. /opt/Thinkbox/DeadlineRepository10 .-x deadlinerepositoryinstaller102
-  Vdeadlineinstaller -. /deadline_installer .-x deadlinercsinstaller102[deadline-rcs-installer-10-2]
-  VDeadlineRepositoryInstall x-. /opt/Thinkbox/DeadlineRepository10 .-x deadlinercsinstaller102
+  Vdatasharenfs -. /data/share/nfs .-x filebrowser
+  Vdatasharenfs -. /nfs .-x filebrowser
+  VDeadlineRepositoryInstall{{"./DeadlineRepositoryInstall"}} x-. /opt/Thinkbox/DeadlineRepository10 .-x deadlinerepositoryinstaller102[deadline-repository-installer-10-2]
+  Vdatasharenfs -. /data/share/nfs .-x deadlinerepositoryinstaller102
+  Vdatasharenfs -. /nfs .-x deadlinerepositoryinstaller102
+  VDeadlineRepositoryInstall x-. /opt/Thinkbox/DeadlineRepository10 .-x deadlinercsinstaller102[deadline-rcs-installer-10-2]
   VDeadlineClientInstall{{"./DeadlineClientInstall"}} x-. /opt/Thinkbox/Deadline10 .-x deadlinercsinstaller102
+  Vdatasharenfs -. /data/share/nfs .-x deadlinercsinstaller102
+  Vdatasharenfs -. /nfs .-x deadlinercsinstaller102
   VDeadlineRepositoryInstall x-. /opt/Thinkbox/DeadlineRepository10 .-x deadlinercsrunner[deadline-rcs-runner]
   VDeadlineClientInstall x-. /opt/Thinkbox/Deadline10 .-x deadlinercsrunner
   VDeadlineRepositoryrcsvarlibThinkboxDeadline10deadlineini{{"./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/deadline.ini"}} -. "/var/lib/Thinkbox/Deadline10/deadline.ini" .-x deadlinercsrunner
   VDeadlineRepositoryrcsvarlibThinkboxDeadline10certcacertificatescrt{{"./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt"}} -. "/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt" .-x deadlinercsrunner
-  Vdeadlineinstaller -. /deadline_installer .-x deadlinewebserviceinstaller102[deadline-webservice-installer-10-2]
-  VDeadlineClientWebserviceInstall{{"./DeadlineClientWebserviceInstall"}} x-. /opt/Thinkbox/Deadline10 .-x deadlinewebserviceinstaller102
+  Vdatasharenfs -. /data/share/nfs .-x deadlinercsrunner
+  Vdatasharenfs -. /nfs .-x deadlinercsrunner
+  VDeadlineClientWebserviceInstall{{"./DeadlineClientWebserviceInstall"}} x-. /opt/Thinkbox/Deadline10 .-x deadlinewebserviceinstaller102[deadline-webservice-installer-10-2]
   VDeadlineRepositoryInstall x-. /opt/Thinkbox/DeadlineRepository10 .-x deadlinewebserviceinstaller102
+  Vdatasharenfs -. /data/share/nfs .-x deadlinewebserviceinstaller102
+  Vdatasharenfs -. /nfs .-x deadlinewebserviceinstaller102
   VDeadlineRepositoryInstall x-. /opt/Thinkbox/DeadlineRepository10 .-x deadlinewebservicerunner[deadline-webservice-runner]
   VDeadlineClientWebserviceInstall x-. /opt/Thinkbox/Deadline10 .-x deadlinewebservicerunner
   VDeadlineRepositoryrcsvarlibThinkboxDeadline10deadlineini -. "/var/lib/Thinkbox/Deadline10/deadline.ini" .-x deadlinewebservicerunner
   VDeadlineRepositoryrcsvarlibThinkboxDeadline10certcacertificatescrt -. "/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt" .-x deadlinewebservicerunner
+  Vdatasharenfs -. /data/share/nfs .-x deadlinewebservicerunner
+  Vdatasharenfs -. /nfs .-x deadlinewebservicerunner
   deadlinercsinstaller102 --> deadlinerepositoryinstaller102
   deadlinercsrunner --> deadlinercsinstaller102
   deadlinerepositoryinstaller102 --> mongodb102
@@ -45,6 +58,6 @@ flowchart TB
   deadlinewebservicerunner -.- repository
 
   classDef volumes fill:#fdfae4,stroke:#867a22
-  class VtestdataoptThinkboxDeadlineDatabase10mongodataLOCAL,VtestdataoptThinkboxDeadlineDatabase10mongodataLOCAL,VtestdataoptThinkboxDeadlineDatabase10mongodataLOCAL,Vnfs,Vfilebrowserfilebrowserdb,Vfilebrowserfilebrowserjson,Vdeadlineinstaller,VDeadlineRepositoryInstall,Vdeadlineinstaller,VDeadlineRepositoryInstall,VDeadlineClientInstall,VDeadlineRepositoryInstall,VDeadlineClientInstall,VDeadlineRepositoryrcsvarlibThinkboxDeadline10deadlineini,VDeadlineRepositoryrcsvarlibThinkboxDeadline10certcacertificatescrt,Vdeadlineinstaller,VDeadlineClientWebserviceInstall,VDeadlineRepositoryInstall,VDeadlineRepositoryInstall,VDeadlineClientWebserviceInstall,VDeadlineRepositoryrcsvarlibThinkboxDeadline10deadlineini,VDeadlineRepositoryrcsvarlibThinkboxDeadline10certcacertificatescrt volumes
+  class VtestdataoptThinkboxDeadlineDatabase10mongodataLOCAL,Vdatasharenfs,Vdatasharenfs,VtestdataoptThinkboxDeadlineDatabase10mongodataLOCAL,Vdatasharenfs,Vdatasharenfs,VtestdataoptThinkboxDeadlineDatabase10mongodataLOCAL,Vnfs,Vfilebrowserfilebrowserdb,Vfilebrowserfilebrowserjson,Vdatasharenfs,Vdatasharenfs,VDeadlineRepositoryInstall,Vdatasharenfs,Vdatasharenfs,VDeadlineRepositoryInstall,VDeadlineClientInstall,Vdatasharenfs,Vdatasharenfs,VDeadlineRepositoryInstall,VDeadlineClientInstall,VDeadlineRepositoryrcsvarlibThinkboxDeadline10deadlineini,VDeadlineRepositoryrcsvarlibThinkboxDeadline10certcacertificatescrt,Vdatasharenfs,Vdatasharenfs,VDeadlineClientWebserviceInstall,VDeadlineRepositoryInstall,Vdatasharenfs,Vdatasharenfs,VDeadlineRepositoryInstall,VDeadlineClientWebserviceInstall,VDeadlineRepositoryrcsvarlibThinkboxDeadline10deadlineini,VDeadlineRepositoryrcsvarlibThinkboxDeadline10certcacertificatescrt,Vdatasharenfs,Vdatasharenfs volumes
   classDef nets fill:#fbfff7,stroke:#8bc34a
   class mongodb,repository nets
