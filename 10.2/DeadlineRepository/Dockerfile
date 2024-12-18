@@ -104,24 +104,14 @@ ENTRYPOINT  \
 
 
 FROM rcs_installer AS rcs_runner
-ARG DEADLINE_VERSION
-ARG PYTHON_VERSION
-#
-ENV DEADLINE_VERSION=$DEADLINE_VERSION
-ENV PYTHON_VERSION=$PYTHON_VERSION
 
 LABEL authors="michael"
 
-WORKDIR /ENTRYPOINT
-
-ADD ./DeadlineRepository/entry_point_rcs_runner.sh /ENTRYPOINT
-RUN chmod u+x /ENTRYPOINT/entry_point_rcs_runner.sh
-
-WORKDIR /nfs/installers/Deadline-${DEADLINE_VERSION}-linux-installers
-
-ENTRYPOINT [  \
-    "/ENTRYPOINT/entry_point_rcs_runner.sh"  \
-]
+ENTRYPOINT  \
+    deadline-wrapper  \
+    -vv  \
+    run  \
+    --executable "/opt/Thinkbox/Deadline10/bin/deadlinercs"
 
 
 
@@ -149,21 +139,11 @@ ENTRYPOINT  \
 
 
 FROM webservice_installer AS webservice_runner
-ARG DEADLINE_VERSION
-ARG PYTHON_VERSION
-#
-ENV DEADLINE_VERSION=$DEADLINE_VERSION
-ENV PYTHON_VERSION=$PYTHON_VERSION
 
 LABEL authors="michael"
 
-WORKDIR /ENTRYPOINT
-
-ADD ./DeadlineRepository/entry_point_webservice_runner.sh /ENTRYPOINT
-RUN chmod u+x /ENTRYPOINT/entry_point_webservice_runner.sh
-
-WORKDIR /nfs/installers/Deadline-${DEADLINE_VERSION}-linux-installers
-
-ENTRYPOINT [  \
-    "/ENTRYPOINT/entry_point_webservice_runner.sh"  \
-]
+ENTRYPOINT  \
+    deadline-wrapper  \
+    -vv  \
+    run  \
+    --executable "/opt/Thinkbox/Deadline10/bin/deadlinewebservice"

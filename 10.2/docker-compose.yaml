@@ -216,20 +216,6 @@ services:
     build:
       context: .
       dockerfile: ./DeadlineRepository/Dockerfile
-      args:
-        - DEADLINE_VERSION=$DEADLINE_VERSION
-        # - DEADLINE_INSTALLER_BASE=$DEADLINE_INSTALLER_BASE
-        # - SECRETS_USERNAME=$SECRETS_USERNAME
-        # - SECRETS_PASSWORD=$SECRETS_PASSWORD
-        # - DB_CERT_PASS=$DB_CERT_PASS
-        # - DB_HOST=$DB_HOST
-        # - CERT_ORG=$CERT_ORG
-        # - CERT_OU=$CERT_OU
-        # - GOOGLE_API_KEY=$GOOGLE_API_KEY
-        # - GOOGLE_ID=$GOOGLE_ID
-        # - MONGO_VERSION=$MONGO_VERSION
-        - PYTHON_VERSION=$PYTHON_VERSION
-#        - FORCE_REINSTALL=$FORCE_REINSTALL
       target: rcs_runner
     container_name: rcs-runner-10-2
     hostname: rcs-runner-10-2
@@ -240,24 +226,6 @@ services:
     networks:
       - mongodb
       - repository
-#    build:
-#      context: .
-#      dockerfile: ./DeadlineRepository/Dockerfile
-#      target: rcs_runner
-#      args:
-#        - DEADLINE_VERSION=$DEADLINE_VERSION
-#        # - DEADLINE_INSTALLER_BASE=$DEADLINE_INSTALLER_BASE
-#        # - SECRETS_USERNAME=$SECRETS_USERNAME
-#        # - SECRETS_PASSWORD=$SECRETS_PASSWORD
-#        # - DB_CERT_PASS=$DB_CERT_PASS
-#        # - DB_HOST=$DB_HOST
-#        # - CERT_ORG=$CERT_ORG
-#        # - CERT_OU=$CERT_OU
-#        # - GOOGLE_API_KEY=$GOOGLE_API_KEY
-#        # - GOOGLE_ID=$GOOGLE_ID
-#        # - MONGO_VERSION=$MONGO_VERSION
-#        - PYTHON_VERSION=$PYTHON_VERSION
-#        - FORCE_REINSTALL=$FORCE_REINSTALL
     volumes:
 #      - certs:/client_certs
 #      - repo:/repo
@@ -321,20 +289,6 @@ services:
     build:
       context: .
       dockerfile: ./DeadlineRepository/Dockerfile
-      args:
-        - DEADLINE_VERSION=$DEADLINE_VERSION
-        # - DEADLINE_INSTALLER_BASE=$DEADLINE_INSTALLER_BASE
-        # - SECRETS_USERNAME=$SECRETS_USERNAME
-        # - SECRETS_PASSWORD=$SECRETS_PASSWORD
-        # - DB_CERT_PASS=$DB_CERT_PASS
-        # - DB_HOST=$DB_HOST
-        # - CERT_ORG=$CERT_ORG
-        # - CERT_OU=$CERT_OU
-        # - GOOGLE_API_KEY=$GOOGLE_API_KEY
-        # - GOOGLE_ID=$GOOGLE_ID
-        # - MONGO_VERSION=$MONGO_VERSION
-        - PYTHON_VERSION=$PYTHON_VERSION
-#        - FORCE_REINSTALL=$FORCE_REINSTALL
       target: webservice_runner
     container_name: webservice-runner-10-2
     hostname: webservice-runner-10-2
@@ -345,24 +299,6 @@ services:
     networks:
       - mongodb
       - repository
-#    build:
-#      context: .
-#      dockerfile: ./DeadlineRepository/Dockerfile
-#      target: rcs_runner
-#      args:
-#        - DEADLINE_VERSION=$DEADLINE_VERSION
-#        # - DEADLINE_INSTALLER_BASE=$DEADLINE_INSTALLER_BASE
-#        # - SECRETS_USERNAME=$SECRETS_USERNAME
-#        # - SECRETS_PASSWORD=$SECRETS_PASSWORD
-#        # - DB_CERT_PASS=$DB_CERT_PASS
-#        # - DB_HOST=$DB_HOST
-#        # - CERT_ORG=$CERT_ORG
-#        # - CERT_OU=$CERT_OU
-#        # - GOOGLE_API_KEY=$GOOGLE_API_KEY
-#        # - GOOGLE_ID=$GOOGLE_ID
-#        # - MONGO_VERSION=$MONGO_VERSION
-#        - PYTHON_VERSION=$PYTHON_VERSION
-#        - FORCE_REINSTALL=$FORCE_REINSTALL
     volumes:
 #      - certs:/client_certs
 #      - repo:/repo
