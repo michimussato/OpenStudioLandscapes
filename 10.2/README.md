@@ -1,5 +1,6 @@
 <!-- TOC -->
 * [Deadline Docker 10.2](#deadline-docker-102)
+  * [Symlinks](#symlinks)
   * [Automated](#automated)
   * [Manual](#manual)
 <!-- TOC -->
@@ -22,8 +23,8 @@ sudo rm -rf /home/michael/git/repos/deadline-setup/deadline-setup-docker/10.2/De
 - https://derlin.github.io/docker-compose-viz-mermaid/
 
 ```
-cd ~/git/repos/deadline-setup/deadline-setup-docker/10.2
-java -jar ../docker-compose-viz-mermaid_no_local-1.3.0.jar docker-compose.yaml --volumes --networks --format TEXT --dir TB --out graph.mermaid
+cd ~/git/repos/deadline-docker
+java -jar ./10.2/docker-compose-viz-mermaid_no_local-1.3.0.jar docker-compose.yaml --volumes --networks --format TEXT --dir TB --out graph.mermaid
 ```
 
 ## Manual
