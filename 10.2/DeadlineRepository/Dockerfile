@@ -92,16 +92,16 @@ LABEL authors="michael"
 WORKDIR /nfs/installers/Deadline-${DEADLINE_VERSION}-linux-installers
 
 # deadline-wrapper --force-reinstall install-rcs --deadline-version 10.2.1.1 --prefix /opt/Thinkbox/Deadline10 --repositorydir /opt/Thinkbox/DeadlineRepository10 --httpport 8888
-ENTRYPOINT [  \
-    "deadline-wrapper",  \
-    "-vv",  \
-    "--force-reinstall",  \
-    "install-rcs",  \
-    "--deadline-version", "DEADLINE_VERSION",  \
-    "--prefix", "/opt/Thinkbox/Deadline10",  \
-    "--repositorydir", "/opt/Thinkbox/DeadlineRepository10",  \
-    "--httpport", "8888"  \
-]
+ENTRYPOINT  \
+    deadline-wrapper  \
+    -vv  \
+    --force-reinstall  \
+    install-rcs  \
+    --deadline-version ${DEADLINE_VERSION}  \
+    --prefix /opt/Thinkbox/Deadline10  \
+    --repositorydir /opt/Thinkbox/DeadlineRepository10  \
+    --httpport 8888
+
 
 
 
@@ -142,16 +142,15 @@ LABEL authors="michael"
 
 WORKDIR /nfs/installers/Deadline-${DEADLINE_VERSION}-linux-installers
 
-ENTRYPOINT [  \
-    "deadline-wrapper",  \
-    "-vv",  \
-    "--force-reinstall",  \
-    "install-webservice",  \
-    "--deadline-version", "DEADLINE_VERSION",  \
-    "--prefix", "/opt/Thinkbox/Deadline10",  \
-    "--repositorydir", "/opt/Thinkbox/DeadlineRepository10",  \
-    "--webservice-httpport", "8899"  \
-]
+ENTRYPOINT  \
+    deadline-wrapper  \
+    -vv  \
+    --force-reinstall  \
+    install-webservice  \
+    --deadline-version ${DEADLINE_VERSION}  \
+    --prefix /opt/Thinkbox/Deadline10  \
+    --repositorydir /opt/Thinkbox/DeadlineRepository10  \
+    --webservice-httpport 8899
 
 
 
