@@ -77,6 +77,10 @@ ENTRYPOINT  \
     --dbname "deadline10db"
 
 
+# Todo
+#  Maybe we can merge rcs_installer and webservice_installer
+#  into one.
+
 
 FROM repo_base AS rcs_installer
 ARG DEADLINE_VERSION
@@ -112,6 +116,30 @@ ENTRYPOINT  \
     -vv  \
     run  \
     --executable "/opt/Thinkbox/Deadline10/bin/deadlinercs"
+
+
+
+FROM rcs_installer AS pulse_runner
+
+LABEL authors="michael"
+
+ENTRYPOINT  \
+    deadline-wrapper  \
+    -vv  \
+    run  \
+    --executable "/opt/Thinkbox/Deadline10/bin/deadlinepulse"
+
+
+
+FROM rcs_installer AS pulse_runner
+
+LABEL authors="michael"
+
+ENTRYPOINT  \
+    deadline-wrapper  \
+    -vv  \
+    run  \
+    --executable "/opt/Thinkbox/Deadline10/bin/deadlineworker"
 
 
 
