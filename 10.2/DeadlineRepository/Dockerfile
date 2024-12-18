@@ -56,25 +56,25 @@ ENTRYPOINT []
 FROM repo_base AS repo_installer
 ARG DEADLINE_VERSION
 ARG PYTHON_VERSION
-ARG FORCE_REINSTALL
 #
 ENV DEADLINE_VERSION=$DEADLINE_VERSION
 ENV PYTHON_VERSION=$PYTHON_VERSION
-ENV FORCE_REINSTALL=$FORCE_REINSTALL
 
 LABEL authors="michael"
 
-WORKDIR /ENTRYPOINT
-
-ADD ./DeadlineRepository/entry_point_repository.sh /ENTRYPOINT
-RUN chmod u+x /ENTRYPOINT/entry_point_repository.sh
-
 WORKDIR /nfs/installers/Deadline-${DEADLINE_VERSION}-linux-installers
 
-ENTRYPOINT [  \
-    "/ENTRYPOINT/entry_point_repository.sh",  \
-    "install"  \
-]
+ENTRYPOINT  \
+    deadline-wrapper  \
+    -vv  \
+    --force-reinstall  \
+    install-repository  \
+    --deadline-version ${DEADLINE_VERSION}  \
+    --prefix "/opt/Thinkbox/DeadlineRepository10"  \
+    --dbtype "MongoDB"  \
+    --dbhost "mongodb-10-2"  \
+    --dbport 27017  \
+    --dbname "deadline10db"
 
 
 
@@ -157,16 +157,13 @@ ENV PYTHON_VERSION=$PYTHON_VERSION
 
 LABEL authors="michael"
 
+WORKDIR /ENTRYPOINT
+
+ADD ./DeadlineRepository/entry_point_webservice_runner.sh /ENTRYPOINT
+RUN chmod u+x /ENTRYPOINT/entry_point_webservice_runner.sh
+
 WORKDIR /nfs/installers/Deadline-${DEADLINE_VERSION}-linux-installers
 
-ENTRYPOINT  \
-    deadline-wrapper  \
-    -vv  \
-    --force-reinstall  \
-    install-repository  \
-    --deadline-version ${DEADLINE_VERSION}  \
-    --prefix "/opt/Thinkbox/DeadlineRepository10"  \
-    --dbtype "MongoDB"  \
-    --dbhost "mongodb-10-2"  \
-    --dbport 27017  \
-    --dbname "deadline10db"
+ENTRYPOINT [  \
+    "/ENTRYPOINT/entry_point_webservice_runner.sh"  \
+]
