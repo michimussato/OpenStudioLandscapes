@@ -172,6 +172,14 @@ RUN chmod u+x /ENTRYPOINT/entry_point_webservice_runner.sh
 
 WORKDIR /nfs/installers/Deadline-${DEADLINE_VERSION}-linux-installers
 
-ENTRYPOINT [  \
-    "/ENTRYPOINT/entry_point_webservice_runner.sh"  \
-]
+ENTRYPOINT  \
+    deadline-wrapper  \
+    -vv  \
+    --force-reinstall  \
+    install-repository  \
+    --deadline-version ${DEADLINE_VERSION}  \
+    --prefix "/opt/Thinkbox/DeadlineRepository10"  \
+    --dbtype "MongoDB"  \
+    --dbhost "mongodb-10-2"  \
+    --dbport 27017  \
+    --dbname "deadline10db"
