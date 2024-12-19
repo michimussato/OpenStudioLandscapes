@@ -143,7 +143,7 @@ services:
       # By default, we already have a configuration file with some
       - ./DeadlineRepository/dagster_shared/workspace.yaml:/dagster/workspace.yaml:ro
       - ./DeadlineRepository/dagster_shared/dagster.yaml:/dagster/materializations/workspace.yaml:ro
-      - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data:ro
+      # - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data:ro
       - /nfs:/nfs
       - /data/share/nfs:/data/share/nfs
       - /data/share/nfs:/nfs
