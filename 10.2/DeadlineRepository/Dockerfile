@@ -119,28 +119,27 @@ ENTRYPOINT  \
 
 
 
-FROM rcs_installer AS rcs_runner
+#FROM rcs_installer AS rcs_runner
+#
+#LABEL authors="michael"
+#
+#ENTRYPOINT  \
+#    deadline-wrapper  \
+#    -vv  \
+#    run  \
+#    --executable "/opt/Thinkbox/Deadline10/bin/deadlinercs"
 
-LABEL authors="michael"
 
-ENTRYPOINT  \
-    deadline-wrapper  \
-    -vv  \
-    run  \
-    --executable "/opt/Thinkbox/Deadline10/bin/deadlinercs"
-
-# ffmpeg xvfb libegl1 libsm6 libglu1-mesa libxss1
-
-FROM rcs_installer AS pulse_runner
-
-LABEL authors="michael"
-
-#ENTRYPOINT ["top", "-b"]
-ENTRYPOINT  \
-    deadline-wrapper  \
-    -vv  \
-    run  \
-    --executable "/opt/Thinkbox/Deadline10/bin/deadlinepulse"
+#FROM rcs_installer AS pulse_runner
+#
+#LABEL authors="michael"
+#
+##ENTRYPOINT ["top", "-b"]
+#ENTRYPOINT  \
+#    deadline-wrapper  \
+#    -vv  \
+#    run  \
+#    --executable "/opt/Thinkbox/Deadline10/bin/deadlinepulse"
 
 
 
