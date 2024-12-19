@@ -1,0 +1,15 @@
+## https://docs.dagster.io/guides/limiting-concurrency-in-data-pipelines
+run_queue:
+  max_concurrent_runs: 1
+  block_op_concurrency_limited_runs:
+    enabled: true
+concurrency:
+  default_op_concurrency_limit: 1
+telemetry:
+  enabled: false
+#run_monitoring:
+#  enabled: true
+#  free_slots_after_run_end_seconds: 300
+auto_materialize:
+  enabled: true
+  use_sensors: true
