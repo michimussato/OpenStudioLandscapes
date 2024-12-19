@@ -75,15 +75,12 @@ ENV PYTHON_VERSION=$PYTHON_VERSION
 
 LABEL authors="michael"
 
+# docker exec -it dagster-dev-10-2 python3.11 -m pip install --root-user-action=ignore "deadline-dagster @ git+https://github.com/michimussato/deadline-dagster.git@main"
+RUN python3.11 -m pip install --root-user-action=ignore "dagster-shared[dagster_dev] @ git+https://github.com/michimussato/dagster-shared.git@main"
+
 WORKDIR /dagster/materializations
 ENV DAGSTER_HOME="/dagster/materializations"
 
-RUN python3.11 -m pip install --root-user-action=ignore "dagster-shared[dagster_dev] @ git+https://github.com/michimussato/dagster-shared.git@main"
-
-ADD ./DeadlineRepository/dagster_shared/workspace.yaml /dagster/
-ADD ./DeadlineRepository/dagster_shared/dagster.yaml /dagster/materializations/
-
-#ENTRYPOINT top -b
 ENTRYPOINT dagster dev --workspace "/dagster/workspace.yaml" --port 3000 --host 0.0.0.0
 
 

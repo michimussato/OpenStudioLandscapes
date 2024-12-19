@@ -141,10 +141,12 @@ services:
 #      - mongodb-10-2
     volumes:
       # By default, we already have a configuration file with some
+      - ./DeadlineRepository/dagster_shared/workspace.yaml:/dagster/workspace.yaml:ro
+      - ./DeadlineRepository/dagster_shared/dagster.yaml:/dagster/materializations/workspace.yaml:ro
       - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data:ro
-      - /nfs:/nfs:ro
-      - /data/share/nfs:/data/share/nfs:ro
-      - /data/share/nfs:/nfs:ro
+      - /nfs:/nfs
+      - /data/share/nfs:/data/share/nfs
+      - /data/share/nfs:/nfs
     ports:
       - "3000:3000"
 
