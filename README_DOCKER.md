@@ -31,3 +31,21 @@ Force Recreate
 
 Down
 `docker compose -f docker-compose.yaml down`
+
+# 
+
+```
+git clone https://github.com/michimussato/deadline-docker
+git clone https://github.com/ynput/ayon-docker
+# kitsu
+https://kitsu.cg-wire.com/installation/#cloud-hosting
+https://hub.docker.com/r/cgwire/cgwire
+https://gitlab.com/mathbou/docker-cgwire
+```
+
+
+
+- https://stackoverflow.com/questions/55650342/import-docker-compose-file-in-another-compose-file
+- https://docs.docker.com/compose/how-tos/multiple-compose-files/include/
+- https://docs.docker.com/reference/compose-file/include/
+- 

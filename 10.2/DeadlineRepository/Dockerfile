@@ -54,8 +54,10 @@ RUN python3.11 -m pip install pip --upgrade
 
 RUN python3.11 -m pip install --root-user-action=ignore git+https://github.com/michimussato/SSLGeneration.git@packaging
 RUN python3.11 -m pip install --root-user-action=ignore git+https://github.com/michimussato/DeadlineWrapper.git@main
-# RUN python3.11 -m pip install --root-user-action=ignore dagster
+RUN python3.11 -m pip install --root-user-action=ignoregit+https://github.com/michimussato/dagster-shared.git@main[dagster_dev]
 # RUN thinkbox-ssl-gen --help
+
+RUN mkdir -p /dagster/materializations
 
 RUN rm -rf /build/python
 
