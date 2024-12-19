@@ -119,6 +119,36 @@ services:
       - "80:80"
 
 
+  # https://github.com/hurlenko/filebrowser-docker
+  # https://filebrowser.org/cli/filebrowser#options
+  dagster_dev:
+    container_name: dagster-dev-10-2
+    hostname: dagster-dev-10-2
+    domainname: farm.evil
+#    image: dagster-dev
+    restart: always
+    networks:
+      - repository
+      - mongodb
+    build:
+      context: .
+      dockerfile: ./DeadlineRepository/Dockerfile
+      target: dagster_dev
+      args:
+        - DEADLINE_VERSION=$DEADLINE_VERSION
+        - PYTHON_VERSION=$PYTHON_VERSION
+#    depends_on:
+#      - mongodb-10-2
+    volumes:
+      # By default, we already have a configuration file with some
+      - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data:ro
+      - /nfs:/nfs:ro
+      - /data/share/nfs:/data/share/nfs:ro
+      - /data/share/nfs:/nfs:ro
+    ports:
+      - "3000:3000"
+
+
   deadline-repository-installer-10-2  :
     restart: "no"
     container_name: deadline-repository-installer-10-2
