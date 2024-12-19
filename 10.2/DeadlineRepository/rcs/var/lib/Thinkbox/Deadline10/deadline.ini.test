@@ -1,0 +1,41 @@
+# Full Documentation
+# https://docs.thinkboxsoftware.com/products/deadline/10.2/1_User%20Manual/manual/client-config.html#client-config-conn-server-ref-label
+[Deadline]
+ConnectionType=Repository
+WebServiceHttpListenPort=8899
+WebServiceTlsListenPort=0
+WebServiceTlsServerCert=
+WebServiceTlsCaCert=
+WebServiceTlsAuth=False
+WebServiceClientSSLAuthentication=NotRequired
+HttpListenPort=8888
+TlsListenPort=0
+LicenseMode=LicenseFree
+Region=
+LauncherListeningPort=17000
+LauncherServiceStartupDelay=60
+AutoConfigurationPort=17001
+SlaveStartupPort=17003
+LicenseForwarderListeningPort=17004
+SlaveDataRoot=
+NoGuiMode=false
+AutoUpdateOverride=false
+IncludeRCSInLauncherMenu=true
+NetworkRoot=/opt/Thinkbox/DeadlineRepository10
+NetworkRoot0=/opt/Thinkbox/DeadlineRepository10
+DbSSLCertificate=
+AutoUpdateBlock=NotBlocked
+
+# Controlled by Docker
+LaunchRemoteConnectionServerAtStartup=false
+KeepRemoteConnectionServerRunning=false
+LaunchPulseAtStartup=false
+KeepPulseRunning=false
+LaunchBalancerAtStartup=false
+KeepBalancerRunning=false
+KeepWebServiceRunning=false
+KeepWorkerRunning=false
+RestartStalledSlave=false
+LaunchLicenseForwarderAtStartup=false
+KeepLicenseForwarderRunning=false
+LaunchSlaveAtStartup=false
