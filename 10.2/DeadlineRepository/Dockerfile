@@ -1,6 +1,10 @@
 FROM ubuntu:20.04 AS repo_base
 LABEL authors="michael"
 
+ENV CONTAINER_TIMEZONE="Australia/Sydney"
+ENV SET_CONTAINER_TIMEZONE=true
+ARG DEBIAN_FRONTEND=noninteractive
+
 ARG DEADLINE_VERSION
 ARG PYTHON_VERSION
 ARG FORCE_REINSTALL
@@ -26,7 +30,14 @@ RUN apt-get install \
     git \
     ca-certificates \
     file  \
-    curl
+    tzdata  \
+    curl  \
+    ffmpeg  \
+    xvfb  \
+    libegl1  \
+    libsm6  \
+    libglu1-mesa  \
+    libxss1
 
 WORKDIR /build/python
 
@@ -43,6 +54,7 @@ RUN python3.11 -m pip install pip --upgrade
 
 RUN python3.11 -m pip install --root-user-action=ignore git+https://github.com/michimussato/SSLGeneration.git@packaging
 RUN python3.11 -m pip install --root-user-action=ignore git+https://github.com/michimussato/DeadlineWrapper.git@main
+# RUN python3.11 -m pip install --root-user-action=ignore dagster
 # RUN thinkbox-ssl-gen --help
 
 RUN rm -rf /build/python
@@ -117,12 +129,13 @@ ENTRYPOINT  \
     run  \
     --executable "/opt/Thinkbox/Deadline10/bin/deadlinercs"
 
-
+# ffmpeg xvfb libegl1 libsm6 libglu1-mesa libxss1
 
 FROM rcs_installer AS pulse_runner
 
 LABEL authors="michael"
 
+#ENTRYPOINT ["top", "-b"]
 ENTRYPOINT  \
     deadline-wrapper  \
     -vv  \
@@ -135,6 +148,7 @@ FROM rcs_installer AS worker_runner
 
 LABEL authors="michael"
 
+#ENTRYPOINT ["top", "-b"]
 ENTRYPOINT  \
     deadline-wrapper  \
     -vv  \

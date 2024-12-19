@@ -57,6 +57,7 @@ services:
       - "27017:27017"
     volumes:
       - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data
+      # Read Only
       - /data/share/nfs:/data/share/nfs:ro
       - /data/share/nfs:/nfs:ro
 
@@ -82,6 +83,7 @@ services:
       - ME_CONFIG_MONGODB_SERVER=mongodb-10-2
     volumes:
       - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data
+      # Read Only
       - /data/share/nfs:/data/share/nfs:ro
       - /data/share/nfs:/nfs:ro
 
@@ -99,8 +101,6 @@ services:
     depends_on:
       - mongodb-10-2
     volumes:
-      - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data:ro
-      - /nfs:/nfs:ro
       # By default, we already have a configuration file with some
       # defaults so you can just mount the root and the database.
       # Although you can overwrite by mounting a directory with a
@@ -110,6 +110,9 @@ services:
       # empty file, resulting in an error when mounting the database
       - ./filebrowser/filebrowser.db:/filebrowser.db
       - ./filebrowser/filebrowser.json:/.filebrowser.json
+      # Read Only
+      - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data:ro
+      - /nfs:/nfs:ro
       - /data/share/nfs:/data/share/nfs:ro
       - /data/share/nfs:/nfs:ro
     ports:
@@ -136,6 +139,7 @@ services:
     volumes:
 #      - ./DeadlineRepositoryInstall:/opt/Thinkbox/DeadlineRepository10
       - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
+      # Read Only
       - /data/share/nfs:/data/share/nfs:ro
       - /data/share/nfs:/nfs:ro
 
@@ -160,9 +164,9 @@ services:
         - DEADLINE_VERSION=$DEADLINE_VERSION
         - PYTHON_VERSION=$PYTHON_VERSION
     volumes:
-      - /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10
+      - /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10/rcs-installer-10-2:/opt/Thinkbox/Deadline10
+      - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
       # Read Only
-      - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10:ro  # ro?
       - /data/share/nfs:/data/share/nfs:ro
       - /data/share/nfs:/nfs:ro
 
@@ -189,8 +193,8 @@ services:
       # Config
       - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/deadline.ini:/var/lib/Thinkbox/Deadline10/deadline.ini:ro
       # Data
-      - /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10:ro
-      - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10:ro
+      - /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10/rcs-installer-10-2:/opt/Thinkbox/Deadline10
+      - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
       - /data/share/nfs:/data/share/nfs:ro
       - /data/share/nfs:/nfs:ro
 #      - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:ro
@@ -198,35 +202,66 @@ services:
       - "8888:8888"
 
 
-  deadline-pulse-runner:
-    restart: always
-    build:
-      context: .
-      dockerfile: ./DeadlineRepository/Dockerfile
-      args:
-        - DEADLINE_VERSION=$DEADLINE_VERSION
-        - PYTHON_VERSION=$PYTHON_VERSION
-      target: pulse_runner
-    container_name: pulse-runner-10-2
-    hostname: pulse-runner-10-2
-    domainname: farm.evil
-    depends_on:
-      deadline-rcs-installer-10-2:
-        condition: service_completed_successfully
-    networks:
-      - mongodb
-      - repository
-    volumes:
-      # Config
-      - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/deadline.ini:/var/lib/Thinkbox/Deadline10/deadline.ini:ro
-      # Data
-      - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10:ro
-      - /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10:ro
-      - /data/share/nfs:/data/share/nfs:ro
-      - /data/share/nfs:/nfs:ro
-#      - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:ro
-#    ports:
-#      - "8888:8888"
+#  deadline-pulse-runner:
+#    restart: always
+#    build:
+#      context: .
+#      dockerfile: ./DeadlineRepository/Dockerfile
+#      args:
+#        - DEADLINE_VERSION=$DEADLINE_VERSION
+#        - PYTHON_VERSION=$PYTHON_VERSION
+#      target: pulse_runner
+#    container_name: pulse-runner-10-2
+#    hostname: pulse-runner-10-2
+#    domainname: farm.evil
+#    depends_on:
+#      deadline-rcs-installer-10-2:
+#        condition: service_completed_successfully
+#    networks:
+#      - mongodb
+#      - repository
+#    volumes:
+#      # Config
+#      - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/deadline.ini:/var/lib/Thinkbox/Deadline10/deadline.ini:ro
+#      # Data
+#      - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
+#      - /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10/rcs-installer-10-2:/opt/Thinkbox/Deadline10
+#      - /data/share/nfs:/data/share/nfs:ro
+#      - /data/share/nfs:/nfs:ro
+##      - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:ro
+##    ports:
+##      - "8888:8888"
+
+
+#  deadline-worker-runner:
+#    restart: always
+#    build:
+#      context: .
+#      dockerfile: ./DeadlineRepository/Dockerfile
+#      args:
+#        - DEADLINE_VERSION=$DEADLINE_VERSION
+#        - PYTHON_VERSION=$PYTHON_VERSION
+#      target: worker_runner
+#    container_name: worker-runner-10-2
+#    hostname: worker-runner-10-2
+#    domainname: farm.evil
+#    depends_on:
+#      deadline-rcs-installer-10-2:
+#        condition: service_completed_successfully
+#    networks:
+#      - mongodb
+#      - repository
+#    volumes:
+#      # Config
+#      - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/deadline.ini:/var/lib/Thinkbox/Deadline10/deadline.ini:ro
+#      # Data
+#      - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
+#      - /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10/rcs-installer-10-2:/opt/Thinkbox/Deadline10
+#      - /data/share/nfs:/data/share/nfs:ro
+#      - /data/share/nfs:/nfs:ro
+##      - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:ro
+##    ports:
+##      - "8888:8888"
 
 
 
@@ -249,9 +284,9 @@ services:
         - DEADLINE_VERSION=$DEADLINE_VERSION
         - PYTHON_VERSION=$PYTHON_VERSION
     volumes:
-      - /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10
+      - /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10/webservice-installer-10-2:/opt/Thinkbox/Deadline10
       # Read Only
-      - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10:ro  # ro?
+      - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10  # ro?
       - /data/share/nfs:/data/share/nfs:ro
       - /data/share/nfs:/nfs:ro
 
@@ -279,8 +314,8 @@ services:
 #      - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:ro
       - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/deadline.ini:/var/lib/Thinkbox/Deadline10/deadline.ini:ro
       # Data
-      - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10:ro
-      - /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10:ro
+      - /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10/webservice-installer-10-2:/opt/Thinkbox/Deadline10
+      - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
       - /data/share/nfs:/data/share/nfs:ro
       - /data/share/nfs:/nfs:ro
     ports:
