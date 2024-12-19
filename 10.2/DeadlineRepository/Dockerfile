@@ -54,6 +54,8 @@ RUN python3.11 -m pip install pip --upgrade
 
 RUN python3.11 -m pip install --root-user-action=ignore git+https://github.com/michimussato/SSLGeneration.git@packaging
 RUN python3.11 -m pip install --root-user-action=ignore git+https://github.com/michimussato/DeadlineWrapper.git@main
+RUN python3.11 -m pip install --root-user-action=ignore "deadline-dagster @ git+https://github.com/michimussato/deadline-dagster.git@main"
+RUN python3.11 -m pip install --root-user-action=ignore "dagster-shared @ git+https://github.com/michimussato/dagster-shared.git@main"
 # RUN thinkbox-ssl-gen --help
 
 RUN rm -rf /build/python
@@ -76,10 +78,12 @@ LABEL authors="michael"
 WORKDIR /dagster/materializations
 ENV DAGSTER_HOME="/dagster/materializations"
 
-RUN python3.11 -m pip install --root-user-action=ignore  -m pip install --root-user-action=ignore "dagster[dagster_dev] @ git+https://github.com/michimussato/dagster-shared.git@main"
+RUN python3.11 -m pip install --root-user-action=ignore "dagster-shared[dagster_dev] @ git+https://github.com/michimussato/dagster-shared.git@main"
 
-RUN mkdir -p /dagster/materializations
+ADD ./DeadlineRepository/dagster_shared/workspace.yaml /dagster/
+ADD ./DeadlineRepository/dagster_shared/dagster.yaml /dagster/materializations/
 
+#ENTRYPOINT top -b
 ENTRYPOINT dagster dev --workspace "/dagster/workspace.yaml" --port 3000 --host 0.0.0.0
 
 
