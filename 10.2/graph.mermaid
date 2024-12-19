@@ -12,6 +12,11 @@ flowchart TB
   Vnfs{{/nfs}} -. /nfs .-x filebrowser
   Vdatasharenfs -. /data/share/nfs .-x filebrowser
   Vdatasharenfs -. /nfs .-x filebrowser
+  VDeadlineRepositorydagstersharedworkspaceyaml{{"./DeadlineRepository/dagster_shared/workspace.yaml"}} -. "/dagster/workspace.yaml" .-x dagsterdev[dagster_dev]
+  VDeadlineRepositorydagstershareddagsteryaml{{"./DeadlineRepository/dagster_shared/dagster.yaml"}} -. "/dagster/materializations/workspace.yaml" .-x dagsterdev
+  Vnfs x-. /nfs .-x dagsterdev
+  Vdatasharenfs x-. /data/share/nfs .-x dagsterdev
+  Vdatasharenfs x-. /nfs .-x dagsterdev
   Vdatasharenfstestdata102optThinkboxDeadlineRepository10{{"/data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10"}} x-. /opt/Thinkbox/DeadlineRepository10 .-x deadlinerepositoryinstaller102[deadline-repository-installer-10-2]
   Vdatasharenfs -. /data/share/nfs .-x deadlinerepositoryinstaller102
   Vdatasharenfs -. /nfs .-x deadlinerepositoryinstaller102
@@ -42,6 +47,7 @@ flowchart TB
   mongoexpress --> mongodb102
   mongodb102 -.- mongodb[/mongodb/]
   mongoexpress -.- mongodb
+  dagsterdev -.- mongodb
   deadlinerepositoryinstaller102 -.- mongodb
   deadlinercsinstaller102 -.- mongodb
   deadlinercsrunner -.- mongodb
@@ -49,6 +55,7 @@ flowchart TB
   deadlinewebservicerunner -.- mongodb
   mongodb102 -.- repository[/repository/]
   filebrowser -.- repository
+  dagsterdev -.- repository
   deadlinerepositoryinstaller102 -.- repository
   deadlinercsinstaller102 -.- repository
   deadlinercsrunner -.- repository
@@ -56,6 +63,6 @@ flowchart TB
   deadlinewebservicerunner -.- repository
 
   classDef volumes fill:#fdfae4,stroke:#867a22
-  class Vdatasharenfstestdata102optThinkboxDeadlineDatabase10mongodataLOCAL,Vdatasharenfs,Vdatasharenfs,Vdatasharenfstestdata102optThinkboxDeadlineDatabase10mongodataLOCAL,Vdatasharenfs,Vdatasharenfs,Vfilebrowserfilebrowserdb,Vfilebrowserfilebrowserjson,Vdatasharenfstestdata102optThinkboxDeadlineDatabase10mongodataLOCAL,Vnfs,Vdatasharenfs,Vdatasharenfs,Vdatasharenfstestdata102optThinkboxDeadlineRepository10,Vdatasharenfs,Vdatasharenfs,Vdatasharenfstestdata102optThinkboxDeadline10rcsinstaller102,Vdatasharenfstestdata102optThinkboxDeadlineRepository10,Vdatasharenfs,Vdatasharenfs,VDeadlineRepositoryrcsvarlibThinkboxDeadline10deadlineini,Vdatasharenfstestdata102optThinkboxDeadline10rcsinstaller102,Vdatasharenfstestdata102optThinkboxDeadlineRepository10,Vdatasharenfs,Vdatasharenfs,Vdatasharenfstestdata102optThinkboxDeadline10webserviceinstaller102,Vdatasharenfstestdata102optThinkboxDeadlineRepository10,Vdatasharenfs,Vdatasharenfs,VDeadlineRepositoryrcsvarlibThinkboxDeadline10deadlineini,Vdatasharenfstestdata102optThinkboxDeadline10webserviceinstaller102,Vdatasharenfstestdata102optThinkboxDeadlineRepository10,Vdatasharenfs,Vdatasharenfs volumes
+  class Vdatasharenfstestdata102optThinkboxDeadlineDatabase10mongodataLOCAL,Vdatasharenfs,Vdatasharenfs,Vdatasharenfstestdata102optThinkboxDeadlineDatabase10mongodataLOCAL,Vdatasharenfs,Vdatasharenfs,Vfilebrowserfilebrowserdb,Vfilebrowserfilebrowserjson,Vdatasharenfstestdata102optThinkboxDeadlineDatabase10mongodataLOCAL,Vnfs,Vdatasharenfs,Vdatasharenfs,VDeadlineRepositorydagstersharedworkspaceyaml,VDeadlineRepositorydagstershareddagsteryaml,Vnfs,Vdatasharenfs,Vdatasharenfs,Vdatasharenfstestdata102optThinkboxDeadlineRepository10,Vdatasharenfs,Vdatasharenfs,Vdatasharenfstestdata102optThinkboxDeadline10rcsinstaller102,Vdatasharenfstestdata102optThinkboxDeadlineRepository10,Vdatasharenfs,Vdatasharenfs,VDeadlineRepositoryrcsvarlibThinkboxDeadline10deadlineini,Vdatasharenfstestdata102optThinkboxDeadline10rcsinstaller102,Vdatasharenfstestdata102optThinkboxDeadlineRepository10,Vdatasharenfs,Vdatasharenfs,Vdatasharenfstestdata102optThinkboxDeadline10webserviceinstaller102,Vdatasharenfstestdata102optThinkboxDeadlineRepository10,Vdatasharenfs,Vdatasharenfs,VDeadlineRepositoryrcsvarlibThinkboxDeadline10deadlineini,Vdatasharenfstestdata102optThinkboxDeadline10webserviceinstaller102,Vdatasharenfstestdata102optThinkboxDeadlineRepository10,Vdatasharenfs,Vdatasharenfs volumes
   classDef nets fill:#fbfff7,stroke:#8bc34a
   class mongodb,repository nets

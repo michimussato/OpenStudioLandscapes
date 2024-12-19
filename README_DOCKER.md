@@ -32,7 +32,10 @@ Force Recreate
 Down
 `docker compose -f docker-compose.yaml down`
 
-# 
+
+
+
+
 
 ```
 git clone https://github.com/michimussato/deadline-docker
