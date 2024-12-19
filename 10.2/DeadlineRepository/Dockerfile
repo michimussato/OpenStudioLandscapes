@@ -77,7 +77,7 @@ LABEL authors="michael"
 WORKDIR /nfs/installers/Deadline-${DEADLINE_VERSION}-linux-installers
 
 ENTRYPOINT  \
-    deadline-wrapper  \
+    deadline-wrapper-10-2  \
     -vv  \
     --force-reinstall  \
     install-repository  \
@@ -105,9 +105,9 @@ LABEL authors="michael"
 
 WORKDIR /nfs/installers/Deadline-${DEADLINE_VERSION}-linux-installers
 
-# deadline-wrapper --force-reinstall install-rcs --deadline-version 10.2.1.1 --prefix /opt/Thinkbox/Deadline10 --repositorydir /opt/Thinkbox/DeadlineRepository10 --httpport 8888
+# deadline-wrapper-10-2 --force-reinstall install-rcs --deadline-version 10.2.1.1 --prefix /opt/Thinkbox/Deadline10 --repositorydir /opt/Thinkbox/DeadlineRepository10 --httpport 8888
 ENTRYPOINT  \
-    deadline-wrapper  \
+    deadline-wrapper-10-2  \
     -vv  \
     --force-reinstall  \
     install-rcs  \
@@ -124,7 +124,7 @@ FROM rcs_installer AS rcs_runner
 LABEL authors="michael"
 
 ENTRYPOINT  \
-    deadline-wrapper  \
+    deadline-wrapper-10-2  \
     -vv  \
     run  \
     --executable "/opt/Thinkbox/Deadline10/bin/deadlinercs"
@@ -136,7 +136,7 @@ ENTRYPOINT  \
 #
 ##ENTRYPOINT ["top", "-b"]
 #ENTRYPOINT  \
-#    deadline-wrapper  \
+#    deadline-wrapper-10-2  \
 #    -vv  \
 #    run  \
 #    --executable "/opt/Thinkbox/Deadline10/bin/deadlinepulse"
@@ -149,7 +149,7 @@ ENTRYPOINT  \
 #
 ##ENTRYPOINT ["top", "-b"]
 #ENTRYPOINT  \
-#    deadline-wrapper  \
+#    deadline-wrapper-10-2  \
 #    -vv  \
 #    run  \
 #    --executable "/opt/Thinkbox/Deadline10/bin/deadlineworker"
@@ -168,7 +168,7 @@ LABEL authors="michael"
 WORKDIR /nfs/installers/Deadline-${DEADLINE_VERSION}-linux-installers
 
 ENTRYPOINT  \
-    deadline-wrapper  \
+    deadline-wrapper-10-2  \
     -vv  \
     --force-reinstall  \
     install-webservice  \
@@ -184,7 +184,7 @@ FROM webservice_installer AS webservice_runner
 LABEL authors="michael"
 
 ENTRYPOINT  \
-    deadline-wrapper  \
+    deadline-wrapper-10-2  \
     -vv  \
     run  \
     --executable "/opt/Thinkbox/Deadline10/bin/deadlinewebservice"
