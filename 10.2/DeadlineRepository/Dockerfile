@@ -119,15 +119,15 @@ ENTRYPOINT  \
 
 
 
-#FROM rcs_installer AS rcs_runner
-#
-#LABEL authors="michael"
-#
-#ENTRYPOINT  \
-#    deadline-wrapper  \
-#    -vv  \
-#    run  \
-#    --executable "/opt/Thinkbox/Deadline10/bin/deadlinercs"
+FROM rcs_installer AS rcs_runner
+
+LABEL authors="michael"
+
+ENTRYPOINT  \
+    deadline-wrapper  \
+    -vv  \
+    run  \
+    --executable "/opt/Thinkbox/Deadline10/bin/deadlinercs"
 
 
 #FROM rcs_installer AS pulse_runner
@@ -143,16 +143,16 @@ ENTRYPOINT  \
 
 
 
-FROM rcs_installer AS worker_runner
-
-LABEL authors="michael"
-
-#ENTRYPOINT ["top", "-b"]
-ENTRYPOINT  \
-    deadline-wrapper  \
-    -vv  \
-    run  \
-    --executable "/opt/Thinkbox/Deadline10/bin/deadlineworker"
+#FROM rcs_installer AS worker_runner
+#
+#LABEL authors="michael"
+#
+##ENTRYPOINT ["top", "-b"]
+#ENTRYPOINT  \
+#    deadline-wrapper  \
+#    -vv  \
+#    run  \
+#    --executable "/opt/Thinkbox/Deadline10/bin/deadlineworker"
 
 
 
