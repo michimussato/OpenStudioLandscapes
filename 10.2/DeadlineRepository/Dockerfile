@@ -114,7 +114,7 @@ ENTRYPOINT  \
 #  into one.
 
 
-FROM repo_base AS rcs_installer
+FROM repo_base AS client_installer
 ARG DEADLINE_VERSION
 ARG PYTHON_VERSION
 #
@@ -125,21 +125,21 @@ LABEL authors="michael"
 
 WORKDIR /nfs/installers/Deadline-${DEADLINE_VERSION}-linux-installers
 
-# deadline-wrapper-10-2 --force-reinstall install-rcs --deadline-version 10.2.1.1 --prefix /opt/Thinkbox/Deadline10 --repositorydir /opt/Thinkbox/DeadlineRepository10 --httpport 8888
 ENTRYPOINT  \
     deadline-wrapper-10-2  \
     -vv  \
     --force-reinstall  \
-    install-rcs  \
+    install-client  \
     --deadline-version ${DEADLINE_VERSION}  \
     --prefix "/opt/Thinkbox/Deadline10"  \
     --repositorydir "/opt/Thinkbox/DeadlineRepository10"  \
-    --httpport 8888
+    --httpport 8888  \
+    --webservice-httpport 8899
 
 
 
 
-FROM rcs_installer AS rcs_runner
+FROM client_installer AS rcs_runner
 
 LABEL authors="michael"
 
@@ -150,7 +150,7 @@ ENTRYPOINT  \
     --executable "/opt/Thinkbox/Deadline10/bin/deadlinercs"
 
 
-#FROM rcs_installer AS pulse_runner
+#FROM client_installer AS pulse_runner
 #
 #LABEL authors="michael"
 #
@@ -163,7 +163,7 @@ ENTRYPOINT  \
 
 
 
-#FROM rcs_installer AS worker_runner
+#FROM client_installer AS worker_runner
 #
 #LABEL authors="michael"
 #
@@ -176,30 +176,7 @@ ENTRYPOINT  \
 
 
 
-FROM repo_base AS webservice_installer
-ARG DEADLINE_VERSION
-ARG PYTHON_VERSION
-#
-ENV DEADLINE_VERSION=$DEADLINE_VERSION
-ENV PYTHON_VERSION=$PYTHON_VERSION
-
-LABEL authors="michael"
-
-WORKDIR /nfs/installers/Deadline-${DEADLINE_VERSION}-linux-installers
-
-ENTRYPOINT  \
-    deadline-wrapper-10-2  \
-    -vv  \
-    --force-reinstall  \
-    install-webservice  \
-    --deadline-version ${DEADLINE_VERSION}  \
-    --prefix "/opt/Thinkbox/Deadline10"  \
-    --repositorydir "/opt/Thinkbox/DeadlineRepository10"  \
-    --webservice-httpport 8899
-
-
-
-FROM webservice_installer AS webservice_runner
+FROM client_installer AS webservice_runner
 
 LABEL authors="michael"
 

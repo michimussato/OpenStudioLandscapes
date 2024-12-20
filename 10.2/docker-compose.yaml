@@ -185,10 +185,10 @@ services:
 
 
 
-  deadline-rcs-installer-10-2:
+  deadline-client-installer-10-2:
     restart: "no"
-    container_name: rcs-installer-10-2
-    hostname: rcs-installer-10-2
+    container_name: client-installer-10-2
+    hostname: client-installer-10-2
     domainname: farm.evil
     depends_on:
       deadline-repository-installer-10-2:
@@ -199,12 +199,12 @@ services:
     build:
       context: .
       dockerfile: ./DeadlineRepository/Dockerfile
-      target: rcs_installer
+      target: client_installer
       args:
         - DEADLINE_VERSION=$DEADLINE_VERSION
         - PYTHON_VERSION=$PYTHON_VERSION
     volumes:
-      - /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10/rcs-installer-10-2:/opt/Thinkbox/Deadline10
+      - /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10
       - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
       # Read Only
       - /data/share/nfs:/data/share/nfs:ro
@@ -224,7 +224,7 @@ services:
     hostname: rcs-runner-10-2
     domainname: farm.evil
     depends_on:
-      deadline-rcs-installer-10-2:
+      deadline-client-installer-10-2:
         condition: service_completed_successfully
     networks:
       - mongodb
@@ -233,7 +233,7 @@ services:
       # Config
       - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/deadline.ini:/var/lib/Thinkbox/Deadline10/deadline.ini:ro
       # Data
-      - /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10/rcs-installer-10-2:/opt/Thinkbox/Deadline10
+      - /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10
       - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
       - /data/share/nfs:/data/share/nfs:ro
       - /data/share/nfs:/nfs:ro
@@ -255,7 +255,7 @@ services:
 #    hostname: pulse-runner-10-2
 #    domainname: farm.evil
 #    depends_on:
-#      deadline-rcs-installer-10-2:
+#      deadline-client-installer-10-2:
 #        condition: service_completed_successfully
 #    networks:
 #      - mongodb
@@ -286,7 +286,7 @@ services:
 #    hostname: worker-runner-10-2
 #    domainname: farm.evil
 #    depends_on:
-#      deadline-rcs-installer-10-2:
+#      deadline-client-installer-10-2:
 #        condition: service_completed_successfully
 #    networks:
 #      - mongodb
@@ -305,30 +305,30 @@ services:
 
 
 
-  deadline-webservice-installer-10-2:
-    restart: "no"
-    container_name: webservice-installer-10-2
-    hostname: webservice-installer-10-2
-    domainname: farm.evil
-    depends_on:
-      deadline-repository-installer-10-2:
-        condition: service_completed_successfully
-    networks:
-      - mongodb
-      - repository
-    build:
-      context: .
-      dockerfile: ./DeadlineRepository/Dockerfile
-      target: webservice_installer
-      args:
-        - DEADLINE_VERSION=$DEADLINE_VERSION
-        - PYTHON_VERSION=$PYTHON_VERSION
-    volumes:
-      - /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10/webservice-installer-10-2:/opt/Thinkbox/Deadline10
-      # Read Only
-      - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10  # ro?
-      - /data/share/nfs:/data/share/nfs:ro
-      - /data/share/nfs:/nfs:ro
+#  deadline-webservice-installer-10-2:
+#    restart: "no"
+#    container_name: webservice-installer-10-2
+#    hostname: webservice-installer-10-2
+#    domainname: farm.evil
+#    depends_on:
+#      deadline-repository-installer-10-2:
+#        condition: service_completed_successfully
+#    networks:
+#      - mongodb
+#      - repository
+#    build:
+#      context: .
+#      dockerfile: ./DeadlineRepository/Dockerfile
+#      target: webservice_installer
+#      args:
+#        - DEADLINE_VERSION=$DEADLINE_VERSION
+#        - PYTHON_VERSION=$PYTHON_VERSION
+#    volumes:
+#      - /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10/webservice-installer-10-2:/opt/Thinkbox/Deadline10
+#      # Read Only
+#      - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10  # ro?
+#      - /data/share/nfs:/data/share/nfs:ro
+#      - /data/share/nfs:/nfs:ro
 
 
   deadline-webservice-runner:
@@ -344,7 +344,7 @@ services:
     hostname: webservice-runner-10-2
     domainname: farm.evil
     depends_on:
-      deadline-webservice-installer-10-2:
+      deadline-client-installer-10-2:
         condition: service_completed_successfully
     networks:
       - mongodb
@@ -354,7 +354,7 @@ services:
 #      - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:ro
       - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/deadline.ini:/var/lib/Thinkbox/Deadline10/deadline.ini:ro
       # Data
-      - /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10/webservice-installer-10-2:/opt/Thinkbox/Deadline10
+      - /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10
       - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
       - /data/share/nfs:/data/share/nfs:ro
       - /data/share/nfs:/nfs:ro
