@@ -1,4 +1,4 @@
-%%{init: {'theme': 'default'}}%%
+%%{init: {'theme': 'dark'}}%%
 flowchart TB
   Vdatasharenfstestdata102optThinkboxDeadlineDatabase10mongodataLOCAL{{"/data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL"}} x-. /opt/Thinkbox/DeadlineDatabase10/mongo/data .-x mongodb102[mongodb-10-2]
   Vdatasharenfs{{/data/share/nfs}} -. /data/share/nfs .-x mongodb102
@@ -45,6 +45,12 @@ flowchart TB
   deadlinewebservicerunner --> deadlinewebserviceinstaller102
   filebrowser --> mongodb102
   mongoexpress --> mongodb102
+  P0((27017)) -.-> mongodb102
+  P1((8080)) -. 8081 .-> mongoexpress
+  P2((80)) -.-> filebrowser
+  P3((3000)) -.-> dagsterdev
+  P4((8888)) -.-> deadlinercsrunner
+  P5((8899)) -.-> deadlinewebservicerunner
   mongodb102 -.- mongodb[/mongodb/]
   mongoexpress -.- mongodb
   dagsterdev -.- mongodb
@@ -62,7 +68,9 @@ flowchart TB
   deadlinewebserviceinstaller102 -.- repository
   deadlinewebservicerunner -.- repository
 
-  classDef volumes fill:#fdfae4,stroke:#867a22
+  classDef volumes fill:#0f544e,stroke:#23968b
   class Vdatasharenfstestdata102optThinkboxDeadlineDatabase10mongodataLOCAL,Vdatasharenfs,Vdatasharenfs,Vdatasharenfstestdata102optThinkboxDeadlineDatabase10mongodataLOCAL,Vdatasharenfs,Vdatasharenfs,Vfilebrowserfilebrowserdb,Vfilebrowserfilebrowserjson,Vdatasharenfstestdata102optThinkboxDeadlineDatabase10mongodataLOCAL,Vnfs,Vdatasharenfs,Vdatasharenfs,VDeadlineRepositorydagstersharedworkspaceyaml,VDeadlineRepositorydagstershareddagsteryaml,Vnfs,Vdatasharenfs,Vdatasharenfs,Vdatasharenfstestdata102optThinkboxDeadlineRepository10,Vdatasharenfs,Vdatasharenfs,Vdatasharenfstestdata102optThinkboxDeadline10rcsinstaller102,Vdatasharenfstestdata102optThinkboxDeadlineRepository10,Vdatasharenfs,Vdatasharenfs,VDeadlineRepositoryrcsvarlibThinkboxDeadline10deadlineini,Vdatasharenfstestdata102optThinkboxDeadline10rcsinstaller102,Vdatasharenfstestdata102optThinkboxDeadlineRepository10,Vdatasharenfs,Vdatasharenfs,Vdatasharenfstestdata102optThinkboxDeadline10webserviceinstaller102,Vdatasharenfstestdata102optThinkboxDeadlineRepository10,Vdatasharenfs,Vdatasharenfs,VDeadlineRepositoryrcsvarlibThinkboxDeadline10deadlineini,Vdatasharenfstestdata102optThinkboxDeadline10webserviceinstaller102,Vdatasharenfstestdata102optThinkboxDeadlineRepository10,Vdatasharenfs,Vdatasharenfs volumes
-  classDef nets fill:#fbfff7,stroke:#8bc34a
+  classDef ports fill:#5a5757,stroke:#b6c2ff
+  class P0,P1,P2,P3,P4,P5 ports
+  classDef nets fill:#3f51b5,stroke:#81B1DB
   class mongodb,repository nets

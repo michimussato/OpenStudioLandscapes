@@ -1,5 +1,7 @@
 services:
-  # Service Overrides
+  # Service Overrides for services:
+  # https://github.com/ynput/ayon-docker/blob/main/docker-compose.yml
+  #
   # https://docs.docker.com/compose/how-tos/multiple-compose-files/include/
   postgres:
     container_name: ayon-postgres-10-2
