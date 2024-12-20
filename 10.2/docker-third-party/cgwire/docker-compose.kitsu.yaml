@@ -6,9 +6,11 @@ services:
     container_name: kitsu-10-2
     hostname: kitsu-10-2
     domainname: farm.evil
-    image: cgwire/cgwire
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: kitsu
     restart: always
-#    user: "postgres:postgres"
     ports:
       - "8181:80"
       - "5432:5432"

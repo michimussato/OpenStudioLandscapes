@@ -36,6 +36,13 @@
 # docker volume ls | grep mongo-data-10-2-test
 
 
+include:
+  - path:
+      - docker-third-party/cgwire/docker-compose.kitsu.yaml
+  - path:
+      - ../repos/ayon-docker/docker-compose.yml
+
+
 services:
   mongodb-10-2:
     container_name: mongodb-10-2
