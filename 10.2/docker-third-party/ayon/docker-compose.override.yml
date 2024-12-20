@@ -1,0 +1,31 @@
+services:
+  # Service Overrides
+  # https://docs.docker.com/compose/how-tos/multiple-compose-files/include/
+  postgres:
+    container_name: ayon-postgres-10-2
+    hostname: ayon-postgres-10-2
+    domainname: farm.evil
+    networks:
+      - repository
+      - mongodb
+    volumes:
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/data/share/nfs/databases/ayon/postgresql/data:/var/lib/postgresql/data"
+
+  redis:
+    container_name: ayon-redis-10-2
+    hostname: ayon-redis-10-2
+    domainname: farm.evil
+    networks:
+      - repository
+      - mongodb
+
+  server:
+    container_name: ayon-server-10-2
+    hostname: ayon-server-10-2
+    domainname: farm.evil
+    networks:
+      - repository
+      - mongodb
+    ports:
+    - "5678:5000"

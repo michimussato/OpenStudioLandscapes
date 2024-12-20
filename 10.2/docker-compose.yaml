@@ -41,17 +41,10 @@ include:
       - docker-third-party/cgwire/docker-compose.kitsu.yaml
   - path:
       - ../repos/ayon-docker/docker-compose.yml
+      - docker-third-party/ayon/docker-compose.override.yml
 
 
 services:
-  # Service Overrides
-  # https://docs.docker.com/compose/how-tos/multiple-compose-files/include/
-  postgres:
-    volumes:
-      - "/etc/localtime:/etc/localtime:ro"
-      - "/data/share/nfs/databases/ayon/postgresql/data:/var/lib/postgresql/data"
-
-  # Local Services
   mongodb-10-2:
     container_name: mongodb-10-2
     hostname: mongodb-10-2
