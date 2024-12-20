@@ -1,15 +1,18 @@
 %%{init: {'theme': 'dark'}}%%
 flowchart TB
   Vetclocaltime{{/etc/localtime}} -. /etc/localtime .-x postgres[(postgres)]
-  Vdb([db]) x-. /var/lib/postgresql/data .-x postgres
-  Vaddons{{"./addons"}} x-. /addons .-x server
-  Vstorage{{"./storage"}} x-. /storage .-x server
-  Vetclocaltime -. /etc/localtime .-x server
-  server --> postgres
-  server --> redis[(redis)]
-  P0((5000)) -.-> server
+  Vdatasharenfsdatabasesayonpostgresqldata{{/data/share/nfs/databases/ayon/postgresql/data}} x-. /var/lib/postgresql/data .-x postgres
+  P0((5678)) -. 5000 .-> server
+  postgres -.- repository[/repository/]
+  redis[(redis)] -.- repository
+  server -.- repository
+  postgres -.- mongodb[/mongodb/]
+  redis -.- mongodb
+  server -.- mongodb
 
   classDef volumes fill:#0f544e,stroke:#23968b
-  class Vetclocaltime,Vdb,Vaddons,Vstorage,Vetclocaltime volumes
+  class Vetclocaltime,Vdatasharenfsdatabasesayonpostgresqldata volumes
   classDef ports fill:#5a5757,stroke:#b6c2ff
   class P0 ports
+  classDef nets fill:#3f51b5,stroke:#81B1DB
+  class repository,mongodb nets

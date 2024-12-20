@@ -30,14 +30,18 @@ sudo rm -rf /home/michael/git/repos/deadline-setup/deadline-setup-docker/10.2/De
 ```
 cd ~/git/repos/deadline-docker
 java -jar docker-compose-viz-mermaid_no_local-1.3.0.jar ./10.2/docker-compose.yaml --ilinks --theme DARK --ports --volumes --networks --format TEXT --dir TB --out ./10.2/mermaid/deadline-docker.mermaid
-java -jar docker-compose-viz-mermaid_no_local-1.3.0.jar ../ayon-docker/docker-compose.yml --ilinks --theme DARK --ports --volumes --networks --format TEXT --dir TB --out ./10.2/mermaid/ayon-docker.mermaid
+java -jar docker-compose-viz-mermaid_no_local-1.3.0.jar ./10.2/docker-third-party/ayon/docker-compose.override.yml --ilinks --theme DARK --ports --volumes --networks --format TEXT --dir TB --out ./10.2/mermaid/ayon-docker.mermaid
+java -jar docker-compose-viz-mermaid_no_local-1.3.0.jar ./10.2/docker-third-party/cgwire/docker-compose.kitsu.yaml --ilinks --theme DARK --ports --volumes --networks --format TEXT --dir TB --out ./10.2/mermaid/kitus-docker.mermaid
+# java -jar docker-compose-viz-mermaid_no_local-1.3.0.jar ../ayon-docker/docker-compose.yml --ilinks --theme DARK --ports --volumes --networks --format TEXT --dir TB --out ./10.2/mermaid/ayon-docker.mermaid
 
 
 # Browser
 # Editor starts with      https://mermaid-js.github.io/mermaid-live-editor/edit#
 # Full screen starts with https://mermaid-js.github.io/mermaid-live-editor/view#
 xdg-open $(java -jar docker-compose-viz-mermaid_no_local-1.3.0.jar ./10.2/docker-compose.yaml --ilinks --theme DARK --ports --volumes --networks --format editor --dir TB)
-xdg-open $(java -jar docker-compose-viz-mermaid_no_local-1.3.0.jar ../ayon-docker/docker-compose.yml --ilinks --theme DARK --ports --volumes --networks --format editor --dir TB)
+xdg-open $(java -jar docker-compose-viz-mermaid_no_local-1.3.0.jar ./10.2/docker-third-party/ayon/docker-compose.override.yml --ilinks --theme DARK --ports --volumes --networks --format editor --dir TB)
+xdg-open $(java -jar docker-compose-viz-mermaid_no_local-1.3.0.jar ./10.2/docker-third-party/cgwire/docker-compose.kitsu.yaml --ilinks --theme DARK --ports --volumes --networks --format editor --dir TB)
+# xdg-open $(java -jar docker-compose-viz-mermaid_no_local-1.3.0.jar ../ayon-docker/docker-compose.yml --ilinks --theme DARK --ports --volumes --networks --format editor --dir TB)
 ```
 
 ## Manual
