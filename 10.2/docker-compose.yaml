@@ -32,10 +32,6 @@
 # docker compose up
 
 
-# Volumes
-# docker volume ls | grep mongo-data-10-2-test
-
-
 include:
   - path:
       - docker-third-party/cgwire/docker-compose.kitsu.yaml
@@ -116,8 +112,8 @@ services:
       # make sure to create a new empty file under the path you specified.
       # Otherwise, Docker will create an empty folder instead of an
       # empty file, resulting in an error when mounting the database
-      - ./filebrowser/filebrowser.db:/filebrowser.db
-      - ./filebrowser/filebrowser.json:/.filebrowser.json
+      - ./databases/filebrowser/filebrowser.db:/filebrowser.db
+      - ./configs/filebrowser/filebrowser.json:/.filebrowser.json
       # Read Only
       - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data:ro
       - /nfs:/nfs:ro
@@ -140,7 +136,7 @@ services:
       - mongodb
     build:
       context: .
-      dockerfile: ./DeadlineRepository/Dockerfile
+      dockerfile: ./Dockerfile
       target: dagster_dev
       args:
         - DEADLINE_VERSION=$DEADLINE_VERSION
@@ -149,8 +145,8 @@ services:
 #      - mongodb-10-2
     volumes:
       # By default, we already have a configuration file with some
-      - ./DeadlineRepository/dagster_shared/workspace.yaml:/dagster/workspace.yaml:ro
-      - ./DeadlineRepository/dagster_shared/dagster.yaml:/dagster/materializations/workspace.yaml:ro
+      - ./configs/dagster_shared/workspace.yaml:/dagster/workspace.yaml:ro
+      - ./configs/dagster_shared/dagster.yaml:/dagster/materializations/workspace.yaml:ro
       # - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data:ro
       - /nfs:/nfs
       - /data/share/nfs:/data/share/nfs
@@ -171,7 +167,7 @@ services:
       - repository
     build:
       context: .
-      dockerfile: ./DeadlineRepository/Dockerfile
+      dockerfile: ./Dockerfile
       target: repo_installer
       args:
         - DEADLINE_VERSION=$DEADLINE_VERSION
@@ -198,7 +194,7 @@ services:
       - repository
     build:
       context: .
-      dockerfile: ./DeadlineRepository/Dockerfile
+      dockerfile: ./Dockerfile
       target: client_installer
       args:
         - DEADLINE_VERSION=$DEADLINE_VERSION
@@ -215,7 +211,7 @@ services:
     restart: always
     build:
       context: .
-      dockerfile: ./DeadlineRepository/Dockerfile
+      dockerfile: ./Dockerfile
       args:
         - DEADLINE_VERSION=$DEADLINE_VERSION
         - PYTHON_VERSION=$PYTHON_VERSION
@@ -231,13 +227,13 @@ services:
       - repository
     volumes:
       # Config
-      - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/deadline.ini:/var/lib/Thinkbox/Deadline10/deadline.ini:ro
+      - ./configs/Deadline10/deadline.ini:/var/lib/Thinkbox/Deadline10/deadline.ini:ro
       # Data
       - /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10
       - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
       - /data/share/nfs:/data/share/nfs:ro
       - /data/share/nfs:/nfs:ro
-#      - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:ro
+#      - ./configs/Deadline10/cert/ca-certificates.crt:/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:ro
     ports:
       - "8888:8888"
 
@@ -262,13 +258,13 @@ services:
 #      - repository
 #    volumes:
 #      # Config
-#      - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/deadline.ini:/var/lib/Thinkbox/Deadline10/deadline.ini:ro
+#      - ./configs/Deadline10/deadline.ini:/var/lib/Thinkbox/Deadline10/deadline.ini:ro
 #      # Data
 #      - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
 #      - /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10/rcs-installer-10-2:/opt/Thinkbox/Deadline10
 #      - /data/share/nfs:/data/share/nfs:ro
 #      - /data/share/nfs:/nfs:ro
-##      - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:ro
+##      - ./configs/Deadline10/cert/ca-certificates.crt:/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:ro
 ##    ports:
 ##      - "8888:8888"
 
@@ -293,13 +289,13 @@ services:
 #      - repository
 #    volumes:
 #      # Config
-#      - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/deadline.ini:/var/lib/Thinkbox/Deadline10/deadline.ini:ro
+#      - ./configs/Deadline10/deadline.ini:/var/lib/Thinkbox/Deadline10/deadline.ini:ro
 #      # Data
 #      - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
 #      - /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10/rcs-installer-10-2:/opt/Thinkbox/Deadline10
 #      - /data/share/nfs:/data/share/nfs:ro
 #      - /data/share/nfs:/nfs:ro
-##      - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:ro
+##      - ./configs/Deadline10/cert/ca-certificates.crt:/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:ro
 ##    ports:
 ##      - "8888:8888"
 
@@ -335,7 +331,7 @@ services:
     restart: always
     build:
       context: .
-      dockerfile: ./DeadlineRepository/Dockerfile
+      dockerfile: ./Dockerfile
       args:
         - DEADLINE_VERSION=$DEADLINE_VERSION
         - PYTHON_VERSION=$PYTHON_VERSION
@@ -351,8 +347,7 @@ services:
       - repository
     volumes:
       # Config
-#      - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:ro
-      - ./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/deadline.ini:/var/lib/Thinkbox/Deadline10/deadline.ini:ro
+      - ./configs/Deadline10/deadline.ini:/var/lib/Thinkbox/Deadline10/deadline.ini:ro
       # Data
       - /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10
       - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
@@ -362,13 +357,11 @@ services:
       - "8899:8899"
 
 
-volumes:
-  mongo-data-10-2-test:
-    driver: local
-
 # https://www.warp.dev/terminus/docker-compose-networks
 networks:
   mongodb:
     name: network_mongodb-10-2
   repository:
     name: network_repository-10-2
+  ayon:
+    name: network_ayon-10-2

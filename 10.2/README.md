@@ -146,3 +146,8 @@ flowchart TB
     end
     
 ```
+
+
+```
+sudo /nfs/installers/Deadline-10.2.1.1-linux-installers/DeadlineClient-10.2.1.1-linux-x64-installer.run --nobinaries /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10 --prefix /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10
+```
