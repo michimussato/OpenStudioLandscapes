@@ -3,7 +3,6 @@
 * [Deadline Docker 10.2](#deadline-docker-102)
   * [Symlinks](#symlinks)
   * [Automated](#automated)
-  * [Manual](#manual)
 <!-- TOC -->
 
 ---
@@ -44,108 +43,13 @@ xdg-open $(java -jar docker-compose-viz-mermaid_no_local-1.3.0.jar ./10.2/docker
 # xdg-open $(java -jar docker-compose-viz-mermaid_no_local-1.3.0.jar ../ayon-docker/docker-compose.yml --ilinks --theme DARK --ports --volumes --networks --format editor --dir TB)
 ```
 
-## Manual
+[./10.2/docker-compose.yaml](https://mermaid-js.github.io/mermaid-live-editor/view#pako:eNrtWVtvozgU_ivIo6oZiTshFx5G2m73bVaLZkf7sE1VGTApWwIRkDadKP99zR2MwSST5mn6UIHPd75zfL5jQ8wB2KGDgAFubg5e4CUGd7hNntEG3RrcrQOjl9vj8eZmFbh--GY_wyjhvt-tAo77x4EJjPEACtw4QXGS3iuyGm6T789e8GKF-3sEHd8L0D22WDBGirwJg3WYAr_-9ftvXw-HFZDSOynjkTCRlDI9ZWOKLKoSZpNKOqnLJ2WEGcdTRrkCxyO3F0TuBE9OFPZcnpmFJ_BQXAqKLKiPnakeDkTKOGAarz1IcHZYMpcRuPMKe34F0H4boTiuyiAUAz3FGJx5zTVi-hRwmmbsej6yovAtRlHj0rHS3hGlCiY1jM1r0bGqlsDNRlqy-I3BLLYdBq637on8XxwGeewC1hs5RTZji10jNfwF5D9DfTKLvNPr9i7FGsq2rxuYPn3AosQOXONKRJmL8xZGL_EW2ugdbvy2EgXuKQdKFVJMoZkUuRIFrgPIciiMDnp9KPnw9WNvPsUNM5viti-XDcT_Peh7P2DihUHMSq4UKV_qZQEJe6vQ-x51mD4jgMN9-g1tw9hLwuhdkc_d85scjE2-Cc0TLwxRZfCCOIG-j6J0oyvNQm0XKsCJG99wqOHuP9F3uObnV5pZX6Kqtu-hIKFXNLcxqzm-fc6RvZvgyXKOpRjpV2wRdUFLPH4Ba28iNUQqMSIGNTaQVxhJvmfRZCJc2k1mx9EuCMgVYMdCPnyWUoP6kIuxkcCVG2IwNHNlM52ZHkPy_5yq252Pn51dXbPxaynbTuLK2jKCs9Qd4z7C5-MUTl8LUESRODdcS2MijSuLzIrOUnmU_xinD9QZWbipXj2btpxr49X07qZzbc1HZMDUfSzHSMf-xzwnCF9GvNDRt5CWM_0VYoQj-dihjZ8QiT6JjKB9fjFQsxPCsbz7Zkes0lMiDniS0Ro_VCkVIA40KAhTnkzUuazMP3_G_dY1K5PJQl7ImZXDVwpXgdoHJaaaIksW4vezqU0mmixX5vYPOHOKXfFfZe2Zq6mnuOWSxPWsiXomKby8fZCKC-mRWqEamUlSJdqxMLqRjqatzx7e1uKgY8g1R0d12qkHRuvzNpSoaD31B6m-zuva6ssWllJWwsiuLN2hp7g97GR96TBKielAWpV7kD2FbqJTvO3DGD_QXe419HcbFKc19Y1PsqtPp4iPkyh8QcYnVVvOFlaFv8SpHd_iGLr7KP7BA1eefS56mSwZk-fZp4I866BuRJDzXmwuxUkyXSqDoffVX_n9yu9j8yu31NY2uw2jpNxkdajP9Xm1yVozW3XdepM1Zd5UeFPlTY03p7yp584tugBVbJqrK5ZesS2UO-X-rmYrHqt8_QDInFcB4MEGRRvoOcAAh9RhBbIvoitg4Mv0m-gKrIIjxsFdEv79HtjASKId4kEU7tbPwHAhfnzxYLfFs0f3HlxHcFNCtjD4Nwyr2xzzh5Mm0IAA4wD2wFguRVXRtOVUmemytpRnPHgHhqIpoj7XFvJsPlNnS1078uBHximLiwXGqrKsKqo60xbYAWXcf-YfebNvvcf_AVt1u2U)
+[./10.2/docker-third-party/ayon/docker-compose.override.yml](https://mermaid-js.github.io/mermaid-live-editor/view#pako:eNqNk8uO2jAUhl_F8ggBUsC54JB40QWiy0ojtepiyCycxIFoEpvahkKjvHvtMAkEddGVz-U7_zm-NTATOYMETiZNyUtNQDPVB1azKQHTnMqPadtOJgkvKvE7O1CpwY9NwgH4yXRWiYxWuqxZ0yDjosFvW7BYgnEMLBcXcBRK7yVTu1lvzd87tZxqqow844WydkoVU_QqeM_9qmzYNLIL6lBkWDTAyNLojncZM8jFTnKmElVl-pwezWTneHVnMxyuo_ncbgC7rmuQL0AxeWbSAj1s0gsgmXFLLeR1h-426nYkWV6abXbL_P0Jt8BN8x-JUYta8L3I0x36NB7EH_NPgkPUxrOKKrVlBTiL6lQb3aKsKvLiFni1Yo7SUnww8uIHcRilAz--X-d_76fvMep7FFL3XTHFa7weuqZh5hfFveure6NH9ZwN5UGBvRQP5ZG38babe_n9IJ3PI-iKEw4dWDNZ0zI3L72xBQnsXnkCiTHtO09gwlvD0ZMW3688g0TLE3OgFKf9AZKCVsp4p6PZJtuWdC9p3SNHyt-EGNwb8zW3gzwgkDTwAkkcL30vCOKVF2I3iN3QgVdIvMBb4nUQueE69MMYB60D_3Sa7jKKDOvFUeBjP_R97EDWaX-7fdzu_7Z_AcbkSa0)
+[./10.2/docker-third-party/cgwire/docker-compose.kitsu.yaml](https://mermaid-js.github.io/mermaid-live-editor/view#pako:eNp1ksGOmzAQhl_FmlWUrETABkzAhx6q7bFSpFY9tO7BCyZBATvFps0W8e41RGSX7u4Jz8w384_N30OuCwkMVqu-UpVlqF_bo2zkmqF1IdrTehhWK67KWv_Jj6K16OtHrhD6dtbGHlpp5u-vOteq7HsOfjDngueiP1Y5DAPa-ohDIG3-ohqQOGhEpV43IH97QafKmo7g8Md02BK8DX9OSxTCCuO2kqo0fR-MYTDFgUs4rYsT-y-7GPhqyLXjLWyPN5uUpOT-frxBih3wYQmQzYbGUTgBi9pYzWthzIMs0W9dd400qKzqmt3hksax9Ixt9UmyuzDKkvTxxr_3yt5i52U0CyxEz7q1syQVdEd3N8nHJA_L8llyj709uTZwBR40snV_pnAO6UeIw-QODswdR39w4GpwnOis_vKkcmC27aQHre4OR2ClqI2LurPbUT5U4tCKZkbOQn3X-hZemU9FZXX7AgHWwwVYlvkhiaIsJgnFUYYTD56AkYj4dBelONklYZLRaPDg7zQT-2nq2BBjmmCaZqEHchr9-er3yfbDP6cP-xo)
 
-```mermaid
-flowchart TB
-    subgraph Images 
-        img_ubuntu_2004["ubuntu:20.04"]
-        img_mongo_express["mongo-express"]
-        img_mongodb["mongodb/mongodb-community-server:4.4-ubuntu2004"]
-        img_filebrowser["filebrowser/filebrowser"]
-        img_repo_base["repo_base"]
-        img_repo_installer["repo_installer"]
-        img_rcs_installer["rcs_installer"]
-        img_rcs_runner["rcs_runner"]
-    end
-    
-    subgraph "Local Volumes" 
-        mongo_data_LOCAL["./test_data/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL"]
-        nfs["/nfs:ro"]
-        filebrowser_db_LOCAL["./filebrowser/filebrowser.db"]
-        filebrowser_json_LOCAL["./filebrowser/filebrowser.json"]
-        deadline_installer_LOCAL["./deadline_installer"]
-        deadline_repository_install_LOCAL["./DeadlineRepositoryInstall"]
-        deadline_client_install_RCS_LOCAL["./DeadlineClientInstall"]
-        deadline_rcs_runner_ini_LOCAL["./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/deadline.ini"]
-        deadline_rcs_runner_crt_LOCAL["./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt"]
-    end
-    
-    subgraph Services
-        subgraph srv_mongodb-10-2
-            mongodb-10-2
-            subgraph Volumes 
-                mongo_data["/opt/Thinkbox/DeadlineDatabase10/mongo/data"]
-            end
-        end
-        subgraph srv_mongo-express 
-           mongo-express-10-2
-           subgraph Volumes 
-               mongo_data_express["/opt/Thinkbox/DeadlineDatabase10/mongo/data"]
-           end
-        end
-        subgraph srv_filebrowser
-            mongo-filebrowser-10-2
-            subgraph Volumes 
-                mongo_data_filebrowser["/opt/Thinkbox/DeadlineDatabase10/mongo/data:ro"]
-                filebrowser_db["/filebrowser.db"]
-                filebrowser_json["/.filebrowser.json"]
-            end
-        end
-        subgraph srv_deadline-repository-installer-10-2 
-            deadline-repository-installer-10-2
-            subgraph Volumes 
-                deadline_installer["/deadline_installer"]
-                deadline_repository_install["/opt/Thinkbox/DeadlineRepository10"]
-            end
-        end
-        subgraph deadline-rcs-installer-10-2 
-            rcs-installer-10-2
-            subgraph Volumes 
-                deadline_installer_RCS["/deadline_installer"]
-                deadline_repository_install_RCS["/opt/Thinkbox/DeadlineRepository10"]
-            end
-        end
-        subgraph deadline-rcs-runner 
-            rcs-runner-10-2
-            subgraph Volumes 
-                deadline_runner_RCS["/opt/Thinkbox/DeadlineRepository10"]
-                deadline_runner_client_RCS["/opt/Thinkbox/Deadline10"]
-                deadline_runner_ini_RCS["/var/lib/Thinkbox/Deadline10/deadline.ini:ro"]
-                deadline_runner_crt_RCS["/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:ro"]
-            end
-        end
-        
-        img_mongodb ---> mongodb-10-2
-        img_mongo_express ---> mongo-express-10-2
-        img_filebrowser ---> mongo-filebrowser-10-2
-        img_rcs_runner ---> rcs-runner-10-2
-        img_rcs_installer ---> rcs-installer-10-2
-        img_repo_installer ---> deadline-repository-installer-10-2
-        
-        img_ubuntu_2004 ---> img_repo_base
-        img_repo_base ---> img_repo_installer
-        img_repo_base ---> img_rcs_installer
-        img_rcs_installer ---> img_rcs_runner
-        
-        %% Volumes
-        mongo_data_LOCAL ---> mongo_data
-        mongo_data_LOCAL ---> mongo_data_express
-        mongo_data_LOCAL ---> mongo_data_filebrowser
-        nfs ---> mongo_data_filebrowser
-        filebrowser_db_LOCAL ---> filebrowser_db
-        filebrowser_json_LOCAL ---> filebrowser_json
-        deadline_installer_LOCAL ---> deadline_installer
-        deadline_repository_install_LOCAL ---> deadline_repository_install
-        deadline_installer_LOCAL ---> deadline_installer_RCS
-        deadline_repository_install_LOCAL ---> deadline_repository_install_RCS
-        deadline_repository_install_LOCAL ---> deadline_runner_RCS
-        deadline_client_install_RCS_LOCAL ---> deadline_runner_client_RCS
-        deadline_rcs_runner_ini_LOCAL ---> deadline_runner_ini_RCS
-        deadline_rcs_runner_crt_LOCAL ---> deadline_runner_crt_RCS
-    end
-    
-```
+
+
+
 
 
 `--binariesonly`

@@ -26,8 +26,6 @@ Force Rebuild
 
 Up
 `docker compose -f docker-compose.yaml up`
-Force Recreate
-`docker compose -f docker-compose.yaml up --force-recreate`
 
 Down
 `docker compose -f docker-compose.yaml down`
@@ -37,8 +35,11 @@ Down
 
 
 ```
-git clone https://github.com/michimussato/deadline-docker
-git clone https://github.com/ynput/ayon-docker
+git -C repos clone https://github.com/michimussato/deadline-docker
+git -C repos clone https://github.com/ynput/ayon-docker
+git -C repos clone https://github.com/cgwire/kitsu-docker
+git -C repos clone https://gitlab.com/mathbou/docker-cgwire.git
+git -C repos clone https://github.com/mathbou/docker-cgwire
 # kitsu
 https://kitsu.cg-wire.com/installation/#cloud-hosting
 https://hub.docker.com/r/cgwire/cgwire

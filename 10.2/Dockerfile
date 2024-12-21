@@ -75,7 +75,6 @@ ENV PYTHON_VERSION=$PYTHON_VERSION
 
 LABEL authors="michael"
 
-# docker exec -it dagster-dev-10-2 python3.11 -m pip install --root-user-action=ignore "deadline-dagster @ git+https://github.com/michimussato/deadline-dagster.git@main"
 RUN python3.11 -m pip install --root-user-action=ignore "dagster-shared[dagster_dev] @ git+https://github.com/michimussato/dagster-shared.git@main"
 
 WORKDIR /dagster/materializations
@@ -99,7 +98,6 @@ WORKDIR /nfs/installers/Deadline-${DEADLINE_VERSION}-linux-installers
 ENTRYPOINT  \
     deadline-wrapper-10-2  \
     -vv  \
-    --force-reinstall  \
     install-repository  \
     --deadline-version ${DEADLINE_VERSION}  \
     --prefix "/opt/Thinkbox/DeadlineRepository10"  \
@@ -108,10 +106,6 @@ ENTRYPOINT  \
     --dbport 27017  \
     --dbname "deadline10db"
 
-
-# Todo
-#  Maybe we can merge rcs_installer and webservice_installer
-#  into one.
 
 
 FROM repo_base AS client_installer
@@ -128,14 +122,12 @@ WORKDIR /nfs/installers/Deadline-${DEADLINE_VERSION}-linux-installers
 ENTRYPOINT  \
     deadline-wrapper-10-2  \
     -vv  \
-    --force-reinstall  \
     install-client  \
     --deadline-version ${DEADLINE_VERSION}  \
     --prefix "/opt/Thinkbox/Deadline10"  \
     --repositorydir "/opt/Thinkbox/DeadlineRepository10"  \
     --httpport 8888  \
     --webservice-httpport 8899
-
 
 
 
@@ -148,6 +140,7 @@ ENTRYPOINT  \
     -vv  \
     run  \
     --executable "/opt/Thinkbox/Deadline10/bin/deadlinercs"
+
 
 
 FROM client_installer AS pulse_runner
@@ -168,7 +161,6 @@ FROM client_installer AS worker_runner
 
 LABEL authors="michael"
 
-#ENTRYPOINT ["top", "-b"]
 ENTRYPOINT  \
     deadline-wrapper-10-2  \
     -vv  \
