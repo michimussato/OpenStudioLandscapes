@@ -12,8 +12,8 @@ services:
       target: kitsu
     restart: always
     ports:
-      - "8181:80"
-      - "5432:5432"
+      - "${KITSU_PORT_HOST}:${KITSU_PORT_CONTAINER}"
+      - "5432:5432"  # What's that for ?
     volumes:
       - ./postgres/postgresql.conf:/etc/postgresql/14/main/postgresql.conf:ro
       - /data/share/nfs:/data/share/nfs

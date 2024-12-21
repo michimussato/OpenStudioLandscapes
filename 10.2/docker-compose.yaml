@@ -44,13 +44,15 @@ services:
   mongodb-10-2:
     container_name: mongodb-10-2
     hostname: mongodb-10-2
-    domainname: farm.evil
+    domainname: ${ROOT_DOMAIN}
     # https://hub.docker.com/layers/mongodb/mongodb-community-server/4.4-ubuntu2004/images/sha256-e2fd10d7979ee1c5565e5b37ad1ae62056dc5c0df8adb7fbff3b8a3409b55dad?context=explore
     image: mongodb/mongodb-community-server:4.4-ubuntu2004
     # https://docs.docker.com/reference/compose-file/services/#command
     networks:
       - mongodb
       - repository
+    environment:
+      - MONGO_PORT=${MONGO_DB_PORT_CONTAINER}
     command: >
       --dbpath /opt/Thinkbox/DeadlineDatabase10/mongo/data
       --bind_ip_all
@@ -58,18 +60,18 @@ services:
       --storageEngine wiredTiger
       --tlsMode disabled
     ports:
-      - "27017:27017"
+      - "${MONGO_DB_PORT_HOST}:${MONGO_DB_PORT_CONTAINER}"
     volumes:
-      - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data
+      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data
       # Read Only
-      - /data/share/nfs:/data/share/nfs:ro
-      - /data/share/nfs:/nfs:ro
+      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}:ro
+      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro
 
 
   mongo-express-10-2:
     container_name: mongo-express-10-2
     hostname: mongo-express-10-2
-    domainname: farm.evil
+    domainname: ${ROOT_DOMAIN}
     depends_on:
       - mongodb-10-2
     # https://hub.docker.com/_/mongo-express
@@ -79,17 +81,19 @@ services:
       - mongodb
     restart: always  # fixes MongoNetworkError when mongodb is not ready when mongo-express starts
     ports:
-      - "8080:8081"
+      - "${MONGO_EXPRESS_PORT_HOST}:${MONGO_EXPRESS_PORT_CONTAINER}"
     environment:
       - ME_CONFIG_BASICAUTH_USERNAME=web
       - ME_CONFIG_BASICAUTH_PASSWORD=web
       - ME_CONFIG_OPTIONS_EDITORTHEME=darcula
       - ME_CONFIG_MONGODB_SERVER=mongodb-10-2
+      - ME_CONFIG_MONGODB_URL=mongodb://admin:pass@localhost:${MONGO_DB_PORT_CONTAINER}/db?ssl=false
     volumes:
-      - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data
+      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data
       # Read Only
-      - /data/share/nfs:/data/share/nfs:ro
-      - /data/share/nfs:/nfs:ro
+      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}:ro
+      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro
+
 
 
   # https://github.com/hurlenko/filebrowser-docker
@@ -97,7 +101,7 @@ services:
   filebrowser:
     container_name: mongo-filebrowser-10-2
     hostname: mongo-filebrowser-10-2
-    domainname: farm.evil
+    domainname: ${ROOT_DOMAIN}
     image: filebrowser/filebrowser
     restart: always
     networks:
@@ -115,12 +119,12 @@ services:
       - ./databases/filebrowser/filebrowser.db:/filebrowser.db
       - ./configs/filebrowser/filebrowser.json:/.filebrowser.json
       # Read Only
-      - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data:ro
-      - /nfs:/nfs:ro
-      - /data/share/nfs:/data/share/nfs:ro
-      - /data/share/nfs:/nfs:ro
+      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data:ro
+      - ${NFS_ENTRY_POINT_LNS}:${NFS_ENTRY_POINT_LNS}:ro
+      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}:ro
+      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro
     ports:
-      - "80:80"
+      - "${FILEBROWSER_PORT_HOST}:${FILEBROWSER_PORT_CONTAINER}"
 
 
   # https://github.com/hurlenko/filebrowser-docker
@@ -128,7 +132,7 @@ services:
   dagster_dev:
     container_name: dagster-dev-10-2
     hostname: dagster-dev-10-2
-    domainname: farm.evil
+    domainname: ${ROOT_DOMAIN}
 #    image: dagster-dev
     restart: always
     networks:
@@ -147,19 +151,19 @@ services:
       # By default, we already have a configuration file with some
       - ./configs/dagster_shared/workspace.yaml:/dagster/workspace.yaml:ro
       - ./configs/dagster_shared/dagster.yaml:/dagster/materializations/workspace.yaml:ro
-      # - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data:ro
-      - /nfs:/nfs
-      - /data/share/nfs:/data/share/nfs
-      - /data/share/nfs:/nfs
+      # - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data:ro
+      - ${NFS_ENTRY_POINT_LNS}:${NFS_ENTRY_POINT_LNS}
+      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}
+      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}
     ports:
-      - "3000:3000"
+      - "${DAGSTER_DEV_PORT_HOST}:${DAGSTER_DEV_PORT_CONTAINER}"
 
 
   deadline-repository-installer-10-2  :
     restart: "no"
     container_name: deadline-repository-installer-10-2
-    hostname: deadline-repository-installer10-2
-    domainname: farm.evil
+    hostname: deadline-repository-installer-10-2
+    domainname: ${ROOT_DOMAIN}
     depends_on:
       - mongodb-10-2
     networks:
@@ -174,10 +178,10 @@ services:
         - PYTHON_VERSION=$PYTHON_VERSION
     volumes:
 #      - ./DeadlineRepositoryInstall:/opt/Thinkbox/DeadlineRepository10
-      - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
+      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
       # Read Only
-      - /data/share/nfs:/data/share/nfs:ro
-      - /data/share/nfs:/nfs:ro
+      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}:ro
+      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro
 
 
 
@@ -185,7 +189,7 @@ services:
     restart: "no"
     container_name: client-installer-10-2
     hostname: client-installer-10-2
-    domainname: farm.evil
+    domainname: ${ROOT_DOMAIN}
     depends_on:
       deadline-repository-installer-10-2:
         condition: service_completed_successfully
@@ -200,11 +204,11 @@ services:
         - DEADLINE_VERSION=$DEADLINE_VERSION
         - PYTHON_VERSION=$PYTHON_VERSION
     volumes:
-      - /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10
-      - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
+      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10
+      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
       # Read Only
-      - /data/share/nfs:/data/share/nfs:ro
-      - /data/share/nfs:/nfs:ro
+      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}:ro
+      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro
 
 
   deadline-rcs-runner-10-2:
@@ -218,7 +222,7 @@ services:
       target: rcs_runner
     container_name: rcs-runner-10-2
     hostname: rcs-runner-10-2
-    domainname: farm.evil
+    domainname: ${ROOT_DOMAIN}
     depends_on:
       deadline-client-installer-10-2:
         condition: service_completed_successfully
@@ -229,13 +233,13 @@ services:
       # Config
       - ./configs/Deadline10/deadline.ini:/var/lib/Thinkbox/Deadline10/deadline.ini:ro
       # Data
-      - /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10
-      - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
-      - /data/share/nfs:/data/share/nfs:ro
-      - /data/share/nfs:/nfs:ro
+      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10
+      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
+      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}:ro
+      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro
 #      - ./configs/Deadline10/cert/ca-certificates.crt:/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:ro
     ports:
-      - "8888:8888"
+      - "${RCS_HTTP_PORT_HOST}:${RCS_HTTP_PORT_CONTAINER}"
 
 
   deadline-pulse-runner-10-2:
@@ -249,7 +253,7 @@ services:
       target: pulse_runner
     container_name: pulse-runner-10-2
     hostname: pulse-runner-10-2
-    domainname: farm.evil
+    domainname: ${ROOT_DOMAIN}
     depends_on:
       deadline-client-installer-10-2:
         condition: service_completed_successfully
@@ -262,10 +266,10 @@ services:
       # Config
       - ./configs/Deadline10/deadline.ini:/var/lib/Thinkbox/Deadline10/deadline.ini:ro
       # Data
-      - /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10
-      - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
-      - /data/share/nfs:/data/share/nfs:ro
-      - /data/share/nfs:/nfs:ro
+      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10
+      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
+      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}:ro
+      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro
 #      - ./configs/Deadline10/cert/ca-certificates.crt:/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:ro
 #    ports:
 #      - "8888:8888"
@@ -282,7 +286,7 @@ services:
       target: worker_runner
     container_name: worker-runner-10-2
     hostname: worker-runner-10-2
-    domainname: farm.evil
+    domainname: ${ROOT_DOMAIN}
     depends_on:
       deadline-client-installer-10-2:
         condition: service_completed_successfully
@@ -295,10 +299,10 @@ services:
       # Config
       - ./configs/Deadline10/deadline.ini:/var/lib/Thinkbox/Deadline10/deadline.ini:ro
       # Data
-      - /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10
-      - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
-      - /data/share/nfs:/data/share/nfs:ro
-      - /data/share/nfs:/nfs:ro
+      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10
+      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
+      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}:ro
+      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro
 #      - ./configs/Deadline10/cert/ca-certificates.crt:/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:ro
 #    ports:
 #      - "8888:8888"
@@ -318,7 +322,7 @@ services:
       target: webservice_runner
     container_name: webservice-runner-10-2
     hostname: webservice-runner-10-2
-    domainname: farm.evil
+    domainname: ${ROOT_DOMAIN}
     depends_on:
       deadline-client-installer-10-2:
         condition: service_completed_successfully
@@ -331,12 +335,12 @@ services:
       # Config
       - ./configs/Deadline10/deadline.ini:/var/lib/Thinkbox/Deadline10/deadline.ini:ro
       # Data
-      - /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10
-      - /data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
-      - /data/share/nfs:/data/share/nfs:ro
-      - /data/share/nfs:/nfs:ro
+      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10
+      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
+      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}:ro
+      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro
     ports:
-      - "8899:8899"
+      - "${WEBSERVICE_HTTP_PORT_HOST}:${WEBSERVICE_HTTP_PORT_CONTAINER}"
 
 
 # https://www.warp.dev/terminus/docker-compose-networks

@@ -30,4 +30,4 @@ services:
       - repository
       - mongodb
     ports:
-    - "5678:5000"
+    - "${AYON_PORT_HOST}:${AYON_PORT_CONTAINER}"
