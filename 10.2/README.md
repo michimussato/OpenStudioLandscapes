@@ -148,6 +148,31 @@ flowchart TB
 ```
 
 
+`--binariesonly`
+https://docs.thinkboxsoftware.com/products/deadline/10.3/1_User%20Manual/manual/deploy-client-centrally-managed.html
 ```
 sudo /nfs/installers/Deadline-10.2.1.1-linux-installers/DeadlineClient-10.2.1.1-linux-x64-installer.run --nobinaries /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10 --prefix /data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10
+```
+
+https://docs.thinkboxsoftware.com/products/deadline/10.3/1_User%20Manual/manual/deploy-client-centrally-managed.html#control-environment-variables
+https://docs.thinkboxsoftware.com/products/deadline/10.3/1_User%20Manual/manual/deploy-client-centrally-managed.html#create-config-files
+
+
+```
+export DEADLINE_CONFIG_FILE=/home/michael/git/repos/deadline-docker/10.2/configs/Deadline10/deadline_client.ini
+export DEADLINE_SYSTEM_PATH="${HOME}/.config/thinkbox/deadline/10.2/var/lib"
+export DEADLINE_ROAMING_USER_PATH="${HOME}/.config/thinkbox/deadline/10.2"
+/nfs/test_data/10.2/opt/Thinkbox/Deadline10/bin/deadlinelauncher
+```
+
+```
+webservice-runner-10-2              | [2024-12-20 23:28:14] INFO:deadline_docker.deadline_wrapper_10_2.deadline_wrapper:WARNING: Ignoring HOME environment because effective user is root.
+webservice-runner-10-2              | ERROR: UpdateClient.MaybeSendRequestNow caught an exception: POST http://rcs-runner-10-2.farm.evil:8888/rcs/v1/update returned "One or more errors occurred. (Name or service not known (rcs-runner-10-2.farm.evil:8888))" (Deadline.Net.Clients.Http.DeadlineHttpRequestException)
+webservice-runner-10-2              | ERROR: DataController threw a configuration exception during initialization: Failed to establish connection to rcs-runner-10-2.farm.evil:8888 due to a communication error. (Deadline.Configuration.DeadlineConfigException)
+webservice-runner-10-2              | Could not connect to Deadline Repository: Failed to establish connection to rcs-runner-10-2.farm.evil:8888 due to a communication error.
+webservice-runner-10-2              | Deadline Web Service will try to connect again in 10 seconds...
+webservice-runner-10-2              | Web Service Shutting Down...
+webservice-runner-10-2              | 
+webservice-runner-10-2              | [2024-12-20 23:28:14] ERROR:deadline_docker.deadline_wrapper_10_2.deadline_wrapper:
+
 ```

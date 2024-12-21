@@ -150,29 +150,31 @@ ENTRYPOINT  \
     --executable "/opt/Thinkbox/Deadline10/bin/deadlinercs"
 
 
-#FROM client_installer AS pulse_runner
-#
-#LABEL authors="michael"
-#
-##ENTRYPOINT ["top", "-b"]
-#ENTRYPOINT  \
-#    deadline-wrapper-10-2  \
-#    -vv  \
-#    run  \
-#    --executable "/opt/Thinkbox/Deadline10/bin/deadlinepulse"
+FROM client_installer AS pulse_runner
+
+LABEL authors="michael"
+
+#ENTRYPOINT ["top", "-b"]
+ENTRYPOINT  \
+    deadline-wrapper-10-2  \
+    -vv  \
+    run  \
+    --executable "/opt/Thinkbox/Deadline10/bin/deadlinepulse"  \
+    --arguments=-nogui,-nosplash
 
 
 
-#FROM client_installer AS worker_runner
-#
-#LABEL authors="michael"
-#
-##ENTRYPOINT ["top", "-b"]
-#ENTRYPOINT  \
-#    deadline-wrapper-10-2  \
-#    -vv  \
-#    run  \
-#    --executable "/opt/Thinkbox/Deadline10/bin/deadlineworker"
+FROM client_installer AS worker_runner
+
+LABEL authors="michael"
+
+#ENTRYPOINT ["top", "-b"]
+ENTRYPOINT  \
+    deadline-wrapper-10-2  \
+    -vv  \
+    run  \
+    --executable "/opt/Thinkbox/Deadline10/bin/deadlineworker"  \
+    --arguments=-nogui,-nosplash
 
 
 
