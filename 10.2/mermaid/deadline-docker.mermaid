@@ -1,76 +1,80 @@
 %%{init: {'theme': 'dark'}}%%
 flowchart TB
-  Vdatasharenfstestdata102optThinkboxDeadlineDatabase10mongodataLOCAL{{"/data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL"}} x-. /opt/Thinkbox/DeadlineDatabase10/mongo/data .-x mongodb102[mongodb-10-2]
-  Vdatasharenfs{{/data/share/nfs}} -. /data/share/nfs .-x mongodb102
-  Vdatasharenfs -. /nfs .-x mongodb102
-  Vdatasharenfstestdata102optThinkboxDeadlineDatabase10mongodataLOCAL x-. /opt/Thinkbox/DeadlineDatabase10/mongo/data .-x mongoexpress[mongo-express]
-  Vdatasharenfs -. /data/share/nfs .-x mongoexpress
-  Vdatasharenfs -. /nfs .-x mongoexpress
-  Vfilebrowserfilebrowserdb{{"./filebrowser/filebrowser.db"}} x-. "/filebrowser.db" .-x filebrowser
-  Vfilebrowserfilebrowserjson{{"./filebrowser/filebrowser.json"}} x-. "/.filebrowser.json" .-x filebrowser
-  Vdatasharenfstestdata102optThinkboxDeadlineDatabase10mongodataLOCAL -. /opt/Thinkbox/DeadlineDatabase10/mongo/data .-x filebrowser
-  Vnfs{{/nfs}} -. /nfs .-x filebrowser
-  Vdatasharenfs -. /data/share/nfs .-x filebrowser
-  Vdatasharenfs -. /nfs .-x filebrowser
-  VDeadlineRepositorydagstersharedworkspaceyaml{{"./DeadlineRepository/dagster_shared/workspace.yaml"}} -. "/dagster/workspace.yaml" .-x dagsterdev[dagster_dev]
-  VDeadlineRepositorydagstershareddagsteryaml{{"./DeadlineRepository/dagster_shared/dagster.yaml"}} -. "/dagster/materializations/workspace.yaml" .-x dagsterdev
-  Vnfs x-. /nfs .-x dagsterdev
-  Vdatasharenfs x-. /data/share/nfs .-x dagsterdev
-  Vdatasharenfs x-. /nfs .-x dagsterdev
-  Vdatasharenfstestdata102optThinkboxDeadlineRepository10{{"/data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10"}} x-. /opt/Thinkbox/DeadlineRepository10 .-x deadlinerepositoryinstaller102[deadline-repository-installer-10-2]
-  Vdatasharenfs -. /data/share/nfs .-x deadlinerepositoryinstaller102
-  Vdatasharenfs -. /nfs .-x deadlinerepositoryinstaller102
-  Vdatasharenfstestdata102optThinkboxDeadline10rcsinstaller102{{"/data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10/rcs-installer-10-2"}} x-. /opt/Thinkbox/Deadline10 .-x deadlinercsinstaller102[deadline-rcs-installer-10-2]
-  Vdatasharenfstestdata102optThinkboxDeadlineRepository10 x-. /opt/Thinkbox/DeadlineRepository10 .-x deadlinercsinstaller102
-  Vdatasharenfs -. /data/share/nfs .-x deadlinercsinstaller102
-  Vdatasharenfs -. /nfs .-x deadlinercsinstaller102
-  VDeadlineRepositoryrcsvarlibThinkboxDeadline10deadlineini{{"./DeadlineRepository/rcs/var/lib/Thinkbox/Deadline10/deadline.ini"}} -. "/var/lib/Thinkbox/Deadline10/deadline.ini" .-x deadlinercsrunner[deadline-rcs-runner]
-  Vdatasharenfstestdata102optThinkboxDeadline10rcsinstaller102 x-. /opt/Thinkbox/Deadline10 .-x deadlinercsrunner
-  Vdatasharenfstestdata102optThinkboxDeadlineRepository10 x-. /opt/Thinkbox/DeadlineRepository10 .-x deadlinercsrunner
-  Vdatasharenfs -. /data/share/nfs .-x deadlinercsrunner
-  Vdatasharenfs -. /nfs .-x deadlinercsrunner
-  Vdatasharenfstestdata102optThinkboxDeadline10webserviceinstaller102{{"/data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10/webservice-installer-10-2"}} x-. /opt/Thinkbox/Deadline10 .-x deadlinewebserviceinstaller102[deadline-webservice-installer-10-2]
-  Vdatasharenfstestdata102optThinkboxDeadlineRepository10 x-. /opt/Thinkbox/DeadlineRepository10 .-x deadlinewebserviceinstaller102
-  Vdatasharenfs -. /data/share/nfs .-x deadlinewebserviceinstaller102
-  Vdatasharenfs -. /nfs .-x deadlinewebserviceinstaller102
-  VDeadlineRepositoryrcsvarlibThinkboxDeadline10deadlineini -. "/var/lib/Thinkbox/Deadline10/deadline.ini" .-x deadlinewebservicerunner[deadline-webservice-runner]
-  Vdatasharenfstestdata102optThinkboxDeadline10webserviceinstaller102 x-. /opt/Thinkbox/Deadline10 .-x deadlinewebservicerunner
-  Vdatasharenfstestdata102optThinkboxDeadlineRepository10 x-. /opt/Thinkbox/DeadlineRepository10 .-x deadlinewebservicerunner
-  Vdatasharenfs -. /data/share/nfs .-x deadlinewebservicerunner
-  Vdatasharenfs -. /nfs .-x deadlinewebservicerunner
-  deadlinercsinstaller102 --> deadlinerepositoryinstaller102
-  deadlinercsrunner --> deadlinercsinstaller102
+  VNFSENTRYPOINTtestdata102optThinkboxDeadlineDatabase10mongodataLOCAL{{"${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL"}} x-. /opt/Thinkbox/DeadlineDatabase10/mongo/data .-x mongodb102[mongodb-10-2]
+  VNFSENTRYPOINT{{"${NFS_ENTRY_POINT}"}} -. "${NFS_ENTRY_POINT}" .-x mongodb102
+  VNFSENTRYPOINT -. "${NFS_ENTRY_POINT_LNS}" .-x mongodb102
+  VNFSENTRYPOINTtestdata102optThinkboxDeadlineDatabase10mongodataLOCAL x-. /opt/Thinkbox/DeadlineDatabase10/mongo/data .-x mongoexpress102[mongo-express-10-2]
+  VNFSENTRYPOINT -. "${NFS_ENTRY_POINT}" .-x mongoexpress102
+  VNFSENTRYPOINT -. "${NFS_ENTRY_POINT_LNS}" .-x mongoexpress102
+  Vdatabasesfilebrowserfilebrowserdb{{"./databases/filebrowser/filebrowser.db"}} x-. "/filebrowser.db" .-x filebrowser
+  Vconfigsfilebrowserfilebrowserjson{{"./configs/filebrowser/filebrowser.json"}} x-. "/.filebrowser.json" .-x filebrowser
+  VNFSENTRYPOINTtestdata102optThinkboxDeadlineDatabase10mongodataLOCAL -. /opt/Thinkbox/DeadlineDatabase10/mongo/data .-x filebrowser
+  VNFSENTRYPOINTLNS{{"${NFS_ENTRY_POINT_LNS}"}} -. "${NFS_ENTRY_POINT_LNS}" .-x filebrowser
+  VNFSENTRYPOINT -. "${NFS_ENTRY_POINT}" .-x filebrowser
+  VNFSENTRYPOINT -. "${NFS_ENTRY_POINT_LNS}" .-x filebrowser
+  Vconfigsdagstersharedworkspaceyaml{{"./configs/dagster_shared/workspace.yaml"}} -. "/dagster/workspace.yaml" .-x dagsterdev[dagster_dev]
+  Vconfigsdagstershareddagsteryaml{{"./configs/dagster_shared/dagster.yaml"}} -. "/dagster/materializations/workspace.yaml" .-x dagsterdev
+  VNFSENTRYPOINTLNS x-. "${NFS_ENTRY_POINT_LNS}" .-x dagsterdev
+  VNFSENTRYPOINT x-. "${NFS_ENTRY_POINT}" .-x dagsterdev
+  VNFSENTRYPOINT x-. "${NFS_ENTRY_POINT_LNS}" .-x dagsterdev
+  VNFSENTRYPOINTtestdata102optThinkboxDeadlineRepository10{{"${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineRepository10"}} x-. /opt/Thinkbox/DeadlineRepository10 .-x deadlinerepositoryinstaller102[deadline-repository-installer-10-2]
+  VNFSENTRYPOINT -. "${NFS_ENTRY_POINT}" .-x deadlinerepositoryinstaller102
+  VNFSENTRYPOINT -. "${NFS_ENTRY_POINT_LNS}" .-x deadlinerepositoryinstaller102
+  VNFSENTRYPOINTtestdata102optThinkboxDeadline10{{"${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/Deadline10"}} x-. /opt/Thinkbox/Deadline10 .-x deadlineclientinstaller102[deadline-client-installer-10-2]
+  VNFSENTRYPOINTtestdata102optThinkboxDeadlineRepository10 x-. /opt/Thinkbox/DeadlineRepository10 .-x deadlineclientinstaller102
+  VNFSENTRYPOINT -. "${NFS_ENTRY_POINT}" .-x deadlineclientinstaller102
+  VNFSENTRYPOINT -. "${NFS_ENTRY_POINT_LNS}" .-x deadlineclientinstaller102
+  VconfigsDeadline10deadlineini{{"./configs/Deadline10/deadline.ini"}} -. "/var/lib/Thinkbox/Deadline10/deadline.ini" .-x deadlinercsrunner102[deadline-rcs-runner-10-2]
+  VNFSENTRYPOINTtestdata102optThinkboxDeadline10 x-. /opt/Thinkbox/Deadline10 .-x deadlinercsrunner102
+  VNFSENTRYPOINTtestdata102optThinkboxDeadlineRepository10 x-. /opt/Thinkbox/DeadlineRepository10 .-x deadlinercsrunner102
+  VNFSENTRYPOINT -. "${NFS_ENTRY_POINT}" .-x deadlinercsrunner102
+  VNFSENTRYPOINT -. "${NFS_ENTRY_POINT_LNS}" .-x deadlinercsrunner102
+  VconfigsDeadline10deadlineini -. "/var/lib/Thinkbox/Deadline10/deadline.ini" .-x deadlinepulserunner102[deadline-pulse-runner-10-2]
+  VNFSENTRYPOINTtestdata102optThinkboxDeadline10 x-. /opt/Thinkbox/Deadline10 .-x deadlinepulserunner102
+  VNFSENTRYPOINTtestdata102optThinkboxDeadlineRepository10 x-. /opt/Thinkbox/DeadlineRepository10 .-x deadlinepulserunner102
+  VNFSENTRYPOINT -. "${NFS_ENTRY_POINT}" .-x deadlinepulserunner102
+  VNFSENTRYPOINT -. "${NFS_ENTRY_POINT_LNS}" .-x deadlinepulserunner102
+  VconfigsDeadline10deadlineini -. "/var/lib/Thinkbox/Deadline10/deadline.ini" .-x deadlineworkerrunner102[deadline-worker-runner-10-2]
+  VNFSENTRYPOINTtestdata102optThinkboxDeadline10 x-. /opt/Thinkbox/Deadline10 .-x deadlineworkerrunner102
+  VNFSENTRYPOINTtestdata102optThinkboxDeadlineRepository10 x-. /opt/Thinkbox/DeadlineRepository10 .-x deadlineworkerrunner102
+  VNFSENTRYPOINT -. "${NFS_ENTRY_POINT}" .-x deadlineworkerrunner102
+  VNFSENTRYPOINT -. "${NFS_ENTRY_POINT_LNS}" .-x deadlineworkerrunner102
+  VconfigsDeadline10deadlineini -. "/var/lib/Thinkbox/Deadline10/deadline.ini" .-x deadlinewebservicerunner102[deadline-webservice-runner-10-2]
+  VNFSENTRYPOINTtestdata102optThinkboxDeadline10 x-. /opt/Thinkbox/Deadline10 .-x deadlinewebservicerunner102
+  VNFSENTRYPOINTtestdata102optThinkboxDeadlineRepository10 x-. /opt/Thinkbox/DeadlineRepository10 .-x deadlinewebservicerunner102
+  VNFSENTRYPOINT -. "${NFS_ENTRY_POINT}" .-x deadlinewebservicerunner102
+  VNFSENTRYPOINT -. "${NFS_ENTRY_POINT_LNS}" .-x deadlinewebservicerunner102
+  deadlineclientinstaller102 --> deadlinerepositoryinstaller102
+  deadlinepulserunner102 --> deadlineclientinstaller102
+  deadlinepulserunner102 --> deadlinercsrunner102
+  deadlinercsrunner102 --> deadlineclientinstaller102
   deadlinerepositoryinstaller102 --> mongodb102
-  deadlinewebserviceinstaller102 --> deadlinerepositoryinstaller102
-  deadlinewebservicerunner --> deadlinewebserviceinstaller102
+  deadlinewebservicerunner102 --> deadlineclientinstaller102
+  deadlinewebservicerunner102 --> deadlinercsrunner102
+  deadlineworkerrunner102 --> deadlineclientinstaller102
+  deadlineworkerrunner102 --> deadlinercsrunner102
   filebrowser --> mongodb102
-  mongoexpress --> mongodb102
-  P0((27017)) -.-> mongodb102
-  P1((8080)) -. 8081 .-> mongoexpress
-  P2((80)) -.-> filebrowser
-  P3((3000)) -.-> dagsterdev
-  P4((8888)) -.-> deadlinercsrunner
-  P5((8899)) -.-> deadlinewebservicerunner
+  mongoexpress102 --> mongodb102
   mongodb102 -.- mongodb[/mongodb/]
-  mongoexpress -.- mongodb
+  mongoexpress102 -.- mongodb
   dagsterdev -.- mongodb
   deadlinerepositoryinstaller102 -.- mongodb
-  deadlinercsinstaller102 -.- mongodb
-  deadlinercsrunner -.- mongodb
-  deadlinewebserviceinstaller102 -.- mongodb
-  deadlinewebservicerunner -.- mongodb
+  deadlineclientinstaller102 -.- mongodb
+  deadlinercsrunner102 -.- mongodb
+  deadlinepulserunner102 -.- mongodb
+  deadlineworkerrunner102 -.- mongodb
+  deadlinewebservicerunner102 -.- mongodb
   mongodb102 -.- repository[/repository/]
   filebrowser -.- repository
   dagsterdev -.- repository
   deadlinerepositoryinstaller102 -.- repository
-  deadlinercsinstaller102 -.- repository
-  deadlinercsrunner -.- repository
-  deadlinewebserviceinstaller102 -.- repository
-  deadlinewebservicerunner -.- repository
+  deadlineclientinstaller102 -.- repository
+  deadlinercsrunner102 -.- repository
+  deadlinepulserunner102 -.- repository
+  deadlineworkerrunner102 -.- repository
+  deadlinewebservicerunner102 -.- repository
 
   classDef volumes fill:#0f544e,stroke:#23968b
-  class Vdatasharenfstestdata102optThinkboxDeadlineDatabase10mongodataLOCAL,Vdatasharenfs,Vdatasharenfs,Vdatasharenfstestdata102optThinkboxDeadlineDatabase10mongodataLOCAL,Vdatasharenfs,Vdatasharenfs,Vfilebrowserfilebrowserdb,Vfilebrowserfilebrowserjson,Vdatasharenfstestdata102optThinkboxDeadlineDatabase10mongodataLOCAL,Vnfs,Vdatasharenfs,Vdatasharenfs,VDeadlineRepositorydagstersharedworkspaceyaml,VDeadlineRepositorydagstershareddagsteryaml,Vnfs,Vdatasharenfs,Vdatasharenfs,Vdatasharenfstestdata102optThinkboxDeadlineRepository10,Vdatasharenfs,Vdatasharenfs,Vdatasharenfstestdata102optThinkboxDeadline10rcsinstaller102,Vdatasharenfstestdata102optThinkboxDeadlineRepository10,Vdatasharenfs,Vdatasharenfs,VDeadlineRepositoryrcsvarlibThinkboxDeadline10deadlineini,Vdatasharenfstestdata102optThinkboxDeadline10rcsinstaller102,Vdatasharenfstestdata102optThinkboxDeadlineRepository10,Vdatasharenfs,Vdatasharenfs,Vdatasharenfstestdata102optThinkboxDeadline10webserviceinstaller102,Vdatasharenfstestdata102optThinkboxDeadlineRepository10,Vdatasharenfs,Vdatasharenfs,VDeadlineRepositoryrcsvarlibThinkboxDeadline10deadlineini,Vdatasharenfstestdata102optThinkboxDeadline10webserviceinstaller102,Vdatasharenfstestdata102optThinkboxDeadlineRepository10,Vdatasharenfs,Vdatasharenfs volumes
-  classDef ports fill:#5a5757,stroke:#b6c2ff
-  class P0,P1,P2,P3,P4,P5 ports
+  class VNFSENTRYPOINTtestdata102optThinkboxDeadlineDatabase10mongodataLOCAL,VNFSENTRYPOINT,VNFSENTRYPOINT,VNFSENTRYPOINTtestdata102optThinkboxDeadlineDatabase10mongodataLOCAL,VNFSENTRYPOINT,VNFSENTRYPOINT,Vdatabasesfilebrowserfilebrowserdb,Vconfigsfilebrowserfilebrowserjson,VNFSENTRYPOINTtestdata102optThinkboxDeadlineDatabase10mongodataLOCAL,VNFSENTRYPOINTLNS,VNFSENTRYPOINT,VNFSENTRYPOINT,Vconfigsdagstersharedworkspaceyaml,Vconfigsdagstershareddagsteryaml,VNFSENTRYPOINTLNS,VNFSENTRYPOINT,VNFSENTRYPOINT,VNFSENTRYPOINTtestdata102optThinkboxDeadlineRepository10,VNFSENTRYPOINT,VNFSENTRYPOINT,VNFSENTRYPOINTtestdata102optThinkboxDeadline10,VNFSENTRYPOINTtestdata102optThinkboxDeadlineRepository10,VNFSENTRYPOINT,VNFSENTRYPOINT,VconfigsDeadline10deadlineini,VNFSENTRYPOINTtestdata102optThinkboxDeadline10,VNFSENTRYPOINTtestdata102optThinkboxDeadlineRepository10,VNFSENTRYPOINT,VNFSENTRYPOINT,VconfigsDeadline10deadlineini,VNFSENTRYPOINTtestdata102optThinkboxDeadline10,VNFSENTRYPOINTtestdata102optThinkboxDeadlineRepository10,VNFSENTRYPOINT,VNFSENTRYPOINT,VconfigsDeadline10deadlineini,VNFSENTRYPOINTtestdata102optThinkboxDeadline10,VNFSENTRYPOINTtestdata102optThinkboxDeadlineRepository10,VNFSENTRYPOINT,VNFSENTRYPOINT,VconfigsDeadline10deadlineini,VNFSENTRYPOINTtestdata102optThinkboxDeadline10,VNFSENTRYPOINTtestdata102optThinkboxDeadlineRepository10,VNFSENTRYPOINT,VNFSENTRYPOINT volumes
   classDef nets fill:#3f51b5,stroke:#81B1DB
   class mongodb,repository nets
