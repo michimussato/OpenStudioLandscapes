@@ -176,6 +176,8 @@ services:
       args:
         - DEADLINE_VERSION=$DEADLINE_VERSION
         - PYTHON_VERSION=$PYTHON_VERSION
+        # args or environment?
+        - INSTALLERS_ROOT=$INSTALLERS_ROOT
     volumes:
 #      - ./DeadlineRepositoryInstall:/opt/Thinkbox/DeadlineRepository10
       - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
@@ -203,6 +205,8 @@ services:
       args:
         - DEADLINE_VERSION=$DEADLINE_VERSION
         - PYTHON_VERSION=$PYTHON_VERSION
+        # args or environment?
+        - INSTALLERS_ROOT=$INSTALLERS_ROOT
     volumes:
       - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10
       - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
