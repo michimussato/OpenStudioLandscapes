@@ -160,7 +160,7 @@ ENTRYPOINT  \
     -vv  \
     run  \
     --executable "/opt/Thinkbox/Deadline10/bin/deadlinepulse"  \
-    --arguments=-nogui,-nosplash
+    --arguments "['-nogui', '-nosplash']"
 
 
 
@@ -174,7 +174,7 @@ ENTRYPOINT  \
     -vv  \
     run  \
     --executable "/opt/Thinkbox/Deadline10/bin/deadlineworker"  \
-    --arguments=-nogui,-nosplash
+    --arguments "['-nogui', '-nosplash']"
 
 
 
