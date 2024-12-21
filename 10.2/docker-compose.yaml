@@ -164,6 +164,8 @@ services:
     container_name: deadline-repository-installer-10-2
     hostname: deadline-repository-installer-10-2
     domainname: ${ROOT_DOMAIN}
+    environment:
+      - INSTALLERS_ROOT=$INSTALLERS_ROOT
     depends_on:
       - mongodb-10-2
     networks:
@@ -177,7 +179,8 @@ services:
         - DEADLINE_VERSION=$DEADLINE_VERSION
         - PYTHON_VERSION=$PYTHON_VERSION
         # args or environment?
-        - INSTALLERS_ROOT=$INSTALLERS_ROOT
+        # https://stackoverflow.com/a/41919137/2207196
+#        - INSTALLERS_ROOT=$INSTALLERS_ROOT
     volumes:
 #      - ./DeadlineRepositoryInstall:/opt/Thinkbox/DeadlineRepository10
       - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
@@ -192,6 +195,8 @@ services:
     container_name: client-installer-10-2
     hostname: client-installer-10-2
     domainname: ${ROOT_DOMAIN}
+    environment:
+      - INSTALLERS_ROOT=$INSTALLERS_ROOT
     depends_on:
       deadline-repository-installer-10-2:
         condition: service_completed_successfully
@@ -206,7 +211,8 @@ services:
         - DEADLINE_VERSION=$DEADLINE_VERSION
         - PYTHON_VERSION=$PYTHON_VERSION
         # args or environment?
-        - INSTALLERS_ROOT=$INSTALLERS_ROOT
+        # https://stackoverflow.com/a/41919137/2207196
+#        - INSTALLERS_ROOT=$INSTALLERS_ROOT
     volumes:
       - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10
       - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
