@@ -120,7 +120,7 @@ services:
       - ./configs/filebrowser/filebrowser.json:/.filebrowser.json
       # Read Only
       - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data:ro
-      - ${NFS_ENTRY_POINT_LNS}:${NFS_ENTRY_POINT_LNS}:ro
+#      - ${NFS_ENTRY_POINT_LNS}:${NFS_ENTRY_POINT_LNS}:ro
       - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}:ro
       - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro
     ports:
@@ -152,7 +152,7 @@ services:
       - ./configs/dagster_shared/workspace.yaml:/dagster/workspace.yaml:ro
       - ./configs/dagster_shared/dagster.yaml:/dagster/materializations/workspace.yaml:ro
       # - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data:ro
-      - ${NFS_ENTRY_POINT_LNS}:${NFS_ENTRY_POINT_LNS}
+#      - ${NFS_ENTRY_POINT_LNS}:${NFS_ENTRY_POINT_LNS}
       - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}
       - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}
     ports:
