@@ -67,25 +67,19 @@ ARG PYTHON_VERSION
 #
 ENV DEADLINE_VERSION=$DEADLINE_VERSION
 ENV PYTHON_VERSION=$PYTHON_VERSION
+ENV LIKEC4_DEV_PORT_CONTAINER=$LIKEC4_DEV_PORT_CONTAINER
 
 LABEL authors="michael"
 
-WORKDIR /git
+WORKDIR /ENTRYPOINT
 
-RUN git -C /git clone https://github.com/likec4/likec4.git
-RUN git -C /git clone https://github.com/asdf-vm/asdf.git --branch v0.15.0
+COPY ./docker-third-party/likec4/setup.sh .
+COPY ./docker-third-party/likec4/run.sh .
 
-ENTRYPOINT . /git/asdf/asdf.sh &&  \
-    cd /git/likec4 &&  \
-    asdf plugin add nodejs &&  \
-    asdf plugin add yarn &&  \
-    asdf plugin add dprint &&  \
-    cd /git/likec4 &&  \
-    asdf install &&  \
-    yarn install &&  \
-    yarn build &&  \
-    cd /git/likec4/apps/playground &&  \
-    yarn dev --host 0.0.0.0 --port 4567
+RUN chmod -R +x /ENTRYPOINT/*.sh
+
+ENTRYPOINT ["/usr/bin/env", "bash", "/ENTRYPOINT/run.sh"]
+CMD ["yarn", "dev", "--host", "0.0.0.0", "--port", "${LIKEC4_DEV_PORT_CONTAINER}"]
 
 
 
