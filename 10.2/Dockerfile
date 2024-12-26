@@ -57,6 +57,38 @@ ENTRYPOINT []
 
 
 
+FROM repo_base AS likec4_dev
+
+LABEL authors="michael"
+
+WORKDIR /git
+
+RUN git -C /git clone https://github.com/likec4/likec4.git
+RUN git -C /git clone https://github.com/asdf-vm/asdf.git --branch v0.15.0
+
+RUN source /git/asdf/asdf.sh
+RUN source /git/asdf/completions/asdf.bash
+
+WORKDIR /git/asdf
+
+RUN asdf plugin add nodejs
+RUN asdf plugin add yarn
+RUN asdf plugin add dprint
+
+RUN asdf install
+
+WORKDIR /git/likec4
+
+RUN yarn install
+RUN yarn build
+
+WORKDIR /git/likec4/apps/playground
+
+ENTRYPOINT yarn dev --host 0.0.0.0 --port 4567
+
+
+
+
 FROM repo_base AS dagster_dev
 ARG DEADLINE_VERSION
 ARG PYTHON_VERSION

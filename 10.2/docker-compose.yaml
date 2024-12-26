@@ -34,10 +34,10 @@
 
 include:
   - path:
-      - docker-third-party/cgwire/docker-compose.kitsu.yaml
+      - ./docker-third-party/cgwire/docker-compose.kitsu.yaml
   - path:
       - ../repos/ayon-docker/docker-compose.yml
-      - docker-third-party/ayon/docker-compose.override.yml
+      - ./docker-third-party/ayon/docker-compose.override.yml
 
 
 services:
@@ -127,8 +127,6 @@ services:
       - "${FILEBROWSER_PORT_HOST}:${FILEBROWSER_PORT_CONTAINER}"
 
 
-  # https://github.com/hurlenko/filebrowser-docker
-  # https://filebrowser.org/cli/filebrowser#options
   dagster_dev:
     container_name: dagster-dev-10-2
     hostname: dagster-dev-10-2
@@ -157,6 +155,36 @@ services:
       - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}
     ports:
       - "${DAGSTER_DEV_PORT_HOST}:${DAGSTER_DEV_PORT_CONTAINER}"
+
+
+  likec4_dev:
+    container_name: likec4-dev-10-2
+    hostname: likec4-dev-10-2
+    domainname: ${ROOT_DOMAIN}
+#    image: dagster-dev
+    restart: always
+#    networks:
+#      - repository
+#      - mongodb
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: likec4_dev
+#      args:
+#        - DEADLINE_VERSION=$DEADLINE_VERSION
+#        - PYTHON_VERSION=$PYTHON_VERSION
+#    depends_on:
+#      - mongodb-10-2
+#    volumes:
+#      # By default, we already have a configuration file with some
+#      - ./configs/dagster_shared/workspace.yaml:/dagster/workspace.yaml:ro
+#      - ./configs/dagster_shared/dagster.yaml:/dagster/materializations/workspace.yaml:ro
+#      # - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data:ro
+##      - ${NFS_ENTRY_POINT_LNS}:${NFS_ENTRY_POINT_LNS}
+#      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}
+#      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}
+    ports:
+      - "${LIKEC4_DEV_PORT_HOST}:${LIKEC4_DEV_PORT_CONTAINER}"
 
 
   deadline-repository-installer-10-2  :
