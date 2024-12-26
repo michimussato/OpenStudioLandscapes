@@ -12,6 +12,8 @@ ENV SET_CONTAINER_TIMEZONE=true
 ENV DEADLINE_VERSION=$DEADLINE_VERSION
 ENV PYTHON_VERSION=$PYTHON_VERSION
 
+SHELL ["/bin/bash", "-c"]
+
 RUN apt-get update \
     && apt-get upgrade -y
 
@@ -28,7 +30,9 @@ RUN apt-get install \
     libegl1  \
     libsm6  \
     libglu1-mesa  \
-    libxss1
+    libxss1  \
+    unzip  \
+    gpg
 
 WORKDIR /build/python
 
@@ -58,6 +62,11 @@ ENTRYPOINT []
 
 
 FROM repo_base AS likec4_dev
+ARG DEADLINE_VERSION
+ARG PYTHON_VERSION
+#
+ENV DEADLINE_VERSION=$DEADLINE_VERSION
+ENV PYTHON_VERSION=$PYTHON_VERSION
 
 LABEL authors="michael"
 
@@ -66,26 +75,17 @@ WORKDIR /git
 RUN git -C /git clone https://github.com/likec4/likec4.git
 RUN git -C /git clone https://github.com/asdf-vm/asdf.git --branch v0.15.0
 
-RUN source /git/asdf/asdf.sh
-RUN source /git/asdf/completions/asdf.bash
-
-WORKDIR /git/asdf
-
-RUN asdf plugin add nodejs
-RUN asdf plugin add yarn
-RUN asdf plugin add dprint
-
-RUN asdf install
-
-WORKDIR /git/likec4
-
-RUN yarn install
-RUN yarn build
-
-WORKDIR /git/likec4/apps/playground
-
-ENTRYPOINT yarn dev --host 0.0.0.0 --port 4567
-
+ENTRYPOINT . /git/asdf/asdf.sh &&  \
+    cd /git/likec4 &&  \
+    asdf plugin add nodejs &&  \
+    asdf plugin add yarn &&  \
+    asdf plugin add dprint &&  \
+    cd /git/likec4 &&  \
+    asdf install &&  \
+    yarn install &&  \
+    yarn build &&  \
+    cd /git/likec4/apps/playground &&  \
+    yarn dev --host 0.0.0.0 --port 4567
 
 
 

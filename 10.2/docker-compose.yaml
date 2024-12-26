@@ -170,9 +170,9 @@ services:
       context: .
       dockerfile: ./Dockerfile
       target: likec4_dev
-#      args:
-#        - DEADLINE_VERSION=$DEADLINE_VERSION
-#        - PYTHON_VERSION=$PYTHON_VERSION
+      args:
+        - DEADLINE_VERSION=$DEADLINE_VERSION
+        - PYTHON_VERSION=$PYTHON_VERSION
 #    depends_on:
 #      - mongodb-10-2
 #    volumes:
