@@ -32,7 +32,8 @@ RUN apt-get install \
     libglu1-mesa  \
     libxss1  \
     unzip  \
-    gpg
+    gpg  \
+    gpg-agent
 
 WORKDIR /build/python
 
@@ -64,6 +65,7 @@ ENTRYPOINT []
 FROM repo_base AS likec4_dev
 ARG DEADLINE_VERSION
 ARG PYTHON_VERSION
+ARG LIKEC4_DEV_PORT_CONTAINER
 #
 ENV DEADLINE_VERSION=$DEADLINE_VERSION
 ENV PYTHON_VERSION=$PYTHON_VERSION
@@ -78,8 +80,10 @@ COPY ./docker-third-party/likec4/run.sh .
 
 RUN chmod -R +x /ENTRYPOINT/*.sh
 
+RUN ["/usr/bin/env", "bash", "/ENTRYPOINT/setup.sh"]
+
 ENTRYPOINT ["/usr/bin/env", "bash", "/ENTRYPOINT/run.sh"]
-CMD ["yarn", "dev", "--host", "0.0.0.0", "--port", "${LIKEC4_DEV_PORT_CONTAINER}"]
+CMD ["yarn", "dev", "--host", "0.0.0.0", "--port", "4567"]
 
 
 

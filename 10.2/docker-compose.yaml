@@ -173,6 +173,7 @@ services:
       args:
         - DEADLINE_VERSION=$DEADLINE_VERSION
         - PYTHON_VERSION=$PYTHON_VERSION
+        - LIKEC4_DEV_PORT_CONTAINER=$LIKEC4_DEV_PORT_CONTAINER
 #    depends_on:
 #      - mongodb-10-2
 #    volumes:
