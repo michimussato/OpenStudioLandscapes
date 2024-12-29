@@ -104,15 +104,6 @@ CMD yarn dev --host 0.0.0.0 --port ${LIKEC4_DEV_PORT_CONTAINER}
 FROM repo_base AS dagster_dev
 LABEL authors="michimussato@gmail.com"
 
-#ARG DAGSTER_HOME
-#ENV DAGSTER_HOME=${DAGSTER_HOME}
-
-#ARG DAGSTER_WORKSPACE
-#ENV DAGSTER_WORKSPACE=${DAGSTER_WORKSPACE}
-
-#ARG DAGSTER_DEV_PORT_CONTAINER
-#ENV DAGSTER_DEV_PORT_CONTAINER=${DAGSTER_DEV_PORT_CONTAINER}
-
 WORKDIR /dagster
 COPY ./configs/dagster_shared/workspace.yaml .
 
@@ -128,16 +119,13 @@ ENTRYPOINT dagster dev --workspace ${DAGSTER_WORKSPACE} --port ${DAGSTER_DEV_POR
 FROM repo_base AS repo_installer
 LABEL authors="michimussato@gmail.com"
 
-#ARG MONGO_DB_PORT_CONTAINER
-#ENV MONGO_DB_PORT_CONTAINER=$MONGO_DB_PORT_CONTAINER
+ARG DEADLINE_VERSION
+ENV DEADLINE_VERSION=$DEADLINE_VERSION
 
-#ARG DEADLINE_VERSION
-#ENV DEADLINE_VERSION=$DEADLINE_VERSION
-#
-#ARG INSTALLERS_ROOT
-#ENV INSTALLERS_ROOT=$INSTALLERS_ROOT
-#
-#WORKDIR ${INSTALLERS_ROOT}/Deadline-${DEADLINE_VERSION}-linux-installers
+ARG INSTALLERS_ROOT
+ENV INSTALLERS_ROOT=$INSTALLERS_ROOT
+
+WORKDIR ${INSTALLERS_ROOT}/Deadline-${DEADLINE_VERSION}-linux-installers
 
 ENTRYPOINT  \
     deadline-wrapper-10-2  \
@@ -146,23 +134,22 @@ ENTRYPOINT  \
     --deadline-version ${DEADLINE_VERSION}  \
     --prefix "/opt/Thinkbox/DeadlineRepository10"  \
     --dbtype "MongoDB"  \
-    --dbhost ${DB_HOST}  \
+    --dbhost ${MONGO_DB_HOST}  \
     --dbport ${MONGO_DB_PORT_CONTAINER}  \
     --dbname ${MONGO_DB_NAME}
 
 
 
 FROM repo_base AS client_installer
-
-ENV DEADLINE_VERSION=$DEADLINE_VERSION
-ENV PYTHON_VERSION=$PYTHON_VERSION
-
-# ARG INSTALLERS_ROOT
-ENV INSTALLERS_ROOT=$INSTALLERS_ROOT
-
 LABEL authors="michimussato@gmail.com"
 
-WORKDIR /nfs/installers/Deadline-${DEADLINE_VERSION}-linux-installers
+ARG DEADLINE_VERSION
+ENV DEADLINE_VERSION=$DEADLINE_VERSION
+
+ARG INSTALLERS_ROOT
+ENV INSTALLERS_ROOT=$INSTALLERS_ROOT
+
+WORKDIR ${INSTALLERS_ROOT}/Deadline-${DEADLINE_VERSION}-linux-installers
 
 ENTRYPOINT  \
     deadline-wrapper-10-2  \
@@ -177,49 +164,48 @@ ENTRYPOINT  \
 
 
 FROM client_installer AS rcs_runner
-
 LABEL authors="michimussato@gmail.com"
 
-ENTRYPOINT  \
-    deadline-wrapper-10-2  \
-    -vv  \
-    run  \
-    --executable "/opt/Thinkbox/Deadline10/bin/deadlinercs"
+ENTRYPOINT ["top", "-b"]
+#ENTRYPOINT  \
+#    deadline-wrapper-10-2 -vv run --executable "/opt/Thinkbox/Deadline10/bin/deadlinercs"
 
 
 
 FROM client_installer AS pulse_runner
-
 LABEL authors="michimussato@gmail.com"
 
-ENTRYPOINT  \
-    deadline-wrapper-10-2  \
-    -vv  \
-    run  \
-    --executable "/opt/Thinkbox/Deadline10/bin/deadlinepulse"  \
-    --arguments "['-nogui', '-nosplash']"
+ENTRYPOINT ["top", "-b"]
+#ENTRYPOINT  \
+#    deadline-wrapper-10-2  \
+#    -vv  \
+#    run  \
+#    --executable "/opt/Thinkbox/Deadline10/bin/deadlinepulse"  \
+#    --arguments "['-nogui', '-nosplash']"
 
 
 
 FROM client_installer AS worker_runner
-
 LABEL authors="michimussato@gmail.com"
 
-ENTRYPOINT  \
-    deadline-wrapper-10-2  \
-    -vv  \
-    run  \
-    --executable "/opt/Thinkbox/Deadline10/bin/deadlineworker"  \
-    --arguments "['-nogui', '-nosplash']"
+ENTRYPOINT ["top", "-b"]
+#ENTRYPOINT  \
+#    deadline-wrapper-10-2  \
+#    -vv  \
+#    run  \
+#    --executable "/opt/Thinkbox/Deadline10/bin/deadlineworker"  \
+#    --arguments "['-nogui', '-nosplash']"
 
 
 
 FROM client_installer AS webservice_runner
-
 LABEL authors="michimussato@gmail.com"
 
-ENTRYPOINT  \
-    deadline-wrapper-10-2  \
-    -vv  \
-    run  \
-    --executable "/opt/Thinkbox/Deadline10/bin/deadlinewebservice"
+ENTRYPOINT ["top", "-b"]
+#ENTRYPOINT  \
+#    deadline-wrapper-10-2  \
+#    -vv  \
+#    run  \
+#    --executable "/opt/Thinkbox/Deadline10/bin/deadlinewebservice"
+
+#    deadline-wrapper-10-2 -vv run --executable "/opt/Thinkbox/Deadline10/bin/deadlinewebservice"
