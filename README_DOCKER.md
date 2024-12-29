@@ -14,6 +14,16 @@
 
 https://depot.dev/blog/docker-clear-cache
 
+```
+# docker container prune -f
+docker stop $(docker ps -q)
+docker container prune -f
+docker image prune -a -f
+docker volume prune -a -f
+docker buildx prune -f
+docker network prune -f
+```
+
 Get disk usage:
 `docker system df`
 

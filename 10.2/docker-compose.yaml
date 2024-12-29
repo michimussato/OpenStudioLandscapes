@@ -32,42 +32,16 @@
 # docker compose up
 
 
-include:
-  - path:
-      - ./docker-third-party/cgwire/docker-compose.kitsu.yaml
-  - path:
-      - ../repos/ayon-docker/docker-compose.yml
-      - ./docker-third-party/ayon/docker-compose.override.yml
+#include:
+#  - path:
+#      - ./docker-third-party/cgwire/docker-compose.kitsu.yaml
+#  - path:
+#      - ../repos/ayon-docker/docker-compose.yml
+#      - ./docker-third-party/ayon/docker-compose.override.yml
+
 
 
 services:
-  mongodb-10-2:
-    container_name: mongodb-10-2
-    hostname: mongodb-10-2
-    domainname: ${ROOT_DOMAIN}
-    # https://hub.docker.com/layers/mongodb/mongodb-community-server/4.4-ubuntu2004/images/sha256-e2fd10d7979ee1c5565e5b37ad1ae62056dc5c0df8adb7fbff3b8a3409b55dad?context=explore
-    image: mongodb/mongodb-community-server:4.4-ubuntu2004
-    # https://docs.docker.com/reference/compose-file/services/#command
-    networks:
-      - mongodb
-      - repository
-    environment:
-      - MONGO_PORT=${MONGO_DB_PORT_CONTAINER}
-    command: >
-      --dbpath /opt/Thinkbox/DeadlineDatabase10/mongo/data
-      --bind_ip_all
-      --noauth
-      --storageEngine wiredTiger
-      --tlsMode disabled
-    ports:
-      - "${MONGO_DB_PORT_HOST}:${MONGO_DB_PORT_CONTAINER}"
-    volumes:
-      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data
-      # Read Only
-      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}:ro
-      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro
-
-
   mongo-express-10-2:
     container_name: mongo-express-10-2
     hostname: mongo-express-10-2
@@ -82,12 +56,8 @@ services:
     restart: always  # fixes MongoNetworkError when mongodb is not ready when mongo-express starts
     ports:
       - "${MONGO_EXPRESS_PORT_HOST}:${MONGO_EXPRESS_PORT_CONTAINER}"
-    environment:
-      - ME_CONFIG_BASICAUTH_USERNAME=web
-      - ME_CONFIG_BASICAUTH_PASSWORD=web
-      - ME_CONFIG_OPTIONS_EDITORTHEME=darcula
-      - ME_CONFIG_MONGODB_SERVER=mongodb-10-2
-      - ME_CONFIG_MONGODB_URL=mongodb://admin:pass@localhost:${MONGO_DB_PORT_CONTAINER}/db?ssl=false
+    env_file:
+      - .env
     volumes:
       - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data
       # Read Only
@@ -104,6 +74,8 @@ services:
     domainname: ${ROOT_DOMAIN}
     image: filebrowser/filebrowser
     restart: always
+    env_file:
+      - .env
     networks:
       - repository
     depends_on:
@@ -127,11 +99,41 @@ services:
       - "${FILEBROWSER_PORT_HOST}:${FILEBROWSER_PORT_CONTAINER}"
 
 
+
+  mongodb-10-2:
+    container_name: mongodb-10-2
+    hostname: mongodb-10-2
+    domainname: ${ROOT_DOMAIN}
+    # https://hub.docker.com/layers/mongodb/mongodb-community-server/4.4-ubuntu2004/images/sha256-e2fd10d7979ee1c5565e5b37ad1ae62056dc5c0df8adb7fbff3b8a3409b55dad?context=explore
+    image: mongodb/mongodb-community-server:4.4-ubuntu2004
+    # https://docs.docker.com/reference/compose-file/services/#command
+    networks:
+      - mongodb
+      - repository
+    env_file:
+      - .env
+    command: >
+      --dbpath /opt/Thinkbox/DeadlineDatabase10/mongo/data
+      --bind_ip_all
+      --noauth
+      --storageEngine wiredTiger
+      --tlsMode disabled
+    ports:
+      - "${MONGO_DB_PORT_HOST}:${MONGO_DB_PORT_CONTAINER}"
+    volumes:
+      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data
+      # Read Only
+      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}:ro
+      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro
+
+
+
   dagster_dev:
+    env_file:
+      - .env
     container_name: dagster-dev-10-2
     hostname: dagster-dev-10-2
     domainname: ${ROOT_DOMAIN}
-#    image: dagster-dev
     restart: always
     networks:
       - repository
@@ -141,10 +143,9 @@ services:
       dockerfile: ./Dockerfile
       target: dagster_dev
       args:
-        - DEADLINE_VERSION=$DEADLINE_VERSION
-        - PYTHON_VERSION=$PYTHON_VERSION
-#    depends_on:
-#      - mongodb-10-2
+        - PYTHON_MAJ
+        - PYTHON_MIN
+        - PYTHON_PAT
     volumes:
       # By default, we already have a configuration file with some
       - ./configs/dagster_shared/workspace.yaml:/dagster/workspace.yaml:ro
@@ -157,35 +158,25 @@ services:
       - "${DAGSTER_DEV_PORT_HOST}:${DAGSTER_DEV_PORT_CONTAINER}"
 
 
-  likec4_dev:
-    container_name: likec4-dev-10-2
-    hostname: likec4-dev-10-2
-    domainname: ${ROOT_DOMAIN}
-#    image: dagster-dev
-    restart: always
-#    networks:
-#      - repository
-#      - mongodb
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-      target: likec4_dev
-      args:
-        - DEADLINE_VERSION=$DEADLINE_VERSION
-        - PYTHON_VERSION=$PYTHON_VERSION
-        - LIKEC4_DEV_PORT_CONTAINER=$LIKEC4_DEV_PORT_CONTAINER
-#    depends_on:
-#      - mongodb-10-2
-#    volumes:
-#      # By default, we already have a configuration file with some
-#      - ./configs/dagster_shared/workspace.yaml:/dagster/workspace.yaml:ro
-#      - ./configs/dagster_shared/dagster.yaml:/dagster/materializations/workspace.yaml:ro
-#      # - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data:ro
-##      - ${NFS_ENTRY_POINT_LNS}:${NFS_ENTRY_POINT_LNS}
-#      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}
-#      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}
-    ports:
-      - "${LIKEC4_DEV_PORT_HOST}:${LIKEC4_DEV_PORT_CONTAINER}"
+
+#  likec4_dev:
+#    container_name: likec4-dev-10-2
+#    hostname: likec4-dev-10-2
+#    domainname: ${ROOT_DOMAIN}
+#    env_file:
+#      - .env
+#    restart: always
+#    build:
+#      context: .
+#      dockerfile: ./Dockerfile
+#      target: likec4_dev
+#      args:
+#        - PYTHON_MAJ
+#        - PYTHON_MIN
+#        - PYTHON_PAT
+#    ports:
+#      - "${LIKEC4_DEV_PORT_HOST}:${LIKEC4_DEV_PORT_CONTAINER}"
+
 
 
   deadline-repository-installer-10-2  :
@@ -193,8 +184,12 @@ services:
     container_name: deadline-repository-installer-10-2
     hostname: deadline-repository-installer-10-2
     domainname: ${ROOT_DOMAIN}
-    environment:
-      - INSTALLERS_ROOT=$INSTALLERS_ROOT
+    env_file:
+      - .env
+#    environment:
+#      - INSTALLERS_ROOT=$INSTALLERS_ROOT
+#      - DEADLINE_VERSION=$DEADLINE_VERSION
+#      - PYTHON_VERSION=$PYTHON_VERSION
     depends_on:
       - mongodb-10-2
     networks:
@@ -205,11 +200,13 @@ services:
       dockerfile: ./Dockerfile
       target: repo_installer
       args:
-        - DEADLINE_VERSION=$DEADLINE_VERSION
-        - PYTHON_VERSION=$PYTHON_VERSION
-        # args or environment?
+        - PYTHON_MAJ
+        - PYTHON_MIN
+        - PYTHON_PAT
+        - DEADLINE_VERSION
+#        # args or environment?
         # https://stackoverflow.com/a/41919137/2207196
-#        - INSTALLERS_ROOT=$INSTALLERS_ROOT
+        - INSTALLERS_ROOT
     volumes:
 #      - ./DeadlineRepositoryInstall:/opt/Thinkbox/DeadlineRepository10
       - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
@@ -219,168 +216,192 @@ services:
 
 
 
-  deadline-client-installer-10-2:
-    restart: "no"
-    container_name: client-installer-10-2
-    hostname: client-installer-10-2
-    domainname: ${ROOT_DOMAIN}
-    environment:
-      - INSTALLERS_ROOT=$INSTALLERS_ROOT
-    depends_on:
-      deadline-repository-installer-10-2:
-        condition: service_completed_successfully
-    networks:
-      - mongodb
-      - repository
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-      target: client_installer
-      args:
-        - DEADLINE_VERSION=$DEADLINE_VERSION
-        - PYTHON_VERSION=$PYTHON_VERSION
-        # args or environment?
-        # https://stackoverflow.com/a/41919137/2207196
-#        - INSTALLERS_ROOT=$INSTALLERS_ROOT
-    volumes:
-      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10
-      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
-      # Read Only
-      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}:ro
-      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro
-
-
-  deadline-rcs-runner-10-2:
-    restart: always
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-      args:
-        - DEADLINE_VERSION=$DEADLINE_VERSION
-        - PYTHON_VERSION=$PYTHON_VERSION
-      target: rcs_runner
-    container_name: rcs-runner-10-2
-    hostname: rcs-runner-10-2
-    domainname: ${ROOT_DOMAIN}
-    depends_on:
-      deadline-client-installer-10-2:
-        condition: service_completed_successfully
-    networks:
-      - mongodb
-      - repository
-    volumes:
-      # Config
-      - ./configs/Deadline10/deadline.ini:/var/lib/Thinkbox/Deadline10/deadline.ini:ro
-      # Data
-      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10
-      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
-      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}:ro
-      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro
-#      - ./configs/Deadline10/cert/ca-certificates.crt:/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:ro
-    ports:
-      - "${RCS_HTTP_PORT_HOST}:${RCS_HTTP_PORT_CONTAINER}"
-
-
-  deadline-pulse-runner-10-2:
-    restart: always
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-      args:
-        - DEADLINE_VERSION=$DEADLINE_VERSION
-        - PYTHON_VERSION=$PYTHON_VERSION
-      target: pulse_runner
-    container_name: pulse-runner-10-2
-    hostname: pulse-runner-10-2
-    domainname: ${ROOT_DOMAIN}
-    depends_on:
-      deadline-client-installer-10-2:
-        condition: service_completed_successfully
-      deadline-rcs-runner-10-2:
-        condition: service_started
-    networks:
-      - mongodb
-      - repository
-    volumes:
-      # Config
-      - ./configs/Deadline10/deadline.ini:/var/lib/Thinkbox/Deadline10/deadline.ini:ro
-      # Data
-      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10
-      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
-      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}:ro
-      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro
-#      - ./configs/Deadline10/cert/ca-certificates.crt:/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:ro
+#  deadline-client-installer-10-2:
+#    restart: "no"
+#    container_name: client-installer-10-2
+#    hostname: client-installer-10-2
+#    domainname: ${ROOT_DOMAIN}
+#    env_file:
+#      - .env
+##    environment:
+##      - INSTALLERS_ROOT=$INSTALLERS_ROOT
+##      - DEADLINE_VERSION=$DEADLINE_VERSION
+##      - PYTHON_VERSION=$PYTHON_VERSION
+#    depends_on:
+#      deadline-repository-installer-10-2:
+#        condition: service_completed_successfully
+#    networks:
+#      - mongodb
+#      - repository
+#    build:
+#      context: .
+#      dockerfile: ./Dockerfile
+#      target: client_installer
+##      args:
+##        - DEADLINE_VERSION=$DEADLINE_VERSION
+##        - PYTHON_VERSION=$PYTHON_VERSION
+##        # args or environment?
+##        # https://stackoverflow.com/a/41919137/2207196
+###        - INSTALLERS_ROOT=$INSTALLERS_ROOT
+#    volumes:
+#      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10
+#      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
+#      # Read Only
+#      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}:ro
+#      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro
+#
+#
+#  deadline-rcs-runner-10-2:
+#    restart: always
+#    env_file:
+#      - .env
+##    environment:
+##      - DEADLINE_VERSION=$DEADLINE_VERSION
+##      - PYTHON_VERSION=$PYTHON_VERSION
+#    build:
+#      context: .
+#      dockerfile: ./Dockerfile
+##      args:
+##        - DEADLINE_VERSION=$DEADLINE_VERSION
+##        - PYTHON_VERSION=$PYTHON_VERSION
+#      target: rcs_runner
+#    container_name: rcs-runner-10-2
+#    hostname: rcs-runner-10-2
+#    domainname: ${ROOT_DOMAIN}
+#    depends_on:
+#      deadline-client-installer-10-2:
+#        condition: service_completed_successfully
+#    networks:
+#      - mongodb
+#      - repository
+#    volumes:
+#      # Config
+#      - ./configs/Deadline10/deadline.ini:/var/lib/Thinkbox/Deadline10/deadline.ini:ro
+#      # Data
+#      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10
+#      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
+#      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}:ro
+#      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro
+##      - ./configs/Deadline10/cert/ca-certificates.crt:/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:ro
 #    ports:
-#      - "8888:8888"
-
-
-  deadline-worker-runner-10-2:
-    restart: always
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-      args:
-        - DEADLINE_VERSION=$DEADLINE_VERSION
-        - PYTHON_VERSION=$PYTHON_VERSION
-      target: worker_runner
-    container_name: worker-runner-10-2
-    hostname: worker-runner-10-2
-    domainname: ${ROOT_DOMAIN}
-    depends_on:
-      deadline-client-installer-10-2:
-        condition: service_completed_successfully
-      deadline-rcs-runner-10-2:
-        condition: service_started
-    networks:
-      - mongodb
-      - repository
-    volumes:
-      # Config
-      - ./configs/Deadline10/deadline.ini:/var/lib/Thinkbox/Deadline10/deadline.ini:ro
-      # Data
-      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10
-      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
-      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}:ro
-      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro
-#      - ./configs/Deadline10/cert/ca-certificates.crt:/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:ro
+#      - "${RCS_HTTP_PORT_HOST}:${RCS_HTTP_PORT_CONTAINER}"
+#
+#
+#  deadline-pulse-runner-10-2:
+#    restart: always
+#    env_file:
+#      - .env
+##    environment:
+##      - DEADLINE_VERSION=$DEADLINE_VERSION
+##      - PYTHON_VERSION=$PYTHON_VERSION
+#    build:
+#      context: .
+#      dockerfile: ./Dockerfile
+##      args:
+##        - DEADLINE_VERSION=$DEADLINE_VERSION
+##        - PYTHON_VERSION=$PYTHON_VERSION
+#      target: pulse_runner
+#    container_name: pulse-runner-10-2
+#    hostname: pulse-runner-10-2
+#    domainname: ${ROOT_DOMAIN}
+#    depends_on:
+#      deadline-client-installer-10-2:
+#        condition: service_completed_successfully
+#      deadline-rcs-runner-10-2:
+#        condition: service_started
+#    networks:
+#      - mongodb
+#      - repository
+#    volumes:
+#      # Config
+#      - ./configs/Deadline10/deadline.ini:/var/lib/Thinkbox/Deadline10/deadline.ini:ro
+#      # Data
+#      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10
+#      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
+#      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}:ro
+#      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro
+##      - ./configs/Deadline10/cert/ca-certificates.crt:/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:ro
+##    ports:
+##      - "8888:8888"
+#
+#
+#  deadline-worker-runner-10-2:
+#    restart: always
+#    env_file:
+#      - .env
+##    environment:
+##      - DEADLINE_VERSION=$DEADLINE_VERSION
+##      - PYTHON_VERSION=$PYTHON_VERSION
+#    build:
+#      context: .
+#      dockerfile: ./Dockerfile
+##      args:
+##        - DEADLINE_VERSION=$DEADLINE_VERSION
+##        - PYTHON_VERSION=$PYTHON_VERSION
+#      target: worker_runner
+#    container_name: worker-runner-10-2
+#    hostname: worker-runner-10-2
+#    domainname: ${ROOT_DOMAIN}
+#    depends_on:
+#      deadline-client-installer-10-2:
+#        condition: service_completed_successfully
+#      deadline-rcs-runner-10-2:
+#        condition: service_started
+#    networks:
+#      - mongodb
+#      - repository
+#    volumes:
+#      # Config
+#      - ./configs/Deadline10/deadline.ini:/var/lib/Thinkbox/Deadline10/deadline.ini:ro
+#      # Data
+#      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10
+#      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
+#      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}:ro
+#      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro
+##      - ./configs/Deadline10/cert/ca-certificates.crt:/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:ro
+##    ports:
+##      - "8888:8888"
+#
+#
+#
+#
+#
+#  deadline-webservice-runner-10-2:
+#    restart: always
+#    env_file:
+#      - .env
+##    environment:
+##      - DEADLINE_VERSION=$DEADLINE_VERSION
+##      - PYTHON_VERSION=$PYTHON_VERSION
+#    build:
+#      context: .
+#      dockerfile: ./Dockerfile
+##      args:
+##        - DEADLINE_VERSION=$DEADLINE_VERSION
+##        - PYTHON_VERSION=$PYTHON_VERSION
+#      target: webservice_runner
+#    container_name: webservice-runner-10-2
+#    hostname: webservice-runner-10-2
+#    domainname: ${ROOT_DOMAIN}
+#    depends_on:
+#      deadline-client-installer-10-2:
+#        condition: service_completed_successfully
+#      deadline-rcs-runner-10-2:
+#        condition: service_started
+#    networks:
+#      - mongodb
+#      - repository
+#    volumes:
+#      # Config
+#      - ./configs/Deadline10/deadline.ini:/var/lib/Thinkbox/Deadline10/deadline.ini:ro
+#      # Data
+#      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10
+#      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
+#      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}:ro
+#      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro
 #    ports:
-#      - "8888:8888"
-
-
-
-
-
-  deadline-webservice-runner-10-2:
-    restart: always
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-      args:
-        - DEADLINE_VERSION=$DEADLINE_VERSION
-        - PYTHON_VERSION=$PYTHON_VERSION
-      target: webservice_runner
-    container_name: webservice-runner-10-2
-    hostname: webservice-runner-10-2
-    domainname: ${ROOT_DOMAIN}
-    depends_on:
-      deadline-client-installer-10-2:
-        condition: service_completed_successfully
-      deadline-rcs-runner-10-2:
-        condition: service_started
-    networks:
-      - mongodb
-      - repository
-    volumes:
-      # Config
-      - ./configs/Deadline10/deadline.ini:/var/lib/Thinkbox/Deadline10/deadline.ini:ro
-      # Data
-      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10
-      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
-      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}:ro
-      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro
-    ports:
-      - "${WEBSERVICE_HTTP_PORT_HOST}:${WEBSERVICE_HTTP_PORT_CONTAINER}"
-
+#      - "${WEBSERVICE_HTTP_PORT_HOST}:${WEBSERVICE_HTTP_PORT_CONTAINER}"
+#
 
 # https://www.warp.dev/terminus/docker-compose-networks
 networks:
