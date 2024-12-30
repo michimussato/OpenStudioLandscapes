@@ -32,12 +32,12 @@
 # docker compose up
 
 
-#include:
-#  - path:
-#      - ./docker-third-party/cgwire/docker-compose.kitsu.yaml
-#  - path:
-#      - ../repos/ayon-docker/docker-compose.yml
-#      - ./docker-third-party/ayon/docker-compose.override.yml
+include:
+  - path:
+      - docker-third-party/cgwire/docker-compose.kitsu.yaml
+  - path:
+      - ../repos/ayon-docker/docker-compose.yml
+      - docker-third-party/ayon/docker-compose.override.yml
 
 
 
@@ -128,6 +128,8 @@ services:
 
 
 
+  # https://github.com/hurlenko/filebrowser-docker
+  # https://filebrowser.org/cli/filebrowser#options
   dagster_dev:
     env_file:
       - .env
@@ -146,6 +148,10 @@ services:
         - PYTHON_MAJ
         - PYTHON_MIN
         - PYTHON_PAT
+        - DEADLINE_VERSION=$DEADLINE_VERSION
+        - PYTHON_VERSION=$PYTHON_VERSION
+#    depends_on:
+#      - mongodb-10-2
     volumes:
       # By default, we already have a configuration file with some
       - ./configs/dagster_shared/workspace.yaml:/dagster/workspace.yaml:ro
@@ -158,27 +164,6 @@ services:
       - "${DAGSTER_DEV_PORT_HOST}:${DAGSTER_DEV_PORT_CONTAINER}"
 
 
-
-#  likec4_dev:
-#    container_name: likec4-dev-10-2
-#    hostname: likec4-dev-10-2
-#    domainname: ${ROOT_DOMAIN}
-#    env_file:
-#      - .env
-#    restart: always
-#    build:
-#      context: .
-#      dockerfile: ./Dockerfile
-#      target: likec4_dev
-#      args:
-#        - PYTHON_MAJ
-#        - PYTHON_MIN
-#        - PYTHON_PAT
-#    ports:
-#      - "${LIKEC4_DEV_PORT_HOST}:${LIKEC4_DEV_PORT_CONTAINER}"
-
-
-
   deadline-repository-installer-10-2  :
     restart: "no"
     container_name: deadline-repository-installer-10-2
@@ -186,6 +171,10 @@ services:
     domainname: ${ROOT_DOMAIN}
     env_file:
       - .env
+#    environment:
+#      - INSTALLERS_ROOT=$INSTALLERS_ROOT
+#      - DEADLINE_VERSION=$DEADLINE_VERSION
+#      - PYTHON_VERSION=$PYTHON_VERSION
     depends_on:
       - mongodb-10-2
     networks:
@@ -199,10 +188,11 @@ services:
         - PYTHON_MAJ
         - PYTHON_MIN
         - PYTHON_PAT
-        - DEADLINE_VERSION
-#        # args or environment?
+        - DEADLINE_VERSION=$DEADLINE_VERSION
+        - PYTHON_VERSION=$PYTHON_VERSION
+        # args or environment?
         # https://stackoverflow.com/a/41919137/2207196
-        - INSTALLERS_ROOT
+        - INSTALLERS_ROOT=$INSTALLERS_ROOT
     volumes:
 #      - ./DeadlineRepositoryInstall:/opt/Thinkbox/DeadlineRepository10
       - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
@@ -233,8 +223,11 @@ services:
         - PYTHON_MAJ
         - PYTHON_MIN
         - PYTHON_PAT
-        - DEADLINE_VERSION
-        - INSTALLERS_ROOT
+        - DEADLINE_VERSION=$DEADLINE_VERSION
+        - PYTHON_VERSION=$PYTHON_VERSION
+        # args or environment?
+        # https://stackoverflow.com/a/41919137/2207196
+#        - INSTALLERS_ROOT=$INSTALLERS_ROOT
     volumes:
       - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10
       - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
@@ -254,8 +247,8 @@ services:
         - PYTHON_MAJ
         - PYTHON_MIN
         - PYTHON_PAT
-        - DEADLINE_VERSION
-        - INSTALLERS_ROOT
+        - DEADLINE_VERSION=$DEADLINE_VERSION
+        - PYTHON_VERSION=$PYTHON_VERSION
       target: rcs_runner
     container_name: rcs-runner-10-2
     hostname: rcs-runner-10-2
@@ -281,8 +274,6 @@ services:
 
   deadline-pulse-runner-10-2:
     restart: always
-    env_file:
-      - .env
     build:
       context: .
       dockerfile: ./Dockerfile
@@ -290,8 +281,8 @@ services:
         - PYTHON_MAJ
         - PYTHON_MIN
         - PYTHON_PAT
-        - DEADLINE_VERSION
-        - INSTALLERS_ROOT
+        - DEADLINE_VERSION=$DEADLINE_VERSION
+        - PYTHON_VERSION=$PYTHON_VERSION
       target: pulse_runner
     container_name: pulse-runner-10-2
     hostname: pulse-runner-10-2
@@ -328,8 +319,8 @@ services:
         - PYTHON_MAJ
         - PYTHON_MIN
         - PYTHON_PAT
-        - DEADLINE_VERSION
-        - INSTALLERS_ROOT
+        - DEADLINE_VERSION=$DEADLINE_VERSION
+        - PYTHON_VERSION=$PYTHON_VERSION
       target: worker_runner
     container_name: worker-runner-10-2
     hostname: worker-runner-10-2
@@ -356,10 +347,10 @@ services:
 
 
 
+
+
   deadline-webservice-runner-10-2:
     restart: always
-    env_file:
-      - .env
     build:
       context: .
       dockerfile: ./Dockerfile
@@ -367,8 +358,8 @@ services:
         - PYTHON_MAJ
         - PYTHON_MIN
         - PYTHON_PAT
-        - DEADLINE_VERSION
-        - INSTALLERS_ROOT
+        - DEADLINE_VERSION=$DEADLINE_VERSION
+        - PYTHON_VERSION=$PYTHON_VERSION
       target: webservice_runner
     container_name: webservice-runner-10-2
     hostname: webservice-runner-10-2
@@ -391,7 +382,6 @@ services:
       - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro
     ports:
       - "${WEBSERVICE_HTTP_PORT_HOST}:${WEBSERVICE_HTTP_PORT_CONTAINER}"
-
 
 
 # https://www.warp.dev/terminus/docker-compose-networks
