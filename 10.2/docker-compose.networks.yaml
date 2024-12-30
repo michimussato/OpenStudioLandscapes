@@ -1,0 +1,24 @@
+---
+# https://www.warp.dev/terminus/docker-compose-networks
+networks:
+  mongodb:
+    name: network_mongodb-10-2
+  repository:
+    name: network_repository-10-2
+  ayon:
+    name: network_ayon-10-2
+#  deadline:
+#    ipam:
+#      driver: overlay
+#      config:
+#        - subnet: 10.1.2.0/24
+#          aux_addresses:
+#            miniboss: 10.1.2.15
+#            minion01: 10.1.2.16
+#            minion02: 10.1.2.17
+#            minion03: 10.1.2.18
+#            minion04: 10.1.2.19
+#            minion05: 10.1.2.20
+#    attachable: true
+
+

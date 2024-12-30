@@ -49,181 +49,6 @@
 
 services:
 
-  # https://github.com/hurlenko/filebrowser-docker
-  # https://filebrowser.org/cli/filebrowser#options
-  filebrowser:
-    container_name: mongo-filebrowser-10-2
-    hostname: mongo-filebrowser-10-2
-    domainname: ${ROOT_DOMAIN}
-    image: filebrowser/filebrowser
-    restart: always
-    env_file:
-      - ./.env
-    networks:
-      - repository
-    depends_on:
-      - mongodb-10-2
-    volumes:
-      # By default, we already have a configuration file with some
-      # defaults so you can just mount the root and the database.
-      # Although you can overwrite by mounting a directory with a
-      # new config file. If you don't already have a database file,
-      # make sure to create a new empty file under the path you specified.
-      # Otherwise, Docker will create an empty folder instead of an
-      # empty file, resulting in an error when mounting the database
-      - ./databases/filebrowser/filebrowser.db:/filebrowser.db
-      - ./configs/filebrowser/filebrowser.json:/.filebrowser.json
-      # Read Only
-      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data:ro
-      #      - ${NFS_ENTRY_POINT_LNS}:${NFS_ENTRY_POINT_LNS}:ro
-      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}:ro
-      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro
-    ports:
-      - "${FILEBROWSER_PORT_HOST}:${FILEBROWSER_PORT_CONTAINER}"
-
-
-
-  mongo-express-10-2:
-    container_name: mongo-express-10-2
-    hostname: mongo-express-10-2
-    domainname: ${ROOT_DOMAIN}
-    depends_on:
-      - mongodb-10-2
-    # https://hub.docker.com/_/mongo-express
-    # https://github.com/mongo-express/mongo-express
-    image: mongo-express
-    networks:
-      - mongodb
-    restart: always  # fixes MongoNetworkError when mongodb is not ready when mongo-express starts
-    ports:
-      - "${MONGO_EXPRESS_PORT_HOST}:${MONGO_EXPRESS_PORT_CONTAINER}"
-    env_file:
-      - ./.env
-    volumes:
-      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data
-      # Read Only
-      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}:ro
-      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro
-
-  dagster_dev:
-    env_file:
-      - .env
-    container_name: dagster-dev-10-2
-    hostname: dagster-dev-10-2
-    domainname: ${ROOT_DOMAIN}
-    restart: always
-    networks:
-      - repository
-      - mongodb
-    image: michimussato/dagster_dev:latest
-    command:
-      - --port
-      - ${DAGSTER_DEV_PORT_CONTAINER}
-    volumes:
-      # By default, we already have a configuration file with some
-      - ./base_images/repo_base/dagster_dev/config/workspace.yaml:/dagster/workspace.yaml:ro
-      - ./base_images/repo_base/dagster_dev/config/materializations/dagster.yaml:/dagster/materializations/dagster.yaml:ro
-      - ./base_images/repo_base/dagster_dev/config/materializations:/dagster/materializations
-      # - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data:ro
-      #      - ${NFS_ENTRY_POINT_LNS}:${NFS_ENTRY_POINT_LNS}
-      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}
-      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}
-    ports:
-      - "${DAGSTER_DEV_PORT_HOST}:${DAGSTER_DEV_PORT_CONTAINER}"
-
-
-
-  likec4_dev:
-    container_name: likec4-dev-10-2
-    hostname: likec4-dev-10-2
-    domainname: ${ROOT_DOMAIN}
-    env_file:
-      - .env
-    restart: always
-    image: michimussato/likec4_dev:latest
-    command:
-      - --host
-      - "0.0.0.0"
-      - --port
-      - ${LIKEC4_DEV_PORT_CONTAINER}
-    ports:
-      - "${LIKEC4_DEV_PORT_HOST}:${LIKEC4_DEV_PORT_CONTAINER}"
-
-
-
-  mongodb-10-2:
-    container_name: mongodb-10-2
-    hostname: mongodb-10-2
-    domainname: ${ROOT_DOMAIN}
-    # https://hub.docker.com/layers/mongodb/mongodb-community-server/4.4-ubuntu2004/images/sha256-e2fd10d7979ee1c5565e5b37ad1ae62056dc5c0df8adb7fbff3b8a3409b55dad?context=explore
-    image: mongodb/mongodb-community-server:4.4-ubuntu2004
-    # https://docs.docker.com/reference/compose-file/services/#command
-    networks:
-      - mongodb
-      - repository
-    env_file:
-      - .env
-    command: >
-      --dbpath /opt/Thinkbox/DeadlineDatabase10/mongo/data
-      --bind_ip_all
-      --noauth
-      --storageEngine wiredTiger
-      --tlsMode disabled
-    ports:
-      - "${MONGO_DB_PORT_HOST}:${MONGO_DB_PORT_CONTAINER}"
-    volumes:
-      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data
-      # Read Only
-      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}:ro
-      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro
-
-
-
-  deadline-repository-installer-10-2  :
-    restart: "no"
-    container_name: deadline-repository-installer-10-2
-    hostname: deadline-repository-installer-10-2
-    domainname: ${ROOT_DOMAIN}
-    env_file:
-      - .env
-    depends_on:
-      - mongodb-10-2
-    image: michimussato/repo_installer:latest
-    networks:
-      - mongodb
-      - repository
-    volumes:
-#      - ./DeadlineRepositoryInstall:/opt/Thinkbox/DeadlineRepository10
-      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
-      # Read Only
-      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}:ro
-      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro
-
-
-
-  deadline-client-installer-10-2:
-    restart: "no"
-    container_name: client-installer-10-2
-    hostname: client-installer-10-2
-    domainname: ${ROOT_DOMAIN}
-    image: michimussato/client_installer:latest
-    env_file:
-      - .env
-    depends_on:
-      deadline-repository-installer-10-2:
-        condition: service_completed_successfully
-    networks:
-      - mongodb
-      - repository
-    volumes:
-      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10
-      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
-      # Read Only
-      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}:ro
-      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro
-
-
-
   deadline-rcs-runner-10-2:
     restart: always
     image: michimussato/generic_runner:latest
@@ -252,8 +77,6 @@ services:
 #      - ./configs/Deadline10/cert/ca-certificates.crt:/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:ro
     ports:
       - "${RCS_HTTP_PORT_HOST}:${RCS_HTTP_PORT_CONTAINER}"
-
-
 
   deadline-pulse-runner-10-2:
     restart: always
@@ -285,8 +108,6 @@ services:
 #      - ./configs/Deadline10/cert/ca-certificates.crt:/var/lib/Thinkbox/Deadline10/cert/ca-certificates.crt:ro
 #    ports:
 #      - "8888:8888"
-
-
 
   deadline-worker-runner-10-2:
     restart: always
@@ -321,8 +142,6 @@ services:
 #    ports:
 #      - "8888:8888"
 
-
-
   deadline-webservice-runner-10-2:
     restart: always
     image: michimussato/generic_runner:latest
@@ -350,8 +169,6 @@ services:
       - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro
     ports:
       - "${WEBSERVICE_HTTP_PORT_HOST}:${WEBSERVICE_HTTP_PORT_CONTAINER}"
-
-
 
 # https://www.warp.dev/terminus/docker-compose-networks
 networks:

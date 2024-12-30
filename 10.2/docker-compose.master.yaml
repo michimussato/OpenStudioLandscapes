@@ -1,0 +1,43 @@
+# mongodb-10-2            | Traceback (most recent call last):
+# mongodb-10-2            |   File "/usr/local/bin/docker-entrypoint.py", line 637, in <module>
+# mongodb-10-2            |     subprocess.run(get_final_command_line_args(), check=True)
+# mongodb-10-2            |   File "/usr/lib/python3.8/subprocess.py", line 516, in run
+# mongodb-10-2            |     raise CalledProcessError(retcode, process.args,
+# mongodb-10-2            | subprocess.CalledProcessError: Command '['/usr/bin/mongod', '--dbpath', '/opt/Thinkbox/DeadlineDatabase10/mongo/data', '--bind_ip_all', '--noauth', '--storageEngine', 'wiredTiger', '--tlsMode', 'disabled']' returned non-zero exit status 100.
+# mongodb-10-2 exited with code 1
+
+## user mongodb has id 101
+
+# data_NAMED
+# test_data/opt/Thinkbox/DeadlineDatabase10/mongo/data_NAMED
+#
+# cd /var/lib/docker/volumes/102_mongo-data-10-2-test
+# mv _data _data.bak
+# cp -rf /home/michael/git/repos/deadline-setup/deadline-setup-docker/10.2/test_data/opt/Thinkbox/DeadlineDatabase10/mongo/data_NAMED _data
+# chown -R 101:nobody _data
+# - mongo-data-10-2-test:/opt/Thinkbox/DeadlineDatabase10/mongo/data
+
+
+# data_LOCAL
+# sudo chown -R 101:nobody test_data/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL
+# - ./test_data/opt/Thinkbox/DeadlineDatabase10/mongo/data_NAMED:/opt/Thinkbox/DeadlineDatabase10/mongo/data
+
+
+# DHCP
+# https://github.com/devplayer0/docker-net-dhcp
+
+
+# docker-compose build
+# docker compose -f docker-compose.yaml build
+# docker compose up
+
+
+include:
+  - path:
+      - ./docker-compose.master.services.yaml
+  - path:
+      - ./docker-compose.networks.yaml
+  - path:
+      - ./docker-compose.master.setup.yaml
+  - path:
+      - ./docker-compose.master.runner.yaml

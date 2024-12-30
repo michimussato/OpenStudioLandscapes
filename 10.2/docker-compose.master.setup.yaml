@@ -1,0 +1,43 @@
+---
+services:
+
+  deadline-repository-installer-10-2  :
+    restart: "no"
+    container_name: deadline-repository-installer-10-2
+    hostname: deadline-repository-installer-10-2
+    domainname: ${ROOT_DOMAIN}
+    env_file:
+      - .env
+    depends_on:
+      - mongodb-10-2
+    image: michimussato/repo_installer:latest
+    networks:
+      - mongodb
+      - repository
+    volumes:
+#      - ./DeadlineRepositoryInstall:/opt/Thinkbox/DeadlineRepository10
+      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
+      # Read Only
+      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}:ro
+      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro
+
+  deadline-client-installer-10-2:
+    restart: "no"
+    container_name: client-installer-10-2
+    hostname: client-installer-10-2
+    domainname: ${ROOT_DOMAIN}
+    image: michimussato/client_installer:latest
+    env_file:
+      - .env
+    depends_on:
+      deadline-repository-installer-10-2:
+        condition: service_completed_successfully
+    networks:
+      - mongodb
+      - repository
+    volumes:
+      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10
+      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
+      # Read Only
+      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}:ro
+      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro
