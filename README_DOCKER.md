@@ -24,6 +24,11 @@ docker buildx prune -f
 docker network prune -f
 ```
 
+```
+# Remove images
+docker rmi $(docker image ls)
+```
+
 Get disk usage:
 `docker system df`
 

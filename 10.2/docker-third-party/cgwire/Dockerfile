@@ -5,7 +5,8 @@ LABEL authors="michael"
 #RUN tar -cvzf /var/lib/postgresql/14/main.tar.gz /var/lib/postgresql/14/main
 
 WORKDIR /opt/zou
-CMD ["/opt/zou/start_zou.sh"]
+#CMD ["/opt/zou/start_zou.sh"]
+ENTRYPOINT ["/opt/zou/start_zou.sh"]
 #ENTRYPOINT ["top", "-b"]
 
 #root@kitsu-10-2:/opt/zou# cat start_zou.sh

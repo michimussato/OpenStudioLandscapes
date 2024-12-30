@@ -32,39 +32,22 @@
 # docker compose up
 
 
-include:
-  - path:
-      - docker-third-party/cgwire/docker-compose.kitsu.yaml
-  - path:
-      - ../repos/ayon-docker/docker-compose.yml
-      - docker-third-party/ayon/docker-compose.override.yml
+#include:
+#  - path:
+#      - docker-third-party/filebrowser/docker-compose.yaml
+#  - path:
+#      - docker-third-party/dagster/docker-compose.yaml
+#  - path:
+#      - docker-third-party/likec4/docker-compose.yaml
+#  - path:
+#      - docker-third-party/cgwire/docker-compose.kitsu.yaml
+#  - path:
+#      - ../repos/ayon-docker/docker-compose.yml
+#      - docker-third-party/ayon/docker-compose.override.yml
 
 
 
 services:
-  mongo-express-10-2:
-    container_name: mongo-express-10-2
-    hostname: mongo-express-10-2
-    domainname: ${ROOT_DOMAIN}
-    depends_on:
-      - mongodb-10-2
-    # https://hub.docker.com/_/mongo-express
-    # https://github.com/mongo-express/mongo-express
-    image: mongo-express
-    networks:
-      - mongodb
-    restart: always  # fixes MongoNetworkError when mongodb is not ready when mongo-express starts
-    ports:
-      - "${MONGO_EXPRESS_PORT_HOST}:${MONGO_EXPRESS_PORT_CONTAINER}"
-    env_file:
-      - .env
-    volumes:
-      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data
-      # Read Only
-      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}:ro
-      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro
-
-
 
   # https://github.com/hurlenko/filebrowser-docker
   # https://filebrowser.org/cli/filebrowser#options
@@ -75,7 +58,7 @@ services:
     image: filebrowser/filebrowser
     restart: always
     env_file:
-      - .env
+      - ./.env
     networks:
       - repository
     depends_on:
@@ -92,11 +75,79 @@ services:
       - ./configs/filebrowser/filebrowser.json:/.filebrowser.json
       # Read Only
       - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data:ro
-#      - ${NFS_ENTRY_POINT_LNS}:${NFS_ENTRY_POINT_LNS}:ro
+      #      - ${NFS_ENTRY_POINT_LNS}:${NFS_ENTRY_POINT_LNS}:ro
       - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}:ro
       - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro
     ports:
       - "${FILEBROWSER_PORT_HOST}:${FILEBROWSER_PORT_CONTAINER}"
+
+
+
+  mongo-express-10-2:
+    container_name: mongo-express-10-2
+    hostname: mongo-express-10-2
+    domainname: ${ROOT_DOMAIN}
+    depends_on:
+      - mongodb-10-2
+    # https://hub.docker.com/_/mongo-express
+    # https://github.com/mongo-express/mongo-express
+    image: mongo-express
+    networks:
+      - mongodb
+    restart: always  # fixes MongoNetworkError when mongodb is not ready when mongo-express starts
+    ports:
+      - "${MONGO_EXPRESS_PORT_HOST}:${MONGO_EXPRESS_PORT_CONTAINER}"
+    env_file:
+      - ./.env
+    volumes:
+      - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data
+      # Read Only
+      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}:ro
+      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro
+
+  dagster_dev:
+    env_file:
+      - .env
+    container_name: dagster-dev-10-2
+    hostname: dagster-dev-10-2
+    domainname: ${ROOT_DOMAIN}
+    restart: always
+    networks:
+      - repository
+      - mongodb
+    image: michimussato/dagster_dev:latest
+    command:
+      - --port
+      - ${DAGSTER_DEV_PORT_CONTAINER}
+    volumes:
+      # By default, we already have a configuration file with some
+      - ./base_images/repo_base/dagster_dev/config/workspace.yaml:/dagster/workspace.yaml:ro
+      - ./base_images/repo_base/dagster_dev/config/materializations/dagster.yaml:/dagster/materializations/dagster.yaml:ro
+      - ./base_images/repo_base/dagster_dev/config/materializations:/dagster/materializations
+      # - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data:ro
+      #      - ${NFS_ENTRY_POINT_LNS}:${NFS_ENTRY_POINT_LNS}
+      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}
+      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}
+    ports:
+      - "${DAGSTER_DEV_PORT_HOST}:${DAGSTER_DEV_PORT_CONTAINER}"
+
+
+
+  likec4_dev:
+    container_name: likec4-dev-10-2
+    hostname: likec4-dev-10-2
+    domainname: ${ROOT_DOMAIN}
+    env_file:
+      - .env
+    restart: always
+    image: michimussato/likec4_dev:latest
+    command:
+      - --host
+      - "0.0.0.0"
+      - --port
+      - ${LIKEC4_DEV_PORT_CONTAINER}
+    ports:
+      - "${LIKEC4_DEV_PORT_HOST}:${LIKEC4_DEV_PORT_CONTAINER}"
 
 
 
@@ -128,42 +179,6 @@ services:
 
 
 
-  # https://github.com/hurlenko/filebrowser-docker
-  # https://filebrowser.org/cli/filebrowser#options
-  dagster_dev:
-    env_file:
-      - .env
-    container_name: dagster-dev-10-2
-    hostname: dagster-dev-10-2
-    domainname: ${ROOT_DOMAIN}
-    restart: always
-    networks:
-      - repository
-      - mongodb
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-      target: dagster_dev
-      args:
-        - PYTHON_MAJ
-        - PYTHON_MIN
-        - PYTHON_PAT
-        - DEADLINE_VERSION=$DEADLINE_VERSION
-        - PYTHON_VERSION=$PYTHON_VERSION
-#    depends_on:
-#      - mongodb-10-2
-    volumes:
-      # By default, we already have a configuration file with some
-      - ./configs/dagster_shared/workspace.yaml:/dagster/workspace.yaml:ro
-      - ./configs/dagster_shared/dagster.yaml:/dagster/materializations/workspace.yaml:ro
-      # - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data:ro
-#      - ${NFS_ENTRY_POINT_LNS}:${NFS_ENTRY_POINT_LNS}
-      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}
-      - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}
-    ports:
-      - "${DAGSTER_DEV_PORT_HOST}:${DAGSTER_DEV_PORT_CONTAINER}"
-
-
   deadline-repository-installer-10-2  :
     restart: "no"
     container_name: deadline-repository-installer-10-2
@@ -171,28 +186,12 @@ services:
     domainname: ${ROOT_DOMAIN}
     env_file:
       - .env
-#    environment:
-#      - INSTALLERS_ROOT=$INSTALLERS_ROOT
-#      - DEADLINE_VERSION=$DEADLINE_VERSION
-#      - PYTHON_VERSION=$PYTHON_VERSION
     depends_on:
       - mongodb-10-2
+    image: michimussato/repo_installer:latest
     networks:
       - mongodb
       - repository
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-      target: repo_installer
-      args:
-        - PYTHON_MAJ
-        - PYTHON_MIN
-        - PYTHON_PAT
-        - DEADLINE_VERSION=$DEADLINE_VERSION
-        - PYTHON_VERSION=$PYTHON_VERSION
-        # args or environment?
-        # https://stackoverflow.com/a/41919137/2207196
-        - INSTALLERS_ROOT=$INSTALLERS_ROOT
     volumes:
 #      - ./DeadlineRepositoryInstall:/opt/Thinkbox/DeadlineRepository10
       - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
@@ -207,6 +206,7 @@ services:
     container_name: client-installer-10-2
     hostname: client-installer-10-2
     domainname: ${ROOT_DOMAIN}
+    image: michimussato/client_installer:latest
     env_file:
       - .env
     depends_on:
@@ -215,19 +215,6 @@ services:
     networks:
       - mongodb
       - repository
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-      target: client_installer
-      args:
-        - PYTHON_MAJ
-        - PYTHON_MIN
-        - PYTHON_PAT
-        - DEADLINE_VERSION=$DEADLINE_VERSION
-        - PYTHON_VERSION=$PYTHON_VERSION
-        # args or environment?
-        # https://stackoverflow.com/a/41919137/2207196
-#        - INSTALLERS_ROOT=$INSTALLERS_ROOT
     volumes:
       - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10
       - ${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10
@@ -236,20 +223,15 @@ services:
       - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro
 
 
+
   deadline-rcs-runner-10-2:
     restart: always
+    image: michimussato/generic_runner:latest
+    command:
+      - --executable
+      - "/opt/Thinkbox/Deadline10/bin/deadlinercs"
     env_file:
       - .env
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-      args:
-        - PYTHON_MAJ
-        - PYTHON_MIN
-        - PYTHON_PAT
-        - DEADLINE_VERSION=$DEADLINE_VERSION
-        - PYTHON_VERSION=$PYTHON_VERSION
-      target: rcs_runner
     container_name: rcs-runner-10-2
     hostname: rcs-runner-10-2
     domainname: ${ROOT_DOMAIN}
@@ -272,18 +254,15 @@ services:
       - "${RCS_HTTP_PORT_HOST}:${RCS_HTTP_PORT_CONTAINER}"
 
 
+
   deadline-pulse-runner-10-2:
     restart: always
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-      args:
-        - PYTHON_MAJ
-        - PYTHON_MIN
-        - PYTHON_PAT
-        - DEADLINE_VERSION=$DEADLINE_VERSION
-        - PYTHON_VERSION=$PYTHON_VERSION
-      target: pulse_runner
+    image: michimussato/generic_runner:latest
+    command:
+      - --executable
+      - "/opt/Thinkbox/Deadline10/bin/deadlinepulse"
+      - --arguments
+      - "['-nogui', '-nosplash']"
     container_name: pulse-runner-10-2
     hostname: pulse-runner-10-2
     domainname: ${ROOT_DOMAIN}
@@ -308,20 +287,17 @@ services:
 #      - "8888:8888"
 
 
+
   deadline-worker-runner-10-2:
     restart: always
+    image: michimussato/generic_runner:latest
+    command:
+      - --executable
+      - "/opt/Thinkbox/Deadline10/bin/deadlineworker"
+      - --arguments
+      - "['-nogui', '-nosplash']"
     env_file:
       - .env
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-      args:
-        - PYTHON_MAJ
-        - PYTHON_MIN
-        - PYTHON_PAT
-        - DEADLINE_VERSION=$DEADLINE_VERSION
-        - PYTHON_VERSION=$PYTHON_VERSION
-      target: worker_runner
     container_name: worker-runner-10-2
     hostname: worker-runner-10-2
     domainname: ${ROOT_DOMAIN}
@@ -347,20 +323,12 @@ services:
 
 
 
-
-
   deadline-webservice-runner-10-2:
     restart: always
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-      args:
-        - PYTHON_MAJ
-        - PYTHON_MIN
-        - PYTHON_PAT
-        - DEADLINE_VERSION=$DEADLINE_VERSION
-        - PYTHON_VERSION=$PYTHON_VERSION
-      target: webservice_runner
+    image: michimussato/generic_runner:latest
+    command:
+      - --executable
+      - "/opt/Thinkbox/Deadline10/bin/deadlinewebservice"
     container_name: webservice-runner-10-2
     hostname: webservice-runner-10-2
     domainname: ${ROOT_DOMAIN}
@@ -382,6 +350,7 @@ services:
       - ${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro
     ports:
       - "${WEBSERVICE_HTTP_PORT_HOST}:${WEBSERVICE_HTTP_PORT_CONTAINER}"
+
 
 
 # https://www.warp.dev/terminus/docker-compose-networks
