@@ -1,10 +1,6 @@
-import os
 import pathlib
-import shutil
-import subprocess
 
 import docker
-from dagster.dagster_shared.shared import helpers
 
 from dagster import (AssetExecutionContext,
                      asset,
@@ -12,13 +8,6 @@ from dagster import (AssetExecutionContext,
                      AssetMaterialization,
                      MetadataValue,
                      AssetIn)
-
-
-# @asset
-# def my_skeleton_package_assets(
-#     context: AssetExecutionContext,
-# ) -> None:
-#     return None
 
 
 @asset
@@ -147,7 +136,6 @@ def build_base_image(
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "build_logs": MetadataValue.md(f"```shell\n{build_logs}\n```"),
             "image_id": MetadataValue.json(base_image.id),
             "env": MetadataValue.json(env),
         },
@@ -199,7 +187,6 @@ def build_repo_installer(
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "build_logs": MetadataValue.md(f"```shell\n{build_logs}\n```"),
             "image_id": MetadataValue.json(base_image.id),
             "env": MetadataValue.json(env),
         },
@@ -251,7 +238,6 @@ docker build  \
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "build_logs": MetadataValue.md(f"```shell\n{build_logs}\n```"),
             "image_id": MetadataValue.json(base_image.id),
             "env": MetadataValue.json(env),
         },
@@ -305,7 +291,6 @@ docker build  \
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "build_logs": MetadataValue.md(f"```shell\n{build_logs}\n```"),
             "image_id": MetadataValue.json(base_image.id),
             "env": MetadataValue.json(env),
         },
@@ -353,7 +338,6 @@ docker build  \
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "build_logs": MetadataValue.md(f"```shell\n{build_logs}\n```"),
             "image_id": MetadataValue.json(base_image.id),
             "env": MetadataValue.json(env),
         },
@@ -365,7 +349,7 @@ docker build  \
         "env": AssetIn(),
     },
     deps=[
-        "build_base_image"
+        "build_client_installer"
     ],
 )
 def build_generic_runner(
@@ -401,7 +385,6 @@ docker build  \
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "build_logs": MetadataValue.md(f"```shell\n{build_logs}\n```"),
             "image_id": MetadataValue.json(base_image.id),
             "env": MetadataValue.json(env),
         },
