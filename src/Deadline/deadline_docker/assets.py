@@ -10,7 +10,9 @@ from dagster import (AssetExecutionContext,
                      AssetIn)
 
 
-@asset
+@asset(
+    group_name="Environment"
+)
 def env(
         context: AssetExecutionContext,
 ) -> dict:
@@ -93,6 +95,7 @@ def env(
 
 
 @asset(
+    group_name="Build_Images",
     ins={
         "env": AssetIn(),
     },
@@ -143,6 +146,7 @@ def build_base_image(
 
 
 @asset(
+    group_name="Build_Images",
     ins={
         "env": AssetIn(),
     },
@@ -194,6 +198,7 @@ def build_repo_installer(
 
 
 @asset(
+    group_name="Build_Images",
     ins={
         "env": AssetIn(),
     },
@@ -245,6 +250,7 @@ docker build  \
 
 
 @asset(
+    group_name="Build_Images",
     ins={
         "env": AssetIn(),
     },
@@ -298,6 +304,7 @@ docker build  \
 
 
 @asset(
+    group_name="Build_Images",
     ins={
         "env": AssetIn(),
     },
@@ -345,6 +352,7 @@ docker build  \
 
 
 @asset(
+    group_name="Build_Images",
     ins={
         "env": AssetIn(),
     },
