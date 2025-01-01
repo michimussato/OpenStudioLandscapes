@@ -397,3 +397,86 @@ docker build  \
             "env": MetadataValue.json(env),
         },
     )
+
+
+# @asset(
+#     group_name="Docker_Swarm",
+#     ins={
+#         "env": AssetIn(),
+#     }
+# )
+# def docker_swarm(
+#         context: AssetExecutionContext,
+#         env: dict,
+# ) -> str:
+#
+#     client = docker.from_env()
+#     swarm = client.swarm.init(
+#         advertise_addr='192.168.100.69',
+#         listen_addr='0.0.0.0:5000',
+#         force_new_cluster=False,
+#         default_addr_pool=['10.1.2.0/24'],
+#         subnet_size=24,
+#         snapshot_interval=5000,
+#         log_entries_for_slow_followers=1200
+#     )
+#
+#     yield Output(swarm)
+#
+#     yield AssetMaterialization(
+#         asset_key=context.asset_key,
+#         metadata={
+#             "swarm_id": MetadataValue.json(swarm),
+#             "env": MetadataValue.json(env),
+#         },
+#     )
+
+
+# @asset(
+#     group_name="Services",
+#     ins={
+#         "docker_swarm": AssetIn(),
+#     },
+# )
+# def mongo_db(
+#         context: AssetExecutionContext,
+#         docker_swarm: str,
+# ):
+#     client = docker.from_env()
+#
+#     client.swarm.join(docker_swarm)
+#
+#     service = client.services.create(
+#         container_name="mongodb-10-2",
+#         hostname="mongodb-10-2",
+#         # domainname=
+#         image="mongodb/mongodb-community-server:4.4-ubuntu2004",
+#         name="mongodb-10-2",
+#         networks=[],
+#         env=[],
+#         # restart_policy=RestartPolicy.a,
+#         command=[
+#             "--dbpath", "/opt/Thinkbox/DeadlineDatabase10/mongo/data",
+#             "--bind_ip_all",
+#             "--noauth",
+#             "--storageEngine", "wiredTiger",
+#             "--tlsMode", "disabled",
+#         ],
+#         mounts=[
+#             "${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data",
+#             "${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}:ro",
+#             "${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro",
+#         ],
+#         # ports
+#     )
+#
+#     yield Output(service.id)
+#
+#     yield AssetMaterialization(
+#         asset_key=context.asset_key,
+#         metadata={
+#             "service_id": MetadataValue.json(service.id),
+#             "service_name": MetadataValue.json(service.name),
+#             "env": MetadataValue.json(env),
+#         },
+#     )
