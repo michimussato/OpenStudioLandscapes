@@ -21,6 +21,20 @@ gh auth login
 
 ```
 gh repo clone michimussato/deadline-docker
+gh repo clone michimussato/git-crypt-keys
+```
+
+```
+apt-get install -y git-crypt
+cd /root/git/repos/deadline-docker
+git-crypt unlock /root/git/repos/git-crypt-keys/deadline-docker.key
+```
+
+### Build Images
+
+```
+cd deadline-docker/10.2
+./docker-build.sh
 ```
 
 ## 10.2
@@ -34,7 +48,7 @@ docker compose --project-name ddld_deadline-docker --file 10.2/docker-compose.ya
 docker compose --file 10.2/docker-compose.yaml down
 ```
 
-## Setup
+## Install Docker
 
 https://docs.docker.com/engine/install/ubuntu/
 
@@ -62,6 +76,19 @@ sudo apt-get update
 sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
 
+### Test
+
 ```
 sudo docker run hello-world
+```
+
+
+
+# Dagster
+
+```shell
+cd ~/git/repos/deadline-docker
+source .venv/bin/activate
+export DAGSTER_HOME="$(pwd)/dagster/materializations"
+dagster dev --workspace "$(pwd)/dagster/workspace.yaml" --host 0.0.0.0 --port 3000 
 ```

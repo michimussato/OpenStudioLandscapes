@@ -1,0 +1,50 @@
+# test db from prod mongo:
+# test_data/opt/Thinkbox/DeadlineDatabase10/mongo/data
+#
+# cd /var/lib/docker/volumes/mongodb_mongo-data-10-4
+# mv _data _data.bak
+# mkdir _data
+# cp -rf /home/michael/git/repos/deadline-setup/deadline-setup-docker/10.4/test_data/opt/Thinkbox/DeadlineDatabase10/mongo/data _data
+# chown -R 101:nobody _data
+
+
+services:
+  mongodb-10-4:
+    # https://hub.docker.com/layers/mongodb/mongodb-community-server/6.0-ubuntu2004
+    image: mongodb/mongodb-community-server:6.0-ubuntu2004
+    command: >
+      --dbpath /opt/Thinkbox/DeadlineDatabase10/mongo/data
+      --bind_ip_all
+      --noauth
+      --storageEngine wiredTiger
+      --tlsMode disabled
+    ports:
+      - 27017:27017
+#    environment:
+#      - MONGO_INITDB_ROOT_USERNAME=admin
+#      - MONGO_INITDB_ROOT_PASSWORD=password
+    volumes:
+      # /var/lib/docker/volumes/mongodb_mongo-data-10-4/_data
+      - mongo-data-10-4:/opt/Thinkbox/DeadlineDatabase10/mongo/data
+  mongo-express:
+    depends_on:
+      - mongodb-10-4
+    # https://hub.docker.com/_/mongo-express
+    # https://github.com/mongo-express/mongo-express
+    image: mongo-express
+    restart: always  # fixes MongoNetworkError when mongodb is not ready when mongo-express starts
+    ports:
+      - 8080:8081
+    environment:
+      - ME_CONFIG_BASICAUTH_USERNAME=web
+      - ME_CONFIG_BASICAUTH_PASSWORD=web
+      - ME_CONFIG_OPTIONS_EDITORTHEME=darcula
+      - ME_CONFIG_MONGODB_SERVER=mongodb-10-4
+#      - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
+#      - ME_CONFIG_MONGODB_ADMINPASSWORD=password
+    volumes:
+      # /var/lib/docker/volumes/mongodb_mongo-data-10-4/_data
+      - mongo-data-10-4:/opt/Thinkbox/DeadlineDatabase10/mongo/data
+volumes:
+  mongo-data-10-4:
+    driver: local
