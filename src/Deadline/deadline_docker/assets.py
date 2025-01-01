@@ -3,6 +3,7 @@ import pathlib
 import shutil
 import subprocess
 
+import docker
 from dagster.dagster_shared.shared import helpers
 
 from dagster import (AssetExecutionContext,
@@ -120,60 +121,35 @@ def build_base_image(
     .
     """
 
-    cmd = list()
-
-    _env = {
-        **os.environ.copy(),
-        **env,
+    docker_file = pathlib.Path("/home/michael/git/repos/deadline-docker/10.2/base_images/repo_base/Dockerfile")
+    tag = "michimussato/repo_base:latest"
+    buildargs = {
+        "PYTHON_MAJ": env.get("PYTHON_MAJ"),
+        "PYTHON_MIN": env.get("PYTHON_MIN"),
+        "PYTHON_PAT": env.get("PYTHON_PAT"),
     }
 
-    docker_file = pathlib.Path("/home/michael/git/repos/deadline-docker/10.2/base_images/repo_base/Dockerfile")
+    client = docker.from_env()
 
-    cmd.append(shutil.which("docker"))
-    cmd.append("build")
-    cmd.extend(["--tag", "michimussato/repo_base:latest"])
-    cmd.extend(["--build-arg", f'PYTHON_MAJ={_env.get("PYTHON_MAJ")}'])
-    cmd.extend(["--build-arg", f'PYTHON_MIN={_env.get("PYTHON_MIN")}'])
-    cmd.extend(["--build-arg", f'PYTHON_PAT={_env.get("PYTHON_PAT")}'])
-    cmd.append(docker_file.parent.as_posix())
-    # cmd.append(".")
-
-    proc = subprocess.Popen(
-        cmd,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        env={
-            **os.environ,
-            **_env,
-        },
-        # cwd=cwd.as_posix(),
+    base_image, build_logs = client.images.build(
+        path=docker_file.parent.as_posix(),
+        tag=tag,
+        buildargs=buildargs,
     )
 
-    handles = (proc.stdout, proc.stderr)
-    labels = ("stdout", "stderr")
-    functions = (context.log.info, context.log.warning)
-    logs = helpers.iterate_fds(
-        handles=handles,
-        labels=labels,
-        functions=functions,
-        live_print=False,
-    )
+    for chunk in build_logs:
+        if 'stream' in chunk:
+            for line in chunk['stream'].splitlines():
+                context.log.debug(line)
 
-    metadata = dict()
-
-    for _label, _function in zip(labels, functions):
-        if bool(logs[_label]):
-            _function(logs[_label].decode("utf-8"))
-        metadata[_label] = MetadataValue.md(f"```shell\n{logs[_label].decode('utf-8')}\n```")
-
-    yield Output(_env)
+    yield Output(base_image.id)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "cmd": MetadataValue.md(f"```shell\n{' '.join(cmd)}\n```"),
-            "_env": MetadataValue.json(_env),
-            **metadata,
+            "build_logs": MetadataValue.md(f"```shell\n{build_logs}\n```"),
+            "image_id": MetadataValue.json(base_image.id),
+            "env": MetadataValue.json(env),
         },
     )
 
@@ -198,59 +174,34 @@ def build_repo_installer(
     .
     """
 
-    cmd = list()
-
-    _env = {
-        **os.environ.copy(),
-        **env,
+    docker_file = pathlib.Path("/home/michael/git/repos/deadline-docker/10.2/base_images/repo_base/repo_installer/Dockerfile")
+    tag = "michimussato/repo_installer:latest"
+    buildargs = {
+        "DEADLINE_VERSION": env.get("DEADLINE_VERSION"),
+        "INSTALLERS_ROOT": env.get("INSTALLERS_ROOT"),
     }
 
-    docker_file = pathlib.Path("/home/michael/git/repos/deadline-docker/10.2/base_images/repo_base/repo_installer/Dockerfile")
+    client = docker.from_env()
 
-    cmd.append(shutil.which("docker"))
-    cmd.append("build")
-    cmd.extend(["--tag", "michimussato/repo_installer:latest"])
-    cmd.extend(["--build-arg", f'DEADLINE_VERSION={_env.get("DEADLINE_VERSION")}'])
-    cmd.extend(["--build-arg", f'INSTALLERS_ROOT={_env.get("INSTALLERS_ROOT")}'])
-    cmd.append(docker_file.parent.as_posix())
-    # cmd.append(".")
-
-    proc = subprocess.Popen(
-        cmd,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        env={
-            **os.environ,
-            **_env,
-        },
-        # cwd=cwd.as_posix(),
+    base_image, build_logs = client.images.build(
+        path=docker_file.parent.as_posix(),
+        tag=tag,
+        buildargs=buildargs,
     )
 
-    handles = (proc.stdout, proc.stderr)
-    labels = ("stdout", "stderr")
-    functions = (context.log.info, context.log.warning)
-    logs = helpers.iterate_fds(
-        handles=handles,
-        labels=labels,
-        functions=functions,
-        live_print=False,
-    )
+    for chunk in build_logs:
+        if 'stream' in chunk:
+            for line in chunk['stream'].splitlines():
+                context.log.debug(line)
 
-    metadata = dict()
-
-    for _label, _function in zip(labels, functions):
-        if bool(logs[_label]):
-            _function(logs[_label].decode("utf-8"))
-        metadata[_label] = MetadataValue.md(f"```shell\n{logs[_label].decode('utf-8')}\n```")
-
-    yield Output(_env)
+    yield Output(base_image.id)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "cmd": MetadataValue.md(f"```shell\n{' '.join(cmd)}\n```"),
-            "_env": MetadataValue.json(_env),
-            **metadata,
+            "build_logs": MetadataValue.md(f"```shell\n{build_logs}\n```"),
+            "image_id": MetadataValue.json(base_image.id),
+            "env": MetadataValue.json(env),
         },
     )
 
@@ -275,59 +226,34 @@ docker build  \
     .
     """
 
-    cmd = list()
-
-    _env = {
-        **os.environ.copy(),
-        **env,
+    docker_file = pathlib.Path("/home/michael/git/repos/deadline-docker/10.2/base_images/repo_base/client_installer/Dockerfile")
+    tag = "michimussato/client_installer:latest"
+    buildargs = {
+        "DEADLINE_VERSION": env.get("DEADLINE_VERSION"),
+        "INSTALLERS_ROOT": env.get("INSTALLERS_ROOT"),
     }
 
-    docker_file = pathlib.Path("/home/michael/git/repos/deadline-docker/10.2/base_images/repo_base/client_installer/Dockerfile")
+    client = docker.from_env()
 
-    cmd.append(shutil.which("docker"))
-    cmd.append("build")
-    cmd.extend(["--tag", "michimussato/client_installer:latest"])
-    cmd.extend(["--build-arg", f'DEADLINE_VERSION={_env.get("DEADLINE_VERSION")}'])
-    cmd.extend(["--build-arg", f'INSTALLERS_ROOT={_env.get("INSTALLERS_ROOT")}'])
-    cmd.append(docker_file.parent.as_posix())
-    # cmd.append(".")
-
-    proc = subprocess.Popen(
-        cmd,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        env={
-            **os.environ,
-            **_env,
-        },
-        # cwd=cwd.as_posix(),
+    base_image, build_logs = client.images.build(
+        path=docker_file.parent.as_posix(),
+        tag=tag,
+        buildargs=buildargs,
     )
 
-    handles = (proc.stdout, proc.stderr)
-    labels = ("stdout", "stderr")
-    functions = (context.log.info, context.log.warning)
-    logs = helpers.iterate_fds(
-        handles=handles,
-        labels=labels,
-        functions=functions,
-        live_print=False,
-    )
+    for chunk in build_logs:
+        if 'stream' in chunk:
+            for line in chunk['stream'].splitlines():
+                context.log.debug(line)
 
-    metadata = dict()
-
-    for _label, _function in zip(labels, functions):
-        if bool(logs[_label]):
-            _function(logs[_label].decode("utf-8"))
-        metadata[_label] = MetadataValue.md(f"```shell\n{logs[_label].decode('utf-8')}\n```")
-
-    yield Output(_env)
+    yield Output(base_image.id)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "cmd": MetadataValue.md(f"```shell\n{' '.join(cmd)}\n```"),
-            "_env": MetadataValue.json(_env),
-            **metadata,
+            "build_logs": MetadataValue.md(f"```shell\n{build_logs}\n```"),
+            "image_id": MetadataValue.json(base_image.id),
+            "env": MetadataValue.json(env),
         },
     )
 
@@ -353,59 +279,130 @@ docker build  \
     .
     """
 
-    cmd = list()
-
-    _env = {
-        **os.environ.copy(),
-        **env,
+    docker_file = pathlib.Path("/home/michael/git/repos/deadline-docker/10.2/base_images/repo_base/dagster_dev/Dockerfile")
+    tag = "michimussato/dagster_dev:latest"
+    buildargs = {
+        "PYTHON_MAJ": env.get("PYTHON_MAJ"),
+        "PYTHON_MIN": env.get("PYTHON_MIN"),
+        "PYTHON_PAT": env.get("PYTHON_PAT"),
     }
 
-    docker_file = pathlib.Path("/home/michael/git/repos/deadline-docker/10.2/base_images/repo_base/dagster_dev/Dockerfile")
+    client = docker.from_env()
 
-    cmd.append(shutil.which("docker"))
-    cmd.append("build")
-    cmd.extend(["--tag", "michimussato/dagster_dev:latest"])
-    cmd.extend(["--build-arg", f'PYTHON_MAJ={_env.get("PYTHON_MAJ")}'])
-    cmd.extend(["--build-arg", f'PYTHON_MIN={_env.get("PYTHON_MIN")}'])
-    cmd.extend(["--build-arg", f'PYTHON_PAT={_env.get("PYTHON_PAT")}'])
-    cmd.append(docker_file.parent.as_posix())
-    # cmd.append(".")
-
-    proc = subprocess.Popen(
-        cmd,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        env={
-            **os.environ,
-            **_env,
-        },
-        # cwd=cwd.as_posix(),
+    base_image, build_logs = client.images.build(
+        path=docker_file.parent.as_posix(),
+        tag=tag,
+        buildargs=buildargs,
     )
 
-    handles = (proc.stdout, proc.stderr)
-    labels = ("stdout", "stderr")
-    functions = (context.log.info, context.log.warning)
-    logs = helpers.iterate_fds(
-        handles=handles,
-        labels=labels,
-        functions=functions,
-        live_print=False,
-    )
+    for chunk in build_logs:
+        if 'stream' in chunk:
+            for line in chunk['stream'].splitlines():
+                context.log.debug(line)
 
-    metadata = dict()
-
-    for _label, _function in zip(labels, functions):
-        if bool(logs[_label]):
-            _function(logs[_label].decode("utf-8"))
-        metadata[_label] = MetadataValue.md(f"```shell\n{logs[_label].decode('utf-8')}\n```")
-
-    yield Output(_env)
+    yield Output(base_image.id)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "cmd": MetadataValue.md(f"```shell\n{' '.join(cmd)}\n```"),
-            "_env": MetadataValue.json(_env),
-            **metadata,
+            "build_logs": MetadataValue.md(f"```shell\n{build_logs}\n```"),
+            "image_id": MetadataValue.json(base_image.id),
+            "env": MetadataValue.json(env),
+        },
+    )
+
+
+@asset(
+    ins={
+        "env": AssetIn(),
+    },
+    deps=[
+        "build_base_image"
+    ],
+)
+def build_likec4_dev(
+        context: AssetExecutionContext,
+        env: dict,
+):
+    """
+docker build  \
+    --tag michimussato/likec4_dev:latest  \
+    .
+    """
+
+    docker_file = pathlib.Path("/home/michael/git/repos/deadline-docker/10.2/base_images/repo_base/likec4_dev/Dockerfile")
+    tag = "michimussato/likec4_dev:latest"
+    buildargs = {
+    }
+
+    client = docker.from_env()
+
+    base_image, build_logs = client.images.build(
+        path=docker_file.parent.as_posix(),
+        tag=tag,
+        buildargs=buildargs,
+    )
+
+    for chunk in build_logs:
+        if 'stream' in chunk:
+            for line in chunk['stream'].splitlines():
+                context.log.debug(line)
+
+    yield Output(base_image.id)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "build_logs": MetadataValue.md(f"```shell\n{build_logs}\n```"),
+            "image_id": MetadataValue.json(base_image.id),
+            "env": MetadataValue.json(env),
+        },
+    )
+
+
+@asset(
+    ins={
+        "env": AssetIn(),
+    },
+    deps=[
+        "build_base_image"
+    ],
+)
+def build_generic_runner(
+        context: AssetExecutionContext,
+        env: dict,
+):
+    """
+docker build  \
+    --tag michimussato/generic_runner:latest  \
+    .
+    """
+
+    docker_file = pathlib.Path("/home/michael/git/repos/deadline-docker/10.2/base_images/repo_base/client_installer/generic_runner/Dockerfile")
+    tag = "michimussato/generic_runner:latest"
+    buildargs = {
+    }
+
+    client = docker.from_env()
+
+    base_image, build_logs = client.images.build(
+        path=docker_file.parent.as_posix(),
+        tag=tag,
+        buildargs=buildargs,
+    )
+
+    for chunk in build_logs:
+        if 'stream' in chunk:
+            for line in chunk['stream'].splitlines():
+                context.log.debug(line)
+
+    yield Output(base_image.id)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "build_logs": MetadataValue.md(f"```shell\n{build_logs}\n```"),
+            "image_id": MetadataValue.json(base_image.id),
+            "env": MetadataValue.json(env),
         },
     )
