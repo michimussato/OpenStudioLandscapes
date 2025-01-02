@@ -1,4 +1,4 @@
-FROM michimussato/repo_base:latest AS likec4_dev
+FROM michimussato/base_image:latest AS likec4_dev
 LABEL authors="michimussato@gmail.com"
 
 RUN apt-get update \

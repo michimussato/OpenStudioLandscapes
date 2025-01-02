@@ -1,4 +1,4 @@
-FROM ubuntu:20.04 AS repo_base
+FROM ubuntu:20.04 AS base_image
 LABEL authors="michimussato@gmail.com"
 
 ARG DEBIAN_FRONTEND=noninteractive
@@ -6,9 +6,6 @@ ARG DEBIAN_FRONTEND=noninteractive
 ARG PYTHON_MAJ
 ARG PYTHON_MIN
 ARG PYTHON_PAT
-ENV PYTHON_MAJ=${PYTHON_MAJ}
-ENV PYTHON_MIN=${PYTHON_MIN}
-ENV PYTHON_PAT=${PYTHON_PAT}
 
 ENV CONTAINER_TIMEZONE="Europe/Zurich"
 ENV SET_CONTAINER_TIMEZONE=true
@@ -24,9 +21,11 @@ RUN apt-get install \
     file  \
     tzdata  \
     curl  \
+    wget  \
     ffmpeg  \
     xvfb  \
     libegl1  \
+    libsm6  \
     libsm6  \
     libglu1-mesa  \
     libxss1
@@ -48,7 +47,9 @@ RUN apt-get install  \
 
 WORKDIR /build/python
 
-RUN curl https://www.python.org/ftp/python/${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}/Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}.tgz -o Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}.tgz
+RUN echo "Downloading Python ${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}..." \
+    &&  curl "https://www.python.org/ftp/python/${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}/Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}.tgz" -o Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}.tgz \
+    && echo "Download done."
 RUN file Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}.tgz
 RUN tar -xvf Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}.tgz
 

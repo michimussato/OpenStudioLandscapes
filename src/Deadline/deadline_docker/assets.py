@@ -10,10 +10,20 @@ from dagster import (AssetExecutionContext,
                      AssetIn)
 
 
+def get_log(build_logs) -> str:
+    log: str = ""
+    for chunk in build_logs:
+        if 'stream' in chunk:
+            for line in chunk['stream'].splitlines():
+                log += f'\n{line}'
+
+    return log
+
+
 @asset(
     group_name="Environment"
 )
-def env(
+def env_base(
         context: AssetExecutionContext,
 ) -> dict:
     _env: dict = {
@@ -32,7 +42,7 @@ def env(
         # "DAGSTER_HOME": "/dagster/materializations",
         # "DAGSTER_WORKSPACE": "/dagster/workspace.yaml",
 
-        "DEADLINE_VERSION": "10.2.1.1",
+        # "DEADLINE_VERSION": "",
 
         # "RCS_HTTP_PORT_HOST": 8888,
         # "RCS_HTTP_PORT_CONTAINER": 8888,
@@ -60,8 +70,7 @@ def env(
         # "ROOT_DOMAIN": "farm.evil",
         # "DB_HOST": "mongodb-10-2",
 
-        # "GOOGLE_API_KEY": "AIzaSyBBH8zUH4VC1Bov-3EdVbjG0gBauroMd9E",
-        # "GOOGLE_ID": "1VZhCcxvCAc4oozLAKRCv_zwQLMuVdMRz",
+        "GOOGLE_API_KEY": "AIzaSyBBH8zUH4VC1Bov-3EdVbjG0gBauroMd9E",
 
         # "PYTHON_VERSION": "3.11.11",
         "PYTHON_MAJ": "3",
@@ -88,21 +97,51 @@ def env(
         asset_key=context.asset_key,
         metadata={
             context.asset_key.path[0]: MetadataValue.json(_env),
+
         },
     )
 
-    return _env
+
+@asset(
+    group_name="Environment",
+    ins={
+        "env_base": AssetIn(),
+    },
+)
+def env_10_2(
+        context: AssetExecutionContext,
+        env_base: dict,
+) -> dict:
+    _env: dict = {
+        "DEADLINE_VERSION": "10.2.1.1",
+
+        "GOOGLE_ID_AWSPortalLink_10_2": "1VOQa6OyYUZj_7VILcD6EVl7YOfYVlCrU",
+        "GOOGLE_ID_DeadlineClient_10_2": "1cGxCPkrJ1ujWqie2yXTrOpShkEgSXR0F",
+        "GOOGLE_ID_DeadlineRepository_10_2": "1VZhCcxvCAc4oozLAKRCv_zwQLMuVdMRz",
+    }
+
+    env_base.update(_env)
+
+    yield Output(env_base)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            context.asset_key.path[0]: MetadataValue.json(_env),
+
+        },
+    )
 
 
 @asset(
     group_name="Build_Images",
     ins={
-        "env": AssetIn(),
+        "env_10_2": AssetIn(),
     },
 )
 def build_base_image(
         context: AssetExecutionContext,
-        env: dict,
+        env_10_2: dict,
 ):
     """
     docker build  \
@@ -113,12 +152,66 @@ def build_base_image(
     .
     """
 
-    docker_file = pathlib.Path("/home/michael/git/repos/deadline-docker/10.2/base_images/repo_base/Dockerfile")
-    tag = "michimussato/repo_base:latest"
+    docker_file = pathlib.Path("/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/Dockerfile")
+    tag = "michimussato/base_image:latest"
     buildargs = {
-        "PYTHON_MAJ": env.get("PYTHON_MAJ"),
-        "PYTHON_MIN": env.get("PYTHON_MIN"),
-        "PYTHON_PAT": env.get("PYTHON_PAT"),
+        "PYTHON_MAJ": env_10_2.get("PYTHON_MAJ"),
+        "PYTHON_MIN": env_10_2.get("PYTHON_MIN"),
+        "PYTHON_PAT": env_10_2.get("PYTHON_PAT"),
+    }
+
+    with open(docker_file, "r") as fr:
+        context.log.info(fr.read())
+
+    context.log.info(f"{buildargs = }")
+
+    client = docker.from_env()
+
+    base_image, build_logs = client.images.build(
+        path=docker_file.parent.as_posix(),
+        tag=tag,
+        buildargs=buildargs,
+    )
+
+    yield Output(base_image.id)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "image_id": MetadataValue.json(base_image.id),
+            "build_logs": MetadataValue.md(f"```shell\n{get_log(build_logs)}\n```"),
+            "env_10_2": MetadataValue.json(env_10_2),
+        },
+    )
+
+
+@asset(
+    group_name="Build_Images",
+    ins={
+        "env_10_2": AssetIn(),
+    },
+    deps=[
+        "build_base_image",
+    ],
+)
+def build_base_image_10_2(
+        context: AssetExecutionContext,
+        env_10_2: dict,
+):
+    """
+    docker run --rm -it --entrypoint bash michimussato/base_image_10_2:latest
+    """
+
+    docker_file = pathlib.Path("/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/base_image_10_2/Dockerfile")
+
+    context.log.info(f"{docker_file.as_posix() = }")
+
+    tag = "michimussato/base_image_10_2:latest"
+    buildargs = {
+        "GOOGLE_API_KEY": env_10_2.get("GOOGLE_API_KEY"),
+        "GOOGLE_ID_AWSPortalLink_10_2": env_10_2.get("GOOGLE_ID_AWSPortalLink_10_2"),
+        "GOOGLE_ID_DeadlineClient_10_2": env_10_2.get("GOOGLE_ID_DeadlineClient_10_2"),
+        "GOOGLE_ID_DeadlineRepository_10_2": env_10_2.get("GOOGLE_ID_DeadlineRepository_10_2"),
     }
 
     client = docker.from_env()
@@ -129,18 +222,14 @@ def build_base_image(
         buildargs=buildargs,
     )
 
-    for chunk in build_logs:
-        if 'stream' in chunk:
-            for line in chunk['stream'].splitlines():
-                context.log.debug(line)
-
     yield Output(base_image.id)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
             "image_id": MetadataValue.json(base_image.id),
-            "env": MetadataValue.json(env),
+            "build_logs": MetadataValue.md(f"```shell\n{get_log(build_logs)}\n```"),
+            "env_10_2": MetadataValue.json(env_10_2),
         },
     )
 
@@ -148,15 +237,15 @@ def build_base_image(
 @asset(
     group_name="Build_Images",
     ins={
-        "env": AssetIn(),
+        "env_10_2": AssetIn(),
     },
     deps=[
-        "build_base_image"
+        "build_base_image_10_2"
     ],
 )
-def build_repo_installer(
+def build_repo_installer_10_2(
         context: AssetExecutionContext,
-        env: dict,
+        env_10_2: dict,
 ):
     """
     docker build  \
@@ -166,11 +255,11 @@ def build_repo_installer(
     .
     """
 
-    docker_file = pathlib.Path("/home/michael/git/repos/deadline-docker/10.2/base_images/repo_base/repo_installer/Dockerfile")
+    docker_file = pathlib.Path("/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/base_image_10_2/repo_installer/Dockerfile")
     tag = "michimussato/repo_installer:latest"
     buildargs = {
-        "DEADLINE_VERSION": env.get("DEADLINE_VERSION"),
-        "INSTALLERS_ROOT": env.get("INSTALLERS_ROOT"),
+        "DEADLINE_VERSION": env_10_2.get("DEADLINE_VERSION"),
+        "INSTALLERS_ROOT": env_10_2.get("INSTALLERS_ROOT"),
     }
 
     client = docker.from_env()
@@ -181,18 +270,14 @@ def build_repo_installer(
         buildargs=buildargs,
     )
 
-    for chunk in build_logs:
-        if 'stream' in chunk:
-            for line in chunk['stream'].splitlines():
-                context.log.debug(line)
-
     yield Output(base_image.id)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
             "image_id": MetadataValue.json(base_image.id),
-            "env": MetadataValue.json(env),
+            "build_logs": MetadataValue.md(f"```shell\n{get_log(build_logs)}\n```"),
+            "env_10_2": MetadataValue.json(env_10_2),
         },
     )
 
@@ -200,15 +285,15 @@ def build_repo_installer(
 @asset(
     group_name="Build_Images",
     ins={
-        "env": AssetIn(),
+        "env_10_2": AssetIn(),
     },
     deps=[
-        "build_base_image"
+        "build_base_image_10_2"
     ],
 )
-def build_client_installer(
+def build_client_installer_10_2(
         context: AssetExecutionContext,
-        env: dict,
+        env_10_2: dict,
 ):
     """
 docker build  \
@@ -218,11 +303,11 @@ docker build  \
     .
     """
 
-    docker_file = pathlib.Path("/home/michael/git/repos/deadline-docker/10.2/base_images/repo_base/client_installer/Dockerfile")
+    docker_file = pathlib.Path("/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/base_image_10_2/client_installer/Dockerfile")
     tag = "michimussato/client_installer:latest"
     buildargs = {
-        "DEADLINE_VERSION": env.get("DEADLINE_VERSION"),
-        "INSTALLERS_ROOT": env.get("INSTALLERS_ROOT"),
+        "DEADLINE_VERSION": env_10_2.get("DEADLINE_VERSION"),
+        "INSTALLERS_ROOT": env_10_2.get("INSTALLERS_ROOT"),
     }
 
     client = docker.from_env()
@@ -233,18 +318,14 @@ docker build  \
         buildargs=buildargs,
     )
 
-    for chunk in build_logs:
-        if 'stream' in chunk:
-            for line in chunk['stream'].splitlines():
-                context.log.debug(line)
-
     yield Output(base_image.id)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
             "image_id": MetadataValue.json(base_image.id),
-            "env": MetadataValue.json(env),
+            "build_logs": MetadataValue.md(f"```shell\n{get_log(build_logs)}\n```"),
+            "env_10_2": MetadataValue.json(env_10_2),
         },
     )
 
@@ -252,7 +333,7 @@ docker build  \
 @asset(
     group_name="Build_Images",
     ins={
-        "env": AssetIn(),
+        "env_10_2": AssetIn(),
     },
     deps=[
         "build_base_image"
@@ -260,23 +341,21 @@ docker build  \
 )
 def build_dagster_dev(
         context: AssetExecutionContext,
-        env: dict,
+        env_10_2: dict,
 ):
     """
 docker build  \
     --tag michimussato/dagster_dev:latest  \
     --build-arg PYTHON_MAJ=3  \
     --build-arg PYTHON_MIN=11  \
-    --build-arg PYTHON_PAT=11  \
     .
     """
 
-    docker_file = pathlib.Path("/home/michael/git/repos/deadline-docker/10.2/base_images/repo_base/dagster_dev/Dockerfile")
+    docker_file = pathlib.Path("/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/dagster_dev/Dockerfile")
     tag = "michimussato/dagster_dev:latest"
     buildargs = {
-        "PYTHON_MAJ": env.get("PYTHON_MAJ"),
-        "PYTHON_MIN": env.get("PYTHON_MIN"),
-        "PYTHON_PAT": env.get("PYTHON_PAT"),
+        "PYTHON_MAJ": env_10_2.get("PYTHON_MAJ"),
+        "PYTHON_MIN": env_10_2.get("PYTHON_MIN"),
     }
 
     client = docker.from_env()
@@ -287,18 +366,14 @@ docker build  \
         buildargs=buildargs,
     )
 
-    for chunk in build_logs:
-        if 'stream' in chunk:
-            for line in chunk['stream'].splitlines():
-                context.log.debug(line)
-
     yield Output(base_image.id)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
             "image_id": MetadataValue.json(base_image.id),
-            "env": MetadataValue.json(env),
+            "build_logs": MetadataValue.md(f"```shell\n{get_log(build_logs)}\n```"),
+            "env_10_2": MetadataValue.json(env_10_2),
         },
     )
 
@@ -306,7 +381,7 @@ docker build  \
 @asset(
     group_name="Build_Images",
     ins={
-        "env": AssetIn(),
+        "env_10_2": AssetIn(),
     },
     deps=[
         "build_base_image"
@@ -314,7 +389,7 @@ docker build  \
 )
 def build_likec4_dev(
         context: AssetExecutionContext,
-        env: dict,
+        env_10_2: dict,
 ):
     """
 docker build  \
@@ -322,7 +397,7 @@ docker build  \
     .
     """
 
-    docker_file = pathlib.Path("/home/michael/git/repos/deadline-docker/10.2/base_images/repo_base/likec4_dev/Dockerfile")
+    docker_file = pathlib.Path("/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/likec4_dev/Dockerfile")
     tag = "michimussato/likec4_dev:latest"
     buildargs = {
     }
@@ -335,18 +410,15 @@ docker build  \
         buildargs=buildargs,
     )
 
-    for chunk in build_logs:
-        if 'stream' in chunk:
-            for line in chunk['stream'].splitlines():
-                context.log.debug(line)
-
     yield Output(base_image.id)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
             "image_id": MetadataValue.json(base_image.id),
-            "env": MetadataValue.json(env),
+
+            "build_logs": MetadataValue.md(f"```shell\n{get_log(build_logs)}\n```"),
+            "env_10_2": MetadataValue.json(env_10_2),
         },
     )
 
@@ -354,15 +426,15 @@ docker build  \
 @asset(
     group_name="Build_Images",
     ins={
-        "env": AssetIn(),
+        "env_10_2": AssetIn(),
     },
     deps=[
-        "build_client_installer"
+        "build_client_installer_10_2"
     ],
 )
-def build_generic_runner(
+def build_generic_runner_10_2(
         context: AssetExecutionContext,
-        env: dict,
+        env_10_2: dict,
 ):
     """
 docker build  \
@@ -370,7 +442,7 @@ docker build  \
     .
     """
 
-    docker_file = pathlib.Path("/home/michael/git/repos/deadline-docker/10.2/base_images/repo_base/client_installer/generic_runner/Dockerfile")
+    docker_file = pathlib.Path("/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/base_image_10_2/client_installer/generic_runner/Dockerfile")
     tag = "michimussato/generic_runner:latest"
     buildargs = {
     }
@@ -383,18 +455,14 @@ docker build  \
         buildargs=buildargs,
     )
 
-    for chunk in build_logs:
-        if 'stream' in chunk:
-            for line in chunk['stream'].splitlines():
-                context.log.debug(line)
-
     yield Output(base_image.id)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
             "image_id": MetadataValue.json(base_image.id),
-            "env": MetadataValue.json(env),
+            "build_logs": MetadataValue.md(f"```shell\n{get_log(build_logs)}\n```"),
+            "env_10_2": MetadataValue.json(env_10_2),
         },
     )
 
@@ -402,12 +470,12 @@ docker build  \
 # @asset(
 #     group_name="Docker_Swarm",
 #     ins={
-#         "env": AssetIn(),
+#         "env_10_2": AssetIn(),
 #     }
 # )
 # def docker_swarm(
 #         context: AssetExecutionContext,
-#         env: dict,
+#         env_10_2: dict,
 # ) -> str:
 #
 #     client = docker.from_env()
@@ -427,7 +495,7 @@ docker build  \
 #         asset_key=context.asset_key,
 #         metadata={
 #             "swarm_id": MetadataValue.json(swarm),
-#             "env": MetadataValue.json(env),
+#             "env_10_2": MetadataValue.json(env_10_2),
 #         },
 #     )
 
@@ -477,6 +545,6 @@ docker build  \
 #         metadata={
 #             "service_id": MetadataValue.json(service.id),
 #             "service_name": MetadataValue.json(service.name),
-#             "env": MetadataValue.json(env),
+#             "env_10_2": MetadataValue.json(env_10_2),
 #         },
 #     )
