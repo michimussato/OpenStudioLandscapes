@@ -9,7 +9,6 @@ from dagster import (AssetExecutionContext,
                      MetadataValue,
                      AssetIn)
 
-
 NO_CACHE = True
 
 
@@ -50,7 +49,8 @@ def compile_cmds(
 ) -> dict[str, MetadataValue]:
     cmd_docker_run = f"docker run --rm -it --entrypoint bash {tag}"
     _cmd_docker_build_buildargs = ' '.join(f"--build-arg {k}={v}" for k, v in buildargs.items())
-    cmd_docker_build = f"docker build --tag {tag} {_cmd_docker_build_buildargs} {docker_file.parent.as_posix()} {'--no-cache' if NO_CACHE else ''}"
+    cmd_docker_build = (f"docker build --tag {tag} {_cmd_docker_build_buildargs} {docker_file.parent.as_posix()} "
+                        f"{'--no-cache' if NO_CACHE else ''}")
 
     metadata_values = {
         "cmd_docker_run": MetadataValue.path(cmd_docker_run),
@@ -154,7 +154,6 @@ def env_10_2(
         context: AssetExecutionContext,
         env_base: dict,
 ) -> dict:
-
     _env: dict = {
         "DEADLINE_VERSION": "10.2.1.1",
 
@@ -499,6 +498,103 @@ def build_likec4_dev(
         },
     )
 
+
+@asset(
+    group_name="Services",
+    ins={
+        "env_base": AssetIn(),
+    },
+    # deps=[
+    #     "build_base_image"
+    # ],
+)
+def filebrowser(
+        context: AssetExecutionContext,
+        env_base: dict,
+) -> int:
+    """
+    """
+
+    client = docker.from_env()
+
+    container = client.containers.run(
+        image="filebrowser/filebrowser",
+        detach=True,
+        # remove=True,
+        # volumes={
+        #     "/home/michael/git/repos/deadline-docker/10.2/databases/filebrowser/filebrowser.db": {
+        #         "bind": "/filebrowser.db",
+        #         "mode": "rw",
+        #     },
+        #     "/home/michael/git/repos/deadline-docker/10.2/configs/filebrowser/filebrowser.json": {
+        #         "bind": "/filebrowser.json",
+        #         "mode": "rw",
+        #     },
+        # },
+        volumes=[
+            # "/home/michael/git/repos/deadline-docker/10.2/databases/filebrowser/filebrowser.db:/database/filebrowser.db",
+            # "/home/michael/git/repos/deadline-docker/10.2/configs/filebrowser/filebrowser.json:/config/settings.json",
+            # "/data/share/nfs:/data/share/nfs:ro",
+            # "/data/share/nfs:/nfs:ro",
+            "/data/share/nfs:/srv:ro",
+        ],
+        domainname="farm.evil",
+        hostname="mongo-filebrowser-10-2",
+        name="mongo-filebrowser-10-2",
+        restart_policy={
+            "Name": "always",
+        },
+        # ports={
+        #     "8080": 80,
+        # },
+        # network="repository",
+    )
+
+    # network = client.networks.create(
+    #     name="repository",
+    #     driver="bridge",
+    # )
+    #
+    # network.connect(
+    #     container=container,
+    # )
+
+    context.log.info(dir(container))
+
+    # docker_file = pathlib.Path(
+    #     "/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/likec4_dev/Dockerfile")
+    # tag = "michimussato/likec4_dev:latest"
+    # buildargs = {}
+    #
+    # with open(docker_file, "r") as fr:
+    #     context.log.info(fr.read())
+    #
+    # base_image, build_logs = docker_build(
+    #     docker_file=docker_file,
+    #     tag=tag,
+    #     buildargs=buildargs,
+    #     nocache=True,
+    # )
+
+    # cmds_docker = compile_cmds(
+    #     docker_file=docker_file,
+    #     tag=tag,
+    #     buildargs=buildargs,
+    # )
+
+    yield Output(80)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            context.asset_key.path[0]: MetadataValue.int(80),
+            "url": MetadataValue.url("http://localhost:80/"),
+            "image_id": MetadataValue.json(container.id),
+            # **cmds_docker,
+            # "build_logs": MetadataValue.md(f"```shell\n{get_log(build_logs)}\n```"),
+            "env_10_2": MetadataValue.json(env_base),
+        },
+    )
 
 # @asset(
 #     group_name="Build_Images_10_2",
