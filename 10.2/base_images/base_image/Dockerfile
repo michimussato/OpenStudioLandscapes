@@ -47,9 +47,7 @@ RUN apt-get install  \
 
 WORKDIR /build/python
 
-RUN echo "Downloading Python ${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}..." \
-    &&  curl "https://www.python.org/ftp/python/${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}/Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}.tgz" -o Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}.tgz \
-    && echo "Download done."
+RUN curl "https://www.python.org/ftp/python/${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}/Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}.tgz" -o Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}.tgz
 RUN file Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}.tgz
 RUN tar -xvf Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}.tgz
 
@@ -59,8 +57,6 @@ RUN cd Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT} && make altinstall  # al
 
 RUN python${PYTHON_MAJ}.${PYTHON_MIN} -m pip install pip --upgrade
 
-RUN python${PYTHON_MAJ}.${PYTHON_MIN} -m pip install --root-user-action=ignore git+https://github.com/michimussato/SSLGeneration.git@packaging
-RUN python${PYTHON_MAJ}.${PYTHON_MIN} -m pip install --root-user-action=ignore git+https://github.com/michimussato/DeadlineWrapper.git@main
 RUN python${PYTHON_MAJ}.${PYTHON_MIN} -m pip install --root-user-action=ignore "deadline-dagster @ git+https://github.com/michimussato/deadline-dagster.git@main"
 RUN python${PYTHON_MAJ}.${PYTHON_MIN} -m pip install --root-user-action=ignore "dagster-shared @ git+https://github.com/michimussato/dagster-shared.git@main"
 # RUN thinkbox-ssl-gen --help

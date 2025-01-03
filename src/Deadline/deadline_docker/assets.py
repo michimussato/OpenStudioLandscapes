@@ -10,7 +10,30 @@ from dagster import (AssetExecutionContext,
                      AssetIn)
 
 
-def get_log(build_logs) -> str:
+NO_CACHE = True
+
+
+def docker_build(
+        docker_file: pathlib.Path,
+        tag: str,
+        buildargs: dict,
+        nocache: bool = NO_CACHE,
+):
+    client = docker.from_env()
+
+    base_image, build_logs = client.images.build(
+        path=docker_file.parent.as_posix(),
+        tag=tag,
+        buildargs=buildargs,
+        nocache=nocache,
+    )
+
+    return base_image, build_logs
+
+
+def get_log(
+        build_logs,
+) -> str:
     log: str = ""
     for chunk in build_logs:
         if 'stream' in chunk:
@@ -18,6 +41,23 @@ def get_log(build_logs) -> str:
                 log += f'\n{line}'
 
     return log
+
+
+def compile_cmds(
+        docker_file,
+        tag,
+        buildargs,
+) -> dict[str, MetadataValue]:
+    cmd_docker_run = f"docker run --rm -it --entrypoint bash {tag}"
+    _cmd_docker_build_buildargs = ' '.join(f"--build-arg {k}={v}" for k, v in buildargs.items())
+    cmd_docker_build = f"docker build --tag {tag} {_cmd_docker_build_buildargs} {docker_file.parent.as_posix()} {'--no-cache' if NO_CACHE else ''}"
+
+    metadata_values = {
+        "cmd_docker_run": MetadataValue.path(cmd_docker_run),
+        "cmd_docker_build": MetadataValue.path(cmd_docker_build),
+    }
+
+    return metadata_values
 
 
 @asset(
@@ -42,18 +82,17 @@ def env_base(
         # "DAGSTER_HOME": "/dagster/materializations",
         # "DAGSTER_WORKSPACE": "/dagster/workspace.yaml",
 
-        # "DEADLINE_VERSION": "",
-
         # "RCS_HTTP_PORT_HOST": 8888,
-        # "RCS_HTTP_PORT_CONTAINER": 8888,
-        #
+        "RCS_HTTP_PORT_CONTAINER": "8888",
+
         # "WEBSERVICE_HTTP_PORT_HOST": 8899,
-        # "WEBSERVICE_HTTP_PORT_CONTAINER": 8899,
-        #
-        # "MONGO_DB_PORT_HOST": 21017,
+        "WEBSERVICE_HTTP_PORT_CONTAINER": "8899",
+
+        "MONGO_DB_PORT_HOST": "21017",
         # "MONGO_DB_PORT_CONTAINER": 21017,
         # "MONGO_PORT": "${MONGO_DB_PORT_CONTAINER}",
-        # # https://docs.docker.com/compose/how-tos/environment-variables/set-environment-variables/#additional-information-1
+        # # https://docs.docker.com/compose/how-tos/environment-variables/set-environment-variables/#additional
+        # -information-1
         # "ME_CONFIG_BASICAUTH_USERNAME": "web",
         # "ME_CONFIG_BASICAUTH_PASSWORD": "web",
         # "ME_CONFIG_OPTIONS_EDITORTHEME": "darcula",
@@ -103,15 +142,19 @@ def env_base(
 
 
 @asset(
-    group_name="Environment",
+    group_name="Environment_10_2",
     ins={
         "env_base": AssetIn(),
     },
+    deps=[
+        "build_base_image",
+    ],
 )
 def env_10_2(
         context: AssetExecutionContext,
         env_base: dict,
 ) -> dict:
+
     _env: dict = {
         "DEADLINE_VERSION": "10.2.1.1",
 
@@ -127,37 +170,31 @@ def env_10_2(
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            context.asset_key.path[0]: MetadataValue.json(_env),
-
+            context.asset_key.path[0]: MetadataValue.json(env_base),
+            "update": MetadataValue.json(_env),
         },
     )
 
 
 @asset(
-    group_name="Build_Images",
+    group_name="Build_Base_Image",
     ins={
-        "env_10_2": AssetIn(),
+        "env_base": AssetIn(),
     },
 )
 def build_base_image(
         context: AssetExecutionContext,
-        env_10_2: dict,
+        env_base: dict,
 ):
     """
-    docker build  \
-    --tag michimussato/repo_base:latest  \
-    --build-arg PYTHON_MAJ=3  \
-    --build-arg PYTHON_MIN=11  \
-    --build-arg PYTHON_PAT=11  \
-    .
     """
 
     docker_file = pathlib.Path("/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/Dockerfile")
     tag = "michimussato/base_image:latest"
     buildargs = {
-        "PYTHON_MAJ": env_10_2.get("PYTHON_MAJ"),
-        "PYTHON_MIN": env_10_2.get("PYTHON_MIN"),
-        "PYTHON_PAT": env_10_2.get("PYTHON_PAT"),
+        "PYTHON_MAJ": env_base.get("PYTHON_MAJ"),
+        "PYTHON_MIN": env_base.get("PYTHON_MIN"),
+        "PYTHON_PAT": env_base.get("PYTHON_PAT"),
     }
 
     with open(docker_file, "r") as fr:
@@ -165,10 +202,15 @@ def build_base_image(
 
     context.log.info(f"{buildargs = }")
 
-    client = docker.from_env()
+    base_image, build_logs = docker_build(
+        docker_file=docker_file,
+        tag=tag,
+        buildargs=buildargs,
+        nocache=True,
+    )
 
-    base_image, build_logs = client.images.build(
-        path=docker_file.parent.as_posix(),
+    cmds_docker = compile_cmds(
+        docker_file=docker_file,
         tag=tag,
         buildargs=buildargs,
     )
@@ -179,14 +221,15 @@ def build_base_image(
         asset_key=context.asset_key,
         metadata={
             "image_id": MetadataValue.json(base_image.id),
+            **cmds_docker,
             "build_logs": MetadataValue.md(f"```shell\n{get_log(build_logs)}\n```"),
-            "env_10_2": MetadataValue.json(env_10_2),
+            "env_10_2": MetadataValue.json(env_base),
         },
     )
 
 
 @asset(
-    group_name="Build_Images",
+    group_name="Build_Images_10_2",
     ins={
         "env_10_2": AssetIn(),
     },
@@ -199,25 +242,36 @@ def build_base_image_10_2(
         env_10_2: dict,
 ):
     """
-    docker run --rm -it --entrypoint bash michimussato/base_image_10_2:latest
     """
 
-    docker_file = pathlib.Path("/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/base_image_10_2/Dockerfile")
+    docker_file = pathlib.Path(
+        "/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/base_image_10_2/Dockerfile")
 
     context.log.info(f"{docker_file.as_posix() = }")
 
     tag = "michimussato/base_image_10_2:latest"
     buildargs = {
+        "PYTHON_MAJ": env_10_2.get("PYTHON_MAJ"),
+        "PYTHON_MIN": env_10_2.get("PYTHON_MIN"),
+        "PYTHON_PAT": env_10_2.get("PYTHON_PAT"),
         "GOOGLE_API_KEY": env_10_2.get("GOOGLE_API_KEY"),
         "GOOGLE_ID_AWSPortalLink_10_2": env_10_2.get("GOOGLE_ID_AWSPortalLink_10_2"),
         "GOOGLE_ID_DeadlineClient_10_2": env_10_2.get("GOOGLE_ID_DeadlineClient_10_2"),
         "GOOGLE_ID_DeadlineRepository_10_2": env_10_2.get("GOOGLE_ID_DeadlineRepository_10_2"),
     }
 
-    client = docker.from_env()
+    with open(docker_file, "r") as fr:
+        context.log.info(fr.read())
 
-    base_image, build_logs = client.images.build(
-        path=docker_file.parent.as_posix(),
+    base_image, build_logs = docker_build(
+        docker_file=docker_file,
+        tag=tag,
+        buildargs=buildargs,
+        nocache=True,
+    )
+
+    cmds_docker = compile_cmds(
+        docker_file=docker_file,
         tag=tag,
         buildargs=buildargs,
     )
@@ -228,6 +282,7 @@ def build_base_image_10_2(
         asset_key=context.asset_key,
         metadata={
             "image_id": MetadataValue.json(base_image.id),
+            **cmds_docker,
             "build_logs": MetadataValue.md(f"```shell\n{get_log(build_logs)}\n```"),
             "env_10_2": MetadataValue.json(env_10_2),
         },
@@ -235,7 +290,7 @@ def build_base_image_10_2(
 
 
 @asset(
-    group_name="Build_Images",
+    group_name="Build_Images_10_2",
     ins={
         "env_10_2": AssetIn(),
     },
@@ -243,29 +298,33 @@ def build_base_image_10_2(
         "build_base_image_10_2"
     ],
 )
-def build_repo_installer_10_2(
+def build_repository_image_10_2(
         context: AssetExecutionContext,
         env_10_2: dict,
 ):
     """
-    docker build  \
-    --tag michimussato/repo_installer:latest  \
-    --build-arg DEADLINE_VERSION=10.2.1.1  \
-    --build-arg INSTALLERS_ROOT=/data/share/nfs/installers  \
-    .
     """
 
-    docker_file = pathlib.Path("/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/base_image_10_2/repo_installer/Dockerfile")
-    tag = "michimussato/repo_installer:latest"
+    docker_file = pathlib.Path(
+        "/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/base_image_10_2/repo_installer/Dockerfile")
+    tag = "michimussato/repository_image_10_2:latest"
     buildargs = {
         "DEADLINE_VERSION": env_10_2.get("DEADLINE_VERSION"),
-        "INSTALLERS_ROOT": env_10_2.get("INSTALLERS_ROOT"),
+        "MONGO_DB_PORT_HOST": env_10_2.get("MONGO_DB_PORT_HOST"),
     }
 
-    client = docker.from_env()
+    with open(docker_file, "r") as fr:
+        context.log.info(fr.read())
 
-    base_image, build_logs = client.images.build(
-        path=docker_file.parent.as_posix(),
+    base_image, build_logs = docker_build(
+        docker_file=docker_file,
+        tag=tag,
+        buildargs=buildargs,
+        nocache=True,
+    )
+
+    cmds_docker = compile_cmds(
+        docker_file=docker_file,
         tag=tag,
         buildargs=buildargs,
     )
@@ -276,6 +335,7 @@ def build_repo_installer_10_2(
         asset_key=context.asset_key,
         metadata={
             "image_id": MetadataValue.json(base_image.id),
+            **cmds_docker,
             "build_logs": MetadataValue.md(f"```shell\n{get_log(build_logs)}\n```"),
             "env_10_2": MetadataValue.json(env_10_2),
         },
@@ -283,7 +343,7 @@ def build_repo_installer_10_2(
 
 
 @asset(
-    group_name="Build_Images",
+    group_name="Build_Images_10_2",
     ins={
         "env_10_2": AssetIn(),
     },
@@ -291,29 +351,35 @@ def build_repo_installer_10_2(
         "build_base_image_10_2"
     ],
 )
-def build_client_installer_10_2(
+def build_client_image_10_2(
         context: AssetExecutionContext,
         env_10_2: dict,
 ):
     """
-docker build  \
-    --tag michimussato/client_installer:latest  \
-    --build-arg DEADLINE_VERSION=10.2.1.1  \
-    --build-arg INSTALLERS_ROOT=/data/share/nfs/installers  \
-    .
     """
 
-    docker_file = pathlib.Path("/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/base_image_10_2/client_installer/Dockerfile")
-    tag = "michimussato/client_installer:latest"
+    docker_file = pathlib.Path(
+        "/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/base_image_10_2/client_installer"
+        "/Dockerfile")
+    tag = "michimussato/client_image_10_2:latest"
     buildargs = {
         "DEADLINE_VERSION": env_10_2.get("DEADLINE_VERSION"),
-        "INSTALLERS_ROOT": env_10_2.get("INSTALLERS_ROOT"),
+        "RCS_HTTP_PORT_CONTAINER": env_10_2.get("RCS_HTTP_PORT_CONTAINER"),
+        "WEBSERVICE_HTTP_PORT_CONTAINER": env_10_2.get("WEBSERVICE_HTTP_PORT_CONTAINER"),
     }
 
-    client = docker.from_env()
+    with open(docker_file, "r") as fr:
+        context.log.info(fr.read())
 
-    base_image, build_logs = client.images.build(
-        path=docker_file.parent.as_posix(),
+    base_image, build_logs = docker_build(
+        docker_file=docker_file,
+        tag=tag,
+        buildargs=buildargs,
+        nocache=True,
+    )
+
+    cmds_docker = compile_cmds(
+        docker_file=docker_file,
         tag=tag,
         buildargs=buildargs,
     )
@@ -324,6 +390,7 @@ docker build  \
         asset_key=context.asset_key,
         metadata={
             "image_id": MetadataValue.json(base_image.id),
+            **cmds_docker,
             "build_logs": MetadataValue.md(f"```shell\n{get_log(build_logs)}\n```"),
             "env_10_2": MetadataValue.json(env_10_2),
         },
@@ -331,9 +398,9 @@ docker build  \
 
 
 @asset(
-    group_name="Build_Images",
+    group_name="Common_Service_Images",
     ins={
-        "env_10_2": AssetIn(),
+        "env_base": AssetIn(),
     },
     deps=[
         "build_base_image"
@@ -341,27 +408,31 @@ docker build  \
 )
 def build_dagster_dev(
         context: AssetExecutionContext,
-        env_10_2: dict,
+        env_base: dict,
 ):
     """
-docker build  \
-    --tag michimussato/dagster_dev:latest  \
-    --build-arg PYTHON_MAJ=3  \
-    --build-arg PYTHON_MIN=11  \
-    .
     """
 
-    docker_file = pathlib.Path("/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/dagster_dev/Dockerfile")
+    docker_file = pathlib.Path(
+        "/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/dagster_dev/Dockerfile")
     tag = "michimussato/dagster_dev:latest"
     buildargs = {
-        "PYTHON_MAJ": env_10_2.get("PYTHON_MAJ"),
-        "PYTHON_MIN": env_10_2.get("PYTHON_MIN"),
+        "PYTHON_MAJ": env_base.get("PYTHON_MAJ"),
+        "PYTHON_MIN": env_base.get("PYTHON_MIN"),
     }
 
-    client = docker.from_env()
+    with open(docker_file, "r") as fr:
+        context.log.info(fr.read())
 
-    base_image, build_logs = client.images.build(
-        path=docker_file.parent.as_posix(),
+    base_image, build_logs = docker_build(
+        docker_file=docker_file,
+        tag=tag,
+        buildargs=buildargs,
+        nocache=True,
+    )
+
+    cmds_docker = compile_cmds(
+        docker_file=docker_file,
         tag=tag,
         buildargs=buildargs,
     )
@@ -372,16 +443,17 @@ docker build  \
         asset_key=context.asset_key,
         metadata={
             "image_id": MetadataValue.json(base_image.id),
+            **cmds_docker,
             "build_logs": MetadataValue.md(f"```shell\n{get_log(build_logs)}\n```"),
-            "env_10_2": MetadataValue.json(env_10_2),
+            "env_10_2": MetadataValue.json(env_base),
         },
     )
 
 
 @asset(
-    group_name="Build_Images",
+    group_name="Common_Service_Images",
     ins={
-        "env_10_2": AssetIn(),
+        "env_base": AssetIn(),
     },
     deps=[
         "build_base_image"
@@ -389,23 +461,28 @@ docker build  \
 )
 def build_likec4_dev(
         context: AssetExecutionContext,
-        env_10_2: dict,
+        env_base: dict,
 ):
     """
-docker build  \
-    --tag michimussato/likec4_dev:latest  \
-    .
     """
 
-    docker_file = pathlib.Path("/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/likec4_dev/Dockerfile")
+    docker_file = pathlib.Path(
+        "/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/likec4_dev/Dockerfile")
     tag = "michimussato/likec4_dev:latest"
-    buildargs = {
-    }
+    buildargs = {}
 
-    client = docker.from_env()
+    with open(docker_file, "r") as fr:
+        context.log.info(fr.read())
 
-    base_image, build_logs = client.images.build(
-        path=docker_file.parent.as_posix(),
+    base_image, build_logs = docker_build(
+        docker_file=docker_file,
+        tag=tag,
+        buildargs=buildargs,
+        nocache=True,
+    )
+
+    cmds_docker = compile_cmds(
+        docker_file=docker_file,
         tag=tag,
         buildargs=buildargs,
     )
@@ -416,56 +493,63 @@ docker build  \
         asset_key=context.asset_key,
         metadata={
             "image_id": MetadataValue.json(base_image.id),
-
+            **cmds_docker,
             "build_logs": MetadataValue.md(f"```shell\n{get_log(build_logs)}\n```"),
-            "env_10_2": MetadataValue.json(env_10_2),
+            "env_10_2": MetadataValue.json(env_base),
         },
     )
 
 
-@asset(
-    group_name="Build_Images",
-    ins={
-        "env_10_2": AssetIn(),
-    },
-    deps=[
-        "build_client_installer_10_2"
-    ],
-)
-def build_generic_runner_10_2(
-        context: AssetExecutionContext,
-        env_10_2: dict,
-):
-    """
-docker build  \
-    --tag michimussato/generic_runner:latest  \
-    .
-    """
-
-    docker_file = pathlib.Path("/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/base_image_10_2/client_installer/generic_runner/Dockerfile")
-    tag = "michimussato/generic_runner:latest"
-    buildargs = {
-    }
-
-    client = docker.from_env()
-
-    base_image, build_logs = client.images.build(
-        path=docker_file.parent.as_posix(),
-        tag=tag,
-        buildargs=buildargs,
-    )
-
-    yield Output(base_image.id)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "image_id": MetadataValue.json(base_image.id),
-            "build_logs": MetadataValue.md(f"```shell\n{get_log(build_logs)}\n```"),
-            "env_10_2": MetadataValue.json(env_10_2),
-        },
-    )
-
+# @asset(
+#     group_name="Build_Images_10_2",
+#     ins={
+#         "env_10_2": AssetIn(),
+#     },
+#     deps=[
+#         "build_client_image_10_2"
+#     ],
+# )
+# def build_generic_runner_10_2(
+#         context: AssetExecutionContext,
+#         env_10_2: dict,
+# ):
+#     """
+#     docker run --rm -it --entrypoint bash michimussato/generic_runner:latest
+#     """
+#
+#     docker_file = pathlib.Path(
+#         "/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/base_image_10_2/client_installer"
+#         "/generic_runner/Dockerfile")
+#     tag = "michimussato/generic_runner:latest"
+#     buildargs = {}
+#
+#     with open(docker_file, "r") as fr:
+#         context.log.info(fr.read())
+#
+#     base_image, build_logs = docker_build(
+#         docker_file=docker_file,
+#         tag=tag,
+#         buildargs=buildargs,
+#         nocache=True,
+#     )
+#
+#     cmds_docker = compile_cmds(
+#         docker_file=docker_file,
+#         tag=tag,
+#         buildargs=buildargs,
+#     )
+#
+#     yield Output(base_image.id)
+#
+#     yield AssetMaterialization(
+#         asset_key=context.asset_key,
+#         metadata={
+#             "image_id": MetadataValue.json(base_image.id),
+#             **cmds_docker,
+#             "build_logs": MetadataValue.md(f"```shell\n{get_log(build_logs)}\n```"),
+#             "env_10_2": MetadataValue.json(env_10_2),
+#         },
+#     )
 
 # @asset(
 #     group_name="Docker_Swarm",
@@ -531,7 +615,8 @@ docker build  \
 #             "--tlsMode", "disabled",
 #         ],
 #         mounts=[
-#             "${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data",
+#             "${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox
+#             /DeadlineDatabase10/mongo/data",
 #             "${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}:ro",
 #             "${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro",
 #         ],
