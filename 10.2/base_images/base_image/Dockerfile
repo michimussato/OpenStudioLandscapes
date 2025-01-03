@@ -18,6 +18,7 @@ RUN apt-get install \
     --no-install-recommends \
     git \
     ca-certificates \
+    htop  \
     file  \
     tzdata  \
     curl  \
