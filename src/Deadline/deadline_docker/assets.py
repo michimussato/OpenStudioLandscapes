@@ -1,6 +1,6 @@
 import pathlib
 
-import docker
+from python_on_whales import docker
 
 from dagster import (AssetExecutionContext,
                      asset,
@@ -9,37 +9,7 @@ from dagster import (AssetExecutionContext,
                      MetadataValue,
                      AssetIn)
 
-NO_CACHE = True
-
-
-def docker_build(
-        docker_file: pathlib.Path,
-        tag: str,
-        buildargs: dict,
-        nocache: bool = NO_CACHE,
-):
-    client = docker.from_env()
-
-    base_image, build_logs = client.images.build(
-        path=docker_file.parent.as_posix(),
-        tag=tag,
-        buildargs=buildargs,
-        nocache=nocache,
-    )
-
-    return base_image, build_logs
-
-
-def get_log(
-        build_logs,
-) -> str:
-    log: str = ""
-    for chunk in build_logs:
-        if 'stream' in chunk:
-            for line in chunk['stream'].splitlines():
-                log += f'\n{line}'
-
-    return log
+USE_CACHE = False
 
 
 def compile_cmds(
@@ -50,7 +20,7 @@ def compile_cmds(
     cmd_docker_run = f"docker run --rm -it --entrypoint bash {tag}"
     _cmd_docker_build_buildargs = ' '.join(f"--build-arg {k}={v}" for k, v in buildargs.items())
     cmd_docker_build = (f"docker build --tag {tag} {_cmd_docker_build_buildargs} {docker_file.parent.as_posix()} "
-                        f"{'--no-cache' if NO_CACHE else ''}")
+                        f"{'--no-cache' if USE_CACHE else ''}")
 
     metadata_values = {
         "cmd_docker_run": MetadataValue.path(cmd_docker_run),
@@ -197,16 +167,23 @@ def build_base_image(
     }
 
     with open(docker_file, "r") as fr:
-        context.log.info(fr.read())
+        docker_file_content = fr.read()
 
     context.log.info(f"{buildargs = }")
 
-    base_image, build_logs = docker_build(
-        docker_file=docker_file,
-        tag=tag,
-        buildargs=buildargs,
-        nocache=True,
+    stream = docker.build(
+        context_path=docker_file.parent.as_posix(),
+        build_args=buildargs,
+        cache=USE_CACHE,
+        tags=tag,
+        stream_logs=True,
     )
+
+    log: str = ""
+
+    for msg in stream:
+        context.log.debug(msg)
+        log += msg
 
     cmds_docker = compile_cmds(
         docker_file=docker_file,
@@ -214,15 +191,16 @@ def build_base_image(
         buildargs=buildargs,
     )
 
-    yield Output(base_image.id)
+    yield Output(docker_file)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "image_id": MetadataValue.json(base_image.id),
+            context.asset_key.path[0]: MetadataValue.path(docker_file),
+            "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
             **cmds_docker,
-            "build_logs": MetadataValue.md(f"```shell\n{get_log(build_logs)}\n```"),
-            "env_10_2": MetadataValue.json(env_base),
+            "build_logs": MetadataValue.md(f"```shell\n{log}\n```"),
+            "env_base": MetadataValue.json(env_base),
         },
     )
 
@@ -260,14 +238,23 @@ def build_base_image_10_2(
     }
 
     with open(docker_file, "r") as fr:
-        context.log.info(fr.read())
+        docker_file_content = fr.read()
 
-    base_image, build_logs = docker_build(
-        docker_file=docker_file,
-        tag=tag,
-        buildargs=buildargs,
-        nocache=True,
+    context.log.info(f"{buildargs = }")
+
+    stream = docker.build(
+        context_path=docker_file.parent.as_posix(),
+        build_args=buildargs,
+        cache=USE_CACHE,
+        tags=tag,
+        stream_logs=True,
     )
+
+    log: str = ""
+
+    for msg in stream:
+        context.log.debug(msg)
+        log += msg
 
     cmds_docker = compile_cmds(
         docker_file=docker_file,
@@ -275,14 +262,15 @@ def build_base_image_10_2(
         buildargs=buildargs,
     )
 
-    yield Output(base_image.id)
+    yield Output(docker_file)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "image_id": MetadataValue.json(base_image.id),
+            context.asset_key.path[0]: MetadataValue.path(docker_file),
+            "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
             **cmds_docker,
-            "build_logs": MetadataValue.md(f"```shell\n{get_log(build_logs)}\n```"),
+            "build_logs": MetadataValue.md(f"```shell\n{log}\n```"),
             "env_10_2": MetadataValue.json(env_10_2),
         },
     )
@@ -313,14 +301,23 @@ def build_repository_image_10_2(
     }
 
     with open(docker_file, "r") as fr:
-        context.log.info(fr.read())
+        docker_file_content = fr.read()
 
-    base_image, build_logs = docker_build(
-        docker_file=docker_file,
-        tag=tag,
-        buildargs=buildargs,
-        nocache=True,
+    context.log.info(f"{buildargs = }")
+
+    stream = docker.build(
+        context_path=docker_file.parent.as_posix(),
+        build_args=buildargs,
+        cache=USE_CACHE,
+        tags=tag,
+        stream_logs=True,
     )
+
+    log: str = ""
+
+    for msg in stream:
+        context.log.debug(msg)
+        log += msg
 
     cmds_docker = compile_cmds(
         docker_file=docker_file,
@@ -328,14 +325,15 @@ def build_repository_image_10_2(
         buildargs=buildargs,
     )
 
-    yield Output(base_image.id)
+    yield Output(docker_file)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "image_id": MetadataValue.json(base_image.id),
+            context.asset_key.path[0]: MetadataValue.path(docker_file),
+            "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
             **cmds_docker,
-            "build_logs": MetadataValue.md(f"```shell\n{get_log(build_logs)}\n```"),
+            "build_logs": MetadataValue.md(f"```shell\n{log}\n```"),
             "env_10_2": MetadataValue.json(env_10_2),
         },
     )
@@ -368,14 +366,23 @@ def build_client_image_10_2(
     }
 
     with open(docker_file, "r") as fr:
-        context.log.info(fr.read())
+        docker_file_content = fr.read()
 
-    base_image, build_logs = docker_build(
-        docker_file=docker_file,
-        tag=tag,
-        buildargs=buildargs,
-        nocache=True,
+    context.log.info(f"{buildargs = }")
+
+    stream = docker.build(
+        context_path=docker_file.parent.as_posix(),
+        build_args=buildargs,
+        cache=USE_CACHE,
+        tags=tag,
+        stream_logs=True,
     )
+
+    log: str = ""
+
+    for msg in stream:
+        context.log.debug(msg)
+        log += msg
 
     cmds_docker = compile_cmds(
         docker_file=docker_file,
@@ -383,14 +390,15 @@ def build_client_image_10_2(
         buildargs=buildargs,
     )
 
-    yield Output(base_image.id)
+    yield Output(docker_file)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "image_id": MetadataValue.json(base_image.id),
+            context.asset_key.path[0]: MetadataValue.path(docker_file),
+            "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
             **cmds_docker,
-            "build_logs": MetadataValue.md(f"```shell\n{get_log(build_logs)}\n```"),
+            "build_logs": MetadataValue.md(f"```shell\n{log}\n```"),
             "env_10_2": MetadataValue.json(env_10_2),
         },
     )
@@ -421,14 +429,23 @@ def build_dagster_dev(
     }
 
     with open(docker_file, "r") as fr:
-        context.log.info(fr.read())
+        docker_file_content = fr.read()
 
-    base_image, build_logs = docker_build(
-        docker_file=docker_file,
-        tag=tag,
-        buildargs=buildargs,
-        nocache=True,
+    context.log.info(f"{buildargs = }")
+
+    stream = docker.build(
+        context_path=docker_file.parent.as_posix(),
+        build_args=buildargs,
+        cache=USE_CACHE,
+        tags=tag,
+        stream_logs=True,
     )
+
+    log: str = ""
+
+    for msg in stream:
+        context.log.debug(msg)
+        log += msg
 
     cmds_docker = compile_cmds(
         docker_file=docker_file,
@@ -436,15 +453,16 @@ def build_dagster_dev(
         buildargs=buildargs,
     )
 
-    yield Output(base_image.id)
+    yield Output(docker_file)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "image_id": MetadataValue.json(base_image.id),
+            context.asset_key.path[0]: MetadataValue.path(docker_file),
+            "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
             **cmds_docker,
-            "build_logs": MetadataValue.md(f"```shell\n{get_log(build_logs)}\n```"),
-            "env_10_2": MetadataValue.json(env_base),
+            "build_logs": MetadataValue.md(f"```shell\n{log}\n```"),
+            "env_base": MetadataValue.json(env_base),
         },
     )
 
@@ -471,14 +489,23 @@ def build_likec4_dev(
     buildargs = {}
 
     with open(docker_file, "r") as fr:
-        context.log.info(fr.read())
+        docker_file_content = fr.read()
 
-    base_image, build_logs = docker_build(
-        docker_file=docker_file,
-        tag=tag,
-        buildargs=buildargs,
-        nocache=True,
+    context.log.info(f"{buildargs = }")
+
+    stream = docker.build(
+        context_path=docker_file.parent.as_posix(),
+        build_args=buildargs,
+        cache=USE_CACHE,
+        tags=tag,
+        stream_logs=True,
     )
+
+    log: str = ""
+
+    for msg in stream:
+        context.log.debug(msg)
+        log += msg
 
     cmds_docker = compile_cmds(
         docker_file=docker_file,
@@ -486,15 +513,16 @@ def build_likec4_dev(
         buildargs=buildargs,
     )
 
-    yield Output(base_image.id)
+    yield Output(docker_file)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "image_id": MetadataValue.json(base_image.id),
+            context.asset_key.path[0]: MetadataValue.path(docker_file),
+            "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
             **cmds_docker,
-            "build_logs": MetadataValue.md(f"```shell\n{get_log(build_logs)}\n```"),
-            "env_10_2": MetadataValue.json(env_base),
+            "build_logs": MetadataValue.md(f"```shell\n{log}\n```"),
+            "env_base": MetadataValue.json(env_base),
         },
     )
 
@@ -589,10 +617,10 @@ def filebrowser(
         metadata={
             context.asset_key.path[0]: MetadataValue.int(80),
             "url": MetadataValue.url("http://localhost:80/"),
-            "image_id": MetadataValue.json(container.id),
+            "docker_file": MetadataValue.json(container.id),
             # **cmds_docker,
             # "build_logs": MetadataValue.md(f"```shell\n{get_log(build_logs)}\n```"),
-            "env_10_2": MetadataValue.json(env_base),
+            "env_base": MetadataValue.json(env_base),
         },
     )
 
@@ -640,7 +668,7 @@ def filebrowser(
 #     yield AssetMaterialization(
 #         asset_key=context.asset_key,
 #         metadata={
-#             "image_id": MetadataValue.json(base_image.id),
+#             "docker_file": MetadataValue.json(base_image.id),
 #             **cmds_docker,
 #             "build_logs": MetadataValue.md(f"```shell\n{get_log(build_logs)}\n```"),
 #             "env_10_2": MetadataValue.json(env_10_2),
