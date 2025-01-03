@@ -191,12 +191,12 @@ def build_base_image(
         buildargs=buildargs,
     )
 
-    yield Output(docker_file)
+    yield Output(tag)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            context.asset_key.path[0]: MetadataValue.path(docker_file),
+            context.asset_key.path[0]: MetadataValue.path(tag),
             "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
             **cmds_docker,
             "build_logs": MetadataValue.md(f"```shell\n{log}\n```"),
@@ -262,12 +262,12 @@ def build_base_image_10_2(
         buildargs=buildargs,
     )
 
-    yield Output(docker_file)
+    yield Output(tag)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            context.asset_key.path[0]: MetadataValue.path(docker_file),
+            context.asset_key.path[0]: MetadataValue.path(tag),
             "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
             **cmds_docker,
             "build_logs": MetadataValue.md(f"```shell\n{log}\n```"),
@@ -325,12 +325,12 @@ def build_repository_image_10_2(
         buildargs=buildargs,
     )
 
-    yield Output(docker_file)
+    yield Output(tag)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            context.asset_key.path[0]: MetadataValue.path(docker_file),
+            context.asset_key.path[0]: MetadataValue.path(tag),
             "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
             **cmds_docker,
             "build_logs": MetadataValue.md(f"```shell\n{log}\n```"),
@@ -390,12 +390,12 @@ def build_client_image_10_2(
         buildargs=buildargs,
     )
 
-    yield Output(docker_file)
+    yield Output(tag)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            context.asset_key.path[0]: MetadataValue.path(docker_file),
+            context.asset_key.path[0]: MetadataValue.path(tag),
             "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
             **cmds_docker,
             "build_logs": MetadataValue.md(f"```shell\n{log}\n```"),
@@ -453,12 +453,12 @@ def build_dagster_dev(
         buildargs=buildargs,
     )
 
-    yield Output(docker_file)
+    yield Output(tag)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            context.asset_key.path[0]: MetadataValue.path(docker_file),
+            context.asset_key.path[0]: MetadataValue.path(tag),
             "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
             **cmds_docker,
             "build_logs": MetadataValue.md(f"```shell\n{log}\n```"),
@@ -513,12 +513,12 @@ def build_likec4_dev(
         buildargs=buildargs,
     )
 
-    yield Output(docker_file)
+    yield Output(tag)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            context.asset_key.path[0]: MetadataValue.path(docker_file),
+            context.asset_key.path[0]: MetadataValue.path(tag),
             "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
             **cmds_docker,
             "build_logs": MetadataValue.md(f"```shell\n{log}\n```"),
