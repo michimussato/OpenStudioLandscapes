@@ -1,4 +1,8 @@
+import json
 import pathlib
+import time
+import yaml
+from collections import ChainMap
 
 from python_on_whales import docker
 
@@ -37,18 +41,18 @@ def env_base(
         context: AssetExecutionContext,
 ) -> dict:
     _env: dict = {
-        # "MONGO_EXPRESS_PORT_HOST": 8080,
-        # "MONGO_EXPRESS_PORT_CONTAINER": 8081,
+        "MONGO_EXPRESS_PORT_HOST": "8080",
+        "MONGO_EXPRESS_PORT_CONTAINER": "8081",
         # "MONGO_DB_NAME": "deadline10db",
 
         # "LIKEC4_DEV_PORT_HOST": 4567,
         # "LIKEC4_DEV_PORT_CONTAINER": 4567,
 
-        # "FILEBROWSER_PORT_HOST": 86,
-        # "FILEBROWSER_PORT_CONTAINER": 80,
+        "FILEBROWSER_PORT_HOST": "86",
+        "FILEBROWSER_PORT_CONTAINER": "80",
 
-        # "DAGSTER_DEV_PORT_HOST": 3003,
-        # "DAGSTER_DEV_PORT_CONTAINER": 3006,
+        "DAGSTER_DEV_PORT_HOST": "3003",
+        "DAGSTER_DEV_PORT_CONTAINER": "3006",
         # "DAGSTER_HOME": "/dagster/materializations",
         # "DAGSTER_WORKSPACE": "/dagster/workspace.yaml",
 
@@ -59,7 +63,7 @@ def env_base(
         "WEBSERVICE_HTTP_PORT_CONTAINER": "8899",
 
         "MONGO_DB_PORT_HOST": "21017",
-        # "MONGO_DB_PORT_CONTAINER": 21017,
+        "MONGO_DB_PORT_CONTAINER": "21017",
         # "MONGO_PORT": "${MONGO_DB_PORT_CONTAINER}",
         # # https://docs.docker.com/compose/how-tos/environment-variables/set-environment-variables/#additional
         # -information-1
@@ -76,7 +80,7 @@ def env_base(
         # "KITSU_PORT_CONTAINER": 80,
         # #"SECRETS_USERNAME": "SecretsAdmin",
         # #"SECRETS_PASSWORD": "%ecretsPassw0rd!",
-        # "ROOT_DOMAIN": "farm.evil",
+        "ROOT_DOMAIN": "farm.evil",
         # "DB_HOST": "mongodb-10-2",
 
         "GOOGLE_API_KEY": "AIzaSyBBH8zUH4VC1Bov-3EdVbjG0gBauroMd9E",
@@ -86,8 +90,8 @@ def env_base(
         "PYTHON_MIN": "11",
         "PYTHON_PAT": "11",
 
-        # "NFS_ENTRY_POINT": "/data/share/nfs",
-        # "NFS_ENTRY_POINT_LNS": "/nfs",
+        "NFS_ENTRY_POINT": "/data/share/nfs",
+        "NFS_ENTRY_POINT_LNS": "/nfs",
         "INSTALLERS_ROOT": "/data/share/nfs/installers",
 
         # # TODO
@@ -154,12 +158,15 @@ def env_10_2(
 def build_base_image(
         context: AssetExecutionContext,
         env_base: dict,
-):
+) -> str:
     """
     """
 
     docker_file = pathlib.Path("/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/Dockerfile")
-    tag = "michimussato/base_image:latest"
+    tags = [
+        "michimussato/base_image:latest",
+        f"michimussato/base_image:{str(time.time())}",
+    ]
     buildargs = {
         "PYTHON_MAJ": env_base.get("PYTHON_MAJ"),
         "PYTHON_MIN": env_base.get("PYTHON_MIN"),
@@ -175,7 +182,7 @@ def build_base_image(
         context_path=docker_file.parent.as_posix(),
         build_args=buildargs,
         cache=USE_CACHE,
-        tags=tag,
+        tags=tags,
         stream_logs=True,
     )
 
@@ -187,16 +194,16 @@ def build_base_image(
 
     cmds_docker = compile_cmds(
         docker_file=docker_file,
-        tag=tag,
+        tag=tags[1],
         buildargs=buildargs,
     )
 
-    yield Output(tag)
+    yield Output(tags[1])
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            context.asset_key.path[0]: MetadataValue.path(tag),
+            context.asset_key.path[0]: MetadataValue.path(tags[1]),
             "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
             **cmds_docker,
             "build_logs": MetadataValue.md(f"```shell\n{log}\n```"),
@@ -217,7 +224,7 @@ def build_base_image(
 def build_base_image_10_2(
         context: AssetExecutionContext,
         env_10_2: dict,
-):
+) -> str:
     """
     """
 
@@ -226,7 +233,10 @@ def build_base_image_10_2(
 
     context.log.info(f"{docker_file.as_posix() = }")
 
-    tag = "michimussato/base_image_10_2:latest"
+    tags = [
+        "michimussato/base_image_10_2:latest",
+        f"michimussato/base_image_10_2:{str(time.time())}",
+    ]
     buildargs = {
         "PYTHON_MAJ": env_10_2.get("PYTHON_MAJ"),
         "PYTHON_MIN": env_10_2.get("PYTHON_MIN"),
@@ -246,7 +256,7 @@ def build_base_image_10_2(
         context_path=docker_file.parent.as_posix(),
         build_args=buildargs,
         cache=USE_CACHE,
-        tags=tag,
+        tags=tags,
         stream_logs=True,
     )
 
@@ -258,16 +268,16 @@ def build_base_image_10_2(
 
     cmds_docker = compile_cmds(
         docker_file=docker_file,
-        tag=tag,
+        tag=tags[1],
         buildargs=buildargs,
     )
 
-    yield Output(tag)
+    yield Output(tags[1])
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            context.asset_key.path[0]: MetadataValue.path(tag),
+            context.asset_key.path[0]: MetadataValue.path(tags[1]),
             "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
             **cmds_docker,
             "build_logs": MetadataValue.md(f"```shell\n{log}\n```"),
@@ -288,13 +298,16 @@ def build_base_image_10_2(
 def build_repository_image_10_2(
         context: AssetExecutionContext,
         env_10_2: dict,
-):
+) -> str:
     """
     """
 
     docker_file = pathlib.Path(
         "/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/base_image_10_2/repo_installer/Dockerfile")
-    tag = "michimussato/repository_image_10_2:latest"
+    tags = [
+        "michimussato/repository_image_10_2:latest",
+        f"michimussato/repository_image_10_2:{str(time.time())}",
+    ]
     buildargs = {
         "DEADLINE_VERSION": env_10_2.get("DEADLINE_VERSION"),
         "MONGO_DB_PORT_HOST": env_10_2.get("MONGO_DB_PORT_HOST"),
@@ -309,7 +322,7 @@ def build_repository_image_10_2(
         context_path=docker_file.parent.as_posix(),
         build_args=buildargs,
         cache=USE_CACHE,
-        tags=tag,
+        tags=tags,
         stream_logs=True,
     )
 
@@ -321,16 +334,16 @@ def build_repository_image_10_2(
 
     cmds_docker = compile_cmds(
         docker_file=docker_file,
-        tag=tag,
+        tag=tags[1],
         buildargs=buildargs,
     )
 
-    yield Output(tag)
+    yield Output(tags[1])
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            context.asset_key.path[0]: MetadataValue.path(tag),
+            context.asset_key.path[0]: MetadataValue.path(tags[1]),
             "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
             **cmds_docker,
             "build_logs": MetadataValue.md(f"```shell\n{log}\n```"),
@@ -351,14 +364,17 @@ def build_repository_image_10_2(
 def build_client_image_10_2(
         context: AssetExecutionContext,
         env_10_2: dict,
-):
+) -> str:
     """
     """
 
     docker_file = pathlib.Path(
         "/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/base_image_10_2/client_installer"
         "/Dockerfile")
-    tag = "michimussato/client_image_10_2:latest"
+    tags = [
+        "michimussato/client_image_10_2:latest",
+        f"michimussato/client_image_10_2:{str(time.time())}",
+    ]
     buildargs = {
         "DEADLINE_VERSION": env_10_2.get("DEADLINE_VERSION"),
         "RCS_HTTP_PORT_CONTAINER": env_10_2.get("RCS_HTTP_PORT_CONTAINER"),
@@ -374,7 +390,7 @@ def build_client_image_10_2(
         context_path=docker_file.parent.as_posix(),
         build_args=buildargs,
         cache=USE_CACHE,
-        tags=tag,
+        tags=tags,
         stream_logs=True,
     )
 
@@ -386,16 +402,16 @@ def build_client_image_10_2(
 
     cmds_docker = compile_cmds(
         docker_file=docker_file,
-        tag=tag,
+        tag=tags[1],
         buildargs=buildargs,
     )
 
-    yield Output(tag)
+    yield Output(tags[1])
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            context.asset_key.path[0]: MetadataValue.path(tag),
+            context.asset_key.path[0]: MetadataValue.path(tags[1]),
             "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
             **cmds_docker,
             "build_logs": MetadataValue.md(f"```shell\n{log}\n```"),
@@ -416,13 +432,16 @@ def build_client_image_10_2(
 def build_dagster_dev(
         context: AssetExecutionContext,
         env_base: dict,
-):
+) -> str:
     """
     """
 
     docker_file = pathlib.Path(
         "/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/dagster_dev/Dockerfile")
-    tag = "michimussato/dagster_dev:latest"
+    tags = [
+        "michimussato/dagster_dev:latest",
+        f"michimussato/dagster_dev:{str(time.time())}",
+    ]
     buildargs = {
         "PYTHON_MAJ": env_base.get("PYTHON_MAJ"),
         "PYTHON_MIN": env_base.get("PYTHON_MIN"),
@@ -437,7 +456,7 @@ def build_dagster_dev(
         context_path=docker_file.parent.as_posix(),
         build_args=buildargs,
         cache=USE_CACHE,
-        tags=tag,
+        tags=tags,
         stream_logs=True,
     )
 
@@ -449,16 +468,16 @@ def build_dagster_dev(
 
     cmds_docker = compile_cmds(
         docker_file=docker_file,
-        tag=tag,
+        tag=tags[1],
         buildargs=buildargs,
     )
 
-    yield Output(tag)
+    yield Output(tags[1])
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            context.asset_key.path[0]: MetadataValue.path(tag),
+            context.asset_key.path[0]: MetadataValue.path(tags[1]),
             "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
             **cmds_docker,
             "build_logs": MetadataValue.md(f"```shell\n{log}\n```"),
@@ -479,13 +498,16 @@ def build_dagster_dev(
 def build_likec4_dev(
         context: AssetExecutionContext,
         env_base: dict,
-):
+) -> str:
     """
     """
 
     docker_file = pathlib.Path(
         "/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/likec4_dev/Dockerfile")
-    tag = "michimussato/likec4_dev:latest"
+    tags = [
+        "michimussato/likec4_dev:latest",
+        f"michimussato/likec4_dev:{str(time.time())}",
+    ]
     buildargs = {}
 
     with open(docker_file, "r") as fr:
@@ -497,7 +519,7 @@ def build_likec4_dev(
         context_path=docker_file.parent.as_posix(),
         build_args=buildargs,
         cache=USE_CACHE,
-        tags=tag,
+        tags=tags,
         stream_logs=True,
     )
 
@@ -509,16 +531,16 @@ def build_likec4_dev(
 
     cmds_docker = compile_cmds(
         docker_file=docker_file,
-        tag=tag,
+        tag=tags[1],
         buildargs=buildargs,
     )
 
-    yield Output(tag)
+    yield Output(tags[1])
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            context.asset_key.path[0]: MetadataValue.path(tag),
+            context.asset_key.path[0]: MetadataValue.path(tags[1]),
             "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
             **cmds_docker,
             "build_logs": MetadataValue.md(f"```shell\n{log}\n```"),
@@ -757,3 +779,228 @@ def build_likec4_dev(
 #             "env_10_2": MetadataValue.json(env_10_2),
 #         },
 #     )
+
+
+
+@asset(
+    group_name="Docker_Compose_10_2",
+    ins={
+        "env_base": AssetIn(),
+    },
+)
+def compose_base_services_10_2(
+        context: AssetExecutionContext,
+        env_base: dict,
+) -> dict:
+
+    docker_dict = {
+        "services": {
+            "mongo-express-10-2": {
+                "image": "mongo-express",
+                "hostname": "mongo-express-10-2",
+                "container_name": "mongo-express-10-2",
+                "domainname": env_base.get("ROOT_DOMAIN"),
+                "restart": "always",
+                "depends_on": [
+                    "mongodb-10-2",
+                ],
+                "networks": [
+                    "mongodb",
+                ],
+                "ports": [
+                    f"{env_base.get('MONGO_EXPRESS_PORT_HOST')}:{env_base.get('MONGO_EXPRESS_PORT_CONTAINER')}",
+                ],
+                "volumes": [
+                    f"{env_base.get('NFS_ENTRY_POINT')}/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL"
+                    f":/opt/Thinkbox/DeadlineDatabase10/mongo/data",
+                    f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT')}:ro",
+                    f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT_LNS')}:ro",
+                ],
+            },
+
+            "filebrowser": {
+                "image": "mongo-express",
+                "container_name": "mongo-filebrowser-10-2",
+                "hostname": "mongo-filebrowser-10-2",
+                "domainname": env_base.get("ROOT_DOMAIN"),
+                "restart": "always",
+                "depends_on": [
+                    "mongodb-10-2",
+                ],
+                "networks": [
+                    "repository",
+                ],
+                "ports": [
+                    f"{env_base.get('FILEBROWSER_PORT_HOST')}:{env_base.get('FILEBROWSER_PORT_CONTAINER')}",
+                ],
+                "volumes": [
+                    "./databases/filebrowser/filebrowser.db:/filebrowser.db",
+                    "./configs/filebrowser/filebrowser.json:/.filebrowser.json",
+                    f"{env_base.get('NFS_ENTRY_POINT')}/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL"
+                    f":/opt/Thinkbox/DeadlineDatabase10/mongo/data:ro",
+                    f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT')}:ro",
+                    f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT_LNS')}:ro",
+                ],
+            },
+
+            "mongodb-10-2": {
+                "image": "mongodb/mongodb-community-server:4.4-ubuntu2004",
+                "container_name": "mongodb-10-2",
+                "hostname": "mongodb-10-2",
+                "domainname": env_base.get("ROOT_DOMAIN"),
+                "restart": "always",
+                "depends_on": [
+                    "mongodb-10-2",
+                ],
+                "command": [
+                    "--dbpath", "/opt/Thinkbox/DeadlineDatabase10/mongo/data",
+                    "--bind_ip_all",
+                    "--noauth",
+                    "--storageEngine", "wiredTiger",
+                    "--tlsMode", "disabled",
+                ],
+                "networks": [
+                    "mongodb",
+                    "repository",
+                ],
+                "ports": [
+                    f"{env_base.get('MONGO_DB_PORT_HOST')}:{env_base.get('MONGO_DB_PORT_CONTAINER')}",
+                ],
+                "volumes": [
+                    f"{env_base.get('NFS_ENTRY_POINT')}/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL"
+                    f":/opt/Thinkbox/DeadlineDatabase10/mongo/data",
+                    f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT')}:ro",
+                    f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT_LNS')}:ro",
+                ],
+            },
+        },
+        "networks": {
+            "mongodb": {
+                "name": "network_mongodb-10-2",
+            },
+            "repository": {
+                "name": "network_repository-10-2",
+            },
+            "ayon": {
+                "name": "network_ayon-10-2",
+            },
+        },
+    }
+
+    docker_yaml = yaml.dump(docker_dict)
+
+    yield Output(docker_dict)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            context.asset_key.path[0]: MetadataValue.json(docker_dict),
+            "docker_dict": MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
+            "docker_yaml": MetadataValue.md(f"```shell\n{docker_yaml}\n```"),
+            "env_base": MetadataValue.json(env_base),
+        },
+    )
+
+
+@asset(
+    group_name="Docker_Compose_10_2",
+    ins={
+        "env_base": AssetIn(),
+        "build_likec4_dev": AssetIn(),
+    },
+    deps=[
+        "build_base_image"
+    ],
+)
+def compose_dagster_dev(
+        context: AssetExecutionContext,
+        env_base: dict,
+        build_likec4_dev: str,
+) -> dict:
+    """
+    """
+
+    docker_dict = {
+        "services": {
+            "dagster_dev": {
+                "container_name": "dagster-dev-10-2",
+                "hostname": "dagster-dev-10-2",
+                "domainname": env_base.get("ROOT_DOMAIN"),
+                "restart": "always",
+                "image": build_likec4_dev,
+                "networks": [
+                    "repository",
+                    "mongodb",
+                ],
+                "depends_on": [
+                    "mongodb-10-2",
+                ],
+                "volumes": [
+                    f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT')}",
+                    f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT_LNS')}",
+                ],
+                "ports": [
+                    f"{env_base.get('DAGSTER_DEV_PORT_HOST')}:{env_base.get('DAGSTER_DEV_PORT_CONTAINER')}",
+                ],
+            },
+        },
+    }
+
+    docker_yaml = yaml.dump(docker_dict)
+
+    yield Output(docker_dict)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            context.asset_key.path[0]: MetadataValue.json(docker_dict),
+            "docker_dict": MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
+            "docker_yaml": MetadataValue.md(f"```shell\n{docker_yaml}\n```"),
+            "env_base": MetadataValue.json(env_base),
+        },
+    )
+
+
+@asset(
+    group_name="Docker_Compose_10_2",
+    ins={
+        "env_base": AssetIn(),
+        "compose_base_services_10_2": AssetIn(),
+        "compose_dagster_dev": AssetIn(),
+        # "base_services_10_2": AssetIn(),
+    },
+    # deps=[
+    #     "build_base_image"
+    # ],
+)
+def compose_10_2(
+        context: AssetExecutionContext,
+        env_base: dict,
+        compose_base_services_10_2: dict,
+        compose_dagster_dev: dict,
+        # build_likec4_dev: str,
+        # base_services_10_2: dict,
+) -> ChainMap:
+    """
+    """
+
+    docker_chainmap = ChainMap(
+        compose_dagster_dev,
+        compose_base_services_10_2
+    )
+
+    # docker_chainmap.
+
+    # docker_yaml = yaml.dump(docker_dict)
+
+    yield Output(docker_chainmap)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            context.asset_key.path[0]: MetadataValue.json(docker_chainmap),
+            # "docker_dict": MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
+            # "docker_yaml": MetadataValue.md(f"```shell\n{docker_yaml}\n```"),
+            "env_base": MetadataValue.json(env_base),
+        },
+    )
