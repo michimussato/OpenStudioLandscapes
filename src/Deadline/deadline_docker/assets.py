@@ -1,8 +1,10 @@
 import json
 import pathlib
+import tempfile
 import time
 import yaml
 from collections import ChainMap
+from functools import reduce
 
 from python_on_whales import docker
 
@@ -14,6 +16,16 @@ from dagster import (AssetExecutionContext,
                      AssetIn)
 
 USE_CACHE = False
+
+
+def deep_merge(dict1, dict2):
+    """https://sqlpey.com/python/solved-top-5-methods-to-deep-merge-dictionaries-in-python/"""
+    for key in dict2:
+        if key in dict1 and isinstance(dict1[key], dict) and isinstance(dict2[key], dict):
+            deep_merge(dict1[key], dict2[key])
+        else:
+            dict1[key] = dict2[key]
+    return dict1
 
 
 def compile_cmds(
@@ -436,8 +448,45 @@ def build_dagster_dev(
     """
     """
 
-    docker_file = pathlib.Path(
-        "/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/dagster_dev/Dockerfile")
+    # with tempfile.NamedTemporaryFile(
+    #         delete=False,
+    #         mode="w",
+    #         dir="/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/dagster_dev",
+    #         prefix=context.asset_key.path[0],
+    #         suffix=".Dockerfile",
+    # ) as _docker_file:
+    with open("/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/dagster_dev/Dockerfile", "w") as _docker_file:
+        # _docker_file = tempfile.NamedTemporaryFile(
+        #     delete=False,
+        #     prefix=context.asset_key.path[0],
+        #     suffix=".Dockerfile",
+        # )
+
+        _docker_file.write("""
+FROM michimussato/base_image:latest AS dagster_dev
+LABEL authors="michimussato@gmail.com"
+
+ARG PYTHON_MAJ
+ARG PYTHON_MIN
+
+ENV DAGSTER_HOME="/dagster/materializations"
+
+RUN python${PYTHON_MAJ}.${PYTHON_MIN} -m pip install --root-user-action=ignore "dagster-shared[dagster_dev] @ git+https://github.com/michimussato/dagster-shared.git@main"
+
+WORKDIR /dagster
+COPY ./config/workspace.yaml .
+
+WORKDIR /dagster/materializations
+COPY ./config/materializations/dagster.yaml .
+
+WORKDIR /dagster
+
+ENTRYPOINT ["dagster", "dev"]
+CMD ["--workspace", "/dagster/workspace.yaml", "--host", "0.0.0.0"]
+"""
+                           )
+
+    docker_file = pathlib.Path(_docker_file.name)
     tags = [
         "michimussato/dagster_dev:latest",
         f"michimussato/dagster_dev:{str(time.time())}",
@@ -447,6 +496,11 @@ def build_dagster_dev(
         "PYTHON_MIN": env_base.get("PYTHON_MIN"),
     }
 
+    context.log.info(_docker_file.name)
+    context.log.info(_docker_file.name)
+    context.log.info(_docker_file.name)
+    context.log.info(_docker_file.name)
+
     with open(docker_file, "r") as fr:
         docker_file_content = fr.read()
 
@@ -454,6 +508,7 @@ def build_dagster_dev(
 
     stream = docker.build(
         context_path=docker_file.parent.as_posix(),
+        # docker_file=docker_file.as_posix(),
         build_args=buildargs,
         cache=USE_CACHE,
         tags=tags,
@@ -478,7 +533,8 @@ def build_dagster_dev(
         asset_key=context.asset_key,
         metadata={
             context.asset_key.path[0]: MetadataValue.path(tags[1]),
-            "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
+            "docker_file": MetadataValue.path(_docker_file.name),
+            "docker_file_content": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
             **cmds_docker,
             "build_logs": MetadataValue.md(f"```shell\n{log}\n```"),
             "env_base": MetadataValue.json(env_base),
@@ -582,8 +638,10 @@ def build_likec4_dev(
 #         #     },
 #         # },
 #         volumes=[
-#             # "/home/michael/git/repos/deadline-docker/10.2/databases/filebrowser/filebrowser.db:/database/filebrowser.db",
-#             # "/home/michael/git/repos/deadline-docker/10.2/configs/filebrowser/filebrowser.json:/config/settings.json",
+#             # "/home/michael/git/repos/deadline-docker/10.2/databases/filebrowser/filebrowser.db:/database
+#             /filebrowser.db",
+#             # "/home/michael/git/repos/deadline-docker/10.2/configs/filebrowser/filebrowser.json:/config/settings
+#             .json",
 #             # "/data/share/nfs:/data/share/nfs:ro",
 #             # "/data/share/nfs:/nfs:ro",
 #             "/data/share/nfs:/srv:ro",
@@ -781,18 +839,19 @@ def build_likec4_dev(
 #     )
 
 
-
 @asset(
     group_name="Docker_Compose_10_2",
     ins={
         "env_base": AssetIn(),
     },
+    deps=[
+        "build_base_image"
+    ],
 )
 def compose_base_services_10_2(
         context: AssetExecutionContext,
         env_base: dict,
 ) -> dict:
-
     docker_dict = {
         "services": {
             "mongo-express-10-2": {
@@ -849,9 +908,7 @@ def compose_base_services_10_2(
                 "hostname": "mongodb-10-2",
                 "domainname": env_base.get("ROOT_DOMAIN"),
                 "restart": "always",
-                "depends_on": [
-                    "mongodb-10-2",
-                ],
+                # "depends_on": [],
                 "command": [
                     "--dbpath", "/opt/Thinkbox/DeadlineDatabase10/mongo/data",
                     "--bind_ip_all",
@@ -906,7 +963,7 @@ def compose_base_services_10_2(
     group_name="Docker_Compose_10_2",
     ins={
         "env_base": AssetIn(),
-        "build_likec4_dev": AssetIn(),
+        "build_dagster_dev": AssetIn(),
     },
     deps=[
         "build_base_image"
@@ -915,7 +972,7 @@ def compose_base_services_10_2(
 def compose_dagster_dev(
         context: AssetExecutionContext,
         env_base: dict,
-        build_likec4_dev: str,
+        build_dagster_dev: str,
 ) -> dict:
     """
     """
@@ -927,14 +984,22 @@ def compose_dagster_dev(
                 "hostname": "dagster-dev-10-2",
                 "domainname": env_base.get("ROOT_DOMAIN"),
                 "restart": "always",
-                "image": build_likec4_dev,
+                "image": build_dagster_dev,
                 "networks": [
                     "repository",
                     "mongodb",
                 ],
-                "depends_on": [
-                    "mongodb-10-2",
+                "command": [
+                    "--workspace",
+                    "/dagster/workspace.yaml",
+                    "--host",
+                    "0.0.0.0",
+                    "--port",
+                    env_base.get('DAGSTER_DEV_PORT_CONTAINER'),
                 ],
+                # "depends_on": [
+                #     "mongodb-10-2",
+                # ],
                 "volumes": [
                     f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT')}",
                     f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT_LNS')}",
@@ -955,7 +1020,7 @@ def compose_dagster_dev(
         metadata={
             context.asset_key.path[0]: MetadataValue.json(docker_dict),
             "docker_dict": MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
-            "docker_yaml": MetadataValue.md(f"```shell\n{docker_yaml}\n```"),
+            "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
             "env_base": MetadataValue.json(env_base),
         },
     )
@@ -967,11 +1032,7 @@ def compose_dagster_dev(
         "env_base": AssetIn(),
         "compose_base_services_10_2": AssetIn(),
         "compose_dagster_dev": AssetIn(),
-        # "base_services_10_2": AssetIn(),
     },
-    # deps=[
-    #     "build_base_image"
-    # ],
 )
 def compose_10_2(
         context: AssetExecutionContext,
@@ -989,18 +1050,22 @@ def compose_10_2(
         compose_base_services_10_2
     )
 
-    # docker_chainmap.
+    docker_dict = reduce(deep_merge, docker_chainmap.maps)
+    docker_yaml = yaml.dump(docker_dict)
 
-    # docker_yaml = yaml.dump(docker_dict)
+    docker_compose = pathlib.Path("/home/michael/git/repos/deadline-docker/10.2/docker_compose/docker-compose.yaml")
+    with open(docker_compose, "w") as fw:
+        fw.write(docker_yaml)
 
     yield Output(docker_chainmap)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            context.asset_key.path[0]: MetadataValue.json(docker_chainmap),
-            # "docker_dict": MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
-            # "docker_yaml": MetadataValue.md(f"```shell\n{docker_yaml}\n```"),
+            context.asset_key.path[0]: MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
+            "docker_compose": MetadataValue.path(docker_compose),
+            "maps": MetadataValue.md(f"```json\n{json.dumps(docker_chainmap.maps, indent=2)}\n```"),
+            "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
             "env_base": MetadataValue.json(env_base),
         },
     )
