@@ -52,7 +52,7 @@ def env_base(
         context: AssetExecutionContext,
 ) -> dict:
     _env: dict = {
-        "MONGO_EXPRESS_PORT_HOST": "8080",
+        "MONGO_EXPRESS_PORT_HOST": "8181",
         "MONGO_EXPRESS_PORT_CONTAINER": "8081",
         # "MONGO_DB_NAME": "deadline10db",
 
@@ -808,7 +808,49 @@ def build_likec4_dev(
         "build_base_image"
     ],
 )
-def compose_base_services_10_2(
+def compose_networks_10_2(
+        context: AssetExecutionContext,
+        env_base: dict,
+) -> dict:
+    docker_dict = {
+        "networks": {
+            "mongodb": {
+                "name": "network_mongodb-10-2",
+            },
+            "repository": {
+                "name": "network_repository-10-2",
+            },
+            "ayon": {
+                "name": "network_ayon-10-2",
+            },
+        },
+    }
+
+    docker_yaml = yaml.dump(docker_dict)
+
+    yield Output(docker_dict)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            context.asset_key.path[0]: MetadataValue.json(docker_dict),
+            "docker_dict": MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
+            "docker_yaml": MetadataValue.md(f"```shell\n{docker_yaml}\n```"),
+            "env_base": MetadataValue.json(env_base),
+        },
+    )
+
+
+@asset(
+    group_name="Docker_Compose_10_2",
+    ins={
+        "env_base": AssetIn(),
+    },
+    deps=[
+        "build_base_image"
+    ],
+)
+def compose_mongo_express_10_2(
         context: AssetExecutionContext,
         env_base: dict,
 ) -> dict:
@@ -836,7 +878,39 @@ def compose_base_services_10_2(
                     f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT_LNS')}:ro",
                 ],
             },
+        },
+    }
 
+    docker_yaml = yaml.dump(docker_dict)
+
+    yield Output(docker_dict)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            context.asset_key.path[0]: MetadataValue.json(docker_dict),
+            "docker_dict": MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
+            "docker_yaml": MetadataValue.md(f"```shell\n{docker_yaml}\n```"),
+            "env_base": MetadataValue.json(env_base),
+        },
+    )
+
+
+@asset(
+    group_name="Docker_Compose_10_2",
+    ins={
+        "env_base": AssetIn(),
+    },
+    deps=[
+        "build_base_image"
+    ],
+)
+def compose_filebrowser_10_2(
+        context: AssetExecutionContext,
+        env_base: dict,
+) -> dict:
+    docker_dict = {
+        "services": {
             "filebrowser": {
                 "image": "filebrowser/filebrowser",
                 "container_name": "filebrowser-10-2",
@@ -861,7 +935,39 @@ def compose_base_services_10_2(
                     f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT_LNS')}:ro",
                 ],
             },
+        },
+    }
 
+    docker_yaml = yaml.dump(docker_dict)
+
+    yield Output(docker_dict)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            context.asset_key.path[0]: MetadataValue.json(docker_dict),
+            "docker_dict": MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
+            "docker_yaml": MetadataValue.md(f"```shell\n{docker_yaml}\n```"),
+            "env_base": MetadataValue.json(env_base),
+        },
+    )
+
+
+@asset(
+    group_name="Docker_Compose_10_2",
+    ins={
+        "env_base": AssetIn(),
+    },
+    deps=[
+        "build_base_image"
+    ],
+)
+def compose_mongodb_10_2(
+        context: AssetExecutionContext,
+        env_base: dict,
+) -> dict:
+    docker_dict = {
+        "services": {
             "mongodb-10-2": {
                 "image": "mongodb/mongodb-community-server:4.4-ubuntu2004",
                 "container_name": "mongodb-10-2",
@@ -889,17 +995,6 @@ def compose_base_services_10_2(
                     f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT')}:ro",
                     f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT_LNS')}:ro",
                 ],
-            },
-        },
-        "networks": {
-            "mongodb": {
-                "name": "network_mongodb-10-2",
-            },
-            "repository": {
-                "name": "network_repository-10-2",
-            },
-            "ayon": {
-                "name": "network_ayon-10-2",
             },
         },
     }
@@ -1052,7 +1147,10 @@ def compose_likec4_dev(
     group_name="Docker_Compose_10_2",
     ins={
         "env_base": AssetIn(),
-        "compose_base_services_10_2": AssetIn(),
+        "compose_networks_10_2": AssetIn(),
+        "compose_mongo_express_10_2": AssetIn(),
+        "compose_mongodb_10_2": AssetIn(),
+        "compose_filebrowser_10_2": AssetIn(),
         "compose_dagster_dev": AssetIn(),
         "compose_likec4_dev": AssetIn(),
     },
@@ -1060,7 +1158,10 @@ def compose_likec4_dev(
 def compose_10_2(
         context: AssetExecutionContext,
         env_base: dict,
-        compose_base_services_10_2: dict,
+        compose_networks_10_2: dict,
+        compose_mongo_express_10_2: dict,
+        compose_mongodb_10_2: dict,
+        compose_filebrowser_10_2: dict,
         compose_dagster_dev: dict,
         compose_likec4_dev: dict,
         # build_likec4_dev: str,
@@ -1072,7 +1173,10 @@ def compose_10_2(
     docker_chainmap = ChainMap(
         compose_likec4_dev,
         compose_dagster_dev,
-        compose_base_services_10_2
+        compose_mongodb_10_2,
+        compose_filebrowser_10_2,
+        compose_mongo_express_10_2,
+        compose_networks_10_2,
     )
 
     docker_dict = reduce(deep_merge, docker_chainmap.maps)
