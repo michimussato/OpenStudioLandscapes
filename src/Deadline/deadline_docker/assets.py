@@ -65,8 +65,10 @@ def env_base(
 
         "DAGSTER_DEV_PORT_HOST": "3003",
         "DAGSTER_DEV_PORT_CONTAINER": "3006",
-        # "DAGSTER_HOME": "/dagster/materializations",
-        # "DAGSTER_WORKSPACE": "/dagster/workspace.yaml",
+        "DAGSTER_DAGSTER_WORKSPACE": "/dagster",
+        "DAGSTER_HOME": "/dagster/materializations",
+        "DAGSTER_HOST": "0.0.0.0",
+        "DAGSTER_WORKSPACE": "/dagster/workspace.yaml",
 
         # "RCS_HTTP_PORT_HOST": 8888,
         "RCS_HTTP_PORT_CONTAINER": "8888",
@@ -448,45 +450,45 @@ def build_dagster_dev(
     """
     """
 
-    # with tempfile.NamedTemporaryFile(
-    #         delete=False,
-    #         mode="w",
-    #         dir="/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/dagster_dev",
-    #         prefix=context.asset_key.path[0],
-    #         suffix=".Dockerfile",
-    # ) as _docker_file:
-    with open("/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/dagster_dev/Dockerfile", "w") as _docker_file:
-        # _docker_file = tempfile.NamedTemporaryFile(
-        #     delete=False,
-        #     prefix=context.asset_key.path[0],
-        #     suffix=".Dockerfile",
-        # )
+#     # with tempfile.NamedTemporaryFile(
+#     #         delete=False,
+#     #         mode="w",
+#     #         dir="/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/dagster_dev",
+#     #         prefix=context.asset_key.path[0],
+#     #         suffix=".Dockerfile",
+#     # ) as _docker_file:
+#     with open("/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/dagster_dev/Dockerfile", "w") as _docker_file:
+#         # _docker_file = tempfile.NamedTemporaryFile(
+#         #     delete=False,
+#         #     prefix=context.asset_key.path[0],
+#         #     suffix=".Dockerfile",
+#         # )
+#
+#         _docker_file.write("""
+# FROM michimussato/base_image:latest AS dagster_dev
+# LABEL authors="michimussato@gmail.com"
+#
+# ARG PYTHON_MAJ
+# ARG PYTHON_MIN
+#
+# ENV DAGSTER_HOME="/dagster/materializations"
+#
+# RUN python${PYTHON_MAJ}.${PYTHON_MIN} -m pip install --root-user-action=ignore "dagster-shared[dagster_dev] @ git+https://github.com/michimussato/dagster-shared.git@main"
+#
+# WORKDIR /dagster
+# COPY ./config/workspace.yaml .
+#
+# WORKDIR /dagster/materializations
+# COPY ./config/materializations/dagster.yaml .
+#
+# WORKDIR /dagster
+#
+# ENTRYPOINT ["dagster", "dev"]
+# CMD ["--workspace", "/dagster/workspace.yaml", "--host", "0.0.0.0"]
+# """
+#                            )
 
-        _docker_file.write("""
-FROM michimussato/base_image:latest AS dagster_dev
-LABEL authors="michimussato@gmail.com"
-
-ARG PYTHON_MAJ
-ARG PYTHON_MIN
-
-ENV DAGSTER_HOME="/dagster/materializations"
-
-RUN python${PYTHON_MAJ}.${PYTHON_MIN} -m pip install --root-user-action=ignore "dagster-shared[dagster_dev] @ git+https://github.com/michimussato/dagster-shared.git@main"
-
-WORKDIR /dagster
-COPY ./config/workspace.yaml .
-
-WORKDIR /dagster/materializations
-COPY ./config/materializations/dagster.yaml .
-
-WORKDIR /dagster
-
-ENTRYPOINT ["dagster", "dev"]
-CMD ["--workspace", "/dagster/workspace.yaml", "--host", "0.0.0.0"]
-"""
-                           )
-
-    docker_file = pathlib.Path(_docker_file.name)
+    docker_file = pathlib.Path("/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/dagster_dev/Dockerfile")
     tags = [
         "michimussato/dagster_dev:latest",
         f"michimussato/dagster_dev:{str(time.time())}",
@@ -494,12 +496,9 @@ CMD ["--workspace", "/dagster/workspace.yaml", "--host", "0.0.0.0"]
     buildargs = {
         "PYTHON_MAJ": env_base.get("PYTHON_MAJ"),
         "PYTHON_MIN": env_base.get("PYTHON_MIN"),
+        "DAGSTER_DAGSTER_WORKSPACE": env_base.get("DAGSTER_DAGSTER_WORKSPACE"),
+        "DAGSTER_HOME": env_base.get("DAGSTER_HOME"),
     }
-
-    context.log.info(_docker_file.name)
-    context.log.info(_docker_file.name)
-    context.log.info(_docker_file.name)
-    context.log.info(_docker_file.name)
 
     with open(docker_file, "r") as fr:
         docker_file_content = fr.read()
@@ -533,8 +532,7 @@ CMD ["--workspace", "/dagster/workspace.yaml", "--host", "0.0.0.0"]
         asset_key=context.asset_key,
         metadata={
             context.asset_key.path[0]: MetadataValue.path(tags[1]),
-            "docker_file": MetadataValue.path(_docker_file.name),
-            "docker_file_content": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
+            "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
             **cmds_docker,
             "build_logs": MetadataValue.md(f"```shell\n{log}\n```"),
             "env_base": MetadataValue.json(env_base),
@@ -989,17 +987,17 @@ def compose_dagster_dev(
                     "repository",
                     "mongodb",
                 ],
+                "environment": {
+                    "DAGSTER_HOME": env_base.get('DAGSTER_HOME'),
+                },
                 "command": [
                     "--workspace",
-                    "/dagster/workspace.yaml",
+                    env_base.get('DAGSTER_WORKSPACE'),
                     "--host",
-                    "0.0.0.0",
+                    env_base.get('DAGSTER_HOST'),
                     "--port",
                     env_base.get('DAGSTER_DEV_PORT_CONTAINER'),
                 ],
-                # "depends_on": [
-                #     "mongodb-10-2",
-                # ],
                 "volumes": [
                     f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT')}",
                     f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT_LNS')}",
