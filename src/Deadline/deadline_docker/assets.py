@@ -1,6 +1,5 @@
 import json
 import pathlib
-import tempfile
 import time
 import yaml
 from collections import ChainMap
@@ -60,7 +59,7 @@ def env_base(
         # "LIKEC4_DEV_PORT_HOST": 4567,
         # "LIKEC4_DEV_PORT_CONTAINER": 4567,
 
-        "FILEBROWSER_PORT_HOST": "86",
+        "FILEBROWSER_PORT_HOST": "8080",
         "FILEBROWSER_PORT_CONTAINER": "80",
 
         "DAGSTER_DEV_PORT_HOST": "3003",
@@ -450,44 +449,6 @@ def build_dagster_dev(
     """
     """
 
-#     # with tempfile.NamedTemporaryFile(
-#     #         delete=False,
-#     #         mode="w",
-#     #         dir="/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/dagster_dev",
-#     #         prefix=context.asset_key.path[0],
-#     #         suffix=".Dockerfile",
-#     # ) as _docker_file:
-#     with open("/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/dagster_dev/Dockerfile", "w") as _docker_file:
-#         # _docker_file = tempfile.NamedTemporaryFile(
-#         #     delete=False,
-#         #     prefix=context.asset_key.path[0],
-#         #     suffix=".Dockerfile",
-#         # )
-#
-#         _docker_file.write("""
-# FROM michimussato/base_image:latest AS dagster_dev
-# LABEL authors="michimussato@gmail.com"
-#
-# ARG PYTHON_MAJ
-# ARG PYTHON_MIN
-#
-# ENV DAGSTER_HOME="/dagster/materializations"
-#
-# RUN python${PYTHON_MAJ}.${PYTHON_MIN} -m pip install --root-user-action=ignore "dagster-shared[dagster_dev] @ git+https://github.com/michimussato/dagster-shared.git@main"
-#
-# WORKDIR /dagster
-# COPY ./config/workspace.yaml .
-#
-# WORKDIR /dagster/materializations
-# COPY ./config/materializations/dagster.yaml .
-#
-# WORKDIR /dagster
-#
-# ENTRYPOINT ["dagster", "dev"]
-# CMD ["--workspace", "/dagster/workspace.yaml", "--host", "0.0.0.0"]
-# """
-#                            )
-
     docker_file = pathlib.Path("/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/dagster_dev/Dockerfile")
     tags = [
         "michimussato/dagster_dev:latest",
@@ -876,14 +837,14 @@ def compose_base_services_10_2(
             },
 
             "filebrowser": {
-                "image": "mongo-express",
-                "container_name": "mongo-filebrowser-10-2",
-                "hostname": "mongo-filebrowser-10-2",
+                "image": "filebrowser/filebrowser",
+                "container_name": "filebrowser-10-2",
+                "hostname": "filebrowser-10-2",
                 "domainname": env_base.get("ROOT_DOMAIN"),
                 "restart": "always",
-                "depends_on": [
-                    "mongodb-10-2",
-                ],
+                # "depends_on": [
+                #     "mongodb-10-2",
+                # ],
                 "networks": [
                     "repository",
                 ],
@@ -891,8 +852,8 @@ def compose_base_services_10_2(
                     f"{env_base.get('FILEBROWSER_PORT_HOST')}:{env_base.get('FILEBROWSER_PORT_CONTAINER')}",
                 ],
                 "volumes": [
-                    "./databases/filebrowser/filebrowser.db:/filebrowser.db",
-                    "./configs/filebrowser/filebrowser.json:/.filebrowser.json",
+                    "/home/michael/git/repos/deadline-docker/10.2/databases/filebrowser/filebrowser.db:/filebrowser.db",
+                    "/home/michael/git/repos/deadline-docker/10.2/configs/filebrowser/filebrowser.json:/.filebrowser.json",
                     f"{env_base.get('NFS_ENTRY_POINT')}/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL"
                     f":/opt/Thinkbox/DeadlineDatabase10/mongo/data:ro",
                     f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT')}:ro",
@@ -1051,7 +1012,9 @@ def compose_10_2(
     docker_dict = reduce(deep_merge, docker_chainmap.maps)
     docker_yaml = yaml.dump(docker_dict)
 
-    docker_compose = pathlib.Path("/home/michael/git/repos/deadline-docker/10.2/docker_compose/docker-compose.yaml")
+    docker_compose = pathlib.Path(f"/home/michael/git/repos/deadline-docker/10.2/.docker_compose/{context.asset_key.path[0]}/docker-compose.yaml")
+    docker_compose.parent.mkdir(parents=True, exist_ok=True)
+
     with open(docker_compose, "w") as fw:
         fw.write(docker_yaml)
 

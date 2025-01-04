@@ -3,8 +3,8 @@ LABEL authors="michimussato@gmail.com"
 
 ARG PYTHON_MAJ
 ARG PYTHON_MIN
-ARG DAGSTER_WORKSPACE
-ARG DAGSTER_HOME
+ARG DAGSTER_WORKSPACE="/dagster"
+ARG DAGSTER_HOME="/dagster/materializations"
 
 RUN python${PYTHON_MAJ}.${PYTHON_MIN} -m pip install --root-user-action=ignore "dagster-shared[dagster_dev] @ git+https://github.com/michimussato/dagster-shared.git@main"
 
