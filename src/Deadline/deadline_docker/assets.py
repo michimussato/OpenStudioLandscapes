@@ -56,8 +56,9 @@ def env_base(
         "MONGO_EXPRESS_PORT_CONTAINER": "8081",
         # "MONGO_DB_NAME": "deadline10db",
 
-        # "LIKEC4_DEV_PORT_HOST": 4567,
-        # "LIKEC4_DEV_PORT_CONTAINER": 4567,
+        "LIKEC4_DEV_PORT_HOST": "4567",
+        "LIKEC4_DEV_PORT_CONTAINER": "4567",
+        "LIKEC4_HOST": "0.0.0.0",
 
         "FILEBROWSER_PORT_HOST": "8080",
         "FILEBROWSER_PORT_CONTAINER": "80",
@@ -989,8 +990,71 @@ def compose_dagster_dev(
     group_name="Docker_Compose_10_2",
     ins={
         "env_base": AssetIn(),
+        "build_likec4_dev": AssetIn(),
+    },
+    deps=[
+        "build_base_image"
+    ],
+)
+def compose_likec4_dev(
+        context: AssetExecutionContext,
+        env_base: dict,
+        build_likec4_dev: str,
+) -> dict:
+    """
+    """
+
+    docker_dict = {
+        "services": {
+            "likec4_dev": {
+                "container_name": "likec4-dev-10-2",
+                "hostname": "likec4-dev-10-2",
+                "domainname": env_base.get("ROOT_DOMAIN"),
+                "restart": "always",
+                "image": build_likec4_dev,
+                "networks": [
+                    "repository",
+                    "mongodb",
+                ],
+                "command": [
+                    "--host",
+                    env_base.get('LIKEC4_HOST'),
+                    "--port",
+                    env_base.get('LIKEC4_DEV_PORT_CONTAINER'),
+                ],
+                "volumes": [
+                    f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT')}",
+                    f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT_LNS')}",
+                ],
+                "ports": [
+                    f"{env_base.get('LIKEC4_DEV_PORT_HOST')}:{env_base.get('LIKEC4_DEV_PORT_CONTAINER')}",
+                ],
+            },
+        },
+    }
+
+    docker_yaml = yaml.dump(docker_dict)
+
+    yield Output(docker_dict)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            context.asset_key.path[0]: MetadataValue.json(docker_dict),
+            "docker_dict": MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
+            "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
+            "env_base": MetadataValue.json(env_base),
+        },
+    )
+
+
+@asset(
+    group_name="Docker_Compose_10_2",
+    ins={
+        "env_base": AssetIn(),
         "compose_base_services_10_2": AssetIn(),
         "compose_dagster_dev": AssetIn(),
+        "compose_likec4_dev": AssetIn(),
     },
 )
 def compose_10_2(
@@ -998,6 +1062,7 @@ def compose_10_2(
         env_base: dict,
         compose_base_services_10_2: dict,
         compose_dagster_dev: dict,
+        compose_likec4_dev: dict,
         # build_likec4_dev: str,
         # base_services_10_2: dict,
 ) -> ChainMap:
@@ -1005,6 +1070,7 @@ def compose_10_2(
     """
 
     docker_chainmap = ChainMap(
+        compose_likec4_dev,
         compose_dagster_dev,
         compose_base_services_10_2
     )
