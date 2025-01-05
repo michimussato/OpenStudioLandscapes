@@ -79,14 +79,14 @@ def env_base(
         "MONGO_DB_PORT_HOST": "21017",
         "MONGO_DB_PORT_CONTAINER": "21017",
         # "MONGO_PORT": "${MONGO_DB_PORT_CONTAINER}",
-        # # https://docs.docker.com/compose/how-tos/environment-variables/set-environment-variables/#additional
-        # -information-1
-        # "ME_CONFIG_BASICAUTH_USERNAME": "web",
-        # "ME_CONFIG_BASICAUTH_PASSWORD": "web",
-        # "ME_CONFIG_OPTIONS_EDITORTHEME": "darcula",
-        # "ME_CONFIG_MONGODB_SERVER": "mongodb-10-2",
-        # "ME_CONFIG_MONGODB_URL": "mongodb://admin:pass@localhost:${MONGO_DB_PORT_CONTAINER}/db?ssl=false",
-        #
+        # https://docs.docker.com/compose/how-tos/environment-variables/set-environment-variables/#additional-information-1
+        "ME_CONFIG_BASICAUTH_USERNAME": "web",
+        "ME_CONFIG_BASICAUTH_PASSWORD": "web",
+        "ME_CONFIG_OPTIONS_EDITORTHEME": "darcula",
+        "ME_CONFIG_MONGODB_SERVER": "mongodb-10-2",
+        "ME_CONFIG_MONGODB_URL": "mongodb://admin:pass@localhost:${MONGO_DB_PORT_CONTAINER}/db?ssl=false",
+        # "ME_CONFIG_MONGODB_URL": "mongodb://admin:pass@localhost:${env_base.get('ME_CONFIG_MONGODB_URL')}/db?ssl=false",
+
         # "AYON_PORT_HOST": 5005,
         # "AYON_PORT_CONTAINER": 5000,
         #
@@ -566,105 +566,6 @@ def build_likec4_dev(
 
 
 # @asset(
-#     group_name="Services",
-#     ins={
-#         "env_base": AssetIn(),
-#     },
-#     # deps=[
-#     #     "build_base_image"
-#     # ],
-# )
-# def filebrowser(
-#         context: AssetExecutionContext,
-#         env_base: dict,
-# ) -> int:
-#     """
-#     """
-#
-#     client = docker.from_env()
-#
-#     container = client.containers.run(
-#         image="filebrowser/filebrowser",
-#         detach=True,
-#         # remove=True,
-#         # volumes={
-#         #     "/home/michael/git/repos/deadline-docker/10.2/databases/filebrowser/filebrowser.db": {
-#         #         "bind": "/filebrowser.db",
-#         #         "mode": "rw",
-#         #     },
-#         #     "/home/michael/git/repos/deadline-docker/10.2/configs/filebrowser/filebrowser.json": {
-#         #         "bind": "/filebrowser.json",
-#         #         "mode": "rw",
-#         #     },
-#         # },
-#         volumes=[
-#             # "/home/michael/git/repos/deadline-docker/10.2/databases/filebrowser/filebrowser.db:/database
-#             /filebrowser.db",
-#             # "/home/michael/git/repos/deadline-docker/10.2/configs/filebrowser/filebrowser.json:/config/settings
-#             .json",
-#             # "/data/share/nfs:/data/share/nfs:ro",
-#             # "/data/share/nfs:/nfs:ro",
-#             "/data/share/nfs:/srv:ro",
-#         ],
-#         domainname="farm.evil",
-#         hostname="mongo-filebrowser-10-2",
-#         name="mongo-filebrowser-10-2",
-#         restart_policy={
-#             "Name": "always",
-#         },
-#         # ports={
-#         #     "8080": 80,
-#         # },
-#         # network="repository",
-#     )
-#
-#     # network = client.networks.create(
-#     #     name="repository",
-#     #     driver="bridge",
-#     # )
-#     #
-#     # network.connect(
-#     #     container=container,
-#     # )
-#
-#     context.log.info(dir(container))
-#
-#     # docker_file = pathlib.Path(
-#     #     "/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/likec4_dev/Dockerfile")
-#     # tag = "michimussato/likec4_dev:latest"
-#     # buildargs = {}
-#     #
-#     # with open(docker_file, "r") as fr:
-#     #     context.log.info(fr.read())
-#     #
-#     # base_image, build_logs = docker_build(
-#     #     docker_file=docker_file,
-#     #     tag=tag,
-#     #     buildargs=buildargs,
-#     #     nocache=True,
-#     # )
-#
-#     # cmds_docker = compile_cmds(
-#     #     docker_file=docker_file,
-#     #     tag=tag,
-#     #     buildargs=buildargs,
-#     # )
-#
-#     yield Output(80)
-#
-#     yield AssetMaterialization(
-#         asset_key=context.asset_key,
-#         metadata={
-#             context.asset_key.path[0]: MetadataValue.int(80),
-#             "url": MetadataValue.url("http://localhost:80/"),
-#             "docker_file": MetadataValue.json(container.id),
-#             # **cmds_docker,
-#             # "build_logs": MetadataValue.md(f"```shell\n{get_log(build_logs)}\n```"),
-#             "env_base": MetadataValue.json(env_base),
-#         },
-#     )
-
-# @asset(
 #     group_name="Build_Images_10_2",
 #     ins={
 #         "env_10_2": AssetIn(),
@@ -711,89 +612,6 @@ def build_likec4_dev(
 #             "docker_file": MetadataValue.json(base_image.id),
 #             **cmds_docker,
 #             "build_logs": MetadataValue.md(f"```shell\n{get_log(build_logs)}\n```"),
-#             "env_10_2": MetadataValue.json(env_10_2),
-#         },
-#     )
-
-# @asset(
-#     group_name="Docker_Swarm",
-#     ins={
-#         "env_10_2": AssetIn(),
-#     }
-# )
-# def docker_swarm(
-#         context: AssetExecutionContext,
-#         env_10_2: dict,
-# ) -> str:
-#
-#     client = docker.from_env()
-#     swarm = client.swarm.init(
-#         advertise_addr='192.168.100.69',
-#         listen_addr='0.0.0.0:5000',
-#         force_new_cluster=False,
-#         default_addr_pool=['10.1.2.0/24'],
-#         subnet_size=24,
-#         snapshot_interval=5000,
-#         log_entries_for_slow_followers=1200
-#     )
-#
-#     yield Output(swarm)
-#
-#     yield AssetMaterialization(
-#         asset_key=context.asset_key,
-#         metadata={
-#             "swarm_id": MetadataValue.json(swarm),
-#             "env_10_2": MetadataValue.json(env_10_2),
-#         },
-#     )
-
-
-# @asset(
-#     group_name="Services",
-#     ins={
-#         "docker_swarm": AssetIn(),
-#     },
-# )
-# def mongo_db(
-#         context: AssetExecutionContext,
-#         docker_swarm: str,
-# ):
-#     client = docker.from_env()
-#
-#     client.swarm.join(docker_swarm)
-#
-#     service = client.services.create(
-#         container_name="mongodb-10-2",
-#         hostname="mongodb-10-2",
-#         # domainname=
-#         image="mongodb/mongodb-community-server:4.4-ubuntu2004",
-#         name="mongodb-10-2",
-#         networks=[],
-#         env=[],
-#         # restart_policy=RestartPolicy.a,
-#         command=[
-#             "--dbpath", "/opt/Thinkbox/DeadlineDatabase10/mongo/data",
-#             "--bind_ip_all",
-#             "--noauth",
-#             "--storageEngine", "wiredTiger",
-#             "--tlsMode", "disabled",
-#         ],
-#         mounts=[
-#             "${NFS_ENTRY_POINT}/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox
-#             /DeadlineDatabase10/mongo/data",
-#             "${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT}:ro",
-#             "${NFS_ENTRY_POINT}:${NFS_ENTRY_POINT_LNS}:ro",
-#         ],
-#         # ports
-#     )
-#
-#     yield Output(service.id)
-#
-#     yield AssetMaterialization(
-#         asset_key=context.asset_key,
-#         metadata={
-#             "service_id": MetadataValue.json(service.id),
-#             "service_name": MetadataValue.json(service.name),
 #             "env_10_2": MetadataValue.json(env_10_2),
 #         },
 #     )
@@ -862,6 +680,13 @@ def compose_mongo_express_10_2(
                 "container_name": "mongo-express-10-2",
                 "domainname": env_base.get("ROOT_DOMAIN"),
                 "restart": "always",
+                "environment": {
+                    "ME_CONFIG_BASICAUTH_USERNAME": env_base.get("ME_CONFIG_BASICAUTH_USERNAME"),
+                    "ME_CONFIG_BASICAUTH_PASSWORD": env_base.get("ME_CONFIG_BASICAUTH_PASSWORD"),
+                    "ME_CONFIG_OPTIONS_EDITORTHEME": env_base.get("ME_CONFIG_OPTIONS_EDITORTHEME"),
+                    "ME_CONFIG_MONGODB_SERVER": env_base.get("ME_CONFIG_MONGODB_SERVER"),
+                    "ME_CONFIG_MONGODB_URL": env_base.get("ME_CONFIG_MONGODB_URL"),
+                },
                 "depends_on": [
                     "mongodb-10-2",
                 ],
@@ -871,12 +696,11 @@ def compose_mongo_express_10_2(
                 "ports": [
                     f"{env_base.get('MONGO_EXPRESS_PORT_HOST')}:{env_base.get('MONGO_EXPRESS_PORT_CONTAINER')}",
                 ],
-                "volumes": [
-                    f"{env_base.get('NFS_ENTRY_POINT')}/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL"
-                    f":/opt/Thinkbox/DeadlineDatabase10/mongo/data",
-                    f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT')}:ro",
-                    f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT_LNS')}:ro",
-                ],
+                # "volumes": [
+                #     f"{env_base.get('NFS_ENTRY_POINT')}/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data",
+                #     f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT')}:ro",
+                #     f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT_LNS')}:ro",
+                # ],
             },
         },
     }
@@ -976,6 +800,7 @@ def compose_mongodb_10_2(
                 "restart": "always",
                 # "depends_on": [],
                 "command": [
+                    "--port", env_base.get("MONGO_DB_PORT_CONTAINER"),
                     "--dbpath", "/opt/Thinkbox/DeadlineDatabase10/mongo/data",
                     "--bind_ip_all",
                     "--noauth",
