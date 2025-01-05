@@ -5,6 +5,8 @@ SHELL ["/bin/bash", "-c"]
 
 ARG DEADLINE_VERSION
 ARG MONGO_DB_PORT_HOST
+ARG MONGO_DB_NAME
+ARG MONGO_DB_HOST
 
 WORKDIR /installers
 
@@ -15,9 +17,9 @@ RUN deadline-wrapper-10-2  \
     --deadline-version ${DEADLINE_VERSION}  \
     --prefix "/opt/Thinkbox/DeadlineRepository10"  \
     --dbtype "MongoDB"  \
-    --dbhost "mongodb-10-2"  \
+    --dbhost ${MONGO_DB_HOST}  \
     --dbport ${MONGO_DB_PORT_HOST}  \
-    --dbname "deadline10db"
+    --dbname ${MONGO_DB_NAME}
 
 WORKDIR /opt/Thinkbox
 

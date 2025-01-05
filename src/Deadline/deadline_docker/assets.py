@@ -54,7 +54,9 @@ def env_base(
     _env: dict = {
         "MONGO_EXPRESS_PORT_HOST": "8181",
         "MONGO_EXPRESS_PORT_CONTAINER": "8081",
-        # "MONGO_DB_NAME": "deadline10db",
+
+        "MONGO_DB_NAME": "deadline10db",
+        "MONGO_DB_HOST": "mongodb-10-2",
 
         "LIKEC4_DEV_PORT_HOST": "4567",
         "LIKEC4_DEV_PORT_CONTAINER": "4567",
@@ -326,6 +328,8 @@ def build_repository_image_10_2(
     buildargs = {
         "DEADLINE_VERSION": env_10_2.get("DEADLINE_VERSION"),
         "MONGO_DB_PORT_HOST": env_10_2.get("MONGO_DB_PORT_HOST"),
+        "MONGO_DB_NAME": env_10_2.get("MONGO_DB_NAME"),
+        "MONGO_DB_HOST": env_10_2.get("MONGO_DB_HOST"),
     }
 
     with open(docker_file, "r") as fr:
@@ -365,6 +369,75 @@ def build_repository_image_10_2(
             "env_10_2": MetadataValue.json(env_10_2),
         },
     )
+
+
+# @asset(
+#     group_name="Build_Images_10_2",
+#     ins={
+#         "env_10_2": AssetIn(),
+#         "build_repository_image_10_2": AssetIn(),
+#     },
+#     # deps=[
+#     #     "build_base_image_10_2"
+#     # ],
+# )
+# def build_rcs_image_10_2(
+#         context: AssetExecutionContext,
+#         build_repository_image_10_2: dict,
+# ) -> str:
+#     """
+#     """
+#
+#     docker_file = pathlib.Path(
+#         "/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/base_image_10_2/repo_installer/Dockerfile")
+#     tags = [
+#         "michimussato/repository_image_10_2:latest",
+#         f"michimussato/repository_image_10_2:{str(time.time())}",
+#     ]
+#     buildargs = {
+#         "DEADLINE_VERSION": env_10_2.get("DEADLINE_VERSION"),
+#         "MONGO_DB_PORT_HOST": env_10_2.get("MONGO_DB_PORT_HOST"),
+#         "MONGO_DB_NAME": env_10_2.get("MONGO_DB_NAME"),
+#         "MONGO_DB_HOST": env_10_2.get("MONGO_DB_HOST"),
+#     }
+#
+#     with open(docker_file, "r") as fr:
+#         docker_file_content = fr.read()
+#
+#     context.log.info(f"{buildargs = }")
+#
+#     stream = docker.build(
+#         context_path=docker_file.parent.as_posix(),
+#         build_args=buildargs,
+#         cache=USE_CACHE,
+#         tags=tags,
+#         stream_logs=True,
+#     )
+#
+#     log: str = ""
+#
+#     for msg in stream:
+#         context.log.debug(msg)
+#         log += msg
+#
+#     cmds_docker = compile_cmds(
+#         docker_file=docker_file,
+#         tag=tags[1],
+#         buildargs=buildargs,
+#     )
+#
+#     yield Output(tags[1])
+#
+#     yield AssetMaterialization(
+#         asset_key=context.asset_key,
+#         metadata={
+#             context.asset_key.path[0]: MetadataValue.path(tags[1]),
+#             "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
+#             **cmds_docker,
+#             "build_logs": MetadataValue.md(f"```shell\n{log}\n```"),
+#             "env_10_2": MetadataValue.json(env_10_2),
+#         },
+#     )
 
 
 @asset(
@@ -917,6 +990,67 @@ def compose_dagster_dev(
     group_name="Docker_Compose_10_2",
     ins={
         "env_base": AssetIn(),
+        "build_repository_image_10_2": AssetIn(),
+    },
+    # deps=[
+    #     "build_base_image"
+    # ],
+)
+def compose_repository_10_2(
+        context: AssetExecutionContext,
+        env_base: dict,
+        build_repository_image_10_2: str,
+) -> dict:
+    """
+    """
+
+    docker_dict = {
+        "services": {
+            "repository_10_2": {
+                "container_name": "repository-10-2",
+                "hostname": "repository-10-2",
+                "domainname": env_base.get("ROOT_DOMAIN"),
+                "restart": "always",
+                "image": build_repository_image_10_2,
+                "networks": [
+                    "repository",
+                    "mongodb",
+                ],
+                "command": [
+                    "tail",
+                    "-F",
+                    "anything",
+                ],
+                # "volumes": [
+                #     f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT')}",
+                #     f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT_LNS')}",
+                # ],
+                # "ports": [
+                #     f"{env_base.get('LIKEC4_DEV_PORT_HOST')}:{env_base.get('LIKEC4_DEV_PORT_CONTAINER')}",
+                # ],
+            },
+        },
+    }
+
+    docker_yaml = yaml.dump(docker_dict)
+
+    yield Output(docker_dict)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            context.asset_key.path[0]: MetadataValue.json(docker_dict),
+            "docker_dict": MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
+            "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
+            "env_base": MetadataValue.json(env_base),
+        },
+    )
+
+
+@asset(
+    group_name="Docker_Compose_10_2",
+    ins={
+        "env_base": AssetIn(),
         "build_likec4_dev": AssetIn(),
     },
     deps=[
@@ -979,6 +1113,7 @@ def compose_likec4_dev(
     group_name="Docker_Compose_10_2",
     ins={
         "env_base": AssetIn(),
+        "compose_repository_10_2": AssetIn(),
         "compose_networks_10_2": AssetIn(),
         "compose_mongo_express_10_2": AssetIn(),
         "compose_mongodb_10_2": AssetIn(),
@@ -990,6 +1125,7 @@ def compose_likec4_dev(
 def compose_10_2(
         context: AssetExecutionContext,
         env_base: dict,
+        compose_repository_10_2: dict,
         compose_networks_10_2: dict,
         compose_mongo_express_10_2: dict,
         compose_mongodb_10_2: dict,
@@ -1008,6 +1144,7 @@ def compose_10_2(
         compose_mongodb_10_2,
         compose_filebrowser_10_2,
         compose_mongo_express_10_2,
+        compose_repository_10_2,
         compose_networks_10_2,
     )
 
@@ -1021,7 +1158,7 @@ def compose_10_2(
         fw.write(docker_yaml)
 
     cmd_docker_compose_up = f"/usr/bin/docker compose -f {docker_compose} -p {context.asset_key.path[0]} up --remove-orphans"
-    # cmd_docker_compose_down = f"/usr/bin/docker compose -f {docker_compose} -p {context.asset_key.path[0]} down --remove-orphans"
+    cmd_docker_compose_down = f"/usr/bin/docker compose -f {docker_compose} -p {context.asset_key.path[0]} down --remove-orphans"
 
     yield Output(docker_chainmap)
 
