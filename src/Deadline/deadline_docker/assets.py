@@ -80,12 +80,13 @@ def env_base(
         "MONGO_DB_PORT_CONTAINER": "21017",
         # "MONGO_PORT": "${MONGO_DB_PORT_CONTAINER}",
         # https://docs.docker.com/compose/how-tos/environment-variables/set-environment-variables/#additional-information-1
+        # https://hub.docker.com/_/mongo-express/
         "ME_CONFIG_BASICAUTH_USERNAME": "web",
         "ME_CONFIG_BASICAUTH_PASSWORD": "web",
         "ME_CONFIG_OPTIONS_EDITORTHEME": "darcula",
         "ME_CONFIG_MONGODB_SERVER": "mongodb-10-2",
-        "ME_CONFIG_MONGODB_URL": "mongodb://admin:pass@localhost:${MONGO_DB_PORT_CONTAINER}/db?ssl=false",
-        # "ME_CONFIG_MONGODB_URL": "mongodb://admin:pass@localhost:${env_base.get('ME_CONFIG_MONGODB_URL')}/db?ssl=false",
+        "ME_CONFIG_MONGODB_PORT": "{MONGO_DB_PORT_CONTAINER}",
+        "ME_CONFIG_MONGODB_URL": "mongodb://admin:pass@localhost:{MONGO_DB_PORT_CONTAINER}/db?ssl=false",
 
         # "AYON_PORT_HOST": 5005,
         # "AYON_PORT_CONTAINER": 5000,
@@ -685,7 +686,13 @@ def compose_mongo_express_10_2(
                     "ME_CONFIG_BASICAUTH_PASSWORD": env_base.get("ME_CONFIG_BASICAUTH_PASSWORD"),
                     "ME_CONFIG_OPTIONS_EDITORTHEME": env_base.get("ME_CONFIG_OPTIONS_EDITORTHEME"),
                     "ME_CONFIG_MONGODB_SERVER": env_base.get("ME_CONFIG_MONGODB_SERVER"),
-                    "ME_CONFIG_MONGODB_URL": env_base.get("ME_CONFIG_MONGODB_URL"),
+                    "ME_CONFIG_MONGODB_PORT": str(env_base.get("ME_CONFIG_MONGODB_PORT")).format(
+                        MONGO_DB_PORT_CONTAINER=env_base.get("MONGO_DB_PORT_CONTAINER")
+                    ),
+                    # "ME_CONFIG_MONGODB_URL": env_base.get(f"MONGO_DB_PORT_CONTAINER"),
+                    "ME_CONFIG_MONGODB_URL": str(env_base.get("ME_CONFIG_MONGODB_URL")).format(
+                        MONGO_DB_PORT_CONTAINER=env_base.get("MONGO_DB_PORT_CONTAINER")
+                    ),
                 },
                 "depends_on": [
                     "mongodb-10-2",
