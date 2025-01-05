@@ -1020,8 +1020,8 @@ def compose_10_2(
     with open(docker_compose, "w") as fw:
         fw.write(docker_yaml)
 
-    cmd_docker_compose_up = f"/usr/bin/docker compose -f {docker_compose} -p {context.asset_key.path[0]} up"
-    cmd_docker_compose_down = f"/usr/bin/docker compose -f {docker_compose} -p {context.asset_key.path[0]} down --remove-orphans"
+    cmd_docker_compose_up = f"/usr/bin/docker compose -f {docker_compose} -p {context.asset_key.path[0]} up --remove-orphans"
+    # cmd_docker_compose_down = f"/usr/bin/docker compose -f {docker_compose} -p {context.asset_key.path[0]} down --remove-orphans"
 
     yield Output(docker_chainmap)
 
@@ -1031,7 +1031,7 @@ def compose_10_2(
             context.asset_key.path[0]: MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
             "docker_compose": MetadataValue.path(docker_compose),
             "cmd_docker_compose_up": MetadataValue.path(cmd_docker_compose_up),
-            "cmd_docker_compose_down": MetadataValue.path(cmd_docker_compose_down),
+            # "cmd_docker_compose_down": MetadataValue.path(cmd_docker_compose_down),
             "maps": MetadataValue.md(f"```json\n{json.dumps(docker_chainmap.maps, indent=2)}\n```"),
             "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
             "env_base": MetadataValue.json(env_base),
