@@ -1,4 +1,4 @@
-FROM michimussato/client_installer_10_2:latest AS generic_runner_10_2
+FROM michimussato/client_image_10_2:latest AS generic_runner_10_2
 LABEL authors="michimussato@gmail.com"
 
 SHELL ["/bin/bash", "-c"]
