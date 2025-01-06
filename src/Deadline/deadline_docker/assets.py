@@ -33,12 +33,11 @@ def deep_merge(dict1, dict2):
 def compile_cmds(
         docker_file,
         tag,
-        buildargs,
 ) -> dict[str, MetadataValue]:
     cmd_docker_run = f"docker run --rm -it --entrypoint bash {tag}"
-    _cmd_docker_build_buildargs = ' '.join(f"--build-arg {k}={v}" for k, v in buildargs.items())
-    cmd_docker_build = (f"docker build --tag {tag} {_cmd_docker_build_buildargs} {docker_file.parent.as_posix()} "
-                        f"{'--no-cache' if USE_CACHE else ''}")
+    cmd_docker_build = (
+        f"docker build --tag {tag} {docker_file.parent.as_posix()} {'--no-cache' if USE_CACHE else ''}"
+    )
 
     metadata_values = {
         "cmd_docker_run": MetadataValue.path(cmd_docker_run),
@@ -192,13 +191,12 @@ def build_base_image(
     """
 
     docker_file = pathlib.Path(
-        f"/home/michael/git/repos/deadline-docker/10.2/.docker/Dockerfiles/{context.asset_key.path[0]}/Dockerfile"
-    )
+        f"~/git/repos/deadline-docker/10.2/.docker/Dockerfiles/{context.asset_key.path[0]}/Dockerfile"
+    ).expanduser()
     tags = [
-        "michimussato/base_image:latest",
-        f"michimussato/base_image:{str(time.time())}",
+        f"michimussato/{context.asset_key.path[0]}:latest",
+        f"michimussato/{context.asset_key.path[0]}:{str(time.time())}",
     ]
-    buildargs = {}
 
     # @formatter:off
     docker_file_str = textwrap.dedent("""
@@ -284,11 +282,8 @@ def build_base_image(
     with open(docker_file, "r") as fr:
         docker_file_content = fr.read()
 
-    context.log.info(f"{buildargs = }")
-
     stream = docker.build(
         context_path=docker_file.parent.as_posix(),
-        build_args=buildargs,
         cache=USE_CACHE,
         tags=tags,
         stream_logs=True,
@@ -303,7 +298,6 @@ def build_base_image(
     cmds_docker = compile_cmds(
         docker_file=docker_file,
         tag=tags[1],
-        buildargs=buildargs,
     )
 
     yield Output(tags[1])
@@ -324,46 +318,79 @@ def build_base_image(
     group_name="Build_Images_10_2",
     ins={
         "env_10_2": AssetIn(),
+        "build_base_image": AssetIn(),
     },
-    deps=[
-        "build_base_image",
-    ],
 )
 def build_base_image_10_2(
         context: AssetExecutionContext,
         env_10_2: dict,
+        build_base_image: str,
 ) -> str:
     """
     """
 
     docker_file = pathlib.Path(
-        "/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/base_image_10_2/Dockerfile",
-    )
+        f"~/git/repos/deadline-docker/10.2/.docker/Dockerfiles/{context.asset_key.path[0]}/Dockerfile"
+    ).expanduser()
 
     context.log.info(f"{docker_file.as_posix() = }")
 
     tags = [
-        "michimussato/base_image_10_2:latest",
-        f"michimussato/base_image_10_2:{str(time.time())}",
+        f"michimussato/{context.asset_key.path[0]}:latest",
+        f"michimussato/{context.asset_key.path[0]}:{str(time.time())}",
     ]
-    buildargs = {
-        "PYTHON_MAJ": env_10_2.get("PYTHON_MAJ"),
-        "PYTHON_MIN": env_10_2.get("PYTHON_MIN"),
-        "PYTHON_PAT": env_10_2.get("PYTHON_PAT"),
-        "GOOGLE_API_KEY": env_10_2.get("GOOGLE_API_KEY"),
-        "GOOGLE_ID_AWSPortalLink_10_2": env_10_2.get("GOOGLE_ID_AWSPortalLink_10_2"),
-        "GOOGLE_ID_DeadlineClient_10_2": env_10_2.get("GOOGLE_ID_DeadlineClient_10_2"),
-        "GOOGLE_ID_DeadlineRepository_10_2": env_10_2.get("GOOGLE_ID_DeadlineRepository_10_2"),
-    }
+
+    # @formatter:off
+    docker_file_str = textwrap.dedent("""
+        FROM {parent_image} AS {image_name}
+        LABEL authors="{AUTHOR}"
+        
+        SHELL ["/bin/bash", "-c"]
+        
+        RUN apt-get update \
+            && apt-get upgrade -y
+        
+        RUN python{PYTHON_MAJ}.{PYTHON_MIN} -m pip install --root-user-action=ignore git+https://github.com/michimussato/SSLGeneration.git@packaging
+        RUN python{PYTHON_MAJ}.{PYTHON_MIN} -m pip install --root-user-action=ignore git+https://github.com/michimussato/DeadlineWrapper.git@main
+        
+        WORKDIR /installers
+        
+        RUN wget -O AWSPortalLink.run "https://www.googleapis.com/drive/v3/files/{GOOGLE_ID_AWSPortalLink_10_2}?alt=media&key={GOOGLE_API_KEY}"
+        RUN chmod a+x AWSPortalLink.run
+        RUN wget -O DeadlineClient.run "https://www.googleapis.com/drive/v3/files/{GOOGLE_ID_DeadlineClient_10_2}?alt=media&key={GOOGLE_API_KEY}"
+        RUN chmod a+x DeadlineClient.run
+        RUN wget -O DeadlineRepository.run "https://www.googleapis.com/drive/v3/files/{GOOGLE_ID_DeadlineRepository_10_2}?alt=media&key={GOOGLE_API_KEY}"
+        RUN chmod a+x DeadlineRepository.run
+        
+        # RUN thinkbox-ssl-gen --help
+        
+        RUN apt-get clean
+        
+        ENTRYPOINT []
+    """).format(
+        image_name=context.asset_key.path[0],
+        parent_image=build_base_image,
+        AUTHOR=env_10_2.get("AUTHOR"),
+        PYTHON_MAJ=env_10_2.get("PYTHON_MAJ"),
+        PYTHON_MIN=env_10_2.get("PYTHON_MIN"),
+        PYTHON_PAT=env_10_2.get("PYTHON_PAT"),
+        GOOGLE_API_KEY=env_10_2.get("GOOGLE_API_KEY"),
+        GOOGLE_ID_AWSPortalLink_10_2=env_10_2.get("GOOGLE_ID_AWSPortalLink_10_2"),
+        GOOGLE_ID_DeadlineClient_10_2=env_10_2.get("GOOGLE_ID_DeadlineClient_10_2"),
+        GOOGLE_ID_DeadlineRepository_10_2=env_10_2.get("GOOGLE_ID_DeadlineRepository_10_2"),
+    )
+    # @formatter:on
+
+    docker_file.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(docker_file, "w") as fw:
+        fw.write(docker_file_str)
 
     with open(docker_file, "r") as fr:
         docker_file_content = fr.read()
 
-    context.log.info(f"{buildargs = }")
-
     stream = docker.build(
         context_path=docker_file.parent.as_posix(),
-        build_args=buildargs,
         cache=USE_CACHE,
         tags=tags,
         stream_logs=True,
@@ -378,7 +405,6 @@ def build_base_image_10_2(
     cmds_docker = compile_cmds(
         docker_file=docker_file,
         tag=tags[1],
-        buildargs=buildargs,
     )
 
     yield Output(tags[1])
@@ -399,40 +425,69 @@ def build_base_image_10_2(
     group_name="Build_Images_10_2",
     ins={
         "env_10_2": AssetIn(),
+        "build_base_image_10_2": AssetIn(),
     },
-    deps=[
-        "build_base_image_10_2"
-    ],
 )
 def build_repository_image_10_2(
         context: AssetExecutionContext,
         env_10_2: dict,
+        build_base_image_10_2: str,
 ) -> str:
     """
     """
 
     docker_file = pathlib.Path(
-        "/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/base_image_10_2/repo_installer/Dockerfile",
-    )
+        "~/git/repos/deadline-docker/10.2/base_images/base_image/base_image_10_2/repo_installer/Dockerfile",
+    ).expanduser()
     tags = [
-        "michimussato/repository_image_10_2:latest",
-        f"michimussato/repository_image_10_2:{str(time.time())}",
+        f"michimussato/{context.asset_key.path[0]}:latest",
+        f"michimussato/{context.asset_key.path[0]}:{str(time.time())}",
     ]
-    buildargs = {
-        "DEADLINE_VERSION": env_10_2.get("DEADLINE_VERSION"),
-        "MONGO_DB_PORT_HOST": env_10_2.get("MONGO_DB_PORT_HOST"),
-        "MONGO_DB_NAME": env_10_2.get("MONGO_DB_NAME"),
-        "MONGO_DB_HOST": env_10_2.get("MONGO_DB_HOST"),
-    }
+
+    # @formatter:off
+    docker_file_str = textwrap.dedent("""
+        FROM {parent_image} AS {image_name}
+        LABEL authors="{AUTHOR}"
+        
+        SHELL ["/bin/bash", "-c"]
+        
+        WORKDIR /installers
+        
+        RUN deadline-wrapper-10-2  \
+            -vv  \
+            install-repository  \
+            --installer /installers/DeadlineRepository.run  \
+            --deadline-version {DEADLINE_VERSION}  \
+            --prefix "/opt/Thinkbox/DeadlineRepository10"  \
+            --dbtype "MongoDB"  \
+            --dbhost {MONGO_DB_HOST}  \
+            --dbport {MONGO_DB_PORT_HOST}  \
+            --dbname {MONGO_DB_NAME}
+        
+        WORKDIR /opt/Thinkbox
+        
+        ENTRYPOINT []
+    """).format(
+        image_name=context.asset_key.path[0],
+        parent_image=build_base_image_10_2,
+        AUTHOR=env_10_2.get("AUTHOR"),
+        DEADLINE_VERSION=env_10_2.get("DEADLINE_VERSION"),
+        MONGO_DB_PORT_HOST=env_10_2.get("MONGO_DB_PORT_HOST"),
+        MONGO_DB_NAME=env_10_2.get("MONGO_DB_NAME"),
+        MONGO_DB_HOST=env_10_2.get("MONGO_DB_HOST"),
+    )
+    # @formatter:on
+
+    docker_file.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(docker_file, "w") as fw:
+        fw.write(docker_file_str)
 
     with open(docker_file, "r") as fr:
         docker_file_content = fr.read()
 
-    context.log.info(f"{buildargs = }")
-
     stream = docker.build(
         context_path=docker_file.parent.as_posix(),
-        build_args=buildargs,
         cache=USE_CACHE,
         tags=tags,
         stream_logs=True,
@@ -447,7 +502,6 @@ def build_repository_image_10_2(
     cmds_docker = compile_cmds(
         docker_file=docker_file,
         tag=tags[1],
-        buildargs=buildargs,
     )
 
     yield Output(tags[1])
@@ -553,8 +607,8 @@ def build_client_image_10_2(
         "/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/base_image_10_2/client_installer/Dockerfile",
     )
     tags = [
-        "michimussato/client_image_10_2:latest",
-        f"michimussato/client_image_10_2:{str(time.time())}",
+        f"michimussato/{context.asset_key.path[0]}:latest",
+        f"michimussato/{context.asset_key.path[0]}:{str(time.time())}",
     ]
     buildargs = {
         "DEADLINE_VERSION": env_10_2.get("DEADLINE_VERSION"),
@@ -696,8 +750,8 @@ def build_dagster_dev(
         "/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/dagster_dev/Dockerfile",
     )
     tags = [
-        "michimussato/dagster_dev:latest",
-        f"michimussato/dagster_dev:{str(time.time())}",
+        f"michimussato/{context.asset_key.path[0]}:latest",
+        f"michimussato/{context.asset_key.path[0]}:{str(time.time())}",
     ]
     buildargs = {
         "PYTHON_MAJ": env_base.get("PYTHON_MAJ"),
@@ -766,8 +820,8 @@ def build_likec4_dev(
         "/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/likec4_dev/Dockerfile",
     )
     tags = [
-        "michimussato/likec4_dev:latest",
-        f"michimussato/likec4_dev:{str(time.time())}",
+        f"michimussato/{context.asset_key.path[0]}:latest",
+        f"michimussato/{context.asset_key.path[0]}:{str(time.time())}",
     ]
     buildargs = {}
 
