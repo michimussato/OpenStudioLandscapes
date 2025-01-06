@@ -945,8 +945,8 @@ def build_likec4_dev(
         
         WORKDIR /ENTRYPOINT
         
-        COPY ./entrypoint/setup.sh .
-        COPY ./entrypoint/run.sh .
+        COPY ./payload/setup.sh .
+        COPY ./payload/run.sh .
         
         RUN chmod -R +x /ENTRYPOINT/*.sh
         
@@ -968,6 +968,21 @@ def build_likec4_dev(
 
     with open(docker_file, "w") as fw:
         fw.write(docker_file_str)
+
+    payload = docker_file.parent / "payload"
+    payload.mkdir(parents=True, exist_ok=True)
+
+    # setup.sh
+    shutil.copy(
+        src=pathlib.Path("~/git/repos/deadline-docker/10.2/base_images/base_image/likec4_dev/entrypoint/setup.sh").expanduser(),
+        dst=payload,
+    )
+
+    # run.sh
+    shutil.copy(
+        src=pathlib.Path("~/git/repos/deadline-docker/10.2/base_images/base_image/likec4_dev/entrypoint/run.sh").expanduser(),
+        dst=payload,
+    )
 
     with open(docker_file, "r") as fr:
         docker_file_content = fr.read()
