@@ -54,14 +54,18 @@ def compile_cmds(
 def secrets(
         context: AssetExecutionContext,
 ) -> dict:
-    from __SECRET__.secrets import secrets
+    try:
+        from __SECRET__.secrets import secrets as _secrets
+    except ModuleNotFoundError:
+        context.log.exception("Failed to import secrets from __SECRET__.secrets")
+        _secrets: dict = {}
 
-    yield Output(secrets)
+    yield Output(_secrets)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            context.asset_key.path[0]: MetadataValue.json(secrets),
+            context.asset_key.path[0]: MetadataValue.json(_secrets),
 
         },
     )
