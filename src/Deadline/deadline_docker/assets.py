@@ -1,4 +1,5 @@
 import json
+import textwrap
 import pathlib
 import time
 import yaml
@@ -7,12 +8,14 @@ from functools import reduce
 
 from python_on_whales import docker
 
-from dagster import (AssetExecutionContext,
-                     asset,
-                     Output,
-                     AssetMaterialization,
-                     MetadataValue,
-                     AssetIn)
+from dagster import (
+    AssetExecutionContext,
+    asset,
+    Output,
+    AssetMaterialization,
+    MetadataValue,
+    AssetIn,
+)
 
 USE_CACHE = False
 
@@ -51,7 +54,9 @@ def compile_cmds(
 def env_base(
         context: AssetExecutionContext,
 ) -> dict:
+    # @formatter:off
     _env: dict = {
+        "AUTHOR": "michimussato@gmail.com",
         "MONGO_EXPRESS_PORT_HOST": "8181",
         "MONGO_EXPRESS_PORT_CONTAINER": "8081",
 
@@ -81,7 +86,8 @@ def env_base(
         "MONGO_DB_PORT_HOST": "21017",
         "MONGO_DB_PORT_CONTAINER": "21017",
         # "MONGO_PORT": "${MONGO_DB_PORT_CONTAINER}",
-        # https://docs.docker.com/compose/how-tos/environment-variables/set-environment-variables/#additional-information-1
+        # https://docs.docker.com/compose/how-tos/environment-variables/set-environment-variables/#additional
+        # -information-1
         # https://hub.docker.com/_/mongo-express/
         "ME_CONFIG_BASICAUTH_USERNAME": "web",
         "ME_CONFIG_BASICAUTH_PASSWORD": "web",
@@ -114,8 +120,6 @@ def env_base(
         "INSTALLERS_ROOT": "/data/share/nfs/installers",
         "TEST_INSTALLERS_ROOT": "/data/share/nfs/installers",
 
-
-
         # # TODO
         # # DEADLINE_INI:
         # # DEADLINE_CLIENT_DIR: "/opt/Thinkbox/Deadline10"
@@ -125,6 +129,7 @@ def env_base(
         # # MONGO_DB_PROD:
         # # MONGO_DB_TEST:
     }
+    # @formatter:on
 
     yield Output(_env)
 
@@ -150,6 +155,7 @@ def env_10_2(
         context: AssetExecutionContext,
         env_base: dict,
 ) -> dict:
+    # @formatter:off
     _env: dict = {
         "DEADLINE_VERSION": "10.2.1.1",
 
@@ -157,6 +163,7 @@ def env_10_2(
         "GOOGLE_ID_DeadlineClient_10_2": "1cGxCPkrJ1ujWqie2yXTrOpShkEgSXR0F",
         "GOOGLE_ID_DeadlineRepository_10_2": "1VZhCcxvCAc4oozLAKRCv_zwQLMuVdMRz",
     }
+    # @formatter:on
 
     env_base.update(_env)
 
@@ -191,96 +198,88 @@ def build_base_image(
         "michimussato/base_image:latest",
         f"michimussato/base_image:{str(time.time())}",
     ]
-    buildargs = {
-        "PYTHON_MAJ": env_base.get("PYTHON_MAJ"),
-        "PYTHON_MIN": env_base.get("PYTHON_MIN"),
-        "PYTHON_PAT": env_base.get("PYTHON_PAT"),
-    }
+    buildargs = {}
 
     # @formatter:off
-    docker_file_str = """
-FROM ubuntu:20.04 AS {image_name}
-LABEL authors="michimussato@gmail.com"
-
-ARG DEBIAN_FRONTEND=noninteractive
-
-ENV CONTAINER_TIMEZONE="Europe/Zurich"
-ENV SET_CONTAINER_TIMEZONE=true
-
-RUN apt-get update \
-    && apt-get upgrade -y
-
-RUN apt-get install \
-    -y \
-    --no-install-recommends \
-    git \
-    ca-certificates \
-    htop  \
-    file  \
-    tzdata  \
-    curl  \
-    wget  \
-    ffmpeg  \
-    xvfb  \
-    libegl1  \
-    libsm6  \
-    libsm6  \
-    libglu1-mesa  \
-    libxss1
-
-RUN apt-get install  \
-    -y  \
-    --no-install-recommends  \
-    make  \
-    build-essential  \
-    zlib1g-dev  \
-    libncurses5-dev  \
-    libgdbm-dev  \
-    libnss3-dev  \
-    libssl-dev  \
-    libreadline-dev  \
-    libffi-dev  \
-    libsqlite3-dev  \
-    libbz2-dev
-
-WORKDIR /build/python
-
-RUN curl "https://www.python.org/ftp/python/${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}/Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}.tgz" -o Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}.tgz
-RUN file Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}.tgz
-RUN tar -xvf Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}.tgz
-
-RUN cd Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT} && ./configure --enable-optimizations  # Todo: --prefix  # 
-https://stackoverflow.com/questions/11307465/destdir-and-prefix-of-make
-RUN cd Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT} && make -j $(nproc)
-RUN cd Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT} && make altinstall  # altinstall instead of install because 
-the later command will overwrite the default system python3 binary.
-
-RUN python${PYTHON_MAJ}.${PYTHON_MIN} -m pip install pip --upgrade
-
-RUN python${PYTHON_MAJ}.${PYTHON_MIN} -m pip install --root-user-action=ignore "deadline-dagster @ 
-git+https://github.com/michimussato/deadline-dagster.git@main"
-RUN python${PYTHON_MAJ}.${PYTHON_MIN} -m pip install --root-user-action=ignore "dagster-shared @ 
-git+https://github.com/michimussato/dagster-shared.git@main"
-# RUN thinkbox-ssl-gen --help
-
-RUN rm -rf /build/python
-
-RUN apt-get clean
-
-ENTRYPOINT []
-    """.format(
+    docker_file_str = textwrap.dedent("""
+        FROM ubuntu:20.04 AS {image_name}
+        LABEL authors="{AUTHOR}"
+        
+        ARG DEBIAN_FRONTEND=noninteractive
+        
+        ENV CONTAINER_TIMEZONE="Europe/Zurich"
+        ENV SET_CONTAINER_TIMEZONE=true
+        
+        RUN apt-get update \
+            && apt-get upgrade -y
+        
+        RUN apt-get install \
+            -y \
+            --no-install-recommends \
+            git \
+            ca-certificates \
+            htop  \
+            file  \
+            tzdata  \
+            curl  \
+            wget  \
+            ffmpeg  \
+            xvfb  \
+            libegl1  \
+            libsm6  \
+            libsm6  \
+            libglu1-mesa  \
+            libxss1
+        
+        RUN apt-get install  \
+            -y  \
+            --no-install-recommends  \
+            make  \
+            build-essential  \
+            zlib1g-dev  \
+            libncurses5-dev  \
+            libgdbm-dev  \
+            libnss3-dev  \
+            libssl-dev  \
+            libreadline-dev  \
+            libffi-dev  \
+            libsqlite3-dev  \
+            libbz2-dev
+        
+        WORKDIR /build/python
+        
+        RUN curl "https://www.python.org/ftp/python/{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}/Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}.tgz" -o Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}.tgz
+        RUN file Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}.tgz
+        RUN tar -xvf Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}.tgz
+        
+        RUN cd Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT} && ./configure --enable-optimizations  # Todo: --prefix  # https://stackoverflow.com/questions/11307465/destdir-and-prefix-of-make
+        RUN cd Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT} && make -j $(nproc)
+        RUN cd Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT} && make altinstall  # altinstall instead of install because the later command will overwrite the default system python3 binary.
+        
+        RUN python{PYTHON_MAJ}.{PYTHON_MIN} -m pip install pip --upgrade
+        
+        RUN python{PYTHON_MAJ}.{PYTHON_MIN} -m pip install --root-user-action=ignore "deadline-dagster @ git+https://github.com/michimussato/deadline-dagster.git@main"
+        RUN python{PYTHON_MAJ}.{PYTHON_MIN} -m pip install --root-user-action=ignore "dagster-shared @ git+https://github.com/michimussato/dagster-shared.git@main"
+        # RUN thinkbox-ssl-gen --help
+        
+        RUN rm -rf /build/python
+        
+        RUN apt-get clean
+        
+        ENTRYPOINT []
+    """).format(
         image_name=context.asset_key.path[0],
+        AUTHOR=env_base.get("AUTHOR"),
         PYTHON_MAJ=env_base.get("PYTHON_MAJ"),
         PYTHON_MIN=env_base.get("PYTHON_MIN"),
         PYTHON_PAT=env_base.get("PYTHON_PAT"),
     )
     # @formatter:on
 
+    docker_file.parent.mkdir(parents=True, exist_ok=True)
+
     with open(docker_file, "w") as fw:
-        fw.write("""
-
-
-""")
+        fw.write(docker_file_str)
 
     with open(docker_file, "r") as fr:
         docker_file_content = fr.read()
@@ -338,7 +337,8 @@ def build_base_image_10_2(
     """
 
     docker_file = pathlib.Path(
-        "/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/base_image_10_2/Dockerfile")
+        "/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/base_image_10_2/Dockerfile",
+    )
 
     context.log.info(f"{docker_file.as_posix() = }")
 
@@ -412,7 +412,8 @@ def build_repository_image_10_2(
     """
 
     docker_file = pathlib.Path(
-        "/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/base_image_10_2/repo_installer/Dockerfile")
+        "/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/base_image_10_2/repo_installer/Dockerfile",
+    )
     tags = [
         "michimussato/repository_image_10_2:latest",
         f"michimussato/repository_image_10_2:{str(time.time())}",
@@ -600,10 +601,6 @@ def build_client_image_10_2(
     )
 
 
-
-
-
-
 @asset(
     group_name="Build_Images_10_2",
     ins={
@@ -679,8 +676,6 @@ CMD ["--help"]
     )
 
 
-
-
 @asset(
     group_name="Common_Service_Images",
     ins={
@@ -697,7 +692,9 @@ def build_dagster_dev(
     """
     """
 
-    docker_file = pathlib.Path("/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/dagster_dev/Dockerfile")
+    docker_file = pathlib.Path(
+        "/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/dagster_dev/Dockerfile",
+    )
     tags = [
         "michimussato/dagster_dev:latest",
         f"michimussato/dagster_dev:{str(time.time())}",
@@ -766,7 +763,8 @@ def build_likec4_dev(
     """
 
     docker_file = pathlib.Path(
-        "/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/likec4_dev/Dockerfile")
+        "/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/likec4_dev/Dockerfile",
+    )
     tags = [
         "michimussato/likec4_dev:latest",
         f"michimussato/likec4_dev:{str(time.time())}",
@@ -1389,7 +1387,9 @@ def compose_10_2(
     docker_dict = reduce(deep_merge, docker_chainmap.maps)
     docker_yaml = yaml.dump(docker_dict)
 
-    docker_compose = pathlib.Path(f"/home/michael/git/repos/deadline-docker/10.2/.docker/docker_compose/{context.asset_key.path[0]}/docker-compose.yaml")
+    docker_compose = pathlib.Path(
+        f"/home/michael/git/repos/deadline-docker/10.2/.docker/docker_compose/{context.asset_key.path[0]}/docker-compose.yaml",
+    )
     docker_compose.parent.mkdir(parents=True, exist_ok=True)
 
     with open(docker_compose, "w") as fw:
