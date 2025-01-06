@@ -51,8 +51,31 @@ def compile_cmds(
 @asset(
     group_name="Environment"
 )
+def secrets(
+        context: AssetExecutionContext,
+) -> dict:
+    from __SECRET__.secrets import secrets
+
+    yield Output(secrets)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            context.asset_key.path[0]: MetadataValue.json(secrets),
+
+        },
+    )
+
+
+@asset(
+    group_name="Environment",
+    ins={
+        "secrets": AssetIn(),
+    },
+)
 def env_base(
         context: AssetExecutionContext,
+        secrets: dict,
 ) -> dict:
     # @formatter:off
     _env: dict = {
@@ -106,8 +129,6 @@ def env_base(
         "ROOT_DOMAIN": "farm.evil",
         # "DB_HOST": "mongodb-10-2",
 
-        "GOOGLE_API_KEY": "AIzaSyBBH8zUH4VC1Bov-3EdVbjG0gBauroMd9E",
-
         # "PYTHON_VERSION": "3.11.11",
         "PYTHON_MAJ": "3",
         "PYTHON_MIN": "11",
@@ -129,6 +150,8 @@ def env_base(
         # # MONGO_DB_PROD:
         # # MONGO_DB_TEST:
     }
+
+    _env.update(secrets)
     # @formatter:on
 
     yield Output(_env)
