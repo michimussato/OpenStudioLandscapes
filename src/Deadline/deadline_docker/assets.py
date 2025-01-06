@@ -333,8 +333,6 @@ def build_base_image_10_2(
         f"~/git/repos/deadline-docker/10.2/.docker/Dockerfiles/{context.asset_key.path[0]}/Dockerfile"
     ).expanduser()
 
-    context.log.info(f"{docker_file.as_posix() = }")
-
     tags = [
         f"michimussato/{context.asset_key.path[0]}:latest",
         f"michimussato/{context.asset_key.path[0]}:{str(time.time())}",
@@ -591,39 +589,71 @@ def build_repository_image_10_2(
     group_name="Build_Images_10_2",
     ins={
         "env_10_2": AssetIn(),
+        "build_base_image_10_2": AssetIn(),
     },
-    deps=[
-        "build_base_image_10_2"
-    ],
+    # deps=[
+    #     "build_base_image_10_2"
+    # ],
 )
 def build_client_image_10_2(
         context: AssetExecutionContext,
         env_10_2: dict,
+        build_base_image_10_2: str,
 ) -> str:
     """
     """
 
     docker_file = pathlib.Path(
-        "/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/base_image_10_2/client_installer/Dockerfile",
-    )
+        f"~/git/repos/deadline-docker/10.2/.docker/Dockerfiles/{context.asset_key.path[0]}/Dockerfile"
+    ).expanduser()
+
     tags = [
         f"michimussato/{context.asset_key.path[0]}:latest",
         f"michimussato/{context.asset_key.path[0]}:{str(time.time())}",
     ]
-    buildargs = {
-        "DEADLINE_VERSION": env_10_2.get("DEADLINE_VERSION"),
-        "RCS_HTTP_PORT_CONTAINER": env_10_2.get("RCS_HTTP_PORT_CONTAINER"),
-        "WEBSERVICE_HTTP_PORT_CONTAINER": env_10_2.get("WEBSERVICE_HTTP_PORT_CONTAINER"),
-    }
+
+    # @formatter:off
+    docker_file_str = textwrap.dedent("""
+        FROM {parent_image} AS {image_name}
+        LABEL authors="{AUTHOR}"
+        
+        SHELL ["/bin/bash", "-c"]
+        
+        WORKDIR /installers
+        
+        RUN deadline-wrapper-10-2  \
+            -vv  \
+            install-client  \
+            --installer /installers/DeadlineClient.run  \
+            --deadline-version {DEADLINE_VERSION}  \
+            --prefix "/opt/Thinkbox/Deadline10"  \
+            --repositorydir "/opt/Thinkbox/DeadlineRepository10"  \
+            --httpport {RCS_HTTP_PORT_CONTAINER}  \
+            --webservice-httpport {WEBSERVICE_HTTP_PORT_CONTAINER}
+        
+        WORKDIR /opt/Thinkbox
+        
+        ENTRYPOINT []
+    """).format(
+        image_name=context.asset_key.path[0],
+        parent_image=build_base_image_10_2,
+        AUTHOR=env_10_2.get("AUTHOR"),
+        DEADLINE_VERSION=env_10_2.get("DEADLINE_VERSION"),
+        RCS_HTTP_PORT_CONTAINER=env_10_2.get("RCS_HTTP_PORT_CONTAINER"),
+        WEBSERVICE_HTTP_PORT_CONTAINER=env_10_2.get("WEBSERVICE_HTTP_PORT_CONTAINER"),
+    )
+    # @formatter:on
+
+    docker_file.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(docker_file, "w") as fw:
+        fw.write(docker_file_str)
 
     with open(docker_file, "r") as fr:
         docker_file_content = fr.read()
 
-    context.log.info(f"{buildargs = }")
-
     stream = docker.build(
         context_path=docker_file.parent.as_posix(),
-        build_args=buildargs,
         cache=USE_CACHE,
         tags=tags,
         stream_logs=True,
@@ -638,7 +668,6 @@ def build_client_image_10_2(
     cmds_docker = compile_cmds(
         docker_file=docker_file,
         tag=tags[1],
-        buildargs=buildargs,
     )
 
     yield Output(tags[1])
