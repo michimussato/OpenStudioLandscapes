@@ -184,7 +184,9 @@ def build_base_image(
     """
     """
 
-    docker_file = pathlib.Path("/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/Dockerfile")
+    docker_file = pathlib.Path(
+        f"/home/michael/git/repos/deadline-docker/10.2/.docker/Dockerfiles/{context.asset_key.path[0]}/Dockerfile"
+    )
     tags = [
         "michimussato/base_image:latest",
         f"michimussato/base_image:{str(time.time())}",
@@ -194,6 +196,91 @@ def build_base_image(
         "PYTHON_MIN": env_base.get("PYTHON_MIN"),
         "PYTHON_PAT": env_base.get("PYTHON_PAT"),
     }
+
+    # @formatter:off
+    docker_file_str = """
+FROM ubuntu:20.04 AS {image_name}
+LABEL authors="michimussato@gmail.com"
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+ENV CONTAINER_TIMEZONE="Europe/Zurich"
+ENV SET_CONTAINER_TIMEZONE=true
+
+RUN apt-get update \
+    && apt-get upgrade -y
+
+RUN apt-get install \
+    -y \
+    --no-install-recommends \
+    git \
+    ca-certificates \
+    htop  \
+    file  \
+    tzdata  \
+    curl  \
+    wget  \
+    ffmpeg  \
+    xvfb  \
+    libegl1  \
+    libsm6  \
+    libsm6  \
+    libglu1-mesa  \
+    libxss1
+
+RUN apt-get install  \
+    -y  \
+    --no-install-recommends  \
+    make  \
+    build-essential  \
+    zlib1g-dev  \
+    libncurses5-dev  \
+    libgdbm-dev  \
+    libnss3-dev  \
+    libssl-dev  \
+    libreadline-dev  \
+    libffi-dev  \
+    libsqlite3-dev  \
+    libbz2-dev
+
+WORKDIR /build/python
+
+RUN curl "https://www.python.org/ftp/python/${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}/Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}.tgz" -o Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}.tgz
+RUN file Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}.tgz
+RUN tar -xvf Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}.tgz
+
+RUN cd Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT} && ./configure --enable-optimizations  # Todo: --prefix  # 
+https://stackoverflow.com/questions/11307465/destdir-and-prefix-of-make
+RUN cd Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT} && make -j $(nproc)
+RUN cd Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT} && make altinstall  # altinstall instead of install because 
+the later command will overwrite the default system python3 binary.
+
+RUN python${PYTHON_MAJ}.${PYTHON_MIN} -m pip install pip --upgrade
+
+RUN python${PYTHON_MAJ}.${PYTHON_MIN} -m pip install --root-user-action=ignore "deadline-dagster @ 
+git+https://github.com/michimussato/deadline-dagster.git@main"
+RUN python${PYTHON_MAJ}.${PYTHON_MIN} -m pip install --root-user-action=ignore "dagster-shared @ 
+git+https://github.com/michimussato/dagster-shared.git@main"
+# RUN thinkbox-ssl-gen --help
+
+RUN rm -rf /build/python
+
+RUN apt-get clean
+
+ENTRYPOINT []
+    """.format(
+        image_name=context.asset_key.path[0],
+        PYTHON_MAJ=env_base.get("PYTHON_MAJ"),
+        PYTHON_MIN=env_base.get("PYTHON_MIN"),
+        PYTHON_PAT=env_base.get("PYTHON_PAT"),
+    )
+    # @formatter:on
+
+    with open(docker_file, "w") as fw:
+        fw.write("""
+
+
+""")
 
     with open(docker_file, "r") as fr:
         docker_file_content = fr.read()
@@ -462,8 +549,8 @@ def build_client_image_10_2(
     """
 
     docker_file = pathlib.Path(
-        "/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/base_image_10_2/client_installer"
-        "/Dockerfile")
+        "/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/base_image_10_2/client_installer/Dockerfile",
+    )
     tags = [
         "michimussato/client_image_10_2:latest",
         f"michimussato/client_image_10_2:{str(time.time())}",
@@ -545,7 +632,8 @@ CMD ["--help"]
     """
 
     docker_file = pathlib.Path(
-        "/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/base_image_10_2/client_installer/generic_runner/Dockerfile")
+        "/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/base_image_10_2/client_installer/generic_runner/Dockerfile",
+    )
     tags = [
         f"michimussato/{context.asset_key.path[0]}:latest",
         f"michimussato/{context.asset_key.path[0]}:{str(time.time())}",
@@ -1225,10 +1313,7 @@ def compose_rcs_runner_10_2(
                     "mongodb",
                 ],
                 "command": [
-                    # "--host",
-                    # env_10_2.get('LIKEC4_HOST'),
-                    # "--port",
-                    # env_10_2.get('LIKEC4_DEV_PORT_CONTAINER'),
+                    "--executable", "/opt/Thinkbox/Deadline10/bin/deadlinercs",
                 ],
                 "volumes": [
                     f"/home/michael/git/repos/deadline-docker/10.2/configs/Deadline10/deadline.ini:/var/lib/Thinkbox/Deadline10/deadline.ini:ro",
@@ -1263,6 +1348,7 @@ def compose_rcs_runner_10_2(
     group_name="Docker_Compose_10_2",
     ins={
         "env_base": AssetIn(),
+        "compose_rcs_runner_10_2": AssetIn(),
         "compose_repository_10_2": AssetIn(),
         "compose_networks_10_2": AssetIn(),
         "compose_mongo_express_10_2": AssetIn(),
@@ -1275,6 +1361,7 @@ def compose_rcs_runner_10_2(
 def compose_10_2(
         context: AssetExecutionContext,
         env_base: dict,
+        compose_rcs_runner_10_2: dict,
         compose_repository_10_2: dict,
         compose_networks_10_2: dict,
         compose_mongo_express_10_2: dict,
@@ -1294,6 +1381,7 @@ def compose_10_2(
         compose_mongodb_10_2,
         compose_filebrowser_10_2,
         compose_mongo_express_10_2,
+        compose_rcs_runner_10_2,
         compose_repository_10_2,
         compose_networks_10_2,
     )
@@ -1301,7 +1389,7 @@ def compose_10_2(
     docker_dict = reduce(deep_merge, docker_chainmap.maps)
     docker_yaml = yaml.dump(docker_dict)
 
-    docker_compose = pathlib.Path(f"/home/michael/git/repos/deadline-docker/10.2/.docker_compose/{context.asset_key.path[0]}/docker-compose.yaml")
+    docker_compose = pathlib.Path(f"/home/michael/git/repos/deadline-docker/10.2/.docker/docker_compose/{context.asset_key.path[0]}/docker-compose.yaml")
     docker_compose.parent.mkdir(parents=True, exist_ok=True)
 
     with open(docker_compose, "w") as fw:
