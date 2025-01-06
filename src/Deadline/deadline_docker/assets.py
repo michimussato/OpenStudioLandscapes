@@ -491,11 +491,6 @@ def build_repository_image_10_2(
         image_name=context.asset_key.path[0],
         parent_image=build_base_image_10_2,
         **env_10_2,
-        # AUTHOR=env_10_2.get("AUTHOR"),
-        # DEADLINE_VERSION=env_10_2.get("DEADLINE_VERSION"),
-        # MONGO_DB_PORT_HOST=env_10_2.get("MONGO_DB_PORT_HOST"),
-        # MONGO_DB_NAME=env_10_2.get("MONGO_DB_NAME"),
-        # MONGO_DB_HOST=env_10_2.get("MONGO_DB_HOST"),
     )
     # @formatter:on
 
@@ -616,9 +611,6 @@ def build_repository_image_10_2(
         "env_10_2": AssetIn(),
         "build_base_image_10_2": AssetIn(),
     },
-    # deps=[
-    #     "build_base_image_10_2"
-    # ],
 )
 def build_client_image_10_2(
         context: AssetExecutionContext,
@@ -664,10 +656,6 @@ def build_client_image_10_2(
         image_name=context.asset_key.path[0],
         parent_image=build_base_image_10_2,
         **env_10_2,
-        # AUTHOR=env_10_2.get("AUTHOR"),
-        # DEADLINE_VERSION=env_10_2.get("DEADLINE_VERSION"),
-        # RCS_HTTP_PORT_CONTAINER=env_10_2.get("RCS_HTTP_PORT_CONTAINER"),
-        # WEBSERVICE_HTTP_PORT_CONTAINER=env_10_2.get("WEBSERVICE_HTTP_PORT_CONTAINER"),
     )
     # @formatter:on
 
@@ -1076,9 +1064,6 @@ def build_likec4_dev(
     ins={
         "env_10_2": AssetIn(),
     },
-    deps=[
-        "build_base_image"
-    ],
 )
 def compose_networks_10_2(
         context: AssetExecutionContext,
@@ -1118,9 +1103,6 @@ def compose_networks_10_2(
     ins={
         "env_10_2": AssetIn(),
     },
-    deps=[
-        "build_base_image"
-    ],
 )
 def compose_mongo_express_10_2(
         context: AssetExecutionContext,
@@ -1183,15 +1165,12 @@ def compose_mongo_express_10_2(
 @asset(
     group_name="Docker_Compose_10_2",
     ins={
-        "env_base": AssetIn(),
+        "env_10_2": AssetIn(),
     },
-    deps=[
-        "build_base_image"
-    ],
 )
 def compose_filebrowser_10_2(
         context: AssetExecutionContext,
-        env_base: dict,
+        env_10_2: dict,
 ) -> dict:
     docker_dict = {
         "services": {
@@ -1199,7 +1178,7 @@ def compose_filebrowser_10_2(
                 "image": "filebrowser/filebrowser",
                 "container_name": "filebrowser-10-2",
                 "hostname": "filebrowser-10-2",
-                "domainname": env_base.get("ROOT_DOMAIN"),
+                "domainname": env_10_2.get("ROOT_DOMAIN"),
                 "restart": "always",
                 # "depends_on": [
                 #     "mongodb-10-2",
@@ -1208,14 +1187,14 @@ def compose_filebrowser_10_2(
                     "repository",
                 ],
                 "ports": [
-                    f"{env_base.get('FILEBROWSER_PORT_HOST')}:{env_base.get('FILEBROWSER_PORT_CONTAINER')}",
+                    f"{env_10_2.get('FILEBROWSER_PORT_HOST')}:{env_10_2.get('FILEBROWSER_PORT_CONTAINER')}",
                 ],
                 "volumes": [
                     "/home/michael/git/repos/deadline-docker/10.2/databases/filebrowser/filebrowser.db:/filebrowser.db",
                     "/home/michael/git/repos/deadline-docker/10.2/configs/filebrowser/filebrowser.json:/.filebrowser.json",
-                    f"{env_base.get('NFS_ENTRY_POINT')}/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data:ro",
-                    f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT')}:ro",
-                    f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT_LNS')}:ro",
+                    f"{env_10_2.get('NFS_ENTRY_POINT')}/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data:ro",
+                    f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT')}:ro",
+                    f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT_LNS')}:ro",
                 ],
             },
         },
@@ -1231,7 +1210,7 @@ def compose_filebrowser_10_2(
             context.asset_key.path[0]: MetadataValue.json(docker_dict),
             "docker_dict": MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
             "docker_yaml": MetadataValue.md(f"```shell\n{docker_yaml}\n```"),
-            "env_base": MetadataValue.json(env_base),
+            "env_base": MetadataValue.json(env_10_2),
         },
     )
 
@@ -1241,9 +1220,6 @@ def compose_filebrowser_10_2(
     ins={
         "env_10_2": AssetIn(),
     },
-    deps=[
-        "build_base_image"
-    ],
 )
 def compose_mongodb_10_2(
         context: AssetExecutionContext,
@@ -1298,14 +1274,11 @@ def compose_mongodb_10_2(
 
 
 @asset(
-    group_name="Docker_Compose_10_2",
+    group_name="Docker_Compose",
     ins={
         "env_base": AssetIn(),
         "build_dagster_dev": AssetIn(),
     },
-    deps=[
-        "build_base_image"
-    ],
 )
 def compose_dagster_dev(
         context: AssetExecutionContext,
@@ -1367,16 +1340,13 @@ def compose_dagster_dev(
 @asset(
     group_name="Docker_Compose_10_2",
     ins={
-        "env_base": AssetIn(),
+        "env_10_2": AssetIn(),
         "build_repository_image_10_2": AssetIn(),
     },
-    # deps=[
-    #     "build_base_image"
-    # ],
 )
 def compose_repository_10_2(
         context: AssetExecutionContext,
-        env_base: dict,
+        env_10_2: dict,
         build_repository_image_10_2: str,
 ) -> dict:
     """
@@ -1387,7 +1357,7 @@ def compose_repository_10_2(
             "repository_10_2": {
                 "container_name": "repository-10-2",
                 "hostname": "repository-10-2",
-                "domainname": env_base.get("ROOT_DOMAIN"),
+                "domainname": env_10_2.get("ROOT_DOMAIN"),
                 "restart": "always",
                 "image": build_repository_image_10_2,
                 "networks": [
@@ -1400,8 +1370,8 @@ def compose_repository_10_2(
                     "anything",
                 ],
                 "volumes": [
-                    f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT')}",
-                    f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT_LNS')}",
+                    f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT')}",
+                    f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT_LNS')}",
                     # Redirect to host installation for now:
                     f"/data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10",
                 ],
@@ -1422,20 +1392,17 @@ def compose_repository_10_2(
             context.asset_key.path[0]: MetadataValue.json(docker_dict),
             # "docker_dict": MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
             "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
-            "env_base": MetadataValue.json(env_base),
+            "env_base": MetadataValue.json(env_10_2),
         },
     )
 
 
 @asset(
-    group_name="Docker_Compose_10_2",
+    group_name="Docker_Compose",
     ins={
         "env_base": AssetIn(),
         "build_likec4_dev": AssetIn(),
     },
-    deps=[
-        "build_base_image"
-    ],
 )
 def compose_likec4_dev(
         context: AssetExecutionContext,
@@ -1495,9 +1462,6 @@ def compose_likec4_dev(
         "env_10_2": AssetIn(),
         "build_generic_runner_image_10_2": AssetIn(),
     },
-    # deps=[
-    #     "build_base_image"
-    # ],
 )
 def compose_rcs_runner_10_2(
         context: AssetExecutionContext,
@@ -1554,7 +1518,7 @@ def compose_rcs_runner_10_2(
 @asset(
     group_name="Docker_Compose_10_2",
     ins={
-        "env_base": AssetIn(),
+        "env_10_2": AssetIn(),
         "compose_rcs_runner_10_2": AssetIn(),
         "compose_repository_10_2": AssetIn(),
         "compose_networks_10_2": AssetIn(),
@@ -1567,7 +1531,7 @@ def compose_rcs_runner_10_2(
 )
 def compose_10_2(
         context: AssetExecutionContext,
-        env_base: dict,
+        env_10_2: dict,
         compose_rcs_runner_10_2: dict,
         compose_repository_10_2: dict,
         compose_networks_10_2: dict,
@@ -1618,6 +1582,6 @@ def compose_10_2(
             # "cmd_docker_compose_down": MetadataValue.path(cmd_docker_compose_down),
             "maps": MetadataValue.md(f"```json\n{json.dumps(docker_chainmap.maps, indent=2)}\n```"),
             "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
-            "env_base": MetadataValue.json(env_base),
+            "env_base": MetadataValue.json(env_10_2),
         },
     )
