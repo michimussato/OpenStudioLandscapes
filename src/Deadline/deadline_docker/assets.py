@@ -170,9 +170,6 @@ def env_base(
     ins={
         "env_base": AssetIn(),
     },
-    # deps=[
-    #     "build_base_image",
-    # ],
 )
 def env_10_2(
         context: AssetExecutionContext,
@@ -296,6 +293,8 @@ def build_base_image(
     )
     # @formatter:on
 
+    shutil.rmtree(docker_file.parent, ignore_errors=True)
+
     docker_file.parent.mkdir(parents=True, exist_ok=True)
 
     with open(docker_file, "w") as fw:
@@ -395,6 +394,8 @@ def build_base_image_10_2(
     )
     # @formatter:on
 
+    shutil.rmtree(docker_file.parent, ignore_errors=True)
+
     docker_file.parent.mkdir(parents=True, exist_ok=True)
 
     with open(docker_file, "w") as fw:
@@ -493,6 +494,8 @@ def build_repository_image_10_2(
         # MONGO_DB_HOST=env_10_2.get("MONGO_DB_HOST"),
     )
     # @formatter:on
+
+    shutil.rmtree(docker_file.parent, ignore_errors=True)
 
     docker_file.parent.mkdir(parents=True, exist_ok=True)
 
@@ -664,6 +667,8 @@ def build_client_image_10_2(
     )
     # @formatter:on
 
+    shutil.rmtree(docker_file.parent, ignore_errors=True)
+
     docker_file.parent.mkdir(parents=True, exist_ok=True)
 
     with open(docker_file, "w") as fw:
@@ -745,6 +750,8 @@ def build_generic_runner_image_10_2(
         **env_10_2,
     )
     # @formatter:on
+
+    shutil.rmtree(docker_file.parent, ignore_errors=True)
 
     docker_file.parent.mkdir(parents=True, exist_ok=True)
 
@@ -834,6 +841,8 @@ def build_dagster_dev(
         **env_base,
     )
     # @formatter:on
+
+    shutil.rmtree(docker_file.parent, ignore_errors=True)
 
     docker_file.parent.mkdir(parents=True, exist_ok=True)
 
@@ -948,6 +957,8 @@ def build_likec4_dev(
         **env_base,
     )
     # @formatter:on
+
+    shutil.rmtree(docker_file.parent, ignore_errors=True)
 
     docker_file.parent.mkdir(parents=True, exist_ok=True)
 
