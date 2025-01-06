@@ -49,7 +49,8 @@ def compile_cmds(
 
 
 @asset(
-    group_name="Environment"
+    group_name="Environment",
+    compute_kind="python",
 )
 def secrets(
         context: AssetExecutionContext,
@@ -73,6 +74,7 @@ def secrets(
 
 @asset(
     group_name="Environment",
+    compute_kind="python",
     ins={
         "secrets": AssetIn(),
     },
@@ -171,6 +173,7 @@ def env_base(
 
 @asset(
     group_name="Environment_10_2",
+    compute_kind="python",
     ins={
         "env_base": AssetIn(),
     },
@@ -204,6 +207,7 @@ def env_10_2(
 
 @asset(
     group_name="Build_Base_Image",
+    compute_kind="python",
     ins={
         "env_base": AssetIn(),
     },
@@ -341,6 +345,7 @@ def build_base_image(
 
 @asset(
     group_name="Build_Images_10_2",
+    compute_kind="python",
     ins={
         "env_10_2": AssetIn(),
         "build_base_image": AssetIn(),
@@ -442,6 +447,7 @@ def build_base_image_10_2(
 
 @asset(
     group_name="Build_Images_10_2",
+    compute_kind="python",
     ins={
         "env_10_2": AssetIn(),
         "build_base_image_10_2": AssetIn(),
@@ -607,6 +613,7 @@ def build_repository_image_10_2(
 
 @asset(
     group_name="Build_Images_10_2",
+    compute_kind="python",
     ins={
         "env_10_2": AssetIn(),
         "build_base_image_10_2": AssetIn(),
@@ -703,6 +710,7 @@ def build_client_image_10_2(
 
 @asset(
     group_name="Build_Images_10_2",
+    compute_kind="python",
     ins={
         "env_10_2": AssetIn(),
         "build_client_image_10_2": AssetIn(),
@@ -787,6 +795,7 @@ def build_generic_runner_image_10_2(
 
 @asset(
     group_name="Common_Service_Images",
+    compute_kind="python",
     ins={
         "env_base": AssetIn(),
         "build_base_image": AssetIn(),
@@ -893,6 +902,7 @@ def build_dagster_dev(
 
 @asset(
     group_name="Common_Service_Images",
+    compute_kind="python",
     ins={
         "env_base": AssetIn(),
         "build_base_image": AssetIn(),
@@ -1061,6 +1071,7 @@ def build_likec4_dev(
 
 @asset(
     group_name="Docker_Compose_10_2",
+    compute_kind="python",
     ins={
         "env_10_2": AssetIn(),
     },
@@ -1100,6 +1111,7 @@ def compose_networks_10_2(
 
 @asset(
     group_name="Docker_Compose_10_2",
+    compute_kind="python",
     ins={
         "env_10_2": AssetIn(),
     },
@@ -1164,6 +1176,7 @@ def compose_mongo_express_10_2(
 
 @asset(
     group_name="Docker_Compose_10_2",
+    compute_kind="python",
     ins={
         "env_10_2": AssetIn(),
     },
@@ -1217,6 +1230,7 @@ def compose_filebrowser_10_2(
 
 @asset(
     group_name="Docker_Compose_10_2",
+    compute_kind="python",
     ins={
         "env_10_2": AssetIn(),
     },
@@ -1275,6 +1289,7 @@ def compose_mongodb_10_2(
 
 @asset(
     group_name="Docker_Compose",
+    compute_kind="python",
     ins={
         "env_base": AssetIn(),
         "build_dagster_dev": AssetIn(),
@@ -1339,6 +1354,7 @@ def compose_dagster_dev(
 
 @asset(
     group_name="Docker_Compose_10_2",
+    compute_kind="python",
     ins={
         "env_10_2": AssetIn(),
         "build_repository_image_10_2": AssetIn(),
@@ -1399,6 +1415,7 @@ def compose_repository_10_2(
 
 @asset(
     group_name="Docker_Compose",
+    compute_kind="python",
     ins={
         "env_base": AssetIn(),
         "build_likec4_dev": AssetIn(),
@@ -1458,6 +1475,7 @@ def compose_likec4_dev(
 
 @asset(
     group_name="Docker_Compose_10_2",
+    compute_kind="python",
     ins={
         "env_10_2": AssetIn(),
         "build_generic_runner_image_10_2": AssetIn(),
@@ -1517,6 +1535,7 @@ def compose_rcs_runner_10_2(
 
 @asset(
     group_name="Docker_Compose_10_2",
+    compute_kind="python",
     ins={
         "env_10_2": AssetIn(),
         "compose_rcs_runner_10_2": AssetIn(),
