@@ -1,4 +1,5 @@
 import json
+import shutil
 import textwrap
 import pathlib
 import time
@@ -146,9 +147,9 @@ def env_base(
     ins={
         "env_base": AssetIn(),
     },
-    deps=[
-        "build_base_image",
-    ],
+    # deps=[
+    #     "build_base_image",
+    # ],
 )
 def env_10_2(
         context: AssetExecutionContext,
@@ -200,6 +201,7 @@ def build_base_image(
 
     # @formatter:off
     docker_file_str = textwrap.dedent("""
+        # AUTO-GENERATED
         FROM ubuntu:20.04 AS {image_name}
         LABEL authors="{AUTHOR}"
         
@@ -267,10 +269,7 @@ def build_base_image(
         ENTRYPOINT []
     """).format(
         image_name=context.asset_key.path[0],
-        AUTHOR=env_base.get("AUTHOR"),
-        PYTHON_MAJ=env_base.get("PYTHON_MAJ"),
-        PYTHON_MIN=env_base.get("PYTHON_MIN"),
-        PYTHON_PAT=env_base.get("PYTHON_PAT"),
+        **env_base,
     )
     # @formatter:on
 
@@ -340,6 +339,7 @@ def build_base_image_10_2(
 
     # @formatter:off
     docker_file_str = textwrap.dedent("""
+        # AUTO-GENERATED
         FROM {parent_image} AS {image_name}
         LABEL authors="{AUTHOR}"
         
@@ -368,14 +368,7 @@ def build_base_image_10_2(
     """).format(
         image_name=context.asset_key.path[0],
         parent_image=build_base_image,
-        AUTHOR=env_10_2.get("AUTHOR"),
-        PYTHON_MAJ=env_10_2.get("PYTHON_MAJ"),
-        PYTHON_MIN=env_10_2.get("PYTHON_MIN"),
-        PYTHON_PAT=env_10_2.get("PYTHON_PAT"),
-        GOOGLE_API_KEY=env_10_2.get("GOOGLE_API_KEY"),
-        GOOGLE_ID_AWSPortalLink_10_2=env_10_2.get("GOOGLE_ID_AWSPortalLink_10_2"),
-        GOOGLE_ID_DeadlineClient_10_2=env_10_2.get("GOOGLE_ID_DeadlineClient_10_2"),
-        GOOGLE_ID_DeadlineRepository_10_2=env_10_2.get("GOOGLE_ID_DeadlineRepository_10_2"),
+        **env_10_2,
     )
     # @formatter:on
 
@@ -444,6 +437,7 @@ def build_repository_image_10_2(
 
     # @formatter:off
     docker_file_str = textwrap.dedent("""
+        # AUTO-GENERATED
         FROM {parent_image} AS {image_name}
         LABEL authors="{AUTHOR}"
         
@@ -468,11 +462,12 @@ def build_repository_image_10_2(
     """).format(
         image_name=context.asset_key.path[0],
         parent_image=build_base_image_10_2,
-        AUTHOR=env_10_2.get("AUTHOR"),
-        DEADLINE_VERSION=env_10_2.get("DEADLINE_VERSION"),
-        MONGO_DB_PORT_HOST=env_10_2.get("MONGO_DB_PORT_HOST"),
-        MONGO_DB_NAME=env_10_2.get("MONGO_DB_NAME"),
-        MONGO_DB_HOST=env_10_2.get("MONGO_DB_HOST"),
+        **env_10_2,
+        # AUTHOR=env_10_2.get("AUTHOR"),
+        # DEADLINE_VERSION=env_10_2.get("DEADLINE_VERSION"),
+        # MONGO_DB_PORT_HOST=env_10_2.get("MONGO_DB_PORT_HOST"),
+        # MONGO_DB_NAME=env_10_2.get("MONGO_DB_NAME"),
+        # MONGO_DB_HOST=env_10_2.get("MONGO_DB_HOST"),
     )
     # @formatter:on
 
@@ -614,6 +609,7 @@ def build_client_image_10_2(
 
     # @formatter:off
     docker_file_str = textwrap.dedent("""
+        # AUTO-GENERATED
         FROM {parent_image} AS {image_name}
         LABEL authors="{AUTHOR}"
         
@@ -637,10 +633,11 @@ def build_client_image_10_2(
     """).format(
         image_name=context.asset_key.path[0],
         parent_image=build_base_image_10_2,
-        AUTHOR=env_10_2.get("AUTHOR"),
-        DEADLINE_VERSION=env_10_2.get("DEADLINE_VERSION"),
-        RCS_HTTP_PORT_CONTAINER=env_10_2.get("RCS_HTTP_PORT_CONTAINER"),
-        WEBSERVICE_HTTP_PORT_CONTAINER=env_10_2.get("WEBSERVICE_HTTP_PORT_CONTAINER"),
+        **env_10_2,
+        # AUTHOR=env_10_2.get("AUTHOR"),
+        # DEADLINE_VERSION=env_10_2.get("DEADLINE_VERSION"),
+        # RCS_HTTP_PORT_CONTAINER=env_10_2.get("RCS_HTTP_PORT_CONTAINER"),
+        # WEBSERVICE_HTTP_PORT_CONTAINER=env_10_2.get("WEBSERVICE_HTTP_PORT_CONTAINER"),
     )
     # @formatter:on
 
@@ -697,37 +694,45 @@ def build_generic_runner_image_10_2(
         build_client_image_10_2: str,
 ) -> str:
     """
-
-
-FROM michimussato/{build_client_image_10_2}:latest AS {context.asset_key.path[0]}
-LABEL authors="michimussato@gmail.com"
-
-SHELL ["/bin/bash", "-c"]
-
-ENTRYPOINT ["deadline-wrapper-10-2", "-vv", "run"]
-
-CMD ["--help"]
-
-
     """
 
     docker_file = pathlib.Path(
-        "/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/base_image_10_2/client_installer/generic_runner/Dockerfile",
-    )
+        f"~/git/repos/deadline-docker/10.2/.docker/Dockerfiles/{context.asset_key.path[0]}/Dockerfile"
+    ).expanduser()
+
     tags = [
         f"michimussato/{context.asset_key.path[0]}:latest",
         f"michimussato/{context.asset_key.path[0]}:{str(time.time())}",
     ]
-    buildargs = {}
+
+    # @formatter:off
+    docker_file_str = textwrap.dedent("""
+        # AUTO-GENERATED
+        FROM {parent_image} AS {image_name}
+        LABEL authors="{AUTHOR}"
+        
+        SHELL ["/bin/bash", "-c"]
+        
+        ENTRYPOINT ["deadline-wrapper-10-2", "-vv", "run"]
+        
+        CMD ["--help"]
+    """).format(
+        image_name=context.asset_key.path[0],
+        parent_image=build_client_image_10_2,
+        **env_10_2,
+    )
+    # @formatter:on
+
+    docker_file.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(docker_file, "w") as fw:
+        fw.write(docker_file_str)
 
     with open(docker_file, "r") as fr:
         docker_file_content = fr.read()
 
-    context.log.info(f"{buildargs = }")
-
     stream = docker.build(
         context_path=docker_file.parent.as_posix(),
-        build_args=buildargs,
         cache=USE_CACHE,
         tags=tags,
         stream_logs=True,
@@ -742,7 +747,6 @@ CMD ["--help"]
     cmds_docker = compile_cmds(
         docker_file=docker_file,
         tag=tags[1],
-        buildargs=buildargs,
     )
 
     yield Output(tags[1])
@@ -763,41 +767,76 @@ CMD ["--help"]
     group_name="Common_Service_Images",
     ins={
         "env_base": AssetIn(),
+        "build_base_image": AssetIn(),
     },
-    deps=[
-        "build_base_image"
-    ],
 )
 def build_dagster_dev(
         context: AssetExecutionContext,
         env_base: dict,
+        build_base_image: str,
 ) -> str:
     """
     """
 
     docker_file = pathlib.Path(
-        "/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/dagster_dev/Dockerfile",
-    )
+        f"~/git/repos/deadline-docker/10.2/.docker/Dockerfiles/{context.asset_key.path[0]}/Dockerfile"
+    ).expanduser()
+
     tags = [
         f"michimussato/{context.asset_key.path[0]}:latest",
         f"michimussato/{context.asset_key.path[0]}:{str(time.time())}",
     ]
-    buildargs = {
-        "PYTHON_MAJ": env_base.get("PYTHON_MAJ"),
-        "PYTHON_MIN": env_base.get("PYTHON_MIN"),
-        "DAGSTER_DAGSTER_WORKSPACE": env_base.get("DAGSTER_DAGSTER_WORKSPACE"),
-        "DAGSTER_HOME": env_base.get("DAGSTER_HOME"),
-    }
+
+    # @formatter:off
+    docker_file_str = textwrap.dedent("""
+        # AUTO-GENERATED
+        FROM {parent_image} AS {image_name}
+        LABEL authors="{AUTHOR}"
+        
+        RUN python{PYTHON_MAJ}.{PYTHON_MIN} -m pip install --root-user-action=ignore "dagster-shared[dagster_dev] @ git+https://github.com/michimussato/dagster-shared.git@main"
+        
+        WORKDIR {DAGSTER_WORKSPACE}
+        COPY ./payload/workspace.yaml .
+        
+        WORKDIR {DAGSTER_HOME}
+        COPY ./payload/dagster.yaml .
+        
+        WORKDIR {DAGSTER_WORKSPACE}
+        
+        ENTRYPOINT ["dagster", "dev"]
+        CMD []
+    """).format(
+        image_name=context.asset_key.path[0],
+        parent_image=build_base_image,
+        **env_base,
+    )
+    # @formatter:on
+
+    docker_file.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(docker_file, "w") as fw:
+        fw.write(docker_file_str)
+
+    payload = docker_file.parent / "payload"
+    payload.mkdir(parents=True, exist_ok=True)
+
+    # workspace.yaml
+    shutil.copy(
+        src=pathlib.Path("~/git/repos/deadline-docker/10.2/base_images/base_image/dagster_dev/config/workspace.yaml").expanduser(),
+        dst=payload,
+    )
+
+    # dagster.yaml
+    shutil.copy(
+        src=pathlib.Path("~/git/repos/deadline-docker/10.2/base_images/base_image/dagster_dev/config/materializations/dagster.yaml").expanduser(),
+        dst=payload,
+    )
 
     with open(docker_file, "r") as fr:
         docker_file_content = fr.read()
 
-    context.log.info(f"{buildargs = }")
-
     stream = docker.build(
         context_path=docker_file.parent.as_posix(),
-        # docker_file=docker_file.as_posix(),
-        build_args=buildargs,
         cache=USE_CACHE,
         tags=tags,
         stream_logs=True,
@@ -812,7 +851,6 @@ def build_dagster_dev(
     cmds_docker = compile_cmds(
         docker_file=docker_file,
         tag=tags[1],
-        buildargs=buildargs,
     )
 
     yield Output(tags[1])
@@ -833,35 +871,71 @@ def build_dagster_dev(
     group_name="Common_Service_Images",
     ins={
         "env_base": AssetIn(),
+        "build_base_image": AssetIn(),
     },
-    deps=[
-        "build_base_image"
-    ],
 )
 def build_likec4_dev(
         context: AssetExecutionContext,
         env_base: dict,
+        build_base_image: str,
 ) -> str:
     """
     """
 
     docker_file = pathlib.Path(
-        "/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/likec4_dev/Dockerfile",
-    )
+        f"~/git/repos/deadline-docker/10.2/.docker/Dockerfiles/{context.asset_key.path[0]}/Dockerfile"
+    ).expanduser()
+
     tags = [
         f"michimussato/{context.asset_key.path[0]}:latest",
         f"michimussato/{context.asset_key.path[0]}:{str(time.time())}",
     ]
-    buildargs = {}
+
+    # @formatter:off
+    docker_file_str = textwrap.dedent("""
+        # AUTO-GENERATED
+        FROM {parent_image} AS {image_name}
+        LABEL authors="{AUTHOR}"
+        
+        RUN apt-get update \
+            && apt-get upgrade -y
+        
+        RUN apt-get install \
+            -y \
+            --no-install-recommends \
+            unzip  \
+            gpg  \
+            gpg-agent
+        
+        WORKDIR /ENTRYPOINT
+        
+        COPY ./entrypoint/setup.sh .
+        COPY ./entrypoint/run.sh .
+        
+        RUN chmod -R +x /ENTRYPOINT/*.sh
+        
+        RUN /usr/bin/env bash /ENTRYPOINT/setup.sh
+        
+        # https://stackoverflow.com/a/40454758/2207196
+        ENTRYPOINT ["/usr/bin/env", "bash", "/ENTRYPOINT/run.sh", "yarn", "dev"]
+        CMD []
+    """).format(
+        image_name=context.asset_key.path[0],
+        parent_image=build_base_image,
+        **env_base,
+    )
+    # @formatter:on
+
+    docker_file.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(docker_file, "w") as fw:
+        fw.write(docker_file_str)
 
     with open(docker_file, "r") as fr:
         docker_file_content = fr.read()
 
-    context.log.info(f"{buildargs = }")
-
     stream = docker.build(
         context_path=docker_file.parent.as_posix(),
-        build_args=buildargs,
         cache=USE_CACHE,
         tags=tags,
         stream_logs=True,
@@ -876,7 +950,6 @@ def build_likec4_dev(
     cmds_docker = compile_cmds(
         docker_file=docker_file,
         tag=tags[1],
-        buildargs=buildargs,
     )
 
     yield Output(tags[1])
