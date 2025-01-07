@@ -4,10 +4,13 @@ import textwrap
 import pathlib
 import time
 import yaml
+import pydot
 from collections import ChainMap
 from functools import reduce
 
 from python_on_whales import docker
+from docker_graph.docker_graph import DockerComposeGraph
+
 
 from dagster import (
     AssetExecutionContext,
@@ -48,17 +51,17 @@ def compile_cmds(
     return metadata_values
 
 
-@asset(
-    group_name="Maintenance",
-    compute_kind="python",
-)
 def docker_cleanup(
-        context: AssetExecutionContext,
+        context: AssetExecutionContext = None,
 ):
-    out = {
-        "stdout": context.log.info,
-        "stderr": context.log.error,
-    }
+    """
+from Deadline.deadline_docker.assets import docker_cleanup
+docker_cleanup()
+    """
+    # out = {
+    #     "stdout": context.log.info,
+    #     "stderr": context.log.error,
+    # }
 
     containers = docker.container.list(
         all=True
@@ -154,6 +157,8 @@ def env_base(
 
         "FILEBROWSER_PORT_HOST": "8080",
         "FILEBROWSER_PORT_CONTAINER": "80",
+        "FILEBROWSER_DB": pathlib.Path("~/git/repos/deadline-docker/10.2/databases/filebrowser/filebrowser.db").expanduser().as_posix(),
+        "FILEBROWSER_JSON": pathlib.Path("~/git/repos/deadline-docker/10.2/configs/filebrowser/filebrowser.json").expanduser().as_posix(),
 
         "DAGSTER_DEV_PORT_HOST": "3003",
         "DAGSTER_DEV_PORT_CONTAINER": "3006",
@@ -202,6 +207,10 @@ def env_base(
         "TEST_NFS_ENTRY_POINT_LNS": "/nfs",
         "INSTALLERS_ROOT": "/data/share/nfs/installers",
         "TEST_INSTALLERS_ROOT": "/data/share/nfs/installers",
+        "NFS_REPOSITORY": "/data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10",
+        "NFS_DEADLINE": "/data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10",
+        "MONGO_DB_DIR": pathlib.Path("~/git/repos/deadline-docker/tests/fixtures/10.2/DeadlineDatabase10/mongo/data").expanduser().as_posix(),
+        "DEADLINE_INI": pathlib.Path("~/git/repos/deadline-docker/10.2/configs/Deadline10/deadline.ini").expanduser().as_posix(),
 
         # # TODO
         # # DEADLINE_INI:
@@ -1207,7 +1216,7 @@ def compose_mongo_express_10_2(
                     f"{env_10_2.get('MONGO_EXPRESS_PORT_HOST')}:{env_10_2.get('MONGO_EXPRESS_PORT_CONTAINER')}",
                 ],
                 # "volumes": [
-                #     f"{env_base.get('NFS_ENTRY_POINT')}/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data",
+                #     f"{env_10_2.get('MONGO_DB_DIR')}:/opt/Thinkbox/DeadlineDatabase10/mongo/data",
                 #     f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT')}:ro",
                 #     f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT_LNS')}:ro",
                 # ],
@@ -1259,9 +1268,9 @@ def compose_filebrowser_10_2(
                     f"{env_10_2.get('FILEBROWSER_PORT_HOST')}:{env_10_2.get('FILEBROWSER_PORT_CONTAINER')}",
                 ],
                 "volumes": [
-                    "/home/michael/git/repos/deadline-docker/10.2/databases/filebrowser/filebrowser.db:/filebrowser.db",
-                    "/home/michael/git/repos/deadline-docker/10.2/configs/filebrowser/filebrowser.json:/.filebrowser.json",
-                    f"{env_10_2.get('NFS_ENTRY_POINT')}/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data:ro",
+                    f"{env_10_2.get('FILEBROWSER_DB')}:/filebrowser.db",
+                    f"{env_10_2.get('FILEBROWSER_JSON')}:/.filebrowser.json",
+                    f"{env_10_2.get('MONGO_DB_DIR')}:/opt/Thinkbox/DeadlineDatabase10/mongo/data:ro",
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT')}:ro",
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT_LNS')}:ro",
                 ],
@@ -1320,7 +1329,7 @@ def compose_mongodb_10_2(
                     f"{env_10_2.get('MONGO_DB_PORT_HOST')}:{env_10_2.get('MONGO_DB_PORT_CONTAINER')}",
                 ],
                 "volumes": [
-                    f"{env_10_2.get('NFS_ENTRY_POINT')}/test_data/10.2/opt/Thinkbox/DeadlineDatabase10/mongo/data_LOCAL:/opt/Thinkbox/DeadlineDatabase10/mongo/data",
+                    f"{env_10_2.get('MONGO_DB_DIR')}:/opt/Thinkbox/DeadlineDatabase10/mongo/data",
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT')}:ro",
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT_LNS')}:ro",
                 ],
@@ -1445,7 +1454,7 @@ def compose_repository_10_2(
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT')}",
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT_LNS')}",
                     # Redirect to host installation for now:
-                    f"/data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10",
+                    f"{env_10_2.get('NFS_REPOSITORY')}:/opt/Thinkbox/DeadlineRepository10",
                 ],
                 # "ports": [
                 #     f"{env_base.get('LIKEC4_DEV_PORT_HOST')}:{env_base.get('LIKEC4_DEV_PORT_CONTAINER')}",
@@ -1561,9 +1570,9 @@ def compose_rcs_runner_10_2(
                     "--executable", "/opt/Thinkbox/Deadline10/bin/deadlinercs",
                 ],
                 "volumes": [
-                    f"/home/michael/git/repos/deadline-docker/10.2/configs/Deadline10/deadline.ini:/var/lib/Thinkbox/Deadline10/deadline.ini:ro",
-                    f"{env_10_2.get('NFS_ENTRY_POINT')}/test_data/10.2/opt/Thinkbox/Deadline10:/opt/Thinkbox/Deadline10",
-                    f"{env_10_2.get('NFS_ENTRY_POINT')}/test_data/10.2/opt/Thinkbox/DeadlineRepository10:/opt/Thinkbox/DeadlineRepository10",
+                    f"{env_10_2.get('DEADLINE_INI')}:/var/lib/Thinkbox/Deadline10/deadline.ini:ro",
+                    f"{env_10_2.get('NFS_DEADLINE')}:/opt/Thinkbox/Deadline10",
+                    f"{env_10_2.get('NFS_REPOSITORY')}:/opt/Thinkbox/DeadlineRepository10",
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT')}",
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT_LNS')}",
                 ],
@@ -1673,12 +1682,9 @@ def compose_10_2(
 def viz_compose_10_2(
         context: AssetExecutionContext,
         compose_10_2: pathlib.Path,
-):
+) -> pydot.Dot:
     """
     """
-
-    from docker_graph.docker_graph import DockerComposeGraph
-
 
     dcg = DockerComposeGraph()
     trees = dcg.parse_docker_compose(
@@ -1690,8 +1696,13 @@ def viz_compose_10_2(
     dcg.iterate_trees(trees)
 
     dcg.graph.write(
-        path=compose_10_2.parent / "main_graph.png",
+        path=compose_10_2.parent / f"{context.asset_key.path[0]}.png",
         format="png",
+    )
+
+    dcg.graph.write(
+        path=compose_10_2.parent / f"{context.asset_key.path[0]}.dot",
+        format="dot",
     )
 
     # self.graph.write(
@@ -1699,13 +1710,14 @@ def viz_compose_10_2(
     #     format="dot",
     # )
 
-    yield Output(None)
+    yield Output(dcg.graph)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            context.asset_key.path[0]: MetadataValue.path(compose_10_2.parent / "main_graph.png"),
-            # "docker_compose": MetadataValue.path(docker_compose),
+            context.asset_key.path[0]: MetadataValue.json(str(dcg.graph)),
+            "dot": MetadataValue.path(compose_10_2.parent / f"{context.asset_key.path[0]}.dot"),
+            "png": MetadataValue.path(compose_10_2.parent / f"{context.asset_key.path[0]}.png"),
             # "cmd_docker_compose_up": MetadataValue.path(cmd_docker_compose_up),
             # # "cmd_docker_compose_down": MetadataValue.path(cmd_docker_compose_down),
             # "maps": MetadataValue.md(f"```json\n{json.dumps(docker_chainmap.maps, indent=2)}\n```"),
@@ -1713,28 +1725,3 @@ def viz_compose_10_2(
             # "env_base": MetadataValue.json(env_10_2),
         },
     )
-
-
-
-"""
-from docker_graph.docker_graph import main, DockerComposeGraph
-
-
-dcg = DockerComposeGraph()
-trees = dcg.parse_docker_compose(
-    pathlib.Path("~/git/repos/docker-graph/tests/fixtures/deadline-docker/10.2/docker-compose.yaml")
-)
-
-# resolve environment variables (optional)
-dcg.load_dotenv(pathlib.Path("/home/michael/git/repos/docker-graph/tests/fixtures/deadline-docker/10.2/.env"))
-
-# dcg.expand_vars(tree)
-
-# with open("tree.json", "w") as fw:
-#     json.dump(tree, fw, indent=2)
-
-dcg.iterate_trees(trees)
-# dcg.connect()
-dcg.write_png()
-dcg.write_dot()
-"""
