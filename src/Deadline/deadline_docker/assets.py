@@ -49,6 +49,62 @@ def compile_cmds(
 
 
 @asset(
+    group_name="Maintenance",
+    compute_kind="python",
+)
+def docker_cleanup(
+        context: AssetExecutionContext,
+):
+    out = {
+        "stdout": context.log.info,
+        "stderr": context.log.error,
+    }
+
+    containers = docker.container.list(
+        all=True
+    )
+
+    docker.container.stop(
+        containers=containers,
+    )
+
+    stream_container_prune = docker.container.prune(
+        stream_logs=True,
+    )
+
+    # log_container_prune_stdout: str = ""
+    # log_container_prune_stderr: str = ""
+
+    # for msg in stream_container_prune:
+    #     out[msg[0]](msg)
+    #     # context.log.debug(msg)
+    #     # locals(f"")
+    #     # log_container_prune += msg
+
+    docker.image.prune(
+        all=True,
+    )
+
+    docker.volume.prune(
+        all=True,
+    )
+
+    stream_buildx_prune = docker.buildx.prune(
+        all=True,
+        stream_logs=True,
+    )
+
+    # log_buildx_prune: str = ""
+
+    # for msg in stream_buildx_prune:
+    #     out[msg[0]](msg)
+
+    docker.network.prune()
+
+    return None
+
+
+@asset(
     group_name="Environment",
     compute_kind="python",
 )
@@ -1561,7 +1617,7 @@ def compose_10_2(
         compose_likec4_dev: dict,
         # build_likec4_dev: str,
         # base_services_10_2: dict,
-) -> ChainMap:
+) -> pathlib.Path:
     """
     """
 
@@ -1590,12 +1646,13 @@ def compose_10_2(
     cmd_docker_compose_up = f"/usr/bin/docker compose -f {docker_compose} -p {context.asset_key.path[0]} up --remove-orphans"
     cmd_docker_compose_down = f"/usr/bin/docker compose -f {docker_compose} -p {context.asset_key.path[0]} down --remove-orphans"
 
-    yield Output(docker_chainmap)
+    yield Output(docker_compose)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            context.asset_key.path[0]: MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
+            # context.asset_key.path[0]: MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
+            context.asset_key.path[0]: MetadataValue.path(docker_compose),
             "docker_compose": MetadataValue.path(docker_compose),
             "cmd_docker_compose_up": MetadataValue.path(cmd_docker_compose_up),
             # "cmd_docker_compose_down": MetadataValue.path(cmd_docker_compose_down),
@@ -1604,3 +1661,80 @@ def compose_10_2(
             "env_base": MetadataValue.json(env_10_2),
         },
     )
+
+
+@asset(
+    group_name="Viz",
+    compute_kind="python",
+    ins={
+        "compose_10_2": AssetIn(),
+    },
+)
+def viz_compose_10_2(
+        context: AssetExecutionContext,
+        compose_10_2: pathlib.Path,
+):
+    """
+    """
+
+    from docker_graph.docker_graph import DockerComposeGraph
+
+
+    dcg = DockerComposeGraph()
+    trees = dcg.parse_docker_compose(
+        pathlib.Path(compose_10_2)
+    )
+
+    context.log.info(trees)
+
+    dcg.iterate_trees(trees)
+
+    dcg.graph.write(
+        path=compose_10_2.parent / "main_graph.png",
+        format="png",
+    )
+
+    # self.graph.write(
+    #     path=pathlib.Path(__file__).parent.parent.parent / "tests" / "fixtures" / "out" / "main_graph.dot",
+    #     format="dot",
+    # )
+
+    yield Output(None)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            context.asset_key.path[0]: MetadataValue.path(compose_10_2.parent / "main_graph.png"),
+            # "docker_compose": MetadataValue.path(docker_compose),
+            # "cmd_docker_compose_up": MetadataValue.path(cmd_docker_compose_up),
+            # # "cmd_docker_compose_down": MetadataValue.path(cmd_docker_compose_down),
+            # "maps": MetadataValue.md(f"```json\n{json.dumps(docker_chainmap.maps, indent=2)}\n```"),
+            # "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
+            # "env_base": MetadataValue.json(env_10_2),
+        },
+    )
+
+
+
+"""
+from docker_graph.docker_graph import main, DockerComposeGraph
+
+
+dcg = DockerComposeGraph()
+trees = dcg.parse_docker_compose(
+    pathlib.Path("~/git/repos/docker-graph/tests/fixtures/deadline-docker/10.2/docker-compose.yaml")
+)
+
+# resolve environment variables (optional)
+dcg.load_dotenv(pathlib.Path("/home/michael/git/repos/docker-graph/tests/fixtures/deadline-docker/10.2/.env"))
+
+# dcg.expand_vars(tree)
+
+# with open("tree.json", "w") as fw:
+#     json.dump(tree, fw, indent=2)
+
+dcg.iterate_trees(trees)
+# dcg.connect()
+dcg.write_png()
+dcg.write_dot()
+"""
