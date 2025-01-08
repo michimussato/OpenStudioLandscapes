@@ -1611,12 +1611,14 @@ def compose_dagster_dev(
     ins={
         "env_10_2": AssetIn(),
         "build_repository_image_10_2": AssetIn(),
+        "connection_ini_10_2": AssetIn(),
     },
 )
 def compose_repository_10_2(
         context: AssetExecutionContext,
         env_10_2: dict,
         build_repository_image_10_2: str,
+        connection_ini_10_2: pathlib.Path,
 ) -> dict:
     """
     """
@@ -1643,6 +1645,7 @@ def compose_repository_10_2(
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT_LNS')}",
                     # Redirect to host installation for now:
                     f"{env_10_2.get('NFS_REPOSITORY')}:/opt/Thinkbox/DeadlineRepository10",
+                    f"{connection_ini_10_2.as_posix()}:/opt/Thinkbox/DeadlineRepository10/settings/connection.ini:ro",
                 ],
                 # "ports": [
                 #     f"{env_base.get('LIKEC4_DEV_PORT_HOST')}:{env_base.get('LIKEC4_DEV_PORT_CONTAINER')}",
@@ -1732,12 +1735,17 @@ def compose_likec4_dev(
     ins={
         "env_10_2": AssetIn(),
         "build_generic_runner_image_10_2": AssetIn(),
+        "connection_ini_10_2": AssetIn(),
+        "deadline_ini_10_2": AssetIn(),
     },
 )
 def compose_rcs_runner_10_2(
         context: AssetExecutionContext,
         env_10_2: dict,
         build_generic_runner_image_10_2: str,
+        connection_ini_10_2: pathlib.Path,
+        deadline_ini_10_2: pathlib.Path,
+
 ) -> dict:
     """
     """
@@ -1758,7 +1766,8 @@ def compose_rcs_runner_10_2(
                     "--executable", "/opt/Thinkbox/Deadline10/bin/deadlinercs",
                 ],
                 "volumes": [
-                    f"{env_10_2.get('DEADLINE_CLIENT_DEADLINE_INI')}:/var/lib/Thinkbox/Deadline10/deadline.ini:ro",
+                    f"{deadline_ini_10_2.as_posix()}:/var/lib/Thinkbox/Deadline10/deadline.ini:ro",
+                    f"{connection_ini_10_2.as_posix()}:/opt/Thinkbox/DeadlineRepository10/settings/connection.ini:ro",
                     f"{env_10_2.get('NFS_DEADLINE')}:/opt/Thinkbox/Deadline10",
                     f"{env_10_2.get('NFS_REPOSITORY')}:/opt/Thinkbox/DeadlineRepository10",
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT')}",
