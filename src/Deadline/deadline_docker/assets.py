@@ -1803,7 +1803,6 @@ def compose_rcs_runner_10_2(
     ins={
         "env_10_2": AssetIn(),
         "build_generic_runner_image_10_2": AssetIn(),
-        "connection_ini_10_2": AssetIn(),
         "deadline_ini_10_2": AssetIn(),
     },
 )
@@ -1811,7 +1810,6 @@ def compose_pulse_runner_10_2(
         context: AssetExecutionContext,
         env_10_2: dict,
         build_generic_runner_image_10_2: str,
-        connection_ini_10_2: pathlib.Path,
         deadline_ini_10_2: pathlib.Path,
 
 ) -> dict:
@@ -1826,9 +1824,11 @@ def compose_pulse_runner_10_2(
                 "domainname": env_10_2.get("ROOT_DOMAIN"),
                 "restart": "always",
                 "image": build_generic_runner_image_10_2,
-                "depends_on": [
-                    "deadline-rcs-runner-10-2",
-                ],
+                "depends_on": {
+                    "deadline-rcs-runner-10-2": {
+                        "condition": "service_started",
+                    },
+                },
                 "networks": [
                     "repository",
                     "mongodb",
@@ -1839,15 +1839,77 @@ def compose_pulse_runner_10_2(
                 ],
                 "volumes": [
                     f"{deadline_ini_10_2.as_posix()}:/var/lib/Thinkbox/Deadline10/deadline.ini:ro",
-                    # f"{connection_ini_10_2.as_posix()}:/opt/Thinkbox/DeadlineRepository10/settings/connection.ini:ro",
                     f"{env_10_2.get('NFS_DEADLINE')}:/opt/Thinkbox/Deadline10",
                     f"{env_10_2.get('NFS_REPOSITORY')}:/opt/Thinkbox/DeadlineRepository10",
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT')}",
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT_LNS')}",
                 ],
-                # "ports": [
-                #     f"{env_10_2.get('RCS_HTTP_PORT_HOST')}:{env_10_2.get('RCS_HTTP_PORT_CONTAINER')}",
-                # ],
+            },
+        },
+    }
+
+    docker_yaml = yaml.dump(docker_dict)
+
+    yield Output(docker_dict)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            context.asset_key.path[0]: MetadataValue.json(docker_dict),
+            "docker_dict": MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
+            "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
+            "env_10_2": MetadataValue.json(env_10_2),
+        },
+    )
+
+
+@asset(
+    group_name="Docker_Compose_10_2",
+    compute_kind="python",
+    ins={
+        "env_10_2": AssetIn(),
+        "build_generic_runner_image_10_2": AssetIn(),
+        "deadline_ini_10_2": AssetIn(),
+    },
+)
+def compose_worker_runner_10_2(
+        context: AssetExecutionContext,
+        env_10_2: dict,
+        build_generic_runner_image_10_2: str,
+        deadline_ini_10_2: pathlib.Path,
+
+) -> dict:
+    """
+    """
+
+    docker_dict = {
+        "services": {
+            "deadline-worker-runner-10-2": {
+                "container_name": "deadline-worker-runner-10-2",
+                "hostname": "deadline-worker-runner-10-2",
+                "domainname": env_10_2.get("ROOT_DOMAIN"),
+                "restart": "always",
+                "image": build_generic_runner_image_10_2,
+                "depends_on": {
+                    "deadline-rcs-runner-10-2": {
+                        "condition": "service_started",
+                    },
+                },
+                "networks": [
+                    "repository",
+                    "mongodb",
+                ],
+                "command": [
+                    "--executable", "/opt/Thinkbox/Deadline10/bin/deadlineworker",
+                    "--arguments", "['-nogui', '-nosplash']",
+                ],
+                "volumes": [
+                    f"{deadline_ini_10_2.as_posix()}:/var/lib/Thinkbox/Deadline10/deadline.ini:ro",
+                    f"{env_10_2.get('NFS_DEADLINE')}:/opt/Thinkbox/Deadline10",
+                    f"{env_10_2.get('NFS_REPOSITORY')}:/opt/Thinkbox/DeadlineRepository10",
+                    f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT')}",
+                    f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT_LNS')}",
+                ],
             },
         },
     }
