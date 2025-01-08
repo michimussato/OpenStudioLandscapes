@@ -186,7 +186,7 @@ def env_base(
         "RCS_HTTP_PORT_HOST": "8888",
         "RCS_HTTP_PORT_CONTAINER": "8888",
 
-        # "WEBSERVICE_HTTP_PORT_HOST": 8899,
+        "WEBSERVICE_HTTP_PORT_HOST": "8899",
         "WEBSERVICE_HTTP_PORT_CONTAINER": "8899",
 
         "MONGO_DB_PORT_HOST": "21017",
@@ -1804,6 +1804,7 @@ def compose_rcs_runner_10_2(
         "env_10_2": AssetIn(),
         "build_generic_runner_image_10_2": AssetIn(),
         "deadline_ini_10_2": AssetIn(),
+        "connection_ini_10_2": AssetIn(),
     },
 )
 def compose_pulse_runner_10_2(
@@ -1811,6 +1812,7 @@ def compose_pulse_runner_10_2(
         env_10_2: dict,
         build_generic_runner_image_10_2: str,
         deadline_ini_10_2: pathlib.Path,
+        connection_ini_10_2: pathlib.Path,
 
 ) -> dict:
     """
@@ -1835,10 +1837,12 @@ def compose_pulse_runner_10_2(
                 ],
                 "command": [
                     "--executable", "/opt/Thinkbox/Deadline10/bin/deadlinepulse",
-                    "--arguments", "['-nogui', '-nosplash']",
+                    "--nogui",
+                    "--nosplash",
                 ],
                 "volumes": [
                     f"{deadline_ini_10_2.as_posix()}:/var/lib/Thinkbox/Deadline10/deadline.ini:ro",
+                    f"{connection_ini_10_2.as_posix()}:/opt/Thinkbox/DeadlineRepository10/settings/connection.ini:ro",
                     f"{env_10_2.get('NFS_DEADLINE')}:/opt/Thinkbox/Deadline10",
                     f"{env_10_2.get('NFS_REPOSITORY')}:/opt/Thinkbox/DeadlineRepository10",
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT')}",
@@ -1870,6 +1874,7 @@ def compose_pulse_runner_10_2(
         "env_10_2": AssetIn(),
         "build_generic_runner_image_10_2": AssetIn(),
         "deadline_ini_10_2": AssetIn(),
+        "connection_ini_10_2": AssetIn(),
     },
 )
 def compose_worker_runner_10_2(
@@ -1877,6 +1882,7 @@ def compose_worker_runner_10_2(
         env_10_2: dict,
         build_generic_runner_image_10_2: str,
         deadline_ini_10_2: pathlib.Path,
+        connection_ini_10_2: pathlib.Path,
 
 ) -> dict:
     """
@@ -1901,10 +1907,12 @@ def compose_worker_runner_10_2(
                 ],
                 "command": [
                     "--executable", "/opt/Thinkbox/Deadline10/bin/deadlineworker",
-                    "--arguments", "['-nogui', '-nosplash']",
+                    "--nogui",
+                    "--nosplash",
                 ],
                 "volumes": [
                     f"{deadline_ini_10_2.as_posix()}:/var/lib/Thinkbox/Deadline10/deadline.ini:ro",
+                    f"{connection_ini_10_2.as_posix()}:/opt/Thinkbox/DeadlineRepository10/settings/connection.ini:ro",
                     f"{env_10_2.get('NFS_DEADLINE')}:/opt/Thinkbox/Deadline10",
                     f"{env_10_2.get('NFS_REPOSITORY')}:/opt/Thinkbox/DeadlineRepository10",
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT')}",
@@ -1936,6 +1944,7 @@ def compose_worker_runner_10_2(
         "env_10_2": AssetIn(),
         "build_generic_runner_image_10_2": AssetIn(),
         "deadline_ini_10_2": AssetIn(),
+        "connection_ini_10_2": AssetIn(),
     },
 )
 def compose_webservice_runner_10_2(
@@ -1943,6 +1952,7 @@ def compose_webservice_runner_10_2(
         env_10_2: dict,
         build_generic_runner_image_10_2: str,
         deadline_ini_10_2: pathlib.Path,
+        connection_ini_10_2: pathlib.Path,
 
 ) -> dict:
     """
@@ -1970,6 +1980,7 @@ def compose_webservice_runner_10_2(
                 ],
                 "volumes": [
                     f"{deadline_ini_10_2.as_posix()}:/var/lib/Thinkbox/Deadline10/deadline.ini:ro",
+                    f"{connection_ini_10_2.as_posix()}:/opt/Thinkbox/DeadlineRepository10/settings/connection.ini:ro",
                     f"{env_10_2.get('NFS_DEADLINE')}:/opt/Thinkbox/Deadline10",
                     f"{env_10_2.get('NFS_REPOSITORY')}:/opt/Thinkbox/DeadlineRepository10",
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT')}",
@@ -2006,7 +2017,7 @@ def compose_webservice_runner_10_2(
         "compose_worker_runner_10_2": AssetIn(),
         "compose_pulse_runner_10_2": AssetIn(),
         "compose_rcs_runner_10_2": AssetIn(),
-        "compose_repository_10_2": AssetIn(),
+        # "compose_repository_10_2": AssetIn(),
         "compose_networks_10_2": AssetIn(),
         "compose_mongo_express_10_2": AssetIn(),
         "compose_mongodb_10_2": AssetIn(),
@@ -2022,7 +2033,7 @@ def compose_10_2(
         compose_worker_runner_10_2: dict,
         compose_pulse_runner_10_2: dict,
         compose_rcs_runner_10_2: dict,
-        compose_repository_10_2: dict,
+        # compose_repository_10_2: dict,
         compose_networks_10_2: dict,
         compose_mongo_express_10_2: dict,
         compose_mongodb_10_2: dict,
@@ -2043,7 +2054,7 @@ def compose_10_2(
         compose_pulse_runner_10_2,
         compose_worker_runner_10_2,
         compose_webservice_runner_10_2,
-        compose_repository_10_2,
+        # compose_repository_10_2,
         compose_networks_10_2,
     )
 
