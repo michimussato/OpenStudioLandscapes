@@ -780,75 +780,6 @@ def build_repository_image_10_2(
     )
 
 
-# @asset(
-#     group_name="Build_Images_10_2",
-#     ins={
-#         "env_10_2": AssetIn(),
-#         "build_repository_image_10_2": AssetIn(),
-#     },
-#     # deps=[
-#     #     "build_base_image_10_2"
-#     # ],
-# )
-# def build_rcs_image_10_2(
-#         context: AssetExecutionContext,
-#         build_repository_image_10_2: dict,
-# ) -> str:
-#     """
-#     """
-#
-#     docker_file = pathlib.Path(
-#         "/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/base_image_10_2/repo_installer/Dockerfile")
-#     tags = [
-#         "michimussato/repository_image_10_2:latest",
-#         f"michimussato/repository_image_10_2:{str(time.time())}",
-#     ]
-#     buildargs = {
-#         "DEADLINE_VERSION": env_10_2.get("DEADLINE_VERSION"),
-#         "MONGO_DB_PORT_HOST": env_10_2.get("MONGO_DB_PORT_HOST"),
-#         "MONGO_DB_NAME": env_10_2.get("MONGO_DB_NAME"),
-#         "MONGO_DB_HOST": env_10_2.get("MONGO_DB_HOST"),
-#     }
-#
-#     with open(docker_file, "r") as fr:
-#         docker_file_content = fr.read()
-#
-#     context.log.info(f"{buildargs = }")
-#
-#     stream = docker.build(
-#         context_path=docker_file.parent.as_posix(),
-#         build_args=buildargs,
-#         cache=USE_CACHE,
-#         tags=tags,
-#         stream_logs=True,
-#     )
-#
-#     log: str = ""
-#
-#     for msg in stream:
-#         context.log.debug(msg)
-#         log += msg
-#
-#     cmds_docker = compile_cmds(
-#         docker_file=docker_file,
-#         tag=tags[1],
-#         buildargs=buildargs,
-#     )
-#
-#     yield Output(tags[1])
-#
-#     yield AssetMaterialization(
-#         asset_key=context.asset_key,
-#         metadata={
-#             context.asset_key.path[0]: MetadataValue.path(tags[1]),
-#             "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
-#             **cmds_docker,
-#             "build_logs": MetadataValue.md(f"```shell\n{log}\n```"),
-#             "env_10_2": MetadataValue.json(env_10_2),
-#         },
-#     )
-
-
 @asset(
     group_name="Build_Images_10_2",
     compute_kind="python",
@@ -1020,7 +951,6 @@ def build_generic_runner_image_10_2(
         volumes=[
             f"{env_10_2.get('DEADLINE_CLIENT_DEADLINE_INI')}:/var/lib/Thinkbox/Deadline10/deadline.ini:ro",
             f"{env_10_2.get('DEADLINE_REPOSITORY_CONNECTION_INI')}:/opt/Thinkbox/DeadlineRepository10/settings/connection.ini:ro",
-            # f"{env_10_2.get('NFS_DEADLINE')}:/opt/Thinkbox/Deadline10",
             f"{env_10_2.get('NFS_REPOSITORY')}:/opt/Thinkbox/DeadlineRepository10",
             f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT')}",
             f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT_LNS')}",
@@ -1109,13 +1039,13 @@ def build_dagster_dev(
 
     # workspace.yaml
     shutil.copy(
-        src=pathlib.Path("~/git/repos/deadline-docker/10.2/base_images/base_image/dagster_dev/config/workspace.yaml").expanduser(),
+        src=pathlib.Path("~/git/repos/deadline-docker/10.2/configs/dagster_dev/config/workspace.yaml").expanduser(),
         dst=payload,
     )
 
     # dagster.yaml
     shutil.copy(
-        src=pathlib.Path("~/git/repos/deadline-docker/10.2/base_images/base_image/dagster_dev/config/materializations/dagster.yaml").expanduser(),
+        src=pathlib.Path("~/git/repos/deadline-docker/10.2/configs/dagster_dev/config/materializations/dagster.yaml").expanduser(),
         dst=payload,
     )
 
@@ -1227,13 +1157,13 @@ def build_likec4_dev(
 
     # setup.sh
     shutil.copy(
-        src=pathlib.Path("~/git/repos/deadline-docker/10.2/base_images/base_image/likec4_dev/entrypoint/setup.sh").expanduser(),
+        src=pathlib.Path("~/git/repos/deadline-docker/10.2/configs/likec4_dev/entrypoint/setup.sh").expanduser(),
         dst=payload,
     )
 
     # run.sh
     shutil.copy(
-        src=pathlib.Path("~/git/repos/deadline-docker/10.2/base_images/base_image/likec4_dev/entrypoint/run.sh").expanduser(),
+        src=pathlib.Path("~/git/repos/deadline-docker/10.2/configs/likec4_dev/entrypoint/run.sh").expanduser(),
         dst=payload,
     )
 
@@ -1270,58 +1200,6 @@ def build_likec4_dev(
             "env_base": MetadataValue.json(env_base),
         },
     )
-
-
-# @asset(
-#     group_name="Build_Images_10_2",
-#     ins={
-#         "env_10_2": AssetIn(),
-#     },
-#     deps=[
-#         "build_client_image_10_2"
-#     ],
-# )
-# def build_generic_runner_10_2(
-#         context: AssetExecutionContext,
-#         env_10_2: dict,
-# ):
-#     """
-#     docker run --rm -it --entrypoint bash michimussato/generic_runner:latest
-#     """
-#
-#     docker_file = pathlib.Path(
-#         "/home/michael/git/repos/deadline-docker/10.2/base_images/base_image/base_image_10_2/client_installer"
-#         "/generic_runner/Dockerfile")
-#     tag = "michimussato/generic_runner:latest"
-#     buildargs = {}
-#
-#     with open(docker_file, "r") as fr:
-#         context.log.info(fr.read())
-#
-#     base_image, build_logs = docker_build(
-#         docker_file=docker_file,
-#         tag=tag,
-#         buildargs=buildargs,
-#         nocache=True,
-#     )
-#
-#     cmds_docker = compile_cmds(
-#         docker_file=docker_file,
-#         tag=tag,
-#         buildargs=buildargs,
-#     )
-#
-#     yield Output(base_image.id)
-#
-#     yield AssetMaterialization(
-#         asset_key=context.asset_key,
-#         metadata={
-#             "docker_file": MetadataValue.json(base_image.id),
-#             **cmds_docker,
-#             "build_logs": MetadataValue.md(f"```shell\n{get_log(build_logs)}\n```"),
-#             "env_10_2": MetadataValue.json(env_10_2),
-#         },
-#     )
 
 
 @asset(
@@ -1391,7 +1269,6 @@ def compose_mongo_express_10_2(
                     "ME_CONFIG_MONGODB_PORT": str(env_10_2.get("ME_CONFIG_MONGODB_PORT")).format(
                         MONGO_DB_PORT_CONTAINER=env_10_2.get("MONGO_DB_PORT_CONTAINER")
                     ),
-                    # "ME_CONFIG_MONGODB_URL": env_base.get(f"MONGO_DB_PORT_CONTAINER"),
                     "ME_CONFIG_MONGODB_URL": str(env_10_2.get("ME_CONFIG_MONGODB_URL")).format(
                         MONGO_DB_PORT_CONTAINER=env_10_2.get("MONGO_DB_PORT_CONTAINER")
                     ),
@@ -1405,11 +1282,6 @@ def compose_mongo_express_10_2(
                 "ports": [
                     f"{env_10_2.get('MONGO_EXPRESS_PORT_HOST')}:{env_10_2.get('MONGO_EXPRESS_PORT_CONTAINER')}",
                 ],
-                # "volumes": [
-                #     f"{env_10_2.get('MONGO_DB_DIR')}:/opt/Thinkbox/DeadlineDatabase10/mongo/data",
-                #     f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT')}:ro",
-                #     f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT_LNS')}:ro",
-                # ],
             },
         },
     }
@@ -1448,9 +1320,6 @@ def compose_filebrowser_10_2(
                 "hostname": "filebrowser-10-2",
                 "domainname": env_10_2.get("ROOT_DOMAIN"),
                 "restart": "always",
-                # "depends_on": [
-                #     "mongodb-10-2",
-                # ],
                 "networks": [
                     "repository",
                 ],
@@ -1502,7 +1371,6 @@ def compose_mongodb_10_2(
                 "hostname": "mongodb-10-2",
                 "domainname": env_10_2.get("ROOT_DOMAIN"),
                 "restart": "always",
-                # "depends_on": [],
                 "command": [
                     "--port", env_10_2.get("MONGO_DB_PORT_CONTAINER"),
                     "--dbpath", "/opt/Thinkbox/DeadlineDatabase10/mongo/data",
@@ -1649,9 +1517,6 @@ def compose_repository_10_2(
                     f"{env_10_2.get('NFS_REPOSITORY')}:/opt/Thinkbox/DeadlineRepository10",
                     f"{connection_ini_10_2.as_posix()}:/opt/Thinkbox/DeadlineRepository10/settings/connection.ini:ro",
                 ],
-                # "ports": [
-                #     f"{env_base.get('LIKEC4_DEV_PORT_HOST')}:{env_base.get('LIKEC4_DEV_PORT_CONTAINER')}",
-                # ],
             },
         },
     }
@@ -1664,7 +1529,6 @@ def compose_repository_10_2(
         asset_key=context.asset_key,
         metadata={
             context.asset_key.path[0]: MetadataValue.json(docker_dict),
-            # "docker_dict": MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
             "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
             "env_10_2": MetadataValue.json(env_10_2),
         },
@@ -2130,10 +1994,5 @@ def viz_compose_10_2(
             context.asset_key.path[0]: MetadataValue.json(str(dcg.graph)),
             "dot": MetadataValue.path(compose_10_2.parent / f"{context.asset_key.path[0]}.dot"),
             "png": MetadataValue.path(compose_10_2.parent / f"{context.asset_key.path[0]}.png"),
-            # "cmd_docker_compose_up": MetadataValue.path(cmd_docker_compose_up),
-            # # "cmd_docker_compose_down": MetadataValue.path(cmd_docker_compose_down),
-            # "maps": MetadataValue.md(f"```json\n{json.dumps(docker_chainmap.maps, indent=2)}\n```"),
-            # "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
-            # "env_base": MetadataValue.json(env_10_2),
         },
     )
