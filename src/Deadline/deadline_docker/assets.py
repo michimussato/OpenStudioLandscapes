@@ -24,6 +24,11 @@ from dagster import (
 USE_CACHE = False
 
 
+class SelfRefDict(dict):
+    def __getitem__(self, item):
+        return dict.__getitem__(self, item).format(self)
+
+
 def deep_merge(dict1, dict2):
     """https://sqlpey.com/python/solved-top-5-methods-to-deep-merge-dictionaries-in-python/"""
     for key in dict2:
@@ -162,7 +167,7 @@ def env_base(
 
         "DAGSTER_DEV_PORT_HOST": "3003",
         "DAGSTER_DEV_PORT_CONTAINER": "3006",
-        "DAGSTER_DAGSTER_WORKSPACE": "/dagster",
+        "DAGSTER_ROOT": "/dagster",
         "DAGSTER_HOME": "/dagster/materializations",
         "DAGSTER_HOST": "0.0.0.0",
         "DAGSTER_WORKSPACE": "/dagster/workspace.yaml",
@@ -201,12 +206,21 @@ def env_base(
         "PYTHON_MIN": "11",
         "PYTHON_PAT": "11",
 
+        # # PROD
+        # "LN_NFS": "/nfs",
+        # "NFS_ENTRY_POINT": "/data/share{0[LN_NFS]}",
+        # "NFS_ENTRY_POINT_LNS": "{0[LN_NFS]}",
+        # "INSTALLERS_ROOT": "{0[NFS_ENTRY_POINT]}/installers",
+        # "NFS_REPOSITORY": "{0[NFS_ENTRY_POINT]}/prod/DeadlineRepository10",
+        # "NFS_DEADLINE": "{0[NFS_ENTRY_POINT]}/prod/Deadline10",
+        # "MONGO_DB_DIR": pathlib.Path("~/git/repos/deadline-docker/tests/fixtures/10.2/DeadlineDatabase10/mongo/data").expanduser().as_posix(),
+        # "DEADLINE_INI": pathlib.Path("~/git/repos/deadline-docker/10.2/configs/Deadline10/deadline.ini").expanduser().as_posix(),
+
+        # # TEST
+        "LN_NFS": "/nfs",
         "NFS_ENTRY_POINT": "/data/share/nfs",
-        "TEST_NFS_ENTRY_POINT": "/data/share/nfs",
         "NFS_ENTRY_POINT_LNS": "/nfs",
-        "TEST_NFS_ENTRY_POINT_LNS": "/nfs",
         "INSTALLERS_ROOT": "/data/share/nfs/installers",
-        "TEST_INSTALLERS_ROOT": "/data/share/nfs/installers",
         "NFS_REPOSITORY": "/data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10",
         "NFS_DEADLINE": "/data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10",
         "MONGO_DB_DIR": pathlib.Path("~/git/repos/deadline-docker/tests/fixtures/10.2/DeadlineDatabase10/mongo/data").expanduser().as_posix(),
@@ -891,13 +905,13 @@ def build_dagster_dev(
         
         RUN python{PYTHON_MAJ}.{PYTHON_MIN} -m pip install --root-user-action=ignore "dagster-shared[dagster_dev] @ git+https://github.com/michimussato/dagster-shared.git@main"
         
-        WORKDIR {DAGSTER_WORKSPACE}
+        WORKDIR {DAGSTER_ROOT}
         COPY ./payload/workspace.yaml .
         
         WORKDIR {DAGSTER_HOME}
         COPY ./payload/dagster.yaml .
         
-        WORKDIR {DAGSTER_WORKSPACE}
+        WORKDIR {DAGSTER_ROOT}
         
         ENTRYPOINT ["dagster", "dev"]
         CMD []
