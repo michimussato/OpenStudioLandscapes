@@ -1934,6 +1934,7 @@ def compose_worker_runner_10_2(
     compute_kind="python",
     ins={
         "env_10_2": AssetIn(),
+        "compose_worker_runner_10_2": AssetIn(),
         "compose_pulse_runner_10_2": AssetIn(),
         "compose_rcs_runner_10_2": AssetIn(),
         "compose_repository_10_2": AssetIn(),
@@ -1948,6 +1949,7 @@ def compose_worker_runner_10_2(
 def compose_10_2(
         context: AssetExecutionContext,
         env_10_2: dict,
+        compose_worker_runner_10_2: dict,
         compose_pulse_runner_10_2: dict,
         compose_rcs_runner_10_2: dict,
         compose_repository_10_2: dict,
@@ -1971,6 +1973,7 @@ def compose_10_2(
         compose_mongo_express_10_2,
         compose_rcs_runner_10_2,
         compose_pulse_runner_10_2,
+        compose_worker_runner_10_2,
         compose_repository_10_2,
         compose_networks_10_2,
     )
