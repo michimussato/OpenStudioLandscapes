@@ -24,9 +24,9 @@ from dagster import (
 USE_CACHE = False
 
 
-class SelfRefDict(dict):
-    def __getitem__(self, item):
-        return dict.__getitem__(self, item).format(self)
+# class SelfRefDict(dict):
+#     def __getitem__(self, item):
+#         return dict.__getitem__(self, item).format(self)
 
 
 def deep_merge(dict1, dict2):
@@ -348,6 +348,7 @@ def connection_ini_10_2(
         metadata={
             context.asset_key.path[0]: MetadataValue.path(ret),
             "connection_ini": MetadataValue.md(f"```\n{connection_ini}\n```"),
+            "env_10_2": MetadataValue.json(env_10_2),
         },
     )
 
@@ -433,6 +434,7 @@ def deadline_ini_10_2(
         metadata={
             context.asset_key.path[0]: MetadataValue.path(ret),
             "connection_ini": MetadataValue.md(f"```\n{deadline_ini}\n```"),
+            "env_10_2": MetadataValue.json(env_10_2),
         },
     )
 
@@ -1357,7 +1359,7 @@ def compose_networks_10_2(
             context.asset_key.path[0]: MetadataValue.json(docker_dict),
             "docker_dict": MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
             "docker_yaml": MetadataValue.md(f"```shell\n{docker_yaml}\n```"),
-            "env_base": MetadataValue.json(env_10_2),
+            "env_10_2": MetadataValue.json(env_10_2),
         },
     )
 
@@ -1422,7 +1424,7 @@ def compose_mongo_express_10_2(
             context.asset_key.path[0]: MetadataValue.json(docker_dict),
             "docker_dict": MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
             "docker_yaml": MetadataValue.md(f"```shell\n{docker_yaml}\n```"),
-            "env_base": MetadataValue.json(env_10_2),
+            "env_10_2": MetadataValue.json(env_10_2),
         },
     )
 
@@ -1476,7 +1478,7 @@ def compose_filebrowser_10_2(
             context.asset_key.path[0]: MetadataValue.json(docker_dict),
             "docker_dict": MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
             "docker_yaml": MetadataValue.md(f"```shell\n{docker_yaml}\n```"),
-            "env_base": MetadataValue.json(env_10_2),
+            "env_10_2": MetadataValue.json(env_10_2),
         },
     )
 
@@ -1535,7 +1537,7 @@ def compose_mongodb_10_2(
             context.asset_key.path[0]: MetadataValue.json(docker_dict),
             "docker_dict": MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
             "docker_yaml": MetadataValue.md(f"```shell\n{docker_yaml}\n```"),
-            "env_base": MetadataValue.json(env_10_2),
+            "env_10_2": MetadataValue.json(env_10_2),
         },
     )
 
@@ -1664,7 +1666,7 @@ def compose_repository_10_2(
             context.asset_key.path[0]: MetadataValue.json(docker_dict),
             # "docker_dict": MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
             "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
-            "env_base": MetadataValue.json(env_10_2),
+            "env_10_2": MetadataValue.json(env_10_2),
         },
     )
 
@@ -1790,7 +1792,7 @@ def compose_rcs_runner_10_2(
             context.asset_key.path[0]: MetadataValue.json(docker_dict),
             "docker_dict": MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
             "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
-            "env_base": MetadataValue.json(env_10_2),
+            "env_10_2": MetadataValue.json(env_10_2),
         },
     )
 
@@ -1800,6 +1802,77 @@ def compose_rcs_runner_10_2(
     compute_kind="python",
     ins={
         "env_10_2": AssetIn(),
+        "build_generic_runner_image_10_2": AssetIn(),
+        "connection_ini_10_2": AssetIn(),
+        "deadline_ini_10_2": AssetIn(),
+    },
+)
+def compose_pulse_runner_10_2(
+        context: AssetExecutionContext,
+        env_10_2: dict,
+        build_generic_runner_image_10_2: str,
+        connection_ini_10_2: pathlib.Path,
+        deadline_ini_10_2: pathlib.Path,
+
+) -> dict:
+    """
+    """
+
+    docker_dict = {
+        "services": {
+            "deadline-pulse-runner-10-2": {
+                "container_name": "deadline-pulse-runner-10-2",
+                "hostname": "deadline-pulse-runner-10-2",
+                "domainname": env_10_2.get("ROOT_DOMAIN"),
+                "restart": "always",
+                "image": build_generic_runner_image_10_2,
+                "depends_on": [
+                    "deadline-rcs-runner-10-2",
+                ],
+                "networks": [
+                    "repository",
+                    "mongodb",
+                ],
+                "command": [
+                    "--executable", "/opt/Thinkbox/Deadline10/bin/deadlinepulse",
+                    "--arguments", "['-nogui', '-nosplash']",
+                ],
+                "volumes": [
+                    f"{deadline_ini_10_2.as_posix()}:/var/lib/Thinkbox/Deadline10/deadline.ini:ro",
+                    # f"{connection_ini_10_2.as_posix()}:/opt/Thinkbox/DeadlineRepository10/settings/connection.ini:ro",
+                    f"{env_10_2.get('NFS_DEADLINE')}:/opt/Thinkbox/Deadline10",
+                    f"{env_10_2.get('NFS_REPOSITORY')}:/opt/Thinkbox/DeadlineRepository10",
+                    f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT')}",
+                    f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT_LNS')}",
+                ],
+                # "ports": [
+                #     f"{env_10_2.get('RCS_HTTP_PORT_HOST')}:{env_10_2.get('RCS_HTTP_PORT_CONTAINER')}",
+                # ],
+            },
+        },
+    }
+
+    docker_yaml = yaml.dump(docker_dict)
+
+    yield Output(docker_dict)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            context.asset_key.path[0]: MetadataValue.json(docker_dict),
+            "docker_dict": MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
+            "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
+            "env_10_2": MetadataValue.json(env_10_2),
+        },
+    )
+
+
+@asset(
+    group_name="Docker_Compose_10_2",
+    compute_kind="python",
+    ins={
+        "env_10_2": AssetIn(),
+        "compose_pulse_runner_10_2": AssetIn(),
         "compose_rcs_runner_10_2": AssetIn(),
         "compose_repository_10_2": AssetIn(),
         "compose_networks_10_2": AssetIn(),
@@ -1813,6 +1886,7 @@ def compose_rcs_runner_10_2(
 def compose_10_2(
         context: AssetExecutionContext,
         env_10_2: dict,
+        compose_pulse_runner_10_2: dict,
         compose_rcs_runner_10_2: dict,
         compose_repository_10_2: dict,
         compose_networks_10_2: dict,
@@ -1834,6 +1908,7 @@ def compose_10_2(
         compose_filebrowser_10_2,
         compose_mongo_express_10_2,
         compose_rcs_runner_10_2,
+        compose_pulse_runner_10_2,
         compose_repository_10_2,
         compose_networks_10_2,
     )
@@ -1859,12 +1934,11 @@ def compose_10_2(
         metadata={
             # context.asset_key.path[0]: MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
             context.asset_key.path[0]: MetadataValue.path(docker_compose),
-            "docker_compose": MetadataValue.path(docker_compose),
             "cmd_docker_compose_up": MetadataValue.path(cmd_docker_compose_up),
             # "cmd_docker_compose_down": MetadataValue.path(cmd_docker_compose_down),
             "maps": MetadataValue.md(f"```json\n{json.dumps(docker_chainmap.maps, indent=2)}\n```"),
             "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
-            "env_base": MetadataValue.json(env_10_2),
+            "env_10_2": MetadataValue.json(env_10_2),
         },
     )
 
