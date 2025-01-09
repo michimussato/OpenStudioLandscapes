@@ -58,7 +58,7 @@ MANIFEST
 # Dagster
 dagster/materializations/*/
 tmp*/
-*/.docker
+**/.docker
 
 **.run
 /sesi/
