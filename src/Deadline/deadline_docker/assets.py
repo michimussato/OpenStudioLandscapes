@@ -1311,19 +1311,18 @@ def build_likec4_dev(
 @asset(
     group_name="Docker_Compose_10_2",
     compute_kind="python",
+    ins={
+        "compose_ayon_override": AssetIn(),
+    },
 )
 def compose_include_10_2(
         context: AssetExecutionContext,
+        compose_ayon_override: dict,
         # env_10_2: dict,
 ) -> dict:
     docker_dict = {
         "include": [
-            # {
-            #     "path": [
-            #         pathlib.Path("~/git/repos/deadline-docker/repos/ayon-docker/docker-compose.yml").expanduser().as_posix(),
-            #         pathlib.Path("~/git/repos/deadline-docker/10.2/docker-third-party/ayon/docker-compose.override.yml").expanduser().as_posix(),
-            #     ],
-            # },
+            compose_ayon_override,
         ],
     }
 
@@ -1611,18 +1610,13 @@ def compose_kitsu(
 def compose_ayon_override(
         context: AssetExecutionContext,
         env_base: dict,
-) -> dict:
+) -> dict[str, list[str]]:
     """
     """
 
+    parent = pathlib.Path("~/git/repos/deadline-docker/repos/ayon-docker/docker-compose.yml").expanduser().as_posix()
+
     docker_dict = {
-        "include": [
-            {
-                "path": [
-                    pathlib.Path("~/git/repos/deadline-docker/repos/ayon-docker/docker-compose.yml").expanduser().as_posix(),
-                ],
-            },
-        ],
         "services": {
             "postgres": {
                 "container_name": "ayon-postgres",
@@ -1661,19 +1655,56 @@ def compose_ayon_override(
         },
     }
 
+    # docker_dict = reduce(deep_merge, docker_chainmap.maps)
     docker_yaml = yaml.dump(docker_dict)
 
-    yield Output(docker_dict)
+    docker_compose_override = pathlib.Path(
+        f"~/git/repos/deadline-docker/.docker/docker_compose/"
+        f"{context.asset_key.path[0]}/docker-compose.override.yaml",
+    ).expanduser()
+    docker_compose_override.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(docker_compose_override, "w") as fw:
+        fw.write(docker_yaml)
+
+    cmd_docker_compose_up = (f"/usr/bin/docker compose -f {docker_compose_override} -p {context.asset_key.path[0]} up "
+                         f"--remove-orphans")
+
+    ret = {
+        "path": [
+            parent,
+            docker_compose_override.as_posix(),
+        ],
+    }
+
+    yield Output(ret)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            context.asset_key.path[0]: MetadataValue.json(docker_dict),
-            "docker_dict": MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
-            "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
-            "env_base": MetadataValue.json(env_base),
+            # context.asset_key.path[0]: MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
+            context.asset_key.path[0]: MetadataValue.json(ret),
+            "cmd_docker_compose_up": MetadataValue.path(cmd_docker_compose_up),
+            # "cmd_docker_compose_down": MetadataValue.path(cmd_docker_compose_down),
+            # "maps": MetadataValue.md(f"```json\n{json.dumps(docker_chainmap.maps, indent=2)}\n```"),
+            "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
+            # "env_10_2": MetadataValue.json(env_10_2),
         },
     )
+
+    # docker_yaml = yaml.dump(docker_dict)
+    #
+    # yield Output(docker_dict)
+    #
+    # yield AssetMaterialization(
+    #     asset_key=context.asset_key,
+    #     metadata={
+    #         context.asset_key.path[0]: MetadataValue.json(docker_dict),
+    #         "docker_dict": MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
+    #         "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
+    #         "env_base": MetadataValue.json(env_base),
+    #     },
+    # )
 
 
 @asset(
@@ -2139,6 +2170,7 @@ def compose_webservice_runner_10_2(
     compute_kind="python",
     ins={
         "env_10_2": AssetIn(),
+        # "compose_ayon_override": AssetIn(),
         "compose_webservice_runner_10_2": AssetIn(),
         "compose_worker_runner_10_2": AssetIn(),
         "compose_pulse_runner_10_2": AssetIn(),
@@ -2157,6 +2189,7 @@ def compose_webservice_runner_10_2(
 def compose_10_2(
         context: AssetExecutionContext,
         env_10_2: dict,
+        # compose_ayon_override: dict,
         compose_webservice_runner_10_2: dict,
         compose_worker_runner_10_2: dict,
         compose_pulse_runner_10_2: dict,
@@ -2188,15 +2221,16 @@ def compose_10_2(
         # compose_repository_10_2,
         compose_include_10_2,
         compose_networks_10_2,
+        # compose_ayon_override,
     )
 
     docker_dict = reduce(deep_merge, docker_chainmap.maps)
     docker_yaml = yaml.dump(docker_dict)
 
     docker_compose = pathlib.Path(
-        f"/home/michael/git/repos/deadline-docker/10.2/.docker/docker_compose/"
+        f"~/git/repos/deadline-docker/10.2/.docker/docker_compose/"
         f"{context.asset_key.path[0]}/docker-compose.yaml",
-    )
+    ).expanduser()
     docker_compose.parent.mkdir(parents=True, exist_ok=True)
 
     with open(docker_compose, "w") as fw:
