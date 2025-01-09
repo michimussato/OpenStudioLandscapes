@@ -204,8 +204,8 @@ def env_base(
         #        is actually correct
         "ME_CONFIG_MONGODB_URL": "mongodb://admin:pass@localhost:{MONGO_DB_PORT_CONTAINER}/db?ssl=false",
 
-        # "AYON_PORT_HOST": 5005,
-        # "AYON_PORT_CONTAINER": 5000,
+        "AYON_PORT_HOST": "5005",
+        "AYON_PORT_CONTAINER": "5000",
 
         "KITSU_PORT_HOST": "4545",
         "KITSU_PORT_CONTAINER": "80",
@@ -1581,6 +1581,81 @@ def compose_kitsu(
                 ],
                 "ports": [
                     f"{env_base.get('KITSU_PORT_HOST')}:{env_base.get('KITSU_PORT_CONTAINER')}",
+                ],
+            },
+        },
+    }
+
+    docker_yaml = yaml.dump(docker_dict)
+
+    yield Output(docker_dict)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            context.asset_key.path[0]: MetadataValue.json(docker_dict),
+            "docker_dict": MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
+            "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
+            "env_base": MetadataValue.json(env_base),
+        },
+    )
+
+
+@asset(
+    group_name="Docker_Compose",
+    compute_kind="python",
+    ins={
+        "env_base": AssetIn(),
+    },
+)
+def compose_ayon_override(
+        context: AssetExecutionContext,
+        env_base: dict,
+) -> dict:
+    """
+    """
+
+    docker_dict = {
+        "include": [
+            {
+                "path": [
+                    pathlib.Path("~/git/repos/deadline-docker/repos/ayon-docker/docker-compose.yml").expanduser().as_posix(),
+                ],
+            },
+        ],
+        "services": {
+            "postgres": {
+                "container_name": "ayon-postgres",
+                "hostname": "ayon-postgres",
+                "domainname": env_base.get("ROOT_DOMAIN"),
+                "volumes": [
+                    f"/etc/localtime:/etc/localtime:ro",
+                    f"{env_base.get('NFS_ENTRY_POINT')}/databases/ayon/postgresql/data:/var/lib/postgresql/data",
+                ],
+                "networks": [
+                    "mongodb",
+                    "repository",
+                ],
+            },
+            "redis": {
+                "container_name": "ayon-redis",
+                "hostname": "ayon-redis",
+                "domainname": env_base.get("ROOT_DOMAIN"),
+                "networks": [
+                    "mongodb",
+                    "repository",
+                ],
+            },
+            "server": {
+                "container_name": "ayon-serve",
+                "hostname": "ayon-serve",
+                "domainname": env_base.get("ROOT_DOMAIN"),
+                "ports": [
+                    f"{env_base.get('AYON_PORT_HOST')}:{env_base.get('AYON_PORT_CONTAINER')}",
+                ],
+                "networks": [
+                    "mongodb",
+                    "repository",
                 ],
             },
         },
