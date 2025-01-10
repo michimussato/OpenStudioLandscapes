@@ -28,6 +28,32 @@ USE_CACHE = False
 #         return dict.__getitem__(self, item).format(self)
 
 
+class OverrideArray(yaml.YAMLObject):
+    """
+    - https://pyyaml.org/wiki/PyYAMLDocumentation
+    - https://stackoverflow.com/questions/26744956/formatting-custom-class-output-in-pyyaml
+    """
+    yaml_tag = u'!override'
+    yaml_flow_style = False
+
+    def __init__(self, array):
+        self.array = array
+
+    @classmethod
+    def to_yaml(cls, dumper, data):
+        node = dumper.represent_sequence(u'!override', data.array)
+        return node
+
+    @classmethod
+    def from_yaml(cls, loader, node):
+        array = loader.construct_sequence(node)
+        return OverrideArray(array)
+
+    def __repr__(self):
+        return "%s(ports=%r)" % (
+            self.__class__.__name__, self.array)
+
+
 def deep_merge(dict1, dict2):
     """https://sqlpey.com/python/solved-top-5-methods-to-deep-merge-dictionaries-in-python/"""
     for key in dict2:
@@ -1615,6 +1641,7 @@ def compose_ayon_override(
     """
 
     parent = pathlib.Path("~/git/repos/deadline-docker/repos/ayon-docker/docker-compose.yml").expanduser().as_posix()
+    override = pathlib.Path("~/git/repos/deadline-docker/repos/ayon-docker/docker-compose.override.yml").expanduser().as_posix()
 
     docker_dict = {
         "services": {
@@ -1644,9 +1671,9 @@ def compose_ayon_override(
                 "container_name": "ayon-serve",
                 "hostname": "ayon-serve",
                 "domainname": env_base.get("ROOT_DOMAIN"),
-                "ports": [
+                "ports": OverrideArray([
                     f"{env_base.get('AYON_PORT_HOST')}:{env_base.get('AYON_PORT_CONTAINER')}",
-                ],
+                ]),
                 "networks": [
                     "mongodb",
                     "repository",
@@ -1659,21 +1686,19 @@ def compose_ayon_override(
     docker_yaml = yaml.dump(docker_dict)
 
     docker_compose_override = pathlib.Path(
-        f"~/git/repos/deadline-docker/.docker/docker_compose/"
-        f"{context.asset_key.path[0]}/docker-compose.override.yaml",
+        f"~/git/repos/deadline-docker/.docker/docker_compose/{context.asset_key.path[0]}/docker-compose.override.yaml",
     ).expanduser()
     docker_compose_override.parent.mkdir(parents=True, exist_ok=True)
 
-    with open(docker_compose_override, "w") as fw:
+    with open(override, "w") as fw:
         fw.write(docker_yaml)
 
-    cmd_docker_compose_up = (f"/usr/bin/docker compose -f {docker_compose_override} -p {context.asset_key.path[0]} up "
-                         f"--remove-orphans")
+    cmd_docker_compose_up = (f"/usr/bin/docker compose -f {parent} -p {context.asset_key.path[0]} up --remove-orphans")
 
     ret = {
         "path": [
             parent,
-            docker_compose_override.as_posix(),
+            override,
         ],
     }
 
