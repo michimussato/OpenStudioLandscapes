@@ -62,4 +62,4 @@ tmp*/
 **.run
 /sesi/
 /installers/
-/*/.docker/
+/**/.docker/
