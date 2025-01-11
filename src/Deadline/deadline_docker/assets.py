@@ -187,6 +187,7 @@ def env_base(
     # @formatter:off
     _env: dict = {
         "AUTHOR": "michimussato@gmail.com",
+        "IMAGE_PREFIX": "michimussato",
         "MONGO_EXPRESS_PORT_HOST": "8181",
         "MONGO_EXPRESS_PORT_CONTAINER": "8081",
 
@@ -484,8 +485,8 @@ def build_base_image(
         f"~/git/repos/deadline-docker/10.2/.docker/Dockerfiles/{context.asset_key.path[0]}/Dockerfile"
     ).expanduser()
     tags = [
-        f"michimussato/{context.asset_key.path[0]}:latest",
-        f"michimussato/{context.asset_key.path[0]}:{str(time.time())}",
+        f"{env_base.get('IMAGE_PREFIX')}/{context.asset_key.path[0]}:latest",
+        f"{env_base.get('IMAGE_PREFIX')}/{context.asset_key.path[0]}:{str(time.time())}",
     ]
 
     # @formatter:off
@@ -627,8 +628,8 @@ def build_base_image_10_2(
     ).expanduser()
 
     tags = [
-        f"michimussato/{context.asset_key.path[0]}:latest",
-        f"michimussato/{context.asset_key.path[0]}:{str(time.time())}",
+        f"{env_10_2.get('IMAGE_PREFIX')}/{context.asset_key.path[0]}:latest",
+        f"{env_10_2.get('IMAGE_PREFIX')}/{context.asset_key.path[0]}:{str(time.time())}",
     ]
 
     # @formatter:off
@@ -729,8 +730,8 @@ def build_repository_image_10_2(
         "~/git/repos/deadline-docker/10.2/base_images/base_image/base_image_10_2/repo_installer/Dockerfile",
     ).expanduser()
     tags = [
-        f"michimussato/{context.asset_key.path[0]}:latest",
-        f"michimussato/{context.asset_key.path[0]}:{str(time.time())}",
+        f"{env_10_2.get('IMAGE_PREFIX')}/{context.asset_key.path[0]}:latest",
+        f"{env_10_2.get('IMAGE_PREFIX')}/{context.asset_key.path[0]}:{str(time.time())}",
     ]
 
     # @formatter:off
@@ -828,8 +829,8 @@ def build_client_image_10_2(
     ).expanduser()
 
     tags = [
-        f"michimussato/{context.asset_key.path[0]}:latest",
-        f"michimussato/{context.asset_key.path[0]}:{str(time.time())}",
+        f"{env_10_2.get('IMAGE_PREFIX')}/{context.asset_key.path[0]}:latest",
+        f"{env_10_2.get('IMAGE_PREFIX')}/{context.asset_key.path[0]}:{str(time.time())}",
     ]
 
     # @formatter:off
@@ -926,8 +927,8 @@ def build_generic_runner_image_10_2(
     ).expanduser()
 
     tags = [
-        f"michimussato/{context.asset_key.path[0]}:latest",
-        f"michimussato/{context.asset_key.path[0]}:{str(time.time())}",
+        f"{env_10_2.get('IMAGE_PREFIX')}/{context.asset_key.path[0]}:latest",
+        f"{env_10_2.get('IMAGE_PREFIX')}/{context.asset_key.path[0]}:{str(time.time())}",
     ]
 
     # @formatter:off
@@ -1021,12 +1022,12 @@ def build_dagster(
     """
 
     docker_file = pathlib.Path(
-        f"~/git/repos/deadline-docker/10.2/.docker/Dockerfiles/{context.asset_key.path[0]}/Dockerfile"
+        f"~/git/repos/deadline-docker/.docker/Dockerfiles/{context.asset_key.path[0]}/Dockerfile"
     ).expanduser()
 
     tags = [
-        f"michimussato/{context.asset_key.path[0]}:latest",
-        f"michimussato/{context.asset_key.path[0]}:{str(time.time())}",
+        f"{env_base.get('IMAGE_PREFIX')}/{context.asset_key.path[0]}:latest",
+        f"{env_base.get('IMAGE_PREFIX')}/{context.asset_key.path[0]}:{str(time.time())}",
     ]
 
     # @formatter:off
@@ -1135,8 +1136,8 @@ def build_kitsu(
     ).expanduser()
 
     tags = [
-        f"michimussato/{context.asset_key.path[0]}:latest",
-        f"michimussato/{context.asset_key.path[0]}:{str(time.time())}",
+        f"{env_base.get('IMAGE_PREFIX')}/{context.asset_key.path[0]}:latest",
+        f"{env_base.get('IMAGE_PREFIX')}/{context.asset_key.path[0]}:{str(time.time())}",
     ]
 
     # @formatter:off
@@ -1234,12 +1235,12 @@ def build_likec4(
     """
 
     docker_file = pathlib.Path(
-        f"~/git/repos/deadline-docker/10.2/.docker/Dockerfiles/{context.asset_key.path[0]}/Dockerfile"
+        f"~/git/repos/deadline-docker/.docker/Dockerfiles/{context.asset_key.path[0]}/Dockerfile"
     ).expanduser()
 
     tags = [
-        f"michimussato/{context.asset_key.path[0]}:latest",
-        f"michimussato/{context.asset_key.path[0]}:{str(time.time())}",
+        f"{env_base.get('IMAGE_PREFIX')}/{context.asset_key.path[0]}:latest",
+        f"{env_base.get('IMAGE_PREFIX')}/{context.asset_key.path[0]}:{str(time.time())}",
     ]
 
     # @formatter:off
