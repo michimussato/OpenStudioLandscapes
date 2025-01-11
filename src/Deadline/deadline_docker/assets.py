@@ -230,6 +230,7 @@ def env_base(
         #        is actually correct
         "ME_CONFIG_MONGODB_URL": "mongodb://admin:pass@localhost:{MONGO_DB_PORT_CONTAINER}/db?ssl=false",
 
+        "AYON_DOCKER_COMPOSE": pathlib.Path("~/git/repos/deadline-docker/repos/ayon-docker/docker-compose.yml").expanduser().as_posix(),
         "AYON_PORT_HOST": "5005",
         "AYON_PORT_CONTAINER": "5000",
 
@@ -1004,14 +1005,14 @@ def build_generic_runner_image_10_2(
 
 
 @asset(
-    group_name="Common_Service_Images",
+    group_name="Dagster",
     compute_kind="python",
     ins={
         "env_base": AssetIn(),
         "build_base_image": AssetIn(),
     },
 )
-def build_dagster_dev(
+def build_dagster(
         context: AssetExecutionContext,
         env_base: dict,
         build_base_image: str,
@@ -1066,14 +1067,14 @@ def build_dagster_dev(
 
     # workspace.yaml
     shutil.copy(
-        src=pathlib.Path("~/git/repos/deadline-docker/10.2/configs/dagster_dev/config/workspace.yaml").expanduser(),
+        src=pathlib.Path("~/git/repos/deadline-docker/10.2/configs/dagster/config/workspace.yaml").expanduser(),
         dst=payload,
     )
 
     # dagster.yaml
     shutil.copy(
         src=pathlib.Path(
-            "~/git/repos/deadline-docker/10.2/configs/dagster_dev/config/materializations/dagster.yaml"
+            "~/git/repos/deadline-docker/10.2/configs/dagster/config/materializations/dagster.yaml"
             ).expanduser(),
         dst=payload,
     )
@@ -1114,7 +1115,7 @@ def build_dagster_dev(
 
 
 @asset(
-    group_name="Common_Service_Images",
+    group_name="Kitsu",
     compute_kind="python",
     ins={
         "env_base": AssetIn(),
@@ -1171,13 +1172,13 @@ def build_kitsu(
     #
     # # setup.sh
     # shutil.copy(
-    #     src=pathlib.Path("~/git/repos/deadline-docker/10.2/configs/likec4_dev/entrypoint/setup.sh").expanduser(),
+    #     src=pathlib.Path("~/git/repos/deadline-docker/10.2/configs/likec4/entrypoint/setup.sh").expanduser(),
     #     dst=payload,
     # )
     #
     # # run.sh
     # shutil.copy(
-    #     src=pathlib.Path("~/git/repos/deadline-docker/10.2/configs/likec4_dev/entrypoint/run.sh").expanduser(),
+    #     src=pathlib.Path("~/git/repos/deadline-docker/10.2/configs/likec4/entrypoint/run.sh").expanduser(),
     #     dst=payload,
     # )
 
@@ -1217,14 +1218,14 @@ def build_kitsu(
 
 
 @asset(
-    group_name="Common_Service_Images",
+    group_name="LikeC4",
     compute_kind="python",
     ins={
         "env_base": AssetIn(),
         "build_base_image": AssetIn(),
     },
 )
-def build_likec4_dev(
+def build_likec4(
         context: AssetExecutionContext,
         env_base: dict,
         build_base_image: str,
@@ -1289,13 +1290,13 @@ def build_likec4_dev(
 
     # setup.sh
     shutil.copy(
-        src=pathlib.Path("~/git/repos/deadline-docker/10.2/configs/likec4_dev/entrypoint/setup.sh").expanduser(),
+        src=pathlib.Path("~/git/repos/deadline-docker/10.2/configs/likec4/entrypoint/setup.sh").expanduser(),
         dst=payload,
     )
 
     # run.sh
     shutil.copy(
-        src=pathlib.Path("~/git/repos/deadline-docker/10.2/configs/likec4_dev/entrypoint/run.sh").expanduser(),
+        src=pathlib.Path("~/git/repos/deadline-docker/10.2/configs/likec4/entrypoint/run.sh").expanduser(),
         dst=payload,
     )
 
@@ -1576,7 +1577,7 @@ def compose_mongodb_10_2(
 
 
 @asset(
-    group_name="Docker_Compose",
+    group_name="Kitsu",
     compute_kind="python",
     ins={
         "env_base": AssetIn(),
@@ -1627,7 +1628,7 @@ def compose_kitsu(
 
 
 @asset(
-    group_name="Docker_Compose",
+    group_name="Ayon",
     compute_kind="python",
     ins={
         "env_base": AssetIn(),
@@ -1640,7 +1641,7 @@ def compose_ayon_override(
     """
     """
 
-    parent = pathlib.Path("~/git/repos/deadline-docker/repos/ayon-docker/docker-compose.yml").expanduser().as_posix()
+    parent = env_base.get("AYON_DOCKER_COMPOSE")
     override = pathlib.Path("~/git/repos/deadline-docker/repos/ayon-docker/docker-compose.override.yml").expanduser().as_posix()
 
     docker_dict = {
@@ -1733,17 +1734,17 @@ def compose_ayon_override(
 
 
 @asset(
-    group_name="Docker_Compose",
+    group_name="Dagster",
     compute_kind="python",
     ins={
         "env_base": AssetIn(),
-        "build_dagster_dev": AssetIn(),
+        "build_dagster": AssetIn(),
     },
 )
-def compose_dagster_dev(
+def compose_dagster(
         context: AssetExecutionContext,
         env_base: dict,
-        build_dagster_dev: str,
+        build_dagster: str,
 ) -> dict:
     """
     """
@@ -1755,7 +1756,7 @@ def compose_dagster_dev(
                 "hostname": "dagster-dev-10-2",
                 "domainname": env_base.get("ROOT_DOMAIN"),
                 "restart": "always",
-                "image": build_dagster_dev,
+                "image": build_dagster,
                 "networks": [
                     "repository",
                     "mongodb",
@@ -1858,17 +1859,17 @@ def compose_repository_10_2(
 
 
 @asset(
-    group_name="Docker_Compose",
+    group_name="LikeC4",
     compute_kind="python",
     ins={
         "env_base": AssetIn(),
-        "build_likec4_dev": AssetIn(),
+        "build_likec4": AssetIn(),
     },
 )
-def compose_likec4_dev(
+def compose_likec4(
         context: AssetExecutionContext,
         env_base: dict,
-        build_likec4_dev: str,
+        build_likec4: str,
 ) -> dict:
     """
     """
@@ -1880,7 +1881,7 @@ def compose_likec4_dev(
                 "hostname": "likec4-dev-10-2",
                 "domainname": env_base.get("ROOT_DOMAIN"),
                 "restart": "always",
-                "image": build_likec4_dev,
+                "image": build_likec4,
                 "networks": [
                     "repository",
                     "mongodb",
@@ -2204,8 +2205,8 @@ def compose_webservice_runner_10_2(
         "compose_mongo_express_10_2": AssetIn(),
         "compose_mongodb_10_2": AssetIn(),
         "compose_filebrowser_10_2": AssetIn(),
-        "compose_dagster_dev": AssetIn(),
-        "compose_likec4_dev": AssetIn(),
+        "compose_dagster": AssetIn(),
+        "compose_likec4": AssetIn(),
         "compose_kitsu": AssetIn(),
     },
 )
@@ -2221,8 +2222,8 @@ def compose_10_2(
         compose_mongo_express_10_2: dict,
         compose_mongodb_10_2: dict,
         compose_filebrowser_10_2: dict,
-        compose_dagster_dev: dict,
-        compose_likec4_dev: dict,
+        compose_dagster: dict,
+        compose_likec4: dict,
         compose_kitsu: dict,
 ) -> pathlib.Path:
     """
@@ -2230,8 +2231,8 @@ def compose_10_2(
 
     docker_chainmap = ChainMap(
         compose_kitsu,
-        compose_likec4_dev,
-        compose_dagster_dev,
+        compose_likec4,
+        compose_dagster,
         compose_mongodb_10_2,
         compose_filebrowser_10_2,
         compose_mongo_express_10_2,
