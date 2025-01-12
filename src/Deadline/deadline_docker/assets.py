@@ -312,6 +312,9 @@ def env_base(
 @asset(
     group_name="Environment_10_2",
     compute_kind="python",
+    key_prefix=[
+        "10_2",
+    ],
     ins={
         "env_base": AssetIn(),
     },
@@ -358,8 +361,15 @@ def env_10_2(
 @asset(
     group_name="Settings_10_2",
     compute_kind="python",
+    key_prefix=[
+        "10_2",
+    ],
     ins={
-        "env_10_2": AssetIn(),
+        "env_10_2": AssetIn(
+            key_prefix=[
+                "10_2",
+            ],
+        ),
     },
 )
 def connection_ini_10_2(
@@ -411,8 +421,15 @@ def connection_ini_10_2(
 @asset(
     group_name="Settings_10_2",
     compute_kind="python",
+    key_prefix=[
+        "10_2",
+    ],
     ins={
-        "env_10_2": AssetIn(),
+        "env_10_2": AssetIn(
+            key_prefix=[
+                "10_2",
+            ],
+        ),
     },
 )
 def deadline_ini_10_2(
@@ -637,8 +654,15 @@ def build_base_image(
 @asset(
     group_name="Build_Images_10_2",
     compute_kind="python",
+    key_prefix=[
+        "10_2",
+    ],
     ins={
-        "env_10_2": AssetIn(),
+        "env_10_2": AssetIn(
+            key_prefix=[
+                "10_2",
+            ],
+        ),
         "build_base_image": AssetIn(),
     },
 )
@@ -827,9 +851,20 @@ def nfs(
     group_name="Repository_Installer_10_2",
     compute_kind="python",
     ins={
-        "env_10_2": AssetIn(),
-        "build_base_image_10_2": AssetIn(),
+        "env_10_2": AssetIn(
+            key_prefix=[
+                "10_2"
+            ],
+        ),
+        "build_base_image_10_2": AssetIn(
+            key_prefix=[
+                "10_2"
+            ],
+        ),
     },
+    key_prefix=[
+        "10_2"
+    ],
 )
 def build_repository_image_10_2(
         context: AssetExecutionContext,
@@ -915,10 +950,25 @@ def build_repository_image_10_2(
     group_name="Repository_Installer_10_2",
     compute_kind="python",
     ins={
-        "env_10_2": AssetIn(),
-        "build_repository_image_10_2": AssetIn(),
-        "connection_ini_10_2": AssetIn(),
+        "env_10_2": AssetIn(
+            key_prefix=[
+                "10_2",
+            ],
+        ),
+        "build_repository_image_10_2": AssetIn(
+            key_prefix=[
+                "10_2",
+            ],
+        ),
+        "connection_ini_10_2": AssetIn(
+            key_prefix=[
+                "10_2",
+            ],
+        ),
     },
+    key_prefix=[
+        "10_2",
+    ],
     description="This executes the Deadline Repository Installer. "
                 "Needs to be done only once."
 )
@@ -986,9 +1036,20 @@ def compose_repository_10_2(
 @asset(
     group_name="Build_Images_10_2",
     compute_kind="python",
+    key_prefix=[
+        "10_2",
+    ],
     ins={
-        "env_10_2": AssetIn(),
-        "build_base_image_10_2": AssetIn(),
+        "env_10_2": AssetIn(
+            key_prefix=[
+                "10_2",
+            ],
+        ),
+        "build_base_image_10_2": AssetIn(
+            key_prefix=[
+                "10_2",
+            ],
+        ),
     },
 )
 def build_client_image_10_2(
@@ -1084,9 +1145,20 @@ def build_client_image_10_2(
 @asset(
     group_name="Build_Images_10_2",
     compute_kind="python",
+    key_prefix=[
+        "10_2",
+    ],
     ins={
-        "env_10_2": AssetIn(),
-        "build_client_image_10_2": AssetIn(),
+        "env_10_2": AssetIn(
+            key_prefix=[
+                "10_2",
+            ],
+        ),
+        "build_client_image_10_2": AssetIn(
+            key_prefix=[
+                "10_2",
+            ],
+        ),
     },
 )
 def build_generic_runner_image_10_2(
@@ -1514,6 +1586,9 @@ def build_likec4(
 @asset(
     group_name="Docker_Compose_10_2",
     compute_kind="python",
+    key_prefix=[
+        "10_2",
+    ],
     ins={
         "compose_ayon_override": AssetIn(),
     },
@@ -1547,8 +1622,15 @@ def compose_include_10_2(
 @asset(
     group_name="Docker_Compose_10_2",
     compute_kind="python",
+    key_prefix=[
+        "10_2",
+    ],
     ins={
-        "env_10_2": AssetIn(),
+        "env_10_2": AssetIn(
+            key_prefix=[
+                "10_2",
+            ],
+        ),
     },
 )
 def compose_networks_10_2(
@@ -1587,8 +1669,15 @@ def compose_networks_10_2(
 @asset(
     group_name="Docker_Compose_10_2",
     compute_kind="python",
+    key_prefix=[
+        "10_2",
+    ],
     ins={
-        "env_10_2": AssetIn(),
+        "env_10_2": AssetIn(
+            key_prefix=[
+                "10_2",
+            ],
+        ),
     },
 )
 def compose_mongo_express_10_2(
@@ -1646,8 +1735,15 @@ def compose_mongo_express_10_2(
 @asset(
     group_name="Docker_Compose_10_2",
     compute_kind="python",
+    key_prefix=[
+        "10_2",
+    ],
     ins={
-        "env_10_2": AssetIn(),
+        "env_10_2": AssetIn(
+            key_prefix=[
+                "10_2",
+            ],
+        ),
     },
 )
 def compose_filebrowser_10_2(
@@ -1697,8 +1793,15 @@ def compose_filebrowser_10_2(
 @asset(
     group_name="Docker_Compose_10_2",
     compute_kind="python",
+    key_prefix=[
+        "10_2",
+    ],
     ins={
-        "env_10_2": AssetIn(),
+        "env_10_2": AssetIn(
+            key_prefix=[
+                "10_2",
+            ],
+        ),
     },
 )
 def compose_mongodb_10_2(
@@ -2037,11 +2140,30 @@ def compose_likec4(
 @asset(
     group_name="Docker_Compose_10_2",
     compute_kind="python",
+    key_prefix=[
+        "10_2",
+    ],
     ins={
-        "env_10_2": AssetIn(),
-        "build_generic_runner_image_10_2": AssetIn(),
-        "connection_ini_10_2": AssetIn(),
-        "deadline_ini_10_2": AssetIn(),
+        "env_10_2": AssetIn(
+            key_prefix=[
+                "10_2",
+            ],
+        ),
+        "build_generic_runner_image_10_2": AssetIn(
+            key_prefix=[
+                "10_2",
+            ],
+        ),
+        "connection_ini_10_2": AssetIn(
+            key_prefix=[
+                "10_2",
+            ],
+        ),
+        "deadline_ini_10_2": AssetIn(
+            key_prefix=[
+                "10_2",
+            ],
+        ),
     },
 )
 def compose_rcs_runner_10_2(
@@ -2102,11 +2224,30 @@ def compose_rcs_runner_10_2(
 @asset(
     group_name="Docker_Compose_10_2",
     compute_kind="python",
+    key_prefix=[
+        "10_2",
+    ],
     ins={
-        "env_10_2": AssetIn(),
-        "build_generic_runner_image_10_2": AssetIn(),
-        "deadline_ini_10_2": AssetIn(),
-        "connection_ini_10_2": AssetIn(),
+        "env_10_2": AssetIn(
+            key_prefix=[
+                "10_2",
+            ],
+        ),
+        "build_generic_runner_image_10_2": AssetIn(
+            key_prefix=[
+                "10_2",
+            ],
+        ),
+        "deadline_ini_10_2": AssetIn(
+            key_prefix=[
+                "10_2",
+            ],
+        ),
+        "connection_ini_10_2": AssetIn(
+            key_prefix=[
+                "10_2",
+            ],
+        ),
     },
 )
 def compose_pulse_runner_10_2(
@@ -2171,11 +2312,30 @@ def compose_pulse_runner_10_2(
 @asset(
     group_name="Docker_Compose_10_2",
     compute_kind="python",
+    key_prefix=[
+        "10_2",
+    ],
     ins={
-        "env_10_2": AssetIn(),
-        "build_generic_runner_image_10_2": AssetIn(),
-        "deadline_ini_10_2": AssetIn(),
-        "connection_ini_10_2": AssetIn(),
+        "env_10_2": AssetIn(
+            key_prefix=[
+                "10_2",
+            ],
+        ),
+        "build_generic_runner_image_10_2": AssetIn(
+            key_prefix=[
+                "10_2",
+            ],
+        ),
+        "deadline_ini_10_2": AssetIn(
+            key_prefix=[
+                "10_2",
+            ],
+        ),
+        "connection_ini_10_2": AssetIn(
+            key_prefix=[
+                "10_2",
+            ],
+        ),
     },
 )
 def compose_worker_runner_10_2(
@@ -2240,11 +2400,30 @@ def compose_worker_runner_10_2(
 @asset(
     group_name="Docker_Compose_10_2",
     compute_kind="python",
+    key_prefix=[
+        "10_2",
+    ],
     ins={
-        "env_10_2": AssetIn(),
-        "build_generic_runner_image_10_2": AssetIn(),
-        "deadline_ini_10_2": AssetIn(),
-        "connection_ini_10_2": AssetIn(),
+        "env_10_2": AssetIn(
+            key_prefix=[
+                "10_2",
+            ],
+        ),
+        "build_generic_runner_image_10_2": AssetIn(
+            key_prefix=[
+                "10_2",
+            ],
+        ),
+        "deadline_ini_10_2": AssetIn(
+            key_prefix=[
+                "10_2",
+            ],
+        ),
+        "connection_ini_10_2": AssetIn(
+            key_prefix=[
+                "10_2",
+            ],
+        ),
     },
 )
 def compose_webservice_runner_10_2(
@@ -2310,17 +2489,50 @@ def compose_webservice_runner_10_2(
 @asset(
     group_name="Docker_Compose_10_2",
     compute_kind="python",
+    key_prefix=[
+        "10_2",
+    ],
     ins={
-        "env_10_2": AssetIn(),
-        "compose_webservice_runner_10_2": AssetIn(),
-        "compose_worker_runner_10_2": AssetIn(),
-        "compose_pulse_runner_10_2": AssetIn(),
-        "compose_rcs_runner_10_2": AssetIn(),
-        "compose_networks_10_2": AssetIn(),
-        "compose_include_10_2": AssetIn(),
-        "compose_mongo_express_10_2": AssetIn(),
-        "compose_mongodb_10_2": AssetIn(),
-        "compose_filebrowser_10_2": AssetIn(),
+        "env_10_2": AssetIn(key_prefix=[
+                "10_2",
+            ],
+        ),
+        "compose_webservice_runner_10_2": AssetIn(key_prefix=[
+                "10_2",
+            ],
+        ),
+        "compose_worker_runner_10_2": AssetIn(key_prefix=[
+                "10_2",
+            ],
+        ),
+        "compose_pulse_runner_10_2": AssetIn(key_prefix=[
+                "10_2",
+            ],
+        ),
+        "compose_rcs_runner_10_2": AssetIn(key_prefix=[
+                "10_2",
+            ],
+        ),
+        "compose_networks_10_2": AssetIn(key_prefix=[
+                "10_2",
+            ],
+        ),
+        "compose_include_10_2": AssetIn(key_prefix=[
+                "10_2",
+            ],
+        ),
+        "compose_mongo_express_10_2": AssetIn(key_prefix=[
+                "10_2",
+            ],
+        ),
+        "compose_mongodb_10_2": AssetIn(key_prefix=[
+                "10_2",
+            ],
+        ),
+        "compose_filebrowser_10_2": AssetIn(key_prefix=[
+                "10_2",
+            ],
+        ),
         "compose_dagster": AssetIn(),
         "compose_likec4": AssetIn(),
         "compose_kitsu": AssetIn(),
@@ -2396,8 +2608,15 @@ def compose_10_2(
 @asset(
     group_name="Viz",
     compute_kind="python",
+    key_prefix=[
+        "10_2",
+    ],
     ins={
-        "compose_10_2": AssetIn(),
+        "compose_10_2": AssetIn(
+            key_prefix=[
+                "10_2",
+            ],
+        ),
     },
 )
 def viz_compose_10_2(
