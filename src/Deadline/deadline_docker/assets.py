@@ -919,6 +919,8 @@ def build_repository_image_10_2(
         "build_repository_image_10_2": AssetIn(),
         "connection_ini_10_2": AssetIn(),
     },
+    description="This executes the Deadline Repository Installer. "
+                "Needs to be done only once."
 )
 def compose_repository_10_2(
         context: AssetExecutionContext,
