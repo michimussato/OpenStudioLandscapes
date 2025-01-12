@@ -178,16 +178,28 @@ def secrets(
     compute_kind="python",
     ins={
         "secrets": AssetIn(),
-        "repository_dirs": AssetIn(),
+        "nfs": AssetIn(),
     },
 )
 def env_base(
         context: AssetExecutionContext,
         secrets: dict,
-        repository_dirs: dict,
+        nfs: dict,
 ) -> dict:
     # @formatter:off
     _env: dict = {
+        "REPOSITORY_INSTALL_DEST_PROD": pathlib.PurePath(
+            nfs.get("NFS_ENTRY_POINT"),
+            "deadline_repository_prod",
+        ).as_posix(),
+        "REPOSITORY_INSTALL_DEST_TEST": pathlib.PurePath(
+            nfs.get("NFS_ENTRY_POINT"),
+            "test_data",
+            "opt",
+            "Thinkbox",
+            "DeadlineRepository10",
+        ).as_posix(),
+
         "AUTHOR": "michimussato@gmail.com",
         "IMAGE_PREFIX": "michimussato",
         "MONGO_EXPRESS_PORT_HOST": "8181",
@@ -283,7 +295,6 @@ def env_base(
     }
 
     _env.update(secrets)
-    _env.update(repository_dirs)
     # @formatter:on
 
     yield Output(_env)
@@ -317,6 +328,16 @@ def env_10_2(
         "GOOGLE_ID_AWSPortalLink_10_2": "1VOQa6OyYUZj_7VILcD6EVl7YOfYVlCrU",
         "GOOGLE_ID_DeadlineClient_10_2": "1cGxCPkrJ1ujWqie2yXTrOpShkEgSXR0F",
         "GOOGLE_ID_DeadlineRepository_10_2": "1VZhCcxvCAc4oozLAKRCv_zwQLMuVdMRz",
+
+        "REPOSITORY_INSTALL_DEST_PROD_10_2": pathlib.PurePath(
+            env_base.get("REPOSITORY_INSTALL_DEST_PROD"),
+            "10_2",
+        ).as_posix(),
+        "REPOSITORY_INSTALL_DEST_TEST_10_2": pathlib.PurePath(
+            env_base.get("REPOSITORY_INSTALL_DEST_TEST"),
+            # "10_2",
+            "MyTest_10_2"
+        ).as_posix(),
     }
     # @formatter:on
 
@@ -742,61 +763,61 @@ def nfs(
     )
 
 
-@asset(
-    group_name="Environment",
-    compute_kind="python",
-    ins={
-        "nfs": AssetIn(),
-    },
-)
-def repository_dirs(
-        context: AssetExecutionContext,
-        nfs: dict,
-) -> dict:
-    # @formatter:off
-    _env: dict = {
-        "DEADLINE_REPO_DICTS": {
-            "10_2": {
-                "INSTALLER": None,
-                "PROD": {
-                    "INSTALL_DEST_REPOSITORY": pathlib.PurePath(
-                        nfs.get("NFS_ENTRY_POINT"),
-                        "deadline_repository_10_prod",
-                        "DeadlineRepository10"
-                    ).as_posix(),
-                },
-                # "TEST": {
-                #     "INSTALL_DEST_REPOSITORY": pathlib.PurePath(
-                #         nfs.get("NFS_ENTRY_POINT"),
-                #         "deadline_repository_10_test",
-                #         "DeadlineRepository10"
-                #     ).as_posix(),
-                # },
-                "TEST": {
-                    "INSTALL_DEST_REPOSITORY": pathlib.PurePath(
-                        nfs.get("NFS_ENTRY_POINT"),
-                        "test_data",
-                        "opt",
-                        "Thinkbox",
-                        "DeadlineRepository10",
-                    ).as_posix(),
-                },
-            },
-        },
-    }
-    # @formatter:on
-
-    _env.update(nfs)
-
-    yield Output(_env)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            context.asset_key.path[0]: MetadataValue.json(_env),
-
-        },
-    )
+# @asset(
+#     group_name="Environment",
+#     compute_kind="python",
+#     ins={
+#         "nfs": AssetIn(),
+#     },
+# )
+# def repository_dirs(
+#         context: AssetExecutionContext,
+#         nfs: dict,
+# ) -> dict:
+#     # @formatter:off
+#     _env: dict = {
+#         "DEADLINE_REPO_DICTS": {
+#             "10_2": {
+#                 "INSTALLER": None,
+#                 "PROD": {
+#                     "INSTALL_DEST_REPOSITORY": pathlib.PurePath(
+#                         nfs.get("NFS_ENTRY_POINT"),
+#                         "deadline_repository_10_prod",
+#                         "DeadlineRepository10"
+#                     ).as_posix(),
+#                 },
+#                 # "TEST": {
+#                 #     "INSTALL_DEST_REPOSITORY": pathlib.PurePath(
+#                 #         nfs.get("NFS_ENTRY_POINT"),
+#                 #         "deadline_repository_10_test",
+#                 #         "DeadlineRepository10"
+#                 #     ).as_posix(),
+#                 # },
+#                 "TEST": {
+#                     "INSTALL_DEST_REPOSITORY": pathlib.PurePath(
+#                         nfs.get("NFS_ENTRY_POINT"),
+#                         "test_data",
+#                         "opt",
+#                         "Thinkbox",
+#                         "DeadlineRepository10",
+#                     ).as_posix(),
+#                 },
+#             },
+#         },
+#     }
+#     # @formatter:on
+#
+#     _env.update(nfs)
+#
+#     yield Output(_env)
+#
+#     yield AssetMaterialization(
+#         asset_key=context.asset_key,
+#         metadata={
+#             context.asset_key.path[0]: MetadataValue.json(_env),
+#
+#         },
+#     )
 
 
 # BUILD_REPOSITORY_IMAGE_10_2 = False
@@ -818,8 +839,9 @@ def build_repository_image_10_2(
     """
 
     docker_file = pathlib.Path(
-        "~/git/repos/deadline-docker/10.2/base_images/base_image/base_image_10_2/repo_installer/Dockerfile",
+        f"~/git/repos/deadline-docker/10.2/.docker/Dockerfiles/{context.asset_key.path[0]}/Dockerfile"
     ).expanduser()
+
     tags = [
         f"{env_10_2.get('IMAGE_PREFIX')}/{context.asset_key.path[0]}:latest",
         f"{env_10_2.get('IMAGE_PREFIX')}/{context.asset_key.path[0]}:{str(time.time())}",
@@ -835,20 +857,22 @@ def build_repository_image_10_2(
         
         WORKDIR /installers
         
-        RUN deadline-wrapper-10-2  \
+        # ENTRYPOINT ["deadline-wrapper-10-2", "-vv", "install-repository"]
+        
+        # CMD ["--help"]
+        
+        ENTRYPOINT deadline-wrapper-10-2  \
             -vv  \
             install-repository  \
             --installer /installers/DeadlineRepository.run  \
             --deadline-version {DEADLINE_VERSION}  \
-            --prefix "/opt/Thinkbox/DeadlineRepository10"  \
+            --prefix {REPOSITORY_INSTALL_DEST_TEST_10_2}  \
             --dbtype "MongoDB"  \
             --dbhost {MONGO_DB_HOST}  \
             --dbport {MONGO_DB_PORT_HOST}  \
             --dbname {MONGO_DB_NAME}
         
-        WORKDIR /opt/Thinkbox
-        
-        ENTRYPOINT []
+        CMD []
     """).format(
         auto_generated=f"AUTO-GENERATED by Dagster Asset {context.asset_key.path[0]}",
         image_name=context.asset_key.path[0],
