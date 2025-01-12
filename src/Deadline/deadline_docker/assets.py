@@ -939,10 +939,6 @@ def compose_repository_10_2(
                 "domainname": env_10_2.get("ROOT_DOMAIN"),
                 "restart": "no",
                 "image": build_repository_image_10_2,
-                # "networks": [
-                #     "repository",
-                #     "mongodb",
-                # ],
                 "command": [
                     "--installer", "/installers/DeadlineRepository.run",
                     "--deadline-version", env_10_2.get("DEADLINE_VERSION"),
@@ -955,8 +951,6 @@ def compose_repository_10_2(
                 "volumes": [
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT')}",
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT_LNS')}",
-                    # Redirect to host installation for now:
-                    # f"{env_10_2.get('NFS_REPOSITORY')}:/opt/Thinkbox/DeadlineRepository10",
                     f"{connection_ini_10_2.as_posix()}:/opt/Thinkbox/DeadlineRepository10/settings/connection.ini:ro",
                 ],
             },
