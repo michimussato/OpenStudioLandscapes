@@ -824,7 +824,7 @@ def nfs(
 # BUILD_REPOSITORY_IMAGE_10_2 = False
 # if BUILD_REPOSITORY_IMAGE_10_2:
 @asset(
-    group_name="Repository_Installer",
+    group_name="Repository_Installer_10_2",
     compute_kind="python",
     ins={
         "env_10_2": AssetIn(),
@@ -912,7 +912,7 @@ def build_repository_image_10_2(
 
 
 @asset(
-    group_name="Repository_Installer",
+    group_name="Repository_Installer_10_2",
     compute_kind="python",
     ins={
         "env_10_2": AssetIn(),
