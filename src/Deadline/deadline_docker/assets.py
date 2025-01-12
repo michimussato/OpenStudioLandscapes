@@ -178,11 +178,13 @@ def secrets(
     compute_kind="python",
     ins={
         "secrets": AssetIn(),
+        "repository_dirs": AssetIn(),
     },
 )
 def env_base(
         context: AssetExecutionContext,
         secrets: dict,
+        repository_dirs: dict,
 ) -> dict:
     # @formatter:off
     _env: dict = {
@@ -259,11 +261,13 @@ def env_base(
         # "DEADLINE_CLIENT_DEADLINE_INI": pathlib.Path("~/git/repos/deadline-docker/10.2/configs/Deadline10/deadline.ini").expanduser().as_posix(),
 
         # # TEST
-        "LN_NFS": "/nfs",
-        "NFS_ENTRY_POINT": "/data/share/nfs",
-        "NFS_ENTRY_POINT_LNS": "/nfs",
-        "INSTALLERS_ROOT": "/data/share/nfs/installers",
+        # "LN_NFS": "/nfs",
+        # "NFS_ENTRY_POINT": "/data/share/nfs",
+        # "NFS_ENTRY_POINT_LNS": "/nfs",
+        # "INSTALLERS_ROOT": "/data/share/nfs/installers",
+        # TODO: relocate
         "NFS_REPOSITORY": "/data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10",
+        # TODO: relocate
         "NFS_DEADLINE": "/data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10",
         "MONGO_DB_DIR": pathlib.Path("~/git/repos/deadline-docker/tests/fixtures/10.2/DeadlineDatabase10/mongo/data").expanduser().as_posix(),
         "DEADLINE_CLIENT_DEADLINE_INI": pathlib.Path("~/git/repos/deadline-docker/10.2/configs/Deadline10/deadline.ini").expanduser().as_posix(),
@@ -279,6 +283,7 @@ def env_base(
     }
 
     _env.update(secrets)
+    _env.update(repository_dirs)
     # @formatter:on
 
     yield Output(_env)
@@ -648,11 +653,11 @@ def build_base_image_10_2(
         
         WORKDIR /installers
         
-        RUN wget -O AWSPortalLink.run "https://www.googleapis.com/drive/v3/files/{GOOGLE_ID_AWSPortalLink_10_2}?alt=media&key={GOOGLE_API_KEY}"
+        RUN wget -O AWSPortalLink.run "https://www.googleapis.com/drive/v3/files/{GOOGLE_ID_AWSPortalLink_10_2}?alt=media&key={SECRET_GOOGLE_API_KEY}"
         RUN chmod a+x AWSPortalLink.run
-        RUN wget -O DeadlineClient.run "https://www.googleapis.com/drive/v3/files/{GOOGLE_ID_DeadlineClient_10_2}?alt=media&key={GOOGLE_API_KEY}"
+        RUN wget -O DeadlineClient.run "https://www.googleapis.com/drive/v3/files/{GOOGLE_ID_DeadlineClient_10_2}?alt=media&key={SECRET_GOOGLE_API_KEY}"
         RUN chmod a+x DeadlineClient.run
-        RUN wget -O DeadlineRepository.run "https://www.googleapis.com/drive/v3/files/{GOOGLE_ID_DeadlineRepository_10_2}?alt=media&key={GOOGLE_API_KEY}"
+        RUN wget -O DeadlineRepository.run "https://www.googleapis.com/drive/v3/files/{GOOGLE_ID_DeadlineRepository_10_2}?alt=media&key={SECRET_GOOGLE_API_KEY}"
         RUN chmod a+x DeadlineRepository.run
         
         # RUN thinkbox-ssl-gen --help
@@ -710,164 +715,248 @@ def build_base_image_10_2(
     )
 
 
-BUILD_REPOSITORY_IMAGE_10_2 = False
-if BUILD_REPOSITORY_IMAGE_10_2:
-    @asset(
-        group_name="Build_Images_10_2",
-        compute_kind="python",
-        ins={
-            "env_10_2": AssetIn(),
-            "build_base_image_10_2": AssetIn(),
+@asset(
+    group_name="Environment",
+    compute_kind="python",
+)
+def nfs(
+        context: AssetExecutionContext,
+) -> dict[str, str]:
+    # @formatter:off
+    _env: dict = {
+        "LN_NFS": pathlib.Path("/nfs").as_posix(),
+        "NFS_ENTRY_POINT": pathlib.Path("/data/share/nfs").as_posix(),
+        "NFS_ENTRY_POINT_LNS": pathlib.Path("/nfs").as_posix(),
+        "INSTALLERS_ROOT": pathlib.Path("/data/share/nfs/installers").as_posix(),
+    }
+    # @formatter:on
+
+    yield Output(_env)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            context.asset_key.path[0]: MetadataValue.json(_env),
+
         },
     )
-    def build_repository_image_10_2(
-            context: AssetExecutionContext,
-            env_10_2: dict,
-            build_base_image_10_2: str,
-    ) -> str:
-        """
-        """
-
-        docker_file = pathlib.Path(
-            "~/git/repos/deadline-docker/10.2/base_images/base_image/base_image_10_2/repo_installer/Dockerfile",
-        ).expanduser()
-        tags = [
-            f"{env_10_2.get('IMAGE_PREFIX')}/{context.asset_key.path[0]}:latest",
-            f"{env_10_2.get('IMAGE_PREFIX')}/{context.asset_key.path[0]}:{str(time.time())}",
-        ]
-
-        # @formatter:off
-        docker_file_str = textwrap.dedent("""
-            # {auto_generated}
-            FROM {parent_image} AS {image_name}
-            LABEL authors="{AUTHOR}"
-            
-            SHELL ["/bin/bash", "-c"]
-            
-            WORKDIR /installers
-            
-            RUN deadline-wrapper-10-2  \
-                -vv  \
-                install-repository  \
-                --installer /installers/DeadlineRepository.run  \
-                --deadline-version {DEADLINE_VERSION}  \
-                --prefix "/opt/Thinkbox/DeadlineRepository10"  \
-                --dbtype "MongoDB"  \
-                --dbhost {MONGO_DB_HOST}  \
-                --dbport {MONGO_DB_PORT_HOST}  \
-                --dbname {MONGO_DB_NAME}
-            
-            WORKDIR /opt/Thinkbox
-            
-            ENTRYPOINT []
-        """).format(
-            auto_generated=f"AUTO-GENERATED by Dagster Asset {context.asset_key.path[0]}",
-            image_name=context.asset_key.path[0],
-            parent_image=build_base_image_10_2,
-            **env_10_2,
-        )
-        # @formatter:on
-
-        shutil.rmtree(docker_file.parent, ignore_errors=True)
-
-        docker_file.parent.mkdir(parents=True, exist_ok=True)
-
-        with open(docker_file, "w") as fw:
-            fw.write(docker_file_str)
-
-        with open(docker_file, "r") as fr:
-            docker_file_content = fr.read()
-
-        stream = docker.build(
-            context_path=docker_file.parent.as_posix(),
-            cache=USE_CACHE,
-            tags=tags,
-            stream_logs=True,
-        )
-
-        log: str = ""
-
-        for msg in stream:
-            context.log.debug(msg)
-            log += msg
-
-        cmds_docker = compile_cmds(
-            docker_file=docker_file,
-            tag=tags[1],
-        )
-
-        yield Output(tags[1])
-
-        yield AssetMaterialization(
-            asset_key=context.asset_key,
-            metadata={
-                context.asset_key.path[0]: MetadataValue.path(tags[1]),
-                "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
-                **cmds_docker,
-                "build_logs": MetadataValue.md(f"```shell\n{log}\n```"),
-                "env_10_2": MetadataValue.json(env_10_2),
-            },
-        )
 
 
-    @asset(
-        group_name="Docker_Compose_10_2",
-        compute_kind="python",
-        ins={
-            "env_10_2": AssetIn(),
-            "build_repository_image_10_2": AssetIn(),
-            "connection_ini_10_2": AssetIn(),
-        },
-    )
-    def compose_repository_10_2(
-            context: AssetExecutionContext,
-            env_10_2: dict,
-            build_repository_image_10_2: str,
-            connection_ini_10_2: pathlib.Path,
-    ) -> dict:
-        """
-        """
-
-        docker_dict = {
-            "services": {
-                "repository-10-2": {
-                    "container_name": "repository-10-2",
-                    "hostname": "repository-10-2",
-                    "domainname": env_10_2.get("ROOT_DOMAIN"),
-                    "restart": "always",
-                    "image": build_repository_image_10_2,
-                    "networks": [
-                        "repository",
-                        "mongodb",
-                    ],
-                    "command": [
-                        "tail",
-                        "-F",
-                        "anything",
-                    ],
-                    "volumes": [
-                        f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT')}",
-                        f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT_LNS')}",
-                        # Redirect to host installation for now:
-                        f"{env_10_2.get('NFS_REPOSITORY')}:/opt/Thinkbox/DeadlineRepository10",
-                        f"{connection_ini_10_2.as_posix()}:/opt/Thinkbox/DeadlineRepository10/settings/connection.ini:ro",
-                    ],
+@asset(
+    group_name="Environment",
+    compute_kind="python",
+    ins={
+        "nfs": AssetIn(),
+    },
+)
+def repository_dirs(
+        context: AssetExecutionContext,
+        nfs: dict,
+) -> dict:
+    # @formatter:off
+    _env: dict = {
+        "DEADLINE_REPO_DICTS": {
+            "10_2": {
+                "INSTALLER": None,
+                "PROD": {
+                    "INSTALL_DEST_REPOSITORY": pathlib.PurePath(
+                        nfs.get("NFS_ENTRY_POINT"),
+                        "deadline_repository_10_prod",
+                        "DeadlineRepository10"
+                    ).as_posix(),
+                },
+                # "TEST": {
+                #     "INSTALL_DEST_REPOSITORY": pathlib.PurePath(
+                #         nfs.get("NFS_ENTRY_POINT"),
+                #         "deadline_repository_10_test",
+                #         "DeadlineRepository10"
+                #     ).as_posix(),
+                # },
+                "TEST": {
+                    "INSTALL_DEST_REPOSITORY": pathlib.PurePath(
+                        nfs.get("NFS_ENTRY_POINT"),
+                        "test_data",
+                        "opt",
+                        "Thinkbox",
+                        "DeadlineRepository10",
+                    ).as_posix(),
                 },
             },
-        }
+        },
+    }
+    # @formatter:on
 
-        docker_yaml = yaml.dump(docker_dict)
+    _env.update(nfs)
 
-        yield Output(docker_dict)
+    yield Output(_env)
 
-        yield AssetMaterialization(
-            asset_key=context.asset_key,
-            metadata={
-                context.asset_key.path[0]: MetadataValue.json(docker_dict),
-                "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
-                "env_10_2": MetadataValue.json(env_10_2),
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            context.asset_key.path[0]: MetadataValue.json(_env),
+
+        },
+    )
+
+
+# BUILD_REPOSITORY_IMAGE_10_2 = False
+# if BUILD_REPOSITORY_IMAGE_10_2:
+@asset(
+    group_name="Repository_Installer",
+    compute_kind="python",
+    ins={
+        "env_10_2": AssetIn(),
+        "build_base_image_10_2": AssetIn(),
+    },
+)
+def build_repository_image_10_2(
+        context: AssetExecutionContext,
+        env_10_2: dict,
+        build_base_image_10_2: str,
+) -> str:
+    """
+    """
+
+    docker_file = pathlib.Path(
+        "~/git/repos/deadline-docker/10.2/base_images/base_image/base_image_10_2/repo_installer/Dockerfile",
+    ).expanduser()
+    tags = [
+        f"{env_10_2.get('IMAGE_PREFIX')}/{context.asset_key.path[0]}:latest",
+        f"{env_10_2.get('IMAGE_PREFIX')}/{context.asset_key.path[0]}:{str(time.time())}",
+    ]
+
+    # @formatter:off
+    docker_file_str = textwrap.dedent("""
+        # {auto_generated}
+        FROM {parent_image} AS {image_name}
+        LABEL authors="{AUTHOR}"
+        
+        SHELL ["/bin/bash", "-c"]
+        
+        WORKDIR /installers
+        
+        RUN deadline-wrapper-10-2  \
+            -vv  \
+            install-repository  \
+            --installer /installers/DeadlineRepository.run  \
+            --deadline-version {DEADLINE_VERSION}  \
+            --prefix "/opt/Thinkbox/DeadlineRepository10"  \
+            --dbtype "MongoDB"  \
+            --dbhost {MONGO_DB_HOST}  \
+            --dbport {MONGO_DB_PORT_HOST}  \
+            --dbname {MONGO_DB_NAME}
+        
+        WORKDIR /opt/Thinkbox
+        
+        ENTRYPOINT []
+    """).format(
+        auto_generated=f"AUTO-GENERATED by Dagster Asset {context.asset_key.path[0]}",
+        image_name=context.asset_key.path[0],
+        parent_image=build_base_image_10_2,
+        **env_10_2,
+    )
+    # @formatter:on
+
+    shutil.rmtree(docker_file.parent, ignore_errors=True)
+
+    docker_file.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(docker_file, "w") as fw:
+        fw.write(docker_file_str)
+
+    with open(docker_file, "r") as fr:
+        docker_file_content = fr.read()
+
+    stream = docker.build(
+        context_path=docker_file.parent.as_posix(),
+        cache=USE_CACHE,
+        tags=tags,
+        stream_logs=True,
+    )
+
+    log: str = ""
+
+    for msg in stream:
+        context.log.debug(msg)
+        log += msg
+
+    cmds_docker = compile_cmds(
+        docker_file=docker_file,
+        tag=tags[1],
+    )
+
+    yield Output(tags[1])
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            context.asset_key.path[0]: MetadataValue.path(tags[1]),
+            "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
+            **cmds_docker,
+            "build_logs": MetadataValue.md(f"```shell\n{log}\n```"),
+            "env_10_2": MetadataValue.json(env_10_2),
+        },
+    )
+
+
+@asset(
+    group_name="Repository_Installer",
+    compute_kind="python",
+    ins={
+        "env_10_2": AssetIn(),
+        "build_repository_image_10_2": AssetIn(),
+        "connection_ini_10_2": AssetIn(),
+    },
+)
+def compose_repository_10_2(
+        context: AssetExecutionContext,
+        env_10_2: dict,
+        build_repository_image_10_2: str,
+        connection_ini_10_2: pathlib.Path,
+) -> dict:
+    """
+    """
+
+    docker_dict = {
+        "services": {
+            "repository-10-2": {
+                "container_name": "repository-10-2",
+                "hostname": "repository-10-2",
+                "domainname": env_10_2.get("ROOT_DOMAIN"),
+                "restart": "always",
+                "image": build_repository_image_10_2,
+                "networks": [
+                    "repository",
+                    "mongodb",
+                ],
+                "command": [
+                    "tail",
+                    "-F",
+                    "anything",
+                ],
+                "volumes": [
+                    f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT')}",
+                    f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT_LNS')}",
+                    # Redirect to host installation for now:
+                    f"{env_10_2.get('NFS_REPOSITORY')}:/opt/Thinkbox/DeadlineRepository10",
+                    f"{connection_ini_10_2.as_posix()}:/opt/Thinkbox/DeadlineRepository10/settings/connection.ini:ro",
+                ],
             },
-        )
+        },
+    }
+
+    docker_yaml = yaml.dump(docker_dict)
+
+    yield Output(docker_dict)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            context.asset_key.path[0]: MetadataValue.json(docker_dict),
+            "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
+            "env_10_2": MetadataValue.json(env_10_2),
+        },
+    )
 
 
 @asset(
