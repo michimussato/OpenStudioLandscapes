@@ -338,10 +338,19 @@ def env_10_2(
         "GOOGLE_ID_DeadlineClient_10_2": "1cGxCPkrJ1ujWqie2yXTrOpShkEgSXR0F",
         "GOOGLE_ID_DeadlineRepository_10_2": "1VZhCcxvCAc4oozLAKRCv_zwQLMuVdMRz",
 
+        # This is temporary:
         "REPOSITORY_INSTALL_DESTINATION_10_2": pathlib.PurePath(
-            env_base.get("REPOSITORY_INSTALL_DESTINATION"),
-            "10_2",
+            env_base.get("NFS_ENTRY_POINT"),
+            "test_data",
+            "10.2",
+            "opt",
+            "Thinkbox",
+            "DeadlineRepository10",
         ).as_posix(),
+        # "REPOSITORY_INSTALL_DESTINATION_10_2": pathlib.PurePath(
+        #     env_base.get("REPOSITORY_INSTALL_DESTINATION"),
+        #     "10_2",
+        # ).as_posix(),
     }
     # @formatter:on
 
