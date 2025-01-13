@@ -268,10 +268,6 @@ def env_base(
         # "NFS_ENTRY_POINT": "/data/share/nfs",
         # "NFS_ENTRY_POINT_LNS": "/nfs",
         # "INSTALLERS_ROOT": "/data/share/nfs/installers",
-        # TODO: relocate
-        "NFS_REPOSITORY": "/data/share/nfs/test_data/10.2/opt/Thinkbox/DeadlineRepository10",
-        # TODO: relocate
-        "NFS_DEADLINE": "/data/share/nfs/test_data/10.2/opt/Thinkbox/Deadline10",
         "MONGO_DB_DIR": pathlib.Path("~/git/repos/deadline-docker/tests/fixtures/10.2/DeadlineDatabase10/mongo/data").expanduser().as_posix(),
         "DEADLINE_CLIENT_DEADLINE_INI": pathlib.Path("~/git/repos/deadline-docker/10.2/configs/Deadline10/deadline.ini").expanduser().as_posix(),
         "DEADLINE_REPOSITORY_CONNECTION_INI": pathlib.Path("~/git/repos/deadline-docker/10.2/configs/DeadlineRepository10/settings/connection.ini").expanduser().as_posix(),
@@ -299,7 +295,13 @@ def env_base(
     env_json.parent.mkdir(parents=True, exist_ok=True)
 
     with open(env_json, "w") as fw:
-        json.dump(_env.copy(), fw, indent=2, ensure_ascii=True)
+        json.dump(
+            obj=_env.copy(),
+            fp=fw,
+            indent=2,
+            ensure_ascii=True,
+            sort_keys=True,
+        )
 
     yield Output(_env)
 
@@ -356,7 +358,13 @@ def env_10_2(
     env_json.parent.mkdir(parents=True, exist_ok=True)
 
     with open(env_json, "w") as fw:
-        json.dump(env_base.copy(), fw, indent=2, ensure_ascii=True)
+        json.dump(
+            obj=env_base.copy(),
+            fp=fw,
+            indent=2,
+            ensure_ascii=True,
+            sort_keys=True,
+        )
 
     yield Output(env_base)
 
@@ -805,7 +813,6 @@ def nfs(
         asset_key=context.asset_key,
         metadata={
             context.asset_key.path[-1]: MetadataValue.json(_env),
-
         },
     )
 
@@ -1278,7 +1285,7 @@ def build_generic_runner_image_10_2(
         volumes=[
             f"{env_10_2.get('DEADLINE_CLIENT_DEADLINE_INI')}:/var/lib/Thinkbox/Deadline10/deadline.ini:ro",
             f"{env_10_2.get('DEADLINE_REPOSITORY_CONNECTION_INI')}:/opt/Thinkbox/DeadlineRepository10/settings/connection.ini:ro",
-            f"{env_10_2.get('NFS_REPOSITORY')}:/opt/Thinkbox/DeadlineRepository10",
+            f"{env_10_2.get('REPOSITORY_INSTALL_DESTINATION_10_2')}:/opt/Thinkbox/DeadlineRepository10",
             f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT')}",
             f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT_LNS')}",
         ],
@@ -2235,7 +2242,7 @@ def compose_rcs_runner_10_2(
                 "volumes": [
                     f"{deadline_ini_10_2.as_posix()}:/var/lib/Thinkbox/Deadline10/deadline.ini:ro",
                     f"{connection_ini_10_2.as_posix()}:/opt/Thinkbox/DeadlineRepository10/settings/connection.ini:ro",
-                    f"{env_10_2.get('NFS_REPOSITORY')}:/opt/Thinkbox/DeadlineRepository10",
+                    f"{env_10_2.get('REPOSITORY_INSTALL_DESTINATION_10_2')}:/opt/Thinkbox/DeadlineRepository10",
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT')}",
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT_LNS')}",
                 ],
@@ -2326,7 +2333,7 @@ def compose_pulse_runner_10_2(
                 "volumes": [
                     f"{deadline_ini_10_2.as_posix()}:/var/lib/Thinkbox/Deadline10/deadline.ini:ro",
                     f"{connection_ini_10_2.as_posix()}:/opt/Thinkbox/DeadlineRepository10/settings/connection.ini:ro",
-                    f"{env_10_2.get('NFS_REPOSITORY')}:/opt/Thinkbox/DeadlineRepository10",
+                    f"{env_10_2.get('REPOSITORY_INSTALL_DESTINATION_10_2')}:/opt/Thinkbox/DeadlineRepository10",
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT')}",
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT_LNS')}",
                 ],
@@ -2414,7 +2421,7 @@ def compose_worker_runner_10_2(
                 "volumes": [
                     f"{deadline_ini_10_2.as_posix()}:/var/lib/Thinkbox/Deadline10/deadline.ini:ro",
                     f"{connection_ini_10_2.as_posix()}:/opt/Thinkbox/DeadlineRepository10/settings/connection.ini:ro",
-                    f"{env_10_2.get('NFS_REPOSITORY')}:/opt/Thinkbox/DeadlineRepository10",
+                    f"{env_10_2.get('REPOSITORY_INSTALL_DESTINATION_10_2')}:/opt/Thinkbox/DeadlineRepository10",
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT')}",
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT_LNS')}",
                 ],
@@ -2500,7 +2507,7 @@ def compose_webservice_runner_10_2(
                 "volumes": [
                     f"{deadline_ini_10_2.as_posix()}:/var/lib/Thinkbox/Deadline10/deadline.ini:ro",
                     f"{connection_ini_10_2.as_posix()}:/opt/Thinkbox/DeadlineRepository10/settings/connection.ini:ro",
-                    f"{env_10_2.get('NFS_REPOSITORY')}:/opt/Thinkbox/DeadlineRepository10",
+                    f"{env_10_2.get('REPOSITORY_INSTALL_DESTINATION_10_2')}:/opt/Thinkbox/DeadlineRepository10",
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT')}",
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT_LNS')}",
                 ],
