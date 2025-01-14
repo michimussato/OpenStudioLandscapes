@@ -204,8 +204,8 @@ def env_base(
 
         "FILEBROWSER_PORT_HOST": "8080",
         "FILEBROWSER_PORT_CONTAINER": "80",
-        "FILEBROWSER_DB": pathlib.Path("~/git/repos/deadline-docker/10.2/databases/filebrowser/filebrowser.db").expanduser().as_posix(),
-        "FILEBROWSER_JSON": pathlib.Path("~/git/repos/deadline-docker/10.2/configs/filebrowser/filebrowser.json").expanduser().as_posix(),
+        "FILEBROWSER_DB": pathlib.Path("~/git/repos/deadline-docker/databases/filebrowser/db/filebrowser.db").expanduser().as_posix(),
+        "FILEBROWSER_JSON": pathlib.Path("~/git/repos/deadline-docker/configs/filebrowser/json/filebrowser.json").expanduser().as_posix(),
 
         "DAGSTER_DEV_PORT_HOST": "3003",
         "DAGSTER_DEV_PORT_CONTAINER": "3006",
@@ -242,7 +242,7 @@ def env_base(
 
         "KITSU_PORT_HOST": "4545",
         "KITSU_PORT_CONTAINER": "80",
-        "KITSU_POSTGRESQL_CONF": pathlib.Path("~/git/repos/deadline-docker/10.2/configs/kitsu/postgres/postgresql.conf").expanduser().as_posix(),
+        "KITSU_POSTGRESQL_CONF": pathlib.Path("~/git/repos/deadline-docker/configs/kitsu/postgres/postgresql.conf").expanduser().as_posix(),
         # #"SECRETS_USERNAME": "SecretsAdmin",
         # #"SECRETS_PASSWORD": "%ecretsPassw0rd!",
         "ROOT_DOMAIN": "farm.evil",
@@ -261,7 +261,6 @@ def env_base(
         # "NFS_REPOSITORY": "{0[NFS_ENTRY_POINT]}/prod/DeadlineRepository10",
         # "NFS_DEADLINE": "{0[NFS_ENTRY_POINT]}/prod/Deadline10",
         # "MONGO_DB_DIR": pathlib.Path("~/git/repos/deadline-docker/tests/fixtures/10.2/DeadlineDatabase10/mongo/data").expanduser().as_posix(),
-        # "DEADLINE_CLIENT_DEADLINE_INI": pathlib.Path("~/git/repos/deadline-docker/10.2/configs/Deadline10/deadline.ini").expanduser().as_posix(),
 
         # # TEST
         # "LN_NFS": "/nfs",
@@ -269,8 +268,6 @@ def env_base(
         # "NFS_ENTRY_POINT_LNS": "/nfs",
         # "INSTALLERS_ROOT": "/data/share/nfs/installers",
         "MONGO_DB_DIR": pathlib.Path("~/git/repos/deadline-docker/tests/fixtures/10.2/DeadlineDatabase10/mongo/data").expanduser().as_posix(),
-        "DEADLINE_CLIENT_DEADLINE_INI": pathlib.Path("~/git/repos/deadline-docker/10.2/configs/Deadline10/deadline.ini").expanduser().as_posix(),
-        "DEADLINE_REPOSITORY_CONNECTION_INI": pathlib.Path("~/git/repos/deadline-docker/10.2/configs/DeadlineRepository10/settings/connection.ini").expanduser().as_posix(),
 
         # # TODO
         # # DEADLINE_CLIENT_DIR: "/opt/Thinkbox/Deadline10"
@@ -333,6 +330,27 @@ def env_10_2(
         "DEADLINE_VERSION": "10.2.1.1",
 
         "MONGO_DB_HOST": "mongodb-10-2",
+
+        "DEADLINE_CLIENT_DEADLINE_INI_10_2": pathlib.Path(
+            DOT_DOCKER_ROOT,
+            "generations",
+            env_base.get("TIMESTAMP", "default"),
+            context.asset_key.path[0],
+            "configs",
+            "Deadline10",
+            "deadline.ini",
+        ).expanduser().as_posix(),
+
+        "DEADLINE_REPOSITORY_CONNECTION_INI_10_2": pathlib.Path(
+            DOT_DOCKER_ROOT,
+            "generations",
+            env_base.get("TIMESTAMP", "default"),
+            context.asset_key.path[0],
+            "configs",
+            "DeadlineRepository10",
+            "settings",
+            "connection.ini",
+        ).expanduser().as_posix(),
 
         "GOOGLE_ID_AWSPortalLink_10_2": "1VOQa6OyYUZj_7VILcD6EVl7YOfYVlCrU",
         "GOOGLE_ID_DeadlineClient_10_2": "1cGxCPkrJ1ujWqie2yXTrOpShkEgSXR0F",
@@ -430,17 +448,19 @@ def connection_ini_10_2(
     )
     # @formatter:on
 
-    with open(env_10_2.get("DEADLINE_REPOSITORY_CONNECTION_INI"), "w") as fw:
+    deadline_connection_ini = pathlib.Path(env_10_2.get("DEADLINE_REPOSITORY_CONNECTION_INI_10_2"))
+
+    deadline_connection_ini.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(deadline_connection_ini, "w") as fw:
         fw.write(connection_ini)
 
-    ret = pathlib.Path(env_10_2.get("DEADLINE_REPOSITORY_CONNECTION_INI"))
-
-    yield Output(ret)
+    yield Output(deadline_connection_ini)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            context.asset_key.path[-1]: MetadataValue.path(ret),
+            context.asset_key.path[-1]: MetadataValue.path(deadline_connection_ini),
             "connection_ini": MetadataValue.md(f"```\n{connection_ini}\n```"),
             "env_10_2": MetadataValue.json(env_10_2),
         },
@@ -523,17 +543,19 @@ def deadline_ini_10_2(
     )
     # @formatter:on
 
-    with open(env_10_2.get("DEADLINE_CLIENT_DEADLINE_INI"), "w") as fw:
+    deadline_client_ini = pathlib.Path(env_10_2.get("DEADLINE_CLIENT_DEADLINE_INI_10_2"))
+
+    deadline_client_ini.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(deadline_client_ini, "w") as fw:
         fw.write(deadline_ini)
 
-    ret = pathlib.Path(env_10_2.get("DEADLINE_CLIENT_DEADLINE_INI"))
-
-    yield Output(ret)
+    yield Output(deadline_client_ini)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            context.asset_key.path[-1]: MetadataValue.path(ret),
+            context.asset_key.path[-1]: MetadataValue.path(deadline_client_ini),
             "connection_ini": MetadataValue.md(f"```\n{deadline_ini}\n```"),
             "env_10_2": MetadataValue.json(env_10_2),
         },
@@ -1292,8 +1314,8 @@ def build_generic_runner_image_10_2(
         docker_file=docker_file,
         tag=tags[1],
         volumes=[
-            f"{env_10_2.get('DEADLINE_CLIENT_DEADLINE_INI')}:/var/lib/Thinkbox/Deadline10/deadline.ini:ro",
-            f"{env_10_2.get('DEADLINE_REPOSITORY_CONNECTION_INI')}:/opt/Thinkbox/DeadlineRepository10/settings/connection.ini:ro",
+            f"{env_10_2.get('DEADLINE_CLIENT_DEADLINE_INI_10_2')}:/var/lib/Thinkbox/Deadline10/deadline.ini:ro",
+            f"{env_10_2.get('DEADLINE_REPOSITORY_CONNECTION_INI_10_2')}:/opt/Thinkbox/DeadlineRepository10/settings/connection.ini:ro",
             f"{env_10_2.get('REPOSITORY_INSTALL_DESTINATION_10_2')}:/opt/Thinkbox/DeadlineRepository10",
             f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT')}",
             f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT_LNS')}",
@@ -1387,13 +1409,13 @@ def build_dagster(
 
     # workspace.yaml
     shutil.copy(
-        src=pathlib.Path("~/git/repos/deadline-docker/10.2/configs/dagster/config/workspace.yaml").expanduser(),
+        src=pathlib.Path("~/git/repos/deadline-docker/configs/dagster/config/workspace.yaml").expanduser(),
         dst=payload,
     )
 
     # dagster.yaml
     shutil.copy(
-        src=pathlib.Path("~/git/repos/deadline-docker/10.2/configs/dagster/config/materializations/dagster.yaml").expanduser(),
+        src=pathlib.Path("~/git/repos/deadline-docker/configs/dagster/config/materializations/dagster.yaml").expanduser(),
         dst=payload,
     )
 
@@ -1600,13 +1622,13 @@ def build_likec4(
 
     # setup.sh
     shutil.copy(
-        src=pathlib.Path("~/git/repos/deadline-docker/10.2/configs/likec4/entrypoint/setup.sh").expanduser(),
+        src=pathlib.Path("~/git/repos/deadline-docker/configs/likec4/entrypoint/setup.sh").expanduser(),
         dst=payload,
     )
 
     # run.sh
     shutil.copy(
-        src=pathlib.Path("~/git/repos/deadline-docker/10.2/configs/likec4/entrypoint/run.sh").expanduser(),
+        src=pathlib.Path("~/git/repos/deadline-docker/configs/likec4/entrypoint/run.sh").expanduser(),
         dst=payload,
     )
 
@@ -1981,7 +2003,7 @@ def compose_ayon_override(
     """
 
     parent = pathlib.Path(env_base.get("AYON_DOCKER_COMPOSE"))
-    override = pathlib.Path("~/git/repos/deadline-docker/repos/ayon-docker/docker-compose.override.yml").expanduser()
+    # override = pathlib.Path("~/git/repos/deadline-docker/repos/ayon-docker/docker-compose.override.yml").expanduser()
 
     docker_dict = {
         "services": {
@@ -2052,7 +2074,8 @@ def compose_ayon_override(
     ret = {
         "path": [
             parent.as_posix(),
-            override.as_posix(),
+            # override.as_posix(),
+            docker_compose_override.as_posix(),
         ],
     }
 
