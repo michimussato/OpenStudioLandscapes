@@ -21,7 +21,8 @@ from dagster import (
     AssetIn,
 )
 
-USE_CACHE = False
+DOCKER_USE_CACHE = False
+MONGODB_INSIDE_CONTAINER = False
 DOT_DOCKER_ROOT = pathlib.Path("~/git/repos/deadline-docker/.docker").expanduser()
 
 
@@ -79,7 +80,7 @@ def compile_cmds(
 
     cmd_docker_run = f"docker run {_volumes} {_networks} --rm --interactive --tty --entrypoint bash {tag}"
     cmd_docker_build = (
-        f"docker build --tag {tag} {docker_file.parent.as_posix()} {'--no-cache' if USE_CACHE else ''}"
+        f"docker build --tag {tag} {docker_file.parent.as_posix()} {'--no-cache' if DOCKER_USE_CACHE else ''}"
     )
 
     metadata_values = {
@@ -185,7 +186,7 @@ def env_base(
 ) -> dict:
     # @formatter:off
     _env: dict = {
-        "TIMESTAMP": str(time.time()),
+        "GENERATION": str(time.time()),
         "REPOSITORY_INSTALL_DESTINATION": pathlib.PurePath(
             nfs.get("NFS_ENTRY_POINT"),
             "deadline_repository_prod",
@@ -204,7 +205,7 @@ def env_base(
 
         "FILEBROWSER_PORT_HOST": "8080",
         "FILEBROWSER_PORT_CONTAINER": "80",
-        "FILEBROWSER_DB": pathlib.Path("~/git/repos/deadline-docker/databases/filebrowser/db/filebrowser.db").expanduser().as_posix(),
+        "FILEBROWSER_DB": pathlib.Path("~/git/repos/deadline-docker/configs/filebrowser/db/filebrowser.db").expanduser().as_posix(),
         "FILEBROWSER_JSON": pathlib.Path("~/git/repos/deadline-docker/configs/filebrowser/json/filebrowser.json").expanduser().as_posix(),
 
         "DAGSTER_DEV_PORT_HOST": "3003",
@@ -222,6 +223,20 @@ def env_base(
 
         "MONGO_DB_PORT_HOST": "21017",
         "MONGO_DB_PORT_CONTAINER": "21017",
+        # MongoDB
+        # "MONGODB_INITDB_ROOT_USERNAME": "",
+        # "MONGO_INITDB_ROOT_USERNAME": "",
+        # "MONGODB_INITDB_ROOT_PASSWORD": "",
+        # "MONGO_INITDB_ROOT_PASSWORD": "",
+        # "MONGODB_INITDB_DATABASE": "",
+        # "MONGO_INITDB_DATABASE": "",
+        # "INITDB_HOST": "127.0.0.1",
+        # "INITDB_PORT": "27017",
+        "MONGO_ENTRY_POINT_SCRIPT": pathlib.Path("~/git/repos/deadline-docker/configs/mongodb/4_4/docker-entrypoint.py").expanduser().as_posix(),
+        "DEFAULT_DBPATH_CONTAINER": "/data/db",
+        # "DEFAULT_DBPATH_CONTAINER": "/opt/Thinkbox/DeadlineDatabase10/mongo/data",
+        "DEFAULT_CONFIG_DBPATH": "/data/configdb",
+
         # "MONGO_PORT": "${MONGO_DB_PORT_CONTAINER}",
         # https://docs.docker.com/compose/how-tos/environment-variables/set-environment-variables/#additional
         # -information-1
@@ -260,14 +275,16 @@ def env_base(
         # "INSTALLERS_ROOT": "{0[NFS_ENTRY_POINT]}/installers",
         # "NFS_REPOSITORY": "{0[NFS_ENTRY_POINT]}/prod/DeadlineRepository10",
         # "NFS_DEADLINE": "{0[NFS_ENTRY_POINT]}/prod/Deadline10",
-        # "MONGO_DB_DIR": pathlib.Path("~/git/repos/deadline-docker/tests/fixtures/10.2/DeadlineDatabase10/mongo/data").expanduser().as_posix(),
+        # "MONGO_DB_DIR_HOST": pathlib.Path("~/git/repos/deadline-docker/tests/fixtures/10.2/DeadlineDatabase10/mongo/data").expanduser().as_posix(),
 
         # # TEST
         # "LN_NFS": "/nfs",
         # "NFS_ENTRY_POINT": "/data/share/nfs",
         # "NFS_ENTRY_POINT_LNS": "/nfs",
         # "INSTALLERS_ROOT": "/data/share/nfs/installers",
-        "MONGO_DB_DIR": pathlib.Path("~/git/repos/deadline-docker/tests/fixtures/10.2/DeadlineDatabase10/mongo/data").expanduser().as_posix(),
+
+        # "MONGO_DB_DIR_HOST": pathlib.Path("~/git/repos/deadline-docker/tests/fixtures/10.2/DeadlineDatabase10/mongo/data").expanduser().as_posix(),
+        # "MONGO_DB_DIR_HOST": pathlib.Path("~/git/repos/deadline-docker/tests/fixtures/10_2/DeadlineDatabase10").expanduser().as_posix(),
 
         # # TODO
         # # DEADLINE_CLIENT_DIR: "/opt/Thinkbox/Deadline10"
@@ -285,7 +302,7 @@ def env_base(
     env_json = pathlib.Path(
         DOT_DOCKER_ROOT,
         "generations",
-        _env.get("TIMESTAMP", "default"),
+        _env.get("GENERATION", "default"),
         f"{context.asset_key.path[-1]}.json",
     )
 
@@ -331,20 +348,20 @@ def env_10_2(
 
         "MONGO_DB_HOST": "mongodb-10-2",
 
-        "DEADLINE_CLIENT_DEADLINE_INI_10_2": pathlib.Path(
+        f"DEADLINE_CLIENT_DEADLINE_INI_{context.asset_key.path[0]}": pathlib.Path(
             DOT_DOCKER_ROOT,
             "generations",
-            env_base.get("TIMESTAMP", "default"),
+            env_base.get("GENERATION", "default"),
             context.asset_key.path[0],
             "configs",
             "Deadline10",
             "deadline.ini",
         ).expanduser().as_posix(),
 
-        "DEADLINE_REPOSITORY_CONNECTION_INI_10_2": pathlib.Path(
+        f"DEADLINE_REPOSITORY_CONNECTION_INI_{context.asset_key.path[0]}": pathlib.Path(
             DOT_DOCKER_ROOT,
             "generations",
-            env_base.get("TIMESTAMP", "default"),
+            env_base.get("GENERATION", "default"),
             context.asset_key.path[0],
             "configs",
             "DeadlineRepository10",
@@ -352,14 +369,14 @@ def env_10_2(
             "connection.ini",
         ).expanduser().as_posix(),
 
-        "GOOGLE_ID_AWSPortalLink_10_2": "1VOQa6OyYUZj_7VILcD6EVl7YOfYVlCrU",
-        "GOOGLE_ID_DeadlineClient_10_2": "1cGxCPkrJ1ujWqie2yXTrOpShkEgSXR0F",
-        "GOOGLE_ID_DeadlineRepository_10_2": "1VZhCcxvCAc4oozLAKRCv_zwQLMuVdMRz",
+        f"GOOGLE_ID_AWSPortalLink_{context.asset_key.path[0]}": "1VOQa6OyYUZj_7VILcD6EVl7YOfYVlCrU",
+        f"GOOGLE_ID_DeadlineClient_{context.asset_key.path[0]}": "1cGxCPkrJ1ujWqie2yXTrOpShkEgSXR0F",
+        f"GOOGLE_ID_DeadlineRepository_{context.asset_key.path[0]}": "1VZhCcxvCAc4oozLAKRCv_zwQLMuVdMRz",
 
         # This is temporary:
-        "REPOSITORY_INSTALL_DESTINATION_10_2": pathlib.PurePath(
+        f"REPOSITORY_INSTALL_DESTINATION_{context.asset_key.path[0]}": pathlib.PurePath(
             env_base.get("NFS_ENTRY_POINT"),
-            "test_data",
+            "test_data2",
             "10.2",
             "opt",
             "Thinkbox",
@@ -369,6 +386,18 @@ def env_10_2(
         #     env_base.get("REPOSITORY_INSTALL_DESTINATION"),
         #     "10_2",
         # ).as_posix(),
+
+        # aka DeadlineDatabase10
+        f"DATABASE_INSTALL_DESTINATION_{context.asset_key.path[0]}": pathlib.Path(
+        # f"MONGO_DB_DIR_HOST_{context.asset_key.path[0]}": pathlib.Path(
+                DOT_DOCKER_ROOT,
+                "generations",
+                env_base.get("GENERATION", "default"),
+                context.asset_key.path[0],
+                "opt",
+                "Thinkbox",
+                "DeadlineDatabase10",
+            ).as_posix(),
     }
     # @formatter:on
 
@@ -377,7 +406,7 @@ def env_10_2(
     env_json = pathlib.Path(
         DOT_DOCKER_ROOT,
         "generations",
-        env_base.get("TIMESTAMP", "default"),
+        env_base.get("GENERATION", "default"),
         context.asset_key.path[0],
         f"{context.asset_key.path[-1]}.json",
     )
@@ -579,7 +608,7 @@ def build_base_image(
     docker_file = pathlib.Path(
         DOT_DOCKER_ROOT,
         "generations",
-        env_base.get("TIMESTAMP", "default"),
+        env_base.get("GENERATION", "default"),
         "Dockerfiles",
         context.asset_key.path[0],
         "Dockerfile",
@@ -676,7 +705,7 @@ def build_base_image(
 
     stream = docker.build(
         context_path=docker_file.parent.as_posix(),
-        cache=USE_CACHE,
+        cache=DOCKER_USE_CACHE,
         tags=tags,
         stream_logs=True,
     )
@@ -733,7 +762,7 @@ def build_base_image_10_2(
     docker_file = pathlib.Path(
         DOT_DOCKER_ROOT,
         "generations",
-        env_10_2.get("TIMESTAMP"),
+        env_10_2.get("GENERATION"),
         context.asset_key.path[0],
         "Dockerfiles",
         context.asset_key.path[-1],
@@ -793,7 +822,7 @@ def build_base_image_10_2(
 
     stream = docker.build(
         context_path=docker_file.parent.as_posix(),
-        cache=USE_CACHE,
+        cache=DOCKER_USE_CACHE,
         tags=tags,
         stream_logs=True,
     )
@@ -935,7 +964,7 @@ def build_repository_image_10_2(
     docker_file = pathlib.Path(
         DOT_DOCKER_ROOT,
         "generations",
-        env_10_2.get("TIMESTAMP", "default"),
+        env_10_2.get("GENERATION", "default"),
         context.asset_key.path[0],
         "Dockerfiles",
         context.asset_key.path[-1],
@@ -980,7 +1009,7 @@ def build_repository_image_10_2(
 
     stream = docker.build(
         context_path=docker_file.parent.as_posix(),
-        cache=USE_CACHE,
+        cache=DOCKER_USE_CACHE,
         tags=tags,
         stream_logs=True,
     )
@@ -1097,7 +1126,7 @@ def compose_repository_10_2(
     docker_compose = pathlib.Path(
         DOT_DOCKER_ROOT,
         "generations",
-        env_10_2.get("TIMESTAMP", "default"),
+        env_10_2.get("GENERATION", "default"),
         context.asset_key.path[0],
         "docker_compose",
         context.asset_key.path[-1],
@@ -1162,7 +1191,7 @@ def build_client_image_10_2(
     docker_file = pathlib.Path(
         DOT_DOCKER_ROOT,
         "generations",
-        env_10_2.get("TIMESTAMP", "default"),
+        env_10_2.get("GENERATION", "default"),
         context.asset_key.path[0],
         "Dockerfiles",
         context.asset_key.path[-1],
@@ -1217,7 +1246,7 @@ def build_client_image_10_2(
 
     stream = docker.build(
         context_path=docker_file.parent.as_posix(),
-        cache=USE_CACHE,
+        cache=DOCKER_USE_CACHE,
         tags=tags,
         stream_logs=True,
     )
@@ -1277,7 +1306,7 @@ def build_generic_runner_image_10_2(
     docker_file = pathlib.Path(
         DOT_DOCKER_ROOT,
         "generations",
-        env_10_2.get("TIMESTAMP", "default"),
+        env_10_2.get("GENERATION", "default"),
         context.asset_key.path[0],
         "Dockerfiles",
         context.asset_key.path[-1],
@@ -1320,7 +1349,7 @@ def build_generic_runner_image_10_2(
 
     stream = docker.build(
         context_path=docker_file.parent.as_posix(),
-        cache=USE_CACHE,
+        cache=DOCKER_USE_CACHE,
         tags=tags,
         stream_logs=True,
     )
@@ -1381,7 +1410,7 @@ def build_dagster(
     docker_file = pathlib.Path(
         DOT_DOCKER_ROOT,
         "generations",
-        env_base.get("TIMESTAMP", "default"),
+        env_base.get("GENERATION", "default"),
         "Dockerfiles",
         context.asset_key.path[-1],
         "Dockerfile",
@@ -1445,7 +1474,7 @@ def build_dagster(
 
     stream = docker.build(
         context_path=docker_file.parent.as_posix(),
-        cache=USE_CACHE,
+        cache=DOCKER_USE_CACHE,
         tags=tags,
         stream_logs=True,
     )
@@ -1492,7 +1521,7 @@ def build_kitsu(
     docker_file = pathlib.Path(
         DOT_DOCKER_ROOT,
         "generations",
-        env_base.get("TIMESTAMP", "default"),
+        env_base.get("GENERATION", "default"),
         "Dockerfiles",
         context.asset_key.path[-1],
         "Dockerfile",
@@ -1535,7 +1564,7 @@ def build_kitsu(
 
     stream = docker.build(
         context_path=docker_file.parent.as_posix(),
-        cache=USE_CACHE,
+        cache=DOCKER_USE_CACHE,
         tags=tags,
         stream_logs=True,
     )
@@ -1584,7 +1613,7 @@ def build_likec4(
     docker_file = pathlib.Path(
         DOT_DOCKER_ROOT,
         "generations",
-        env_base.get("TIMESTAMP", "default"),
+        env_base.get("GENERATION", "default"),
         "Dockerfiles",
         context.asset_key.path[-1],
         "Dockerfile",
@@ -1658,7 +1687,7 @@ def build_likec4(
 
     stream = docker.build(
         context_path=docker_file.parent.as_posix(),
-        cache=USE_CACHE,
+        cache=DOCKER_USE_CACHE,
         tags=tags,
         stream_logs=True,
     )
@@ -1853,6 +1882,23 @@ def compose_filebrowser_10_2(
         context: AssetExecutionContext,
         env_10_2: dict,
 ) -> dict:
+
+    volumes = [
+        f"{env_10_2.get('FILEBROWSER_DB')}:/filebrowser.db",
+        f"{env_10_2.get('FILEBROWSER_JSON')}:/.filebrowser.json",
+        f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT')}:ro",
+        f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT_LNS')}:ro",
+    ]
+
+    if MONGODB_INSIDE_CONTAINER:
+        mongo_db_dir_host = pathlib.Path(env_10_2.get(f"DATABASE_INSTALL_DESTINATION_{context.asset_key.path[0]}"))
+        mongo_db_dir_host.mkdir(parents=True, exist_ok=True)
+
+        volumes.insert(
+            2,
+            f"{mongo_db_dir_host.as_posix()}:{env_10_2.get('DEFAULT_DBPATH_CONTAINER')}:ro",
+        )
+
     docker_dict = {
         "services": {
             "filebrowser": {
@@ -1867,13 +1913,7 @@ def compose_filebrowser_10_2(
                 "ports": [
                     f"{env_10_2.get('FILEBROWSER_PORT_HOST')}:{env_10_2.get('FILEBROWSER_PORT_CONTAINER')}",
                 ],
-                "volumes": [
-                    f"{env_10_2.get('FILEBROWSER_DB')}:/filebrowser.db",
-                    f"{env_10_2.get('FILEBROWSER_JSON')}:/.filebrowser.json",
-                    f"{env_10_2.get('MONGO_DB_DIR')}:/opt/Thinkbox/DeadlineDatabase10/mongo/data:ro",
-                    f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT')}:ro",
-                    f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT_LNS')}:ro",
-                ],
+                "volumes": volumes,
             },
         },
     }
@@ -1911,17 +1951,60 @@ def compose_mongodb_10_2(
         context: AssetExecutionContext,
         env_10_2: dict,
 ) -> dict:
+
+    image = "mongodb/mongodb-community-server:4.4-ubuntu2004"
+
+    """
+$ python3 /usr/local/bin/docker-entrypoint.py --help
+usage: docker-entrypoint.py [-h] [--config CONFIG] [--tlsCertificateKeyFile TLSCERTIFICATEKEYFILE] [--dbpath DBPATH] [--configsvr] [--bind_ip BIND_IP] [--bind_ip_all] [EXECUTABLE]
+
+positional arguments:
+  EXECUTABLE            The name of the executable to run in the Docker container. Defaults to 'mongod' if none provided.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --config CONFIG, -f CONFIG
+  --tlsCertificateKeyFile TLSCERTIFICATEKEYFILE
+  --dbpath DBPATH
+  --configsvr
+  --bind_ip BIND_IP
+  --bind_ip_all
+    """
+
+    cmd_docker_run = f"docker run --rm --interactive --tty {image} /bin/bash"
+
+    volumes = [
+        # f"{env_10_2.get('MONGO_ENTRY_POINT_SCRIPT')}:/usr/local/bin/docker-entrypoint.py:ro",
+        f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT')}:ro",
+        f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT_LNS')}:ro",
+    ]
+
+    if MONGODB_INSIDE_CONTAINER:
+        mongo_db_dir_host = pathlib.Path(env_10_2.get(f"DATABASE_INSTALL_DESTINATION_{context.asset_key.path[0]}"))
+        mongo_db_dir_host.mkdir(parents=True, exist_ok=True)
+
+        volumes.insert(
+            0,
+            f"{mongo_db_dir_host.as_posix()}:{env_10_2.get('DEFAULT_DBPATH_CONTAINER')}",
+        )
+
     docker_dict = {
         "services": {
             "mongodb-10-2": {
-                "image": "mongodb/mongodb-community-server:4.4-ubuntu2004",
+                "image": image,
                 "container_name": "mongodb-10-2",
                 "hostname": "mongodb-10-2",
                 "domainname": env_10_2.get("ROOT_DOMAIN"),
                 "restart": "always",
+                # "environment": {
+                #     "INITDB_PORT": env_10_2.get("MONGO_DB_PORT_CONTAINER"),
+                #     # "INITDB_HOST": env_10_2.get("INITDB_HOST")
+                #     "DEFAULT_DBPATH": env_10_2.get("DEFAULT_DBPATH_CONTAINER"),
+                #     # "DEFAULT_CONFIG_DBPATH": env_10_2.get("DEFAULT_CONFIG_DBPATH"),
+                # },
                 "command": [
                     "--port", env_10_2.get("MONGO_DB_PORT_CONTAINER"),
-                    "--dbpath", "/opt/Thinkbox/DeadlineDatabase10/mongo/data",
+                    "--dbpath", f"{env_10_2.get('DEFAULT_DBPATH_CONTAINER')}",
                     "--bind_ip_all",
                     "--noauth",
                     "--storageEngine", "wiredTiger",
@@ -1934,11 +2017,7 @@ def compose_mongodb_10_2(
                 "ports": [
                     f"{env_10_2.get('MONGO_DB_PORT_HOST')}:{env_10_2.get('MONGO_DB_PORT_CONTAINER')}",
                 ],
-                "volumes": [
-                    f"{env_10_2.get('MONGO_DB_DIR')}:/opt/Thinkbox/DeadlineDatabase10/mongo/data",
-                    f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT')}:ro",
-                    f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT_LNS')}:ro",
-                ],
+                "volumes": volumes,
             },
         },
     }
@@ -1953,6 +2032,7 @@ def compose_mongodb_10_2(
             context.asset_key.path[-1]: MetadataValue.json(docker_dict),
             "docker_dict": MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
             "docker_yaml": MetadataValue.md(f"```shell\n{docker_yaml}\n```"),
+            "cmd_docker_run": MetadataValue.path(cmd_docker_run),
             "env_10_2": MetadataValue.json(env_10_2),
         },
     )
@@ -2070,7 +2150,7 @@ def compose_ayon_override(
     docker_compose_override = pathlib.Path(
         DOT_DOCKER_ROOT,
         "generations",
-        env_base.get("TIMESTAMP", "default"),
+        env_base.get("GENERATION", "default"),
         "docker_compose",
         context.asset_key.path[-1],
         "docker-compose.override.yml",
@@ -2678,7 +2758,7 @@ def compose_10_2(
     docker_compose = pathlib.Path(
         DOT_DOCKER_ROOT,
         "generations",
-        env_10_2.get("TIMESTAMP", "default"),
+        env_10_2.get("GENERATION", "default"),
         context.asset_key.path[0],
         "docker_compose",
         context.asset_key.path[-1],
