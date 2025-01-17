@@ -1019,12 +1019,21 @@ def build_repository_image_10_2(
                 "10_2",
             ],
         ),
+        "compose_networks_10_2": AssetIn(key_prefix=[
+                "10_2",
+            ],
+        ),
         "build_repository_image_10_2": AssetIn(
             key_prefix=[
                 "10_2",
             ],
         ),
         "connection_ini_10_2": AssetIn(
+            key_prefix=[
+                "10_2",
+            ],
+        ),
+        "compose_mongodb_10_2": AssetIn(
             key_prefix=[
                 "10_2",
             ],
@@ -1039,9 +1048,11 @@ def build_repository_image_10_2(
 def compose_repository_10_2(
         context: AssetExecutionContext,
         env_10_2: dict,
+        compose_networks_10_2: dict,
         build_repository_image_10_2: str,
         connection_ini_10_2: pathlib.Path,
-) -> dict:
+        compose_mongodb_10_2: dict,
+) -> pathlib.Path:
     """
     """
 
@@ -1051,6 +1062,8 @@ def compose_repository_10_2(
                 "container_name": "repository-10-2",
                 "hostname": "repository-10-2",
                 "domainname": env_10_2.get("ROOT_DOMAIN"),
+                "networks": list(compose_networks_10_2.get("networks", {}).keys()),
+                "depends_on": list(compose_mongodb_10_2.get("services", {}).keys()),
                 "restart": "no",
                 "image": build_repository_image_10_2,
                 "command": [
@@ -1071,7 +1084,15 @@ def compose_repository_10_2(
         },
     }
 
-    docker_yaml = yaml.dump(docker_dict)
+    docker_chainmap = ChainMap(
+        compose_networks_10_2,
+        compose_mongodb_10_2,
+        docker_dict,
+    )
+
+    docker_chainmap_dict = reduce(deep_merge, docker_chainmap.maps)
+
+    docker_yaml = yaml.dump(docker_chainmap_dict)
 
     docker_compose = pathlib.Path(
         DOT_DOCKER_ROOT,
@@ -1098,7 +1119,7 @@ def compose_repository_10_2(
         "--remove-orphans",
     ]
 
-    yield Output(docker_dict)
+    yield Output(docker_compose)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
@@ -2737,6 +2758,67 @@ def viz_compose_10_2(
     dcg.iterate_trees(trees)
 
     docker_compose_dir = compose_10_2.parent / context.asset_key.path[-1]
+
+    docker_compose_dir.mkdir(parents=True, exist_ok=True)
+
+    dcg.graph.write(
+        path=docker_compose_dir / f"{context.asset_key.path[-1]}.png",
+        format="png",
+    )
+
+    dcg.graph.write(
+        path=docker_compose_dir / f"{context.asset_key.path[-1]}.dot",
+        format="dot",
+    )
+
+    # self.graph.write(
+    #     path=pathlib.Path(__file__).parent.parent.parent / "tests" / "fixtures" / "out" / "main_graph.dot",
+    #     format="dot",
+    # )
+
+    yield Output(dcg.graph)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            context.asset_key.path[-1]: MetadataValue.json(str(dcg.graph)),
+            "dot": MetadataValue.path(docker_compose_dir / f"{context.asset_key.path[-1]}.dot"),
+            "png": MetadataValue.path(docker_compose_dir / f"{context.asset_key.path[-1]}.png"),
+        },
+    )
+
+
+@asset(
+    group_name="Viz",
+    compute_kind="python",
+    key_prefix=[
+        "10_2",
+    ],
+    ins={
+        "compose_repository_10_2": AssetIn(
+            key_prefix=[
+                "10_2",
+            ],
+        ),
+    },
+)
+def viz_compose_repository_10_2(
+        context: AssetExecutionContext,
+        compose_repository_10_2: pathlib.Path,
+) -> pydot.Dot:
+    """
+    """
+
+    dcg = DockerComposeGraph()
+    trees = dcg.parse_docker_compose(
+        pathlib.Path(compose_repository_10_2)
+    )
+
+    context.log.info(trees)
+
+    dcg.iterate_trees(trees)
+
+    docker_compose_dir = compose_repository_10_2.parent / context.asset_key.path[-1]
 
     docker_compose_dir.mkdir(parents=True, exist_ok=True)
 
