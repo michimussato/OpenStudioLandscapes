@@ -1,5 +1,6 @@
-# $ cat /usr/local/bin/docker-entrypoint.py
 """Entrypoint script for starting a mongod Docker container."""
+# Modified version of /usr/local/bin/docker-entrypoint.py
+# michimussato@gmail.com
 import argparse
 import os
 import platform
@@ -184,8 +185,8 @@ def requires_initialization() -> bool:
 
 INITDB_CONFIG_FILEPATH = "/tmp/docker-entrypoint-temp-config.json"
 INITDB_LOG_FILEPATH = "docker-initdb.log"
-INITDB_HOST = "127.0.0.1"
-INITDB_PORT = "27017"
+INITDB_HOST = os.environ.get("INITDB_HOST", "127.0.0.1")
+INITDB_PORT = os.environ.get("INITDB_PORT", "27017")
 
 
 def get_init_db_command_line() -> List[str]:
@@ -324,8 +325,8 @@ def _init_database() -> None:
 
 ####################### FUNCTIONS THAT AFFECT STATE (SETUP & CLEANUP) #############################
 
-DEFAULT_DBPATH = "/data/db"
-DEFAULT_CONFIG_DBPATH = "/data/configdb"
+DEFAULT_DBPATH = os.environ.get("DEFAULT_DBPATH", "/data/db")
+DEFAULT_CONFIG_DBPATH = os.environ.get("DEFAULT_CONFIG_DBPATH", "/data/configdb")
 
 
 def _set_environment_variable_from_file(environment_var: str) -> None:
