@@ -1883,6 +1883,8 @@ def compose_filebrowser_10_2(
         env_10_2: dict,
 ) -> dict:
 
+    image = "filebrowser/filebrowser"
+
     volumes = [
         f"{env_10_2.get('FILEBROWSER_DB')}:/filebrowser.db",
         f"{env_10_2.get('FILEBROWSER_JSON')}:/.filebrowser.json",
@@ -1890,19 +1892,10 @@ def compose_filebrowser_10_2(
         f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT_LNS')}:ro",
     ]
 
-    if MONGODB_INSIDE_CONTAINER:
-        mongo_db_dir_host = pathlib.Path(env_10_2.get(f"DATABASE_INSTALL_DESTINATION_{context.asset_key.path[0]}"))
-        mongo_db_dir_host.mkdir(parents=True, exist_ok=True)
-
-        volumes.insert(
-            2,
-            f"{mongo_db_dir_host.as_posix()}:{env_10_2.get('DEFAULT_DBPATH_CONTAINER')}:ro",
-        )
-
     docker_dict = {
         "services": {
             "filebrowser": {
-                "image": "filebrowser/filebrowser",
+                "image": image,
                 "container_name": "filebrowser-10-2",
                 "hostname": "filebrowser-10-2",
                 "domainname": env_10_2.get("ROOT_DOMAIN"),
@@ -1954,23 +1947,6 @@ def compose_mongodb_10_2(
 
     image = "mongodb/mongodb-community-server:4.4-ubuntu2004"
 
-    """
-$ python3 /usr/local/bin/docker-entrypoint.py --help
-usage: docker-entrypoint.py [-h] [--config CONFIG] [--tlsCertificateKeyFile TLSCERTIFICATEKEYFILE] [--dbpath DBPATH] [--configsvr] [--bind_ip BIND_IP] [--bind_ip_all] [EXECUTABLE]
-
-positional arguments:
-  EXECUTABLE            The name of the executable to run in the Docker container. Defaults to 'mongod' if none provided.
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --config CONFIG, -f CONFIG
-  --tlsCertificateKeyFile TLSCERTIFICATEKEYFILE
-  --dbpath DBPATH
-  --configsvr
-  --bind_ip BIND_IP
-  --bind_ip_all
-    """
-
     cmd_docker_run = f"docker run --rm --interactive --tty {image} /bin/bash"
 
     volumes = [
@@ -1979,9 +1955,20 @@ optional arguments:
         f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT_LNS')}:ro",
     ]
 
-    if MONGODB_INSIDE_CONTAINER:
+    if not MONGODB_INSIDE_CONTAINER:
         mongo_db_dir_host = pathlib.Path(env_10_2.get(f"DATABASE_INSTALL_DESTINATION_{context.asset_key.path[0]}"))
         mongo_db_dir_host.mkdir(parents=True, exist_ok=True)
+        # Todo:
+        #  This would work
+        #  sudo chown 101:65534 DeadlineDatabase10
+        #  Concept: /usr/bin/sshpass -p \"pi\" /usr/bin/ssh sudo systemctl restart pimo.service
+        # mongo_uid = 101
+        # mongo_gid = 65534
+        # shutil.chown(
+        #     path=mongo_db_dir_host,
+        #     user=mongo_uid,
+        #     group=mongo_gid,
+        # )
 
         volumes.insert(
             0,
