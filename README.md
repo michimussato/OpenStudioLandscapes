@@ -5,7 +5,7 @@
   * [Limitations](#limitations)
   * [Integrated Tools](#integrated-tools)
   * [Dagster Lineage](#dagster-lineage)
-  * [Dynamic Documentation with `docker-graph`](#dynamic-documentation-with-docker-graph)
+  * [Docker Compose Graph](#docker-compose-graph)
     * [Deadline 10.2](#deadline-102)
     * [Repository-Installer 10.2](#repository-installer-102)
   * [Install](#install)
@@ -75,13 +75,19 @@ a proof of concept.
 
 ![Global_Asset_Lineage.svg](docs/img/Global_Asset_Lineage.svg)
 
-## Dynamic Documentation with `docker-graph`
+## Docker Compose Graph
+
+Dynamic Documentation with `docker-graph`.
 
 ### Deadline 10.2
+
+`.docker/generations/1737214595.1053066/10_2/docker_compose/compose_10_2/docker-compose.yml`
 
 ![viz_compose_10_2.png](docs/img/viz_compose_10_2.png)
 
 ### Repository-Installer 10.2
+
+`.docker/generations/1737214595.1053066/10_2/docker_compose/compose_repository_10_2/docker-compose.yml`
 
 ![viz_compose_repository_10_2.png](docs/img/viz_compose_repository_10_2.png)
 
