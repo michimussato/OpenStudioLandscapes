@@ -106,9 +106,9 @@ sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plug
 sudo docker run hello-world
 ```
 
-## Run
+## Create Generation
 
-### Dagster
+### Launch Dagster
 
 ```shell
 cd ~/git/repos/deadline-docker
@@ -118,3 +118,81 @@ dagster dev --workspace "$(pwd)/dagster/workspace.yaml" --host 0.0.0.0 --port 30
 ```
 
 http://0.0.0.0:3000
+
+-> Materialize All
+
+## Resulting Files and Directories ("Generation")
+
+```shell
+$ tree deadline-docker/.docker/generations/1737208678.732601/
+deadline-docker/.docker/generations/1737208678.732601/
+├── 10_2
+│   ├── configs
+│   │   ├── Deadline10
+│   │   │   └── deadline.ini
+│   │   └── DeadlineRepository10
+│   │       └── settings
+│   │           └── connection.ini
+│   ├── docker_compose
+│   │   ├── compose_10_2
+│   │   │   ├── docker-compose.yml
+│   │   │   └── viz_compose_10_2
+│   │   │       ├── viz_compose_10_2.dot
+│   │   │       └── viz_compose_10_2.png
+│   │   └── compose_repository_10_2
+│   │       ├── docker-compose.yml
+│   │       └── viz_compose_repository_10_2
+│   │           ├── viz_compose_repository_10_2.dot
+│   │           └── viz_compose_repository_10_2.png
+│   ├── Dockerfiles
+│   │   ├── build_base_image_10_2
+│   │   │   └── Dockerfile
+│   │   ├── build_client_image_10_2
+│   │   │   └── Dockerfile
+│   │   ├── build_generic_runner_image_10_2
+│   │   │   └── Dockerfile
+│   │   └── build_repository_image_10_2
+│   │       └── Dockerfile
+│   ├── env_10_2.json
+│   └── opt
+│       └── Thinkbox
+│           └── DeadlineDatabase10
+├── docker_compose
+│   └── compose_ayon_override
+│       └── docker-compose.override.yml
+├── Dockerfiles
+│   ├── build_base_image
+│   │   └── Dockerfile
+│   ├── build_dagster
+│   │   ├── Dockerfile
+│   │   └── payload
+│   │       ├── dagster.yaml
+│   │       └── workspace.yaml
+│   ├── build_kitsu
+│   │   └── Dockerfile
+│   └── build_likec4
+│       ├── Dockerfile
+│       └── payload
+│           ├── run.sh
+│           └── setup.sh
+└── env_base.json
+```
+
+## Run Repository Installer
+
+Copy/Paste command, execute and wait for it to finish:
+
+![installer_compose_up.png](docs/img/installer_compose_up.png)
+
+## Run Deadline Farm
+
+Together with:
+- Kitsu
+- Ayon
+- Dagster
+- LikeC4
+- ...
+
+Copy/Paste command and execute:
+
+![farm_compose_up.png](docs/img/farm_compose_up.png)
