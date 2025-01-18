@@ -77,7 +77,7 @@ a proof of concept.
 
 ## Docker Compose Graph
 
-Dynamic Documentation with `docker-graph`.
+Dynamic documentation with `docker-graph`.
 
 ### Deadline 10.2
 
