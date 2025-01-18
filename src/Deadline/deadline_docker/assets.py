@@ -374,6 +374,7 @@ def env_10_2(
             ).as_posix(),
 
         # This is where DeadlineDatabase10 will get installed to:
+        # (provided MONGODB_INSIDE_CONTAINER is set to False)
         f"DATABASE_INSTALL_DESTINATION_{context.asset_key.path[0]}": pathlib.Path(
                 DOT_DOCKER_ROOT,
                 "generations",
