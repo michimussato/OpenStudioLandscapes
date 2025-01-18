@@ -29,9 +29,9 @@
 
 |
 
-===================
-My-Skeleton-Package
-===================
+===============
+Deadline Docker
+===============
 
 
     Add a short description here!

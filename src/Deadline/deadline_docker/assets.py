@@ -2817,7 +2817,7 @@ def compose_10_2(
         shutil.which("docker"),
         "compose",
         "--file",
-        docker_compose,
+        docker_compose.as_posix(),
         "--project-name",
         context.asset_key.path[-1],
         "down",

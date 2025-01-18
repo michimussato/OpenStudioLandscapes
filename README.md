@@ -1,62 +1,86 @@
-
+<!-- TOC -->
+* [deadline-docker](#deadline-docker)
+  * [Tested on](#tested-on)
+  * [Requirements](#requirements)
+  * [Integrated Tools](#integrated-tools)
+  * [Dagster Lineage](#dagster-lineage)
+  * [docker-graph (Visualizer)](#docker-graph-visualizer)
+    * [Deadline 10.2](#deadline-102)
+    * [Repository-Installer 10.2](#repository-installer-102)
+  * [Install](#install)
+    * [deadline-docker](#deadline-docker-1)
+    * [Docker](#docker)
+      * [Verify Docker Installation](#verify-docker-installation)
+  * [Run](#run)
+    * [Dagster](#dagster)
+<!-- TOC -->
 
 ---
 
 # deadline-docker
 
-```
-(type -p wget >/dev/null || (sudo apt update && sudo apt-get install wget -y)) \
-	&& sudo mkdir -p -m 755 /etc/apt/keyrings \
-        && out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
-        && cat $out | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
-	&& sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
-	&& echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-	&& sudo apt update \
-	&& sudo apt install gh -y
+A toolset to easily set up a Deadline Render Farm environment.
+Easily create test setups for debugging, migration, DB restore etc.
+
+## Tested on
+
+- Manjaro
+
+## Requirements
+
+- `graphviz`
+- `sshpass`
+- `docker`
+- `docker compose`
+- `git`
+- `python` (3.9 through 3.12)
+
+## Integrated Tools
+
+- [Dagster](https://dagster.io/)
+- [LikeC4](https://likec4.dev/)
+- [Kitsu](https://kitsu.cg-wire.com/)
+- [Ayon](https://ayon.ynput.io/)
+- Deadline
+  - [Version 10.2](https://docs.thinkboxsoftware.com/products/deadline/10.2/1_User%20Manual/index.html)
+- [docker-graph](https://github.com/michimussato/docker-graph)
+
+## Dagster Lineage
+
+![Global_Asset_Lineage.svg](docs/img/Global_Asset_Lineage.svg)
+
+## docker-graph (Visualizer)
+
+### Deadline 10.2
+
+![viz_compose_10_2.png](docs/img/viz_compose_10_2.png)
+
+### Repository-Installer 10.2
+
+![viz_compose_repository_10_2.png](docs/img/viz_compose_repository_10_2.png)
+
+## Install
+
+### deadline-docker
+
+```shell
+git clone https://github.com/michimussato/deadline-docker.git
+cd deadline-docker
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip setuptools
+pip install -e .[dev]
 ```
 
-```
-gh auth login
-```
-
-```
-gh repo clone michimussato/deadline-docker
-gh repo clone michimussato/git-crypt-keys
-```
-
-```
-apt-get install -y git-crypt
-cd /root/git/repos/deadline-docker
-git-crypt unlock /root/git/repos/git-crypt-keys/deadline-docker.key
-```
-
-### Build Images
-
-```
-cd deadline-docker/10.2
-./docker-build.sh
-```
-
-## 10.2
-
-```
-docker compose --project-name ddld_deadline-docker --file 10.2/docker-compose.yaml build --no-cache
-docker compose --project-name ddld_deadline-docker --file 10.2/docker-compose.yaml up --remove-orphans --build
-```
-
-```
-docker compose --file 10.2/docker-compose.yaml down
-```
-
-## Install Docker
+### Docker
 
 https://docs.docker.com/engine/install/ubuntu/
 
-```
+```shell
 for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-doc
 ```
 
-```
+```shell
 # Add Docker's official GPG key:
 sudo apt-get update
 sudo apt-get install -y ca-certificates curl
@@ -72,23 +96,25 @@ echo \
 sudo apt-get update
 ```
 
-```
+```shell
 sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
 
-### Test
+#### Verify Docker Installation
 
-```
+```shell
 sudo docker run hello-world
 ```
 
+## Run
 
-
-# Dagster
+### Dagster
 
 ```shell
 cd ~/git/repos/deadline-docker
 source .venv/bin/activate
 export DAGSTER_HOME="$(pwd)/dagster/materializations"
-dagster dev --workspace "$(pwd)/dagster/workspace.yaml" --host 0.0.0.0 --port 3000 
+dagster dev --workspace "$(pwd)/dagster/workspace.yaml" --host 0.0.0.0 --port 3000
 ```
+
+http://0.0.0.0:3000
