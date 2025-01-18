@@ -6,6 +6,7 @@ import pathlib
 import time
 import yaml
 import pydot
+import subprocess
 from collections import ChainMap
 from functools import reduce
 
@@ -1146,6 +1147,21 @@ def compose_repository_10_2(
         context.asset_key.path[-1],
         "up",
         "--remove-orphans",
+        "--abort-on-container-exit",
+    ]
+
+    with open(docker_compose, "w") as fw:
+        fw.write(docker_yaml)
+
+    cmd_docker_compose_down = [
+        shutil.which("docker"),
+        "compose",
+        "--file",
+        docker_compose.as_posix(),
+        "--project-name",
+        context.asset_key.path[-1],
+        "down",
+        "--remove-orphans",
     ]
 
     yield Output(docker_compose)
@@ -1155,6 +1171,7 @@ def compose_repository_10_2(
         metadata={
             context.asset_key.path[-1]: MetadataValue.json(docker_dict),
             "cmd_docker_compose_up": MetadataValue.path(" ".join(shlex.quote(s) for s in cmd_docker_compose_up)),
+            "cmd_docker_compose_down": MetadataValue.path(" ".join(shlex.quote(s) for s in cmd_docker_compose_down)),
             "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
             "env_10_2": MetadataValue.json(env_10_2),
         },
@@ -1955,19 +1972,70 @@ def compose_mongodb_10_2(
         f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT_LNS')}:ro",
     ]
 
+    mongo_db_dir_host = pathlib.Path(env_10_2.get(f"DATABASE_INSTALL_DESTINATION_{context.asset_key.path[0]}"))
+    mongo_db_dir_host.mkdir(parents=True, exist_ok=True)
+
+    # Todo:
+    #  This would work
+    #  sudo chown 101:65534 DeadlineDatabase10
+    #  Concept: /usr/bin/sshpass -p \"pi\" /usr/bin/ssh sudo systemctl restart pimo.service
+    #  /usr/bin/sshpass -e SUDO_PASS
+    mongo_uid = 101
+    mongo_gid = 65534
+    # shutil.chown(
+    #     path=mongo_db_dir_host,
+    #     user=mongo_uid,
+    #     group=mongo_gid,
+    # )
+
+    cmd = [
+        shutil.which("sshpass"),
+        "-eSSH_PASS",
+        "ssh",
+        f"{env_10_2.get('SSH_USER')}@{env_10_2.get('SSH_HOST')}",
+        f"\"echo $SSH_PASS | sudo -S chown {mongo_uid}:{mongo_gid} {mongo_db_dir_host.as_posix()}\"",
+    ]
+
+    cmd_str = " ".join(cmd)
+
+    context.log.info(f"{cmd_str = }")
+
+    stdout_stderr = {
+            "stdout": MetadataValue.md(f"```shell\nNone\n```"),
+            "stderr": MetadataValue.md(f"```shell\nNone\n```"),
+    }
+
     if not MONGODB_INSIDE_CONTAINER:
-        mongo_db_dir_host = pathlib.Path(env_10_2.get(f"DATABASE_INSTALL_DESTINATION_{context.asset_key.path[0]}"))
         mongo_db_dir_host.mkdir(parents=True, exist_ok=True)
-        # Todo:
-        #  This would work
-        #  sudo chown 101:65534 DeadlineDatabase10
-        #  Concept: /usr/bin/sshpass -p \"pi\" /usr/bin/ssh sudo systemctl restart pimo.service
-        # mongo_uid = 101
-        # mongo_gid = 65534
-        # shutil.chown(
-        #     path=mongo_db_dir_host,
-        #     user=mongo_uid,
-        #     group=mongo_gid,
+
+        context.log.info(f"Setting ownership of {mongo_db_dir_host.as_posix()}...")
+
+        proc = subprocess.Popen(
+            args=cmd_str,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            shell=True,
+            env={
+                "SSH_PASS": env_10_2.get('SSH_PASS'),
+            }
+        )
+
+        stdout, stderr = proc.communicate()
+
+        stdout_stderr = {
+                "stdout": MetadataValue.md(f"```shell\n{stdout.decode(encoding='utf-8')}\n```"),
+                "stderr": MetadataValue.md(f"```shell\n{stderr.decode(encoding='utf-8')}\n```"),
+        }
+
+        # helpers.iterate_fds(
+        #     (
+        #         proc.stderr,
+        #         proc.stdout,
+        #     ),
+        #     (
+        #         context.log.warning,
+        #         context.log.info,
+        #     )
         # )
 
         volumes.insert(
@@ -2020,6 +2088,8 @@ def compose_mongodb_10_2(
             "docker_dict": MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
             "docker_yaml": MetadataValue.md(f"```shell\n{docker_yaml}\n```"),
             "cmd_docker_run": MetadataValue.path(cmd_docker_run),
+            "cmd_chown": MetadataValue.path(cmd_str),
+            **stdout_stderr,
             "env_10_2": MetadataValue.json(env_10_2),
         },
     )
@@ -2768,16 +2838,16 @@ def compose_10_2(
         "--remove-orphans",
     ]
 
-    # cmd_docker_compose_down = [
-    #     shutil.which("docker"),
-    #     "compose",
-    #     "--file",
-    #     docker_compose,
-    #     "--project-name",
-    #     context.asset_key.path[-1],
-    #     "down",
-    #     "--remove-orphans",
-    # ]
+    cmd_docker_compose_down = [
+        shutil.which("docker"),
+        "compose",
+        "--file",
+        docker_compose,
+        "--project-name",
+        context.asset_key.path[-1],
+        "down",
+        "--remove-orphans",
+    ]
 
     yield Output(docker_compose)
 
@@ -2786,7 +2856,7 @@ def compose_10_2(
         metadata={
             context.asset_key.path[-1]: MetadataValue.path(docker_compose),
             "cmd_docker_compose_up": MetadataValue.path(" ".join(shlex.quote(s) for s in cmd_docker_compose_up)),
-            # "cmd_docker_compose_down": MetadataValue.path(" ".join(shlex.quote(s) for s in cmd_docker_compose_down)),
+            "cmd_docker_compose_down": MetadataValue.path(" ".join(shlex.quote(s) for s in cmd_docker_compose_down)),
             "maps": MetadataValue.md(f"```json\n{json.dumps(docker_chainmap.maps, indent=2)}\n```"),
             "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
             "env_10_2": MetadataValue.json(env_10_2),
