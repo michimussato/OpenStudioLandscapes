@@ -29,8 +29,8 @@
 
 # deadline-docker
 
-Launch your 3D Animation or VFX
-pipeline with ease, independence
+Setup and launch your 3D Animation and VFX
+Pipeline backbone with ease, independence
 and scalability.
 
 A toolset to easily create reproducible 
@@ -38,6 +38,10 @@ Deadline Render Farm environment setups:
 create setups for production, 
 testing, debugging, development, 
 migration, DB restore etc.
+
+No more black boxes.
+No more path dependencies due to bad decisions
+made in the past.
 
 ## Tested on
 
