@@ -362,21 +362,18 @@ def env_10_2(
         f"GOOGLE_ID_DeadlineClient_{context.asset_key.path[0]}": "1cGxCPkrJ1ujWqie2yXTrOpShkEgSXR0F",
         f"GOOGLE_ID_DeadlineRepository_{context.asset_key.path[0]}": "1VZhCcxvCAc4oozLAKRCv_zwQLMuVdMRz",
 
-        # This is temporary:
-        f"REPOSITORY_INSTALL_DESTINATION_{context.asset_key.path[0]}": pathlib.PurePath(
-            env_base.get("NFS_ENTRY_POINT"),
-            "test_data2",
-            "10.2",
-            "opt",
-            "Thinkbox",
-            "DeadlineRepository10",
-        ).as_posix(),
-        # "REPOSITORY_INSTALL_DESTINATION_10_2": pathlib.PurePath(
-        #     env_base.get("REPOSITORY_INSTALL_DESTINATION"),
-        #     "10_2",
-        # ).as_posix(),
+        # This is where DeadlineRepository10 will get installed to:
+        f"REPOSITORY_INSTALL_DESTINATION_{context.asset_key.path[0]}": pathlib.Path(
+                DOT_DOCKER_ROOT,
+                "generations",
+                env_base.get("GENERATION", "default"),
+                context.asset_key.path[0],
+                "opt",
+                "Thinkbox",
+                "DeadlineRepository10",
+            ).as_posix(),
 
-        # aka DeadlineDatabase10
+        # This is where DeadlineDatabase10 will get installed to:
         f"DATABASE_INSTALL_DESTINATION_{context.asset_key.path[0]}": pathlib.Path(
                 DOT_DOCKER_ROOT,
                 "generations",
