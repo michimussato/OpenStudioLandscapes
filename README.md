@@ -10,8 +10,6 @@
     * [Repository-Installer 10.2](#repository-installer-102)
   * [Install](#install)
     * [deadline-docker](#deadline-docker-1)
-    * [Docker](#docker)
-      * [Verify Docker Installation](#verify-docker-installation)
   * [Create Generation](#create-generation)
     * [Launch Dagster](#launch-dagster)
     * [Configure Generation](#configure-generation)
@@ -19,14 +17,23 @@
       * [Resulting Files and Directories ("Generation")](#resulting-files-and-directories-generation)
   * [Run Repository Installer](#run-repository-installer)
   * [Run Deadline Farm](#run-deadline-farm)
+  * [Client](#client)
+    * [Deadline Monitor](#deadline-monitor)
 <!-- TOC -->
 
 ---
 
 # deadline-docker
 
-A toolset to easily set up a Deadline Render Farm environment.
-Easily create test setups for debugging, migration, DB restore etc.
+Launch your 3D Animation or VFX
+pipeline with ease, independence
+and scalability.
+
+A toolset to easily create reproducible 
+Deadline Render Farm environment setups:
+create setups for production, 
+testing, debugging, development, 
+migration, DB restore etc.
 
 ## Tested on
 
@@ -57,6 +64,8 @@ a proof of concept.
 - Deadline
   - [Version 10.2](https://docs.thinkboxsoftware.com/products/deadline/10.2/1_User%20Manual/index.html)
 - [docker-graph](https://github.com/michimussato/docker-graph)
+- [mongo-express](https://hub.docker.com/_/mongo-express)
+- [filebrowser/filebrowser](https://hub.docker.com/r/filebrowser/filebrowser)
 
 ## Dagster Lineage
 
@@ -71,7 +80,6 @@ a proof of concept.
 ### Repository-Installer 10.2
 
 ![viz_compose_repository_10_2.png](docs/img/viz_compose_repository_10_2.png)
-![Global_Asset_Lineage_expanded.svg](docs/img/Global_Asset_Lineage_expanded.svg)
 
 ## Install
 
@@ -171,6 +179,8 @@ Copy/Paste command, execute and wait for it to finish:
 
 ![installer_compose_up.png](docs/img/installer_compose_up.png)
 
+![installer.png](docs/img/installer.png)
+
 ## Run Deadline Farm
 
 Together with:
@@ -183,3 +193,11 @@ Together with:
 Copy/Paste command and execute:
 
 ![farm_compose_up.png](docs/img/farm_compose_up.png)
+
+![runner.png](docs/img/runner.png)
+
+## Client
+
+### Deadline Monitor
+
+![img.png](img.png)
