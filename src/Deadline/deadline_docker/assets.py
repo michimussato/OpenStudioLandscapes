@@ -224,16 +224,6 @@ def env_base(
 
         "MONGO_DB_PORT_HOST": "21017",
         "MONGO_DB_PORT_CONTAINER": "21017",
-        # MongoDB
-        # "MONGODB_INITDB_ROOT_USERNAME": "",
-        # "MONGO_INITDB_ROOT_USERNAME": "",
-        # "MONGODB_INITDB_ROOT_PASSWORD": "",
-        # "MONGO_INITDB_ROOT_PASSWORD": "",
-        # "MONGODB_INITDB_DATABASE": "",
-        # "MONGO_INITDB_DATABASE": "",
-        # "INITDB_HOST": "127.0.0.1",
-        # "INITDB_PORT": "27017",
-        "MONGO_ENTRY_POINT_SCRIPT": pathlib.Path("~/git/repos/deadline-docker/configs/mongodb/4_4/docker-entrypoint.py").expanduser().as_posix(),
         "DEFAULT_DBPATH_CONTAINER": "/data/db",
         # "DEFAULT_DBPATH_CONTAINER": "/opt/Thinkbox/DeadlineDatabase10/mongo/data",
         "DEFAULT_CONFIG_DBPATH": "/data/configdb",
@@ -259,8 +249,6 @@ def env_base(
         "KITSU_PORT_HOST": "4545",
         "KITSU_PORT_CONTAINER": "80",
         "KITSU_POSTGRESQL_CONF": pathlib.Path("~/git/repos/deadline-docker/configs/kitsu/postgres/postgresql.conf").expanduser().as_posix(),
-        # #"SECRETS_USERNAME": "SecretsAdmin",
-        # #"SECRETS_PASSWORD": "%ecretsPassw0rd!",
         "ROOT_DOMAIN": "farm.evil",
         # "DB_HOST": "mongodb-10-2",
 
@@ -390,7 +378,6 @@ def env_10_2(
 
         # aka DeadlineDatabase10
         f"DATABASE_INSTALL_DESTINATION_{context.asset_key.path[0]}": pathlib.Path(
-        # f"MONGO_DB_DIR_HOST_{context.asset_key.path[0]}": pathlib.Path(
                 DOT_DOCKER_ROOT,
                 "generations",
                 env_base.get("GENERATION", "default"),
@@ -1967,7 +1954,6 @@ def compose_mongodb_10_2(
     cmd_docker_run = f"docker run --rm --interactive --tty {image} /bin/bash"
 
     volumes = [
-        # f"{env_10_2.get('MONGO_ENTRY_POINT_SCRIPT')}:/usr/local/bin/docker-entrypoint.py:ro",
         f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT')}:ro",
         f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT_LNS')}:ro",
     ]
@@ -1975,18 +1961,11 @@ def compose_mongodb_10_2(
     mongo_db_dir_host = pathlib.Path(env_10_2.get(f"DATABASE_INSTALL_DESTINATION_{context.asset_key.path[0]}"))
     mongo_db_dir_host.mkdir(parents=True, exist_ok=True)
 
-    # Todo:
-    #  This would work
-    #  sudo chown 101:65534 DeadlineDatabase10
-    #  Concept: /usr/bin/sshpass -p \"pi\" /usr/bin/ssh sudo systemctl restart pimo.service
-    #  /usr/bin/sshpass -e SUDO_PASS
+    # sudo chown 101:65534 DeadlineDatabase10
+    # Concept: /usr/bin/sshpass -eENV_VAR /usr/bin/ssh "echo $ENV_VAR | sudo -S <cmd>"
+    # Because shutil.chown cannot sudo
     mongo_uid = 101
     mongo_gid = 65534
-    # shutil.chown(
-    #     path=mongo_db_dir_host,
-    #     user=mongo_uid,
-    #     group=mongo_gid,
-    # )
 
     cmd = [
         shutil.which("sshpass"),
@@ -2161,7 +2140,6 @@ def compose_ayon_override(
     """
 
     parent = pathlib.Path(env_base.get("AYON_DOCKER_COMPOSE"))
-    # override = pathlib.Path("~/git/repos/deadline-docker/repos/ayon-docker/docker-compose.override.yml").expanduser()
 
     docker_dict = {
         "services": {
@@ -2232,7 +2210,6 @@ def compose_ayon_override(
     ret = {
         "path": [
             parent.as_posix(),
-            # override.as_posix(),
             docker_compose_override.as_posix(),
         ],
     }
@@ -2908,11 +2885,6 @@ def viz_compose_10_2(
         format="dot",
     )
 
-    # self.graph.write(
-    #     path=pathlib.Path(__file__).parent.parent.parent / "tests" / "fixtures" / "out" / "main_graph.dot",
-    #     format="dot",
-    # )
-
     yield Output(dcg.graph)
 
     yield AssetMaterialization(
@@ -2968,11 +2940,6 @@ def viz_compose_repository_10_2(
         path=docker_compose_dir / f"{context.asset_key.path[-1]}.dot",
         format="dot",
     )
-
-    # self.graph.write(
-    #     path=pathlib.Path(__file__).parent.parent.parent / "tests" / "fixtures" / "out" / "main_graph.dot",
-    #     format="dot",
-    # )
 
     yield Output(dcg.graph)
 
