@@ -1084,7 +1084,7 @@ def compose_repository_10_2(
                 "command": [
                     "--installer", "/installers/DeadlineRepository.run",
                     "--deadline-version", env_10_2.get("DEADLINE_VERSION"),
-                    "--prefix", env_10_2.get("REPOSITORY_INSTALL_DESTINATION_10_2"),
+                    "--prefix", "/opt/Thinkbox/DeadlineRepository10",
                     "--dbtype", "MongoDB",
                     "--dbhost", env_10_2.get("MONGO_DB_HOST"),
                     "--dbport", env_10_2.get("MONGO_DB_PORT_HOST"),
@@ -1093,7 +1093,8 @@ def compose_repository_10_2(
                 "volumes": [
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT')}",
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT_LNS')}",
-                    f"{connection_ini_10_2.as_posix()}:/opt/Thinkbox/DeadlineRepository10/settings/connection.ini:ro",
+                    f"{env_10_2.get('REPOSITORY_INSTALL_DESTINATION_10_2')}:/opt/Thinkbox/DeadlineRepository10",
+                    # f"{connection_ini_10_2.as_posix()}:/opt/Thinkbox/DeadlineRepository10/settings/connection.ini:ro",
                 ],
             },
         },
