@@ -11,8 +11,11 @@
     * [deadline-docker](#deadline-docker-1)
     * [Docker](#docker)
       * [Verify Docker Installation](#verify-docker-installation)
-  * [Run](#run)
-    * [Dagster](#dagster)
+  * [Create Generation](#create-generation)
+    * [Launch Dagster](#launch-dagster)
+  * [Resulting Files and Directories ("Generation")](#resulting-files-and-directories-generation)
+  * [Run Repository Installer](#run-repository-installer)
+  * [Run Deadline Farm](#run-deadline-farm)
 <!-- TOC -->
 
 ---
