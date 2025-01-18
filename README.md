@@ -79,6 +79,8 @@ a proof of concept.
 
 ![Global_Asset_Lineage.svg](docs/img/Global_Asset_Lineage.svg)
 
+![dagster_cascade.png](docs/img/dagster_cascade.png)
+
 ## Docker Compose Graph
 
 Dynamic documentation with `docker-graph`.
