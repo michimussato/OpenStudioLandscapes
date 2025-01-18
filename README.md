@@ -200,4 +200,4 @@ Copy/Paste command and execute:
 
 ### Deadline Monitor
 
-![img.png](img.png)
+![monitor.png](docs/img/monitor.png)
