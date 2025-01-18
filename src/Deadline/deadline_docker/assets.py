@@ -375,6 +375,22 @@ def env_10_2(
 
         # This is where DeadlineDatabase10 will get installed to:
         # (provided MONGODB_INSIDE_CONTAINER is set to False)
+        #
+        # The Python script that comes with the mongodb docker image
+        # initializes a DB if none is found at installation time.
+        # That means, if DATABASE_INSTALL_DESTINATION_{context.asset_key.path[0]}
+        # already points to an existing DB, this one will be used.
+        # Make sure that the DB path has ownership of 101:65534.
+        # Default would be inside a Generation:
+        # f"DATABASE_INSTALL_DESTINATION_{context.asset_key.path[0]}": pathlib.Path(
+        #         DOT_DOCKER_ROOT,
+        #         "generations",
+        #         env_base.get("GENERATION", "default"),
+        #         context.asset_key.path[0],
+        #         "opt",
+        #         "Thinkbox",
+        #         "DeadlineDatabase10",
+        #     ).as_posix(),
         f"DATABASE_INSTALL_DESTINATION_{context.asset_key.path[0]}": pathlib.Path(
                 DOT_DOCKER_ROOT,
                 "generations",
