@@ -4,7 +4,7 @@
   * [Requirements](#requirements)
   * [Integrated Tools](#integrated-tools)
   * [Dagster Lineage](#dagster-lineage)
-  * [docker-graph (docker compose Visualizer)](#docker-graph-docker-compose-visualizer)
+  * [Dynamic Documentation with `docker-graph`](#dynamic-documentation-with-docker-graph)
     * [Deadline 10.2](#deadline-102)
     * [Repository-Installer 10.2](#repository-installer-102)
   * [Install](#install)
@@ -52,7 +52,7 @@ Easily create test setups for debugging, migration, DB restore etc.
 
 ![Global_Asset_Lineage.svg](docs/img/Global_Asset_Lineage.svg)
 
-## docker-graph (docker compose Visualizer)
+## Dynamic Documentation with `docker-graph`
 
 ### Deadline 10.2
 
