@@ -2,6 +2,7 @@
 * [deadline-docker](#deadline-docker)
   * [Tested on](#tested-on)
   * [Requirements](#requirements)
+  * [Limitations](#limitations)
   * [Integrated Tools](#integrated-tools)
   * [Dagster Lineage](#dagster-lineage)
   * [Dynamic Documentation with `docker-graph`](#dynamic-documentation-with-docker-graph)
@@ -13,7 +14,9 @@
       * [Verify Docker Installation](#verify-docker-installation)
   * [Create Generation](#create-generation)
     * [Launch Dagster](#launch-dagster)
-  * [Resulting Files and Directories ("Generation")](#resulting-files-and-directories-generation)
+    * [Configure Generation](#configure-generation)
+    * [Materialize Generation](#materialize-generation)
+      * [Resulting Files and Directories ("Generation")](#resulting-files-and-directories-generation)
   * [Run Repository Installer](#run-repository-installer)
   * [Run Deadline Farm](#run-deadline-farm)
 <!-- TOC -->
@@ -37,6 +40,13 @@ Easily create test setups for debugging, migration, DB restore etc.
 - `docker compose`
 - `git`
 - `python` (3.9 through 3.12)
+
+## Limitations
+
+Currently only for Deadline version 10.2. 
+Versions 10.3 and 10.4 are WIP and will be
+implemented as soon as 10.2 fully works as
+a proof of concept.
 
 ## Integrated Tools
 
@@ -122,6 +132,11 @@ dagster dev --workspace "$(pwd)/dagster/workspace.yaml" --host 0.0.0.0 --port 30
 ```
 
 http://0.0.0.0:3000
+
+### Configure Generation
+
+Edit `deadline-docker.assets.env_base` and 
+`deadline-docker.assets.env_10_2` according to your needs.
 
 ### Materialize Generation
 
