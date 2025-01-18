@@ -30,7 +30,7 @@ Easily create test setups for debugging, migration, DB restore etc.
 
 ## Tested on
 
-- Manjaro
+- Manjaro Linux
 
 ## Requirements
 
