@@ -19,6 +19,8 @@
   * [Run Deadline Farm](#run-deadline-farm)
   * [Client](#client)
     * [Deadline Monitor](#deadline-monitor)
+  * [Docker](#docker)
+    * [Clean](#clean)
 <!-- TOC -->
 
 ---
@@ -201,3 +203,17 @@ Copy/Paste command and execute:
 ### Deadline Monitor
 
 ![monitor.png](docs/img/monitor.png)
+![monitor_2.png](docs/img/monitor_2.png)
+
+## Docker
+
+### Clean
+
+```shell
+docker stop $(docker ps -q)
+docker container prune -f
+docker image prune -a -f
+docker volume prune -a -f
+docker buildx prune -f
+docker network prune -f
+```
