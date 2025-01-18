@@ -391,7 +391,8 @@ def env_10_2(
         #         "Thinkbox",
         #         "DeadlineDatabase10",
         #     ).as_posix(),
-        f"DATABASE_INSTALL_DESTINATION_{context.asset_key.path[0]}": pathlib.Path(
+        f"DATABASE_INSTALL_DESTINATION_{context.asset_key.path[0]}": [
+            pathlib.Path(
                 DOT_DOCKER_ROOT,
                 "generations",
                 env_base.get("GENERATION", "default"),
@@ -400,6 +401,10 @@ def env_10_2(
                 "Thinkbox",
                 "DeadlineDatabase10",
             ).as_posix(),
+            pathlib.Path(
+                f"~/git/repos/deadline-docker/tests/fixtures/{context.asset_key.path[0]}/DeadlineDatabase10",
+            ).expanduser().as_posix(),
+        ][1],
     }
     # @formatter:on
 
