@@ -29,8 +29,8 @@
 
 # deadline-docker
 
-Setup and launch your 3D Animation and VFX
-Pipeline backbone with ease, independence
+Setup and launch Deadline - your 3D Animation and VFX
+Pipeline backbone - with ease, independence
 and scalability.
 
 A toolset to easily create reproducible 
