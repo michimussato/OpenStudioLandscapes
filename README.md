@@ -21,6 +21,8 @@
     * [Deadline Monitor](#deadline-monitor)
   * [Docker](#docker)
     * [Clean](#clean)
+  * [DeadlineDatabase10](#deadlinedatabase10)
+    * [Use Test DB](#use-test-db)
 <!-- TOC -->
 
 ---
@@ -216,4 +218,22 @@ docker image prune -a -f
 docker volume prune -a -f
 docker buildx prune -f
 docker network prune -f
+```
+
+## DeadlineDatabase10
+
+### Use Test DB
+
+```shell
+mkdir -p tests/fixtures/10_2/DeadlineDatabase10
+tar -xzvf tests/fixtures/DeadlineDatabase10_2.tar.gz -C tests/fixtures/10_2/DeadlineDatabase10
+sudo chown -R 101:65534 tests/fixtures/10_2/DeadlineDatabase10
+```
+
+And in `deadline-docker.assets.env_10_2` set
+
+```
+f"DATABASE_INSTALL_DESTINATION_{context.asset_key.path[0]}": pathlib.Path(
+        f"/home/michael/git/repos/deadline-docker/tests/fixtures/{context.asset_key.path[0]}/DeadlineDatabase10",
+    ).as_posix()
 ```
