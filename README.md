@@ -61,6 +61,7 @@ Easily create test setups for debugging, migration, DB restore etc.
 ### Repository-Installer 10.2
 
 ![viz_compose_repository_10_2.png](docs/img/viz_compose_repository_10_2.png)
+![Global_Asset_Lineage_expanded.svg](docs/img/Global_Asset_Lineage_expanded.svg)
 
 ## Install
 
@@ -122,9 +123,11 @@ dagster dev --workspace "$(pwd)/dagster/workspace.yaml" --host 0.0.0.0 --port 30
 
 http://0.0.0.0:3000
 
--> Materialize All
+### Materialize Generation
 
-## Resulting Files and Directories ("Generation")
+![materialize_all.png](docs/img/materialize_all.png)
+
+#### Resulting Files and Directories ("Generation")
 
 ```shell
 $ tree deadline-docker/.docker/generations/1737208678.732601/
