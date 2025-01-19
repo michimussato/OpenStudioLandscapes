@@ -1,6 +1,11 @@
 from yaml import YAMLObject
 
 
+__all__ = [
+    "OverrideArray",
+]
+
+
 class OverrideArray(YAMLObject):
     """
     - https://pyyaml.org/wiki/PyYAMLDocumentation

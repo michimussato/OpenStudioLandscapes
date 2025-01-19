@@ -13,6 +13,9 @@ from functools import reduce
 from python_on_whales import docker
 from docker_graph.docker_graph import DockerComposeGraph
 
+from Deadline.deadline_docker.constants import *
+from Deadline.deadline_docker.utils import *
+
 from dagster import (
     AssetExecutionContext,
     asset,
@@ -21,10 +24,6 @@ from dagster import (
     MetadataValue,
     AssetIn,
 )
-
-DOCKER_USE_CACHE = False
-MONGODB_INSIDE_CONTAINER = False
-DOT_DOCKER_ROOT = pathlib.Path("~/git/repos/deadline-docker/.docker").expanduser()
 
 
 @asset(
