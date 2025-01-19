@@ -77,6 +77,7 @@ def env_10_2(
                 "generations",
                 env_base.get("GENERATION", "default"),
                 context.asset_key.path[0],
+                "data",
                 "opt",
                 "Thinkbox",
                 "DeadlineRepository10",
@@ -108,6 +109,7 @@ def env_10_2(
                 "generations",
                 env_base.get("GENERATION", "default"),
                 context.asset_key.path[0],
+                "data",
                 "opt",
                 "Thinkbox",
                 "DeadlineDatabase10",
@@ -115,8 +117,15 @@ def env_10_2(
             #################################################################
             # Test DB:
             "test_db_10_2": pathlib.Path(
-                f"~/git/repos/deadline-docker/tests/fixtures/{context.asset_key.path[0]}/DeadlineDatabase10",
-            ).expanduser().as_posix(),
+                pathlib.Path().home(),
+                "git",
+                "repos",
+                "deadline-docker",
+                "tests",
+                "fixtures",
+                context.asset_key.path[0],
+                "DeadlineDatabase10",
+            ).as_posix(),
         }["test_db_10_2"],
     }
     # @formatter:on
@@ -1218,8 +1227,9 @@ def compose_mongodb_10_2(
         shutil.which("sshpass"),
         "-eSSH_PASS",
         "ssh",
-        f"{env_10_2.get('SSH_USER')}@{env_10_2.get('SSH_HOST')}",
-        f"\"echo $SSH_PASS | sudo -S chown {mongo_uid}:{mongo_gid} {mongo_db_dir_host.as_posix()}\"",
+        f"{env_10_2['SSH_USER']}@{env_10_2['SSH_HOST']}",
+        f"echo $SSH_PASS | sudo -S chown {mongo_uid}:{mongo_gid} {mongo_db_dir_host.as_posix()}",
+        # f"echo {env_10_2['SSH_PASS']} | sudo -S chown {mongo_uid}:{mongo_gid} {mongo_db_dir_host.as_posix()}",
     ]
 
     cmd_chown_str = cmd_list_to_str(cmd_chown)

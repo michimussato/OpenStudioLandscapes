@@ -155,8 +155,9 @@ def compose_kitsu(
         shutil.which("sshpass"),
         "-eSSH_PASS",
         "ssh",
-        f"{env_base.get('SSH_USER')}@{env_base.get('SSH_HOST')}",
-        f"\"echo $SSH_PASS | sudo -S chown {mongo_uid}:{mongo_gid} {kitsu_db_dir_host.as_posix()}\"",
+        f"{env_base['SSH_USER']}@{env_base['SSH_HOST']}",
+        f"echo $SSH_PASS | sudo -S chown {mongo_uid}:{mongo_gid} {kitsu_db_dir_host.as_posix()}",
+        # f"echo {env_base['SSH_PASS']} | sudo -S chown {mongo_uid}:{mongo_gid} {kitsu_db_dir_host.as_posix()}",
     ]
 
     cmd_chown_str = cmd_list_to_str(cmd_chown)

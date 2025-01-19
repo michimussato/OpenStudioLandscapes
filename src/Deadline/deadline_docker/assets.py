@@ -152,6 +152,7 @@ def env_base(
                 DOT_DOCKER_ROOT,
                 "generations",
                 generation.get("GENERATION", "default"),
+                "data",
                 "kitsu",
                 "postgres",
                 "main",
@@ -161,8 +162,12 @@ def env_base(
             # Username: admin@example.com
             # Password: mysecretpassword
             "test_db": pathlib.Path(
-                "/nfs/test_data/10.2/kitsu/main",
-            ).expanduser().as_posix(),
+                "nfs",
+                "test_data",
+                "10.2",
+                "kitsu",
+                "main",
+            ).as_posix(),
         }["default"],
 
         "ROOT_DOMAIN": "farm.evil",
