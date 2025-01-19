@@ -4,6 +4,7 @@
   * [Requirements](#requirements)
   * [Limitations](#limitations)
   * [Integrated Tools](#integrated-tools)
+    * [3rd Party](#3rd-party)
   * [Dagster Lineage](#dagster-lineage)
   * [Docker Compose Graph](#docker-compose-graph)
     * [Deadline 10.2](#deadline-102)
@@ -67,13 +68,16 @@ a proof of concept.
 
 ## Integrated Tools
 
+- [docker-graph](https://github.com/michimussato/docker-graph)
+
+### 3rd Party
+
 - [Dagster](https://dagster.io/)
 - [LikeC4](https://likec4.dev/)
 - [Kitsu](https://kitsu.cg-wire.com/)
 - [Ayon](https://ayon.ynput.io/)
 - Deadline
   - [Version 10.2](https://docs.thinkboxsoftware.com/products/deadline/10.2/1_User%20Manual/index.html)
-- [docker-graph](https://github.com/michimussato/docker-graph)
 - [mongo-express](https://hub.docker.com/_/mongo-express)
 - [filebrowser/filebrowser](https://hub.docker.com/r/filebrowser/filebrowser)
 
