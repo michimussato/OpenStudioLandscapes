@@ -217,6 +217,10 @@ Copy/Paste command, execute and wait for it to finish:
 
 ![installer.png](docs/img/installer.png)
 
+And `docker compose down` eventually:
+
+![installer_compose_down.png](docs/img/installer_compose_down.png)
+
 ## Run Deadline Farm
 
 Together with:
