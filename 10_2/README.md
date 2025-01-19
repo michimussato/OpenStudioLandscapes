@@ -1,5 +1,6 @@
 <!-- TOC -->
 * [`deadline.ini`](#deadlineini)
+* [Ports](#ports)
 * [Deadline Docker 10.2](#deadline-docker-102)
   * [Symlinks](#symlinks)
   * [Automated](#automated)
@@ -10,6 +11,10 @@
 # `deadline.ini`
 
 https://docs.thinkboxsoftware.com/products/deadline/10.2/1_User%20Manual/manual/client-config.html#client-config-conn-server-ref-label
+
+# Ports
+
+https://docs.thinkboxsoftware.com/products/deadline/10.2/1_User%20Manual/manual/considerations.html#firewall-anti-virus-security-considerations
 
 # Deadline Docker 10.2
 
@@ -78,5 +83,4 @@ webservice-runner-10-2              | Deadline Web Service will try to connect a
 webservice-runner-10-2              | Web Service Shutting Down...
 webservice-runner-10-2              | 
 webservice-runner-10-2              | [2024-12-20 23:28:14] ERROR:deadline_docker.deadline_wrapper_10_2.deadline_wrapper:
-
 ```
