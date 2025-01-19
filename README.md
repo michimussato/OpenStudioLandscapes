@@ -8,7 +8,9 @@
   * [Docker Compose Graph](#docker-compose-graph)
     * [Deadline 10.2](#deadline-102)
     * [Repository-Installer 10.2](#repository-installer-102)
+  * [Clone](#clone)
   * [Install](#install)
+    * [venv](#venv)
     * [deadline-docker](#deadline-docker-1)
   * [Create Generation](#create-generation)
     * [Launch Dagster](#launch-dagster)
@@ -97,9 +99,7 @@ Dynamic documentation with `docker-graph`.
 
 ![viz_compose_repository_10_2.png](docs/img/viz_compose_repository_10_2.png)
 
-## Install
-
-### deadline-docker
+## Clone
 
 ```shell
 git clone https://github.com/michimussato/deadline-docker.git
@@ -108,6 +108,22 @@ python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip setuptools
 pip install -e .[dev]
+```
+
+## Install
+
+### venv
+
+```shell
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip setuptools
+```
+
+### deadline-docker
+
+```shell
+python -m pip install git+https://github.com/michimussato/deadline-docker.git@main
 ```
 
 ## Create Generation

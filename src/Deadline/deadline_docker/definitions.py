@@ -1,4 +1,7 @@
-from dagster import Definitions, load_assets_from_modules
+from dagster import (
+    Definitions,
+    load_assets_from_modules,
+)
 from Deadline.deadline_docker import (
     assets,
     assets_10_2,
