@@ -3,10 +3,8 @@ import shutil
 import textwrap
 import pathlib
 import time
-import yaml
 
 from Deadline.deadline_docker.constants import *
-from Deadline.deadline_docker.yaml_tags.overrides import *
 from Deadline.deadline_docker.utils import *
 
 from python_on_whales import docker
@@ -19,6 +17,29 @@ from dagster import (
     MetadataValue,
     AssetIn,
 )
+
+
+@asset(
+    group_name="Environment",
+    compute_kind="python",
+)
+def generation(
+        context: AssetExecutionContext,
+) -> dict:
+
+    generation_stamp = {
+        "GENERATION": str(time.time()),
+    }
+
+    yield Output(generation_stamp)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            context.asset_key.path[-1]: MetadataValue.json(generation_stamp),
+
+        },
+    )
 
 
 @asset(
@@ -50,17 +71,18 @@ def secrets(
     compute_kind="python",
     ins={
         "secrets": AssetIn(),
+        "generation": AssetIn(),
         "nfs": AssetIn(),
     },
 )
 def env_base(
         context: AssetExecutionContext,
         secrets: dict,
+        generation: dict,
         nfs: dict,
 ) -> dict:
     # @formatter:off
     _env: dict = {
-        "GENERATION": str(time.time()),
         "REPOSITORY_INSTALL_DESTINATION": pathlib.PurePath(
             nfs.get("NFS_ENTRY_POINT"),
             "deadline_repository_prod",
@@ -159,6 +181,7 @@ def env_base(
     }
 
     _env.update(secrets)
+    _env.update(generation)
     _env.update(nfs)
     # @formatter:on
 

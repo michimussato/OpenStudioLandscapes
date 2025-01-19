@@ -127,7 +127,15 @@ def compose_kitsu(
     """
     """
 
-    cmd_docker_run = f"docker run --rm --interactive --tty {build_kitsu} /bin/bash"
+    cmd_docker_run = [
+        shutil.which("docker"),
+        "run",
+        "--rm",
+        "--interactive",
+        "--tty",
+        build_kitsu,
+        "/bin/bash",
+    ]
 
     volumes = [
         f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT')}",
@@ -224,7 +232,7 @@ def compose_kitsu(
             context.asset_key.path[-1]: MetadataValue.json(docker_dict),
             "docker_dict": MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
             "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
-            "cmd_docker_run": MetadataValue.path(cmd_docker_run),
+            "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)),
             "cmd_chown": MetadataValue.path(cmd_chown_str),
             **stdout_stderr,
             "env_base": MetadataValue.json(env_base),
