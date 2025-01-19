@@ -203,7 +203,8 @@ def compose_kitsu(
 
         volumes.insert(
             0,
-            f"{env_base.get('KITSU_POSTGRESQL_CONF')}:/etc/postgresql/14/main/postgresql.conf:ro",
+            # f"{env_base.get('KITSU_POSTGRESQL_CONF')}:/etc/postgresql/14/main/postgresql.conf:ro",
+            f"{env_base.get('KITSU_DATABASE_INSTALL_DESTINATION')}:/var/lib/postgresql/14/main",
         )
 
     docker_dict = {
