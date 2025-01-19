@@ -146,20 +146,25 @@ def env_base(
         "KITSU_DATABASE_INSTALL_DESTINATION": {
             #################################################################
             # Inside Generation:
+            # Username: admin@example.com
+            # Password: mysecretpassword
             "default": pathlib.Path(
                 DOT_DOCKER_ROOT,
                 "generations",
                 generation.get("GENERATION", "default"),
+                "kitsu",
                 "postgres",
                 "main",
             ).as_posix(),
             #################################################################
             # Test DB:
+            # Username: admin@example.com
+            # Password: mysecretpassword
             "test_db": pathlib.Path(
                 "/nfs/test_data/10.2/kitsu/main",
             ).expanduser().as_posix(),
-        }["test_db"],
-        # "KITSU_POSTGRESQL_CONF": pathlib.Path("~/git/repos/deadline-docker/configs/kitsu/postgres/postgresql.conf").expanduser().as_posix(),
+        }["default"],
+
         "ROOT_DOMAIN": "farm.evil",
         # "DB_HOST": "mongodb-10-2",
 
