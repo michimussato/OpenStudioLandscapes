@@ -1,3 +1,6 @@
+import shutil
+import shlex
+
 from Deadline.deadline_docker.constants import *
 
 from dagster import MetadataValue
@@ -5,6 +8,7 @@ from dagster import MetadataValue
 
 __all__ = [
     "compile_cmds",
+    "cmd_list_to_str",
     "deep_merge",
 ]
 
@@ -25,17 +29,40 @@ def compile_cmds(
     _volumes = ' '.join([f'--volume {i}' for i in volumes])
     _networks = ' '.join([f'--network {i}' for i in networks])
 
-    cmd_docker_run = f"docker run {_volumes} {_networks} --rm --interactive --tty --entrypoint bash {tag}"
-    cmd_docker_build = (
-        f"docker build --tag {tag} {docker_file.parent.as_posix()} {'--no-cache' if DOCKER_USE_CACHE else ''}"
-    )
+    cmd_docker_run = [
+        shutil.which("docker"),
+        "run",
+        _volumes,
+        _networks,
+        "--rm",
+        "--interactive",
+        "--tty",
+        "--entrypoint",
+        "bash",
+        tag,
+    ]
+    cmd_docker_build = [
+        shutil.which("docker"),
+        "build",
+        "--tag",
+        tag,
+        docker_file.parent.as_posix(),
+        '--no-cache' if DOCKER_USE_CACHE else '',
+    ]
 
     metadata_values = {
-        "cmd_docker_run": MetadataValue.path(cmd_docker_run),
-        "cmd_docker_build": MetadataValue.path(cmd_docker_build),
+        "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)),
+        "cmd_docker_build": MetadataValue.path(cmd_list_to_str(cmd_docker_build)),
     }
 
     return metadata_values
+
+
+def cmd_list_to_str(
+        cmd_list: list[str],
+) -> str:
+    cmd_str = " ".join(shlex.quote(s) for s in cmd_list)
+    return cmd_str
 
 
 def deep_merge(dict1, dict2):

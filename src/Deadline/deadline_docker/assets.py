@@ -1,5 +1,4 @@
 import json
-import shlex
 import shutil
 import textwrap
 import pathlib
@@ -893,7 +892,7 @@ def compose_ayon_override(
         asset_key=context.asset_key,
         metadata={
             context.asset_key.path[-1]: MetadataValue.json(ret),
-            "cmd_docker_compose_up": MetadataValue.path(" ".join(shlex.quote(s) for s in cmd_docker_compose_up)),
+            "cmd_docker_compose_up": MetadataValue.path(cmd_list_to_str(cmd_docker_compose_up)),
             "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
         },
     )
