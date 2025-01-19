@@ -4,6 +4,7 @@ import shutil
 import pathlib
 import yaml
 import json
+import subprocess
 
 from python_on_whales import docker
 
@@ -126,6 +127,77 @@ def compose_kitsu(
     """
     """
 
+    cmd_docker_run = f"docker run --rm --interactive --tty {build_kitsu} /bin/bash"
+
+    volumes = [
+        f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT')}",
+        f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT_LNS')}",
+    ]
+
+    kitsu_db_dir_host = pathlib.Path(env_base.get("KITSU_DATABASE_INSTALL_DESTINATION"))
+    kitsu_db_dir_host.mkdir(parents=True, exist_ok=True)
+
+    # sudo chown 105:105 KitsuPostgres
+    # Concept: /usr/bin/sshpass -eENV_VAR /usr/bin/ssh "echo $ENV_VAR | sudo -S <cmd>"
+    # Because shutil.chown cannot sudo
+    mongo_uid = 105
+    mongo_gid = 105
+
+    cmd_chown = [
+        shutil.which("sshpass"),
+        "-eSSH_PASS",
+        "ssh",
+        f"{env_base.get('SSH_USER')}@{env_base.get('SSH_HOST')}",
+        f"\"echo $SSH_PASS | sudo -S chown {mongo_uid}:{mongo_gid} {kitsu_db_dir_host.as_posix()}\"",
+    ]
+
+    cmd_chown_str = cmd_list_to_str(cmd_chown)
+
+    context.log.info(f"{cmd_chown_str = }")
+
+    stdout_stderr = {
+            "stdout": MetadataValue.md(f"```shell\nNone\n```"),
+            "stderr": MetadataValue.md(f"```shell\nNone\n```"),
+    }
+
+    if not KITSUDB_INSIDE_CONTAINER:
+        kitsu_db_dir_host.mkdir(parents=True, exist_ok=True)
+
+        context.log.info(f"Setting ownership of {kitsu_db_dir_host.as_posix()}...")
+
+        proc = subprocess.Popen(
+            args=cmd_chown_str,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            shell=True,
+            env={
+                "SSH_PASS": env_base.get('SSH_PASS'),
+            }
+        )
+
+        stdout, stderr = proc.communicate()
+
+        stdout_stderr = {
+                "stdout": MetadataValue.md(f"```shell\n{stdout.decode(encoding='utf-8')}\n```"),
+                "stderr": MetadataValue.md(f"```shell\n{stderr.decode(encoding='utf-8')}\n```"),
+        }
+
+        # helpers.iterate_fds(
+        #     (
+        #         proc.stderr,
+        #         proc.stdout,
+        #     ),
+        #     (
+        #         context.log.warning,
+        #         context.log.info,
+        #     )
+        # )
+
+        volumes.insert(
+            0,
+            f"{env_base.get('KITSU_POSTGRESQL_CONF')}:/etc/postgresql/14/main/postgresql.conf:ro",
+        )
+
     docker_dict = {
         "services": {
             "kitsu": {
@@ -134,11 +206,7 @@ def compose_kitsu(
                 "domainname": env_base.get("ROOT_DOMAIN"),
                 "restart": "always",
                 "image": build_kitsu,
-                "volumes": [
-                    f"{env_base.get('KITSU_POSTGRESQL_CONF')}:/etc/postgresql/14/main/postgresql.conf:ro",
-                    f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT')}",
-                    f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT_LNS')}",
-                ],
+                "volumes": volumes,
                 "ports": [
                     f"{env_base.get('KITSU_PORT_HOST')}:{env_base.get('KITSU_PORT_CONTAINER')}",
                 ],
@@ -156,6 +224,9 @@ def compose_kitsu(
             context.asset_key.path[-1]: MetadataValue.json(docker_dict),
             "docker_dict": MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
             "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
+            "cmd_docker_run": MetadataValue.path(cmd_docker_run),
+            "cmd_chown": MetadataValue.path(cmd_chown_str),
+            **stdout_stderr,
             "env_base": MetadataValue.json(env_base),
         },
     )

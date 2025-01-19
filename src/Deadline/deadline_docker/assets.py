@@ -121,11 +121,12 @@ def env_base(
 
         "KITSU_PORT_HOST": "4545",
         "KITSU_PORT_CONTAINER": "80",
+        "KITSU_DATABASE_INSTALL_DESTINATION": pathlib.Path("/nfs/test_data/10.2/kitsu/main").expanduser().as_posix(),
         "KITSU_POSTGRESQL_CONF": pathlib.Path("~/git/repos/deadline-docker/configs/kitsu/postgres/postgresql.conf").expanduser().as_posix(),
         "ROOT_DOMAIN": "farm.evil",
         # "DB_HOST": "mongodb-10-2",
 
-        # "PYTHON_VERSION": "3.11.11",
+        # https://vfxplatform.com/
         "PYTHON_MAJ": "3",
         "PYTHON_MIN": "11",
         "PYTHON_PAT": "11",

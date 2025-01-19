@@ -100,9 +100,10 @@ def env_10_2(
         #         "Thinkbox",
         #         "DeadlineDatabase10",
         #     ).as_posix(),
-        f"DATABASE_INSTALL_DESTINATION_{context.asset_key.path[0]}": [
+        f"DATABASE_INSTALL_DESTINATION_{context.asset_key.path[0]}": {
+            #################################################################
             # Inside Generation:
-            pathlib.Path(
+            "default": pathlib.Path(
                 DOT_DOCKER_ROOT,
                 "generations",
                 env_base.get("GENERATION", "default"),
@@ -111,11 +112,12 @@ def env_10_2(
                 "Thinkbox",
                 "DeadlineDatabase10",
             ).as_posix(),
+            #################################################################
             # Test DB:
-            pathlib.Path(
+            "test_db_10_2": pathlib.Path(
                 f"~/git/repos/deadline-docker/tests/fixtures/{context.asset_key.path[0]}/DeadlineDatabase10",
             ).expanduser().as_posix(),
-        ][1],
+        }["test_db_10_2"],
     }
     # @formatter:on
 
@@ -1188,7 +1190,15 @@ def compose_mongodb_10_2(
 
     image = "mongodb/mongodb-community-server:4.4-ubuntu2004"
 
-    cmd_docker_run = f"docker run --rm --interactive --tty {image} /bin/bash"
+    cmd_docker_run = [
+        shutil.which("docker"),
+        "run",
+        "--rm",
+        "--interactive",
+        "--tty",
+        image,
+        "/bin/bash",
+    ]
 
     volumes = [
         f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT')}:ro",
@@ -1204,7 +1214,7 @@ def compose_mongodb_10_2(
     mongo_uid = 101
     mongo_gid = 65534
 
-    cmd = [
+    cmd_chown = [
         shutil.which("sshpass"),
         "-eSSH_PASS",
         "ssh",
@@ -1212,9 +1222,9 @@ def compose_mongodb_10_2(
         f"\"echo $SSH_PASS | sudo -S chown {mongo_uid}:{mongo_gid} {mongo_db_dir_host.as_posix()}\"",
     ]
 
-    cmd_str = " ".join(cmd)
+    cmd_chown_str = cmd_list_to_str(cmd_chown)
 
-    context.log.info(f"{cmd_str = }")
+    context.log.info(f"{cmd_chown_str = }")
 
     stdout_stderr = {
             "stdout": MetadataValue.md(f"```shell\nNone\n```"),
@@ -1227,7 +1237,7 @@ def compose_mongodb_10_2(
         context.log.info(f"Setting ownership of {mongo_db_dir_host.as_posix()}...")
 
         proc = subprocess.Popen(
-            args=cmd_str,
+            args=cmd_chown_str,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             shell=True,
@@ -1267,12 +1277,6 @@ def compose_mongodb_10_2(
                 "hostname": "mongodb-10-2",
                 "domainname": env_10_2.get("ROOT_DOMAIN"),
                 "restart": "always",
-                # "environment": {
-                #     "INITDB_PORT": env_10_2.get("MONGO_DB_PORT_CONTAINER"),
-                #     # "INITDB_HOST": env_10_2.get("INITDB_HOST")
-                #     "DEFAULT_DBPATH": env_10_2.get("DEFAULT_DBPATH_CONTAINER"),
-                #     # "DEFAULT_CONFIG_DBPATH": env_10_2.get("DEFAULT_CONFIG_DBPATH"),
-                # },
                 "command": [
                     "--port", env_10_2.get("MONGO_DB_PORT_CONTAINER"),
                     "--dbpath", f"{env_10_2.get('DEFAULT_DBPATH_CONTAINER')}",
@@ -1303,8 +1307,8 @@ def compose_mongodb_10_2(
             context.asset_key.path[-1]: MetadataValue.json(docker_dict),
             "docker_dict": MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
             "docker_yaml": MetadataValue.md(f"```shell\n{docker_yaml}\n```"),
-            "cmd_docker_run": MetadataValue.path(cmd_docker_run),
-            "cmd_chown": MetadataValue.path(cmd_str),
+            "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)),
+            "cmd_chown": MetadataValue.path(cmd_chown_str),
             **stdout_stderr,
             "env_10_2": MetadataValue.json(env_10_2),
         },
