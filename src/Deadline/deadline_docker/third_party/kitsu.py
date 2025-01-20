@@ -166,12 +166,21 @@ def prepare_db_kitsu(
 
     if not KITSUDB_INSIDE_CONTAINER:
 
-        kitsu_db_dir_host = pathlib.Path(env_base.get("KITSU_DATABASE_INSTALL_DESTINATION"))
+        kitsu_db_dir_host = pathlib.Path(env_base.get("KITSU_DATABASE_INSTALL_DESTINATION")) / "postgresql" / "14" / "main"
         kitsu_db_dir_host.mkdir(parents=True, exist_ok=True)
 
         kitsu_db_template = env_base.get("KITSU_TEMPLATE_DB_14")
 
-        if not any(kitsu_db_dir_host.iterdir()):
+        try:
+            empty = not any(kitsu_db_dir_host.iterdir())
+        except PermissionError as e:
+            context.log.exception(
+                f"Database folder {kitsu_db_dir_host} already "
+                f"exists and/or is not writable: "
+                f"{e}")
+            empty = False
+
+        if empty:
             shutil.copytree(
                 src=kitsu_db_template,
                 dst=kitsu_db_dir_host,
@@ -367,23 +376,20 @@ def compose_kitsu(
 
     if not KITSUDB_INSIDE_CONTAINER:
 
+        kitsu_db_dir_host = pathlib.Path(env_base.get("KITSU_DATABASE_INSTALL_DESTINATION")) / "postgresql" / "14" / "main"
+
         volumes.insert(
             0,
-            f"{env_base.get('KITSU_DATABASE_INSTALL_DESTINATION')}:/var/lib/postgresql/14/main",
+            f"{kitsu_db_dir_host.as_posix()}:/var/lib/postgresql/14/main",
         )
 
-        # Todo:
-        #  - [ ] Set ownership of kitsu_previews_host as well?
-        #  - [ ] /opt/zou/zou?
-        kitsu_previews_host = pathlib.Path(env_base.get("KITSU_PREVIEWS"))
+        kitsu_previews_host = pathlib.Path(env_base.get("KITSU_DATABASE_INSTALL_DESTINATION")) / "previews"
         kitsu_previews_host.mkdir(parents=True, exist_ok=True)
 
-        # Todo:
-        #  - [ ] re-enable after test
-        # volumes.insert(
-        #     1,
-        #     f"{kitsu_previews_host}:/opt/zou/previews",
-        # )
+        volumes.insert(
+            1,
+            f"{kitsu_previews_host}:/opt/zou/previews",
+        )
 
     docker_dict = {
         "services": {

@@ -192,6 +192,12 @@ def env_base(
         "KITSU_PORT_CONTAINER": "80",
         "KITSU_DATABASE_INSTALL_DESTINATION": {
             #################################################################
+            # Kitsu Postgresql DB will be created in (hardcoded):
+            # "KITSU_DATABASE_INSTALL_DESTINATION" / "postgresql" / "14" / "main"
+            # Kitsu Previews folder will be created in (hardcoded):
+            # "KITSU_DATABASE_INSTALL_DESTINATION" / "previews"
+            #################################################################
+            #################################################################
             # Inside Generation:
             "default": pathlib.Path(
                 DOT_DOCKER_ROOT,
@@ -199,8 +205,6 @@ def env_base(
                 generation.get("GENERATION", "default"),
                 "data",
                 "kitsu",
-                "postgres",
-                "main",
             ).as_posix(),
             #################################################################
             # Prod DB:
@@ -208,7 +212,6 @@ def env_base(
                 nfs["NFS_ENTRY_POINT"],
                 "services",
                 "kitsu",
-                "main",
             ).as_posix(),
             #################################################################
             # Test DB:
@@ -217,7 +220,6 @@ def env_base(
                 "test_data",
                 "10.2",
                 "kitsu",
-                "main",
             ).as_posix(),
         }["prod_db"],
         f"KITSU_INIT_ZOU": pathlib.Path(
@@ -247,14 +249,14 @@ def env_base(
         #     "kitsu",
         #     "init_and_start_zou.sh",
         # ).expanduser().as_posix(),
-        f"KITSU_PREVIEWS": pathlib.Path(
-            DOT_DOCKER_ROOT,
-            "generations",
-            generation.get("GENERATION", "default"),
-            "data",
-            "kitsu",
-            "previews",
-        ).expanduser().as_posix(),
+        # f"KITSU_PREVIEWS": pathlib.Path(
+        #     DOT_DOCKER_ROOT,
+        #     "generations",
+        #     generation.get("GENERATION", "default"),
+        #     "data",
+        #     "kitsu",
+        #     "previews",
+        # ).expanduser().as_posix(),
         f"KITSU_TEMPLATE_DB_14": pathlib.Path(
             pathlib.Path("~/git/repos/deadline-docker/configs/kitsu/postgres/template_dbs/14/main").expanduser().as_posix()
         ).expanduser().as_posix(),
