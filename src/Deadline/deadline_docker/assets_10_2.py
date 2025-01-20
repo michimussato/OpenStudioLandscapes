@@ -617,11 +617,11 @@ def build_repository_image_10_2(
                 "10_2",
             ],
         ),
-        "connection_ini_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
-        ),
+        # "connection_ini_10_2": AssetIn(
+        #     key_prefix=[
+        #         "10_2",
+        #     ],
+        # ),
         "compose_mongodb_10_2": AssetIn(
             key_prefix=[
                 "10_2",
@@ -639,7 +639,7 @@ def compose_repository_10_2(
         env_10_2: dict,
         compose_networks_10_2: dict,
         build_repository_image_10_2: str,
-        connection_ini_10_2: pathlib.Path,
+        # connection_ini_10_2: pathlib.Path,
         compose_mongodb_10_2: dict,
 ) -> pathlib.Path:
     """
@@ -729,9 +729,9 @@ def compose_repository_10_2(
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            context.asset_key.path[-1]: MetadataValue.json(docker_dict),
             "cmd_docker_compose_up": MetadataValue.path(" ".join(shlex.quote(s) for s in cmd_docker_compose_up)),
             "cmd_docker_compose_down": MetadataValue.path(" ".join(shlex.quote(s) for s in cmd_docker_compose_down)),
+            context.asset_key.path[-1]: MetadataValue.json(docker_dict),
             "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
             "env_10_2": MetadataValue.json(env_10_2),
         },
@@ -1825,9 +1825,9 @@ def compose_10_2(
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            context.asset_key.path[-1]: MetadataValue.path(docker_compose),
             "cmd_docker_compose_up": MetadataValue.path(" ".join(shlex.quote(s) for s in cmd_docker_compose_up)),
             "cmd_docker_compose_down": MetadataValue.path(" ".join(shlex.quote(s) for s in cmd_docker_compose_down)),
+            context.asset_key.path[-1]: MetadataValue.path(docker_compose),
             "maps": MetadataValue.md(f"```json\n{json.dumps(docker_chainmap.maps, indent=2)}\n```"),
             "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
             "env_10_2": MetadataValue.json(env_10_2),
