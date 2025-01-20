@@ -32,8 +32,8 @@ def compile_cmds(
     cmd_docker_run = [
         shutil.which("docker"),
         "run",
-        _volumes,
-        _networks,
+        # _volumes if bool(_volumes) else "",
+        # _networks if bool(_networks) else "",
         "--rm",
         "--interactive",
         "--tty",
@@ -41,14 +41,23 @@ def compile_cmds(
         "bash",
         tag,
     ]
+
+    if bool(_volumes):
+        cmd_docker_run.insert(2, _volumes)
+
+    if bool(_networks):
+        cmd_docker_run.insert(2, _networks)
+
     cmd_docker_build = [
         shutil.which("docker"),
         "build",
         "--tag",
         tag,
         docker_file.parent.as_posix(),
-        '--no-cache' if DOCKER_USE_CACHE else '',
     ]
+
+    if not DOCKER_USE_CACHE:
+        cmd_docker_build.append("--no-cache")
 
     metadata_values = {
         "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)),

@@ -6,6 +6,7 @@ import pathlib
 import time
 import yaml
 import pydot
+import tempfile
 import subprocess
 from collections import ChainMap
 from functools import reduce
@@ -1220,21 +1221,6 @@ def compose_mongodb_10_2(
     # sudo chown 101:65534 DeadlineDatabase10
     # Concept: /usr/bin/sshpass -eENV_VAR /usr/bin/ssh "echo $ENV_VAR | sudo -S <cmd>"
     # Because shutil.chown cannot sudo
-    mongo_uid = 101
-    mongo_gid = 65534
-
-    cmd_chown = [
-        shutil.which("sshpass"),
-        "-eSSH_PASS",
-        "ssh",
-        f"{env_10_2['SSH_USER']}@{env_10_2['SSH_HOST']}",
-        f"echo $SSH_PASS | sudo -S chown {mongo_uid}:{mongo_gid} {mongo_db_dir_host.as_posix()}",
-        # f"echo {env_10_2['SSH_PASS']} | sudo -S chown {mongo_uid}:{mongo_gid} {mongo_db_dir_host.as_posix()}",
-    ]
-
-    cmd_chown_str = cmd_list_to_str(cmd_chown)
-
-    context.log.info(f"{cmd_chown_str = }")
 
     stdout_stderr = {
             "stdout": MetadataValue.md(f"```shell\nNone\n```"),
@@ -1246,13 +1232,47 @@ def compose_mongodb_10_2(
 
         context.log.info(f"Setting ownership of {mongo_db_dir_host.as_posix()}...")
 
+        script_out_dir = pathlib.Path(
+            DOT_DOCKER_ROOT,
+            "generations",
+            env_10_2.get("GENERATION", "default"),
+            context.asset_key.path[0],
+            "scripts",
+            context.asset_key.path[-1],
+        )
+
+        script_out_dir.mkdir(parents=True, exist_ok=True)
+
+        with tempfile.NamedTemporaryFile(
+            mode="w",
+            suffix=".sh",
+            delete=False,
+            prefix=f"{context.asset_key.path[-1]}__chown__",
+            dir=script_out_dir
+        ) as sh:
+            mongo_uid = 101
+            mongo_gid = 65534
+            sh.write("#!/bin/bash\n")
+            sh.write("\n")
+            sh.write(
+                f"{shutil.which('sshpass')} -eSSH_PASS "
+                f"ssh {env_10_2['SSH_USER']}@{env_10_2['SSH_HOST']} "
+                # f"\"echo {env_base['SSH_PASS']} | sudo -S chown {mongo_uid}:{mongo_gid} {kitsu_db_dir_host.as_posix()}\"\n")
+                f"\"echo $SSH_PASS | sudo -S chown {mongo_uid}:{mongo_gid} {mongo_db_dir_host.as_posix()}\"\n")
+            sh.write("echo Success\n")
+            sh.write("exit 0\n")
+
+        cmd = [
+            shutil.which("bash"),
+            sh.name,
+        ]
+
         proc = subprocess.Popen(
-            args=cmd_chown_str,
+            cmd,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            shell=True,
             env={
-                "SSH_PASS": env_10_2.get('SSH_PASS'),
+                "SSH_PASS": env_10_2['SSH_PASS'],
             }
         )
 
@@ -1318,7 +1338,7 @@ def compose_mongodb_10_2(
             "docker_dict": MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
             "docker_yaml": MetadataValue.md(f"```shell\n{docker_yaml}\n```"),
             "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)),
-            "cmd_chown": MetadataValue.path(cmd_chown_str),
+            "sh_chown": MetadataValue.path(sh.name),
             **stdout_stderr,
             "env_10_2": MetadataValue.json(env_10_2),
         },

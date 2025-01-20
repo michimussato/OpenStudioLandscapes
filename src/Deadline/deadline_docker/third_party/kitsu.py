@@ -1,3 +1,4 @@
+import tempfile
 import time
 import textwrap
 import shutil
@@ -19,6 +20,38 @@ from dagster import (
     AssetMaterialization,
     MetadataValue,
 )
+
+
+"""
+/opt/zou# cat init_zou.sh 
+#!/bin/bash
+export LC_ALL=C.UTF-8
+export LANG=C.UTF-8
+
+service postgresql start
+service redis-server start
+
+. /opt/zou/env/bin/activate
+
+zou upgrade-db
+zou init-data
+zou create-admin admin@example.com --password mysecretpassword
+
+service postgresql stop
+service redis-server stop
+
+
+
+/opt/zou# cat start_zou.sh 
+#!/bin/bash
+
+# create /var/run/postgresql
+. /usr/share/postgresql-common/init.d-functions
+create_socket_directory
+
+echo Running Zou...
+supervisord -c /etc/supervisord.conf
+"""
 
 
 @asset(
@@ -148,21 +181,6 @@ def compose_kitsu(
     # sudo chown 105:105 KitsuPostgres
     # Concept: /usr/bin/sshpass -eENV_VAR /usr/bin/ssh "echo $ENV_VAR | sudo -S <cmd>"
     # Because shutil.chown cannot sudo
-    mongo_uid = 105
-    mongo_gid = 105
-
-    cmd_chown = [
-        shutil.which("sshpass"),
-        "-eSSH_PASS",
-        "ssh",
-        f"{env_base['SSH_USER']}@{env_base['SSH_HOST']}",
-        f"echo $SSH_PASS | sudo -S chown {mongo_uid}:{mongo_gid} {kitsu_db_dir_host.as_posix()}",
-        # f"echo {env_base['SSH_PASS']} | sudo -S chown {mongo_uid}:{mongo_gid} {kitsu_db_dir_host.as_posix()}",
-    ]
-
-    cmd_chown_str = cmd_list_to_str(cmd_chown)
-
-    context.log.info(f"{cmd_chown_str = }")
 
     stdout_stderr = {
             "stdout": MetadataValue.md(f"```shell\nNone\n```"),
@@ -174,13 +192,46 @@ def compose_kitsu(
 
         context.log.info(f"Setting ownership of {kitsu_db_dir_host.as_posix()}...")
 
+        script_out_dir = pathlib.Path(
+            DOT_DOCKER_ROOT,
+            "generations",
+            env_base.get("GENERATION", "default"),
+            "scripts",
+            context.asset_key.path[-1],
+        )
+
+        script_out_dir.mkdir(parents=True, exist_ok=True)
+
+        with tempfile.NamedTemporaryFile(
+            mode="w",
+            suffix=".sh",
+            delete=False,
+            prefix=f"{context.asset_key.path[-1]}__chown__",
+            dir=script_out_dir
+        ) as sh:
+            kitsu_postgres_uid = 105
+            kitsu_postgres_gid = 105
+            sh.write("#!/bin/bash\n")
+            sh.write("\n")
+            sh.write(
+                f"{shutil.which('sshpass')} -eSSH_PASS "
+                f"ssh {env_base['SSH_USER']}@{env_base['SSH_HOST']} "
+                # f"\"echo {env_base['SSH_PASS']} | sudo -S chown {mongo_uid}:{mongo_gid} {kitsu_db_dir_host.as_posix()}\"\n")
+                f"\"echo $SSH_PASS | sudo -S chown {kitsu_postgres_uid}:{kitsu_postgres_gid} {kitsu_db_dir_host.as_posix()}\"\n")
+            sh.write("echo Success\n")
+            sh.write("exit 0\n")
+
+        cmd = [
+            shutil.which("bash"),
+            sh.name,
+        ]
+
         proc = subprocess.Popen(
-            args=cmd_chown_str,
+            cmd,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            shell=True,
             env={
-                "SSH_PASS": env_base.get('SSH_PASS'),
+                "SSH_PASS": env_base['SSH_PASS'],
             }
         )
 
@@ -235,7 +286,7 @@ def compose_kitsu(
             "docker_dict": MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
             "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
             "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)),
-            "cmd_chown": MetadataValue.path(cmd_chown_str),
+            "sh_chown": MetadataValue.path(sh.name),
             **stdout_stderr,
             "env_base": MetadataValue.json(env_base),
         },
