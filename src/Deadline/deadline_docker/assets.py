@@ -95,22 +95,6 @@ def env_base(
 
         "MONGO_DB_NAME": "deadline10db",
 
-        "LIKEC4_DEV_PORT_HOST": "4567",
-        "LIKEC4_DEV_PORT_CONTAINER": "4567",
-        "LIKEC4_HOST": "0.0.0.0",
-
-        "FILEBROWSER_PORT_HOST": "8080",
-        "FILEBROWSER_PORT_CONTAINER": "80",
-        "FILEBROWSER_DB": pathlib.Path("~/git/repos/deadline-docker/configs/filebrowser/db/filebrowser.db").expanduser().as_posix(),
-        "FILEBROWSER_JSON": pathlib.Path("~/git/repos/deadline-docker/configs/filebrowser/json/filebrowser.json").expanduser().as_posix(),
-
-        "DAGSTER_DEV_PORT_HOST": "3003",
-        "DAGSTER_DEV_PORT_CONTAINER": "3006",
-        "DAGSTER_ROOT": "/dagster",
-        "DAGSTER_HOME": "/dagster/materializations",
-        "DAGSTER_HOST": "0.0.0.0",
-        "DAGSTER_WORKSPACE": "/dagster/workspace.yaml",
-
         "RCS_HTTP_PORT_HOST": "8888",
         "RCS_HTTP_PORT_CONTAINER": "8888",
 
@@ -122,7 +106,70 @@ def env_base(
         "DEFAULT_DBPATH_CONTAINER": "/data/db",
         # "DEFAULT_DBPATH_CONTAINER": "/opt/Thinkbox/DeadlineDatabase10/mongo/data",
         "DEFAULT_CONFIG_DBPATH": "/data/configdb",
+        "ROOT_DOMAIN": "farm.evil",
+        # "DB_HOST": "mongodb-10-2",
 
+        # https://vfxplatform.com/
+        "PYTHON_MAJ": "3",
+        "PYTHON_MIN": "11",
+        "PYTHON_PAT": "11",
+
+        # # PROD
+        # "LN_NFS": "/nfs",
+        # "NFS_ENTRY_POINT": "/data/share{0[LN_NFS]}",
+        # "NFS_ENTRY_POINT_LNS": "{0[LN_NFS]}",
+        # "INSTALLERS_ROOT": "{0[NFS_ENTRY_POINT]}/installers",
+        # "NFS_REPOSITORY": "{0[NFS_ENTRY_POINT]}/prod/DeadlineRepository10",
+        # "NFS_DEADLINE": "{0[NFS_ENTRY_POINT]}/prod/Deadline10",
+        # "MONGO_DB_DIR_HOST": pathlib.Path("~/git/repos/deadline-docker/tests/fixtures/10.2/DeadlineDatabase10/mongo/data").expanduser().as_posix(),
+
+        # # TEST
+        # "LN_NFS": "/nfs",
+        # "NFS_ENTRY_POINT": "/data/share/nfs",
+        # "NFS_ENTRY_POINT_LNS": "/nfs",
+        # "INSTALLERS_ROOT": "/data/share/nfs/installers",
+
+        # "MONGO_DB_DIR_HOST": pathlib.Path("~/git/repos/deadline-docker/tests/fixtures/10.2/DeadlineDatabase10/mongo/data").expanduser().as_posix(),
+        # "MONGO_DB_DIR_HOST": pathlib.Path("~/git/repos/deadline-docker/tests/fixtures/10_2/DeadlineDatabase10").expanduser().as_posix(),
+
+        # # TODO
+        # # DEADLINE_CLIENT_DIR: "/opt/Thinkbox/Deadline10"
+        # # DEADLINE_REPO_DIR: "/opt/Thinkbox/DeadlineRepository10"
+        # # MONGO_DB_NAME: deadline10db
+        # # MONGO_DB_HOST: $DB_HOST
+        # # MONGO_DB_PROD:
+        # # MONGO_DB_TEST:
+    }
+
+    _env_ayon = {
+        "AYON_DOCKER_COMPOSE": pathlib.Path("~/git/repos/deadline-docker/repos/ayon-docker/docker-compose.yml").expanduser().as_posix(),
+        "AYON_PORT_HOST": "5005",
+        "AYON_PORT_CONTAINER": "5000",
+    }
+
+    _env_dagster = {
+        "DAGSTER_DEV_PORT_HOST": "3003",
+        "DAGSTER_DEV_PORT_CONTAINER": "3006",
+        "DAGSTER_ROOT": "/dagster",
+        "DAGSTER_HOME": "/dagster/materializations",
+        "DAGSTER_HOST": "0.0.0.0",
+        "DAGSTER_WORKSPACE": "/dagster/workspace.yaml",
+    }
+
+    _env_filebrowser = {
+        "FILEBROWSER_PORT_HOST": "8080",
+        "FILEBROWSER_PORT_CONTAINER": "80",
+        "FILEBROWSER_DB": pathlib.Path("~/git/repos/deadline-docker/configs/filebrowser/db/filebrowser.db").expanduser().as_posix(),
+        "FILEBROWSER_JSON": pathlib.Path("~/git/repos/deadline-docker/configs/filebrowser/json/filebrowser.json").expanduser().as_posix(),
+    }
+
+    _env_likec4 = {
+        "LIKEC4_DEV_PORT_HOST": "4567",
+        "LIKEC4_DEV_PORT_CONTAINER": "4567",
+        "LIKEC4_HOST": "0.0.0.0",
+    }
+
+    _env_mongo_express = {
         # "MONGO_PORT": "${MONGO_DB_PORT_CONTAINER}",
         # https://docs.docker.com/compose/how-tos/environment-variables/set-environment-variables/#additional
         # -information-1
@@ -136,20 +183,16 @@ def env_base(
         #  - [ ] Verify whether MONGO_DB_PORT_CONTAINER or MONGO_DB_PORT_HOST
         #        is actually correct
         "ME_CONFIG_MONGODB_URL": "mongodb://admin:pass@localhost:{MONGO_DB_PORT_CONTAINER}/db?ssl=false",
+    }
 
-        "AYON_DOCKER_COMPOSE": pathlib.Path("~/git/repos/deadline-docker/repos/ayon-docker/docker-compose.yml").expanduser().as_posix(),
-        "AYON_PORT_HOST": "5005",
-        "AYON_PORT_CONTAINER": "5000",
-
+    _env_kitsu = {
         "KITSU_ADMIN_USER": "admin@example.com",
-        "KITSU_ADMIN_PASSWORD": "mysecretpassword",
+        "KITSU_ADMIN_PASSWORD": "mysecretpassword2",
         "KITSU_PORT_HOST": "4545",
         "KITSU_PORT_CONTAINER": "80",
         "KITSU_DATABASE_INSTALL_DESTINATION": {
             #################################################################
             # Inside Generation:
-            # Username: admin@example.com
-            # Password: mysecretpassword
             "default": pathlib.Path(
                 DOT_DOCKER_ROOT,
                 "generations",
@@ -160,17 +203,23 @@ def env_base(
                 "main",
             ).as_posix(),
             #################################################################
+            # Prod DB:
+            "prod_db": pathlib.Path(
+                nfs["NFS_ENTRY_POINT"],
+                "services",
+                "kitsu",
+                "main",
+            ).as_posix(),
+            #################################################################
             # Test DB:
-            # Username: admin@example.com
-            # Password: mysecretpassword
             "test_db": pathlib.Path(
-                "nfs",
+                nfs["NFS_ENTRY_POINT"],
                 "test_data",
                 "10.2",
                 "kitsu",
                 "main",
             ).as_posix(),
-        }["default"],
+        }["prod_db"],
         f"KITSU_INIT_ZOU": pathlib.Path(
             DOT_DOCKER_ROOT,
             "generations",
@@ -209,41 +258,14 @@ def env_base(
         f"KITSU_TEMPLATE_DB_14": pathlib.Path(
             pathlib.Path("~/git/repos/deadline-docker/configs/kitsu/postgres/template_dbs/14/main").expanduser().as_posix()
         ).expanduser().as_posix(),
-
-        "ROOT_DOMAIN": "farm.evil",
-        # "DB_HOST": "mongodb-10-2",
-
-        # https://vfxplatform.com/
-        "PYTHON_MAJ": "3",
-        "PYTHON_MIN": "11",
-        "PYTHON_PAT": "11",
-
-        # # PROD
-        # "LN_NFS": "/nfs",
-        # "NFS_ENTRY_POINT": "/data/share{0[LN_NFS]}",
-        # "NFS_ENTRY_POINT_LNS": "{0[LN_NFS]}",
-        # "INSTALLERS_ROOT": "{0[NFS_ENTRY_POINT]}/installers",
-        # "NFS_REPOSITORY": "{0[NFS_ENTRY_POINT]}/prod/DeadlineRepository10",
-        # "NFS_DEADLINE": "{0[NFS_ENTRY_POINT]}/prod/Deadline10",
-        # "MONGO_DB_DIR_HOST": pathlib.Path("~/git/repos/deadline-docker/tests/fixtures/10.2/DeadlineDatabase10/mongo/data").expanduser().as_posix(),
-
-        # # TEST
-        # "LN_NFS": "/nfs",
-        # "NFS_ENTRY_POINT": "/data/share/nfs",
-        # "NFS_ENTRY_POINT_LNS": "/nfs",
-        # "INSTALLERS_ROOT": "/data/share/nfs/installers",
-
-        # "MONGO_DB_DIR_HOST": pathlib.Path("~/git/repos/deadline-docker/tests/fixtures/10.2/DeadlineDatabase10/mongo/data").expanduser().as_posix(),
-        # "MONGO_DB_DIR_HOST": pathlib.Path("~/git/repos/deadline-docker/tests/fixtures/10_2/DeadlineDatabase10").expanduser().as_posix(),
-
-        # # TODO
-        # # DEADLINE_CLIENT_DIR: "/opt/Thinkbox/Deadline10"
-        # # DEADLINE_REPO_DIR: "/opt/Thinkbox/DeadlineRepository10"
-        # # MONGO_DB_NAME: deadline10db
-        # # MONGO_DB_HOST: $DB_HOST
-        # # MONGO_DB_PROD:
-        # # MONGO_DB_TEST:
     }
+
+    _env.update(_env_ayon)
+    _env.update(_env_dagster)
+    _env.update(_env_kitsu)
+    _env.update(_env_filebrowser)
+    _env.update(_env_likec4)
+    _env.update(_env_mongo_express)
 
     _env.update(secrets)
     _env.update(generation)

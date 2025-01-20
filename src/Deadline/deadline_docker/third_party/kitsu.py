@@ -159,16 +159,9 @@ def prepare_db_kitsu(
         env_base: dict,
 ):
 
-    # kitsu_db_dir_host = pathlib.Path(env_base.get("KITSU_DATABASE_INSTALL_DESTINATION"))
-    # kitsu_db_dir_host.mkdir(parents=True, exist_ok=True)
-
-    # sudo chown 105:105 KitsuPostgres
-    # Concept: /usr/bin/sshpass -eENV_VAR /usr/bin/ssh "echo $ENV_VAR | sudo -S <cmd>"
-    # Because shutil.chown cannot sudo
-
     stdout_stderr = {
-            "stdout": MetadataValue.md(f"```shell\nNone\n```"),
-            "stderr": MetadataValue.md(f"```shell\nNone\n```"),
+        "stdout": MetadataValue.md(f"```shell\nNone\n```"),
+        "stderr": MetadataValue.md(f"```shell\nNone\n```"),
     }
 
     if not KITSUDB_INSIDE_CONTAINER:
@@ -201,9 +194,12 @@ def prepare_db_kitsu(
             mode="w",
             suffix=".sh",
             delete=False,
-            prefix=f"{context.asset_key.path[-1]}__chown__",
+            prefix=f"{context.asset_key.path[-1]}__",
             dir=script_out_dir
         ) as sh_chown:
+            # sudo chown 105:105 KitsuPostgres
+            # Concept: /usr/bin/sshpass -eENV_VAR /usr/bin/ssh "echo $ENV_VAR | sudo -S <cmd>"
+            # Because shutil.chown cannot sudo
             kitsu_postgres_uid = 105
             kitsu_postgres_gid = 105
             sh_chown.write("#!/bin/bash\n")
@@ -218,7 +214,7 @@ def prepare_db_kitsu(
             sh_chown.write(
                 f"{shutil.which('sshpass')} -eSSH_PASS "
                 f"ssh {env_base['SSH_USER']}@{env_base['SSH_HOST']} "
-                f"\"echo $SSH_PASS | sudo -S chmod -R 0700 {kitsu_db_dir_host.as_posix()}\"\n")
+                f"\"echo $SSH_PASS | sudo -S chmod 0700 {kitsu_db_dir_host.as_posix()}\"\n")
             sh_chown.write("echo Success\n")
             sh_chown.write("exit 0\n")
 
@@ -371,30 +367,22 @@ def compose_kitsu(
 
     if not KITSUDB_INSIDE_CONTAINER:
 
+        volumes.insert(
+            0,
+            f"{env_base.get('KITSU_DATABASE_INSTALL_DESTINATION')}:/var/lib/postgresql/14/main",
+        )
+
         # Todo:
         #  - [ ] Set ownership of kitsu_previews_host as well?
         #  - [ ] /opt/zou/zou?
         kitsu_previews_host = pathlib.Path(env_base.get("KITSU_PREVIEWS"))
         kitsu_previews_host.mkdir(parents=True, exist_ok=True)
 
-        volumes.insert(
-            0,
-            f"{env_base.get('KITSU_DATABASE_INSTALL_DESTINATION')}:/var/lib/postgresql/14/main",
-        )
-
-        volumes.insert(
-            1,
-            f"{kitsu_previews_host}:/opt/zou/previews",
-        )
-
+        # Todo:
+        #  - [ ] re-enable after test
         # volumes.insert(
         #     1,
-        #     f"{env_base.get('KITSU_INIT_ZOU')}:/opt/zou/init_zou.sh",
-        # )
-
-        # volumes.insert(
-        #     2,
-        #     f"{env_base.get('KITSU_INIT_AND_START_ZOU')}:/opt/zou/init_and_start_zou.sh",
+        #     f"{kitsu_previews_host}:/opt/zou/previews",
         # )
 
     docker_dict = {
