@@ -187,7 +187,7 @@ def env_base(
 
     _env_kitsu = {
         "KITSU_ADMIN_USER": "admin@example.com",
-        "KITSU_ADMIN_PASSWORD": "mysecretpassword2",
+        "KITSU_ADMIN_PASSWORD": "mysecretpassword",
         "KITSU_PORT_HOST": "4545",
         "KITSU_PORT_CONTAINER": "80",
         "KITSU_DATABASE_INSTALL_DESTINATION": {
@@ -226,37 +226,10 @@ def env_base(
             DOT_DOCKER_ROOT,
             "generations",
             generation.get("GENERATION", "default"),
-            # context.asset_key.path[0],
             "configs",
             "kitsu",
             "init_zou.sh",
         ).expanduser().as_posix(),
-        # f"KITSU_START_ZOU": pathlib.Path(
-        #     DOT_DOCKER_ROOT,
-        #     "generations",
-        #     generation.get("GENERATION", "default"),
-        #     # context.asset_key.path[0],
-        #     "configs",
-        #     "kitsu",
-        #     "start_zou.sh",
-        # ).expanduser().as_posix(),
-        # f"KITSU_INIT_AND_START_ZOU": pathlib.Path(
-        #     DOT_DOCKER_ROOT,
-        #     "generations",
-        #     generation.get("GENERATION", "default"),
-        #     # context.asset_key.path[0],
-        #     "configs",
-        #     "kitsu",
-        #     "init_and_start_zou.sh",
-        # ).expanduser().as_posix(),
-        # f"KITSU_PREVIEWS": pathlib.Path(
-        #     DOT_DOCKER_ROOT,
-        #     "generations",
-        #     generation.get("GENERATION", "default"),
-        #     "data",
-        #     "kitsu",
-        #     "previews",
-        # ).expanduser().as_posix(),
         f"KITSU_TEMPLATE_DB_14": pathlib.Path(
             pathlib.Path("~/git/repos/deadline-docker/configs/kitsu/postgres/template_dbs/14/main").expanduser().as_posix()
         ).expanduser().as_posix(),
