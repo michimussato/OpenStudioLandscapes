@@ -1,6 +1,7 @@
 <!-- TOC -->
 * [deadline-docker](#deadline-docker)
   * [Tested on](#tested-on)
+  * [Author](#author)
   * [Requirements](#requirements)
   * [Limitations](#limitations)
   * [Integrated Tools](#integrated-tools)
@@ -17,7 +18,7 @@
     * [Launch Dagster](#launch-dagster)
     * [Configure Generation](#configure-generation)
     * [Materialize Generation](#materialize-generation)
-      * [Resulting Files and Directories ("Generation")](#resulting-files-and-directories-generation)
+      * [Resulting Files and Directories (aka "Generation")](#resulting-files-and-directories-aka-generation)
   * [Run Repository Installer](#run-repository-installer)
   * [Run Deadline Farm](#run-deadline-farm)
   * [Client](#client)
@@ -44,11 +45,31 @@ migration, DB restore etc.
 
 No more black boxes.
 No more path dependencies due to bad decisions
-made in the past.
+made in the past. Stay flexible and adaptable 
+with this modular system by reconfiguring
+your production landscape with ease:
+- Add or remove services
+- Duplicate entire production landscapes for testing, debugging or development
+- Always stay on top of things with maps and node trees of code and landscapes
+- `deadline-docker` uses Dagster as its engine
+
+This platform is aimed towards small to medium-sized
+studios where only limited resources for Pipeline 
+Engineers and Technical Directors are available.
+This system allows those studios to share a common
+technical playground be still allowing the flexibility
+to implement highly studio specific or individual solutions if 
+needed.
 
 ## Tested on
 
 - Manjaro Linux
+
+## Author
+
+Michael Mussato
+[LinkedIn](https://www.linkedin.com/in/michael-mussato-815902190/)
+[IMDb](https://www.imdb.com/name/nm5961264/)
 
 ## Requirements
 
@@ -65,6 +86,10 @@ Currently only for Deadline version 10.2.
 Versions 10.3 and 10.4 are WIP and will be
 implemented as soon as 10.2 fully works as
 a proof of concept.
+
+Todo:
+- [ ] Deadline 10.3
+- [ ] Deadline 10.4
 
 ## Integrated Tools
 
@@ -89,7 +114,13 @@ a proof of concept.
 
 ## Docker Compose Graph
 
-Dynamic Docker Compose documentation with `docker-graph` visualizer.
+Dynamic Docker Compose documentation: 
+`docker-graph` creates a visual representation of
+`docker-compose.yml` files for every individual
+generation for quick reference and context.
+
+Todo:
+- [ ] LikeC4-Map
 
 ### Deadline 10.2
 
@@ -152,7 +183,7 @@ Edit `deadline-docker.assets.env_base` and
 
 ![materialize_all.png](docs/img/materialize_all.png)
 
-#### Resulting Files and Directories ("Generation")
+#### Resulting Files and Directories (aka "Generation")
 
 ```shell
 $ tree deadline-docker/.docker/generations/1737208678.732601/
@@ -241,6 +272,7 @@ Copy/Paste command and execute:
 ### Deadline Monitor
 
 ![monitor.png](docs/img/monitor.png)
+
 ![monitor_2.png](docs/img/monitor_2.png)
 
 ## Docker
@@ -270,6 +302,6 @@ And in `deadline-docker.assets.env_10_2` set
 
 ```
 f"DATABASE_INSTALL_DESTINATION_{context.asset_key.path[0]}": pathlib.Path(
-        f"/home/michael/git/repos/deadline-docker/tests/fixtures/{context.asset_key.path[0]}/DeadlineDatabase10",
-    ).as_posix()
+      f"/home/michael/git/repos/deadline-docker/tests/fixtures/{context.asset_key.path[0]}/DeadlineDatabase10",
+  ).as_posix()
 ```
