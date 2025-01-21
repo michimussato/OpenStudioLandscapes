@@ -1,7 +1,7 @@
 <!-- TOC -->
 * [deadline-docker](#deadline-docker)
   * [Tested on](#tested-on)
-  * [Author](#author)
+  * [About the Author](#about-the-author)
   * [Requirements](#requirements)
   * [Limitations](#limitations)
   * [Integrated Tools](#integrated-tools)
