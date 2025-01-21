@@ -65,7 +65,7 @@ needed.
 
 - Manjaro Linux
 
-## Author
+## About the Author
 
 Michael Mussato
 - [LinkedIn](https://www.linkedin.com/in/michael-mussato-815902190/)
