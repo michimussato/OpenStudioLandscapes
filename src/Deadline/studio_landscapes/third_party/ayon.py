@@ -2,8 +2,8 @@ import pathlib
 import yaml
 import shutil
 
-from Deadline.deadline_docker.utils import *
-from Deadline.deadline_docker.constants import *
+from Deadline.studio_landscapes.utils import *
+from Deadline.studio_landscapes.constants import *
 
 from docker_graph.yaml_tags.overrides import *
 

@@ -1,7 +1,7 @@
 import shutil
 import shlex
 
-from Deadline.deadline_docker.constants import *
+from Deadline.studio_landscapes.constants import *
 
 from dagster import MetadataValue
 
@@ -88,7 +88,7 @@ def deep_merge(dict1, dict2):
 #         context: AssetExecutionContext = None,
 # ):
 #     """
-# from Deadline.deadline_docker.assets import docker_cleanup
+# from Deadline.studio_landscapes.assets import docker_cleanup
 # docker_cleanup()
 #     """
 #     # out = {

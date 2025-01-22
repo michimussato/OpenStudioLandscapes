@@ -2,11 +2,11 @@ from dagster import (
     Definitions,
     load_assets_from_modules,
 )
-from Deadline.deadline_docker import (
+from Deadline.studio_landscapes import (
     assets,
     assets_10_2,
 )
-from Deadline.deadline_docker.third_party import (
+from Deadline.studio_landscapes.third_party import (
     ayon,
     dagster,
     kitsu,

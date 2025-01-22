@@ -9,8 +9,8 @@ import subprocess
 
 from python_on_whales import docker
 
-from Deadline.deadline_docker.constants import *
-from Deadline.deadline_docker.utils import *
+from Deadline.studio_landscapes.constants import *
+from Deadline.studio_landscapes.utils import *
 
 from dagster import (
     AssetIn,

@@ -14,8 +14,8 @@ from functools import reduce
 from python_on_whales import docker
 from docker_graph.docker_graph import DockerComposeGraph
 
-from Deadline.deadline_docker.constants import *
-from Deadline.deadline_docker.utils import *
+from Deadline.studio_landscapes.constants import *
+from Deadline.studio_landscapes.utils import *
 
 from dagster import (
     AssetExecutionContext,
@@ -117,11 +117,13 @@ def env_10_2(
             ).as_posix(),
             #################################################################
             # Test DB:
+            # Todo:
+            #  - [ ] Fix hardcoded path
             "test_db_10_2": pathlib.Path(
                 pathlib.Path().home(),
                 "git",
                 "repos",
-                "deadline-docker",
+                "studio-landscapes",
                 "tests",
                 "fixtures",
                 context.asset_key.path[0],

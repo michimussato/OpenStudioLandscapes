@@ -4,8 +4,8 @@ import textwrap
 import pathlib
 import time
 
-from Deadline.deadline_docker.constants import *
-from Deadline.deadline_docker.utils import *
+from Deadline.studio_landscapes.constants import *
+from Deadline.studio_landscapes.utils import *
 
 from python_on_whales import docker
 
@@ -121,7 +121,7 @@ def env_base(
         # "INSTALLERS_ROOT": "{0[NFS_ENTRY_POINT]}/installers",
         # "NFS_REPOSITORY": "{0[NFS_ENTRY_POINT]}/prod/DeadlineRepository10",
         # "NFS_DEADLINE": "{0[NFS_ENTRY_POINT]}/prod/Deadline10",
-        # "MONGO_DB_DIR_HOST": pathlib.Path("~/git/repos/deadline-docker/tests/fixtures/10.2/DeadlineDatabase10/mongo/data").expanduser().as_posix(),
+        # "MONGO_DB_DIR_HOST": pathlib.Path("~/git/repos/studio-landscapes/tests/fixtures/10.2/DeadlineDatabase10/mongo/data").expanduser().as_posix(),
 
         # # TEST
         # "LN_NFS": "/nfs",
@@ -129,8 +129,8 @@ def env_base(
         # "NFS_ENTRY_POINT_LNS": "/nfs",
         # "INSTALLERS_ROOT": "/data/share/nfs/installers",
 
-        # "MONGO_DB_DIR_HOST": pathlib.Path("~/git/repos/deadline-docker/tests/fixtures/10.2/DeadlineDatabase10/mongo/data").expanduser().as_posix(),
-        # "MONGO_DB_DIR_HOST": pathlib.Path("~/git/repos/deadline-docker/tests/fixtures/10_2/DeadlineDatabase10").expanduser().as_posix(),
+        # "MONGO_DB_DIR_HOST": pathlib.Path("~/git/repos/studio-landscapes/tests/fixtures/10.2/DeadlineDatabase10/mongo/data").expanduser().as_posix(),
+        # "MONGO_DB_DIR_HOST": pathlib.Path("~/git/repos/studio-landscapes/tests/fixtures/10_2/DeadlineDatabase10").expanduser().as_posix(),
 
         # # TODO
         # # DEADLINE_CLIENT_DIR: "/opt/Thinkbox/Deadline10"
@@ -142,7 +142,9 @@ def env_base(
     }
 
     _env_ayon = {
-        "AYON_DOCKER_COMPOSE": pathlib.Path("~/git/repos/deadline-docker/repos/ayon-docker/docker-compose.yml").expanduser().as_posix(),
+        # Todo:
+        #  - [ ] Fix hardcoded path
+        "AYON_DOCKER_COMPOSE": pathlib.Path("~/git/repos/studio-landscapes/repos/ayon-docker/docker-compose.yml").expanduser().as_posix(),
         "AYON_PORT_HOST": "5005",
         "AYON_PORT_CONTAINER": "5000",
     }
@@ -159,8 +161,10 @@ def env_base(
     _env_filebrowser = {
         "FILEBROWSER_PORT_HOST": "8080",
         "FILEBROWSER_PORT_CONTAINER": "80",
-        "FILEBROWSER_DB": pathlib.Path("~/git/repos/deadline-docker/configs/filebrowser/db/filebrowser.db").expanduser().as_posix(),
-        "FILEBROWSER_JSON": pathlib.Path("~/git/repos/deadline-docker/configs/filebrowser/json/filebrowser.json").expanduser().as_posix(),
+        # Todo:
+        #  - [ ] Fix hardcoded paths
+        "FILEBROWSER_DB": pathlib.Path("~/git/repos/studio-landscapes/configs/filebrowser/db/filebrowser.db").expanduser().as_posix(),
+        "FILEBROWSER_JSON": pathlib.Path("~/git/repos/studio-landscapes/configs/filebrowser/json/filebrowser.json").expanduser().as_posix(),
     }
 
     _env_likec4 = {
@@ -231,7 +235,9 @@ def env_base(
             "init_zou.sh",
         ).expanduser().as_posix(),
         f"KITSU_TEMPLATE_DB_14": pathlib.Path(
-            pathlib.Path("~/git/repos/deadline-docker/configs/kitsu/postgres/template_dbs/14/main").expanduser().as_posix()
+            # Todo:
+            #  - [ ] Fix hardcoded path
+            pathlib.Path("~/git/repos/studio-landscapes/configs/kitsu/postgres/template_dbs/14/main").expanduser().as_posix()
         ).expanduser().as_posix(),
     }
 
