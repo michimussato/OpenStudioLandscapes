@@ -68,7 +68,7 @@ needed.
 
 ```mermaid
 mindmap
-  root((deadline-landscape))
+  root((landscape))
     Deadline
         RCS
         Webserver
