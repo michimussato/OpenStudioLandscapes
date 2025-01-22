@@ -700,7 +700,7 @@ def compose_repository_10_2(
     with open(docker_compose, "w") as fw:
         fw.write(docker_yaml)
 
-    project_name = f"{context.asset_key.path[-1]}__{env_10_2.get('LANDSCAPE', 'default').replace('.', '-')}",
+    project_name = f"{context.asset_key.path[-1]}__{env_10_2.get('LANDSCAPE', 'default').replace('.', '-')}"
 
     cmd_docker_compose_up = [
         shutil.which("docker"),
