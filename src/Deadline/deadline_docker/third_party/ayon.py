@@ -2,9 +2,10 @@ import pathlib
 import yaml
 import shutil
 
-from Deadline.deadline_docker.yaml_tags.overrides import *
 from Deadline.deadline_docker.utils import *
 from Deadline.deadline_docker.constants import *
+
+from docker_graph.yaml_tags.overrides import *
 
 from dagster import (
     AssetIn,
