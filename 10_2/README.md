@@ -1,7 +1,7 @@
 <!-- TOC -->
 * [`deadline.ini`](#deadlineini)
 * [Ports](#ports)
-* [Deadline Docker 10.2](#deadline-docker-102)
+* [studio-landscapes 10.2](#studio-landscapes-102)
   * [Symlinks](#symlinks)
   * [Automated](#automated)
 <!-- TOC -->
@@ -16,7 +16,7 @@ https://docs.thinkboxsoftware.com/products/deadline/10.2/1_User%20Manual/manual/
 
 https://docs.thinkboxsoftware.com/products/deadline/10.2/1_User%20Manual/manual/considerations.html#firewall-anti-virus-security-considerations
 
-# Deadline Docker 10.2
+# studio-landscapes 10.2
 
 ```
 sudo rm -rf /home/michael/git/repos/deadline-setup/deadline-setup-docker/10.2/DeadlineRepositoryInstall/*
@@ -32,8 +32,8 @@ sudo rm -rf /home/michael/git/repos/deadline-setup/deadline-setup-docker/10.2/De
 - https://derlin.github.io/docker-compose-viz-mermaid/
 
 ```
-cd ~/git/repos/deadline-docker
-java -jar docker-compose-viz-mermaid_no_local-1.3.0.jar ./10.2/docker-compose.yaml --ilinks --theme DARK --ports --volumes --networks --format TEXT --dir TB --out ./10.2/mermaid/deadline-docker.mermaid
+cd ~/git/repos/studio-landscapes
+java -jar docker-compose-viz-mermaid_no_local-1.3.0.jar ./10.2/docker-compose.yaml --ilinks --theme DARK --ports --volumes --networks --format TEXT --dir TB --out ./10.2/mermaid/studio-landscape.mermaid
 java -jar docker-compose-viz-mermaid_no_local-1.3.0.jar ./10.2/docker-third-party/ayon/docker-compose.override.yml --ilinks --theme DARK --ports --volumes --networks --format TEXT --dir TB --out ./10.2/mermaid/ayon-docker.mermaid
 java -jar docker-compose-viz-mermaid_no_local-1.3.0.jar ./10.2/docker-third-party/cgwire/docker-compose.kitsu.yaml --ilinks --theme DARK --ports --volumes --networks --format TEXT --dir TB --out ./10.2/mermaid/kitus-docker.mermaid
 # java -jar docker-compose-viz-mermaid_no_local-1.3.0.jar ../ayon-docker/docker-compose.yml --ilinks --theme DARK --ports --volumes --networks --format TEXT --dir TB --out ./10.2/mermaid/ayon-docker.mermaid
@@ -68,7 +68,7 @@ https://docs.thinkboxsoftware.com/products/deadline/10.3/1_User%20Manual/manual/
 
 
 ```
-export DEADLINE_CONFIG_FILE=/home/michael/git/repos/deadline-docker/10.2/configs/Deadline10/deadline_client.ini
+export DEADLINE_CONFIG_FILE=/home/michael/git/repos/studio-landscapes/10.2/configs/Deadline10/deadline_client.ini
 export DEADLINE_SYSTEM_PATH="${HOME}/.config/thinkbox/deadline/10.2/var/lib"
 export DEADLINE_ROAMING_USER_PATH="${HOME}/.config/thinkbox/deadline/10.2"
 /nfs/test_data/10.2/opt/Thinkbox/Deadline10/bin/deadlinelauncher
