@@ -698,13 +698,15 @@ def compose_repository_10_2(
     with open(docker_compose, "w") as fw:
         fw.write(docker_yaml)
 
+    project_name = f"{context.asset_key.path[-1]}__{env_10_2.get('LANDSCAPE', 'default').replace('.', '-')}",
+
     cmd_docker_compose_up = [
         shutil.which("docker"),
         "compose",
         "--file",
         docker_compose.as_posix(),
         "--project-name",
-        f"{context.asset_key.path[-1]}__{env_10_2.get('LANDSCAPE', 'default')}",
+        project_name,
         "up",
         "--remove-orphans",
         "--abort-on-container-exit",
@@ -719,7 +721,7 @@ def compose_repository_10_2(
         "--file",
         docker_compose.as_posix(),
         "--project-name",
-        context.asset_key.path[-1],
+        project_name,
         "down",
         "--remove-orphans",
     ]
@@ -1798,13 +1800,15 @@ def compose_10_2(
     with open(docker_compose, "w") as fw:
         fw.write(docker_yaml)
 
+    project_name = f"{context.asset_key.path[-1]}__{env_10_2.get('LANDSCAPE', 'default').replace('.', '-')}"
+
     cmd_docker_compose_up = [
         shutil.which("docker"),
         "compose",
         "--file",
         docker_compose.as_posix(),
         "--project-name",
-        f"{context.asset_key.path[-1]}__{env_10_2.get('LANDSCAPE', 'default')}",
+        project_name,
         "up",
         "--remove-orphans",
     ]
@@ -1815,7 +1819,7 @@ def compose_10_2(
         "--file",
         docker_compose.as_posix(),
         "--project-name",
-        context.asset_key.path[-1],
+        project_name,
         "down",
         "--remove-orphans",
     ]

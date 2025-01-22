@@ -4,6 +4,8 @@
   * [About the Author](#about-the-author)
   * [Requirements](#requirements)
   * [Limitations](#limitations)
+    * [Deadline](#deadline)
+    * [VFX Platform](#vfx-platform)
   * [Integrated Tools](#integrated-tools)
     * [3rd Party](#3rd-party)
   * [Dagster Lineage](#dagster-lineage)
@@ -13,12 +15,12 @@
   * [Clone](#clone)
   * [Install](#install)
     * [venv](#venv)
-    * [deadline-docker](#deadline-docker)
-  * [Create Generation](#create-generation)
+    * [studio-landscapes](#studio-landscapes-1)
+  * [Create Landscape](#create-landscape)
     * [Launch Dagster](#launch-dagster)
-    * [Configure Generation](#configure-generation)
-    * [Materialize Generation](#materialize-generation)
-      * [Resulting Files and Directories (aka "Generation")](#resulting-files-and-directories-aka-generation)
+    * [Configure Landscape](#configure-landscape)
+    * [Materialize Landscape](#materialize-landscape)
+      * [Resulting Files and Directories (aka "Landscape")](#resulting-files-and-directories-aka-landscape)
   * [Run Repository Installer](#run-repository-installer)
   * [Run Deadline Farm](#run-deadline-farm)
   * [Client](#client)
@@ -51,7 +53,8 @@ your production landscape with ease:
 - Easily add, replace or remove services
 - Clone (or modify and clone) entire production landscapes for testing, debugging or development
 - Always stay on top of things with maps and node trees of code and landscapes
-- `deadline-docker` is powered by Dagster
+- `studio-landscapes` is (primarily) powered by Dagster and Docker
+- Fully Python based
 
 This platform is aimed towards small to medium-sized
 studios where only limited resources for Pipeline 
@@ -62,6 +65,25 @@ on top of with the ability to share them among others
 without sacrificing the technical freedom  
 to implement highly studio specific and individual solutions if 
 needed.
+
+```mermaid
+mindmap
+  root((deadline-landscape))
+    Deadline
+        RCS
+        Webserver
+        Pulse
+        MongoDB
+    Ayon
+        Redis
+        Postgres
+    Kitsu
+        Postgres
+    Dagster
+    LikeC4
+    Filebrowser
+    Landscape Map
+```
 
 ## Tested on
 
@@ -91,6 +113,8 @@ Former employers, among others:
 
 ## Limitations
 
+### Deadline
+
 Currently only for Deadline version 10.2. 
 Versions 10.3 and 10.4 are WIP and will be
 implemented as soon as 10.2 fully works as
@@ -99,6 +123,14 @@ a proof of concept.
 Todo:
 - [ ] Deadline 10.3
 - [ ] Deadline 10.4
+
+### VFX Platform
+
+Integration of VFX Platform compatibility 
+is on the roadmap.
+
+Todo:
+- [ ] VFX Platform integration
 
 ## Integrated Tools
 
@@ -133,21 +165,21 @@ Todo:
 
 ### Deadline 10.2
 
-`.docker/landscapes/1737214595.1053066/10_2/docker_compose/compose_10_2/docker-compose.yml`
+`.docker/landscapes/2025-01-22_12-40-25__1737549625.8644402/10_2/docker_compose/compose_10_2/docker-compose.yml`
 
 ![viz_compose_10_2.png](docs/img/viz_compose_10_2.png)
 
 ### Repository-Installer 10.2
 
-`.docker/landscapes/1737214595.1053066/10_2/docker_compose/compose_repository_10_2/docker-compose.yml`
+`.docker/landscapes/2025-01-22_12-40-25__1737549625.8644402/10_2/docker_compose/compose_repository_10_2/docker-compose.yml`
 
 ![viz_compose_repository_10_2.png](docs/img/viz_compose_repository_10_2.png)
 
 ## Clone
 
 ```shell
-git clone https://github.com/michimussato/deadline-docker.git
-cd deadline-docker
+git clone https://github.com/michimussato/studio-landscapes.git
+cd studio-landscapes
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip setuptools
@@ -164,10 +196,10 @@ source .venv/bin/activate
 python -m pip install --upgrade pip setuptools
 ```
 
-### deadline-docker
+### studio-landscapes
 
 ```shell
-python -m pip install git+https://github.com/michimussato/deadline-docker.git@main
+python -m pip install git+https://github.com/michimussato/studio-landscapes.git@main
 ```
 
 ## Create Landscape
@@ -175,7 +207,7 @@ python -m pip install git+https://github.com/michimussato/deadline-docker.git@ma
 ### Launch Dagster
 
 ```shell
-cd ~/git/repos/deadline-docker
+cd ~/git/repos/studio-landscapes
 source .venv/bin/activate
 export DAGSTER_HOME="$(pwd)/dagster/materializations"
 dagster dev --workspace "$(pwd)/dagster/workspace.yaml" --host 0.0.0.0 --port 3000
@@ -185,8 +217,8 @@ http://0.0.0.0:3000
 
 ### Configure Landscape
 
-Edit `deadline-docker.assets.env_base` and 
-`deadline-docker.assets.env_10_2` according to your needs.
+Edit `studio-landscapes.assets.env_base` and 
+`studio-landscapes.assets.env_10_2` according to your needs.
 
 ### Materialize Landscape
 
@@ -195,8 +227,8 @@ Edit `deadline-docker.assets.env_base` and
 #### Resulting Files and Directories (aka "Landscape")
 
 ```shell
-$ tree deadline-docker/.docker/landscapes/1737208678.732601/
-deadline-docker/.docker/landscapes/1737208678.732601/
+$ tree .docker/landscapes/2025-01-22_12-40-25__1737549625.8644402
+.docker/landscapes/2025-01-22_12-40-25__1737549625.8644402
 ├── 10_2
 │   ├── configs
 │   │   ├── Deadline10
@@ -204,6 +236,10 @@ deadline-docker/.docker/landscapes/1737208678.732601/
 │   │   └── DeadlineRepository10
 │   │       └── settings
 │   │           └── connection.ini
+│   ├── data
+│   │   └── opt
+│   │       └── Thinkbox
+│   │           └── DeadlineDatabase10
 │   ├── docker_compose
 │   │   ├── compose_10_2
 │   │   │   ├── docker-compose.yml
@@ -225,28 +261,24 @@ deadline-docker/.docker/landscapes/1737208678.732601/
 │   │   └── build_repository_image_10_2
 │   │       └── Dockerfile
 │   ├── env_10_2.json
-│   └── opt
-│       └── Thinkbox
-│           └── DeadlineDatabase10
-├── docker_compose
-│   └── compose_ayon_override
-│       └── docker-compose.override.yml
+│   └── scripts
+│       └── compose_mongodb_10_2
+│           └── compose_mongodb_10_2__chown__vupr52ix.sh
+├── configs
+│   └── kitsu
+│       └── init_zou.sh
+├── data
+│   └── kitsu
+│       ├── postgresql
+│       │   └── 14
+│       │       └── main  [error opening dir]
+│       └── previews
 ├── Dockerfiles
-│   ├── build_base_image
-│   │   └── Dockerfile
-│   ├── build_dagster
-│   │   ├── Dockerfile
-│   │   └── payload
-│   │       ├── dagster.yaml
-│   │       └── workspace.yaml
-│   ├── build_kitsu
-│   │   └── Dockerfile
-│   └── build_likec4
-│       ├── Dockerfile
-│       └── payload
-│           ├── run.sh
-│           └── setup.sh
+│   └── build_base_image
+│       └── Dockerfile
 └── env_base.json
+
+32 directories, 17 files
 ```
 
 ## Run Repository Installer
@@ -304,16 +336,19 @@ docker network prune -f
 
 ### Use Test DB
 
+Todo:
+- Section still needed?
+
 ```shell
 mkdir -p tests/fixtures/10_2/DeadlineDatabase10
 tar -xzvf tests/fixtures/DeadlineDatabase10_2.tar.gz -C tests/fixtures/10_2/DeadlineDatabase10
 sudo chown -R 101:65534 tests/fixtures/10_2/DeadlineDatabase10
 ```
 
-And in `deadline-docker.assets.env_10_2` set
+And in `studio-landscapes.assets.env_10_2` set
 
 ```
 f"DATABASE_INSTALL_DESTINATION_{context.asset_key.path[0]}": pathlib.Path(
-      f"/home/michael/git/repos/deadline-docker/tests/fixtures/{context.asset_key.path[0]}/DeadlineDatabase10",
-  ).as_posix()
+      f"~/git/repos/studio-landscapes/tests/fixtures/{context.asset_key.path[0]}/DeadlineDatabase10",
+  ).expanduser().as_posix()
 ```
