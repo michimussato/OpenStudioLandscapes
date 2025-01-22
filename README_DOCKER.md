@@ -50,7 +50,7 @@ Down
 
 
 ```
-git -C repos clone https://github.com/michimussato/deadline-docker
+git -C repos clone https://github.com/michimussato/studio-landscapes
 git -C repos clone https://github.com/ynput/ayon-docker
 git -C repos clone https://github.com/cgwire/kitsu-docker
 git -C repos clone https://gitlab.com/mathbou/docker-cgwire.git
