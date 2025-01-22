@@ -28,7 +28,7 @@ def landscape(
 ) -> dict:
 
     landscape_stamp = {
-        "LANDSCAPE": str(time.time()),
+        "LANDSCAPE": f"{time.strftime('%Y-%m-%d_%H-%M-%S', time.gmtime())}__{time.time()}"
     }
 
     yield Output(landscape_stamp)
@@ -221,7 +221,7 @@ def env_base(
                 "10.2",
                 "kitsu",
             ).as_posix(),
-        }["prod_db"],
+        }["default"],
         f"KITSU_INIT_ZOU": pathlib.Path(
             DOT_DOCKER_ROOT,
             "landscapes",

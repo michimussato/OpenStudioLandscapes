@@ -74,14 +74,14 @@ def env_10_2(
 
         # This is where DeadlineRepository10 will get installed to:
         f"REPOSITORY_INSTALL_DESTINATION_{context.asset_key.path[0]}": pathlib.Path(
-                DOT_DOCKER_ROOT,
-                "landscapes",
-                env_base.get("LANDSCAPE", "default"),
-                context.asset_key.path[0],
-                "data",
-                "opt",
-                "Thinkbox",
-                "DeadlineRepository10",
+            DOT_DOCKER_ROOT,
+            "landscapes",
+            env_base.get("LANDSCAPE", "default"),
+            context.asset_key.path[0],
+            "data",
+            "opt",
+            "Thinkbox",
+            "DeadlineRepository10",
             ).as_posix(),
 
         # This is where DeadlineDatabase10 will get installed to:
@@ -127,7 +127,7 @@ def env_10_2(
                 context.asset_key.path[0],
                 "DeadlineDatabase10",
             ).as_posix(),
-        }["test_db_10_2"],
+        }["default"],
     }
     # @formatter:on
 
@@ -704,7 +704,7 @@ def compose_repository_10_2(
         "--file",
         docker_compose.as_posix(),
         "--project-name",
-        context.asset_key.path[-1],
+        f"{context.asset_key.path[-1]}__{env_10_2.get('LANDSCAPE', 'default')}",
         "up",
         "--remove-orphans",
         "--abort-on-container-exit",
@@ -1804,7 +1804,7 @@ def compose_10_2(
         "--file",
         docker_compose.as_posix(),
         "--project-name",
-        context.asset_key.path[-1],
+        f"{context.asset_key.path[-1]}__{env_10_2.get('LANDSCAPE', 'default')}",
         "up",
         "--remove-orphans",
     ]
