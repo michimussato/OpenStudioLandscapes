@@ -48,17 +48,19 @@ No more path dependencies due to bad decisions
 made in the past. Stay flexible and adaptable 
 with this modular system by reconfiguring
 your production landscape with ease:
-- Add or remove services
-- Duplicate entire production landscapes for testing, debugging or development
+- Easily add, replace or remove services
+- Clone (or modify and clone) entire production landscapes for testing, debugging or development
 - Always stay on top of things with maps and node trees of code and landscapes
-- `deadline-docker` uses Dagster as its engine
+- `deadline-docker` is powered by Dagster
 
 This platform is aimed towards small to medium-sized
 studios where only limited resources for Pipeline 
 Engineers and Technical Directors are available.
 This system allows those studios to share a common
-technical playground be still allowing the flexibility
-to implement highly studio specific or individual solutions if 
+underlying system to build arbitrary pipeline tools
+on top of with the ability to share them among others 
+without sacrificing the technical freedom  
+to implement highly studio specific and individual solutions if 
 needed.
 
 ## Tested on
