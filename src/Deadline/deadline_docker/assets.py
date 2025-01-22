@@ -23,20 +23,20 @@ from dagster import (
     group_name="Environment",
     compute_kind="python",
 )
-def generation(
+def landscape(
         context: AssetExecutionContext,
 ) -> dict:
 
-    generation_stamp = {
-        "GENERATION": str(time.time()),
+    landscape_stamp = {
+        "LANDSCAPE": str(time.time()),
     }
 
-    yield Output(generation_stamp)
+    yield Output(landscape_stamp)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            context.asset_key.path[-1]: MetadataValue.json(generation_stamp),
+            context.asset_key.path[-1]: MetadataValue.json(landscape_stamp),
 
         },
     )
@@ -71,14 +71,14 @@ def secrets(
     compute_kind="python",
     ins={
         "secrets": AssetIn(),
-        "generation": AssetIn(),
+        "landscape": AssetIn(),
         "nfs": AssetIn(),
     },
 )
 def env_base(
         context: AssetExecutionContext,
         secrets: dict,
-        generation: dict,
+        landscape: dict,
         nfs: dict,
 ) -> dict:
     # @formatter:off
@@ -198,11 +198,11 @@ def env_base(
             # "KITSU_DATABASE_INSTALL_DESTINATION" / "previews"
             #################################################################
             #################################################################
-            # Inside Generation:
+            # Inside Landscape:
             "default": pathlib.Path(
                 DOT_DOCKER_ROOT,
-                "generations",
-                generation.get("GENERATION", "default"),
+                "landscapes",
+                landscape.get("LANDSCAPE", "default"),
                 "data",
                 "kitsu",
             ).as_posix(),
@@ -224,8 +224,8 @@ def env_base(
         }["prod_db"],
         f"KITSU_INIT_ZOU": pathlib.Path(
             DOT_DOCKER_ROOT,
-            "generations",
-            generation.get("GENERATION", "default"),
+            "landscapes",
+            landscape.get("LANDSCAPE", "default"),
             "configs",
             "kitsu",
             "init_zou.sh",
@@ -243,14 +243,14 @@ def env_base(
     _env.update(_env_mongo_express)
 
     _env.update(secrets)
-    _env.update(generation)
+    _env.update(landscape)
     _env.update(nfs)
     # @formatter:on
 
     env_json = pathlib.Path(
         DOT_DOCKER_ROOT,
-        "generations",
-        _env.get("GENERATION", "default"),
+        "landscapes",
+        _env.get("LANDSCAPE", "default"),
         f"{context.asset_key.path[-1]}.json",
     )
 
@@ -292,8 +292,8 @@ def build_base_image(
 
     docker_file = pathlib.Path(
         DOT_DOCKER_ROOT,
-        "generations",
-        env_base.get("GENERATION", "default"),
+        "landscapes",
+        env_base.get("LANDSCAPE", "default"),
         "Dockerfiles",
         context.asset_key.path[0],
         "Dockerfile",

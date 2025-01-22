@@ -1,5 +1,5 @@
 <!-- TOC -->
-* [deadline-docker](#deadline-docker)
+* [studio-landscapes](#studio-landscapes)
   * [Tested on](#tested-on)
   * [About the Author](#about-the-author)
   * [Requirements](#requirements)
@@ -13,7 +13,7 @@
   * [Clone](#clone)
   * [Install](#install)
     * [venv](#venv)
-    * [deadline-docker](#deadline-docker-1)
+    * [deadline-docker](#deadline-docker)
   * [Create Generation](#create-generation)
     * [Launch Dagster](#launch-dagster)
     * [Configure Generation](#configure-generation)
@@ -31,13 +31,13 @@
 
 ---
 
-# deadline-docker
+# studio-landscapes
 
 Setup and launch Deadline - your 3D Animation and VFX
 Pipeline backbone - with ease, independence
 and scalability.
 
-A toolset to easily create reproducible 
+A toolkit to easily create reproducible 
 Deadline Render Farm environment setups:
 create setups for production, 
 testing, debugging, development, 
@@ -126,20 +126,20 @@ Todo:
 Dynamic Docker Compose documentation: 
 `docker-graph` creates a visual representation of
 `docker-compose.yml` files for every individual
-generation for quick reference and context.
+Landscape for quick reference and context.
 
 Todo:
 - [ ] LikeC4-Map
 
 ### Deadline 10.2
 
-`.docker/generations/1737214595.1053066/10_2/docker_compose/compose_10_2/docker-compose.yml`
+`.docker/landscapes/1737214595.1053066/10_2/docker_compose/compose_10_2/docker-compose.yml`
 
 ![viz_compose_10_2.png](docs/img/viz_compose_10_2.png)
 
 ### Repository-Installer 10.2
 
-`.docker/generations/1737214595.1053066/10_2/docker_compose/compose_repository_10_2/docker-compose.yml`
+`.docker/landscapes/1737214595.1053066/10_2/docker_compose/compose_repository_10_2/docker-compose.yml`
 
 ![viz_compose_repository_10_2.png](docs/img/viz_compose_repository_10_2.png)
 
@@ -170,7 +170,7 @@ python -m pip install --upgrade pip setuptools
 python -m pip install git+https://github.com/michimussato/deadline-docker.git@main
 ```
 
-## Create Generation
+## Create Landscape
 
 ### Launch Dagster
 
@@ -183,20 +183,20 @@ dagster dev --workspace "$(pwd)/dagster/workspace.yaml" --host 0.0.0.0 --port 30
 
 http://0.0.0.0:3000
 
-### Configure Generation
+### Configure Landscape
 
 Edit `deadline-docker.assets.env_base` and 
 `deadline-docker.assets.env_10_2` according to your needs.
 
-### Materialize Generation
+### Materialize Landscape
 
 ![materialize_all.png](docs/img/materialize_all.png)
 
-#### Resulting Files and Directories (aka "Generation")
+#### Resulting Files and Directories (aka "Landscape")
 
 ```shell
-$ tree deadline-docker/.docker/generations/1737208678.732601/
-deadline-docker/.docker/generations/1737208678.732601/
+$ tree deadline-docker/.docker/landscapes/1737208678.732601/
+deadline-docker/.docker/landscapes/1737208678.732601/
 ├── 10_2
 │   ├── configs
 │   │   ├── Deadline10
@@ -275,6 +275,9 @@ Copy/Paste command and execute:
 ![farm_compose_up.png](docs/img/farm_compose_up.png)
 
 ![runner.png](docs/img/runner.png)
+
+Todo
+- [ ] rename project `compose_10_2` to `<landscape_id>`
 
 ## Client
 
