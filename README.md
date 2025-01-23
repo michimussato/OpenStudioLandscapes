@@ -217,8 +217,8 @@ http://0.0.0.0:3000
 
 ### Configure Landscape
 
-Edit `studio-landscapes.assets.env_base` and 
-`studio-landscapes.assets.env_10_2` according to your needs.
+Edit `studio_landscapes.assets.env_base` and 
+`studio_landscapes.assets.env_10_2` according to your needs.
 
 ### Materialize Landscape
 

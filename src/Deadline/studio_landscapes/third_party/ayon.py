@@ -76,8 +76,8 @@ def compose_ayon_override(
 
     docker_compose_override = pathlib.Path(
         DOT_DOCKER_ROOT,
-        "generations",
-        env_base.get("GENERATION", "default"),
+        "landscapes",
+        env_base.get("LANDSCAPE", "default"),
         "docker_compose",
         context.asset_key.path[-1],
         "docker-compose.override.yml",

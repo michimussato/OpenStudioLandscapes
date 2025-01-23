@@ -38,8 +38,8 @@ def build_likec4(
 
     docker_file = pathlib.Path(
         DOT_DOCKER_ROOT,
-        "generations",
-        env_base.get("GENERATION", "default"),
+        "landscapes",
+        env_base.get("LANDSCAPE", "default"),
         "Dockerfiles",
         context.asset_key.path[-1],
         "Dockerfile",

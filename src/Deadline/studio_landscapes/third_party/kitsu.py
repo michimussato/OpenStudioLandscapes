@@ -76,8 +76,8 @@ def build_kitsu(
 
     docker_file = pathlib.Path(
         DOT_DOCKER_ROOT,
-        "generations",
-        env_base.get("GENERATION", "default"),
+        "landscapes",
+        env_base.get("LANDSCAPE", "default"),
         "Dockerfiles",
         context.asset_key.path[-1],
         "Dockerfile",
@@ -174,6 +174,7 @@ def prepare_db_kitsu(
         try:
             empty = not any(kitsu_db_dir_host.iterdir())
         except PermissionError as e:
+
             context.log.exception(
                 f"Database folder {kitsu_db_dir_host} already "
                 f"exists and/or is not writable: "
@@ -191,8 +192,8 @@ def prepare_db_kitsu(
 
         script_out_dir = pathlib.Path(
             DOT_DOCKER_ROOT,
-            "generations",
-            env_base.get("GENERATION", "default"),
+            "landscapes",
+            env_base.get("LANDSCAPE", "default"),
             "scripts",
             context.asset_key.path[-1],
         )
