@@ -397,13 +397,6 @@ def build_base_image_10_2(
         f"{env_10_2.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:{str(time.time())}",
     ]
 
-    # pip_packages_base_image_10_2: list = [
-    #     # Todo:
-    #     #  - [ ] (LOW) Deadline SSL authentication
-    #     # "git+https://github.com/michimussato/SSLGeneration.git@packaging",
-    #     "git+https://github.com/michimussato/deadline-wrapper.git@main",
-    # ]
-
     pip_install_str: str = get_pip_install_str(
         pip_install_packages=pip_packages_base_image_10_2
     )
