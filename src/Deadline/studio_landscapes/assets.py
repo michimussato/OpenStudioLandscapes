@@ -310,7 +310,7 @@ def build_base_image(
     ]
 
     pip_packages: list = [
-        # "dagster-shared[dagster_dev] @ git+https://github.com/michimussato/dagster-shared.git@main",  # currently private
+        "dagster-shared[dev] @ git+https://github.com/michimussato/dagster-shared.git@main",
         "deadline-dagster[dev] @ git+https://github.com/michimussato/deadline-dagster.git@main",
     ]
 
