@@ -362,8 +362,10 @@ def build_base_image_10_2(
     ]
 
     pip_packages: list = [
-        "git+https://github.com/michimussato/SSLGeneration.git@packaging",
-        "git+https://github.com/michimussato/DeadlineWrapper.git@main",
+        # Todo:
+        #  - [ ] (LOW) Deadline SSL authentication
+        # "git+https://github.com/michimussato/SSLGeneration.git@packaging",
+        "git+https://github.com/michimussato/deadline-wrapper.git@main",
     ]
 
     pip_install_str: str = str()
@@ -392,6 +394,7 @@ def build_base_image_10_2(
         RUN wget -O DeadlineRepository.run "https://www.googleapis.com/drive/v3/files/{GOOGLE_ID_DeadlineRepository_10_2}?alt=media&key={SECRET_GOOGLE_API_KEY}"
         RUN chmod a+x DeadlineRepository.run
         
+        # Todo:
         # RUN thinkbox-ssl-gen --help
         
         RUN apt-get clean
