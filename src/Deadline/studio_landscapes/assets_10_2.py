@@ -329,6 +329,36 @@ def deadline_ini_10_2(
     key_prefix=[
         "10_2",
     ],
+)
+def pip_packages_base_image_10_2(
+        context: AssetExecutionContext,
+) -> list:
+    """
+    """
+
+    pip_packages: list = [
+        # Todo:
+        #  - [ ] (LOW) Deadline SSL authentication
+        # "git+https://github.com/michimussato/SSLGeneration.git@packaging",
+        "git+https://github.com/michimussato/deadline-wrapper.git@main",
+    ]
+
+    yield Output(pip_packages)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            context.asset_key.path[-1]: MetadataValue.json(pip_packages),
+        },
+    )
+
+
+@asset(
+    group_name="Build_Images_10_2",
+    compute_kind="python",
+    key_prefix=[
+        "10_2",
+    ],
     ins={
         "env_10_2": AssetIn(
             key_prefix=[
@@ -336,12 +366,18 @@ def deadline_ini_10_2(
             ],
         ),
         "build_base_image": AssetIn(),
+        "pip_packages_base_image_10_2": AssetIn(
+            key_prefix=[
+                "10_2",
+            ],
+        ),
     },
 )
 def build_base_image_10_2(
         context: AssetExecutionContext,
         env_10_2: dict,
         build_base_image: str,
+        pip_packages_base_image_10_2: list,
 ) -> str:
     """
     """
@@ -361,16 +397,16 @@ def build_base_image_10_2(
         f"{env_10_2.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:{str(time.time())}",
     ]
 
-    pip_packages: list = [
-        # Todo:
-        #  - [ ] (LOW) Deadline SSL authentication
-        # "git+https://github.com/michimussato/SSLGeneration.git@packaging",
-        "git+https://github.com/michimussato/deadline-wrapper.git@main",
-    ]
+    # pip_packages_base_image_10_2: list = [
+    #     # Todo:
+    #     #  - [ ] (LOW) Deadline SSL authentication
+    #     # "git+https://github.com/michimussato/SSLGeneration.git@packaging",
+    #     "git+https://github.com/michimussato/deadline-wrapper.git@main",
+    # ]
 
-    pip_install_str: str = str()
-    for pip_package in pip_packages:
-        pip_install_str += "RUN python{PYTHON_MAJ}.{PYTHON_MIN} -m pip install --root-user-action=ignore '%s'\n" % pip_package
+    pip_install_str: str = get_pip_install_str(
+        pip_install_packages=pip_packages_base_image_10_2
+    )
 
     # @formatter:off
     docker_file_str = textwrap.dedent("""

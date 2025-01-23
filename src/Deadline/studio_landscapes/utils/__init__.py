@@ -10,6 +10,7 @@ __all__ = [
     "compile_cmds",
     "cmd_list_to_str",
     "deep_merge",
+    "get_pip_install_str",
 ]
 
 
@@ -82,6 +83,16 @@ def deep_merge(dict1, dict2):
         else:
             dict1[key] = dict2[key]
     return dict1
+
+
+def get_pip_install_str(
+        pip_install_packages: list[str],
+) -> str:
+    pip_install_str: str = str()
+    for pip_package in pip_install_packages:
+        pip_install_str += "RUN python{PYTHON_MAJ}.{PYTHON_MIN} -m pip install --root-user-action=ignore '%s'\n" % pip_package
+
+    return pip_install_str
 
 
 # def docker_cleanup(

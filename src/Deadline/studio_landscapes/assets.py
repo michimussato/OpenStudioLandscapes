@@ -285,13 +285,40 @@ def env_base(
 @asset(
     group_name="Build_Base_Image",
     compute_kind="python",
+)
+def pip_packages_base_image(
+        context: AssetExecutionContext,
+) -> list:
+    """
+    """
+
+    pip_packages: list = [
+        "dagster-shared[dev] @ git+https://github.com/michimussato/dagster-shared.git@main",
+        "deadline-dagster[dev] @ git+https://github.com/michimussato/deadline-dagster.git@main",
+    ]
+
+    yield Output(pip_packages)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            context.asset_key.path[-1]: MetadataValue.json(pip_packages),
+        },
+    )
+
+
+@asset(
+    group_name="Build_Base_Image",
+    compute_kind="python",
     ins={
         "env_base": AssetIn(),
+        "pip_packages_base_image": AssetIn(),
     },
 )
 def build_base_image(
         context: AssetExecutionContext,
         env_base: dict,
+        pip_packages_base_image: list,
 ) -> str:
     """
     """
@@ -309,14 +336,9 @@ def build_base_image(
         f"{env_base.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:{str(time.time())}",
     ]
 
-    pip_packages: list = [
-        "dagster-shared[dev] @ git+https://github.com/michimussato/dagster-shared.git@main",
-        "deadline-dagster[dev] @ git+https://github.com/michimussato/deadline-dagster.git@main",
-    ]
-
-    pip_install_str: str = str()
-    for pip_package in pip_packages:
-        pip_install_str += "RUN python{PYTHON_MAJ}.{PYTHON_MIN} -m pip install --root-user-action=ignore '%s'\n" % pip_package
+    pip_install_str: str = get_pip_install_str(
+        pip_install_packages=pip_packages_base_image
+    )
 
     # @formatter:off
     docker_file_str = textwrap.dedent("""
