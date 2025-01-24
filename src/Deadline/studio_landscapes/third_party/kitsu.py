@@ -75,7 +75,7 @@ def build_kitsu(
     """
 
     docker_file = pathlib.Path(
-        DOT_DOCKER_ROOT,
+        env_base["DOT_DOCKER"],
         "landscapes",
         env_base.get("LANDSCAPE", "default"),
         "Dockerfiles",
@@ -85,7 +85,8 @@ def build_kitsu(
 
     tags = [
         f"{env_base.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:latest",
-        f"{env_base.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:{str(time.time())}",
+        # f"{env_base.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:{str(time.time())}",
+        f"{env_base.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:{env_base.get('LANDSCAPE', str(time.time()))}",
     ]
 
     # @formatter:off
@@ -191,7 +192,7 @@ def prepare_db_kitsu(
         context.log.info(f"Setting ownership of {kitsu_db_dir_host.as_posix()}...")
 
         script_out_dir = pathlib.Path(
-            DOT_DOCKER_ROOT,
+            env_base["DOT_DOCKER"],
             "landscapes",
             env_base.get("LANDSCAPE", "default"),
             "scripts",

@@ -25,6 +25,27 @@ from dagster import (
     group_name="Environment",
     compute_kind="python",
 )
+def git_root(
+        context: AssetExecutionContext,
+) -> pathlib.Path:
+
+    _git_root = get_git_root()
+
+    yield Output(_git_root)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            context.asset_key.path[-1]: MetadataValue.path(_git_root),
+
+        },
+    )
+
+
+@asset(
+    group_name="Environment",
+    compute_kind="python",
+)
 def landscape_id(
         context: AssetExecutionContext,
 ) -> dict:
@@ -74,6 +95,7 @@ def secrets(
     group_name="Environment",
     compute_kind="python",
     ins={
+        "git_root": AssetIn(),
         "secrets": AssetIn(),
         "landscape_id": AssetIn(),
         "nfs": AssetIn(),
@@ -81,16 +103,29 @@ def secrets(
 )
 def env_base(
         context: AssetExecutionContext,
+        git_root: pathlib.Path,
         secrets: dict,
         landscape_id: dict,
         nfs: dict,
 ) -> dict:
     # @formatter:off
+
+    dot_docker = git_root / ".docker"
+    dot_docker.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
     _env: dict = {
+        # Todo:
+        #  - [ ] needed?
         "REPOSITORY_INSTALL_DESTINATION": pathlib.PurePath(
             nfs.get("NFS_ENTRY_POINT"),
             "deadline_repository_prod",
         ).as_posix(),
+
+        "GIT_ROOT": git_root.as_posix(),
+        "DOT_DOCKER": dot_docker.as_posix(),
 
         "AUTHOR": "michimussato@gmail.com",
         "IMAGE_PREFIX": "michimussato",
@@ -148,7 +183,12 @@ def env_base(
     _env_ayon = {
         # Todo:
         #  - [ ] Fix hardcoded path
-        "AYON_DOCKER_COMPOSE": pathlib.Path("~/git/repos/studio-landscapes/repos/ayon-docker/docker-compose.yml").expanduser().as_posix(),
+        "AYON_DOCKER_COMPOSE": pathlib.Path(
+            _env["GIT_ROOT"],
+            "repos",
+            "ayon-docker",
+            "docker-compose.yml",
+        ).expanduser().as_posix(),
         "AYON_PORT_HOST": "5005",
         "AYON_PORT_CONTAINER": "5000",
     }
@@ -165,10 +205,20 @@ def env_base(
     _env_filebrowser = {
         "FILEBROWSER_PORT_HOST": "8080",
         "FILEBROWSER_PORT_CONTAINER": "80",
-        # Todo:
-        #  - [ ] Fix hardcoded paths
-        "FILEBROWSER_DB": pathlib.Path("~/git/repos/studio-landscapes/configs/filebrowser/db/filebrowser.db").expanduser().as_posix(),
-        "FILEBROWSER_JSON": pathlib.Path("~/git/repos/studio-landscapes/configs/filebrowser/json/filebrowser.json").expanduser().as_posix(),
+        "FILEBROWSER_DB": pathlib.Path(
+            _env["GIT_ROOT"],
+            "configs",
+            "filebrowser",
+            "db",
+            "filebrowser.db",
+        ).expanduser().as_posix(),
+        "FILEBROWSER_JSON": pathlib.Path(
+            _env["GIT_ROOT"],
+            "configs",
+            "filebrowser",
+            "json",
+            "filebrowser.json",
+        ).expanduser().as_posix(),
     }
 
     _env_likec4 = {
@@ -208,7 +258,7 @@ def env_base(
             #################################################################
             # Inside Landscape:
             "default": pathlib.Path(
-                DOT_DOCKER_ROOT,
+                _env["DOT_DOCKER"],
                 "landscapes",
                 landscape_id.get("LANDSCAPE", "default"),
                 "data",
@@ -231,7 +281,7 @@ def env_base(
             ).as_posix(),
         }["default"],
         f"KITSU_INIT_ZOU": pathlib.Path(
-            DOT_DOCKER_ROOT,
+            _env["DOT_DOCKER"],
             "landscapes",
             landscape_id.get("LANDSCAPE", "default"),
             "configs",
@@ -239,9 +289,13 @@ def env_base(
             "init_zou.sh",
         ).expanduser().as_posix(),
         f"KITSU_TEMPLATE_DB_14": pathlib.Path(
-            # Todo:
-            #  - [ ] Fix hardcoded path
-            pathlib.Path("~/git/repos/studio-landscapes/configs/kitsu/postgres/template_dbs/14/main").expanduser().as_posix()
+            _env["GIT_ROOT"],
+            "configs",
+            "kitsu",
+            "postgres",
+            "template_dbs",
+            "14",
+            "main"
         ).expanduser().as_posix(),
     }
 
@@ -258,7 +312,7 @@ def env_base(
     # @formatter:on
 
     env_json = pathlib.Path(
-        DOT_DOCKER_ROOT,
+        _env["DOT_DOCKER"],
         "landscapes",
         _env.get("LANDSCAPE", "default"),
         f"{context.asset_key.path[-1]}.json",
@@ -328,7 +382,7 @@ def build_base_image(
     """
 
     docker_file = pathlib.Path(
-        DOT_DOCKER_ROOT,
+        env_base["DOT_DOCKER"],
         "landscapes",
         env_base.get("LANDSCAPE", "default"),
         "Dockerfiles",
@@ -337,7 +391,8 @@ def build_base_image(
     )
     tags = [
         f"{env_base.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:latest",
-        f"{env_base.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:{str(time.time())}",
+        # f"{env_base.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:{str(time.time())}",
+        f"{env_base.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:{env_base.get('LANDSCAPE', str(time.time()))}",
     ]
 
     pip_install_str: str = get_pip_install_str(

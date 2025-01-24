@@ -37,7 +37,7 @@ def build_dagster(
     """
 
     docker_file = pathlib.Path(
-        DOT_DOCKER_ROOT,
+        env_base["DOT_DOCKER"],
         "landscapes",
         env_base.get("LANDSCAPE", "default"),
         "Dockerfiles",
@@ -47,11 +47,12 @@ def build_dagster(
 
     tags = [
         f"{env_base.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:latest",
-        f"{env_base.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:{str(time.time())}",
+        # f"{env_base.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:{str(time.time())}",
+        f"{env_base.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:{env_base.get('LANDSCAPE', str(time.time()))}",
     ]
 
     pip_packages: list = [
-        # "dagster-shared[dagster_dev] @ git+https://github.com/michimussato/dagster-shared.git@main",
+        "dagster-shared[dagster_dev] @ git+https://github.com/michimussato/dagster-shared.git@main",
         "deadline-dagster[dev] @ git+https://github.com/michimussato/deadline-dagster.git@main",
     ]
 
@@ -167,9 +168,9 @@ def compose_dagster(
 
     docker_dict = {
         "services": {
-            "dagster-dev": {
-                "container_name": "dagster-dev-10-2",
-                "hostname": "dagster-dev-10-2",
+            "dagster": {
+                "container_name": "dagster",
+                "hostname": "dagster",
                 "domainname": env_base.get("ROOT_DOMAIN"),
                 "restart": "always",
                 "image": build_dagster,

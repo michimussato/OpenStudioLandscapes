@@ -37,7 +37,7 @@ def build_likec4(
     """
 
     docker_file = pathlib.Path(
-        DOT_DOCKER_ROOT,
+        env_base["DOT_DOCKER"],
         "landscapes",
         env_base.get("LANDSCAPE", "default"),
         "Dockerfiles",
@@ -47,7 +47,8 @@ def build_likec4(
 
     tags = [
         f"{env_base.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:latest",
-        f"{env_base.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:{str(time.time())}",
+        # f"{env_base.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:{str(time.time())}",
+        f"{env_base.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:{env_base.get('LANDSCAPE', str(time.time()))}",
     ]
 
     # @formatter:off
@@ -147,7 +148,6 @@ def build_likec4(
     )
 
 
-
 @asset(
     group_name="LikeC4",
     compute_kind="python",
@@ -166,9 +166,9 @@ def compose_likec4(
 
     docker_dict = {
         "services": {
-            "likec4-dev": {
-                "container_name": "likec4-dev-10-2",
-                "hostname": "likec4-dev-10-2",
+            "likec4": {
+                "container_name": "likec4",
+                "hostname": "likec4",
                 "domainname": env_base.get("ROOT_DOMAIN"),
                 "restart": "always",
                 "image": build_likec4,

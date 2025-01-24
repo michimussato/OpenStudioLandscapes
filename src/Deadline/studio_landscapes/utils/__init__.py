@@ -1,5 +1,8 @@
+import os
+import pathlib
 import shutil
 import shlex
+import git
 
 from Deadline.studio_landscapes.constants import *
 
@@ -11,6 +14,7 @@ __all__ = [
     "cmd_list_to_str",
     "deep_merge",
     "get_pip_install_str",
+    "get_git_root",
 ]
 
 
@@ -93,6 +97,15 @@ def get_pip_install_str(
         pip_install_str += "RUN python{PYTHON_MAJ}.{PYTHON_MIN} -m pip install --root-user-action=ignore '%s'\n" % pip_package
 
     return pip_install_str
+
+
+def get_git_root(
+        path: pathlib.Path = pathlib.Path(__file__),
+) -> pathlib.Path:
+    git_repo = git.Repo(path, search_parent_directories=True)
+    git_root = git_repo.git.rev_parse("--show-toplevel")
+    print(git_root)
+    return pathlib.Path(git_root)
 
 
 # def docker_cleanup(
