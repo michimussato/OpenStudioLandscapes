@@ -58,8 +58,8 @@ def compose_ayon_override(
                 ],
             },
             "server": {
-                "container_name": "ayon-serve",
-                "hostname": "ayon-serve",
+                "container_name": "ayon-server",
+                "hostname": "ayon-server",
                 "domainname": env_base.get("ROOT_DOMAIN"),
                 "ports": OverrideArray([
                     f"{env_base.get('AYON_PORT_HOST')}:{env_base.get('AYON_PORT_CONTAINER')}",
