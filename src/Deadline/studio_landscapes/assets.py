@@ -1,3 +1,5 @@
+import uuid
+from datetime import datetime
 import json
 import shutil
 import textwrap
@@ -23,12 +25,14 @@ from dagster import (
     group_name="Environment",
     compute_kind="python",
 )
-def landscape(
+def landscape_id(
         context: AssetExecutionContext,
 ) -> dict:
 
+    now = datetime.now()
+
     landscape_stamp = {
-        "LANDSCAPE": f"{time.strftime('%Y-%m-%d_%H-%M-%S', time.gmtime())}__{time.time()}"
+        "LANDSCAPE": f"{datetime.strftime(now, '%Y-%m-%d_%H-%M-%S')}__{uuid.uuid4().hex}",
     }
 
     yield Output(landscape_stamp)
@@ -71,14 +75,14 @@ def secrets(
     compute_kind="python",
     ins={
         "secrets": AssetIn(),
-        "landscape": AssetIn(),
+        "landscape_id": AssetIn(),
         "nfs": AssetIn(),
     },
 )
 def env_base(
         context: AssetExecutionContext,
         secrets: dict,
-        landscape: dict,
+        landscape_id: dict,
         nfs: dict,
 ) -> dict:
     # @formatter:off
@@ -206,7 +210,7 @@ def env_base(
             "default": pathlib.Path(
                 DOT_DOCKER_ROOT,
                 "landscapes",
-                landscape.get("LANDSCAPE", "default"),
+                landscape_id.get("LANDSCAPE", "default"),
                 "data",
                 "kitsu",
             ).as_posix(),
@@ -229,7 +233,7 @@ def env_base(
         f"KITSU_INIT_ZOU": pathlib.Path(
             DOT_DOCKER_ROOT,
             "landscapes",
-            landscape.get("LANDSCAPE", "default"),
+            landscape_id.get("LANDSCAPE", "default"),
             "configs",
             "kitsu",
             "init_zou.sh",
@@ -249,7 +253,7 @@ def env_base(
     _env.update(_env_mongo_express)
 
     _env.update(secrets)
-    _env.update(landscape)
+    _env.update(landscape_id)
     _env.update(nfs)
     # @formatter:on
 
