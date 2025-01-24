@@ -144,6 +144,10 @@ def env_base(
     _env: dict = {
 
         "GIT_ROOT": git_root.as_posix(),
+        "CONFIGS_ROOT": pathlib.Path(
+            git_root,
+            "configs",
+        ).as_posix(),
         "DOT_LANDSCAPES": dot_landscapes.as_posix(),
 
         "AUTHOR": "michimussato@gmail.com",
@@ -223,15 +227,13 @@ def env_base(
         "FILEBROWSER_PORT_HOST": "8080",
         "FILEBROWSER_PORT_CONTAINER": "80",
         "FILEBROWSER_DB": pathlib.Path(
-            _env["GIT_ROOT"],
-            "configs",
+            _env["CONFIGS_ROOT"],
             "filebrowser",
             "db",
             "filebrowser.db",
         ).expanduser().as_posix(),
         "FILEBROWSER_JSON": pathlib.Path(
-            _env["GIT_ROOT"],
-            "configs",
+            _env["CONFIGS_ROOT"],
             "filebrowser",
             "json",
             "filebrowser.json",
@@ -304,8 +306,7 @@ def env_base(
             "init_zou.sh",
         ).expanduser().as_posix(),
         f"KITSU_TEMPLATE_DB_14": pathlib.Path(
-            _env["GIT_ROOT"],
-            "configs",
+            _env["CONFIGS_ROOT"],
             "kitsu",
             "postgres",
             "template_dbs",

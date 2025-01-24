@@ -97,18 +97,24 @@ def build_likec4(
     payload.mkdir(parents=True, exist_ok=True)
 
     # setup.sh
-    # Todo:
-    #  - [ ] fix hardcoded path
     shutil.copy(
-        src=pathlib.Path("~/git/repos/studio-landscapes/configs/likec4/entrypoint/setup.sh").expanduser(),
+        src=pathlib.Path(
+            env_base["CONFIGS_ROOT"],
+            "likec4",
+            "entrypoint",
+            "setup.sh",
+        ).expanduser(),
         dst=payload,
     )
 
     # run.sh
-    # Todo:
-    #  - [ ] fix hardcoded path
     shutil.copy(
-        src=pathlib.Path("~/git/repos/studio-landscapes/configs/likec4/entrypoint/run.sh").expanduser(),
+        src=pathlib.Path(
+            env_base["CONFIGS_ROOT"],
+            "likec4",
+            "entrypoint",
+            "run.sh",
+        ).expanduser(),
         dst=payload,
     )
 

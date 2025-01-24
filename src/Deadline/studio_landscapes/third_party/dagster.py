@@ -99,18 +99,25 @@ def build_dagster(
     payload.mkdir(parents=True, exist_ok=True)
 
     # workspace.yaml
-    # Todo:
-    #  - [ ] fix hardcoded path
     shutil.copy(
-        src=pathlib.Path("~/git/repos/studio-landscapes/configs/dagster/config/workspace.yaml").expanduser(),
+        src=pathlib.Path(
+            env_base["CONFIGS_ROOT"],
+            "dagster",
+            "config",
+            "workspace.yaml",
+        ).expanduser(),
         dst=payload,
     )
 
     # dagster.yaml
-    # Todo:
-    #  - [ ] fix hardcoded path
     shutil.copy(
-        src=pathlib.Path("~/git/repos/studio-landscapes/configs/dagster/config/materializations/dagster.yaml").expanduser(),
+        src=pathlib.Path(
+            env_base["CONFIGS_ROOT"],
+            "dagster",
+            "config",
+            "materializations",
+            "dagster.yaml",
+        ).expanduser(),
         dst=payload,
     )
 
