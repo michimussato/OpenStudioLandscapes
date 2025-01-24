@@ -815,7 +815,7 @@ def build_client_image_10_2(
     """
 
     docker_file = pathlib.Path(
-        DOT_DOCKER_ROOT,
+        env_10_2["DOT_DOCKER"],
         "landscapes",
         env_10_2.get("LANDSCAPE", "default"),
         context.asset_key.path[0],
