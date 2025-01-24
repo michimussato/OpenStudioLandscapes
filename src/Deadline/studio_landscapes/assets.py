@@ -1,3 +1,5 @@
+import getpass
+import socket
 import uuid
 from datetime import datetime
 import json
@@ -52,8 +54,13 @@ def landscape_id(
 
     now = datetime.now()
 
+    # Todo
+    # - [ ] socket.gethostname() vs socket.getfqdn()
+
+    hostname = socket.gethostname()
+
     landscape_stamp = {
-        "LANDSCAPE": f"{datetime.strftime(now, '%Y-%m-%d_%H-%M-%S')}__{uuid.uuid4().hex}",
+        "LANDSCAPE": f"{datetime.strftime(now, '%Y-%m-%d_%H-%M-%S')}__{getpass.getuser()}_at_{str(hostname).replace('.', '_')}__{uuid.uuid4().hex}",
     }
 
     yield Output(landscape_stamp)
