@@ -117,12 +117,6 @@ def env_base(
     )
 
     _env: dict = {
-        # Todo:
-        #  - [ ] needed? (probably not)
-        # "REPOSITORY_INSTALL_DESTINATION": pathlib.PurePath(
-        #     nfs.get("NFS_ENTRY_POINT"),
-        #     "deadline_repository_prod",
-        # ).as_posix(),
 
         "GIT_ROOT": git_root.as_posix(),
         "DOT_DOCKER": dot_docker.as_posix(),
