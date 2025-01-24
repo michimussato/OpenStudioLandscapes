@@ -75,8 +75,7 @@ def build_kitsu(
     """
 
     docker_file = pathlib.Path(
-        env_base["DOT_DOCKER"],
-        "landscapes",
+        env_base["DOT_LANDSCAPES"],
         env_base.get("LANDSCAPE", "default"),
         "Dockerfiles",
         context.asset_key.path[-1],
@@ -192,8 +191,7 @@ def prepare_db_kitsu(
         context.log.info(f"Setting ownership of {kitsu_db_dir_host.as_posix()}...")
 
         script_out_dir = pathlib.Path(
-            env_base["DOT_DOCKER"],
-            "landscapes",
+        env_base["DOT_LANDSCAPES"],
             env_base.get("LANDSCAPE", "default"),
             "scripts",
             context.asset_key.path[-1],
@@ -211,8 +209,9 @@ def prepare_db_kitsu(
             # sudo chown 105:105 KitsuPostgres
             # Concept: /usr/bin/sshpass -eENV_VAR /usr/bin/ssh "echo $ENV_VAR | sudo -S <cmd>"
             # Because shutil.chown cannot sudo
-            kitsu_postgres_uid = 105
-            kitsu_postgres_gid = 105
+            kitsu_postgres_uid: int = 105
+            kitsu_postgres_gid: int = 105
+            kitsu_postgres_chmod: int = [700, 750][1]
             sh_chown.write("#!/bin/bash\n")
             sh_chown.write("\n")
             sh_chown.write(
@@ -225,7 +224,7 @@ def prepare_db_kitsu(
             sh_chown.write(
                 f"{shutil.which('sshpass')} -eSSH_PASS "
                 f"ssh {env_base['SSH_USER']}@{env_base['SSH_HOST']} "
-                f"\"echo $SSH_PASS | sudo -S chmod 0700 {kitsu_db_dir_host.as_posix()}\"\n")
+                f"\"echo $SSH_PASS | sudo -S chmod {str(kitsu_postgres_chmod).zfill(4)} {kitsu_db_dir_host.as_posix()}\"\n")
             sh_chown.write("echo Success\n")
             sh_chown.write("exit 0\n")
 

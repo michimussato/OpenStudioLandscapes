@@ -48,8 +48,7 @@ def env_10_2(
         "MONGO_DB_HOST": "mongodb-10-2",
 
         f"DEADLINE_CLIENT_DEADLINE_INI_{context.asset_key.path[0]}": pathlib.Path(
-            env_base["DOT_DOCKER"],
-            "landscapes",
+            env_base["DOT_LANDSCAPES"],
             env_base.get("LANDSCAPE", "default"),
             context.asset_key.path[0],
             "configs",
@@ -58,8 +57,7 @@ def env_10_2(
         ).expanduser().as_posix(),
 
         f"DEADLINE_REPOSITORY_CONNECTION_INI_{context.asset_key.path[0]}": pathlib.Path(
-            env_base["DOT_DOCKER"],
-            "landscapes",
+            env_base["DOT_LANDSCAPES"],
             env_base.get("LANDSCAPE", "default"),
             context.asset_key.path[0],
             "configs",
@@ -74,8 +72,7 @@ def env_10_2(
 
         # This is where DeadlineRepository10 will get installed to:
         f"REPOSITORY_INSTALL_DESTINATION_{context.asset_key.path[0]}": pathlib.Path(
-            env_base["DOT_DOCKER"],
-            "landscapes",
+            env_base["DOT_LANDSCAPES"],
             env_base.get("LANDSCAPE", "default"),
             context.asset_key.path[0],
             "data",
@@ -95,7 +92,6 @@ def env_10_2(
         # Default would be inside a Landscape:
         # f"DATABASE_INSTALL_DESTINATION_{context.asset_key.path[0]}": pathlib.Path(
         #         DOT_DOCKER_ROOT,
-        #         "landscapes",
         #         env_base.get("LANDSCAPE", "default"),
         #         context.asset_key.path[0],
         #         "opt",
@@ -106,8 +102,7 @@ def env_10_2(
             #################################################################
             # Inside Landscape:
             "default": pathlib.Path(
-                env_base["DOT_DOCKER"],
-                "landscapes",
+                env_base["DOT_LANDSCAPES"],
                 env_base.get("LANDSCAPE", "default"),
                 context.asset_key.path[0],
                 "data",
@@ -131,8 +126,7 @@ def env_10_2(
     env_base.update(_env)
 
     env_json = pathlib.Path(
-        env_base["DOT_DOCKER"],
-        "landscapes",
+        env_base["DOT_LANDSCAPES"],
         env_base.get("LANDSCAPE", "default"),
         context.asset_key.path[0],
         f"{context.asset_key.path[-1]}.json",
@@ -378,8 +372,7 @@ def build_base_image_10_2(
     """
 
     docker_file = pathlib.Path(
-        env_10_2["GIT_ROOT"],
-        "landscapes",
+        env_10_2["DOT_LANDSCAPES"],
         env_10_2.get("LANDSCAPE"),
         context.asset_key.path[0],
         "Dockerfiles",
@@ -562,8 +555,7 @@ def build_repository_image_10_2(
     """
 
     docker_file = pathlib.Path(
-        env_10_2["DOT_DOCKER"],
-        "landscapes",
+        env_10_2["DOT_LANDSCAPES"],
         env_10_2.get("LANDSCAPE", "default"),
         context.asset_key.path[0],
         "Dockerfiles",
@@ -725,8 +717,7 @@ def compose_repository_10_2(
     docker_yaml = yaml.dump(docker_chainmap_dict)
 
     docker_compose = pathlib.Path(
-        env_10_2["DOT_DOCKER"],
-        "landscapes",
+        env_10_2["DOT_LANDSCAPES"],
         env_10_2.get("LANDSCAPE", "default"),
         context.asset_key.path[0],
         "docker_compose",
@@ -808,8 +799,7 @@ def build_client_image_10_2(
     """
 
     docker_file = pathlib.Path(
-        env_10_2["DOT_DOCKER"],
-        "landscapes",
+        env_10_2["DOT_LANDSCAPES"],
         env_10_2.get("LANDSCAPE", "default"),
         context.asset_key.path[0],
         "Dockerfiles",
@@ -923,8 +913,7 @@ def build_generic_runner_image_10_2(
     """
 
     docker_file = pathlib.Path(
-        env_10_2["DOT_DOCKER"],
-        "landscapes",
+        env_10_2["DOT_LANDSCAPES"],
         env_10_2.get("LANDSCAPE", "default"),
         context.asset_key.path[0],
         "Dockerfiles",
@@ -1275,8 +1264,7 @@ def compose_mongodb_10_2(
         context.log.info(f"Setting ownership of {mongo_db_dir_host.as_posix()}...")
 
         script_out_dir = pathlib.Path(
-            env_10_2["DOT_DOCKER"],
-            "landscapes",
+            env_10_2["DOT_LANDSCAPES"],
             env_10_2.get("LANDSCAPE", "default"),
             context.asset_key.path[0],
             "scripts",
@@ -1827,8 +1815,7 @@ def compose_10_2(
     docker_yaml = yaml.dump(docker_dict)
 
     docker_compose = pathlib.Path(
-        env_10_2["DOT_DOCKER"],
-        "landscapes",
+        env_10_2["DOT_LANDSCAPES"],
         env_10_2.get("LANDSCAPE", "default"),
         context.asset_key.path[0],
         "docker_compose",

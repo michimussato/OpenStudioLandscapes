@@ -96,8 +96,38 @@ def secrets(
     compute_kind="python",
     ins={
         "git_root": AssetIn(),
+    },
+)
+def dot_landscapes(
+        context: AssetExecutionContext,
+        git_root: pathlib.Path,
+) -> pathlib.Path:
+
+    dot_landscapes = git_root / ".landscapes"
+    dot_landscapes.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    yield Output(dot_landscapes)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            context.asset_key.path[-1]: MetadataValue.path(dot_landscapes),
+
+        },
+    )
+
+
+@asset(
+    group_name="Environment",
+    compute_kind="python",
+    ins={
+        "git_root": AssetIn(),
         "secrets": AssetIn(),
         "landscape_id": AssetIn(),
+        "dot_landscapes": AssetIn(),
         "nfs": AssetIn(),
     },
 )
@@ -106,20 +136,15 @@ def env_base(
         git_root: pathlib.Path,
         secrets: dict,
         landscape_id: dict,
+        dot_landscapes: pathlib.Path,
         nfs: dict,
 ) -> dict:
     # @formatter:off
 
-    dot_docker = git_root / ".docker"
-    dot_docker.mkdir(
-        parents=True,
-        exist_ok=True,
-    )
-
     _env: dict = {
 
         "GIT_ROOT": git_root.as_posix(),
-        "DOT_DOCKER": dot_docker.as_posix(),
+        "DOT_LANDSCAPES": dot_landscapes.as_posix(),
 
         "AUTHOR": "michimussato@gmail.com",
         "IMAGE_PREFIX": "michimussato",
@@ -250,8 +275,7 @@ def env_base(
             #################################################################
             # Inside Landscape:
             "default": pathlib.Path(
-                _env["DOT_DOCKER"],
-                "landscapes",
+                _env["DOT_LANDSCAPES"],
                 landscape_id.get("LANDSCAPE", "default"),
                 "data",
                 "kitsu",
@@ -273,8 +297,7 @@ def env_base(
             ).as_posix(),
         }["default"],
         f"KITSU_INIT_ZOU": pathlib.Path(
-            _env["DOT_DOCKER"],
-            "landscapes",
+            _env["DOT_LANDSCAPES"],
             landscape_id.get("LANDSCAPE", "default"),
             "configs",
             "kitsu",
@@ -304,8 +327,7 @@ def env_base(
     # @formatter:on
 
     env_json = pathlib.Path(
-        _env["DOT_DOCKER"],
-        "landscapes",
+        _env["DOT_LANDSCAPES"],
         _env.get("LANDSCAPE", "default"),
         f"{context.asset_key.path[-1]}.json",
     )
@@ -374,8 +396,7 @@ def build_base_image(
     """
 
     docker_file = pathlib.Path(
-        env_base["DOT_DOCKER"],
-        "landscapes",
+        env_base["DOT_LANDSCAPES"],
         env_base.get("LANDSCAPE", "default"),
         "Dockerfiles",
         context.asset_key.path[0],

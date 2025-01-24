@@ -37,8 +37,7 @@ def build_dagster(
     """
 
     docker_file = pathlib.Path(
-        env_base["DOT_DOCKER"],
-        "landscapes",
+        env_base["DOT_LANDSCAPES"],
         env_base.get("LANDSCAPE", "default"),
         "Dockerfiles",
         context.asset_key.path[-1],

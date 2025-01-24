@@ -37,8 +37,6 @@ def compile_cmds(
     cmd_docker_run = [
         shutil.which("docker"),
         "run",
-        # _volumes if bool(_volumes) else "",
-        # _networks if bool(_networks) else "",
         "--rm",
         "--interactive",
         "--tty",
