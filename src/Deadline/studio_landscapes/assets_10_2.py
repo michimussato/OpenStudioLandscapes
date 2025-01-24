@@ -1280,6 +1280,8 @@ def compose_mongodb_10_2(
             prefix=f"{context.asset_key.path[-1]}__chown__",
             dir=script_out_dir
         ) as sh:
+            # Todo
+            #  - [ ] Do we really have to keep this?
             mongo_uid = 101
             mongo_gid = 65534
             sh.write("#!/bin/bash\n")
