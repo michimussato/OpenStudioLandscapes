@@ -54,13 +54,8 @@ def landscape_id(
 
     now = datetime.now()
 
-    # Todo
-    # - [ ] socket.gethostname() vs socket.getfqdn()
-
-    hostname = socket.gethostname()
-
     landscape_stamp = {
-        "LANDSCAPE": f"{datetime.strftime(now, '%Y-%m-%d_%H-%M-%S')}__{getpass.getuser()}_at_{str(hostname).replace('.', '_')}__{uuid.uuid4().hex}",
+        "LANDSCAPE": f"{datetime.strftime(now, '%Y-%m-%d_%H-%M-%S')}__{uuid.uuid4().hex}",
     }
 
     yield Output(landscape_stamp)
@@ -158,6 +153,11 @@ def env_base(
         "DOT_LANDSCAPES": dot_landscapes.as_posix(),
 
         "AUTHOR": "michimussato@gmail.com",
+        "CREATED_BY": str(getpass.getuser()),
+        "CREATED_ON": str(socket.gethostname()),
+        "CREATED_AT": str(datetime.strftime(
+            datetime.now(), '%Y-%m-%d_%H-%M-%S')
+        ),
         "IMAGE_PREFIX": "michimussato",
         "MONGO_EXPRESS_PORT_HOST": "8181",
         "MONGO_EXPRESS_PORT_CONTAINER": "8081",

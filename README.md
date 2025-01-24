@@ -309,9 +309,6 @@ Copy/Paste command and execute:
 
 ![runner.png](docs/img/runner.png)
 
-Todo
-- [ ] rename project `compose_10_2` to `<landscape_id>`
-
 ## Client
 
 ### Deadline Monitor
