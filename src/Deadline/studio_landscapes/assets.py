@@ -118,11 +118,11 @@ def env_base(
 
     _env: dict = {
         # Todo:
-        #  - [ ] needed?
-        "REPOSITORY_INSTALL_DESTINATION": pathlib.PurePath(
-            nfs.get("NFS_ENTRY_POINT"),
-            "deadline_repository_prod",
-        ).as_posix(),
+        #  - [ ] needed? (probably not)
+        # "REPOSITORY_INSTALL_DESTINATION": pathlib.PurePath(
+        #     nfs.get("NFS_ENTRY_POINT"),
+        #     "deadline_repository_prod",
+        # ).as_posix(),
 
         "GIT_ROOT": git_root.as_posix(),
         "DOT_DOCKER": dot_docker.as_posix(),
@@ -181,8 +181,6 @@ def env_base(
     }
 
     _env_ayon = {
-        # Todo:
-        #  - [ ] Fix hardcoded path
         "AYON_DOCKER_COMPOSE": pathlib.Path(
             _env["GIT_ROOT"],
             "repos",
@@ -391,7 +389,6 @@ def build_base_image(
     )
     tags = [
         f"{env_base.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:latest",
-        # f"{env_base.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:{str(time.time())}",
         f"{env_base.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:{env_base.get('LANDSCAPE', str(time.time()))}",
     ]
 

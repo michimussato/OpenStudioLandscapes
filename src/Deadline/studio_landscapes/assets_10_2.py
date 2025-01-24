@@ -117,13 +117,8 @@ def env_10_2(
             ).as_posix(),
             #################################################################
             # Test DB:
-            # Todo:
-            #  - [ ] Fix hardcoded path
             "test_db_10_2": pathlib.Path(
-                pathlib.Path().home(),
-                "git",
-                "repos",
-                "studio-landscapes",
+                env_base["GIT_ROOT"],
                 "tests",
                 "fixtures",
                 context.asset_key.path[0],
@@ -394,7 +389,6 @@ def build_base_image_10_2(
 
     tags = [
         f"{env_10_2.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:latest",
-        # f"{env_10_2.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:{str(time.time())}",
         f"{env_10_2.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:{env_10_2.get('LANDSCAPE', str(time.time()))}",
     ]
 
@@ -579,7 +573,6 @@ def build_repository_image_10_2(
 
     tags = [
         f"{env_10_2.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:latest",
-        # f"{env_10_2.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:{str(time.time())}",
         f"{env_10_2.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:{env_10_2.get('LANDSCAPE', str(time.time()))}",
     ]
 
@@ -826,7 +819,6 @@ def build_client_image_10_2(
 
     tags = [
         f"{env_10_2.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:latest",
-        # f"{env_10_2.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:{str(time.time())}",
         f"{env_10_2.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:{env_10_2.get('LANDSCAPE', str(time.time()))}",
     ]
 
@@ -942,7 +934,6 @@ def build_generic_runner_image_10_2(
 
     tags = [
         f"{env_10_2.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:latest",
-        # f"{env_10_2.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:{str(time.time())}",
         f"{env_10_2.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:{env_10_2.get('LANDSCAPE', str(time.time()))}",
     ]
 
@@ -1308,7 +1299,6 @@ def compose_mongodb_10_2(
             sh.write(
                 f"{shutil.which('sshpass')} -eSSH_PASS "
                 f"ssh {env_10_2['SSH_USER']}@{env_10_2['SSH_HOST']} "
-                # f"\"echo {env_base['SSH_PASS']} | sudo -S chown {mongo_uid}:{mongo_gid} {kitsu_db_dir_host.as_posix()}\"\n")
                 f"\"echo $SSH_PASS | sudo -S chown {mongo_uid}:{mongo_gid} {mongo_db_dir_host.as_posix()}\"\n")
             sh.write("echo Success\n")
             sh.write("exit 0\n")
