@@ -1460,6 +1460,8 @@ def compose_rcs_runner_10_2(
                 ],
                 "ports": [
                     f"{env_10_2.get('RCS_HTTP_PORT_HOST')}:{env_10_2.get('RCS_HTTP_PORT_CONTAINER')}",
+                    #Todo:
+                    # - [ ] Expose Deadline standard Ports (https://docs.thinkboxsoftware.com/products/deadline/10.2/1_User%20Manual/manual/considerations.html#firewall-anti-virus-security-considerations)
                 ],
             },
         },
