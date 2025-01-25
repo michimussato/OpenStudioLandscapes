@@ -3,7 +3,6 @@ import yaml
 import shutil
 
 from Deadline.studio_landscapes.utils import *
-from Deadline.studio_landscapes.constants import *
 
 from docker_graph.yaml_tags.overrides import *
 
