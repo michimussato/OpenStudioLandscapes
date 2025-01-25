@@ -60,7 +60,10 @@ def compose_ayon_override(
                 "container_name": "ayon-server",
                 "hostname": "ayon-server",
                 "domainname": env_base.get("ROOT_DOMAIN"),
-                # "exports": OverrideArray([]),
+                # Todo:
+                #  - [ ] Need to find out whether `ports` Override
+                #  also overrides the exports in the source ayon-docker-compose.yml
+                #  "exports": OverrideArray([]),
                 "ports": OverrideArray([
                     f"{env_base.get('AYON_PORT_HOST')}:{env_base.get('AYON_PORT_CONTAINER')}",
                 ]),
