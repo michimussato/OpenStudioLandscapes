@@ -24,15 +24,44 @@ from dagster import (
 @asset(
     group_name="Dagster",
     compute_kind="python",
+)
+def pip_packages_dagster(
+        context: AssetExecutionContext,
+) -> list:
+    """
+    """
+
+    # Todo
+    #  Check: content seems identical to asset `pip_packages_base_image`
+    pip_packages: list = [
+        "dagster-shared[dev] @ git+https://github.com/michimussato/dagster-shared.git@main",
+        "deadline-dagster[dev] @ git+https://github.com/michimussato/deadline-dagster.git@main",
+    ]
+
+    yield Output(pip_packages)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            context.asset_key.path[-1]: MetadataValue.json(pip_packages),
+        },
+    )
+
+
+@asset(
+    group_name="Dagster",
+    compute_kind="python",
     ins={
         "env_base": AssetIn(),
         "build_base_image": AssetIn(),
+        "pip_packages_dagster": AssetIn(),
     },
 )
 def build_dagster(
         context: AssetExecutionContext,
         env_base: dict,
         build_base_image: str,
+        pip_packages_dagster: list,
 ) -> str:
     """
     """
@@ -51,14 +80,9 @@ def build_dagster(
         f"{env_base.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:{env_base.get('LANDSCAPE', str(time.time()))}",
     ]
 
-    pip_packages: list = [
-        "dagster-shared[dagster_dev] @ git+https://github.com/michimussato/dagster-shared.git@main",
-        "deadline-dagster[dev] @ git+https://github.com/michimussato/deadline-dagster.git@main",
-    ]
-
-    pip_install_str: str = str()
-    for pip_package in pip_packages:
-        pip_install_str += "RUN python{PYTHON_MAJ}.{PYTHON_MIN} -m pip install --root-user-action=ignore '%s'\n" % pip_package
+    pip_install_str: str = get_pip_install_str(
+        pip_install_packages=pip_packages_dagster,
+    )
 
     # @formatter:off
     docker_file_str = textwrap.dedent("""
