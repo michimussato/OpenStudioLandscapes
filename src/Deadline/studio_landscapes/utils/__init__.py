@@ -14,6 +14,7 @@ __all__ = [
     "deep_merge",
     "get_pip_install_str",
     "get_apt_install_str",
+    "get_wget_str",
     "get_git_root",
 ]
 
@@ -105,6 +106,17 @@ def get_apt_install_str(
         apt_install_str += "RUN apt-get install -y --no-install-recommends '%s'\n" % apt_package
 
     return apt_install_str
+
+
+def get_wget_str(
+        wget_packages: dict[str, str],
+) -> str:
+    wget_str: str = str()
+    for wget_package, wget_url in wget_packages.items():
+        wget_str += "RUN wget -O '%s' '%s'\n" % (wget_package, wget_url)
+        wget_str += "RUN chmod a+x '%s'\n" % wget_package
+
+    return wget_str
 
 
 def get_git_root(

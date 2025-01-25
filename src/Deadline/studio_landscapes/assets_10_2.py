@@ -347,6 +347,35 @@ def pip_packages_base_image_10_2(
     key_prefix=[
         "10_2",
     ],
+)
+def wget_deadline_packages_base_image_10_2(
+        context: AssetExecutionContext,
+) -> dict[str, str]:
+    """
+    """
+
+    ret: dict[str, str] = dict()
+
+    ret["AWSPortalLink.run"] = "https://www.googleapis.com/drive/v3/files/{GOOGLE_ID_AWSPortalLink_10_2}?alt=media&key={SECRET_GOOGLE_API_KEY}"
+    ret["DeadlineClient.run"] = "https://www.googleapis.com/drive/v3/files/{GOOGLE_ID_DeadlineClient_10_2}?alt=media&key={SECRET_GOOGLE_API_KEY}"
+    ret["DeadlineRepository.run"] = "https://www.googleapis.com/drive/v3/files/{GOOGLE_ID_DeadlineRepository_10_2}?alt=media&key={SECRET_GOOGLE_API_KEY}"
+
+    yield Output(ret)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            context.asset_key.path[-1]: MetadataValue.json(ret),
+        },
+    )
+
+
+@asset(
+    group_name="Build_Images_10_2",
+    compute_kind="python",
+    key_prefix=[
+        "10_2",
+    ],
     ins={
         "env_10_2": AssetIn(
             key_prefix=[
@@ -354,6 +383,11 @@ def pip_packages_base_image_10_2(
             ],
         ),
         "build_base_image": AssetIn(),
+        "wget_deadline_packages_base_image_10_2": AssetIn(
+            key_prefix=[
+                "10_2",
+            ],
+        ),
         "pip_packages_base_image_10_2": AssetIn(
             key_prefix=[
                 "10_2",
@@ -365,6 +399,7 @@ def build_base_image_10_2(
         context: AssetExecutionContext,
         env_10_2: dict,
         build_base_image: str,
+        wget_deadline_packages_base_image_10_2: dict[str, str],
         pip_packages_base_image_10_2: list,
 ) -> str:
     """
@@ -383,6 +418,10 @@ def build_base_image_10_2(
         f"{env_10_2.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:latest",
         f"{env_10_2.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:{env_10_2.get('LANDSCAPE', str(time.time()))}",
     ]
+
+    wget_str: str = get_wget_str(
+        wget_packages=wget_deadline_packages_base_image_10_2
+    )
 
     pip_install_str: str = get_pip_install_str(
         pip_install_packages=pip_packages_base_image_10_2
@@ -403,12 +442,7 @@ def build_base_image_10_2(
         
         WORKDIR /installers
         
-        RUN wget -O AWSPortalLink.run "https://www.googleapis.com/drive/v3/files/{GOOGLE_ID_AWSPortalLink_10_2}?alt=media&key={SECRET_GOOGLE_API_KEY}"
-        RUN chmod a+x AWSPortalLink.run
-        RUN wget -O DeadlineClient.run "https://www.googleapis.com/drive/v3/files/{GOOGLE_ID_DeadlineClient_10_2}?alt=media&key={SECRET_GOOGLE_API_KEY}"
-        RUN chmod a+x DeadlineClient.run
-        RUN wget -O DeadlineRepository.run "https://www.googleapis.com/drive/v3/files/{GOOGLE_ID_DeadlineRepository_10_2}?alt=media&key={SECRET_GOOGLE_API_KEY}"
-        RUN chmod a+x DeadlineRepository.run
+        {wget_str}
         
         # Todo:
         # RUN thinkbox-ssl-gen --help
@@ -417,6 +451,9 @@ def build_base_image_10_2(
         
         ENTRYPOINT []
     """).format(
+        wget_str=wget_str.format(
+            **env_10_2,
+        ),
         pip_install_str=pip_install_str.format(
             **env_10_2,
         ),

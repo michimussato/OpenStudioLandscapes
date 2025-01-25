@@ -393,15 +393,9 @@ def pip_packages_base_image(
 @asset(
     group_name="Build_Base_Image",
     compute_kind="python",
-    ins={
-        "env_base": AssetIn(),
-        # "pip_packages_base_image": AssetIn(),
-    },
 )
 def apt_packages_base_image(
         context: AssetExecutionContext,
-        env_base: dict,
-        # pip_packages_base_image: list,
 ) -> dict[str, list[str]]:
     """
     """
@@ -444,7 +438,6 @@ def apt_packages_base_image(
         asset_key=context.asset_key,
         metadata={
             context.asset_key.path[-1]: MetadataValue.json(ret),
-            "env_base": MetadataValue.json(env_base),
         },
     )
 
