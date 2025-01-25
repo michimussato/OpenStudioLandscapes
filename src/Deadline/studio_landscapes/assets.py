@@ -443,10 +443,7 @@ def apt_packages_base_image(
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            context.asset_key.path[-1]: MetadataValue.path(tags[1]),
-            # "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
-            # **cmds_docker,
-            # "build_logs": MetadataValue.md(f"```shell\n{log}\n```"),
+            context.asset_key.path[-1]: MetadataValue.json(ret),
             "env_base": MetadataValue.json(env_base),
         },
     )
