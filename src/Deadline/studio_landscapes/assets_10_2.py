@@ -13,6 +13,7 @@ from functools import reduce
 
 from python_on_whales import docker
 from docker_graph.docker_graph import DockerComposeGraph
+from docker_graph.utils import *
 
 from Deadline.studio_landscapes.constants import *
 from Deadline.studio_landscapes.utils import *

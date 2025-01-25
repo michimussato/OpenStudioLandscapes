@@ -11,7 +11,6 @@ from dagster import MetadataValue
 __all__ = [
     "compile_cmds",
     "cmd_list_to_str",
-    "deep_merge",
     "get_pip_install_str",
     "get_apt_install_str",
     "get_wget_str",
@@ -76,16 +75,6 @@ def cmd_list_to_str(
 ) -> str:
     cmd_str = " ".join(shlex.quote(s) for s in cmd_list)
     return cmd_str
-
-
-def deep_merge(dict1, dict2):
-    """https://sqlpey.com/python/solved-top-5-methods-to-deep-merge-dictionaries-in-python/"""
-    for key in dict2:
-        if key in dict1 and isinstance(dict1[key], dict) and isinstance(dict2[key], dict):
-            deep_merge(dict1[key], dict2[key])
-        else:
-            dict1[key] = dict2[key]
-    return dict1
 
 
 def get_pip_install_str(
