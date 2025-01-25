@@ -6,7 +6,6 @@ import pathlib
 import time
 import yaml
 import pydot
-import tempfile
 import subprocess
 from collections import ChainMap
 from functools import reduce
@@ -1224,9 +1223,73 @@ def compose_filebrowser_10_2(
         ),
     },
 )
+def script_chown_mongodb_10_2(
+        context: AssetExecutionContext,
+        env_10_2: dict,
+) -> dict[str, str]:
+
+    ret = dict()
+
+    ret["exe"] = shutil.which("bash")
+    ret["script"] = str()
+
+    mongo_db_dir_host = pathlib.Path(
+        env_10_2.get(f"DATABASE_INSTALL_DESTINATION_{context.asset_key.path[0]}")
+    )
+
+    # sudo chown 101:65534 DeadlineDatabase10
+    # Concept: /usr/bin/sshpass -eENV_VAR /usr/bin/ssh "echo $ENV_VAR | sudo -S <cmd>"
+    # Because shutil.chown cannot sudo
+
+    mongo_uid = 101
+    mongo_gid = 65534
+
+    ret["script"] += "#!/bin/bash\n"
+    ret["script"] += "\n"
+    ret["script"] += (
+        f"{shutil.which('sshpass')} -eSSH_PASS "
+        f"ssh {env_10_2['SSH_USER']}@{env_10_2['SSH_HOST']} "
+        f"\"echo $SSH_PASS | sudo -S chown {mongo_uid}:{mongo_gid} {mongo_db_dir_host.as_posix()}\"\n"
+    )
+    ret["script"] += "\n"
+    ret["script"] += "echo Success\n"
+    ret["script"] += "exit 0\n"
+
+    yield Output(ret)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            context.asset_key.path[-1]: MetadataValue.json(ret),
+            "script_chown": MetadataValue.md(f"```shell\n{ret['script']}\n```"),
+            "env_10_2": MetadataValue.json(env_10_2),
+        },
+    )
+
+
+@asset(
+    group_name="Docker_Compose_10_2",
+    compute_kind="python",
+    key_prefix=[
+        "10_2",
+    ],
+    ins={
+        "env_10_2": AssetIn(
+            key_prefix=[
+                "10_2",
+            ],
+        ),
+        "script_chown_mongodb_10_2": AssetIn(
+            key_prefix=[
+                "10_2",
+            ],
+        ),
+    },
+)
 def compose_mongodb_10_2(
         context: AssetExecutionContext,
         env_10_2: dict,
+        script_chown_mongodb_10_2: dict[str, str],
 ) -> dict:
 
     image = "mongodb/mongodb-community-server:4.4-ubuntu2004"
@@ -1249,81 +1312,46 @@ def compose_mongodb_10_2(
     mongo_db_dir_host = pathlib.Path(env_10_2.get(f"DATABASE_INSTALL_DESTINATION_{context.asset_key.path[0]}"))
     mongo_db_dir_host.mkdir(parents=True, exist_ok=True)
 
-    # sudo chown 101:65534 DeadlineDatabase10
-    # Concept: /usr/bin/sshpass -eENV_VAR /usr/bin/ssh "echo $ENV_VAR | sudo -S <cmd>"
-    # Because shutil.chown cannot sudo
-
     stdout_stderr = {
-            "stdout": MetadataValue.md(f"```shell\nNone\n```"),
-            "stderr": MetadataValue.md(f"```shell\nNone\n```"),
+        "stdout": MetadataValue.md(f"```shell\nNone\n```"),
+        "stderr": MetadataValue.md(f"```shell\nNone\n```"),
     }
 
     if not MONGODB_INSIDE_CONTAINER:
-        mongo_db_dir_host.mkdir(parents=True, exist_ok=True)
 
-        context.log.info(f"Setting ownership of {mongo_db_dir_host.as_posix()}...")
+        if bool(script_chown_mongodb_10_2["script"]):
 
-        script_out_dir = pathlib.Path(
-            env_10_2["DOT_LANDSCAPES"],
-            env_10_2.get("LANDSCAPE", "default"),
-            context.asset_key.path[0],
-            "scripts",
-            context.asset_key.path[-1],
-        )
+            context.log.info(f"Setting ownership of {mongo_db_dir_host.as_posix()}...")
 
-        script_out_dir.mkdir(parents=True, exist_ok=True)
+            proc = subprocess.Popen(
+                script_chown_mongodb_10_2["exe"],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                stdin=subprocess.PIPE,
+                env={
+                    "SSH_PASS": env_10_2['SSH_PASS'],
+                }
+            )
 
-        with tempfile.NamedTemporaryFile(
-            mode="w",
-            suffix=".sh",
-            delete=False,
-            prefix=f"{context.asset_key.path[-1]}__chown__",
-            dir=script_out_dir
-        ) as sh:
-            # Todo
-            #  - [ ] Do we really have to keep this?
-            mongo_uid = 101
-            mongo_gid = 65534
-            sh.write("#!/bin/bash\n")
-            sh.write("\n")
-            sh.write(
-                f"{shutil.which('sshpass')} -eSSH_PASS "
-                f"ssh {env_10_2['SSH_USER']}@{env_10_2['SSH_HOST']} "
-                f"\"echo $SSH_PASS | sudo -S chown {mongo_uid}:{mongo_gid} {mongo_db_dir_host.as_posix()}\"\n")
-            sh.write("echo Success\n")
-            sh.write("exit 0\n")
+            stdout, stderr = proc.communicate(
+                input=script_chown_mongodb_10_2["script"].encode(),
+            )
 
-        cmd = [
-            shutil.which("bash"),
-            sh.name,
-        ]
-
-        proc = subprocess.Popen(
-            cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            env={
-                "SSH_PASS": env_10_2['SSH_PASS'],
-            }
-        )
-
-        stdout, stderr = proc.communicate()
-
-        stdout_stderr = {
+            stdout_stderr = {
                 "stdout": MetadataValue.md(f"```shell\n{stdout.decode(encoding='utf-8')}\n```"),
                 "stderr": MetadataValue.md(f"```shell\n{stderr.decode(encoding='utf-8')}\n```"),
-        }
+            }
 
-        # helpers.iterate_fds(
-        #     (
-        #         proc.stderr,
-        #         proc.stdout,
-        #     ),
-        #     (
-        #         context.log.warning,
-        #         context.log.info,
-        #     )
-        # )
+            # helpers.iterate_fds(
+            #     (
+            #         proc.stderr,
+            #         proc.stdout,
+            #     ),
+            #     (
+            #         context.log.warning,
+            #         context.log.info,
+            #     )
+            # )
 
         volumes.insert(
             0,
@@ -1369,7 +1397,6 @@ def compose_mongodb_10_2(
             "docker_dict": MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
             "docker_yaml": MetadataValue.md(f"```shell\n{docker_yaml}\n```"),
             "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)),
-            "sh_chown": MetadataValue.path(sh.name),
             **stdout_stderr,
             "env_10_2": MetadataValue.json(env_10_2),
         },

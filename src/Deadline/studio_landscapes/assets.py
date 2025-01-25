@@ -270,8 +270,10 @@ def env_base(
     }
 
     _env_kitsu = {
-        "KITSU_ADMIN_USER": "admin@example.com",
-        "KITSU_ADMIN_PASSWORD": "mysecretpassword",
+        # Todo:
+        #  - [ ] These have no effect yet
+        # "KITSU_ADMIN_USER": "admin@example.com",
+        # "KITSU_ADMIN_PASSWORD": "mysecretpassword",
         "KITSU_PORT_HOST": "4545",
         "KITSU_PORT_CONTAINER": "80",
         "KITSU_DATABASE_INSTALL_DESTINATION": {

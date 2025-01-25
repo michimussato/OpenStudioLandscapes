@@ -17,6 +17,7 @@ from dagster import (
     AssetExecutionContext,
     asset,
     Output,
+    MaterializeResult,
     AssetMaterialization,
     MetadataValue,
 )
@@ -154,9 +155,72 @@ def build_kitsu(
         "env_base": AssetIn(),
     },
 )
+def script_prepare_db_kitsu(
+        context: AssetExecutionContext,
+        env_base: dict,
+) -> dict[str, str]:
+
+    ret = dict()
+
+    ret["exe"] = shutil.which("bash")
+    ret["script"] = str()
+
+    kitsu_db_dir_host = pathlib.Path(
+        env_base.get("KITSU_DATABASE_INSTALL_DESTINATION"),
+        "postgresql",
+        "14",
+        "main",
+    )
+
+    # sudo chown 105:105 KitsuPostgres
+    # Concept: /usr/bin/sshpass -eENV_VAR /usr/bin/ssh "echo $ENV_VAR | sudo -S <cmd>"
+    # Because shutil.chown cannot sudo
+    # Requirements:
+    # 2025-01-20 11:00:01.316 UTC [98] FATAL:  data directory "/var/lib/postgresql/14/main" has invalid permissions
+    # 2025-01-20 11:00:01.316 UTC [98] DETAIL:  Permissions should be u=rwx (0700) or u=rwx,g=rx (0750).
+
+    kitsu_postgres_uid: int = 105
+    kitsu_postgres_gid: int = 105
+    kitsu_postgres_chmod: int = [700, 750][1]
+
+    ret["script"] += "#!/bin/bash\n"
+    ret["script"] += "\n"
+    ret["script"] += (
+        f"{shutil.which('sshpass')} -eSSH_PASS "
+        f"ssh {env_base['SSH_USER']}@{env_base['SSH_HOST']} "
+        f"\"echo $SSH_PASS | sudo -S chown -R {kitsu_postgres_uid}:{kitsu_postgres_gid} {kitsu_db_dir_host.as_posix()}\"\n")
+    ret["script"] += (
+        f"{shutil.which('sshpass')} -eSSH_PASS "
+        f"ssh {env_base['SSH_USER']}@{env_base['SSH_HOST']} "
+        f"\"echo $SSH_PASS | sudo -S chmod {str(kitsu_postgres_chmod).zfill(4)} {kitsu_db_dir_host.as_posix()}\"\n")
+    ret["script"] += "\n"
+    ret["script"] += "echo Success\n"
+    ret["script"] += "exit 0\n"
+
+    yield Output(ret)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            context.asset_key.path[-1]: MetadataValue.json(ret),
+            "script_prepare_db": MetadataValue.md(f"```shell\n{ret['script']}\n```"),
+            "env_base": MetadataValue.json(env_base),
+        },
+    )
+
+
+@asset(
+    group_name="Kitsu",
+    compute_kind="python",
+    ins={
+        "env_base": AssetIn(),
+        "script_prepare_db_kitsu": AssetIn(),
+    },
+)
 def prepare_db_kitsu(
         context: AssetExecutionContext,
         env_base: dict,
+        script_prepare_db_kitsu: dict[str, str],
 ):
 
     stdout_stderr = {
@@ -174,8 +238,7 @@ def prepare_db_kitsu(
         try:
             empty = not any(kitsu_db_dir_host.iterdir())
         except PermissionError as e:
-
-            context.log.exception(
+            context.log.warning(
                 f"Database folder {kitsu_db_dir_host} already "
                 f"exists and/or is not writable: "
                 f"{e}")
@@ -188,84 +251,46 @@ def prepare_db_kitsu(
                 dirs_exist_ok=True,
             )
 
-        context.log.info(f"Setting ownership of {kitsu_db_dir_host.as_posix()}...")
+        if bool(script_prepare_db_kitsu["script"]):
 
-        script_out_dir = pathlib.Path(
-        env_base["DOT_LANDSCAPES"],
-            env_base.get("LANDSCAPE", "default"),
-            "scripts",
-            context.asset_key.path[-1],
-        )
+            context.log.info(f"Setting ownership of {kitsu_db_dir_host.as_posix()}...")
 
-        script_out_dir.mkdir(parents=True, exist_ok=True)
+            proc = subprocess.Popen(
+                script_prepare_db_kitsu["exe"],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                stdin=subprocess.PIPE,
+                env={
+                    "SSH_PASS": env_base['SSH_PASS'],
+                }
+            )
 
-        with tempfile.NamedTemporaryFile(
-            mode="w",
-            suffix=".sh",
-            delete=False,
-            prefix=f"{context.asset_key.path[-1]}__",
-            dir=script_out_dir
-        ) as sh_chown:
-            # sudo chown 105:105 KitsuPostgres
-            # Concept: /usr/bin/sshpass -eENV_VAR /usr/bin/ssh "echo $ENV_VAR | sudo -S <cmd>"
-            # Because shutil.chown cannot sudo
-            kitsu_postgres_uid: int = 105
-            kitsu_postgres_gid: int = 105
-            kitsu_postgres_chmod: int = [700, 750][1]
-            sh_chown.write("#!/bin/bash\n")
-            sh_chown.write("\n")
-            sh_chown.write(
-                f"{shutil.which('sshpass')} -eSSH_PASS "
-                f"ssh {env_base['SSH_USER']}@{env_base['SSH_HOST']} "
-                f"\"echo $SSH_PASS | sudo -S chown -R {kitsu_postgres_uid}:{kitsu_postgres_gid} {kitsu_db_dir_host.as_posix()}\"\n")
-            sh_chown.write("\n")
-            sh_chown.write('# 2025-01-20 11:00:01.316 UTC [98] FATAL:  data directory "/var/lib/postgresql/14/main" has invalid permissions\n')
-            sh_chown.write('# 2025-01-20 11:00:01.316 UTC [98] DETAIL:  Permissions should be u=rwx (0700) or u=rwx,g=rx (0750).\n')
-            sh_chown.write(
-                f"{shutil.which('sshpass')} -eSSH_PASS "
-                f"ssh {env_base['SSH_USER']}@{env_base['SSH_HOST']} "
-                f"\"echo $SSH_PASS | sudo -S chmod {str(kitsu_postgres_chmod).zfill(4)} {kitsu_db_dir_host.as_posix()}\"\n")
-            sh_chown.write("echo Success\n")
-            sh_chown.write("exit 0\n")
+            stdout, stderr = proc.communicate(
+                input=script_prepare_db_kitsu["script"].encode(),
+            )
 
-        cmd = [
-            shutil.which("bash"),
-            sh_chown.name,
-        ]
-
-        proc = subprocess.Popen(
-            cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            env={
-                "SSH_PASS": env_base['SSH_PASS'],
-            }
-        )
-
-        stdout, stderr = proc.communicate()
-
-        stdout_stderr = {
+            stdout_stderr = {
                 "stdout": MetadataValue.md(f"```shell\n{stdout.decode(encoding='utf-8')}\n```"),
                 "stderr": MetadataValue.md(f"```shell\n{stderr.decode(encoding='utf-8')}\n```"),
-        }
+            }
 
-        # helpers.iterate_fds(
-        #     (
-        #         proc.stderr,
-        #         proc.stdout,
-        #     ),
-        #     (
-        #         context.log.warning,
-        #         context.log.info,
-        #     )
-        # )
+            # Todo:
+            #  - [ ] implement reliable verification whether successful or not
 
-    yield Output({})
+            # helpers.iterate_fds(
+            #     (
+            #         proc.stderr,
+            #         proc.stdout,
+            #     ),
+            #     (
+            #         context.log.warning,
+            #         context.log.info,
+            #     )
+            # )
 
-    yield AssetMaterialization(
+    return MaterializeResult(
         asset_key=context.asset_key,
         metadata={
-            "sh_chown": MetadataValue.path(sh_chown.name),
             **stdout_stderr,
             "env_base": MetadataValue.json(env_base),
         },
@@ -277,6 +302,67 @@ def prepare_db_kitsu(
     compute_kind="python",
     ins={
         "env_base": AssetIn(),
+    },
+)
+def script_init_zou(
+        context: AssetExecutionContext,
+        env_base: dict,
+) -> dict[str, str]:
+    """This script overrides the default
+    Kitsu `/opt/zou/init_zou.sh` to be able
+    to specify custom DB username and password"""
+
+    # Todo
+    #  - [ ] Custom username and password don't work yet
+
+    ret = dict()
+
+    ret["exe"] = shutil.which("bash")
+    ret["script"] = str()
+
+    # Source:
+    # /opt/zou/init_zou.sh
+    kitsu_admin_user = env_base.get("KITSU_ADMIN_USER", "admin@example.com")
+    kitsu_admin_password = env_base.get("KITSU_ADMIN_PASSWORD", "mysecretpassword")
+
+    ret["script"] += "#!/bin/bash\n"
+    ret["script"] += "export LC_ALL=C.UTF-8\n"
+    ret["script"] += "export LANG=C.UTF-8\n"
+    ret["script"] += "\n"
+    ret["script"] += "service postgresql start\n"
+    ret["script"] += "service redis-server start\n"
+    ret["script"] += "\n"
+    ret["script"] += ". /opt/zou/env/bin/activate\n"
+    ret["script"] += "\n"
+    ret["script"] += "zou upgrade-db\n"
+    ret["script"] += "zou init-data\n"
+    ret["script"] += f"zou create-admin {kitsu_admin_user} --password {kitsu_admin_password}\n"
+    ret["script"] += "\n"
+    ret["script"] += "service postgresql stop\n"
+    ret["script"] += "service redis-server stop\n"
+    ret["script"] += "\n"
+    ret["script"] += "echo Success\n"
+    ret["script"] += "\n"
+    ret["script"] += "exit 0\n"
+
+    yield Output(ret)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            context.asset_key.path[-1]: MetadataValue.json(ret),
+            "script_init_zou": MetadataValue.md(f"```shell\n{ret['script']}\n```"),
+            "env_base": MetadataValue.json(env_base),
+        },
+    )
+
+
+@asset(
+    group_name="Kitsu",
+    compute_kind="python",
+    ins={
+        "env_base": AssetIn(),
+        "script_init_zou": AssetIn(),
         "build_kitsu": AssetIn(),
     },
     deps=[
@@ -286,46 +372,24 @@ def prepare_db_kitsu(
 def compose_kitsu(
         context: AssetExecutionContext,
         env_base: dict,
+        script_init_zou: dict,
         build_kitsu: str,
 ) -> dict:
     """
     """
 
     # INIT_ZOU.SH
-    script_init_zou = pathlib.Path(
+    script_init_zou_path = pathlib.Path(
         env_base.get('KITSU_INIT_ZOU'),
     )
 
-    script_init_zou.parent.mkdir(parents=True, exist_ok=True)
+    script_init_zou_path.parent.mkdir(parents=True, exist_ok=True)
 
     with open(
-        file=script_init_zou,
+        file=script_init_zou_path,
         mode="w",
     ) as sh_init_zou:
-        # Source:
-        # /opt/zou/init_zou.sh
-        kitsu_admin_user = env_base.get("KITSU_ADMIN_USER")
-        kitsu_admin_password = env_base.get("KITSU_ADMIN_PASSWORD")
-
-        sh_init_zou.write("#!/bin/bash\n")
-        sh_init_zou.write("export LC_ALL=C.UTF-8\n")
-        sh_init_zou.write("export LANG=C.UTF-8\n")
-        sh_init_zou.write("\n")
-        sh_init_zou.write("service postgresql start\n")
-        sh_init_zou.write("service redis-server start\n")
-        sh_init_zou.write("\n")
-        sh_init_zou.write(". /opt/zou/env/bin/activate\n")
-        sh_init_zou.write("\n")
-        sh_init_zou.write("zou upgrade-db\n")
-        sh_init_zou.write("zou init-data\n")
-        sh_init_zou.write(f"zou create-admin {kitsu_admin_user} --password {kitsu_admin_password}\n")
-        sh_init_zou.write("\n")
-        sh_init_zou.write("service postgresql stop\n")
-        sh_init_zou.write("service redis-server stop\n")
-        sh_init_zou.write("\n")
-        sh_init_zou.write("echo Success\n")
-        sh_init_zou.write("\n")
-        sh_init_zou.write("exit 0\n")
+        sh_init_zou.write(script_init_zou["script"])
 
     # # INIT_AND_START_ZOU.SH
     # script_init_and_start_zou = pathlib.Path(
