@@ -158,10 +158,11 @@ def env_base(
         "CREATED_AT": str(datetime.strftime(
             datetime.now(), '%Y-%m-%d_%H-%M-%S')
         ),
+        "TIMEZONE": "Europe/Zurich",
         "IMAGE_PREFIX": "michimussato",
+
         "MONGO_EXPRESS_PORT_HOST": "8181",
         "MONGO_EXPRESS_PORT_CONTAINER": "8081",
-
         "MONGO_DB_NAME": "deadline10db",
 
         "RCS_HTTP_PORT_HOST": "8888",
@@ -394,12 +395,76 @@ def pip_packages_base_image(
     compute_kind="python",
     ins={
         "env_base": AssetIn(),
+        # "pip_packages_base_image": AssetIn(),
+    },
+)
+def apt_packages_base_image(
+        context: AssetExecutionContext,
+        env_base: dict,
+        # pip_packages_base_image: list,
+) -> dict[str, list[str]]:
+    """
+    """
+
+    ret = dict()
+
+    ret["base"] = [
+        "git",
+        "ca-certificates",
+        "htop",
+        "file",
+        "tzdata",
+        "curl",
+        "wget",
+        "ffmpeg",
+        "xvfb",
+        "libegl1",
+        "libsm6",
+        "libsm6",
+        "libglu1-mesa",
+        "libxss1",
+    ]
+
+    ret["build_python311"] = [
+        "build-essential",
+        "zlib1g-dev",
+        "libncurses5-dev",
+        "libgdbm-dev",
+        "libnss3-dev",
+        "libssl-dev",
+        "libreadline-dev",
+        "libffi-dev",
+        "libsqlite3-dev",
+        "libbz2-dev",
+    ]
+
+    yield Output(ret)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            context.asset_key.path[-1]: MetadataValue.path(tags[1]),
+            # "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
+            # **cmds_docker,
+            # "build_logs": MetadataValue.md(f"```shell\n{log}\n```"),
+            "env_base": MetadataValue.json(env_base),
+        },
+    )
+
+
+@asset(
+    group_name="Build_Base_Image",
+    compute_kind="python",
+    ins={
+        "env_base": AssetIn(),
+        "apt_packages_base_image": AssetIn(),
         "pip_packages_base_image": AssetIn(),
     },
 )
 def build_base_image(
         context: AssetExecutionContext,
         env_base: dict,
+        apt_packages_base_image: dict[str, list[str]],
         pip_packages_base_image: list,
 ) -> str:
     """
@@ -417,6 +482,14 @@ def build_base_image(
         f"{env_base.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:{env_base.get('LANDSCAPE', str(time.time()))}",
     ]
 
+    apt_install_str_base: str = get_apt_install_str(
+        apt_install_packages=apt_packages_base_image["base"],
+    )
+
+    apt_install_str_build_python311: str = get_apt_install_str(
+        apt_install_packages=apt_packages_base_image["build_python311"],
+    )
+
     pip_install_str: str = get_pip_install_str(
         pip_install_packages=pip_packages_base_image
     )
@@ -429,44 +502,15 @@ def build_base_image(
         
         ARG DEBIAN_FRONTEND=noninteractive
         
-        ENV CONTAINER_TIMEZONE="Europe/Zurich"
+        ENV CONTAINER_TIMEZONE={TIMEZONE}
         ENV SET_CONTAINER_TIMEZONE=true
         
         RUN apt-get update \
             && apt-get upgrade -y
         
-        RUN apt-get install \
-            -y \
-            --no-install-recommends \
-            git \
-            ca-certificates \
-            htop  \
-            file  \
-            tzdata  \
-            curl  \
-            wget  \
-            ffmpeg  \
-            xvfb  \
-            libegl1  \
-            libsm6  \
-            libsm6  \
-            libglu1-mesa  \
-            libxss1
+        {apt_install_str_base}
         
-        RUN apt-get install  \
-            -y  \
-            --no-install-recommends  \
-            make  \
-            build-essential  \
-            zlib1g-dev  \
-            libncurses5-dev  \
-            libgdbm-dev  \
-            libnss3-dev  \
-            libssl-dev  \
-            libreadline-dev  \
-            libffi-dev  \
-            libsqlite3-dev  \
-            libbz2-dev
+        {apt_install_str_build_python311}
         
         WORKDIR /build/python
         
@@ -489,6 +533,8 @@ def build_base_image(
         
         ENTRYPOINT []
     """).format(
+        apt_install_str_base=apt_install_str_base,
+        apt_install_str_build_python311=apt_install_str_build_python311,
         pip_install_str=pip_install_str.format(
             **env_base,
         ),

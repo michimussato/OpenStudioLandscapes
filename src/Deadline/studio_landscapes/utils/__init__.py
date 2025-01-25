@@ -13,6 +13,7 @@ __all__ = [
     "cmd_list_to_str",
     "deep_merge",
     "get_pip_install_str",
+    "get_apt_install_str",
     "get_git_root",
 ]
 
@@ -94,6 +95,16 @@ def get_pip_install_str(
         pip_install_str += "RUN python{PYTHON_MAJ}.{PYTHON_MIN} -m pip install --root-user-action=ignore '%s'\n" % pip_package
 
     return pip_install_str
+
+
+def get_apt_install_str(
+        apt_install_packages: list[str],
+) -> str:
+    apt_install_str: str = str()
+    for apt_package in apt_install_packages:
+        apt_install_str += "RUN apt-get install -y --no-install-recommends '%s'\n" % apt_package
+
+    return apt_install_str
 
 
 def get_git_root(
