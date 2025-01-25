@@ -2,6 +2,8 @@ load_from:
 #  - python_package:
 #      package_name: My-Skeleton-Package
 #      location_name: "My Skeleton Package Location"
+# Todo:
+#  - [ ] dynamic workspace.yaml to be able to add dagster-shared dynamically
   - python_module:
       working_directory: src
       module_name: deadline_dagster.definitions
