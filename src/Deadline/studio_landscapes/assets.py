@@ -377,7 +377,9 @@ def pip_packages_base_image(
     """
 
     pip_packages: list = [
-        "studio-landscapes[dev] @ git+https://github.com/michimussato/dagster-shared.git@main",
+        # Todo:
+        #  - [ ] enable after publish
+        # "studio-landscapes[dev] @ git+https://github.com/michimussato/dagster-shared.git@main",
         "dagster-shared[dev] @ git+https://github.com/michimussato/dagster-shared.git@main",
         "deadline-dagster[dev] @ git+https://github.com/michimussato/deadline-dagster.git@main",
     ]
