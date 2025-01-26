@@ -214,6 +214,12 @@ def compose_dagster(
                 "environment": {
                     "DAGSTER_HOME": env_base.get('DAGSTER_HOME'),
                 },
+                "healthcheck": {
+                    "test": ["CMD", "curl", "-f", f"http://localhost:{env_base.get('DAGSTER_DEV_PORT_CONTAINER')}"],
+                    "interval": "10s",
+                    "timeout": "2s",
+                    "retries": "3",
+                },
                 "command": [
                     "--workspace",
                     env_base.get('DAGSTER_WORKSPACE'),

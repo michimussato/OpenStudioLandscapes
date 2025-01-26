@@ -11,3 +11,11 @@ load_from:
       module_name: deadline_dagster.definitions
       location_name: "deadline_dagster Package Location"
       # executable_path: ../.venv/bin/python
+  - python_module:
+      # Todo:
+      #  - [ ] will only work after making studio-landscapes public
+      # https://github.com/michimussato/deadline-dagster
+      working_directory: src
+      module_name: Deadline.studio_landscapes.definitions
+      location_name: "Deadline.studio_landscapes Package Location"
+      # executable_path: ../.venv/bin/python

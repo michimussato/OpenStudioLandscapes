@@ -1277,6 +1277,12 @@ def compose_mongo_express_10_2(
                 "networks": [
                     "mongodb",
                 ],
+                # "healthcheck": {
+                #     "test": ["CMD", "curl", "-f", f"http://localhost:{env_10_2.get('MONGO_EXPRESS_PORT_CONTAINER')}"],
+                #     "interval": "10s",
+                #     "timeout": "2s",
+                #     "retries": "3",
+                # },
                 "ports": [
                     f"{env_10_2.get('MONGO_EXPRESS_PORT_HOST')}:{env_10_2.get('MONGO_EXPRESS_PORT_CONTAINER')}",
                 ],
@@ -2051,6 +2057,12 @@ def compose_webservice_runner_10_2(
                     "deadline-rcs-runner-10-2": {
                         "condition": "service_started",
                     },
+                },
+                "healthcheck": {
+                    "test": ["CMD", "curl", "-f", f"http://localhost:{env_10_2.get('WEBSERVICE_HTTP_PORT_CONTAINER')}"],
+                    "interval": "10s",
+                    "timeout": "2s",
+                    "retries": "3",
                 },
                 "networks": [
                     "repository",

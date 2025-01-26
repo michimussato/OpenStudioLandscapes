@@ -194,6 +194,12 @@ def compose_likec4(
                     f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT')}",
                     f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT_LNS')}",
                 ],
+                "healthcheck": {
+                    "test": ["CMD", "curl", "-f", f"http://localhost:{env_base.get('LIKEC4_DEV_PORT_CONTAINER')}"],
+                    "interval": "10s",
+                    "timeout": "2s",
+                    "retries": "3",
+                },
                 "ports": [
                     f"{env_base.get('LIKEC4_DEV_PORT_HOST')}:{env_base.get('LIKEC4_DEV_PORT_CONTAINER')}",
                 ],
