@@ -34,8 +34,8 @@ def pip_packages_dagster(
     # Todo
     #  Check: content seems identical to asset `pip_packages_base_image`
     pip_packages: list = [
-        "dagster-shared[dev] @ git+https://github.com/michimussato/dagster-shared.git@main",
-        "deadline-dagster[dev] @ git+https://github.com/michimussato/deadline-dagster.git@main",
+        # "dagster-shared[dev] @ git+https://github.com/michimussato/dagster-shared.git@main",
+        # "deadline-dagster[dev] @ git+https://github.com/michimussato/deadline-dagster.git@main",
     ]
 
     yield Output(pip_packages)
