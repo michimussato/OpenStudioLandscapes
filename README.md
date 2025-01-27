@@ -6,7 +6,15 @@
   * [Limitations](#limitations)
     * [Deadline](#deadline)
     * [VFX Platform](#vfx-platform)
+  * [Secrets](#secrets)
+    * [Personal Secrets](#personal-secrets)
+    * [Internal Secrets](#internal-secrets)
+      * [Workflow "encrypt"](#workflow-encrypt)
+      * [Workflow "unlock"](#workflow-unlock)
+      * [Remove git History of a Secrets file](#remove-git-history-of-a-secrets-file)
+    * [Public](#public)
   * [Integrated Tools](#integrated-tools)
+    * [Render Manager](#render-manager)
     * [3rd Party](#3rd-party)
   * [Dagster Lineage](#dagster-lineage)
   * [Docker Compose Graph](#docker-compose-graph)
@@ -133,10 +141,149 @@ is on the roadmap.
 Todo:
 - [ ] VFX Platform integration
 
+## Secrets
+
+There are many ways to protect sensitive data.
+It is `studio-landscapes` does not provide a dedicated solution
+to protect your secrets - it lets (and wants you to) implement 
+your own solution or use existing ones if you have something
+implemented already.
+
+However, I do have sensitive data myself and I would like to 
+quickly present my approach to you here. I'm not a security 
+engineer, hence, I'm coming up with my personal (very basic)
+terminology.
+
+I'm suggesting three levels of secrecy, although I'm
+only using two in practice:
+- Personal
+  - > Secrets that only certain individuals can know
+- Internal
+  - > Secrets that all individuals within an entity can know
+      but not the outside world
+- Public
+  - > Everything that comes with the public `michimussato/studio-landscapes`
+      Git repository
+
+### Personal Secrets
+
+I'm not concerned about this level of secrecy in my environment.
+Integrate/implement your own solution or make suggestions.
+
+### Internal Secrets
+
+I'm protecting secrets from the outside world which need to 
+be part of the Git repo (version controlled). I've had
+very good experience using `git-crypt` which transparently
+encrypts files and directories based on a `.gitattributes`
+file. The contents of those files are in clear text as
+long as the local clone has the key.
+
+My `.gitattributes` file looks as follows:
+
+```
+# files starting with __SECRET__
+__SECRET__* filter=git-crypt diff=git-crypt
+.env filter=git-crypt diff=git-crypt
+
+# folders starting with __SECRET__
+*/__SECRET__*/** filter=git-crypt diff=git-crypt
+```
+
+You get the idea.
+
+#### Workflow "encrypt"
+
+1. Clone Repo
+   ```
+   git clone repo
+   ```
+2. Init `git-crypt`
+   ```
+   cd repo
+   git-crypt init
+   ```
+3. Export Key
+   ```
+   git-crypt export-key keyfile.key
+   ```
+4. Create Filter (`.gitattribtes`)
+5. Push Filter
+6. Add secrets
+7. Push
+
+#### Workflow "unlock"
+
+1. Clone Repo
+   ```
+   git clone repo
+   ```
+2. Unlock Repo
+   ```
+   cd repo
+   git-crypt unlock /path/to/keyfile.key
+   ```
+
+#### Remove git History of a Secrets file
+
+Requirements:
+- `bfg` (https://rtyley.github.io/bfg-repo-cleaner/)
+
+- backup secrets file
+- remove secrets file from local repo, commit and push
+- `bfg --delete-files __SECRET__* /path/to/repo/.git`
+- `git reflog expire --expire=now --all && git gc --prune=now --aggressive`
+- `git push --force`
+
+Re-add secrets file with `.gitattributes` filter in place,
+commit and push.
+
+More info: https://github.com/AGWA/git-crypt
+
+### Public
+
+You clone (or fork-clone) the repo, make your modification and
+push everything publicly.
+
 ## Integrated Tools
 
 - [docker-graph](https://github.com/michimussato/docker-graph)
 - [deadline-wrapper](https://github.com/michimussato/deadline-wrapper)
+
+### Render Manager
+
+There are a multitude of managers available
+and I had to make a decision to begin with. 
+In general, `studio-landscapes` has the 
+capability to support arbitrary managers, 
+however, as of now, only Deadline is considered
+integrated. The decision to go with Deadline
+was based on the following specs:
+
+- Cross Platform
+- Feature rich
+- Production proven
+- Freely available (not necessarily OSS)
+- Scalability (locally and into the cloud)
+- Active Development
+- Local (no exclusive cloud rendering)
+- Python (Python API)
+- DCC agnostic
+
+Here's a non-exhaustive list of managers in
+comparison:
+
+| Render Manager | Integrated | Cross Platform | Freely Available | Scalability (local and cloud) | Active Development | Local    | Python API | DCC agnostic |
+|----------------|------------|----------------|------------------|-------------------------------|--------------------|----------|------------|--------------|
+| Deadline 10.x  | &#x2611;   | &#x2611;       | &#x2611;         | &#x2611;                      |                    | &#x2611; | &#x2611;   | &#x2611;     |
+| OpenCue        | &#x2610;   |                |                  |                               | &#x2610;           |          |            |              |
+| Tractor        | &#x2610;   |                | &#x2610;         |                               |                    |          |            |              |
+| Flamenco       | &#x2610;   |                |                  |                               |                    |          |            | &#x2610;     |
+| RoyalRender    | &#x2610;   |                |                  |                               |                    |          |            |              |
+| Qube!          | &#x2610;   |                | &#x2610;         |                               |                    |          |            |              |
+| AFANASY        | &#x2610;   |                |                  |                               |                    |          |            |              |
+| Muster         | &#x2610;   |                |                  |                               |                    |          |            |              |
+
 
 ### 3rd Party
 
@@ -144,8 +291,6 @@ Todo:
 - [LikeC4](https://likec4.dev/)
 - [Kitsu](https://kitsu.cg-wire.com/)
 - [Ayon](https://ayon.ynput.io/)
-- Deadline
-  - [Version 10.2](https://docs.thinkboxsoftware.com/products/deadline/10.2/1_User%20Manual/index.html)
 - [mongo-express](https://hub.docker.com/_/mongo-express)
 - [filebrowser/filebrowser](https://hub.docker.com/r/filebrowser/filebrowser)
 

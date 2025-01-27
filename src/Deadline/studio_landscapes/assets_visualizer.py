@@ -14,6 +14,10 @@ from dagster import (
 )
 
 
+# Todo:
+#  - [x] Do SVG's
+
+
 @asset(
     group_name="Viz",
     compute_kind="python",
@@ -48,17 +52,17 @@ def viz_compose_10_2(
 
     docker_compose_dir.mkdir(parents=True, exist_ok=True)
 
-    png = docker_compose_dir / f"{context.asset_key.path[-1]}.png"
+    svg = docker_compose_dir / f"{context.asset_key.path[-1]}.svg"
     dcg.graph.write(
-        path=png,
-        format="png",
+        path=svg,
+        format="svg",
     )
 
-    with open(png, "rb") as fr:
-        png_bytes = fr.read()
+    with open(svg, "rb") as fr:
+        svg_bytes = fr.read()
 
-    png_base64 = base64.b64encode(png_bytes).decode("utf-8")
-    png_md = f"![Image](data:image/svg+xml;base64,{png_base64})"
+    svg_base64 = base64.b64encode(svg_bytes).decode("utf-8")
+    svg_md = f"![Image](data:image/svg+xml;base64,{svg_base64})"
 
     dot = docker_compose_dir / f"{context.asset_key.path[-1]}.dot"
     dcg.graph.write(
@@ -72,9 +76,9 @@ def viz_compose_10_2(
         asset_key=context.asset_key,
         metadata={
             context.asset_key.path[-1]: MetadataValue.json(str(dcg.graph)),
-            "png": MetadataValue.md(png_md),
+            "svg": MetadataValue.md(svg_md),
             "dot_path": MetadataValue.path(dot),
-            "png_path": MetadataValue.path(png),
+            "svg_path": MetadataValue.path(svg),
         },
     )
 
@@ -113,17 +117,17 @@ def viz_compose_repository_10_2(
 
     docker_compose_dir.mkdir(parents=True, exist_ok=True)
 
-    png = docker_compose_dir / f"{context.asset_key.path[-1]}.png"
+    svg = docker_compose_dir / f"{context.asset_key.path[-1]}.png"
     dcg.graph.write(
-        path=docker_compose_dir / f"{context.asset_key.path[-1]}.png",
-        format="png",
+        path=svg,
+        format="svg",
     )
 
-    with open(png, "rb") as fr:
-        png_bytes = fr.read()
+    with open(svg, "rb") as fr:
+        svg_bytes = fr.read()
 
-    png_base64 = base64.b64encode(png_bytes).decode("utf-8")
-    png_md = f"![Image](data:image/svg+xml;base64,{png_base64})"
+    svg_base64 = base64.b64encode(svg_bytes).decode("utf-8")
+    svg_md = f"![Image](data:image/svg+xml;base64,{svg_base64})"
 
     dot = docker_compose_dir / f"{context.asset_key.path[-1]}.dot"
     dcg.graph.write(
@@ -137,8 +141,8 @@ def viz_compose_repository_10_2(
         asset_key=context.asset_key,
         metadata={
             context.asset_key.path[-1]: MetadataValue.json(str(dcg.graph)),
-            "png": MetadataValue.md(png_md),
+            "svg": MetadataValue.md(svg_md),
             "dot_path": MetadataValue.path(dot),
-            "png_path": MetadataValue.path(png),
+            "svg_path": MetadataValue.path(svg),
         },
     )
