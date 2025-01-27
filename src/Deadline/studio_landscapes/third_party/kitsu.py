@@ -259,19 +259,51 @@ def script_prepare_db_kitsu(
     # 2025-01-26T23:00:16.740382063Z 2025-01-26 23:00:16,740 INFO exited: postgresql (exit status 1; not expected)
     # 2025-01-26T23:00:17.741613518Z 2025-01-26 23:00:17,741 INFO gave up: postgresql entered FATAL state, too many start retries too quickly
 
+    """
+    Referende Script:
+        
+    #!/bin/bash
+    
+    echo $SSH_PASS;
+    echo $SSH_PASS;
+    
+    /usr/bin/sshpass -eSSH_PASS ssh -tt -oStrictHostKeyChecking=no michael@localhost << EOF
+    echo ${SSH_PASS} | \
+    sudo -S chown -R 105:105 /home/michael/git/repos/studio-landscapes/.landscapes/2025-01-27_09-38-08__98308581e4744378ae2972dadc88af1c/data/kitsu/postgresql/14/main && \
+    sudo -S chmod 0750 /home/michael/git/repos/studio-landscapes/.landscapes/2025-01-27_09-38-08__98308581e4744378ae2972dadc88af1c/data/kitsu/postgresql/14/main && \
+    exit 0;
+    EOF
+    
+    echo $SSH_PASS;
+    echo Success;
+    exit 0;
+    """
+
+    # Todo:
+    #  - [ ] ideally over SSH but it seems to be a PITA
+
+    # @formatter:off
     ret["script"] += "#!/bin/bash\n"
     ret["script"] += "\n"
-    ret["script"] += (
-        f"{shutil.which('sshpass')} -eSSH_PASS "
-        f"ssh {env_base['SSH_USER']}@{env_base['SSH_HOST']} "
-        f"\"echo $SSH_PASS | sudo -S chown -R {kitsu_postgres_uid}:{kitsu_postgres_gid} {kitsu_db_dir_host.as_posix()}\"\n")
-    ret["script"] += (
-        f"{shutil.which('sshpass')} -eSSH_PASS "
-        f"ssh {env_base['SSH_USER']}@{env_base['SSH_HOST']} "
-        f"\"echo $SSH_PASS | sudo -S chmod {str(kitsu_postgres_chmod).zfill(4)} {kitsu_db_dir_host.as_posix()}\"\n")
+    # ret["script"] += "echo $SSH_PASS;\n"
+    # ret["script"] += "echo $SSH_PASS;\n"
+    # ret["script"] += "\n"
+    # ret["script"] += f"{shutil.which('sshpass')} -eSSH_PASS ssh -tt -oStrictHostKeyChecking=no {env_base['SSH_USER']}@{env_base['SSH_HOST']} << 'EOF'\n"
+    # ret["script"] += f"{shutil.which('sshpass')} -eSSH_PASS ssh -tt -oStrictHostKeyChecking=no {env_base['SSH_USER']}@{env_base['SSH_HOST']} << EOF\n"
+    ret["script"] += f"echo $SUDO_PASS | sudo -S -k /usr/bin/chown -R {kitsu_postgres_uid}:{kitsu_postgres_gid} {kitsu_db_dir_host.as_posix()};\n"
+    ret["script"] += f"echo $SUDO_PASS | sudo -S -k /usr/bin/chmod {str(kitsu_postgres_chmod).zfill(4)} {kitsu_db_dir_host.as_posix()};\n"
+    # ret["script"] += f"sudo -S chmod {str(kitsu_postgres_chmod).zfill(4)} {kitsu_db_dir_host.as_posix()} && \\\n"
+    # ret["script"] += "exit 0;\n"
+    # ret["script"] += "EOF\n"
+
+    # ret["script"] += f"{shutil.which('sshpass')} -eSSH_PASS ssh -tt -oStrictHostKeyChecking=no {env_base['SSH_USER']}@{env_base['SSH_HOST']} \"echo $SSH_PASS | sudo -S chown -R {kitsu_postgres_uid}:{kitsu_postgres_gid} {kitsu_db_dir_host.as_posix()} && exit 0;\";\n"
+    # # ret["script"] += f"{shutil.which('sshpass')} -eSSH_PASS ssh -tt -oStrictHostKeyChecking=no {env_base['SSH_USER']}@{env_base['SSH_HOST']} \"echo $SSH_PASS | sudo -S touch {kitsu_db_dir_host.as_posix()}/hello &>/dev/null && echo $? || echo 1;\";\n"
+    # ret["script"] += f"{shutil.which('sshpass')} -eSSH_PASS ssh -tt -oStrictHostKeyChecking=no {env_base['SSH_USER']}@{env_base['SSH_HOST']} \"echo $SSH_PASS | sudo -S chmod {str(kitsu_postgres_chmod).zfill(4)} {kitsu_db_dir_host.as_posix()} &>/dev/null && echo $? || echo 1; exit;;\";\n"
     ret["script"] += "\n"
-    ret["script"] += "echo Success\n"
-    ret["script"] += "exit 0\n"
+    # ret["script"] += "echo $SSH_PASS;\n"
+    ret["script"] += "echo Success;\n"
+    ret["script"] += "exit 0;\n"
+    # @formatter:on
 
     yield Output(ret)
 
@@ -337,7 +369,7 @@ def prepare_db_kitsu(
                 stderr=subprocess.PIPE,
                 stdin=subprocess.PIPE,
                 env={
-                    "SSH_PASS": env_base['SSH_PASS'],
+                    "SUDO_PASS": env_base['SUDO_PASS'],
                 }
             )
 
@@ -530,12 +562,15 @@ def compose_kitsu(
                 "restart": "always",
                 "image": build_kitsu,
                 "volumes": volumes,
-                "healthcheck": {
-                    "test": ["CMD", "curl", "-f", f"http://localhost:{env_base.get('KITSU_PORT_CONTAINER')}"],
-                    "interval": "10s",
-                    "timeout": "2s",
-                    "retries": "3",
-                },
+                # "healthcheck": {
+                #     # Todo:
+                #     #  - [ ] fix: test succeeds even if Postgres is down
+                #     #  "test": ["CMD-SHELL", "psql -U ${DB_USER} -d ${DB_MAIN} -c 'SELECT 1' || exit 1"],
+                #     "test": ["CMD", "curl", "-f", f"http://localhost:{env_base.get('KITSU_PORT_CONTAINER')}"],
+                #     "interval": "10s",
+                #     "timeout": "2s",
+                #     "retries": "3",
+                # },
                 "command": [
                     "bash",
                     "/opt/zou/start_zou.sh",

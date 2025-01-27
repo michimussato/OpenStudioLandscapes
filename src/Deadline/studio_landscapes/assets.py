@@ -128,9 +128,39 @@ def dot_landscapes(
     compute_kind="python",
     ins={
         "git_root": AssetIn(),
+    },
+)
+def dot_installers(
+        context: AssetExecutionContext,
+        git_root: pathlib.Path,
+) -> pathlib.Path:
+
+    dot_installers = git_root / ".installers"
+    dot_installers.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    yield Output(dot_installers)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            context.asset_key.path[-1]: MetadataValue.path(dot_installers),
+
+        },
+    )
+
+
+@asset(
+    group_name="Environment",
+    compute_kind="python",
+    ins={
+        "git_root": AssetIn(),
         "secrets": AssetIn(),
         "landscape_id": AssetIn(),
         "dot_landscapes": AssetIn(),
+        "dot_installers": AssetIn(),
         "nfs": AssetIn(),
     },
 )
@@ -140,6 +170,7 @@ def env_base(
         secrets: dict,
         landscape_id: dict,
         dot_landscapes: pathlib.Path,
+        dot_installers: pathlib.Path,
         nfs: dict,
 ) -> dict:
     # @formatter:off
@@ -152,6 +183,7 @@ def env_base(
             "configs",
         ).as_posix(),
         "DOT_LANDSCAPES": dot_landscapes.as_posix(),
+        "DOT_INSTALLERS": dot_installers.as_posix(),
 
         "AUTHOR": "michimussato@gmail.com",
         "CREATED_BY": str(getpass.getuser()),
@@ -471,6 +503,11 @@ def build_base_image(
         context.asset_key.path[0],
         "Dockerfile",
     )
+
+    shutil.rmtree(docker_file.parent, ignore_errors=True)
+
+    docker_file.parent.mkdir(parents=True, exist_ok=True)
+
     tags = [
         f"{env_base.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:latest",
         f"{env_base.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:{env_base.get('LANDSCAPE', str(time.time()))}",
@@ -538,10 +575,6 @@ def build_base_image(
         **env_base,
     )
     # @formatter:on
-
-    shutil.rmtree(docker_file.parent, ignore_errors=True)
-
-    docker_file.parent.mkdir(parents=True, exist_ok=True)
 
     with open(docker_file, "w") as fw:
         fw.write(docker_file_str)

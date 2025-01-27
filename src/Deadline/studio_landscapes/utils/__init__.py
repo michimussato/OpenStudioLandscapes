@@ -14,6 +14,7 @@ __all__ = [
     "get_pip_install_str",
     "get_apt_install_str",
     "get_wget_str",
+    "get_copy_str",
     "get_git_root",
 ]
 
@@ -95,6 +96,21 @@ def get_apt_install_str(
         apt_install_str += "RUN apt-get install -y --no-install-recommends '%s'\n" % apt_package
 
     return apt_install_str
+
+
+def get_copy_str(
+        temp_dir: str,
+        copy_packages: dict[str, str],
+        mode: [int | None] = None,
+) -> str:
+    # Todo:
+    #  - [ ] COPY vs. ADD?
+    copy_str: str = str()
+    _mode = "" if mode is None else f"--chmod={str(mode).zfill(4)}"
+    for copy_package in copy_packages.keys():
+        copy_str += f"COPY {_mode} ./{pathlib.Path(temp_dir).name}/{copy_package} .\n"
+
+    return copy_str
 
 
 def get_wget_str(

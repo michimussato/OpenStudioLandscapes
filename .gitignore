@@ -63,3 +63,5 @@ tmp*/
 /sesi/
 /installers/
 /**/.docker/
+
+.installers
