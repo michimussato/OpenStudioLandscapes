@@ -439,8 +439,7 @@ def build_base_image_10_2(
         
         SHELL ["/bin/bash", "-c"]
         
-        RUN apt-get update \
-            && apt-get upgrade -y
+        RUN apt-get update && apt-get upgrade -y
         
         {pip_install_str}
         
@@ -468,12 +467,6 @@ def build_base_image_10_2(
         **env_10_2,
     )
     # @formatter:on
-
-    # context.log.info(urllib.parse.quote(f"http://localhost:3000/assets/{context.asset_key.path[0]}/{context.asset_key.path[-1]}", safe=":/%"))
-    # context.log.info(urllib.parse.quote(f"http://localhost:3000/asset-groups/{context.asset_key.path[0]}%2F{context.asset_key.path[-1]}", safe=":/%"))
-    # # context.log.info("http://" + urllib.parse.quote(f"{env_10_2.get('DAGSTER_HOST')}/assets/{context.asset_key.path[0]}/{context.asset_key.path[-1]}"))
-    # # context.log.info("http://" + urllib.parse.quote(f"{env_10_2.get('DAGSTER_HOST')}/assets/{context.asset_key.path[0]}/{context.asset_key.path[-1]}"))
-    # # context.log.info("http://" + urllib.parse.quote(f"{env_10_2.get('DAGSTER_HOST')}/assets/{context.asset_key.path[0]}/{context.asset_key.path[-1]}"))
 
     shutil.rmtree(docker_file.parent, ignore_errors=True)
 
@@ -515,63 +508,6 @@ def build_base_image_10_2(
             "env_10_2": MetadataValue.json(env_10_2),
         },
     )
-
-
-# @asset(
-#     group_name="Environment",
-#     compute_kind="python",
-#     ins={
-#         "nfs": AssetIn(),
-#     },
-# )
-# def repository_dirs(
-#         context: AssetExecutionContext,
-#         nfs: dict,
-# ) -> dict:
-#     # @formatter:off
-#     _env: dict = {
-#         "DEADLINE_REPO_DICTS": {
-#             "10_2": {
-#                 "INSTALLER": None,
-#                 "PROD": {
-#                     "INSTALL_DEST_REPOSITORY": pathlib.PurePath(
-#                         nfs.get("NFS_ENTRY_POINT"),
-#                         "deadline_repository_10_prod",
-#                         "DeadlineRepository10"
-#                     ).as_posix(),
-#                 },
-#                 # "TEST": {
-#                 #     "INSTALL_DEST_REPOSITORY": pathlib.PurePath(
-#                 #         nfs.get("NFS_ENTRY_POINT"),
-#                 #         "deadline_repository_10_test",
-#                 #         "DeadlineRepository10"
-#                 #     ).as_posix(),
-#                 # },
-#                 "TEST": {
-#                     "INSTALL_DEST_REPOSITORY": pathlib.PurePath(
-#                         nfs.get("NFS_ENTRY_POINT"),
-#                         "test_data",
-#                         "opt",
-#                         "Thinkbox",
-#                         "DeadlineRepository10",
-#                     ).as_posix(),
-#                 },
-#             },
-#         },
-#     }
-#     # @formatter:on
-#
-#     _env.update(nfs)
-#
-#     yield Output(_env)
-#
-#     yield AssetMaterialization(
-#         asset_key=context.asset_key,
-#         metadata={
-#             context.asset_key.path[0]: MetadataValue.json(_env),
-#
-#         },
-#     )
 
 
 @asset(
@@ -747,11 +683,6 @@ def build_repository_image_10_2(
                 "10_2",
             ],
         ),
-        # "connection_ini_10_2": AssetIn(
-        #     key_prefix=[
-        #         "10_2",
-        #     ],
-        # ),
         "compose_mongodb_10_2": AssetIn(
             key_prefix=[
                 "10_2",
@@ -774,7 +705,6 @@ def compose_repository_10_2(
         env_10_2: dict,
         compose_networks_10_2: dict,
         build_repository_image_10_2: str,
-        # connection_ini_10_2: pathlib.Path,
         compose_mongodb_10_2: dict,
         deadline_command_install_repository_10_2: list,
 ) -> pathlib.Path:
@@ -796,7 +726,6 @@ def compose_repository_10_2(
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT')}",
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT_LNS')}",
                     f"{env_10_2.get('REPOSITORY_INSTALL_DESTINATION_10_2')}:/opt/Thinkbox/DeadlineRepository10",
-                    # f"{connection_ini_10_2.as_posix()}:/opt/Thinkbox/DeadlineRepository10/settings/connection.ini:ro",
                 ],
             },
         },
@@ -1035,123 +964,6 @@ def build_client_image_10_2(
     )
 
 
-# @asset(
-#     group_name="Build_Images_10_2",
-#     compute_kind="python",
-#     key_prefix=[
-#         "10_2",
-#     ],
-#     ins={
-#         "env_10_2": AssetIn(
-#             key_prefix=[
-#                 "10_2",
-#             ],
-#         ),
-#         "build_client_image_10_2": AssetIn(
-#             key_prefix=[
-#                 "10_2",
-#             ],
-#         ),
-#     },
-# )
-# def build_generic_runner_image_10_2(
-#         context: AssetExecutionContext,
-#         env_10_2: dict,
-#         build_client_image_10_2: str,
-# ) -> str:
-#     """
-#     """
-#
-#     # Todo
-#     #  - [ ] Not needed anymore
-#
-#     docker_file = pathlib.Path(
-#         env_10_2["DOT_LANDSCAPES"],
-#         env_10_2.get("LANDSCAPE", "default"),
-#         context.asset_key.path[0],
-#         "Dockerfiles",
-#         context.asset_key.path[-1],
-#         "Dockerfile",
-#     )
-#
-#     tags = [
-#         f"{env_10_2.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:latest",
-#         f"{env_10_2.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:{env_10_2.get('LANDSCAPE', str(time.time()))}",
-#     ]
-#
-#     # @formatter:off
-#     docker_file_str = textwrap.dedent("""
-#         # {auto_generated}
-#         # {dagster_url}
-#         FROM {parent_image} AS {image_name}
-#         LABEL authors="{AUTHOR}"
-#
-#         SHELL ["/bin/bash", "-c"]
-#
-#         ENTRYPOINT []
-#     """).format(
-#         auto_generated=f"AUTO-GENERATED by Dagster Asset {context.asset_key.path[-1]}",
-#         dagster_url=urllib.parse.quote(f"http://localhost:3000/asset-groups/{context.asset_key.path[0]}%2F{context.asset_key.path[-1]}", safe=":/%"),
-#         image_name=context.asset_key.path[1],
-#         parent_image=build_client_image_10_2,
-#         **env_10_2,
-#     )
-#     # @formatter:on
-#
-#     shutil.rmtree(docker_file.parent, ignore_errors=True)
-#
-#     docker_file.parent.mkdir(parents=True, exist_ok=True)
-#
-#     with open(docker_file, "w") as fw:
-#         fw.write(docker_file_str)
-#
-#     with open(docker_file, "r") as fr:
-#         docker_file_content = fr.read()
-#
-#     stream = docker.build(
-#         context_path=docker_file.parent.as_posix(),
-#         cache=DOCKER_USE_CACHE,
-#         tags=tags,
-#         stream_logs=True,
-#     )
-#
-#     log: str = ""
-#
-#     for msg in stream:
-#         context.log.debug(msg)
-#         log += msg
-#
-#     cmds_docker = compile_cmds(
-#         docker_file=docker_file,
-#         tag=tags[1],
-#         volumes=[
-#             f"{env_10_2.get('DEADLINE_CLIENT_DEADLINE_INI_10_2')}:/var/lib/Thinkbox/Deadline10/deadline.ini:ro",
-#             f"{env_10_2.get('DEADLINE_REPOSITORY_CONNECTION_INI_10_2')}:/opt/Thinkbox/DeadlineRepository10/settings/connection.ini:ro",
-#             f"{env_10_2.get('REPOSITORY_INSTALL_DESTINATION_10_2')}:/opt/Thinkbox/DeadlineRepository10",
-#             f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT')}",
-#             f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT_LNS')}",
-#         ],
-#         networks=[
-#             "network_repository-10-2",
-#             "network_mongodb-10-2",
-#         ],
-#
-#     )
-#
-#     yield Output(tags[1])
-#
-#     yield AssetMaterialization(
-#         asset_key=context.asset_key,
-#         metadata={
-#             context.asset_key.path[-1]: MetadataValue.path(tags[1]),
-#             "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
-#             **cmds_docker,
-#             "build_logs": MetadataValue.md(f"```shell\n{log}\n```"),
-#             "env_10_2": MetadataValue.json(env_10_2),
-#         },
-#     )
-
-
 @asset(
     group_name="Docker_Compose_10_2",
     compute_kind="python",
@@ -1277,8 +1089,9 @@ def compose_mongo_express_10_2(
                 "networks": [
                     "mongodb",
                 ],
+                #Todo
                 # "healthcheck": {
-                #     "test": ["CMD", "curl", "-f", f"http://localhost:{env_10_2.get('MONGO_EXPRESS_PORT_CONTAINER')}"],
+                #     "test": ["CMD", "wget", "-S", f"http://0.0.0.0:{env_10_2.get('MONGO_EXPRESS_PORT_CONTAINER')}"],
                 #     "interval": "10s",
                 #     "timeout": "2s",
                 #     "retries": "3",
@@ -1659,9 +1472,12 @@ def compose_rcs_runner_10_2(
                     "mongodb",
                 ],
                 "command": deadline_command_compose_rcs_runner_10_2,
-                # "command": [
-                #     "--executable", "/opt/Thinkbox/Deadline10/bin/deadlinercs",
-                # ],
+                "healthcheck": {
+                    "test": ["CMD", "curl", "-f", f"http://localhost:{env_10_2.get('RCS_HTTP_PORT_CONTAINER')}"],
+                    "interval": "10s",
+                    "timeout": "2s",
+                    "retries": "3",
+                },
                 "volumes": [
                     f"{deadline_ini_10_2.as_posix()}:/var/lib/Thinkbox/Deadline10/deadline.ini:ro",
                     f"{connection_ini_10_2.as_posix()}:/opt/Thinkbox/DeadlineRepository10/settings/connection.ini:ro",
@@ -1798,11 +1614,6 @@ def compose_pulse_runner_10_2(
                     "mongodb",
                 ],
                 "command": deadline_command_compose_pulse_runner_10_2,
-                # "command": [
-                #     "--executable", "/opt/Thinkbox/Deadline10/bin/deadlinepulse",
-                #     "--nogui",
-                #     "--nosplash",
-                # ],
                 "volumes": [
                     f"{deadline_ini_10_2.as_posix()}:/var/lib/Thinkbox/Deadline10/deadline.ini:ro",
                     f"{connection_ini_10_2.as_posix()}:/opt/Thinkbox/DeadlineRepository10/settings/connection.ini:ro",
@@ -2069,9 +1880,6 @@ def compose_webservice_runner_10_2(
                     "mongodb",
                 ],
                 "command": deadline_command_compose_webservice_runner_10_2,
-                # "command": [
-                #     "--executable", "/opt/Thinkbox/Deadline10/bin/deadlinewebservice",
-                # ],
                 "volumes": [
                     f"{deadline_ini_10_2.as_posix()}:/var/lib/Thinkbox/Deadline10/deadline.ini:ro",
                     f"{connection_ini_10_2.as_posix()}:/opt/Thinkbox/DeadlineRepository10/settings/connection.ini:ro",

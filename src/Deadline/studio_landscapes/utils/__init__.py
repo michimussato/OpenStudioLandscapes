@@ -99,11 +99,13 @@ def get_apt_install_str(
 
 def get_wget_str(
         wget_packages: dict[str, str],
+        chmod_plus_x: bool = True,
 ) -> str:
     wget_str: str = str()
     for wget_package, wget_url in wget_packages.items():
         wget_str += "RUN wget -O '%s' '%s'\n" % (wget_package, wget_url)
-        wget_str += "RUN chmod a+x '%s'\n" % wget_package
+        if chmod_plus_x:
+            wget_str += "RUN chmod a+x '%s'\n" % wget_package
 
     return wget_str
 

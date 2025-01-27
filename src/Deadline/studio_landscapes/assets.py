@@ -500,8 +500,7 @@ def build_base_image(
         ENV CONTAINER_TIMEZONE={TIMEZONE}
         ENV SET_CONTAINER_TIMEZONE=true
         
-        RUN apt-get update \
-            && apt-get upgrade -y
+        RUN apt-get update && apt-get upgrade -y
         
         {apt_install_str_base}
         
