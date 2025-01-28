@@ -463,8 +463,8 @@ Edit `studio_landscapes.assets.env_base` and
 #### Resulting Files and Directories (aka "Landscape")
 
 ```shell
-$ tree .docker/landscapes/2025-01-22_12-40-25__1737549625.8644402
-.docker/landscapes/2025-01-22_12-40-25__1737549625.8644402
+$ tree .landscapes/2025-01-22_12-40-25__1737549625.8644402
+.landscapes/2025-01-22_12-40-25__1737549625.8644402
 ├── 10_2
 │   ├── configs
 │   │   ├── Deadline10
