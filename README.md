@@ -233,7 +233,10 @@ There are many ways to protect sensitive data.
 It is `studio-landscapes` does not provide a dedicated solution
 to protect your secrets - it lets (and wants you to) implement 
 your own solution or use existing ones if you have something
-implemented already.
+implemented already. Dagster does handle secrets in
+its own way. This approach might be a valid candidate for
+`studio-landscapes` in the future. More on this here:
+https://docs.dagster.io/guides/deploy/using-environment-variables-and-secrets
 
 However, I do have sensitive data myself and I would like to 
 quickly present my approach to you here. I'm not a security 
@@ -243,13 +246,13 @@ terminology.
 I'm suggesting three levels of secrecy, although I'm
 only using two in practice:
 - Personal
-  - > Secrets that only certain individuals can know
+  > Secrets that only certain individuals can know
 - Internal
-  - > Secrets that all individuals within an entity can know
-      but not the outside world
+  > Secrets that all individuals within an entity can know
+    but not the outside world
 - Public
-  - > Everything that comes with the public `michimussato/studio-landscapes`
-      Git repository
+  > Everything that comes with the public `michimussato/studio-landscapes`
+    Git repository
 
 ### Personal Secrets
 
