@@ -75,9 +75,11 @@ without sacrificing the technical freedom
 to implement highly studio specific and individual solutions if 
 needed.
 
+The structure of a Landscape:
+
 ```mermaid
 mindmap
-  root((landscape))
+  root(landscape)
     Deadline
         RCS
         Webserver
@@ -92,6 +94,90 @@ mindmap
     LikeC4
     Filebrowser
     Landscape Map
+```
+
+The hierarchy of multiple Landscapes
+in the context of `studio-landscapes`:
+
+```mermaid
+mindmap
+root((studio-landscapes))
+    Landscape(Production)
+      Deadline
+          RCS
+          Webserver
+          Pulse
+          MongoDB
+      Ayon
+          Redis
+          Postgres
+      Kitsu
+          Postgres
+      Dagster
+      LikeC4
+      Filebrowser
+      Landscape Map
+    Landscape(Development)
+      Version{{v1}}
+        Deadline
+            RCS
+            Webserver
+            Pulse
+            MongoDB
+        Ayon
+            Redis
+            Postgres
+        Kitsu
+            Postgres
+        Dagster
+        LikeC4
+        Filebrowser
+        Landscape Map
+      Version{{v2}}
+        Deadline
+            RCS
+            Webserver
+            Pulse
+            MongoDB
+        Ayon
+            Redis
+            Postgres
+        Kitsu
+            Postgres
+        Dagster
+        LikeC4
+        Filebrowser
+        Landscape Map
+      Version{{v3}}
+        Deadline
+            RCS
+            Webserver
+            Pulse
+            MongoDB
+        Ayon
+            Redis
+            Postgres
+        Kitsu
+            Postgres
+        Dagster
+        LikeC4
+        Filebrowser
+        Landscape Map
+    Landscape(Debugging)
+      Deadline
+          RCS
+          Webserver
+          Pulse
+          MongoDB
+      Ayon
+          Redis
+          Postgres
+      Kitsu
+          Postgres
+      Dagster
+      LikeC4
+      Filebrowser
+      Landscape Map
 ```
 
 ## Tested on
