@@ -400,13 +400,13 @@ Todo:
 
 `.docker/landscapes/2025-01-22_12-40-25__1737549625.8644402/10_2/docker_compose/compose_10_2/docker-compose.yml`
 
-![viz_compose_10_2.png](docs/img/viz_compose_10_2.png)
+![viz_compose_10_2.png](docs/img/viz_compose_10_2.svg)
 
 ### Repository-Installer 10.2
 
 `.docker/landscapes/2025-01-22_12-40-25__1737549625.8644402/10_2/docker_compose/compose_repository_10_2/docker-compose.yml`
 
-![viz_compose_repository_10_2.png](docs/img/viz_compose_repository_10_2.png)
+![viz_compose_repository_10_2.png](docs/img/viz_compose_repository_10_2.svg)
 
 ## Clone
 

@@ -14,10 +14,6 @@ from dagster import (
 )
 
 
-# Todo:
-#  - [x] Do SVG's
-
-
 @asset(
     group_name="Viz",
     compute_kind="python",
@@ -117,7 +113,7 @@ def viz_compose_repository_10_2(
 
     docker_compose_dir.mkdir(parents=True, exist_ok=True)
 
-    svg = docker_compose_dir / f"{context.asset_key.path[-1]}.png"
+    svg = docker_compose_dir / f"{context.asset_key.path[-1]}.svg"
     dcg.graph.write(
         path=svg,
         format="svg",
