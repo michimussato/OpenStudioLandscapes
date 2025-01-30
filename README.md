@@ -392,7 +392,7 @@ comparison:
 ## Docker Compose Graph
 
 Dynamic Docker Compose documentation: 
-`docker-graph` creates a visual representation of
+[`docker-graph`](https://github.com/michimussato/docker-graph) creates a visual representation of
 `docker-compose.yml` files for every individual
 Landscape for quick reference and context.
 
