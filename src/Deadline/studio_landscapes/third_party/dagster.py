@@ -216,7 +216,7 @@ def compose_dagster(
                     # Todo
                     #  - [ ] fix hard code here (from deadline-dagster .env)
                     "DAGSTER_DEPLOYMENT": "farm",
-                    "DAGSTER_JOBS_IN": "/nfs/in",
+                    "DAGSTER_JOBS_IN": "/data/share/nfs/in",
                 },
                 "healthcheck": {
                     "test": ["CMD", "curl", "-f", f"http://localhost:{env_base.get('DAGSTER_DEV_PORT_CONTAINER')}"],
