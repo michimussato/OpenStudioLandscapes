@@ -42,6 +42,19 @@
 
 ---
 
+<table border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td>
+      <img style="border-radius: 0%" src="docs/img/logo.png" alt="Logo" width="100"/>
+    </td>
+    <td>
+      <h1>OpenStudioLandscapes</h1>
+    </td>
+  </tr>
+</table>
+
+---
+
 # open-studio-landscapes
 
 Setup and launch Deadline - your 3D Animation and VFX
