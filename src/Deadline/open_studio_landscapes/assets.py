@@ -264,6 +264,15 @@ def env_base(
         "DAGSTER_WORKSPACE": "/dagster/workspace.yaml",
     }
 
+    _env_grafana = {
+        "GRAFANA_PORT_HOST": "3030",
+        "GRAFANA_PORT_CONTAINER": "3030",
+        # "DAGSTER_ROOT": "/dagster",
+        # "DAGSTER_HOME": "/dagster/materializations",
+        # "DAGSTER_HOST": "0.0.0.0",
+        # "DAGSTER_WORKSPACE": "/dagster/workspace.yaml",
+    }
+
     _env_filebrowser = {
         "FILEBROWSER_PORT_HOST": "8080",
         "FILEBROWSER_PORT_CONTAINER": "80",
@@ -360,6 +369,7 @@ def env_base(
 
     _env.update(_env_ayon)
     _env.update(_env_dagster)
+    _env.update(_env_grafana)
     _env.update(_env_kitsu)
     _env.update(_env_filebrowser)
     _env.update(_env_likec4)
