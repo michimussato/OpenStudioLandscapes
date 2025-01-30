@@ -45,7 +45,7 @@
 <table border="0" cellpadding="0" cellspacing="0">
   <tr>
     <td>
-      <img style="border-radius: 0%" src="docs/img/logo.png" alt="Logo" width="100"/>
+      <img style="border-radius: 0%" src="docs/img/logo.png" alt="Logo" width="200"/>
     </td>
     <td>
       <h1>OpenStudioLandscapes</h1>
