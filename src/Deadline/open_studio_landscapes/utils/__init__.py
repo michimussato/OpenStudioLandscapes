@@ -3,7 +3,7 @@ import shutil
 import shlex
 import git
 
-from Deadline.studio_landscapes.constants import *
+from Deadline.open_studio_landscapes.constants import *
 
 from dagster import MetadataValue
 
@@ -139,7 +139,7 @@ def get_git_root(
 #         context: AssetExecutionContext = None,
 # ):
 #     """
-# from Deadline.studio_landscapes.assets import docker_cleanup
+# from Deadline.open_studio_landscapes.assets import docker_cleanup
 # docker_cleanup()
 #     """
 #     # out = {

@@ -1,5 +1,5 @@
 <!-- TOC -->
-* [studio-landscapes](#studio-landscapes)
+* [open-studio-landscapes](#open-studio-landscapes)
   * [Tested on](#tested-on)
   * [About the Author](#about-the-author)
   * [Requirements](#requirements)
@@ -23,7 +23,7 @@
   * [Clone](#clone)
   * [Install](#install)
     * [venv](#venv)
-    * [studio-landscapes](#studio-landscapes-1)
+    * [open-studio-landscapes](#open-studio-landscapes-1)
   * [Create Landscape](#create-landscape)
     * [Launch Dagster](#launch-dagster)
     * [Configure Landscape](#configure-landscape)
@@ -42,7 +42,7 @@
 
 ---
 
-# studio-landscapes
+# open-studio-landscapes
 
 Setup and launch Deadline - your 3D Animation and VFX
 Pipeline backbone - with ease, independence
@@ -62,7 +62,7 @@ your production landscape with ease:
 - Easily add, replace or remove services
 - Clone (or modify and clone) entire production landscapes for testing, debugging or development
 - Always stay on top of things with maps and node trees of code and landscapes
-- `studio-landscapes` is (primarily) powered by Dagster and Docker
+- `open-studio-landscapes` is (primarily) powered by Dagster and Docker
 - Fully Python based
 
 This platform is aimed towards small to medium-sized
@@ -97,11 +97,11 @@ mindmap
 ```
 
 The hierarchy of multiple Landscapes
-in the context of `studio-landscapes`:
+in the context of `open-studio-landscapes`:
 
 ```mermaid
 mindmap
-root((studio-landscapes))
+root((open-studio-landscapes))
     Landscape(Production)
       Deadline
           RCS
@@ -230,12 +230,12 @@ Todo:
 ## Secrets
 
 There are many ways to protect sensitive data.
-It is `studio-landscapes` does not provide a dedicated solution
+It is `open-studio-landscapes` does not provide a dedicated solution
 to protect your secrets - it lets (and wants you to) implement 
 your own solution or use existing ones if you have something
 implemented already. Dagster does handle secrets in
 its own way. This approach might be a valid candidate for
-`studio-landscapes` in the future. More on this here:
+`open-studio-landscapes` in the future. More on this here:
 https://docs.dagster.io/guides/deploy/using-environment-variables-and-secrets
 
 However, I do have sensitive data myself and I would like to 
@@ -251,7 +251,7 @@ only using two in practice:
   > Secrets that all individuals within an entity can know
     but not the outside world
 - Public
-  > Everything that comes with the public `michimussato/studio-landscapes`
+  > Everything that comes with the public `michimussato/open-studio-landscapes`
     Git repository
 
 ### Personal Secrets
@@ -343,7 +343,7 @@ push everything publicly.
 
 There are a multitude of managers available
 and I had to make a decision to begin with. 
-In general, `studio-landscapes` has the 
+In general, `open-studio-landscapes` has the 
 capability to support arbitrary managers, 
 however, as of now, only Deadline is considered
 integrated. The decision to go with Deadline
@@ -414,8 +414,8 @@ Todo:
 ## Clone
 
 ```shell
-git clone https://github.com/michimussato/studio-landscapes.git
-cd studio-landscapes
+git clone https://github.com/michimussato/open-studio-landscapes.git
+cd open-studio-landscapes
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip setuptools
@@ -432,10 +432,10 @@ source .venv/bin/activate
 python -m pip install --upgrade pip setuptools
 ```
 
-### studio-landscapes
+### open-studio-landscapes
 
 ```shell
-python -m pip install git+https://github.com/michimussato/studio-landscapes.git@main
+python -m pip install git+https://github.com/michimussato/open-studio-landscapes.git@main
 ```
 
 ## Create Landscape
@@ -443,7 +443,7 @@ python -m pip install git+https://github.com/michimussato/studio-landscapes.git@
 ### Launch Dagster
 
 ```shell
-cd ~/git/repos/studio-landscapes
+cd ~/git/repos/open-studio-landscapes
 source .venv/bin/activate
 export DAGSTER_HOME="$(pwd)/dagster/materializations"
 dagster dev --workspace "$(pwd)/dagster/workspace.yaml" --host 0.0.0.0  # --port 3000
@@ -453,8 +453,8 @@ http://0.0.0.0:3000
 
 ### Configure Landscape
 
-Edit `studio_landscapes.assets.env_base` and 
-`studio_landscapes.assets.env_10_2` according to your needs.
+Edit `open_studio_landscapes.assets.env_base` and 
+`open_studio_landscapes.assets.env_10_2` according to your needs.
 
 ### Materialize Landscape
 
@@ -578,11 +578,11 @@ tar -xzvf tests/fixtures/DeadlineDatabase10_2.tar.gz -C tests/fixtures/10_2/Dead
 sudo chown -R 101:65534 tests/fixtures/10_2/DeadlineDatabase10
 ```
 
-And in `studio-landscapes.assets.env_10_2` set
+And in `Deadline.open_studio_landscapes.assets.env_10_2` set
 
 ```
 f"DATABASE_INSTALL_DESTINATION_{context.asset_key.path[0]}": pathlib.Path(
-      f"~/git/repos/studio-landscapes/tests/fixtures/{context.asset_key.path[0]}/DeadlineDatabase10",
+      f"~/git/repos/open-studio-landscapes/tests/fixtures/{context.asset_key.path[0]}/DeadlineDatabase10",
   ).expanduser().as_posix()
 ```
 

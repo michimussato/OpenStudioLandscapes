@@ -2,12 +2,12 @@ from dagster import (
     Definitions,
     load_assets_from_modules,
 )
-from Deadline.studio_landscapes import (
+from Deadline.open_studio_landscapes import (
     assets,
     assets_10_2,
     assets_visualizer,
 )
-from Deadline.studio_landscapes.third_party import (
+from Deadline.open_studio_landscapes.third_party import (
     ayon,
     dagster,
     kitsu,

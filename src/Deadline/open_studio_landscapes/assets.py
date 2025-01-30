@@ -9,8 +9,8 @@ import textwrap
 import pathlib
 import time
 
-from Deadline.studio_landscapes.constants import *
-from Deadline.studio_landscapes.utils import *
+from Deadline.open_studio_landscapes.constants import *
+from Deadline.open_studio_landscapes.utils import *
 
 from python_on_whales import docker
 

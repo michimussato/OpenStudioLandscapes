@@ -14,8 +14,8 @@ from functools import reduce
 from python_on_whales import docker
 from docker_graph.utils import *
 
-from Deadline.studio_landscapes.constants import *
-from Deadline.studio_landscapes.utils import *
+from Deadline.open_studio_landscapes.constants import *
+from Deadline.open_studio_landscapes.utils import *
 
 from dagster import (
     AssetExecutionContext,

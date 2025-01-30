@@ -2,7 +2,7 @@ import pathlib
 import yaml
 import shutil
 
-from Deadline.studio_landscapes.utils import *
+from Deadline.open_studio_landscapes.utils import *
 
 from docker_graph.yaml_tags.overrides import *
 
