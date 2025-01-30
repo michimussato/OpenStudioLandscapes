@@ -79,7 +79,7 @@ your production landscape with ease:
 - Easily add, replace or remove services
 - Clone (or modify and clone) entire production landscapes for testing, debugging or development
 - Always stay on top of things with maps and node trees of code and landscapes
-- `open-studio-landscapes` is (primarily) powered by Dagster and Docker
+- `open-studio-landscapes` is (primarily) powered by [Dagster](https://github.com/dagster-io/) and [Docker](https://github.com/docker)
 - Fully Python based
 
 This platform is aimed towards small to medium-sized
@@ -420,13 +420,13 @@ Todo:
 
 ### Deadline 10.2
 
-`.docker/landscapes/2025-01-22_12-40-25__1737549625.8644402/10_2/docker_compose/compose_10_2/docker-compose.yml`
+`.landscapes/2025-01-22_12-40-25__1737549625.8644402/10_2/docker_compose/compose_10_2/docker-compose.yml`
 
 ![viz_compose_10_2.png](docs/img/viz_compose_10_2.svg)
 
 ### Repository-Installer 10.2
 
-`.docker/landscapes/2025-01-22_12-40-25__1737549625.8644402/10_2/docker_compose/compose_repository_10_2/docker-compose.yml`
+`.landscapes/2025-01-22_12-40-25__1737549625.8644402/10_2/docker_compose/compose_repository_10_2/docker-compose.yml`
 
 ![viz_compose_repository_10_2.png](docs/img/viz_compose_repository_10_2.svg)
 
