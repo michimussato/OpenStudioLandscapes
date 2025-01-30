@@ -1,3 +1,16 @@
+<table border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td>
+      <img style="border-radius: 0%" src="docs/img/logo.png" alt="Logo" width="200"/>
+    </td>
+    <td>
+      <h1>OpenStudioLandscapes</h1>
+    </td>
+  </tr>
+</table>
+
+---
+
 <!-- TOC -->
 * [open-studio-landscapes](#open-studio-landscapes)
   * [Tested on](#tested-on)
@@ -39,19 +52,6 @@
     * [Use Test DB](#use-test-db)
   * [Git Repos](#git-repos)
 <!-- TOC -->
-
----
-
-<table border="0" cellpadding="0" cellspacing="0">
-  <tr>
-    <td>
-      <img style="border-radius: 0%" src="docs/img/logo.png" alt="Logo" width="200"/>
-    </td>
-    <td>
-      <h1>OpenStudioLandscapes</h1>
-    </td>
-  </tr>
-</table>
 
 ---
 
