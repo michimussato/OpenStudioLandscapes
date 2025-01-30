@@ -8,7 +8,7 @@ load_from:
   - python_module:
       # https://github.com/michimussato/deadline-dagster
       working_directory: src
-      module_name: deadline_dagster.definitions
+      module_name: Deadline.deadline_dagster.definitions
       location_name: "deadline_dagster Package Location"
       # executable_path: ../.venv/bin/python
   - python_module:

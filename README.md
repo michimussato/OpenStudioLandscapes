@@ -446,7 +446,7 @@ python -m pip install git+https://github.com/michimussato/studio-landscapes.git@
 cd ~/git/repos/studio-landscapes
 source .venv/bin/activate
 export DAGSTER_HOME="$(pwd)/dagster/materializations"
-dagster dev --workspace "$(pwd)/dagster/workspace.yaml" --host 0.0.0.0 --port 3000
+dagster dev --workspace "$(pwd)/dagster/workspace.yaml" --host 0.0.0.0  # --port 3000
 ```
 
 http://0.0.0.0:3000
