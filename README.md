@@ -13,6 +13,8 @@
 
 <!-- TOC -->
 * [open-studio-landscapes](#open-studio-landscapes)
+  * [Brief](#brief)
+  * [Structure](#structure)
   * [Tested on](#tested-on)
   * [About the Author](#about-the-author)
   * [Requirements](#requirements)
@@ -57,6 +59,8 @@
 
 # open-studio-landscapes
 
+## Brief
+
 Setup and launch Deadline - your 3D Animation and VFX
 Pipeline backbone - with ease, independence
 and scalability.
@@ -87,6 +91,8 @@ on top of with the ability to share them among others
 without sacrificing the technical freedom  
 to implement highly studio specific and individual solutions if 
 needed.
+
+## Structure
 
 The structure of a Landscape:
 
