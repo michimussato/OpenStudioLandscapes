@@ -23,6 +23,8 @@ from dagster import (
     MetadataValue,
 )
 
+from Deadline.open_studio_landscapes.assets import KEY as KEY_BASE
+
 
 """
 # cat /opt/zou/init_zou.sh 
@@ -75,12 +77,14 @@ asset_header = {
 @asset(
     **asset_header,
     ins={
-        "env_base": AssetIn(),
+        "env": AssetIn(
+            AssetKey([KEY_BASE, "env"]),
+        ),
     },
 )
 def env(
         context: AssetExecutionContext,
-        env_base: dict,
+        env: dict,
 ) -> dict:
 
     # @formatter:off
@@ -101,36 +105,36 @@ def env(
             #################################################################
             # Inside Landscape:
             "default": pathlib.Path(
-                env_base["DOT_LANDSCAPES"],
-                env_base.get("LANDSCAPE", "default"),
+                env["DOT_LANDSCAPES"],
+                env.get("LANDSCAPE", "default"),
                 "data",
                 "kitsu",
             ).as_posix(),
             #################################################################
             # Prod DB:
             "prod_db": pathlib.Path(
-                env_base["NFS_ENTRY_POINT"],
+                env["NFS_ENTRY_POINT"],
                 "services",
                 "kitsu",
             ).as_posix(),
             #################################################################
             # Test DB:
             "test_db": pathlib.Path(
-                env_base["NFS_ENTRY_POINT"],
+                env["NFS_ENTRY_POINT"],
                 "test_data",
                 "10.2",
                 "kitsu",
             ).as_posix(),
         }["default"],
         f"KITSU_INIT_ZOU": pathlib.Path(
-            env_base["DOT_LANDSCAPES"],
-            env_base.get("LANDSCAPE", "default"),
+            env["DOT_LANDSCAPES"],
+            env.get("LANDSCAPE", "default"),
             "configs",
             "kitsu",
             "init_zou.sh",
         ).expanduser().as_posix(),
         f"KITSU_TEMPLATE_DB_14": pathlib.Path(
-            env_base["CONFIGS_ROOT"],
+            env["CONFIGS_ROOT"],
             "kitsu",
             "postgres",
             "template_dbs",
@@ -140,11 +144,11 @@ def env(
     }
     # @formatter:on
 
-    env_base.update(_env)
+    env.update(_env)
 
     env_json = pathlib.Path(
-        env_base["DOT_LANDSCAPES"],
-        env_base.get("LANDSCAPE", "default"),
+        env["DOT_LANDSCAPES"],
+        env.get("LANDSCAPE", "default"),
         "third_party",
         *context.asset_key.path,
         f"{'__'.join(context.asset_key.path)}.json",
@@ -161,12 +165,12 @@ def env(
             sort_keys=True,
         )
 
-    yield Output(env_base)
+    yield Output(env)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(env_base),
+            "__".join(context.asset_key.path): MetadataValue.json(env),
             "json": MetadataValue.path(env_json),
         },
     )
@@ -175,25 +179,25 @@ def env(
 @asset(
     **asset_header,
 )
-def apt_packages_build(
+def apt_packages(
         context: AssetExecutionContext,
 ) -> dict[str, list[str]]:
     """
     """
 
-    ret = dict()
+    _apt_packages = dict()
 
-    ret["base"] = [
+    _apt_packages["base"] = [
         "htop",
         "curl",
     ]
 
-    yield Output(ret)
+    yield Output(_apt_packages)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(ret),
+            "__".join(context.asset_key.path): MetadataValue.json(_apt_packages),
         },
     )
 
@@ -202,17 +206,18 @@ def apt_packages_build(
     **asset_header,
     ins={
         "env": AssetIn(
-            key_prefix=[KEY],
+            AssetKey([KEY, "env"]),
         ),
-        "apt_packages_build": AssetIn(
-            key_prefix=[KEY],
+        "apt_packages": AssetIn(
+            AssetKey([KEY, "apt_packages"]),
+
         ),
     },
 )
 def build(
         context: AssetExecutionContext,
         env: dict,
-        apt_packages_build: dict[str, list[str]],
+        apt_packages: dict[str, list[str]],
 ) -> str:
     """
     """
@@ -231,7 +236,7 @@ def build(
     ]
 
     apt_install_str_base: str = get_apt_install_str(
-        apt_install_packages=apt_packages_build["base"],
+        apt_install_packages=apt_packages["base"],
     )
 
     # @formatter:off
@@ -316,7 +321,7 @@ def build(
     **asset_header,
     ins={
         "env": AssetIn(
-            key_prefix=[KEY],
+            AssetKey([KEY, "env"]),
         ),
     },
 )
@@ -410,10 +415,10 @@ def script_prepare_db(
     **asset_header,
     ins={
         "env": AssetIn(
-            key_prefix=[KEY],
+            AssetKey([KEY, "env"]),
         ),
         "script_prepare_db": AssetIn(
-            key_prefix=[KEY],
+            AssetKey([KEY, "script_prepare_db"]),
         ),
     },
 )
@@ -490,7 +495,7 @@ def prepare_db(
     **asset_header,
     ins={
         "env": AssetIn(
-            key_prefix=[KEY],
+            AssetKey([KEY, "env"]),
         ),
     },
 )
@@ -551,13 +556,13 @@ def script_init_zou(
     **asset_header,
     ins={
         "env": AssetIn(
-            key_prefix=[KEY],
+            AssetKey([KEY, "env"]),
         ),
         "script_init_zou": AssetIn(
-            key_prefix=[KEY],
+            AssetKey([KEY, "script_init_zou"]),
         ),
         "build": AssetIn(
-            key_prefix=[KEY],
+            AssetKey([KEY, "build"]),
         ),
     },
     deps=[

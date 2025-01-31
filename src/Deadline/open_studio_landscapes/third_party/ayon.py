@@ -9,12 +9,15 @@ from docker_graph.yaml_tags.overrides import *
 
 from dagster import (
     AssetIn,
+    AssetKey,
     asset,
     AssetExecutionContext,
     Output,
     AssetMaterialization,
     MetadataValue
 )
+
+from Deadline.open_studio_landscapes.assets import KEY as KEY_BASE
 
 
 GROUP = "Ayon"
@@ -30,18 +33,20 @@ asset_header = {
 @asset(
     **asset_header,
     ins={
-        "env_base": AssetIn(),
+        "env": AssetIn(
+            AssetKey([KEY_BASE, "env"]),
+        ),
     },
 )
 def env(
         context: AssetExecutionContext,
-        env_base: dict,
+        env: dict,
 ) -> dict:
 
     # @formatter:off
     _env = {
         "AYON_DOCKER_COMPOSE": pathlib.Path(
-            env_base["GIT_ROOT"],
+            env["GIT_ROOT"],
             "repos",
             "ayon-docker",
             "docker-compose.yml",
@@ -51,11 +56,11 @@ def env(
     }
     # @formatter:on
 
-    env_base.update(_env)
+    env.update(_env)
 
     env_json = pathlib.Path(
-        env_base["DOT_LANDSCAPES"],
-        env_base.get("LANDSCAPE", "default"),
+        env["DOT_LANDSCAPES"],
+        env.get("LANDSCAPE", "default"),
         "third_party",
         *context.asset_key.path,
         f"{'__'.join(context.asset_key.path)}.json",
@@ -72,12 +77,12 @@ def env(
             sort_keys=True,
         )
 
-    yield Output(env_base)
+    yield Output(env)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(env_base),
+            "__".join(context.asset_key.path): MetadataValue.json(env),
             "json": MetadataValue.path(env_json),
         },
     )
@@ -87,7 +92,7 @@ def env(
     **asset_header,
     ins={
         "env": AssetIn(
-            key_prefix=[KEY],
+            AssetKey([KEY, "env"]),
         ),
     },
 )

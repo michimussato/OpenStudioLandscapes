@@ -13,12 +13,15 @@ from Deadline.open_studio_landscapes.utils import *
 
 from dagster import (
     AssetIn,
+    AssetKey,
     AssetExecutionContext,
     asset,
     Output,
     AssetMaterialization,
     MetadataValue,
 )
+
+from Deadline.open_studio_landscapes.assets import KEY as KEY_BASE
 
 
 GROUP = "Dagster"
@@ -34,12 +37,14 @@ asset_header = {
 @asset(
     **asset_header,
     ins={
-        "env_base": AssetIn(),
+        "env": AssetIn(
+            AssetKey([KEY_BASE, "env"]),
+        ),
     },
 )
 def env(
         context: AssetExecutionContext,
-        env_base: dict,
+        env: dict,
 ) -> dict:
 
     # @formatter:off
@@ -53,11 +58,11 @@ def env(
     }
     # @formatter:on
 
-    env_base.update(_env)
+    env.update(_env)
 
     env_json = pathlib.Path(
-        env_base["DOT_LANDSCAPES"],
-        env_base.get("LANDSCAPE", "default"),
+        env["DOT_LANDSCAPES"],
+        env.get("LANDSCAPE", "default"),
         "third_party",
         *context.asset_key.path,
         f"{'__'.join(context.asset_key.path)}.json",
@@ -74,12 +79,12 @@ def env(
             sort_keys=True,
         )
 
-    yield Output(env_base)
+    yield Output(env)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(env_base),
+            "__".join(context.asset_key.path): MetadataValue.json(env),
             "json": MetadataValue.path(env_json),
         },
     )
@@ -96,17 +101,17 @@ def pip_packages(
 
     # Todo
     #  Check: content seems identical to asset `pip_packages_base_image`
-    pip_packages: list = [
+    _pip_packages: list = [
         # "dagster-shared[dev] @ git+https://github.com/michimussato/dagster-shared.git@main",
         # "deadline-dagster[dev] @ git+https://github.com/michimussato/deadline-dagster.git@main",
     ]
 
-    yield Output(pip_packages)
+    yield Output(_pip_packages)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(pip_packages),
+            "__".join(context.asset_key.path): MetadataValue.json(_pip_packages),
         },
     )
 
@@ -115,11 +120,13 @@ def pip_packages(
     **asset_header,
     ins={
         "env": AssetIn(
-            key_prefix=[KEY],
+            AssetKey([KEY, "env"]),
         ),
-        "build_base_image": AssetIn(),
+        "build_base_image": AssetIn(
+            AssetKey([KEY_BASE, "build_base_image"]),
+        ),
         "pip_packages": AssetIn(
-            key_prefix=[KEY],
+            AssetKey([KEY, "pip_packages"]),
         ),
     },
 )
@@ -252,10 +259,10 @@ def build(
     **asset_header,
     ins={
         "env": AssetIn(
-            key_prefix=[KEY],
+            AssetKey([KEY, "env"]),
         ),
         "build": AssetIn(
-            key_prefix=[KEY],
+            AssetKey([KEY, "build"]),
         ),
     },
 )

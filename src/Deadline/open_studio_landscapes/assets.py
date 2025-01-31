@@ -20,16 +20,16 @@ from dagster import (
     Output,
     AssetMaterialization,
     MetadataValue,
-    AssetIn,
+    AssetIn, AssetKey,
 )
 
 
 # GROUP = ""
-# KEY = "Base"
+KEY = "Base"
 
 asset_header = {
     # "group_name": GROUP,
-    # "key_prefix": [KEY],
+    "key_prefix": [KEY],
     "compute_kind": "python"
 }
 
@@ -108,7 +108,9 @@ def secrets(
     **asset_header,
     group_name="Environment",
     ins={
-        "git_root": AssetIn(),
+        "git_root": AssetIn(
+            AssetKey([KEY, "git_root"]),
+        ),
     },
 )
 def dot_landscapes(
@@ -137,7 +139,8 @@ def dot_landscapes(
     **asset_header,
     group_name="Environment",
     ins={
-        "git_root": AssetIn(),
+        "git_root": AssetIn(
+            AssetKey([KEY, "git_root"])),
     },
 )
 def dot_installers(
@@ -166,15 +169,21 @@ def dot_installers(
     **asset_header,
     group_name="Environment",
     ins={
-        "git_root": AssetIn(),
-        "secrets": AssetIn(),
-        "landscape_id": AssetIn(),
-        "dot_landscapes": AssetIn(),
-        "dot_installers": AssetIn(),
-        "nfs": AssetIn(),
+        "git_root": AssetIn(
+            AssetKey([KEY, "git_root"])),
+        "secrets": AssetIn(
+            AssetKey([KEY, "secrets"])),
+        "landscape_id": AssetIn(
+            AssetKey([KEY, "landscape_id"])),
+        "dot_landscapes": AssetIn(
+            AssetKey([KEY, "dot_landscapes"])),
+        "dot_installers": AssetIn(
+            AssetKey([KEY, "dot_installers"])),
+        "nfs": AssetIn(
+            AssetKey([KEY, "nfs"])),
     },
 )
-def env_base(
+def env(
         context: AssetExecutionContext,
         git_root: pathlib.Path,
         secrets: dict,
@@ -328,13 +337,13 @@ def env_base(
     **asset_header,
     group_name="Build_Base_Image",
 )
-def pip_packages_base_image(
+def pip_packages(
         context: AssetExecutionContext,
 ) -> list:
     """
     """
 
-    pip_packages: list = [
+    _pip_packages: list = [
         # Todo:
         #  - [ ] enable open-studio-landscapes after publish
         #  - [ ] maybe move dagster stuff to dagster image?
@@ -343,12 +352,12 @@ def pip_packages_base_image(
         "deadline-dagster[dev] @ git+https://github.com/michimussato/deadline-dagster.git@main",
     ]
 
-    yield Output(pip_packages)
+    yield Output(_pip_packages)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(pip_packages),
+            "__".join(context.asset_key.path): MetadataValue.json(_pip_packages),
         },
     )
 
@@ -357,15 +366,15 @@ def pip_packages_base_image(
     **asset_header,
     group_name="Build_Base_Image",
 )
-def apt_packages_base_image(
+def apt_packages(
         context: AssetExecutionContext,
 ) -> dict[str, list[str]]:
     """
     """
 
-    ret = dict()
+    _apt_packages = dict()
 
-    ret["base"] = [
+    _apt_packages["base"] = [
         "git",
         "ca-certificates",
         "htop",
@@ -382,7 +391,7 @@ def apt_packages_base_image(
         "libxss1",
     ]
 
-    ret["build_python311"] = [
+    _apt_packages["build_python311"] = [
         "build-essential",
         "zlib1g-dev",
         "libncurses5-dev",
@@ -395,12 +404,12 @@ def apt_packages_base_image(
         "libbz2-dev",
     ]
 
-    yield Output(ret)
+    yield Output(_apt_packages)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(ret),
+            "__".join(context.asset_key.path): MetadataValue.json(_apt_packages),
         },
     )
 
@@ -409,23 +418,26 @@ def apt_packages_base_image(
     **asset_header,
     group_name="Build_Base_Image",
     ins={
-        "env_base": AssetIn(),
-        "apt_packages_base_image": AssetIn(),
-        "pip_packages_base_image": AssetIn(),
+        "env": AssetIn(
+            AssetKey([KEY, "env"])),
+        "apt_packages": AssetIn(
+            AssetKey([KEY, "apt_packages"])),
+        "pip_packages": AssetIn(
+            AssetKey([KEY, "pip_packages"])),
     },
 )
 def build_base_image(
         context: AssetExecutionContext,
-        env_base: dict,
-        apt_packages_base_image: dict[str, list[str]],
-        pip_packages_base_image: list,
+        env: dict,
+        apt_packages: dict[str, list[str]],
+        pip_packages: list,
 ) -> str:
     """
     """
 
     docker_file = pathlib.Path(
-        env_base["DOT_LANDSCAPES"],
-        env_base.get("LANDSCAPE", "default"),
+        env["DOT_LANDSCAPES"],
+        env.get("LANDSCAPE", "default"),
         "Dockerfiles",
         "__".join(context.asset_key.path),
         "Dockerfile",
@@ -436,20 +448,20 @@ def build_base_image(
     docker_file.parent.mkdir(parents=True, exist_ok=True)
 
     tags = [
-        f"{env_base.get('IMAGE_PREFIX')}/{'__'.join(context.asset_key.path).lower()}:latest",
-        f"{env_base.get('IMAGE_PREFIX')}/{'__'.join(context.asset_key.path).lower()}:{env_base.get('LANDSCAPE', str(time.time()))}",
+        f"{env.get('IMAGE_PREFIX')}/{'__'.join(context.asset_key.path).lower()}:latest",
+        f"{env.get('IMAGE_PREFIX')}/{'__'.join(context.asset_key.path).lower()}:{env.get('LANDSCAPE', str(time.time()))}",
     ]
 
     apt_install_str_base: str = get_apt_install_str(
-        apt_install_packages=apt_packages_base_image["base"],
+        apt_install_packages=apt_packages["base"],
     )
 
     apt_install_str_build_python311: str = get_apt_install_str(
-        apt_install_packages=apt_packages_base_image["build_python311"],
+        apt_install_packages=apt_packages["build_python311"],
     )
 
     pip_install_str: str = get_pip_install_str(
-        pip_install_packages=pip_packages_base_image
+        pip_install_packages=pip_packages
     )
 
     # @formatter:off
@@ -494,12 +506,12 @@ def build_base_image(
         apt_install_str_base=apt_install_str_base,
         apt_install_str_build_python311=apt_install_str_build_python311,
         pip_install_str=pip_install_str.format(
-            **env_base,
+            **env,
         ),
         auto_generated=f"AUTO-GENERATED by Dagster Asset {'__'.join(context.asset_key.path)}",
         dagster_url=urllib.parse.quote(f"http://localhost:3000/asset-groups/{'%2F'.join(context.asset_key.path)}", safe=":/%"),
         image_name="__".join(context.asset_key.path).lower(),
-        **env_base,
+        **env,
     )
     # @formatter:on
 
@@ -537,7 +549,7 @@ def build_base_image(
             "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
             **cmds_docker,
             "build_logs": MetadataValue.md(f"```shell\n{log}\n```"),
-            "env_base": MetadataValue.json(env_base),
+            "env": MetadataValue.json(env),
         },
     )
 
