@@ -7,6 +7,7 @@ from docker_graph.docker_graph import DockerComposeGraph
 from dagster import (
     asset,
     AssetIn,
+    AssetKey,
     AssetExecutionContext,
     Output,
     AssetMaterialization,
@@ -14,37 +15,44 @@ from dagster import (
 )
 
 
+from Deadline.open_studio_landscapes.assets_10_2 import KEY as KEY_10_2
+
+
+GROUP = "Viz"
+KEY = "Viz"
+
+asset_header = {
+    "group_name": GROUP,
+    "key_prefix": [KEY],
+    "compute_kind": "python"
+}
+
+
 @asset(
-    group_name="Viz",
-    compute_kind="python",
-    key_prefix=[
-        "10_2",
-    ],
+    **asset_header,
     ins={
-        "compose_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+        "compose": AssetIn(
+            AssetKey([KEY_10_2, "compose_10_2"]),
         ),
     },
 )
 def viz_compose_10_2(
         context: AssetExecutionContext,
-        compose_10_2: pathlib.Path,
+        compose: pathlib.Path,
 ) -> pydot.Dot:
     """
     """
 
     dcg = DockerComposeGraph()
     trees = dcg.parse_docker_compose(
-        pathlib.Path(compose_10_2)
+        pathlib.Path(compose)
     )
 
     context.log.info(trees)
 
     dcg.iterate_trees(trees)
 
-    docker_compose_dir = compose_10_2.parent / '__'.join(context.asset_key.path)
+    docker_compose_dir = compose.parent / '__'.join(context.asset_key.path)
 
     docker_compose_dir.mkdir(parents=True, exist_ok=True)
 
@@ -71,7 +79,7 @@ def viz_compose_10_2(
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            '__'.join(context.asset_key.path): MetadataValue.json(str(dcg.graph)),
+            "__".join(context.asset_key.path): MetadataValue.json(str(dcg.graph)),
             "svg": MetadataValue.md(svg_md),
             "dot_path": MetadataValue.path(dot),
             "svg_path": MetadataValue.path(svg),
@@ -80,36 +88,30 @@ def viz_compose_10_2(
 
 
 @asset(
-    group_name="Viz",
-    compute_kind="python",
-    key_prefix=[
-        "10_2",
-    ],
+    **asset_header,
     ins={
-        "compose_repository_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+        "compose_repository": AssetIn(
+            AssetKey([KEY_10_2, "compose_repository_10_2"]),
         ),
     },
 )
 def viz_compose_repository_10_2(
         context: AssetExecutionContext,
-        compose_repository_10_2: pathlib.Path,
+        compose_repository: pathlib.Path,
 ) -> pydot.Dot:
     """
     """
 
     dcg = DockerComposeGraph()
     trees = dcg.parse_docker_compose(
-        pathlib.Path(compose_repository_10_2)
+        pathlib.Path(compose_repository)
     )
 
     context.log.info(trees)
 
     dcg.iterate_trees(trees)
 
-    docker_compose_dir = compose_repository_10_2.parent / '__'.join(context.asset_key.path)
+    docker_compose_dir = compose_repository.parent / '__'.join(context.asset_key.path)
 
     docker_compose_dir.mkdir(parents=True, exist_ok=True)
 
@@ -136,7 +138,7 @@ def viz_compose_repository_10_2(
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            '__'.join(context.asset_key.path): MetadataValue.json(str(dcg.graph)),
+            "__".join(context.asset_key.path): MetadataValue.json(str(dcg.graph)),
             "svg": MetadataValue.md(svg_md),
             "dot_path": MetadataValue.path(dot),
             "svg_path": MetadataValue.path(svg),

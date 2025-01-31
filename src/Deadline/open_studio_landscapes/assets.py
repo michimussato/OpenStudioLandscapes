@@ -254,35 +254,6 @@ def env_base(
         # # MONGO_DB_TEST:
     }
 
-    # _env_ayon = {
-    #     "AYON_DOCKER_COMPOSE": pathlib.Path(
-    #         _env["GIT_ROOT"],
-    #         "repos",
-    #         "ayon-docker",
-    #         "docker-compose.yml",
-    #     ).expanduser().as_posix(),
-    #     "AYON_PORT_HOST": "5005",
-    #     "AYON_PORT_CONTAINER": "5000",
-    # }
-
-    # _env_dagster = {
-    #     "DAGSTER_DEV_PORT_HOST": "3003",
-    #     "DAGSTER_DEV_PORT_CONTAINER": "3006",
-    #     "DAGSTER_ROOT": "/dagster",
-    #     "DAGSTER_HOME": "/dagster/materializations",
-    #     "DAGSTER_HOST": "0.0.0.0",
-    #     "DAGSTER_WORKSPACE": "/dagster/workspace.yaml",
-    # }
-
-    # _env_grafana = {
-    #     "GRAFANA_PORT_HOST": "3030",
-    #     "GRAFANA_PORT_CONTAINER": "3030",
-    #     # "DAGSTER_ROOT": "/dagster",
-    #     # "DAGSTER_HOME": "/dagster/materializations",
-    #     # "DAGSTER_HOST": "0.0.0.0",
-    #     # "DAGSTER_WORKSPACE": "/dagster/workspace.yaml",
-    # }
-
     _env_filebrowser = {
         "FILEBROWSER_PORT_HOST": "8080",
         "FILEBROWSER_PORT_CONTAINER": "80",
@@ -300,12 +271,6 @@ def env_base(
         ).expanduser().as_posix(),
     }
 
-    # _env_likec4 = {
-    #     "LIKEC4_DEV_PORT_HOST": "4567",
-    #     "LIKEC4_DEV_PORT_CONTAINER": "4567",
-    #     "LIKEC4_HOST": "0.0.0.0",
-    # }
-
     _env_mongo_express = {
         # "MONGO_PORT": "${MONGO_DB_PORT_CONTAINER}",
         # https://docs.docker.com/compose/how-tos/environment-variables/set-environment-variables/#additional
@@ -322,67 +287,7 @@ def env_base(
         "ME_CONFIG_MONGODB_URL": "mongodb://admin:pass@localhost:{MONGO_DB_PORT_CONTAINER}/db?ssl=false",
     }
 
-    # _env_kitsu = {
-    #     # Todo:
-    #     #  - [ ] These have no effect yet
-    #     # "KITSU_ADMIN_USER": "admin@example.com",
-    #     # "KITSU_ADMIN_PASSWORD": "mysecretpassword",
-    #     "KITSU_PORT_HOST": "4545",
-    #     "KITSU_PORT_CONTAINER": "80",
-    #     "KITSU_DATABASE_INSTALL_DESTINATION": {
-    #         #################################################################
-    #         # Kitsu Postgresql DB will be created in (hardcoded):
-    #         # "KITSU_DATABASE_INSTALL_DESTINATION" / "postgresql" / "14" / "main"
-    #         # Kitsu Previews folder will be created in (hardcoded):
-    #         # "KITSU_DATABASE_INSTALL_DESTINATION" / "previews"
-    #         #################################################################
-    #         #################################################################
-    #         # Inside Landscape:
-    #         "default": pathlib.Path(
-    #             _env["DOT_LANDSCAPES"],
-    #             landscape_id.get("LANDSCAPE", "default"),
-    #             "data",
-    #             "kitsu",
-    #         ).as_posix(),
-    #         #################################################################
-    #         # Prod DB:
-    #         "prod_db": pathlib.Path(
-    #             nfs["NFS_ENTRY_POINT"],
-    #             "services",
-    #             "kitsu",
-    #         ).as_posix(),
-    #         #################################################################
-    #         # Test DB:
-    #         "test_db": pathlib.Path(
-    #             nfs["NFS_ENTRY_POINT"],
-    #             "test_data",
-    #             "10.2",
-    #             "kitsu",
-    #         ).as_posix(),
-    #     }["default"],
-    #     f"KITSU_INIT_ZOU": pathlib.Path(
-    #         _env["DOT_LANDSCAPES"],
-    #         landscape_id.get("LANDSCAPE", "default"),
-    #         "configs",
-    #         "kitsu",
-    #         "init_zou.sh",
-    #     ).expanduser().as_posix(),
-    #     f"KITSU_TEMPLATE_DB_14": pathlib.Path(
-    #         _env["CONFIGS_ROOT"],
-    #         "kitsu",
-    #         "postgres",
-    #         "template_dbs",
-    #         "14",
-    #         "main"
-    #     ).expanduser().as_posix(),
-    # }
-
-    # _env.update(_env_ayon)
-    # _env.update(_env_dagster)
-    # _env.update(_env_grafana)
-    # _env.update(_env_kitsu)
     _env.update(_env_filebrowser)
-    # _env.update(_env_likec4)
     _env.update(_env_mongo_express)
 
     _env.update(secrets)
@@ -431,8 +336,9 @@ def pip_packages_base_image(
 
     pip_packages: list = [
         # Todo:
-        #  - [ ] enable after publish
-        # "studio-landscapes[dev] @ git+https://github.com/michimussato/dagster-shared.git@main",
+        #  - [ ] enable open-studio-landscapes after publish
+        #  - [ ] maybe move dagster stuff to dagster image?
+        # "open-studio-landscapes[dev] @ git+https://github.com/michimussato/open-studio-landscapes.git@main",
         "dagster-shared[dev] @ git+https://github.com/michimussato/dagster-shared.git@main",
         "deadline-dagster[dev] @ git+https://github.com/michimussato/deadline-dagster.git@main",
     ]
@@ -659,60 +565,3 @@ def nfs(
             "__".join(context.asset_key.path): MetadataValue.json(_env),
         },
     )
-
-
-# @asset(
-#     group_name="Environment",
-#     compute_kind="python",
-#     ins={
-#         "nfs": AssetIn(),
-#     },
-# )
-# def repository_dirs(
-#         context: AssetExecutionContext,
-#         nfs: dict,
-# ) -> dict:
-#     # @formatter:off
-#     _env: dict = {
-#         "DEADLINE_REPO_DICTS": {
-#             "10_2": {
-#                 "INSTALLER": None,
-#                 "PROD": {
-#                     "INSTALL_DEST_REPOSITORY": pathlib.PurePath(
-#                         nfs.get("NFS_ENTRY_POINT"),
-#                         "deadline_repository_10_prod",
-#                         "DeadlineRepository10"
-#                     ).as_posix(),
-#                 },
-#                 # "TEST": {
-#                 #     "INSTALL_DEST_REPOSITORY": pathlib.PurePath(
-#                 #         nfs.get("NFS_ENTRY_POINT"),
-#                 #         "deadline_repository_10_test",
-#                 #         "DeadlineRepository10"
-#                 #     ).as_posix(),
-#                 # },
-#                 "TEST": {
-#                     "INSTALL_DEST_REPOSITORY": pathlib.PurePath(
-#                         nfs.get("NFS_ENTRY_POINT"),
-#                         "test_data",
-#                         "opt",
-#                         "Thinkbox",
-#                         "DeadlineRepository10",
-#                     ).as_posix(),
-#                 },
-#             },
-#         },
-#     }
-#     # @formatter:on
-#
-#     _env.update(nfs)
-#
-#     yield Output(_env)
-#
-#     yield AssetMaterialization(
-#         asset_key=context.asset_key,
-#         metadata={
-#             "__".join(context.asset_key.path): MetadataValue.json(_env),
-#
-#         },
-#     )

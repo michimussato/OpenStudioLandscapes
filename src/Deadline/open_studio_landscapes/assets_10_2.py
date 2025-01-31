@@ -28,8 +28,10 @@ from dagster import (
 )
 
 
+# Requirements:
+# - [ ] ERROR: failed to solve: dockerfile parse error on line 4: invalid name for build stage: "10_2__build_base_image_10_2", name can't start with a number or contain symbols
 # GROUP = ""
-KEY = "10_2"
+KEY = "Deadline_10_2"
 
 asset_header = {
     # "group_name": GROUP,
@@ -62,7 +64,7 @@ def env_10_2(
         f"DEADLINE_CLIENT_DEADLINE_INI_{KEY}": pathlib.Path(
             env_base["DOT_LANDSCAPES"],
             env_base.get("LANDSCAPE", "default"),
-            "__".join(context.asset_key.path),
+            KEY,
             "configs",
             "Deadline10",
             "deadline.ini",
@@ -71,7 +73,7 @@ def env_10_2(
         f"DEADLINE_REPOSITORY_CONNECTION_INI_{KEY}": pathlib.Path(
             env_base["DOT_LANDSCAPES"],
             env_base.get("LANDSCAPE", "default"),
-            "__".join(context.asset_key.path),
+            KEY,
             "configs",
             "DeadlineRepository10",
             "settings",
@@ -84,21 +86,21 @@ def env_10_2(
 
         f"INSTALLER_AWSPortalLink_{KEY}": pathlib.Path(
             env_base["DOT_INSTALLERS"],
-            "__".join(context.asset_key.path),
+            KEY,
             "deadline",
             "deadline_10-2-1-1",
             "AWSPortalLink-1.2.1.0-linux-x64-installer.run",
             ).as_posix(),
         f"INSTALLER_DeadlineClient_{KEY}": pathlib.Path(
             env_base["DOT_INSTALLERS"],
-            "__".join(context.asset_key.path),
+            KEY,
             "deadline",
             "deadline_10-2-1-1",
             "DeadlineClient-10.2.1.1-linux-x64-installer.run",
             ).as_posix(),
         f"INSTALLER_DeadlineRepository_{KEY}": pathlib.Path(
             env_base["DOT_INSTALLERS"],
-            "__".join(context.asset_key.path),
+            KEY,
             "deadline",
             "deadline_10-2-1-1",
             "DeadlineRepository-10.2.1.1-linux-x64-installer.run",
@@ -194,9 +196,7 @@ def env_10_2(
     group_name="Settings_10_2",
     ins={
         "env_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
     },
 )
@@ -255,9 +255,7 @@ def connection_ini_10_2(
     group_name="Settings_10_2",
     ins={
         "env_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
     },
 )
@@ -402,20 +400,14 @@ if BUILD_FROM_GOOGLE_DRIVE_10_2:
         group_name="Build_Images_10_2",
         ins={
             "env_10_2": AssetIn(
-                key_prefix=[
-                    "10_2",
-                ],
+                key_prefix=[KEY],
             ),
             "build_base_image": AssetIn(),
             "wget_deadline_packages_base_image_10_2": AssetIn(
-                key_prefix=[
-                    "10_2",
-                ],
+                key_prefix=[KEY],
             ),
             "pip_packages_base_image_10_2": AssetIn(
-                key_prefix=[
-                    "10_2",
-                ],
+                key_prefix=[KEY],
             ),
         },
     )
@@ -536,15 +528,11 @@ else:
         group_name="Build_Images_10_2",
         ins={
             "env_10_2": AssetIn(
-                key_prefix=[
-                    "10_2",
-                ],
+                key_prefix=[KEY],
             ),
             "build_base_image": AssetIn(),
             "pip_packages_base_image_10_2": AssetIn(
-                key_prefix=[
-                    "10_2",
-                ],
+                key_prefix=[KEY],
             ),
         },
     )
@@ -683,9 +671,7 @@ else:
     group_name="Repository_Installer_10_2",
     ins={
         "env_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
     },
     description="This executes the Deadline Repository Installer. "
@@ -731,14 +717,10 @@ def deadline_command_install_repository_10_2(
     group_name="Repository_Installer_10_2",
     ins={
         "env_10_2": AssetIn(
-            key_prefix=[
-                "10_2"
-            ],
+            key_prefix=[KEY],
         ),
         "build_base_image_10_2": AssetIn(
-            key_prefix=[
-                "10_2"
-            ],
+            key_prefix=[KEY],
         ),
     },
 )
@@ -753,7 +735,7 @@ def build_repository_image_10_2(
     docker_file = pathlib.Path(
         env_10_2["DOT_LANDSCAPES"],
         env_10_2.get("LANDSCAPE", "default"),
-#         KEY,
+        KEY,
         "Dockerfiles",
         "__".join(context.asset_key.path),
         "Dockerfile",
@@ -832,28 +814,19 @@ def build_repository_image_10_2(
     group_name="Repository_Installer_10_2",
     ins={
         "env_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
-        "compose_networks_10_2": AssetIn(key_prefix=[
-                "10_2",
-            ],
+        "compose_networks_10_2": AssetIn(
+            key_prefix=[KEY],
         ),
         "build_repository_image_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
         "compose_mongodb_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
         "deadline_command_install_repository_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
     },
     description="This executes the Deadline Repository Installer. "
@@ -959,9 +932,7 @@ def compose_repository_10_2(
     group_name="Build_Images_10_2",
     ins={
         "env_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
     },
     description=""
@@ -1009,19 +980,13 @@ def deadline_command_build_client_image_10_2(
     group_name="Build_Images_10_2",
     ins={
         "env_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
         "build_base_image_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
         "deadline_command_build_client_image_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
     },
 )
@@ -1037,7 +1002,7 @@ def build_client_image_10_2(
     docker_file = pathlib.Path(
         env_10_2["DOT_LANDSCAPES"],
         env_10_2.get("LANDSCAPE", "default"),
-        # KEY,
+        KEY,
         "Dockerfiles",
         "__".join(context.asset_key.path),
         "Dockerfile",
@@ -1154,9 +1119,7 @@ def compose_include_10_2(
     group_name="Docker_Compose_10_2",
     ins={
         "env_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
     },
 )
@@ -1198,9 +1161,7 @@ def compose_networks_10_2(
     group_name="Docker_Compose_10_2",
     ins={
         "env_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
     },
 )
@@ -1268,9 +1229,7 @@ def compose_mongo_express_10_2(
     group_name="Docker_Compose_10_2",
     ins={
         "env_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
     },
 )
@@ -1327,9 +1286,7 @@ def compose_filebrowser_10_2(
     group_name="Docker_Compose_10_2",
     ins={
         "env_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
     },
 )
@@ -1381,14 +1338,10 @@ def script_chown_mongodb_10_2(
     group_name="Docker_Compose_10_2",
     ins={
         "env_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
         "script_chown_mongodb_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
     },
 )
@@ -1514,9 +1467,7 @@ def compose_mongodb_10_2(
     group_name="Docker_Compose_10_2",
     ins={
         "env_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
     },
     description="This executes the Deadline Repository Installer. "
@@ -1550,29 +1501,19 @@ def deadline_command_compose_rcs_runner_10_2(
     group_name="Docker_Compose_10_2",
     ins={
         "env_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
         "build_client_image_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
         "connection_ini_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
         "deadline_ini_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
         "deadline_command_compose_rcs_runner_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
     },
 )
@@ -1643,9 +1584,7 @@ def compose_rcs_runner_10_2(
     group_name="Docker_Compose_10_2",
     ins={
         "env_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
     },
     description="This executes the Deadline Repository Installer. "
@@ -1681,29 +1620,19 @@ def deadline_command_compose_pulse_runner_10_2(
     group_name="Docker_Compose_10_2",
     ins={
         "env_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
         "build_client_image_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
         "deadline_ini_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
         "connection_ini_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
         "deadline_command_compose_pulse_runner_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
     },
 )
@@ -1768,9 +1697,7 @@ def compose_pulse_runner_10_2(
     group_name="Docker_Compose_10_2",
     ins={
         "env_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
     },
     description="This executes the Deadline Repository Installer. "
@@ -1806,29 +1733,19 @@ def deadline_command_compose_worker_runner_10_2(
     group_name="Docker_Compose_10_2",
     ins={
         "env_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
         "build_client_image_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
         "deadline_ini_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
         "connection_ini_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
         "deadline_command_compose_worker_runner_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
     },
 )
@@ -1893,9 +1810,7 @@ def compose_worker_runner_10_2(
     group_name="Docker_Compose_10_2",
     ins={
         "env_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
     },
     description="This executes the Deadline Repository Installer. "
@@ -1929,29 +1844,19 @@ def deadline_command_compose_webservice_runner_10_2(
     group_name="Docker_Compose_10_2",
     ins={
         "env_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
         "build_client_image_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
         "deadline_ini_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
         "connection_ini_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
         "deadline_command_compose_webservice_runner_10_2": AssetIn(
-            key_prefix=[
-                "10_2",
-            ],
+            key_prefix=[KEY],
         ),
     },
 )
@@ -2024,45 +1929,35 @@ def compose_webservice_runner_10_2(
     **asset_header,
     group_name="Docker_Compose_10_2",
     ins={
-        "env_10_2": AssetIn(key_prefix=[
-                "10_2",
-            ],
+        "env_10_2": AssetIn(
+            key_prefix=[KEY],
         ),
-        "compose_webservice_runner_10_2": AssetIn(key_prefix=[
-                "10_2",
-            ],
+        "compose_webservice_runner_10_2": AssetIn(
+            key_prefix=[KEY],
         ),
-        "compose_worker_runner_10_2": AssetIn(key_prefix=[
-                "10_2",
-            ],
+        "compose_worker_runner_10_2": AssetIn(
+            key_prefix=[KEY],
         ),
-        "compose_pulse_runner_10_2": AssetIn(key_prefix=[
-                "10_2",
-            ],
+        "compose_pulse_runner_10_2": AssetIn(
+            key_prefix=[KEY],
         ),
-        "compose_rcs_runner_10_2": AssetIn(key_prefix=[
-                "10_2",
-            ],
+        "compose_rcs_runner_10_2": AssetIn(
+            key_prefix=[KEY],
         ),
-        "compose_networks_10_2": AssetIn(key_prefix=[
-                "10_2",
-            ],
+        "compose_networks_10_2": AssetIn(
+            key_prefix=[KEY],
         ),
-        "compose_include_10_2": AssetIn(key_prefix=[
-                "10_2",
-            ],
+        "compose_include_10_2": AssetIn(
+            key_prefix=[KEY],
         ),
-        "compose_mongo_express_10_2": AssetIn(key_prefix=[
-                "10_2",
-            ],
+        "compose_mongo_express_10_2": AssetIn(
+            key_prefix=[KEY],
         ),
-        "compose_mongodb_10_2": AssetIn(key_prefix=[
-                "10_2",
-            ],
+        "compose_mongodb_10_2": AssetIn(
+            key_prefix=[KEY],
         ),
-        "compose_filebrowser_10_2": AssetIn(key_prefix=[
-                "10_2",
-            ],
+        "compose_filebrowser_10_2": AssetIn(
+            key_prefix=[KEY],
         ),
         "compose_grafana": AssetIn(
             AssetKey(["Grafana", "compose"])),
