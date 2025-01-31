@@ -428,7 +428,7 @@ if BUILD_FROM_GOOGLE_DRIVE_10_2:
         docker_file = pathlib.Path(
             env_10_2["DOT_LANDSCAPES"],
             env_10_2.get("LANDSCAPE"),
-            # "__".join(context.asset_key.path),
+            KEY,
             "Dockerfiles",
             "__".join(context.asset_key.path),
             "Dockerfile",
@@ -861,7 +861,7 @@ def compose_repository_10_2(
                 "volumes": [
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT')}",
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT_LNS')}",
-                    f"{env_10_2.get('REPOSITORY_INSTALL_DESTINATION_%s') % KEY}:/opt/Thinkbox/DeadlineRepository10",
+                    f"{env_10_2.get('REPOSITORY_INSTALL_DESTINATION_%s' % KEY)}:/opt/Thinkbox/DeadlineRepository10",
                 ],
             },
         },
@@ -880,8 +880,9 @@ def compose_repository_10_2(
     docker_compose = pathlib.Path(
         env_10_2["DOT_LANDSCAPES"],
         env_10_2.get("LANDSCAPE", "default"),
+        KEY,
         "docker_compose",
-        *context.asset_key.path,
+        "__".join(context.asset_key.path),
         "docker-compose.yml",
     )
     docker_compose.parent.mkdir(parents=True, exist_ok=True)
@@ -1556,7 +1557,7 @@ def compose_rcs_runner_10_2(
                 "volumes": [
                     f"{deadline_ini_10_2.as_posix()}:/var/lib/Thinkbox/Deadline10/deadline.ini:ro",
                     f"{connection_ini_10_2.as_posix()}:/opt/Thinkbox/DeadlineRepository10/settings/connection.ini:ro",
-                    f"{env_10_2.get('REPOSITORY_INSTALL_DESTINATION_%s') % KEY}:/opt/Thinkbox/DeadlineRepository10",
+                    f"{env_10_2.get('REPOSITORY_INSTALL_DESTINATION_%s' % KEY)}:/opt/Thinkbox/DeadlineRepository10",
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT')}",
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT_LNS')}",
                 ],
@@ -1674,7 +1675,7 @@ def compose_pulse_runner_10_2(
                 "volumes": [
                     f"{deadline_ini_10_2.as_posix()}:/var/lib/Thinkbox/Deadline10/deadline.ini:ro",
                     f"{connection_ini_10_2.as_posix()}:/opt/Thinkbox/DeadlineRepository10/settings/connection.ini:ro",
-                    f"{env_10_2.get('REPOSITORY_INSTALL_DESTINATION_%s') % KEY}:/opt/Thinkbox/DeadlineRepository10",
+                    f"{env_10_2.get('REPOSITORY_INSTALL_DESTINATION_%s' % KEY)}:/opt/Thinkbox/DeadlineRepository10",
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT')}",
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT_LNS')}",
                 ],
@@ -1787,7 +1788,7 @@ def compose_worker_runner_10_2(
                 "volumes": [
                     f"{deadline_ini_10_2.as_posix()}:/var/lib/Thinkbox/Deadline10/deadline.ini:ro",
                     f"{connection_ini_10_2.as_posix()}:/opt/Thinkbox/DeadlineRepository10/settings/connection.ini:ro",
-                    f"{env_10_2.get('REPOSITORY_INSTALL_DESTINATION_%s') % KEY}:/opt/Thinkbox/DeadlineRepository10",
+                    f"{env_10_2.get('REPOSITORY_INSTALL_DESTINATION_%s' % KEY)}:/opt/Thinkbox/DeadlineRepository10",
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT')}",
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT_LNS')}",
                 ],
@@ -1904,7 +1905,7 @@ def compose_webservice_runner_10_2(
                 "volumes": [
                     f"{deadline_ini_10_2.as_posix()}:/var/lib/Thinkbox/Deadline10/deadline.ini:ro",
                     f"{connection_ini_10_2.as_posix()}:/opt/Thinkbox/DeadlineRepository10/settings/connection.ini:ro",
-                    f"{env_10_2.get('REPOSITORY_INSTALL_DESTINATION_%s') % KEY}:/opt/Thinkbox/DeadlineRepository10",
+                    f"{env_10_2.get('REPOSITORY_INSTALL_DESTINATION_%s' % KEY)}:/opt/Thinkbox/DeadlineRepository10",
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT')}",
                     f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT_LNS')}",
                 ],
@@ -2016,7 +2017,7 @@ def compose_10_2(
     docker_compose = pathlib.Path(
         env_10_2["DOT_LANDSCAPES"],
         env_10_2.get("LANDSCAPE", "default"),
-        # KEY,
+        KEY,
         "docker_compose",
         "__".join(context.asset_key.path),
         "docker-compose.yml",
