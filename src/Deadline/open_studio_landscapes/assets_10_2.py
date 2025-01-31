@@ -59,7 +59,7 @@ def env_10_2(
 
         "MONGO_DB_HOST": "mongodb-10-2",
 
-        f"DEADLINE_CLIENT_DEADLINE_INI_{context.asset_key.path[0]}": pathlib.Path(
+        f"DEADLINE_CLIENT_DEADLINE_INI_{KEY}": pathlib.Path(
             env_base["DOT_LANDSCAPES"],
             env_base.get("LANDSCAPE", "default"),
             "__".join(context.asset_key.path),
@@ -68,7 +68,7 @@ def env_10_2(
             "deadline.ini",
         ).expanduser().as_posix(),
 
-        f"DEADLINE_REPOSITORY_CONNECTION_INI_{context.asset_key.path[0]}": pathlib.Path(
+        f"DEADLINE_REPOSITORY_CONNECTION_INI_{KEY}": pathlib.Path(
             env_base["DOT_LANDSCAPES"],
             env_base.get("LANDSCAPE", "default"),
             "__".join(context.asset_key.path),
@@ -78,25 +78,25 @@ def env_10_2(
             "connection.ini",
         ).expanduser().as_posix(),
 
-        f"GOOGLE_ID_AWSPortalLink_{context.asset_key.path[0]}": "1VOQa6OyYUZj_7VILcD6EVl7YOfYVlCrU",
-        f"GOOGLE_ID_DeadlineClient_{context.asset_key.path[0]}": "1cGxCPkrJ1ujWqie2yXTrOpShkEgSXR0F",
-        f"GOOGLE_ID_DeadlineRepository_{context.asset_key.path[0]}": "1VZhCcxvCAc4oozLAKRCv_zwQLMuVdMRz",
+        f"GOOGLE_ID_AWSPortalLink_{KEY}": "1VOQa6OyYUZj_7VILcD6EVl7YOfYVlCrU",
+        f"GOOGLE_ID_DeadlineClient_{KEY}": "1cGxCPkrJ1ujWqie2yXTrOpShkEgSXR0F",
+        f"GOOGLE_ID_DeadlineRepository_{KEY}": "1VZhCcxvCAc4oozLAKRCv_zwQLMuVdMRz",
 
-        f"INSTALLER_AWSPortalLink_{context.asset_key.path[0]}": pathlib.Path(
+        f"INSTALLER_AWSPortalLink_{KEY}": pathlib.Path(
             env_base["DOT_INSTALLERS"],
             "__".join(context.asset_key.path),
             "deadline",
             "deadline_10-2-1-1",
             "AWSPortalLink-1.2.1.0-linux-x64-installer.run",
             ).as_posix(),
-        f"INSTALLER_DeadlineClient_{context.asset_key.path[0]}": pathlib.Path(
+        f"INSTALLER_DeadlineClient_{KEY}": pathlib.Path(
             env_base["DOT_INSTALLERS"],
             "__".join(context.asset_key.path),
             "deadline",
             "deadline_10-2-1-1",
             "DeadlineClient-10.2.1.1-linux-x64-installer.run",
             ).as_posix(),
-        f"INSTALLER_DeadlineRepository_{context.asset_key.path[0]}": pathlib.Path(
+        f"INSTALLER_DeadlineRepository_{KEY}": pathlib.Path(
             env_base["DOT_INSTALLERS"],
             "__".join(context.asset_key.path),
             "deadline",
@@ -105,7 +105,7 @@ def env_10_2(
             ).as_posix(),
 
         # This is where DeadlineRepository10 will get installed to:
-        f"REPOSITORY_INSTALL_DESTINATION_{context.asset_key.path[0]}": pathlib.Path(
+        f"REPOSITORY_INSTALL_DESTINATION_{KEY}": pathlib.Path(
             env_base["DOT_LANDSCAPES"],
             env_base.get("LANDSCAPE", "default"),
             "__".join(context.asset_key.path),
@@ -120,11 +120,11 @@ def env_10_2(
         #
         # The Python script that comes with the mongodb docker image
         # initializes a DB if none is found at installation time.
-        # That means, if DATABASE_INSTALL_DESTINATION_{context.asset_key.path[0]}
+        # That means, if DATABASE_INSTALL_DESTINATION_{KEY}
         # already points to an existing DB, this one will be used.
         # Make sure that the DB path has ownership of 101:65534.
         # Default would be inside a Landscape:
-        # f"DATABASE_INSTALL_DESTINATION_{context.asset_key.path[0]}": pathlib.Path(
+        # f"DATABASE_INSTALL_DESTINATION_{KEY}": pathlib.Path(
         #         DOT_DOCKER_ROOT,
         #         env_base.get("LANDSCAPE", "default"),
         #         "__".join(context.asset_key.path),
@@ -132,7 +132,7 @@ def env_10_2(
         #         "Thinkbox",
         #         "DeadlineDatabase10",
         #     ).as_posix(),
-        f"DATABASE_INSTALL_DESTINATION_{context.asset_key.path[0]}": {
+        f"DATABASE_INSTALL_DESTINATION_{KEY}": {
             #################################################################
             # Inside Landscape:
             "default": pathlib.Path(
@@ -231,7 +231,7 @@ def connection_ini_10_2(
     )
     # @formatter:on
 
-    deadline_connection_ini = pathlib.Path(env_10_2.get(f"DEADLINE_REPOSITORY_CONNECTION_INI_{context.asset_key.path[0]}"))
+    deadline_connection_ini = pathlib.Path(env_10_2.get(f"DEADLINE_REPOSITORY_CONNECTION_INI_{KEY}"))
 
     deadline_connection_ini.parent.mkdir(parents=True, exist_ok=True)
 
@@ -325,7 +325,7 @@ def deadline_ini_10_2(
     )
     # @formatter:on
 
-    deadline_client_ini = pathlib.Path(env_10_2.get(f"DEADLINE_CLIENT_DEADLINE_INI_{context.asset_key.path[0]}"))
+    deadline_client_ini = pathlib.Path(env_10_2.get(f"DEADLINE_CLIENT_DEADLINE_INI_{KEY}"))
 
     deadline_client_ini.parent.mkdir(parents=True, exist_ok=True)
 
@@ -560,7 +560,7 @@ else:
         docker_file = pathlib.Path(
             env_10_2["DOT_LANDSCAPES"],
             env_10_2.get("LANDSCAPE"),
-            # context.asset_key.path[0],
+            # KEY,
             "Dockerfiles",
             "__".join(context.asset_key.path),
             "Dockerfile",
@@ -572,9 +572,9 @@ else:
 
         # @formatter:off
         files_10_2 = {
-            "AWSPortalLink.run": env_10_2.get(f"INSTALLER_AWSPortalLink_{context.asset_key.path[0]}"),
-            "DeadlineClient.run": env_10_2.get(f"INSTALLER_DeadlineClient_{context.asset_key.path[0]}"),
-            "DeadlineRepository.run": env_10_2.get(f"INSTALLER_DeadlineRepository_{context.asset_key.path[0]}"),
+            "AWSPortalLink.run": env_10_2.get(f"INSTALLER_AWSPortalLink_{KEY}"),
+            "DeadlineClient.run": env_10_2.get(f"INSTALLER_DeadlineClient_{KEY}"),
+            "DeadlineRepository.run": env_10_2.get(f"INSTALLER_DeadlineRepository_{KEY}"),
         }
         # @formatter:on
 
@@ -753,7 +753,7 @@ def build_repository_image_10_2(
     docker_file = pathlib.Path(
         env_10_2["DOT_LANDSCAPES"],
         env_10_2.get("LANDSCAPE", "default"),
-#         context.asset_key.path[0],
+#         KEY,
         "Dockerfiles",
         "__".join(context.asset_key.path),
         "Dockerfile",
@@ -1037,7 +1037,7 @@ def build_client_image_10_2(
     docker_file = pathlib.Path(
         env_10_2["DOT_LANDSCAPES"],
         env_10_2.get("LANDSCAPE", "default"),
-        # context.asset_key.path[0],
+        # KEY,
         "Dockerfiles",
         "__".join(context.asset_key.path),
         "Dockerfile",
@@ -1344,7 +1344,7 @@ def script_chown_mongodb_10_2(
     ret["script"] = str()
 
     mongo_db_dir_host = pathlib.Path(
-        env_10_2.get(f"DATABASE_INSTALL_DESTINATION_{context.asset_key.path[0]}")
+        env_10_2.get(f"DATABASE_INSTALL_DESTINATION_{KEY}")
     )
 
     # sudo chown 101:65534 DeadlineDatabase10
@@ -1415,7 +1415,7 @@ def compose_mongodb_10_2(
         f"{env_10_2.get('NFS_ENTRY_POINT')}:{env_10_2.get('NFS_ENTRY_POINT_LNS')}:ro",
     ]
 
-    mongo_db_dir_host = pathlib.Path(env_10_2.get(f"DATABASE_INSTALL_DESTINATION_{context.asset_key.path[0]}"))
+    mongo_db_dir_host = pathlib.Path(env_10_2.get(f"DATABASE_INSTALL_DESTINATION_{KEY}"))
     mongo_db_dir_host.mkdir(parents=True, exist_ok=True)
 
     stdout_stderr = {
@@ -2116,7 +2116,7 @@ def compose_10_2(
     docker_compose = pathlib.Path(
         env_10_2["DOT_LANDSCAPES"],
         env_10_2.get("LANDSCAPE", "default"),
-        # context.asset_key.path[0],
+        # KEY,
         "docker_compose",
         "__".join(context.asset_key.path),
         "docker-compose.yml",

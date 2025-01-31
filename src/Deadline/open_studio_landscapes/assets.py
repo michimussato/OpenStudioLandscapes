@@ -25,7 +25,7 @@ from dagster import (
 
 
 # GROUP = ""
-KEY = "Base"
+# KEY = "Base"
 
 asset_header = {
     # "group_name": GROUP,
