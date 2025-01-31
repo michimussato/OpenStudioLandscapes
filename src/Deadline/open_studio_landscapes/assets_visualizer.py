@@ -44,11 +44,11 @@ def viz_compose_10_2(
 
     dcg.iterate_trees(trees)
 
-    docker_compose_dir = compose_10_2.parent / context.asset_key.path[-1]
+    docker_compose_dir = compose_10_2.parent / '__'.join(context.asset_key.path)
 
     docker_compose_dir.mkdir(parents=True, exist_ok=True)
 
-    svg = docker_compose_dir / f"{context.asset_key.path[-1]}.svg"
+    svg = docker_compose_dir / f"{'__'.join(context.asset_key.path)}.svg"
     dcg.graph.write(
         path=svg,
         format="svg",
@@ -60,7 +60,7 @@ def viz_compose_10_2(
     svg_base64 = base64.b64encode(svg_bytes).decode("utf-8")
     svg_md = f"![Image](data:image/svg+xml;base64,{svg_base64})"
 
-    dot = docker_compose_dir / f"{context.asset_key.path[-1]}.dot"
+    dot = docker_compose_dir / f"{'__'.join(context.asset_key.path)}.dot"
     dcg.graph.write(
         path=dot,
         format="dot",
@@ -71,7 +71,7 @@ def viz_compose_10_2(
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            context.asset_key.path[-1]: MetadataValue.json(str(dcg.graph)),
+            '__'.join(context.asset_key.path): MetadataValue.json(str(dcg.graph)),
             "svg": MetadataValue.md(svg_md),
             "dot_path": MetadataValue.path(dot),
             "svg_path": MetadataValue.path(svg),
@@ -109,11 +109,11 @@ def viz_compose_repository_10_2(
 
     dcg.iterate_trees(trees)
 
-    docker_compose_dir = compose_repository_10_2.parent / context.asset_key.path[-1]
+    docker_compose_dir = compose_repository_10_2.parent / '__'.join(context.asset_key.path)
 
     docker_compose_dir.mkdir(parents=True, exist_ok=True)
 
-    svg = docker_compose_dir / f"{context.asset_key.path[-1]}.svg"
+    svg = docker_compose_dir / f"{'__'.join(context.asset_key.path)}.svg"
     dcg.graph.write(
         path=svg,
         format="svg",
@@ -125,9 +125,9 @@ def viz_compose_repository_10_2(
     svg_base64 = base64.b64encode(svg_bytes).decode("utf-8")
     svg_md = f"![Image](data:image/svg+xml;base64,{svg_base64})"
 
-    dot = docker_compose_dir / f"{context.asset_key.path[-1]}.dot"
+    dot = docker_compose_dir / f"{'__'.join(context.asset_key.path)}.dot"
     dcg.graph.write(
-        path=docker_compose_dir / f"{context.asset_key.path[-1]}.dot",
+        path=docker_compose_dir / f"{'__'.join(context.asset_key.path)}.dot",
         format="dot",
     )
 
@@ -136,7 +136,7 @@ def viz_compose_repository_10_2(
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            context.asset_key.path[-1]: MetadataValue.json(str(dcg.graph)),
+            '__'.join(context.asset_key.path): MetadataValue.json(str(dcg.graph)),
             "svg": MetadataValue.md(svg_md),
             "dot_path": MetadataValue.path(dot),
             "svg_path": MetadataValue.path(svg),

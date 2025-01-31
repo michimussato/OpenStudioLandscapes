@@ -58,7 +58,7 @@ def env(
         env_base.get("LANDSCAPE", "default"),
         "third_party",
         *context.asset_key.path,
-        f"{context.asset_key.path[-1]}.json",
+        f"{'__'.join(context.asset_key.path)}.json",
     )
 
     env_json.parent.mkdir(parents=True, exist_ok=True)
@@ -77,7 +77,7 @@ def env(
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            context.asset_key.path[-1]: MetadataValue.json(env_base),
+            "__".join(context.asset_key.path): MetadataValue.json(env_base),
             "json": MetadataValue.path(env_json),
         },
     )
@@ -164,7 +164,7 @@ def compose_override(
         "--file",
         parent.as_posix(),
         "--project-name",
-        context.asset_key.path[-1],
+        "__".join(context.asset_key.path),
         "up",
         "--remove-orphans",
     ]
@@ -181,7 +181,7 @@ def compose_override(
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            context.asset_key.path[-1]: MetadataValue.json(ret),
+            "__".join(context.asset_key.path): MetadataValue.json(ret),
             "cmd_docker_compose_up": MetadataValue.path(cmd_list_to_str(cmd_docker_compose_up)),
             "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
         },
