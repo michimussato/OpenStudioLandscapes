@@ -28,14 +28,23 @@ from dagster import (
 )
 
 
+# GROUP = ""
+KEY = "10_2"
+
+asset_header = {
+    # "group_name": GROUP,
+    "key_prefix": [KEY],
+    "compute_kind": "python"
+}
+
+
 # Todo
 #  - [ ] Dockerfiles and docker_compose files to *context.asset_key.path,
 
 
 @asset(
+    **asset_header,
     group_name="Environment_10_2",
-    compute_kind="python",
-    key_prefix=["10_2"],
     ins={
         "env_base": AssetIn(),
     },
@@ -181,9 +190,8 @@ def env_10_2(
 
 
 @asset(
+    **asset_header,
     group_name="Settings_10_2",
-    compute_kind="python",
-    key_prefix=["10_2"],
     ins={
         "env_10_2": AssetIn(
             key_prefix=[
@@ -243,9 +251,8 @@ def connection_ini_10_2(
 
 
 @asset(
+    **asset_header,
     group_name="Settings_10_2",
-    compute_kind="python",
-    key_prefix=["10_2"],
     ins={
         "env_10_2": AssetIn(
             key_prefix=[
@@ -338,9 +345,8 @@ def deadline_ini_10_2(
 
 
 @asset(
+    **asset_header,
     group_name="Build_Images_10_2",
-    compute_kind="python",
-    key_prefix=["10_2"],
 )
 def pip_packages_base_image_10_2(
         context: AssetExecutionContext,
@@ -365,9 +371,8 @@ def pip_packages_base_image_10_2(
 
 
 @asset(
+    **asset_header,
     group_name="Build_Images_10_2",
-    compute_kind="python",
-    key_prefix=["10_2"],
 )
 def wget_deadline_packages_base_image_10_2(
         context: AssetExecutionContext,
@@ -393,9 +398,8 @@ def wget_deadline_packages_base_image_10_2(
 
 if BUILD_FROM_GOOGLE_DRIVE_10_2:
     @asset(
+        **asset_header,
         group_name="Build_Images_10_2",
-        compute_kind="python",
-        key_prefix=["10_2"],
         ins={
             "env_10_2": AssetIn(
                 key_prefix=[
@@ -528,9 +532,8 @@ if BUILD_FROM_GOOGLE_DRIVE_10_2:
 
 else:
     @asset(
+        **asset_header,
         group_name="Build_Images_10_2",
-        compute_kind="python",
-        key_prefix=["10_2"],
         ins={
             "env_10_2": AssetIn(
                 key_prefix=[
@@ -676,8 +679,8 @@ else:
 
 
 @asset(
+    **asset_header,
     group_name="Repository_Installer_10_2",
-    compute_kind="python",
     ins={
         "env_10_2": AssetIn(
             key_prefix=[
@@ -685,7 +688,6 @@ else:
             ],
         ),
     },
-    key_prefix=["10_2"],
     description="This executes the Deadline Repository Installer. "
                 "Needs to be done only once."
 )
@@ -725,8 +727,8 @@ def deadline_command_install_repository_10_2(
 
 
 @asset(
+    **asset_header,
     group_name="Repository_Installer_10_2",
-    compute_kind="python",
     ins={
         "env_10_2": AssetIn(
             key_prefix=[
@@ -739,7 +741,6 @@ def deadline_command_install_repository_10_2(
             ],
         ),
     },
-    key_prefix=["10_2"],
 )
 def build_repository_image_10_2(
         context: AssetExecutionContext,
@@ -827,8 +828,8 @@ def build_repository_image_10_2(
 
 
 @asset(
+    **asset_header,
     group_name="Repository_Installer_10_2",
-    compute_kind="python",
     ins={
         "env_10_2": AssetIn(
             key_prefix=[
@@ -855,7 +856,6 @@ def build_repository_image_10_2(
             ],
         ),
     },
-    key_prefix=["10_2"],
     description="This executes the Deadline Repository Installer. "
                 "Needs to be done only once."
 )
@@ -955,8 +955,8 @@ def compose_repository_10_2(
 
 
 @asset(
+    **asset_header,
     group_name="Build_Images_10_2",
-    compute_kind="python",
     ins={
         "env_10_2": AssetIn(
             key_prefix=[
@@ -964,7 +964,6 @@ def compose_repository_10_2(
             ],
         ),
     },
-    key_prefix=["10_2"],
     description=""
 )
 def deadline_command_build_client_image_10_2(
@@ -1006,9 +1005,8 @@ def deadline_command_build_client_image_10_2(
 
 
 @asset(
+    **asset_header,
     group_name="Build_Images_10_2",
-    compute_kind="python",
-    key_prefix=["10_2"],
     ins={
         "env_10_2": AssetIn(
             key_prefix=[
@@ -1119,9 +1117,8 @@ def build_client_image_10_2(
 
 
 @asset(
+    **asset_header,
     group_name="Docker_Compose_10_2",
-    compute_kind="python",
-    key_prefix=["10_2"],
     ins={
         "compose_override_ayon": AssetIn(
             AssetKey(["Ayon", "compose_override"]),
@@ -1153,9 +1150,8 @@ def compose_include_10_2(
 
 
 @asset(
+    **asset_header,
     group_name="Docker_Compose_10_2",
-    compute_kind="python",
-    key_prefix=["10_2"],
     ins={
         "env_10_2": AssetIn(
             key_prefix=[
@@ -1198,9 +1194,8 @@ def compose_networks_10_2(
 
 
 @asset(
+    **asset_header,
     group_name="Docker_Compose_10_2",
-    compute_kind="python",
-    key_prefix=["10_2"],
     ins={
         "env_10_2": AssetIn(
             key_prefix=[
@@ -1269,9 +1264,8 @@ def compose_mongo_express_10_2(
 
 
 @asset(
+    **asset_header,
     group_name="Docker_Compose_10_2",
-    compute_kind="python",
-    key_prefix=["10_2"],
     ins={
         "env_10_2": AssetIn(
             key_prefix=[
@@ -1329,9 +1323,8 @@ def compose_filebrowser_10_2(
 
 
 @asset(
+    **asset_header,
     group_name="Docker_Compose_10_2",
-    compute_kind="python",
-    key_prefix=["10_2"],
     ins={
         "env_10_2": AssetIn(
             key_prefix=[
@@ -1384,9 +1377,8 @@ def script_chown_mongodb_10_2(
 
 
 @asset(
+    **asset_header,
     group_name="Docker_Compose_10_2",
-    compute_kind="python",
-    key_prefix=["10_2"],
     ins={
         "env_10_2": AssetIn(
             key_prefix=[
@@ -1518,8 +1510,8 @@ def compose_mongodb_10_2(
 
 
 @asset(
+    **asset_header,
     group_name="Docker_Compose_10_2",
-    compute_kind="python",
     ins={
         "env_10_2": AssetIn(
             key_prefix=[
@@ -1527,7 +1519,6 @@ def compose_mongodb_10_2(
             ],
         ),
     },
-    key_prefix=["10_2"],
     description="This executes the Deadline Repository Installer. "
                 "Needs to be done only once."
 )
@@ -1555,9 +1546,8 @@ def deadline_command_compose_rcs_runner_10_2(
 
 
 @asset(
+    **asset_header,
     group_name="Docker_Compose_10_2",
-    compute_kind="python",
-    key_prefix=["10_2"],
     ins={
         "env_10_2": AssetIn(
             key_prefix=[
@@ -1649,8 +1639,8 @@ def compose_rcs_runner_10_2(
 
 
 @asset(
+    **asset_header,
     group_name="Docker_Compose_10_2",
-    compute_kind="python",
     ins={
         "env_10_2": AssetIn(
             key_prefix=[
@@ -1658,7 +1648,6 @@ def compose_rcs_runner_10_2(
             ],
         ),
     },
-    key_prefix=["10_2"],
     description="This executes the Deadline Repository Installer. "
                 "Needs to be done only once."
 )
@@ -1688,9 +1677,8 @@ def deadline_command_compose_pulse_runner_10_2(
 
 
 @asset(
+    **asset_header,
     group_name="Docker_Compose_10_2",
-    compute_kind="python",
-    key_prefix=["10_2"],
     ins={
         "env_10_2": AssetIn(
             key_prefix=[
@@ -1776,8 +1764,8 @@ def compose_pulse_runner_10_2(
 
 
 @asset(
+    **asset_header,
     group_name="Docker_Compose_10_2",
-    compute_kind="python",
     ins={
         "env_10_2": AssetIn(
             key_prefix=[
@@ -1785,7 +1773,6 @@ def compose_pulse_runner_10_2(
             ],
         ),
     },
-    key_prefix=["10_2"],
     description="This executes the Deadline Repository Installer. "
                 "Needs to be done only once."
 )
@@ -1815,9 +1802,8 @@ def deadline_command_compose_worker_runner_10_2(
 
 
 @asset(
+    **asset_header,
     group_name="Docker_Compose_10_2",
-    compute_kind="python",
-    key_prefix=["10_2"],
     ins={
         "env_10_2": AssetIn(
             key_prefix=[
@@ -1903,8 +1889,8 @@ def compose_worker_runner_10_2(
 
 
 @asset(
+    **asset_header,
     group_name="Docker_Compose_10_2",
-    compute_kind="python",
     ins={
         "env_10_2": AssetIn(
             key_prefix=[
@@ -1912,7 +1898,6 @@ def compose_worker_runner_10_2(
             ],
         ),
     },
-    key_prefix=["10_2"],
     description="This executes the Deadline Repository Installer. "
                 "Needs to be done only once."
 )
@@ -1940,9 +1925,8 @@ def deadline_command_compose_webservice_runner_10_2(
 
 
 @asset(
+    **asset_header,
     group_name="Docker_Compose_10_2",
-    compute_kind="python",
-    key_prefix=["10_2"],
     ins={
         "env_10_2": AssetIn(
             key_prefix=[
@@ -2037,9 +2021,8 @@ def compose_webservice_runner_10_2(
 
 
 @asset(
+    **asset_header,
     group_name="Docker_Compose_10_2",
-    compute_kind="python",
-    key_prefix=["10_2"],
     ins={
         "env_10_2": AssetIn(key_prefix=[
                 "10_2",

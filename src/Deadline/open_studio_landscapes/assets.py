@@ -24,9 +24,19 @@ from dagster import (
 )
 
 
+# GROUP = ""
+KEY = "Base"
+
+asset_header = {
+    # "group_name": GROUP,
+    # "key_prefix": [KEY],
+    "compute_kind": "python"
+}
+
+
 @asset(
+    **asset_header,
     group_name="Environment",
-    compute_kind="python",
 )
 def git_root(
         context: AssetExecutionContext,
@@ -46,8 +56,8 @@ def git_root(
 
 
 @asset(
+    **asset_header,
     group_name="Environment",
-    compute_kind="python",
 )
 def landscape_id(
         context: AssetExecutionContext,
@@ -71,8 +81,8 @@ def landscape_id(
 
 
 @asset(
+    **asset_header,
     group_name="Environment",
-    compute_kind="python",
 )
 def secrets(
         context: AssetExecutionContext,
@@ -95,8 +105,8 @@ def secrets(
 
 
 @asset(
+    **asset_header,
     group_name="Environment",
-    compute_kind="python",
     ins={
         "git_root": AssetIn(),
     },
@@ -124,8 +134,8 @@ def dot_landscapes(
 
 
 @asset(
+    **asset_header,
     group_name="Environment",
-    compute_kind="python",
     ins={
         "git_root": AssetIn(),
     },
@@ -153,8 +163,8 @@ def dot_installers(
 
 
 @asset(
+    **asset_header,
     group_name="Environment",
-    compute_kind="python",
     ins={
         "git_root": AssetIn(),
         "secrets": AssetIn(),
@@ -410,8 +420,8 @@ def env_base(
 
 
 @asset(
+    **asset_header,
     group_name="Build_Base_Image",
-    compute_kind="python",
 )
 def pip_packages_base_image(
         context: AssetExecutionContext,
@@ -438,8 +448,8 @@ def pip_packages_base_image(
 
 
 @asset(
+    **asset_header,
     group_name="Build_Base_Image",
-    compute_kind="python",
 )
 def apt_packages_base_image(
         context: AssetExecutionContext,
@@ -490,8 +500,8 @@ def apt_packages_base_image(
 
 
 @asset(
+    **asset_header,
     group_name="Build_Base_Image",
-    compute_kind="python",
     ins={
         "env_base": AssetIn(),
         "apt_packages_base_image": AssetIn(),
@@ -627,8 +637,8 @@ def build_base_image(
 
 
 @asset(
+    **asset_header,
     group_name="Environment",
-    compute_kind="python",
 )
 def nfs(
         context: AssetExecutionContext,
