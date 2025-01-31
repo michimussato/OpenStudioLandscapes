@@ -79,10 +79,10 @@ def viz_compose_10_2(
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(str(dcg.graph)),
             "svg": MetadataValue.md(svg_md),
-            "dot_path": MetadataValue.path(dot),
+            "__".join(context.asset_key.path): MetadataValue.json(str(dcg.graph)),
             "svg_path": MetadataValue.path(svg),
+            "dot_path": MetadataValue.path(dot),
         },
     )
 
@@ -138,9 +138,9 @@ def viz_compose_repository_10_2(
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(str(dcg.graph)),
             "svg": MetadataValue.md(svg_md),
-            "dot_path": MetadataValue.path(dot),
+            "__".join(context.asset_key.path): MetadataValue.json(str(dcg.graph)),
             "svg_path": MetadataValue.path(svg),
+            "dot_path": MetadataValue.path(dot),
         },
     )
