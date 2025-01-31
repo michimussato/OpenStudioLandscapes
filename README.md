@@ -39,6 +39,9 @@
   * [Install](#install)
     * [venv](#venv)
     * [open-studio-landscapes](#open-studio-landscapes-1)
+    * [Git Repos](#git-repos)
+    * [DeadlineDatabase10](#deadlinedatabase10)
+      * [Use Test DB](#use-test-db)
   * [Create Landscape](#create-landscape)
     * [Launch Dagster](#launch-dagster)
     * [Configure Landscape](#configure-landscape)
@@ -50,9 +53,6 @@
     * [Deadline Monitor](#deadline-monitor)
   * [Docker](#docker)
     * [Clean](#clean)
-  * [DeadlineDatabase10](#deadlinedatabase10)
-    * [Use Test DB](#use-test-db)
-  * [Git Repos](#git-repos)
 <!-- TOC -->
 
 ---
@@ -420,15 +420,15 @@ Todo:
 
 ### Deadline 10.2
 
-`.landscapes/2025-01-22_12-40-25__1737549625.8644402/10_2/docker_compose/compose_10_2/docker-compose.yml`
+`.landscapes/2025-02-01_00-11-08__578595276b424d1ea62550cb0b6f166f/Deadline_10_2/docker_compose/Deadline_10_2__compose_10_2/docker-compose.yml`
 
-![viz_compose_10_2.png](docs/img/viz_compose_10_2.svg)
+![Viz__viz_compose_10_2.png](docs/img/Viz__viz_compose_10_2.svg)
 
 ### Repository-Installer 10.2
 
-`.landscapes/2025-01-22_12-40-25__1737549625.8644402/10_2/docker_compose/compose_repository_10_2/docker-compose.yml`
+`/home/michael/git/repos/open-studio-landscapes/.landscapes/2025-02-01_00-11-08__578595276b424d1ea62550cb0b6f166f/Deadline_10_2/docker_compose/Deadline_10_2__compose_repository_10_2/docker-compose.yml`
 
-![viz_compose_repository_10_2.png](docs/img/viz_compose_repository_10_2.svg)
+![Viz__viz_compose_repository_10_2.png](docs/img/Viz__viz_compose_repository_10_2.svg)
 
 ## Clone
 
@@ -457,6 +457,39 @@ python -m pip install --upgrade pip setuptools
 python -m pip install git+https://github.com/michimussato/open-studio-landscapes.git@main
 ```
 
+### Git Repos
+
+Clone the 
+
+```shell
+cd open-studio-landscapes
+mkdir -p repos
+git -C repos clone https://github.com/ynput/ayon-docker.git
+```
+
+### DeadlineDatabase10
+
+#### Use Test DB
+
+Make sure that the `DeadlineDatabase10` directory has
+appropriate ownership:
+
+```shell
+sudo chown -R 101:65534 /path/to/DeadlineDatabase10
+```
+
+And in `Deadline.open_studio_landscapes.assets.env_10_2` set
+
+```python
+f"DATABASE_INSTALL_DESTINATION_{KEY}": {
+    "default": [...],                     # <-- Set key-value pairs as desired
+    "test_db_10_2": pathlib.Path(
+        "/path/to/DeadlineDatabase10"
+    ).as_posix(),                         # <--
+    "another_test_db": [...],  # <--
+}["test_db_10_2"]                         # <--- Set to value to be used
+```
+
 ## Create Landscape
 
 ### Launch Dagster
@@ -472,8 +505,11 @@ http://0.0.0.0:3000
 
 ### Configure Landscape
 
-Edit `open_studio_landscapes.assets.env_base` and 
-`open_studio_landscapes.assets.env_10_2` according to your needs.
+Edit 
+- `Deadline.open_studio_landscapes.assets.env`
+- `Deadline.open_studio_landscapes.assets_10_2.env` 
+- `Deadline.open_studio_landscapes.third_party.[...].env`
+according to your needs.
 
 ### Materialize Landscape
 
@@ -482,9 +518,20 @@ Edit `open_studio_landscapes.assets.env_base` and
 #### Resulting Files and Directories (aka "Landscape")
 
 ```shell
-$ tree .landscapes/2025-01-22_12-40-25__1737549625.8644402
-.landscapes/2025-01-22_12-40-25__1737549625.8644402
-├── 10_2
+$ tree .landscapes/2025-02-01_00-38-08__cd68a765e3394d41b5e20420f33970bb
+.landscapes/2025-02-01_00-38-08__cd68a765e3394d41b5e20420f33970bb
+├── Base__env
+│   └── Base__env.json
+├── configs
+│   └── kitsu
+│       └── init_zou.sh
+├── data
+│   └── kitsu
+│       ├── postgresql
+│       │   └── 14
+│       │       └── main  [error opening dir]
+│       └── previews
+├── Deadline_10_2
 │   ├── configs
 │   │   ├── Deadline10
 │   │   │   └── deadline.ini
@@ -495,45 +542,65 @@ $ tree .landscapes/2025-01-22_12-40-25__1737549625.8644402
 │   │   └── opt
 │   │       └── Thinkbox
 │   │           └── DeadlineDatabase10
+│   ├── Deadline_10_2__env_10_2.json
 │   ├── docker_compose
-│   │   ├── compose_10_2
+│   │   ├── Deadline_10_2__compose_10_2
 │   │   │   ├── docker-compose.yml
-│   │   │   └── viz_compose_10_2
-│   │   │       ├── viz_compose_10_2.dot
-│   │   │       └── viz_compose_10_2.png
-│   │   └── compose_repository_10_2
+│   │   │   └── Viz__viz_compose_10_2
+│   │   │       ├── Viz__viz_compose_10_2.dot
+│   │   │       └── Viz__viz_compose_10_2.svg
+│   │   └── Deadline_10_2__compose_repository_10_2
 │   │       ├── docker-compose.yml
-│   │       └── viz_compose_repository_10_2
-│   │           ├── viz_compose_repository_10_2.dot
-│   │           └── viz_compose_repository_10_2.png
-│   ├── Dockerfiles
-│   │   ├── build_base_image_10_2
-│   │   │   └── Dockerfile
-│   │   ├── build_client_image_10_2
-│   │   │   └── Dockerfile
-│   │   ├── build_generic_runner_image_10_2
-│   │   │   └── Dockerfile
-│   │   └── build_repository_image_10_2
-│   │       └── Dockerfile
-│   ├── env_10_2.json
-│   └── scripts
-│       └── compose_mongodb_10_2
-│           └── compose_mongodb_10_2__chown__vupr52ix.sh
-├── configs
-│   └── kitsu
-│       └── init_zou.sh
-├── data
-│   └── kitsu
-│       ├── postgresql
-│       │   └── 14
-│       │       └── main  [error opening dir]
-│       └── previews
+│   │       └── Viz__viz_compose_repository_10_2
+│   │           ├── Viz__viz_compose_repository_10_2.dot
+│   │           └── Viz__viz_compose_repository_10_2.svg
+│   └── Dockerfiles
+│       ├── Deadline_10_2__build_client_image_10_2
+│       │   └── Dockerfile
+│       └── Deadline_10_2__build_repository_image_10_2
+│           └── Dockerfile
+├── docker_compose
+│   └── Ayon
+│       └── compose_override
+│           └── docker-compose.override.yml
 ├── Dockerfiles
-│   └── build_base_image
-│       └── Dockerfile
-└── env_base.json
+│   ├── Base__build_base_image
+│   │   └── Dockerfile
+│   ├── Dagster
+│   │   └── build
+│   │       ├── Dockerfile
+│   │       └── payload
+│   │           ├── dagster.yaml
+│   │           └── workspace.yaml
+│   ├── Deadline_10_2__build_base_image_10_2
+│   │   └── Dockerfile
+│   ├── Kitsu
+│   │   └── build
+│   │       └── Dockerfile
+│   └── LikeC4
+│       └── build
+│           ├── Dockerfile
+│           └── payload
+│               ├── run.sh
+│               └── setup.sh
+└── third_party
+    ├── Ayon
+    │   └── env
+    │       └── Ayon__env.json
+    ├── Dagster
+    │   └── env
+    │       └── Dagster__env.json
+    ├── Grafana
+    │   └── env
+    │       └── Grafana__env.json
+    ├── Kitsu
+    │   └── env
+    │       └── Kitsu__env.json
+    └── LikeC4
+        └── env
+            └── LikeC4__env.json
 
-32 directories, 17 files
+52 directories, 28 files
 ```
 
 ## Run Repository Installer
@@ -583,29 +650,3 @@ docker volume prune -a -f
 docker buildx prune -a -f
 docker network prune -f
 ```
-
-## DeadlineDatabase10
-
-### Use Test DB
-
-Todo:
-- Section still needed?
-
-```shell
-mkdir -p tests/fixtures/10_2/DeadlineDatabase10
-tar -xzvf tests/fixtures/DeadlineDatabase10_2.tar.gz -C tests/fixtures/10_2/DeadlineDatabase10
-sudo chown -R 101:65534 tests/fixtures/10_2/DeadlineDatabase10
-```
-
-And in `Deadline.open_studio_landscapes.assets.env_10_2` set
-
-```
-f"DATABASE_INSTALL_DESTINATION_{context.asset_key.path[0]}": pathlib.Path(
-      f"~/git/repos/open-studio-landscapes/tests/fixtures/{context.asset_key.path[0]}/DeadlineDatabase10",
-  ).expanduser().as_posix()
-```
-
-## Git Repos
-
-Todo:
-
