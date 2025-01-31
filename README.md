@@ -580,7 +580,7 @@ docker stop $(docker ps -q)
 docker container prune -f
 docker image prune -a -f
 docker volume prune -a -f
-docker buildx prune -f
+docker buildx prune -a -f
 docker network prune -f
 ```
 
