@@ -1,8 +1,4 @@
 import pathlib
-import urllib.parse
-import time
-import textwrap
-import shutil
 import yaml
 import json
 
@@ -22,6 +18,63 @@ from dagster import (
 
 
 GROUP = "Grafana"
+KEY = "Grafana"
+
+asset_header = {
+    "group_name": GROUP,
+    "key_prefix": [KEY],
+    "compute_kind": "python"
+}
+
+
+@asset(
+    **asset_header,
+    ins={
+        "env_base": AssetIn(),
+    },
+)
+def env(
+        context: AssetExecutionContext,
+        env_base: dict,
+) -> dict:
+
+    # @formatter:off
+    _env = {
+        "GRAFANA_PORT_HOST": "3030",
+        "GRAFANA_PORT_CONTAINER": "3030",
+    }
+    # @formatter:on
+
+    env_base.update(_env)
+
+    env_json = pathlib.Path(
+        env_base["DOT_LANDSCAPES"],
+        env_base.get("LANDSCAPE", "default"),
+        "third_party",
+        *context.asset_key.path,
+        f"{context.asset_key.path[-1]}.json",
+    )
+
+    env_json.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(env_json, "w") as fw:
+        json.dump(
+            obj=_env.copy(),
+            fp=fw,
+            indent=2,
+            ensure_ascii=True,
+            sort_keys=True,
+        )
+
+    yield Output(env_base)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            context.asset_key.path[-1]: MetadataValue.json(env_base),
+            "json": MetadataValue.path(env_json),
+        },
+    )
 
 
 # @asset(
@@ -185,16 +238,17 @@ GROUP = "Grafana"
 
 
 @asset(
-    group_name=GROUP,
-    compute_kind="python",
+    **asset_header,
     ins={
-        "env_base": AssetIn(),
+        "env": AssetIn(
+            key_prefix=[KEY],
+        ),
         # "build_grafana": AssetIn(),
     },
 )
-def compose_grafana(
+def compose(
         context: AssetExecutionContext,
-        env_base: dict,
+        env: dict,
         # build_grafana: str,
 ) -> dict:
     """
@@ -205,7 +259,7 @@ def compose_grafana(
             "grafana": {
                 "container_name": "grafana",
                 "hostname": "grafana",
-                "domainname": env_base.get("ROOT_DOMAIN"),
+                "domainname": env.get("ROOT_DOMAIN"),
                 "restart": "always",
                 "image": "grafana/grafana",
                 "networks": [
@@ -238,7 +292,7 @@ def compose_grafana(
                 #     f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT_LNS')}",
                 # ],
                 "ports": [
-                    f"{env_base.get('GRAFANA_PORT_HOST')}:{env_base.get('GRAFANA_PORT_CONTAINER')}",
+                    f"{env.get('GRAFANA_PORT_HOST')}:{env.get('GRAFANA_PORT_CONTAINER')}",
                 ],
             },
         },
@@ -254,6 +308,6 @@ def compose_grafana(
             context.asset_key.path[-1]: MetadataValue.json(docker_dict),
             "docker_dict": MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
             "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
-            "env_base": MetadataValue.json(env_base),
+            "env": MetadataValue.json(env),
         },
     )

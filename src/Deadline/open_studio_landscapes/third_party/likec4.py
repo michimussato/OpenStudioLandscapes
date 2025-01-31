@@ -21,34 +21,96 @@ from dagster import (
 )
 
 
+GROUP = "LikeC4"
+KEY = "LikeC4"
+
+asset_header = {
+    "group_name": GROUP,
+    "key_prefix": [KEY],
+    "compute_kind": "python"
+}
+
+
 @asset(
-    group_name="LikeC4",
-    compute_kind="python",
+    **asset_header,
     ins={
         "env_base": AssetIn(),
+    },
+)
+def env(
+        context: AssetExecutionContext,
+        env_base: dict,
+) -> dict:
+
+    # @formatter:off
+    _env = {
+        "LIKEC4_DEV_PORT_HOST": "4567",
+        "LIKEC4_DEV_PORT_CONTAINER": "4567",
+        "LIKEC4_HOST": "0.0.0.0",
+    }
+    # @formatter:on
+
+    env_base.update(_env)
+
+    env_json = pathlib.Path(
+        env_base["DOT_LANDSCAPES"],
+        env_base.get("LANDSCAPE", "default"),
+        "third_party",
+        *context.asset_key.path,
+        f"{context.asset_key.path[-1]}.json",
+    )
+
+    env_json.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(env_json, "w") as fw:
+        json.dump(
+            obj=_env.copy(),
+            fp=fw,
+            indent=2,
+            ensure_ascii=True,
+            sort_keys=True,
+        )
+
+    yield Output(env_base)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            context.asset_key.path[-1]: MetadataValue.json(env_base),
+            "json": MetadataValue.path(env_json),
+        },
+    )
+
+
+@asset(
+    **asset_header,
+    ins={
+        "env": AssetIn(
+            key_prefix=[KEY],
+        ),
         "build_base_image": AssetIn(),
     },
 )
-def build_likec4(
+def build(
         context: AssetExecutionContext,
-        env_base: dict,
+        env: dict,
         build_base_image: str,
 ) -> str:
     """
     """
 
     docker_file = pathlib.Path(
-        env_base["DOT_LANDSCAPES"],
-        env_base.get("LANDSCAPE", "default"),
+        env["DOT_LANDSCAPES"],
+        env.get("LANDSCAPE", "default"),
         "Dockerfiles",
-        context.asset_key.path[-1],
+        *context.asset_key.path,
         "Dockerfile",
     )
 
     tags = [
-        f"{env_base.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:latest",
+        f"{env.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:latest",
         # f"{env_base.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:{str(time.time())}",
-        f"{env_base.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:{env_base.get('LANDSCAPE', str(time.time()))}",
+        f"{env.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:{env.get('LANDSCAPE', str(time.time()))}",
     ]
 
     # @formatter:off
@@ -85,7 +147,7 @@ def build_likec4(
         dagster_url=urllib.parse.quote(f"http://localhost:3000/asset-groups/{context.asset_key.path[-1]}", safe=":/%"),
         image_name=context.asset_key.path[-1],
         parent_image=build_base_image,
-        **env_base,
+        **env,
     )
     # @formatter:on
 
@@ -102,7 +164,7 @@ def build_likec4(
     # setup.sh
     shutil.copy(
         src=pathlib.Path(
-            env_base["CONFIGS_ROOT"],
+            env["CONFIGS_ROOT"],
             "likec4",
             "entrypoint",
             "setup.sh",
@@ -113,7 +175,7 @@ def build_likec4(
     # run.sh
     shutil.copy(
         src=pathlib.Path(
-            env_base["CONFIGS_ROOT"],
+            env["CONFIGS_ROOT"],
             "likec4",
             "entrypoint",
             "run.sh",
@@ -151,23 +213,26 @@ def build_likec4(
             "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
             **cmds_docker,
             "build_logs": MetadataValue.md(f"```shell\n{log}\n```"),
-            "env_base": MetadataValue.json(env_base),
+            "env": MetadataValue.json(env),
         },
     )
 
 
 @asset(
-    group_name="LikeC4",
-    compute_kind="python",
+    **asset_header,
     ins={
-        "env_base": AssetIn(),
-        "build_likec4": AssetIn(),
+        "env": AssetIn(
+            key_prefix=[KEY],
+        ),
+        "build": AssetIn(
+            key_prefix=[KEY],
+        ),
     },
 )
-def compose_likec4(
+def compose(
         context: AssetExecutionContext,
-        env_base: dict,
-        build_likec4: str,
+        env: dict,
+        build: str,
 ) -> dict:
     """
     """
@@ -177,31 +242,31 @@ def compose_likec4(
             "likec4": {
                 "container_name": "likec4",
                 "hostname": "likec4",
-                "domainname": env_base.get("ROOT_DOMAIN"),
+                "domainname": env.get("ROOT_DOMAIN"),
                 "restart": "always",
-                "image": build_likec4,
+                "image": build,
                 "networks": [
                     "repository",
                     "mongodb",
                 ],
                 "command": [
                     "--host",
-                    env_base.get('LIKEC4_HOST'),
+                    env.get('LIKEC4_HOST'),
                     "--port",
-                    env_base.get('LIKEC4_DEV_PORT_CONTAINER'),
+                    env.get('LIKEC4_DEV_PORT_CONTAINER'),
                 ],
                 "volumes": [
-                    f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT')}",
-                    f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT_LNS')}",
+                    f"{env.get('NFS_ENTRY_POINT')}:{env.get('NFS_ENTRY_POINT')}",
+                    f"{env.get('NFS_ENTRY_POINT')}:{env.get('NFS_ENTRY_POINT_LNS')}",
                 ],
                 "healthcheck": {
-                    "test": ["CMD", "curl", "-f", f"http://localhost:{env_base.get('LIKEC4_DEV_PORT_CONTAINER')}"],
+                    "test": ["CMD", "curl", "-f", f"http://localhost:{env.get('LIKEC4_DEV_PORT_CONTAINER')}"],
                     "interval": "10s",
                     "timeout": "2s",
                     "retries": "3",
                 },
                 "ports": [
-                    f"{env_base.get('LIKEC4_DEV_PORT_HOST')}:{env_base.get('LIKEC4_DEV_PORT_CONTAINER')}",
+                    f"{env.get('LIKEC4_DEV_PORT_HOST')}:{env.get('LIKEC4_DEV_PORT_CONTAINER')}",
                 ],
             },
         },
@@ -217,6 +282,6 @@ def compose_likec4(
             context.asset_key.path[-1]: MetadataValue.json(docker_dict),
             "docker_dict": MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
             "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
-            "env_base": MetadataValue.json(env_base),
+            "env": MetadataValue.json(env),
         },
     )

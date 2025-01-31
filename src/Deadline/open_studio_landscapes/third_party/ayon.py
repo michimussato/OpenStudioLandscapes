@@ -1,6 +1,7 @@
 import pathlib
 import yaml
 import shutil
+import json
 
 from Deadline.open_studio_landscapes.utils import *
 
@@ -16,31 +17,98 @@ from dagster import (
 )
 
 
+GROUP = "Ayon"
+KEY = "Ayon"
+
+asset_header = {
+    "group_name": GROUP,
+    "key_prefix": [KEY],
+    "compute_kind": "python"
+}
+
+
 @asset(
-    group_name="Ayon",
-    compute_kind="python",
+    **asset_header,
     ins={
         "env_base": AssetIn(),
     },
 )
-def compose_ayon_override(
+def env(
         context: AssetExecutionContext,
         env_base: dict,
+) -> dict:
+
+    # @formatter:off
+    _env = {
+        "AYON_DOCKER_COMPOSE": pathlib.Path(
+            env_base["GIT_ROOT"],
+            "repos",
+            "ayon-docker",
+            "docker-compose.yml",
+        ).expanduser().as_posix(),
+        "AYON_PORT_HOST": "5005",
+        "AYON_PORT_CONTAINER": "5000",
+    }
+    # @formatter:on
+
+    env_base.update(_env)
+
+    env_json = pathlib.Path(
+        env_base["DOT_LANDSCAPES"],
+        env_base.get("LANDSCAPE", "default"),
+        "third_party",
+        *context.asset_key.path,
+        f"{context.asset_key.path[-1]}.json",
+    )
+
+    env_json.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(env_json, "w") as fw:
+        json.dump(
+            obj=_env.copy(),
+            fp=fw,
+            indent=2,
+            ensure_ascii=True,
+            sort_keys=True,
+        )
+
+    yield Output(env_base)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            context.asset_key.path[-1]: MetadataValue.json(env_base),
+            "json": MetadataValue.path(env_json),
+        },
+    )
+
+
+@asset(
+    **asset_header,
+    ins={
+        "env": AssetIn(
+            key_prefix=[KEY],
+        ),
+    },
+)
+def compose_override(
+        context: AssetExecutionContext,
+        env: dict,
 ) -> dict[str, list[str]]:
     """
     """
 
-    parent = pathlib.Path(env_base.get("AYON_DOCKER_COMPOSE"))
+    parent = pathlib.Path(env.get("AYON_DOCKER_COMPOSE"))
 
     docker_dict = {
         "services": {
             "postgres": {
                 "container_name": "ayon-postgres",
                 "hostname": "ayon-postgres",
-                "domainname": env_base.get("ROOT_DOMAIN"),
+                "domainname": env.get("ROOT_DOMAIN"),
                 "volumes": [
                     f"/etc/localtime:/etc/localtime:ro",
-                    f"{env_base.get('NFS_ENTRY_POINT')}/databases/ayon/postgresql/data:/var/lib/postgresql/data",
+                    f"{env.get('NFS_ENTRY_POINT')}/databases/ayon/postgresql/data:/var/lib/postgresql/data",
                 ],
                 "networks": [
                     "mongodb",
@@ -50,7 +118,7 @@ def compose_ayon_override(
             "redis": {
                 "container_name": "ayon-redis",
                 "hostname": "ayon-redis",
-                "domainname": env_base.get("ROOT_DOMAIN"),
+                "domainname": env.get("ROOT_DOMAIN"),
                 "networks": [
                     "mongodb",
                     "repository",
@@ -59,13 +127,13 @@ def compose_ayon_override(
             "server": {
                 "container_name": "ayon-server",
                 "hostname": "ayon-server",
-                "domainname": env_base.get("ROOT_DOMAIN"),
+                "domainname": env.get("ROOT_DOMAIN"),
                 # Todo:
                 #  - [ ] Need to find out whether `ports` Override
                 #  also overrides the exports in the source ayon-docker-compose.yml
                 #  "exports": OverrideArray([]),
                 "ports": OverrideArray([
-                    f"{env_base.get('AYON_PORT_HOST')}:{env_base.get('AYON_PORT_CONTAINER')}",
+                    f"{env.get('AYON_PORT_HOST')}:{env.get('AYON_PORT_CONTAINER')}",
                 ]),
                 "networks": [
                     "mongodb",
@@ -78,10 +146,10 @@ def compose_ayon_override(
     docker_yaml = yaml.dump(docker_dict)
 
     docker_compose_override = pathlib.Path(
-        env_base["DOT_LANDSCAPES"],
-        env_base.get("LANDSCAPE", "default"),
+        env["DOT_LANDSCAPES"],
+        env.get("LANDSCAPE", "default"),
         "docker_compose",
-        context.asset_key.path[-1],
+        *context.asset_key.path,
         "docker-compose.override.yml",
     )
 

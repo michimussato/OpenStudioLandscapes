@@ -24,7 +24,12 @@ from dagster import (
     AssetMaterialization,
     MetadataValue,
     AssetIn,
+    AssetKey,
 )
+
+
+# Todo
+#  - [ ] Dockerfiles and docker_compose files to *context.asset_key.path,
 
 
 @asset(
@@ -918,9 +923,8 @@ def compose_repository_10_2(
     docker_compose = pathlib.Path(
         env_10_2["DOT_LANDSCAPES"],
         env_10_2.get("LANDSCAPE", "default"),
-        context.asset_key.path[0],
         "docker_compose",
-        context.asset_key.path[-1],
+        *context.asset_key.path,
         "docker-compose.yml",
     )
     docker_compose.parent.mkdir(parents=True, exist_ok=True)
@@ -1141,20 +1145,20 @@ def build_client_image_10_2(
 @asset(
     group_name="Docker_Compose_10_2",
     compute_kind="python",
-    key_prefix=[
-        "10_2",
-    ],
+    key_prefix=["10_2"],
     ins={
-        "compose_ayon_override": AssetIn(),
+        "compose_override_ayon": AssetIn(
+            AssetKey(["Ayon", "compose_override"]),
+        ),
     },
 )
 def compose_include_10_2(
         context: AssetExecutionContext,
-        compose_ayon_override: dict,
+        compose_override_ayon: dict,
 ) -> dict:
     docker_dict = {
         "include": [
-            compose_ayon_override,
+            compose_override_ayon,
         ],
     }
 
@@ -2129,10 +2133,14 @@ def compose_webservice_runner_10_2(
                 "10_2",
             ],
         ),
-        "compose_grafana": AssetIn(),
-        "compose_dagster": AssetIn(),
-        "compose_likec4": AssetIn(),
-        "compose_kitsu": AssetIn(),
+        "compose_grafana": AssetIn(
+            AssetKey(["Grafana", "compose"])),
+        "compose_dagster": AssetIn(
+            AssetKey(["Dagster", "compose"])),
+        "compose_likec4": AssetIn(
+            AssetKey(["LikeC4", "compose"])),
+        "compose_kitsu": AssetIn(
+            AssetKey(["Kitsu", "compose"])),
     },
 )
 def compose_10_2(

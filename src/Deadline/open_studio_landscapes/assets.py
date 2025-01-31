@@ -244,34 +244,34 @@ def env_base(
         # # MONGO_DB_TEST:
     }
 
-    _env_ayon = {
-        "AYON_DOCKER_COMPOSE": pathlib.Path(
-            _env["GIT_ROOT"],
-            "repos",
-            "ayon-docker",
-            "docker-compose.yml",
-        ).expanduser().as_posix(),
-        "AYON_PORT_HOST": "5005",
-        "AYON_PORT_CONTAINER": "5000",
-    }
+    # _env_ayon = {
+    #     "AYON_DOCKER_COMPOSE": pathlib.Path(
+    #         _env["GIT_ROOT"],
+    #         "repos",
+    #         "ayon-docker",
+    #         "docker-compose.yml",
+    #     ).expanduser().as_posix(),
+    #     "AYON_PORT_HOST": "5005",
+    #     "AYON_PORT_CONTAINER": "5000",
+    # }
 
-    _env_dagster = {
-        "DAGSTER_DEV_PORT_HOST": "3003",
-        "DAGSTER_DEV_PORT_CONTAINER": "3006",
-        "DAGSTER_ROOT": "/dagster",
-        "DAGSTER_HOME": "/dagster/materializations",
-        "DAGSTER_HOST": "0.0.0.0",
-        "DAGSTER_WORKSPACE": "/dagster/workspace.yaml",
-    }
+    # _env_dagster = {
+    #     "DAGSTER_DEV_PORT_HOST": "3003",
+    #     "DAGSTER_DEV_PORT_CONTAINER": "3006",
+    #     "DAGSTER_ROOT": "/dagster",
+    #     "DAGSTER_HOME": "/dagster/materializations",
+    #     "DAGSTER_HOST": "0.0.0.0",
+    #     "DAGSTER_WORKSPACE": "/dagster/workspace.yaml",
+    # }
 
-    _env_grafana = {
-        "GRAFANA_PORT_HOST": "3030",
-        "GRAFANA_PORT_CONTAINER": "3030",
-        # "DAGSTER_ROOT": "/dagster",
-        # "DAGSTER_HOME": "/dagster/materializations",
-        # "DAGSTER_HOST": "0.0.0.0",
-        # "DAGSTER_WORKSPACE": "/dagster/workspace.yaml",
-    }
+    # _env_grafana = {
+    #     "GRAFANA_PORT_HOST": "3030",
+    #     "GRAFANA_PORT_CONTAINER": "3030",
+    #     # "DAGSTER_ROOT": "/dagster",
+    #     # "DAGSTER_HOME": "/dagster/materializations",
+    #     # "DAGSTER_HOST": "0.0.0.0",
+    #     # "DAGSTER_WORKSPACE": "/dagster/workspace.yaml",
+    # }
 
     _env_filebrowser = {
         "FILEBROWSER_PORT_HOST": "8080",
@@ -290,11 +290,11 @@ def env_base(
         ).expanduser().as_posix(),
     }
 
-    _env_likec4 = {
-        "LIKEC4_DEV_PORT_HOST": "4567",
-        "LIKEC4_DEV_PORT_CONTAINER": "4567",
-        "LIKEC4_HOST": "0.0.0.0",
-    }
+    # _env_likec4 = {
+    #     "LIKEC4_DEV_PORT_HOST": "4567",
+    #     "LIKEC4_DEV_PORT_CONTAINER": "4567",
+    #     "LIKEC4_HOST": "0.0.0.0",
+    # }
 
     _env_mongo_express = {
         # "MONGO_PORT": "${MONGO_DB_PORT_CONTAINER}",
@@ -312,67 +312,67 @@ def env_base(
         "ME_CONFIG_MONGODB_URL": "mongodb://admin:pass@localhost:{MONGO_DB_PORT_CONTAINER}/db?ssl=false",
     }
 
-    _env_kitsu = {
-        # Todo:
-        #  - [ ] These have no effect yet
-        # "KITSU_ADMIN_USER": "admin@example.com",
-        # "KITSU_ADMIN_PASSWORD": "mysecretpassword",
-        "KITSU_PORT_HOST": "4545",
-        "KITSU_PORT_CONTAINER": "80",
-        "KITSU_DATABASE_INSTALL_DESTINATION": {
-            #################################################################
-            # Kitsu Postgresql DB will be created in (hardcoded):
-            # "KITSU_DATABASE_INSTALL_DESTINATION" / "postgresql" / "14" / "main"
-            # Kitsu Previews folder will be created in (hardcoded):
-            # "KITSU_DATABASE_INSTALL_DESTINATION" / "previews"
-            #################################################################
-            #################################################################
-            # Inside Landscape:
-            "default": pathlib.Path(
-                _env["DOT_LANDSCAPES"],
-                landscape_id.get("LANDSCAPE", "default"),
-                "data",
-                "kitsu",
-            ).as_posix(),
-            #################################################################
-            # Prod DB:
-            "prod_db": pathlib.Path(
-                nfs["NFS_ENTRY_POINT"],
-                "services",
-                "kitsu",
-            ).as_posix(),
-            #################################################################
-            # Test DB:
-            "test_db": pathlib.Path(
-                nfs["NFS_ENTRY_POINT"],
-                "test_data",
-                "10.2",
-                "kitsu",
-            ).as_posix(),
-        }["default"],
-        f"KITSU_INIT_ZOU": pathlib.Path(
-            _env["DOT_LANDSCAPES"],
-            landscape_id.get("LANDSCAPE", "default"),
-            "configs",
-            "kitsu",
-            "init_zou.sh",
-        ).expanduser().as_posix(),
-        f"KITSU_TEMPLATE_DB_14": pathlib.Path(
-            _env["CONFIGS_ROOT"],
-            "kitsu",
-            "postgres",
-            "template_dbs",
-            "14",
-            "main"
-        ).expanduser().as_posix(),
-    }
+    # _env_kitsu = {
+    #     # Todo:
+    #     #  - [ ] These have no effect yet
+    #     # "KITSU_ADMIN_USER": "admin@example.com",
+    #     # "KITSU_ADMIN_PASSWORD": "mysecretpassword",
+    #     "KITSU_PORT_HOST": "4545",
+    #     "KITSU_PORT_CONTAINER": "80",
+    #     "KITSU_DATABASE_INSTALL_DESTINATION": {
+    #         #################################################################
+    #         # Kitsu Postgresql DB will be created in (hardcoded):
+    #         # "KITSU_DATABASE_INSTALL_DESTINATION" / "postgresql" / "14" / "main"
+    #         # Kitsu Previews folder will be created in (hardcoded):
+    #         # "KITSU_DATABASE_INSTALL_DESTINATION" / "previews"
+    #         #################################################################
+    #         #################################################################
+    #         # Inside Landscape:
+    #         "default": pathlib.Path(
+    #             _env["DOT_LANDSCAPES"],
+    #             landscape_id.get("LANDSCAPE", "default"),
+    #             "data",
+    #             "kitsu",
+    #         ).as_posix(),
+    #         #################################################################
+    #         # Prod DB:
+    #         "prod_db": pathlib.Path(
+    #             nfs["NFS_ENTRY_POINT"],
+    #             "services",
+    #             "kitsu",
+    #         ).as_posix(),
+    #         #################################################################
+    #         # Test DB:
+    #         "test_db": pathlib.Path(
+    #             nfs["NFS_ENTRY_POINT"],
+    #             "test_data",
+    #             "10.2",
+    #             "kitsu",
+    #         ).as_posix(),
+    #     }["default"],
+    #     f"KITSU_INIT_ZOU": pathlib.Path(
+    #         _env["DOT_LANDSCAPES"],
+    #         landscape_id.get("LANDSCAPE", "default"),
+    #         "configs",
+    #         "kitsu",
+    #         "init_zou.sh",
+    #     ).expanduser().as_posix(),
+    #     f"KITSU_TEMPLATE_DB_14": pathlib.Path(
+    #         _env["CONFIGS_ROOT"],
+    #         "kitsu",
+    #         "postgres",
+    #         "template_dbs",
+    #         "14",
+    #         "main"
+    #     ).expanduser().as_posix(),
+    # }
 
-    _env.update(_env_ayon)
-    _env.update(_env_dagster)
-    _env.update(_env_grafana)
-    _env.update(_env_kitsu)
+    # _env.update(_env_ayon)
+    # _env.update(_env_dagster)
+    # _env.update(_env_grafana)
+    # _env.update(_env_kitsu)
     _env.update(_env_filebrowser)
-    _env.update(_env_likec4)
+    # _env.update(_env_likec4)
     _env.update(_env_mongo_express)
 
     _env.update(secrets)

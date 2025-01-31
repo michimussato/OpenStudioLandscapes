@@ -14,6 +14,7 @@ from Deadline.open_studio_landscapes.utils import *
 
 from dagster import (
     AssetIn,
+    AssetKey,
     AssetExecutionContext,
     asset,
     Output,
@@ -61,11 +62,120 @@ zou upgrade_db
 """
 
 
+GROUP = "Kitsu"
+KEY = "Kitsu"
+
+asset_header = {
+    "group_name": GROUP,
+    "key_prefix": [KEY],
+    "compute_kind": "python"
+}
+
+
 @asset(
-    group_name="Kitsu",
-    compute_kind="python",
+    **asset_header,
+    ins={
+        "env_base": AssetIn(),
+    },
 )
-def apt_packages_build_kitsu(
+def env(
+        context: AssetExecutionContext,
+        env_base: dict,
+) -> dict:
+
+    # @formatter:off
+    _env = {
+        # Todo:
+        #  - [ ] These have no effect yet
+        # "KITSU_ADMIN_USER": "admin@example.com",
+        # "KITSU_ADMIN_PASSWORD": "mysecretpassword",
+        "KITSU_PORT_HOST": "4545",
+        "KITSU_PORT_CONTAINER": "80",
+        "KITSU_DATABASE_INSTALL_DESTINATION": {
+            #################################################################
+            # Kitsu Postgresql DB will be created in (hardcoded):
+            # "KITSU_DATABASE_INSTALL_DESTINATION" / "postgresql" / "14" / "main"
+            # Kitsu Previews folder will be created in (hardcoded):
+            # "KITSU_DATABASE_INSTALL_DESTINATION" / "previews"
+            #################################################################
+            #################################################################
+            # Inside Landscape:
+            "default": pathlib.Path(
+                env_base["DOT_LANDSCAPES"],
+                env_base.get("LANDSCAPE", "default"),
+                "data",
+                "kitsu",
+            ).as_posix(),
+            #################################################################
+            # Prod DB:
+            "prod_db": pathlib.Path(
+                env_base["NFS_ENTRY_POINT"],
+                "services",
+                "kitsu",
+            ).as_posix(),
+            #################################################################
+            # Test DB:
+            "test_db": pathlib.Path(
+                env_base["NFS_ENTRY_POINT"],
+                "test_data",
+                "10.2",
+                "kitsu",
+            ).as_posix(),
+        }["default"],
+        f"KITSU_INIT_ZOU": pathlib.Path(
+            env_base["DOT_LANDSCAPES"],
+            env_base.get("LANDSCAPE", "default"),
+            "configs",
+            "kitsu",
+            "init_zou.sh",
+        ).expanduser().as_posix(),
+        f"KITSU_TEMPLATE_DB_14": pathlib.Path(
+            env_base["CONFIGS_ROOT"],
+            "kitsu",
+            "postgres",
+            "template_dbs",
+            "14",
+            "main"
+        ).expanduser().as_posix(),
+    }
+    # @formatter:on
+
+    env_base.update(_env)
+
+    env_json = pathlib.Path(
+        env_base["DOT_LANDSCAPES"],
+        env_base.get("LANDSCAPE", "default"),
+        "third_party",
+        *context.asset_key.path,
+        f"{context.asset_key.path[-1]}.json",
+    )
+
+    env_json.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(env_json, "w") as fw:
+        json.dump(
+            obj=_env.copy(),
+            fp=fw,
+            indent=2,
+            ensure_ascii=True,
+            sort_keys=True,
+        )
+
+    yield Output(env_base)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            context.asset_key.path[-1]: MetadataValue.json(env_base),
+            "json": MetadataValue.path(env_json),
+        },
+    )
+
+
+@asset(
+    **asset_header,
+)
+def apt_packages_build(
         context: AssetExecutionContext,
 ) -> dict[str, list[str]]:
     """
@@ -89,36 +199,39 @@ def apt_packages_build_kitsu(
 
 
 @asset(
-    group_name="Kitsu",
-    compute_kind="python",
+    **asset_header,
     ins={
-        "env_base": AssetIn(),
-        "apt_packages_build_kitsu": AssetIn(),
+        "env": AssetIn(
+            key_prefix=[KEY],
+        ),
+        "apt_packages_build": AssetIn(
+            key_prefix=[KEY],
+        ),
     },
 )
-def build_kitsu(
+def build(
         context: AssetExecutionContext,
-        env_base: dict,
-        apt_packages_build_kitsu: dict[str, list[str]],
+        env: dict,
+        apt_packages_build: dict[str, list[str]],
 ) -> str:
     """
     """
 
     docker_file = pathlib.Path(
-        env_base["DOT_LANDSCAPES"],
-        env_base.get("LANDSCAPE", "default"),
+        env["DOT_LANDSCAPES"],
+        env.get("LANDSCAPE", "default"),
         "Dockerfiles",
-        context.asset_key.path[-1],
+        *context.asset_key.path,
         "Dockerfile",
     )
 
     tags = [
-        f"{env_base.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:latest",
-        f"{env_base.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:{env_base.get('LANDSCAPE', str(time.time()))}",
+        f"{env.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:latest",
+        f"{env.get('IMAGE_PREFIX')}/{context.asset_key.path[-1]}:{env.get('LANDSCAPE', str(time.time()))}",
     ]
 
     apt_install_str_base: str = get_apt_install_str(
-        apt_install_packages=apt_packages_build_kitsu["base"],
+        apt_install_packages=apt_packages_build["base"],
     )
 
     # @formatter:off
@@ -150,7 +263,7 @@ def build_kitsu(
         auto_generated=f"AUTO-GENERATED by Dagster Asset {context.asset_key.path[-1]}",
         dagster_url=urllib.parse.quote(f"http://localhost:3000/asset-groups/{context.asset_key.path[-1]}", safe=":/%"),
         image_name=context.asset_key.path[-1],
-        **env_base,
+        **env,
     )
     # @formatter:on
 
@@ -191,21 +304,22 @@ def build_kitsu(
             "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
             **cmds_docker,
             "build_logs": MetadataValue.md(f"```shell\n{log}\n```"),
-            "env_base": MetadataValue.json(env_base),
+            "env": MetadataValue.json(env),
         },
     )
 
 
 @asset(
-    group_name="Kitsu",
-    compute_kind="python",
+    **asset_header,
     ins={
-        "env_base": AssetIn(),
+        "env": AssetIn(
+            key_prefix=[KEY],
+        ),
     },
 )
-def script_prepare_db_kitsu(
+def script_prepare_db(
         context: AssetExecutionContext,
-        env_base: dict,
+        env: dict,
 ) -> dict[str, str]:
 
     ret = dict()
@@ -214,7 +328,7 @@ def script_prepare_db_kitsu(
     ret["script"] = str()
 
     kitsu_db_dir_host = pathlib.Path(
-        env_base.get("KITSU_DATABASE_INSTALL_DESTINATION"),
+        env.get("KITSU_DATABASE_INSTALL_DESTINATION"),
         "postgresql",
         "14",
         "main",
@@ -231,36 +345,8 @@ def script_prepare_db_kitsu(
     kitsu_postgres_gid: int = 105
     kitsu_postgres_chmod: int = [700, 750][1]
 
-    #Todo:
-    # Fix: sudo -S chmod 0750 /home/michael/git/repos/studio-landscapes/.landscapes/2025-01-27_00-21-19__281d46fa551d4f5d884a5e642be47a5d/data/kitsu/postgresql/14/main
-    # Running Zou...
-    # 2025-01-26T23:00:08.885729829Z 2025-01-26 23:00:08,885 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
-    # 2025-01-26T23:00:08.887691859Z Unlinking stale socket /tmp/supervisor.sock
-    # 2025-01-26T23:00:09.191771369Z 2025-01-26 23:00:09,191 INFO RPC interface 'supervisor' initialized
-    # 2025-01-26T23:00:09.191912931Z 2025-01-26 23:00:09,191 CRIT Server 'unix_http_server' running without any HTTP authentication checking
-    # 2025-01-26T23:00:09.192632429Z 2025-01-26 23:00:09,192 INFO supervisord started with pid 10
-    # 2025-01-26T23:00:10.197072617Z 2025-01-26 23:00:10,196 INFO spawned: 'gunicorn' with pid 11
-    # 2025-01-26T23:00:10.200468148Z 2025-01-26 23:00:10,199 INFO spawned: 'gunicorn-events' with pid 12
-    # 2025-01-26T23:00:10.210042704Z 2025-01-26 23:00:10,209 INFO spawned: 'postgresql' with pid 13
-    # 2025-01-26T23:00:10.212273431Z 2025-01-26 23:00:10,212 INFO spawned: 'redis' with pid 14
-    # 2025-01-26T23:00:10.214396772Z 2025-01-26 23:00:10,214 INFO spawned: 'sendria' with pid 15
-    # 2025-01-26T23:00:10.215980640Z 2025-01-26 23:00:10,215 INFO spawned: 'nginx' with pid 16
-    # 2025-01-26T23:00:10.226493696Z 2025-01-26 23:00:10,226 INFO exited: postgresql (exit status 1; not expected)
-    # 2025-01-26T23:00:11.692682848Z 2025-01-26 23:00:11,692 INFO success: gunicorn entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
-    # 2025-01-26T23:00:11.692712521Z 2025-01-26 23:00:11,692 INFO success: gunicorn-events entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
-    # 2025-01-26T23:00:11.694479502Z 2025-01-26 23:00:11,694 INFO spawned: 'postgresql' with pid 39
-    # 2025-01-26T23:00:11.694734237Z 2025-01-26 23:00:11,694 INFO success: redis entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
-    # 2025-01-26T23:00:11.694744372Z 2025-01-26 23:00:11,694 INFO success: sendria entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
-    # 2025-01-26T23:00:11.694746903Z 2025-01-26 23:00:11,694 INFO success: nginx entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
-    # 2025-01-26T23:00:11.706522457Z 2025-01-26 23:00:11,706 INFO exited: postgresql (exit status 1; not expected)
-    # 2025-01-26T23:00:13.710232348Z 2025-01-26 23:00:13,710 INFO spawned: 'postgresql' with pid 68
-    # 2025-01-26T23:00:13.719576401Z 2025-01-26 23:00:13,719 INFO exited: postgresql (exit status 1; not expected)
-    # 2025-01-26T23:00:16.724819127Z 2025-01-26 23:00:16,724 INFO spawned: 'postgresql' with pid 69
-    # 2025-01-26T23:00:16.740382063Z 2025-01-26 23:00:16,740 INFO exited: postgresql (exit status 1; not expected)
-    # 2025-01-26T23:00:17.741613518Z 2025-01-26 23:00:17,741 INFO gave up: postgresql entered FATAL state, too many start retries too quickly
-
     """
-    Referende Script:
+    Reference Script:
         
     #!/bin/bash
     
@@ -288,17 +374,17 @@ def script_prepare_db_kitsu(
     # ret["script"] += "echo $SSH_PASS;\n"
     # ret["script"] += "echo $SSH_PASS;\n"
     # ret["script"] += "\n"
-    # ret["script"] += f"{shutil.which('sshpass')} -eSSH_PASS ssh -tt -oStrictHostKeyChecking=no {env_base['SSH_USER']}@{env_base['SSH_HOST']} << 'EOF'\n"
-    # ret["script"] += f"{shutil.which('sshpass')} -eSSH_PASS ssh -tt -oStrictHostKeyChecking=no {env_base['SSH_USER']}@{env_base['SSH_HOST']} << EOF\n"
+    # ret["script"] += f"{shutil.which('sshpass')} -eSSH_PASS ssh -tt -oStrictHostKeyChecking=no {env['SSH_USER']}@{env['SSH_HOST']} << 'EOF'\n"
+    # ret["script"] += f"{shutil.which('sshpass')} -eSSH_PASS ssh -tt -oStrictHostKeyChecking=no {env['SSH_USER']}@{env['SSH_HOST']} << EOF\n"
     ret["script"] += f"echo $SUDO_PASS | sudo -S -k /usr/bin/chown -R {kitsu_postgres_uid}:{kitsu_postgres_gid} {kitsu_db_dir_host.as_posix()};\n"
     ret["script"] += f"echo $SUDO_PASS | sudo -S -k /usr/bin/chmod {str(kitsu_postgres_chmod).zfill(4)} {kitsu_db_dir_host.as_posix()};\n"
     # ret["script"] += f"sudo -S chmod {str(kitsu_postgres_chmod).zfill(4)} {kitsu_db_dir_host.as_posix()} && \\\n"
     # ret["script"] += "exit 0;\n"
     # ret["script"] += "EOF\n"
 
-    # ret["script"] += f"{shutil.which('sshpass')} -eSSH_PASS ssh -tt -oStrictHostKeyChecking=no {env_base['SSH_USER']}@{env_base['SSH_HOST']} \"echo $SSH_PASS | sudo -S chown -R {kitsu_postgres_uid}:{kitsu_postgres_gid} {kitsu_db_dir_host.as_posix()} && exit 0;\";\n"
-    # # ret["script"] += f"{shutil.which('sshpass')} -eSSH_PASS ssh -tt -oStrictHostKeyChecking=no {env_base['SSH_USER']}@{env_base['SSH_HOST']} \"echo $SSH_PASS | sudo -S touch {kitsu_db_dir_host.as_posix()}/hello &>/dev/null && echo $? || echo 1;\";\n"
-    # ret["script"] += f"{shutil.which('sshpass')} -eSSH_PASS ssh -tt -oStrictHostKeyChecking=no {env_base['SSH_USER']}@{env_base['SSH_HOST']} \"echo $SSH_PASS | sudo -S chmod {str(kitsu_postgres_chmod).zfill(4)} {kitsu_db_dir_host.as_posix()} &>/dev/null && echo $? || echo 1; exit;;\";\n"
+    # ret["script"] += f"{shutil.which('sshpass')} -eSSH_PASS ssh -tt -oStrictHostKeyChecking=no {env['SSH_USER']}@{env['SSH_HOST']} \"echo $SSH_PASS | sudo -S chown -R {kitsu_postgres_uid}:{kitsu_postgres_gid} {kitsu_db_dir_host.as_posix()} && exit 0;\";\n"
+    # # ret["script"] += f"{shutil.which('sshpass')} -eSSH_PASS ssh -tt -oStrictHostKeyChecking=no {env['SSH_USER']}@{env['SSH_HOST']} \"echo $SSH_PASS | sudo -S touch {kitsu_db_dir_host.as_posix()}/hello &>/dev/null && echo $? || echo 1;\";\n"
+    # ret["script"] += f"{shutil.which('sshpass')} -eSSH_PASS ssh -tt -oStrictHostKeyChecking=no {env['SSH_USER']}@{env['SSH_HOST']} \"echo $SSH_PASS | sudo -S chmod {str(kitsu_postgres_chmod).zfill(4)} {kitsu_db_dir_host.as_posix()} &>/dev/null && echo $? || echo 1; exit;;\";\n"
     ret["script"] += "\n"
     # ret["script"] += "echo $SSH_PASS;\n"
     ret["script"] += "echo Success;\n"
@@ -312,23 +398,26 @@ def script_prepare_db_kitsu(
         metadata={
             context.asset_key.path[-1]: MetadataValue.json(ret),
             "script_prepare_db": MetadataValue.md(f"```shell\n{ret['script']}\n```"),
-            "env_base": MetadataValue.json(env_base),
+            "env": MetadataValue.json(env),
         },
     )
 
 
 @asset(
-    group_name="Kitsu",
-    compute_kind="python",
+    **asset_header,
     ins={
-        "env_base": AssetIn(),
-        "script_prepare_db_kitsu": AssetIn(),
+        "env": AssetIn(
+            key_prefix=[KEY],
+        ),
+        "script_prepare_db": AssetIn(
+            key_prefix=[KEY],
+        ),
     },
 )
-def prepare_db_kitsu(
+def prepare_db(
         context: AssetExecutionContext,
-        env_base: dict,
-        script_prepare_db_kitsu: dict[str, str],
+        env: dict,
+        script_prepare_db: dict[str, str],
 ):
 
     stdout_stderr = {
@@ -338,10 +427,10 @@ def prepare_db_kitsu(
 
     if not KITSUDB_INSIDE_CONTAINER:
 
-        kitsu_db_dir_host = pathlib.Path(env_base.get("KITSU_DATABASE_INSTALL_DESTINATION")) / "postgresql" / "14" / "main"
+        kitsu_db_dir_host = pathlib.Path(env.get("KITSU_DATABASE_INSTALL_DESTINATION")) / "postgresql" / "14" / "main"
         kitsu_db_dir_host.mkdir(parents=True, exist_ok=True)
 
-        kitsu_db_template = env_base.get("KITSU_TEMPLATE_DB_14")
+        kitsu_db_template = env.get("KITSU_TEMPLATE_DB_14")
 
         try:
             empty = not any(kitsu_db_dir_host.iterdir())
@@ -359,22 +448,22 @@ def prepare_db_kitsu(
                 dirs_exist_ok=True,
             )
 
-        if bool(script_prepare_db_kitsu["script"]):
+        if bool(script_prepare_db["script"]):
 
             context.log.info(f"Setting ownership of {kitsu_db_dir_host.as_posix()}...")
 
             proc = subprocess.Popen(
-                script_prepare_db_kitsu["exe"],
+                script_prepare_db["exe"],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 stdin=subprocess.PIPE,
                 env={
-                    "SUDO_PASS": env_base['SUDO_PASS'],
+                    "SUDO_PASS": env['SUDO_PASS'],
                 }
             )
 
             stdout, stderr = proc.communicate(
-                input=script_prepare_db_kitsu["script"].encode(),
+                input=script_prepare_db["script"].encode(),
             )
 
             stdout_stderr = {
@@ -389,21 +478,22 @@ def prepare_db_kitsu(
         asset_key=context.asset_key,
         metadata={
             **stdout_stderr,
-            "env_base": MetadataValue.json(env_base),
+            "env": MetadataValue.json(env),
         },
     )
 
 
 @asset(
-    group_name="Kitsu",
-    compute_kind="python",
+    **asset_header,
     ins={
-        "env_base": AssetIn(),
+        "env": AssetIn(
+            key_prefix=[KEY],
+        ),
     },
 )
 def script_init_zou(
         context: AssetExecutionContext,
-        env_base: dict,
+        env: dict,
 ) -> dict[str, str]:
     """This script overrides the default
     Kitsu `/opt/zou/init_zou.sh` to be able
@@ -419,8 +509,8 @@ def script_init_zou(
 
     # Source:
     # /opt/zou/init_zou.sh
-    kitsu_admin_user = env_base.get("KITSU_ADMIN_USER", "admin@example.com")
-    kitsu_admin_password = env_base.get("KITSU_ADMIN_PASSWORD", "mysecretpassword")
+    kitsu_admin_user = env.get("KITSU_ADMIN_USER", "admin@example.com")
+    kitsu_admin_password = env.get("KITSU_ADMIN_PASSWORD", "mysecretpassword")
 
     ret["script"] += "#!/bin/bash\n"
     ret["script"] += "export LC_ALL=C.UTF-8\n"
@@ -449,35 +539,40 @@ def script_init_zou(
         metadata={
             context.asset_key.path[-1]: MetadataValue.json(ret),
             "script_init_zou": MetadataValue.md(f"```shell\n{ret['script']}\n```"),
-            "env_base": MetadataValue.json(env_base),
+            "env": MetadataValue.json(env),
         },
     )
 
 
 @asset(
-    group_name="Kitsu",
-    compute_kind="python",
+    **asset_header,
     ins={
-        "env_base": AssetIn(),
-        "script_init_zou": AssetIn(),
-        "build_kitsu": AssetIn(),
+        "env": AssetIn(
+            key_prefix=[KEY],
+        ),
+        "script_init_zou": AssetIn(
+            key_prefix=[KEY],
+        ),
+        "build": AssetIn(
+            key_prefix=[KEY],
+        ),
     },
     deps=[
-        "prepare_db_kitsu",
+        AssetKey([KEY, "prepare_db"]),
     ],
 )
-def compose_kitsu(
+def compose(
         context: AssetExecutionContext,
-        env_base: dict,
+        env: dict,
         script_init_zou: dict,
-        build_kitsu: str,
+        build: str,
 ) -> dict:
     """
     """
 
     # INIT_ZOU.SH
     script_init_zou_path = pathlib.Path(
-        env_base.get('KITSU_INIT_ZOU'),
+        env.get('KITSU_INIT_ZOU'),
     )
 
     script_init_zou_path.parent.mkdir(parents=True, exist_ok=True)
@@ -490,7 +585,7 @@ def compose_kitsu(
 
     # # INIT_AND_START_ZOU.SH
     # script_init_and_start_zou = pathlib.Path(
-    #     env_base.get('KITSU_INIT_AND_START_ZOU'),
+    #     env.get('KITSU_INIT_AND_START_ZOU'),
     # )
     #
     # script_init_and_start_zou.parent.mkdir(parents=True, exist_ok=True)
@@ -525,27 +620,27 @@ def compose_kitsu(
         "--rm",
         "--interactive",
         "--tty",
-        build_kitsu,
+        build,
         "/bin/bash",
     ]
 
     volumes = [
-        f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT')}",
-        f"{env_base.get('NFS_ENTRY_POINT')}:{env_base.get('NFS_ENTRY_POINT_LNS')}",
-        # f"{env_base.get('KITSU_INIT_AND_START_ZOU')}:/opt/zou/init_and_start_zou.sh",
-        f"{env_base.get('KITSU_INIT_ZOU')}:/opt/zou/init_zou.sh",
+        f"{env.get('NFS_ENTRY_POINT')}:{env.get('NFS_ENTRY_POINT')}",
+        f"{env.get('NFS_ENTRY_POINT')}:{env.get('NFS_ENTRY_POINT_LNS')}",
+        # f"{env.get('KITSU_INIT_AND_START_ZOU')}:/opt/zou/init_and_start_zou.sh",
+        f"{env.get('KITSU_INIT_ZOU')}:/opt/zou/init_zou.sh",
     ]
 
     if not KITSUDB_INSIDE_CONTAINER:
 
-        kitsu_db_dir_host = pathlib.Path(env_base.get("KITSU_DATABASE_INSTALL_DESTINATION")) / "postgresql" / "14" / "main"
+        kitsu_db_dir_host = pathlib.Path(env.get("KITSU_DATABASE_INSTALL_DESTINATION")) / "postgresql" / "14" / "main"
 
         volumes.insert(
             0,
             f"{kitsu_db_dir_host.as_posix()}:/var/lib/postgresql/14/main",
         )
 
-        kitsu_previews_host = pathlib.Path(env_base.get("KITSU_DATABASE_INSTALL_DESTINATION")) / "previews"
+        kitsu_previews_host = pathlib.Path(env.get("KITSU_DATABASE_INSTALL_DESTINATION")) / "previews"
         kitsu_previews_host.mkdir(parents=True, exist_ok=True)
 
         volumes.insert(
@@ -558,15 +653,15 @@ def compose_kitsu(
             "kitsu": {
                 "container_name": "kitsu",
                 "hostname": "kitsu",
-                "domainname": env_base.get("ROOT_DOMAIN"),
+                "domainname": env.get("ROOT_DOMAIN"),
                 "restart": "always",
-                "image": build_kitsu,
+                "image": build,
                 "volumes": volumes,
                 # "healthcheck": {
                 #     # Todo:
                 #     #  - [ ] fix: test succeeds even if Postgres is down
                 #     #  "test": ["CMD-SHELL", "psql -U ${DB_USER} -d ${DB_MAIN} -c 'SELECT 1' || exit 1"],
-                #     "test": ["CMD", "curl", "-f", f"http://localhost:{env_base.get('KITSU_PORT_CONTAINER')}"],
+                #     "test": ["CMD", "curl", "-f", f"http://localhost:{env.get('KITSU_PORT_CONTAINER')}"],
                 #     "interval": "10s",
                 #     "timeout": "2s",
                 #     "retries": "3",
@@ -576,7 +671,7 @@ def compose_kitsu(
                     "/opt/zou/start_zou.sh",
                 ],
                 "ports": [
-                    f"{env_base.get('KITSU_PORT_HOST')}:{env_base.get('KITSU_PORT_CONTAINER')}",
+                    f"{env.get('KITSU_PORT_HOST')}:{env.get('KITSU_PORT_CONTAINER')}",
                 ],
             },
         },
@@ -593,6 +688,6 @@ def compose_kitsu(
             "docker_dict": MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
             "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
             "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)),
-            "env_base": MetadataValue.json(env_base),
+            "env": MetadataValue.json(env),
         },
     )
