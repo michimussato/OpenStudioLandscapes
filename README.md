@@ -487,7 +487,7 @@ appropriate ownership:
 sudo chown -R 101:65534 /path/to/DeadlineDatabase10
 ```
 
-And in `OpenStudioLandscapes.open_studio_landscapes.Deadline.10_2.assets.env` set
+And in `OpenStudioLandscapes.open_studio_landscapes.Deadline.v10_2.assets.env` set
 
 ```python![img.png](img.png)
 f"DATABASE_INSTALL_DESTINATION_{KEY}": {
