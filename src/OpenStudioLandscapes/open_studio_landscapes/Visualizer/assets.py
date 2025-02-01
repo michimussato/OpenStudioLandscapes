@@ -31,28 +31,28 @@ asset_header = {
 @asset(
     **asset_header,
     ins={
-        "compose": AssetIn(
-            AssetKey([KEY_DEADLINE_V10_2, "compose_10_2"]),
+        "compose_10_2": AssetIn(
+            AssetKey([KEY_DEADLINE_V10_2, "compose"]),
         ),
     },
 )
 def viz_compose_10_2(
         context: AssetExecutionContext,
-        compose: pathlib.Path,
+        compose_10_2: pathlib.Path,
 ) -> pydot.Dot:
     """
     """
 
     dcg = DockerComposeGraph()
     trees = dcg.parse_docker_compose(
-        pathlib.Path(compose)
+        pathlib.Path(compose_10_2)
     )
 
     context.log.info(trees)
 
     dcg.iterate_trees(trees)
 
-    docker_compose_dir = compose.parent / '__'.join(context.asset_key.path)
+    docker_compose_dir = compose_10_2.parent / '__'.join(context.asset_key.path)
 
     docker_compose_dir.mkdir(parents=True, exist_ok=True)
 
@@ -90,28 +90,28 @@ def viz_compose_10_2(
 @asset(
     **asset_header,
     ins={
-        "compose_repository": AssetIn(
-            AssetKey([KEY_DEADLINE_V10_2, "compose_repository_10_2"]),
+        "compose_repository_10_2": AssetIn(
+            AssetKey([KEY_DEADLINE_V10_2, "compose_repository"]),
         ),
     },
 )
 def viz_compose_repository_10_2(
         context: AssetExecutionContext,
-        compose_repository: pathlib.Path,
+        compose_repository_10_2: pathlib.Path,
 ) -> pydot.Dot:
     """
     """
 
     dcg = DockerComposeGraph()
     trees = dcg.parse_docker_compose(
-        pathlib.Path(compose_repository)
+        pathlib.Path(compose_repository_10_2)
     )
 
     context.log.info(trees)
 
     dcg.iterate_trees(trees)
 
-    docker_compose_dir = compose_repository.parent / '__'.join(context.asset_key.path)
+    docker_compose_dir = compose_repository_10_2.parent / '__'.join(context.asset_key.path)
 
     docker_compose_dir.mkdir(parents=True, exist_ok=True)
 
