@@ -489,7 +489,7 @@ sudo chown -R 101:65534 /path/to/DeadlineDatabase10
 
 And in `OpenStudioLandscapes.open_studio_landscapes.Deadline.10_2.assets.env` set
 
-```python
+```python![img.png](img.png)
 f"DATABASE_INSTALL_DESTINATION_{KEY}": {
     "default": [...],                     # <-- Set key-value pairs as desired
     "test_db_10_2": pathlib.Path(
