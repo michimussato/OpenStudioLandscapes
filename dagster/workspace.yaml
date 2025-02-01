@@ -4,6 +4,6 @@ load_from:
 #      location_name: "My Skeleton Package Location"
   - python_module:
       working_directory: src
-      module_name: Deadline.open_studio_landscapes.definitions
-      location_name: "Deadline.open_studio_landscapes"
+      module_name: OpenStudioLandscapes.open_studio_landscapes.definitions
+      location_name: "OpenStudioLandscapes.open_studio_landscapes"
       # executable_path: ../.venv/bin/python

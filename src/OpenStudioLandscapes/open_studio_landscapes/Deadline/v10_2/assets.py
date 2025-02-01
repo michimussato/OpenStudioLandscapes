@@ -14,8 +14,8 @@ from functools import reduce
 from python_on_whales import docker
 from docker_graph.utils import *
 
-from Deadline.open_studio_landscapes.constants import *
-from Deadline.open_studio_landscapes.utils import *
+from OpenStudioLandscapes.open_studio_landscapes.constants import *
+from OpenStudioLandscapes.open_studio_landscapes.utils import *
 
 from dagster import (
     AssetExecutionContext,
@@ -52,7 +52,7 @@ asset_header = {
             AssetKey(["Base", "env"])),
     },
 )
-def env_10_2(
+def env(
         context: AssetExecutionContext,
         env: dict,
 ) -> dict:
@@ -202,7 +202,7 @@ def env_10_2(
     group_name="Settings_10_2",
     ins={
         "env_10_2": AssetIn(
-            AssetKey([KEY, "env_10_2"]),
+            AssetKey([KEY, "env"]),
         ),
     },
 )
@@ -261,7 +261,7 @@ def connection_ini_10_2(
     group_name="Settings_10_2",
     ins={
         "env_10_2": AssetIn(
-            AssetKey([KEY, "env_10_2"]),
+            AssetKey([KEY, "env"]),
         ),
     },
 )
@@ -275,7 +275,7 @@ def deadline_ini_10_2(
     # {dagster_url}
     # Full Documentation
     # https://docs.thinkboxsoftware.com/products/deadline/10.2/1_User%20Manual/manual/client-config.html#client-config-conn-server-ref-label
-    [Deadline]
+    [OpenStudioLandscapes]
     # # For Remote
     # ConnectionType=Remote
     # ProxyRoot=rcs-runner-10-2:8888
@@ -360,7 +360,7 @@ def pip_packages(
 
     _pip_packages: list = [
         # Todo:
-        #  - [ ] (LOW) Deadline SSL authentication
+        #  - [ ] (LOW) OpenStudioLandscapes SSL authentication
         # "git+https://github.com/michimussato/SSLGeneration.git@packaging",
     ]
 
@@ -406,7 +406,7 @@ if BUILD_FROM_GOOGLE_DRIVE_10_2:
         group_name="Build_Images_10_2",
         ins={
             "env_10_2": AssetIn(
-                AssetKey([KEY, "env_10_2"]),
+                AssetKey([KEY, "env"]),
             ),
             "build_base_image": AssetIn(
                 AssetKey(["Base", "build_base_image"]),
@@ -536,7 +536,7 @@ else:
         group_name="Build_Images_10_2",
         ins={
             "env_10_2": AssetIn(
-                AssetKey([KEY, "env_10_2"]),
+                AssetKey([KEY, "env"]),
             ),
             "build_base_image": AssetIn(
                 AssetKey(["Base", "build_base_image"]),
@@ -681,10 +681,10 @@ else:
     group_name="Repository_Installer_10_2",
     ins={
         "env_10_2": AssetIn(
-            AssetKey([KEY, "env_10_2"]),
+            AssetKey([KEY, "env"]),
         ),
     },
-    description="This executes the Deadline Repository Installer. "
+    description="This executes the OpenStudioLandscapes Repository Installer. "
                 "Needs to be done only once."
 )
 def deadline_command_install_repository_10_2(
@@ -727,7 +727,7 @@ def deadline_command_install_repository_10_2(
     group_name="Repository_Installer_10_2",
     ins={
         "env_10_2": AssetIn(
-            AssetKey([KEY, "env_10_2"]),
+            AssetKey([KEY, "env"]),
         ),
         "build_base_image_10_2": AssetIn(
             AssetKey([KEY, "build_base_image_10_2"]),
@@ -824,7 +824,7 @@ def build_repository_image_10_2(
     group_name="Repository_Installer_10_2",
     ins={
         "env_10_2": AssetIn(
-            AssetKey([KEY, "env_10_2"]),
+            AssetKey([KEY, "env"]),
         ),
         "compose_networks_10_2": AssetIn(
             AssetKey([KEY, "compose_networks_10_2"]),
@@ -839,7 +839,7 @@ def build_repository_image_10_2(
             AssetKey([KEY, "deadline_command_install_repository_10_2"]),
         ),
     },
-    description="This executes the Deadline Repository Installer. "
+    description="This executes the OpenStudioLandscapes Repository Installer. "
                 "Needs to be done only once."
 )
 def compose_repository_10_2(
@@ -944,7 +944,7 @@ def compose_repository_10_2(
     group_name="Build_Images_10_2",
     ins={
         "env_10_2": AssetIn(
-            AssetKey([KEY, "env_10_2"]),
+            AssetKey([KEY, "env"]),
         ),
     },
     description=""
@@ -992,7 +992,7 @@ def deadline_command_build_client_image_10_2(
     group_name="Build_Images_10_2",
     ins={
         "env_10_2": AssetIn(
-            AssetKey([KEY, "env_10_2"]),
+            AssetKey([KEY, "env"]),
         ),
         "build_base_image_10_2": AssetIn(
             AssetKey([KEY, "build_base_image_10_2"]),
@@ -1131,7 +1131,7 @@ def compose_include_10_2(
     group_name="Docker_Compose_10_2",
     ins={
         "env_10_2": AssetIn(
-            AssetKey([KEY, "env_10_2"]),
+            AssetKey([KEY, "env"]),
         ),
     },
 )
@@ -1173,7 +1173,7 @@ def compose_networks_10_2(
     group_name="Docker_Compose_10_2",
     ins={
         "env_10_2": AssetIn(
-            AssetKey([KEY, "env_10_2"]),
+            AssetKey([KEY, "env"]),
         ),
     },
 )
@@ -1241,7 +1241,7 @@ def compose_mongo_express_10_2(
     group_name="Docker_Compose_10_2",
     ins={
         "env_10_2": AssetIn(
-            AssetKey([KEY, "env_10_2"]),
+            AssetKey([KEY, "env"]),
         ),
     },
 )
@@ -1298,7 +1298,7 @@ def compose_filebrowser_10_2(
     group_name="Docker_Compose_10_2",
     ins={
         "env_10_2": AssetIn(
-            AssetKey([KEY, "env_10_2"]),
+            AssetKey([KEY, "env"]),
         ),
     },
 )
@@ -1350,7 +1350,7 @@ def script_chown_mongodb_10_2(
     group_name="Docker_Compose_10_2",
     ins={
         "env_10_2": AssetIn(
-            AssetKey([KEY, "env_10_2"]),
+            AssetKey([KEY, "env"]),
         ),
         "script_chown_mongodb_10_2": AssetIn(
             AssetKey([KEY, "script_chown_mongodb_10_2"]),
@@ -1479,10 +1479,10 @@ def compose_mongodb_10_2(
     group_name="Docker_Compose_10_2",
     ins={
         "env_10_2": AssetIn(
-            AssetKey([KEY, "env_10_2"]),
+            AssetKey([KEY, "env"]),
         ),
     },
-    description="This executes the Deadline Repository Installer. "
+    description="This executes the OpenStudioLandscapes Repository Installer. "
                 "Needs to be done only once."
 )
 def deadline_command_compose_rcs_runner_10_2(
@@ -1513,7 +1513,7 @@ def deadline_command_compose_rcs_runner_10_2(
     group_name="Docker_Compose_10_2",
     ins={
         "env_10_2": AssetIn(
-            AssetKey([KEY, "env_10_2"]),
+            AssetKey([KEY, "env"]),
         ),
         "build_client_image_10_2": AssetIn(
             AssetKey([KEY, "build_client_image_10_2"]),
@@ -1570,7 +1570,7 @@ def compose_rcs_runner_10_2(
                 "ports": [
                     f"{env_10_2.get('RCS_HTTP_PORT_HOST')}:{env_10_2.get('RCS_HTTP_PORT_CONTAINER')}",
                     #Todo:
-                    # - [ ] Expose Deadline standard Ports (https://docs.thinkboxsoftware.com/products/deadline/10.2/1_User%20Manual/manual/considerations.html#firewall-anti-virus-security-considerations)
+                    # - [ ] Expose OpenStudioLandscapes standard Ports (https://docs.thinkboxsoftware.com/products/deadline/10.2/1_User%20Manual/manual/considerations.html#firewall-anti-virus-security-considerations)
                 ],
             },
         },
@@ -1596,10 +1596,10 @@ def compose_rcs_runner_10_2(
     group_name="Docker_Compose_10_2",
     ins={
         "env_10_2": AssetIn(
-            AssetKey([KEY, "env_10_2"]),
+            AssetKey([KEY, "env"]),
         ),
     },
-    description="This executes the Deadline Repository Installer. "
+    description="This executes the OpenStudioLandscapes Repository Installer. "
                 "Needs to be done only once."
 )
 def deadline_command_compose_pulse_runner_10_2(
@@ -1632,7 +1632,7 @@ def deadline_command_compose_pulse_runner_10_2(
     group_name="Docker_Compose_10_2",
     ins={
         "env_10_2": AssetIn(
-            AssetKey([KEY, "env_10_2"]),
+            AssetKey([KEY, "env"]),
         ),
         "build_client_image_10_2": AssetIn(
             AssetKey([KEY, "build_client_image_10_2"]),
@@ -1709,10 +1709,10 @@ def compose_pulse_runner_10_2(
     group_name="Docker_Compose_10_2",
     ins={
         "env_10_2": AssetIn(
-            AssetKey([KEY, "env_10_2"]),
+            AssetKey([KEY, "env"]),
         ),
     },
-    description="This executes the Deadline Repository Installer. "
+    description="This executes the OpenStudioLandscapes Repository Installer. "
                 "Needs to be done only once."
 )
 def deadline_command_compose_worker_runner_10_2(
@@ -1745,7 +1745,7 @@ def deadline_command_compose_worker_runner_10_2(
     group_name="Docker_Compose_10_2",
     ins={
         "env_10_2": AssetIn(
-            AssetKey([KEY, "env_10_2"]),
+            AssetKey([KEY, "env"]),
         ),
         "build_client_image_10_2": AssetIn(
             AssetKey([KEY, "build_client_image_10_2"]),
@@ -1822,10 +1822,10 @@ def compose_worker_runner_10_2(
     group_name="Docker_Compose_10_2",
     ins={
         "env_10_2": AssetIn(
-            AssetKey([KEY, "env_10_2"]),
+            AssetKey([KEY, "env"]),
         ),
     },
-    description="This executes the Deadline Repository Installer. "
+    description="This executes the OpenStudioLandscapes Repository Installer. "
                 "Needs to be done only once."
 )
 def deadline_command_compose_webservice_runner_10_2(
@@ -1856,7 +1856,7 @@ def deadline_command_compose_webservice_runner_10_2(
     group_name="Docker_Compose_10_2",
     ins={
         "env_10_2": AssetIn(
-            AssetKey([KEY, "env_10_2"]),
+            AssetKey([KEY, "env"]),
         ),
         "build_client_image_10_2": AssetIn(
             AssetKey([KEY, "build_client_image_10_2"]),
@@ -1942,7 +1942,7 @@ def compose_webservice_runner_10_2(
     group_name="Docker_Compose_10_2",
     ins={
         "env_10_2": AssetIn(
-            AssetKey([KEY, "env_10_2"]),
+            AssetKey([KEY, "env"]),
         ),
         "compose_webservice_runner_10_2": AssetIn(
             AssetKey([KEY, "compose_webservice_runner_10_2"]),

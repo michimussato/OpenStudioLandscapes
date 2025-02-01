@@ -9,8 +9,8 @@ import textwrap
 import pathlib
 import time
 
-from Deadline.open_studio_landscapes.constants import *
-from Deadline.open_studio_landscapes.utils import *
+from OpenStudioLandscapes.open_studio_landscapes.constants import *
+from OpenStudioLandscapes.open_studio_landscapes.utils import *
 
 from python_on_whales import docker
 
@@ -252,7 +252,7 @@ def env(
         # "INSTALLERS_ROOT": "/data/share/nfs/installers",
 
         # "MONGO_DB_DIR_HOST": pathlib.Path("~/git/repos/studio-landscapes/tests/fixtures/10.2/DeadlineDatabase10/mongo/data").expanduser().as_posix(),
-        # "MONGO_DB_DIR_HOST": pathlib.Path("~/git/repos/studio-landscapes/tests/fixtures/10_2/DeadlineDatabase10").expanduser().as_posix(),
+        # "MONGO_DB_DIR_HOST": pathlib.Path("~/git/repos/studio-landscapes/tests/fixtures/v10_2/DeadlineDatabase10").expanduser().as_posix(),
 
         # # TODO
         # # DEADLINE_CLIENT_DIR: "/opt/Thinkbox/Deadline10"
@@ -350,6 +350,7 @@ def pip_packages(
         # "open-studio-landscapes[dev] @ git+https://github.com/michimussato/open-studio-landscapes.git@main",
         "dagster-shared[dev] @ git+https://github.com/michimussato/dagster-shared.git@main",
         "deadline-dagster[dev] @ git+https://github.com/michimussato/deadline-dagster.git@main",
+        "docker-compose-graph[dev] @ git+https://github.com/michimussato/docker-compose-graph.git@main",
     ]
 
     yield Output(_pip_packages)

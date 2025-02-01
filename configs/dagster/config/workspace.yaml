@@ -4,11 +4,11 @@ load_from:
 #      location_name: "My Skeleton Package Location"
 # Todo:
 #  - [ ] dynamic workspace.yaml to be able to add dagster-shared dynamically (https://github.com/michimussato/dagster-shared)
-#  - [ ] Shouldn't this be Deadline.open_studio_landscapes also?
+#  - [ ] Shouldn't this be OpenStudioLandscapes.open_studio_landscapes also?
   - python_module:
       # https://github.com/michimussato/deadline-dagster
       working_directory: src
-      module_name: Deadline.deadline_dagster.definitions
+      module_name: OpenStudioLandscapes.deadline_dagster.definitions
       location_name: "deadline_dagster Package Location"
       # executable_path: ../.venv/bin/python
   - python_module:
@@ -16,6 +16,6 @@ load_from:
       #  - [ ] will only work after making studio-landscapes public
       # https://github.com/michimussato/deadline-dagster
       working_directory: src
-      module_name: Deadline.open_studio_landscapes.definitions
-      location_name: "Deadline.open_studio_landscapes Package Location"
+      module_name: OpenStudioLandscapes.open_studio_landscapes.definitions
+      location_name: "OpenStudioLandscapes.open_studio_landscapes Package Location"
       # executable_path: ../.venv/bin/python

@@ -3,7 +3,7 @@ import yaml
 import shutil
 import json
 
-from Deadline.open_studio_landscapes.utils import *
+from OpenStudioLandscapes.open_studio_landscapes.utils import *
 
 from docker_graph.yaml_tags.overrides import *
 
@@ -17,7 +17,7 @@ from dagster import (
     MetadataValue
 )
 
-from Deadline.open_studio_landscapes.assets import KEY as KEY_BASE
+from OpenStudioLandscapes.open_studio_landscapes.assets import KEY as KEY_BASE
 
 
 GROUP = "Ayon"

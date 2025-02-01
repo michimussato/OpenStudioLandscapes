@@ -9,8 +9,8 @@ import subprocess
 
 from python_on_whales import docker
 
-from Deadline.open_studio_landscapes.constants import *
-from Deadline.open_studio_landscapes.utils import *
+from OpenStudioLandscapes.open_studio_landscapes.constants import *
+from OpenStudioLandscapes.open_studio_landscapes.utils import *
 
 from dagster import (
     AssetIn,
@@ -23,7 +23,7 @@ from dagster import (
     MetadataValue,
 )
 
-from Deadline.open_studio_landscapes.assets import KEY as KEY_BASE
+from OpenStudioLandscapes.open_studio_landscapes.assets import KEY as KEY_BASE
 
 
 """

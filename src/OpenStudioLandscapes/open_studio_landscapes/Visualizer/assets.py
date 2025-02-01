@@ -2,7 +2,7 @@ import base64
 import pydot
 import pathlib
 
-from docker_graph.docker_graph import DockerComposeGraph
+from docker_compose_graph.docker_compose_graph import DockerComposeGraph
 
 from dagster import (
     asset,
@@ -15,7 +15,7 @@ from dagster import (
 )
 
 
-from Deadline.open_studio_landscapes.assets_10_2 import KEY as KEY_10_2
+from OpenStudioLandscapes.open_studio_landscapes.Deadline.v10_2.assets import KEY as KEY_DEADLINE_V10_2
 
 
 GROUP = "Viz"
@@ -32,7 +32,7 @@ asset_header = {
     **asset_header,
     ins={
         "compose": AssetIn(
-            AssetKey([KEY_10_2, "compose_10_2"]),
+            AssetKey([KEY_DEADLINE_V10_2, "compose_10_2"]),
         ),
     },
 )
@@ -91,7 +91,7 @@ def viz_compose_10_2(
     **asset_header,
     ins={
         "compose_repository": AssetIn(
-            AssetKey([KEY_10_2, "compose_repository_10_2"]),
+            AssetKey([KEY_DEADLINE_V10_2, "compose_repository_10_2"]),
         ),
     },
 )

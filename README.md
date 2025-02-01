@@ -365,7 +365,7 @@ push everything publicly.
 
 ## Integrated Tools
 
-- [docker-graph](https://github.com/michimussato/docker-graph)
+- [docker-compose-graph](https://github.com/michimussato/docker-compose-graph)
 
 ### Render Manager
 
@@ -420,7 +420,7 @@ comparison:
 ## Docker Compose Graph
 
 Dynamic Docker Compose documentation: 
-[`docker-graph`](https://github.com/michimussato/docker-graph) creates a visual representation of
+[`docker-compose-graph`](https://github.com/michimussato/docker-compose-graph) creates a visual representation of
 `docker-compose.yml` files for every individual
 Landscape for quick reference and context.
 
@@ -487,7 +487,7 @@ appropriate ownership:
 sudo chown -R 101:65534 /path/to/DeadlineDatabase10
 ```
 
-And in `Deadline.open_studio_landscapes.assets.env_10_2` set
+And in `OpenStudioLandscapes.open_studio_landscapes.Deadline.10_2.assets.env` set
 
 ```python
 f"DATABASE_INSTALL_DESTINATION_{KEY}": {
@@ -515,9 +515,9 @@ http://0.0.0.0:3000
 ### Configure Landscape
 
 Edit 
-- `Deadline.open_studio_landscapes.assets.env`
-- `Deadline.open_studio_landscapes.assets_10_2.env` 
-- `Deadline.open_studio_landscapes.third_party.[...].env`
+- `OpenStudioLandscapes.open_studio_landscapes.assets.env`
+- `OpenStudioLandscapes.open_studio_landscapes.Deadline.[...].assets.env` 
+- `OpenStudioLandscapes.open_studio_landscapes.third_party.[...].assets.env`
 according to your needs.
 
 ### Materialize Landscape
