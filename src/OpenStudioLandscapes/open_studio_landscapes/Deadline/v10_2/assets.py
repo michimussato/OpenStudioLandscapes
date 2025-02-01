@@ -12,7 +12,7 @@ from collections import ChainMap
 from functools import reduce
 
 from python_on_whales import docker
-from docker_graph.utils import *
+from docker_compose_graph.utils import *
 
 from OpenStudioLandscapes.open_studio_landscapes.constants import *
 from OpenStudioLandscapes.open_studio_landscapes.utils import *
@@ -29,7 +29,7 @@ from dagster import (
 
 
 # Requirements:
-# - [ ] ERROR: failed to solve: dockerfile parse error on line 4: invalid name for build stage: "10_2__build_base_image_10_2", name can't start with a number or contain symbols
+# - [ ] ERROR: failed to solve: dockerfile parse error on line 4: invalid name for build stage: "10_2__build_base_image", name can't start with a number or contain symbols
 # GROUP = ""
 KEY = "Deadline_10_2"
 
@@ -206,7 +206,7 @@ def env(
         ),
     },
 )
-def connection_ini_10_2(
+def connection_ini(
         context: AssetExecutionContext,
         env_10_2: dict,
 ) -> pathlib.Path:
@@ -265,7 +265,7 @@ def connection_ini_10_2(
         ),
     },
 )
-def deadline_ini_10_2(
+def deadline_ini(
         context: AssetExecutionContext,
         env_10_2: dict,
 ) -> pathlib.Path:
@@ -378,7 +378,7 @@ def pip_packages(
     **asset_header,
     group_name="Build_Images_10_2",
 )
-def wget_deadline_packages_base_image_10_2(
+def wget_deadline_packages_base_image(
         context: AssetExecutionContext,
 ) -> dict[str, str]:
     """
@@ -412,14 +412,14 @@ if BUILD_FROM_GOOGLE_DRIVE_10_2:
                 AssetKey(["Base", "build_base_image"]),
             ),
             "wget_deadline_packages_base_image_10_2": AssetIn(
-                AssetKey([KEY, "wget_deadline_packages_base_image_10_2"]),
+                AssetKey([KEY, "wget_deadline_packages_base_image"]),
             ),
             "pip_packages": AssetIn(
                 AssetKey([KEY, "pip_packages"]),
             ),
         },
     )
-    def build_base_image_10_2(
+    def build_base_image(
             context: AssetExecutionContext,
             env_10_2: dict,
             build_base_image: str,
@@ -546,7 +546,7 @@ else:
             ),
         },
     )
-    def build_base_image_10_2(
+    def build_base_image(
             context: AssetExecutionContext,
             env_10_2: dict,
             build_base_image: str,
@@ -687,7 +687,7 @@ else:
     description="This executes the OpenStudioLandscapes Repository Installer. "
                 "Needs to be done only once."
 )
-def deadline_command_install_repository_10_2(
+def deadline_command_install_repository(
         context: AssetExecutionContext,
         env_10_2: dict,
 ) -> list:
@@ -730,11 +730,11 @@ def deadline_command_install_repository_10_2(
             AssetKey([KEY, "env"]),
         ),
         "build_base_image_10_2": AssetIn(
-            AssetKey([KEY, "build_base_image_10_2"]),
+            AssetKey([KEY, "build_base_image"]),
         ),
     },
 )
-def build_repository_image_10_2(
+def build_repository_image(
         context: AssetExecutionContext,
         env_10_2: dict,
         build_base_image_10_2: str,
@@ -827,22 +827,22 @@ def build_repository_image_10_2(
             AssetKey([KEY, "env"]),
         ),
         "compose_networks_10_2": AssetIn(
-            AssetKey([KEY, "compose_networks_10_2"]),
+            AssetKey([KEY, "compose_networks"]),
         ),
         "build_repository_image_10_2": AssetIn(
-            AssetKey([KEY, "build_repository_image_10_2"]),
+            AssetKey([KEY, "build_repository_image"]),
         ),
         "compose_mongodb_10_2": AssetIn(
-            AssetKey([KEY, "compose_mongodb_10_2"]),
+            AssetKey([KEY, "compose_mongodb"]),
         ),
         "deadline_command_install_repository_10_2": AssetIn(
-            AssetKey([KEY, "deadline_command_install_repository_10_2"]),
+            AssetKey([KEY, "deadline_command_install_repository"]),
         ),
     },
     description="This executes the OpenStudioLandscapes Repository Installer. "
                 "Needs to be done only once."
 )
-def compose_repository_10_2(
+def compose_repository(
         context: AssetExecutionContext,
         env_10_2: dict,
         compose_networks_10_2: dict,
@@ -949,7 +949,7 @@ def compose_repository_10_2(
     },
     description=""
 )
-def deadline_command_build_client_image_10_2(
+def deadline_command_build_client_image(
         context: AssetExecutionContext,
         env_10_2: dict,
 ) -> list:
@@ -995,14 +995,14 @@ def deadline_command_build_client_image_10_2(
             AssetKey([KEY, "env"]),
         ),
         "build_base_image_10_2": AssetIn(
-            AssetKey([KEY, "build_base_image_10_2"]),
+            AssetKey([KEY, "build_base_image"]),
         ),
         "deadline_command_build_client_image_10_2": AssetIn(
-            AssetKey([KEY, "deadline_command_build_client_image_10_2"]),
+            AssetKey([KEY, "deadline_command_build_client_image"]),
         ),
     },
 )
-def build_client_image_10_2(
+def build_client_image(
         context: AssetExecutionContext,
         env_10_2: dict,
         build_base_image_10_2: str,
@@ -1102,7 +1102,7 @@ def build_client_image_10_2(
         ),
     },
 )
-def compose_include_10_2(
+def compose_include(
         context: AssetExecutionContext,
         compose_override_ayon: dict,
 ) -> dict:
@@ -1135,7 +1135,7 @@ def compose_include_10_2(
         ),
     },
 )
-def compose_networks_10_2(
+def compose_networks(
         context: AssetExecutionContext,
         env_10_2: dict,
 ) -> dict:
@@ -1177,7 +1177,7 @@ def compose_networks_10_2(
         ),
     },
 )
-def compose_mongo_express_10_2(
+def compose_mongo_express(
         context: AssetExecutionContext,
         env_10_2: dict,
 ) -> dict:
@@ -1245,7 +1245,7 @@ def compose_mongo_express_10_2(
         ),
     },
 )
-def compose_filebrowser_10_2(
+def compose_filebrowser(
         context: AssetExecutionContext,
         env_10_2: dict,
 ) -> dict:
@@ -1302,7 +1302,7 @@ def compose_filebrowser_10_2(
         ),
     },
 )
-def script_chown_mongodb_10_2(
+def script_chown_mongodb(
         context: AssetExecutionContext,
         env_10_2: dict,
 ) -> dict[str, str]:
@@ -1353,11 +1353,11 @@ def script_chown_mongodb_10_2(
             AssetKey([KEY, "env"]),
         ),
         "script_chown_mongodb_10_2": AssetIn(
-            AssetKey([KEY, "script_chown_mongodb_10_2"]),
+            AssetKey([KEY, "script_chown_mongodb"]),
         ),
     },
 )
-def compose_mongodb_10_2(
+def compose_mongodb(
         context: AssetExecutionContext,
         env_10_2: dict,
         script_chown_mongodb_10_2: dict[str, str],
@@ -1485,7 +1485,7 @@ def compose_mongodb_10_2(
     description="This executes the OpenStudioLandscapes Repository Installer. "
                 "Needs to be done only once."
 )
-def deadline_command_compose_rcs_runner_10_2(
+def deadline_command_compose_rcs_runner(
         context: AssetExecutionContext,
         env_10_2: dict,
 ) -> list:
@@ -1516,20 +1516,20 @@ def deadline_command_compose_rcs_runner_10_2(
             AssetKey([KEY, "env"]),
         ),
         "build_client_image_10_2": AssetIn(
-            AssetKey([KEY, "build_client_image_10_2"]),
+            AssetKey([KEY, "build_client_image"]),
         ),
         "connection_ini_10_2": AssetIn(
-            AssetKey([KEY, "connection_ini_10_2"]),
+            AssetKey([KEY, "connection_ini"]),
         ),
         "deadline_ini_10_2": AssetIn(
-            AssetKey([KEY, "deadline_ini_10_2"]),
+            AssetKey([KEY, "deadline_ini"]),
         ),
         "deadline_command_compose_rcs_runner_10_2": AssetIn(
-            AssetKey([KEY, "deadline_command_compose_rcs_runner_10_2"]),
+            AssetKey([KEY, "deadline_command_compose_rcs_runner"]),
         ),
     },
 )
-def compose_rcs_runner_10_2(
+def compose_rcs_runner(
         context: AssetExecutionContext,
         env_10_2: dict,
         build_client_image_10_2: str,
@@ -1602,7 +1602,7 @@ def compose_rcs_runner_10_2(
     description="This executes the OpenStudioLandscapes Repository Installer. "
                 "Needs to be done only once."
 )
-def deadline_command_compose_pulse_runner_10_2(
+def deadline_command_compose_pulse_runner(
         context: AssetExecutionContext,
         env_10_2: dict,
 ) -> list:
@@ -1635,20 +1635,20 @@ def deadline_command_compose_pulse_runner_10_2(
             AssetKey([KEY, "env"]),
         ),
         "build_client_image_10_2": AssetIn(
-            AssetKey([KEY, "build_client_image_10_2"]),
+            AssetKey([KEY, "build_client_image"]),
         ),
         "deadline_ini_10_2": AssetIn(
-            AssetKey([KEY, "deadline_ini_10_2"]),
+            AssetKey([KEY, "deadline_ini"]),
         ),
         "connection_ini_10_2": AssetIn(
-            AssetKey([KEY, "connection_ini_10_2"]),
+            AssetKey([KEY, "connection_ini"]),
         ),
         "deadline_command_compose_pulse_runner_10_2": AssetIn(
-            AssetKey([KEY, "deadline_command_compose_pulse_runner_10_2"]),
+            AssetKey([KEY, "deadline_command_compose_pulse_runner"]),
         ),
     },
 )
-def compose_pulse_runner_10_2(
+def compose_pulse_runner(
         context: AssetExecutionContext,
         env_10_2: dict,
         build_client_image_10_2: str,
@@ -1715,7 +1715,7 @@ def compose_pulse_runner_10_2(
     description="This executes the OpenStudioLandscapes Repository Installer. "
                 "Needs to be done only once."
 )
-def deadline_command_compose_worker_runner_10_2(
+def deadline_command_compose_worker_runner(
         context: AssetExecutionContext,
         env_10_2: dict,
 ) -> list:
@@ -1748,20 +1748,20 @@ def deadline_command_compose_worker_runner_10_2(
             AssetKey([KEY, "env"]),
         ),
         "build_client_image_10_2": AssetIn(
-            AssetKey([KEY, "build_client_image_10_2"]),
+            AssetKey([KEY, "build_client_image"]),
         ),
         "deadline_ini_10_2": AssetIn(
-            AssetKey([KEY, "deadline_ini_10_2"]),
+            AssetKey([KEY, "deadline_ini"]),
         ),
         "connection_ini_10_2": AssetIn(
-            AssetKey([KEY, "connection_ini_10_2"]),
+            AssetKey([KEY, "connection_ini"]),
         ),
         "deadline_command_compose_worker_runner_10_2": AssetIn(
-            AssetKey([KEY, "deadline_command_compose_worker_runner_10_2"]),
+            AssetKey([KEY, "deadline_command_compose_worker_runner"]),
         ),
     },
 )
-def compose_worker_runner_10_2(
+def compose_worker_runner(
         context: AssetExecutionContext,
         env_10_2: dict,
         build_client_image_10_2: str,
@@ -1828,7 +1828,7 @@ def compose_worker_runner_10_2(
     description="This executes the OpenStudioLandscapes Repository Installer. "
                 "Needs to be done only once."
 )
-def deadline_command_compose_webservice_runner_10_2(
+def deadline_command_compose_webservice_runner(
         context: AssetExecutionContext,
         env_10_2: dict,
 ) -> list:
@@ -1859,20 +1859,20 @@ def deadline_command_compose_webservice_runner_10_2(
             AssetKey([KEY, "env"]),
         ),
         "build_client_image_10_2": AssetIn(
-            AssetKey([KEY, "build_client_image_10_2"]),
+            AssetKey([KEY, "build_client_image"]),
         ),
         "deadline_ini_10_2": AssetIn(
-            AssetKey([KEY, "deadline_ini_10_2"]),
+            AssetKey([KEY, "deadline_ini"]),
         ),
         "connection_ini_10_2": AssetIn(
-            AssetKey([KEY, "connection_ini_10_2"]),
+            AssetKey([KEY, "connection_ini"]),
         ),
         "deadline_command_compose_webservice_runner_10_2": AssetIn(
-            AssetKey([KEY, "deadline_command_compose_webservice_runner_10_2"]),
+            AssetKey([KEY, "deadline_command_compose_webservice_runner"]),
         ),
     },
 )
-def compose_webservice_runner_10_2(
+def compose_webservice_runner(
         context: AssetExecutionContext,
         env_10_2: dict,
         build_client_image_10_2: str,
@@ -1945,31 +1945,31 @@ def compose_webservice_runner_10_2(
             AssetKey([KEY, "env"]),
         ),
         "compose_webservice_runner_10_2": AssetIn(
-            AssetKey([KEY, "compose_webservice_runner_10_2"]),
+            AssetKey([KEY, "compose_webservice_runner"]),
         ),
         "compose_worker_runner_10_2": AssetIn(
-            AssetKey([KEY, "compose_worker_runner_10_2"]),
+            AssetKey([KEY, "compose_worker_runner"]),
         ),
         "compose_pulse_runner_10_2": AssetIn(
-            AssetKey([KEY, "compose_pulse_runner_10_2"]),
+            AssetKey([KEY, "compose_pulse_runner"]),
         ),
         "compose_rcs_runner_10_2": AssetIn(
-            AssetKey([KEY, "compose_rcs_runner_10_2"]),
+            AssetKey([KEY, "compose_rcs_runner"]),
         ),
         "compose_networks_10_2": AssetIn(
-            AssetKey([KEY, "compose_networks_10_2"]),
+            AssetKey([KEY, "compose_networks"]),
         ),
         "compose_include_10_2": AssetIn(
-            AssetKey([KEY, "compose_include_10_2"]),
+            AssetKey([KEY, "compose_include"]),
         ),
         "compose_mongo_express_10_2": AssetIn(
-            AssetKey([KEY, "compose_mongo_express_10_2"]),
+            AssetKey([KEY, "compose_mongo_express"]),
         ),
         "compose_mongodb_10_2": AssetIn(
-            AssetKey([KEY, "compose_mongodb_10_2"]),
+            AssetKey([KEY, "compose_mongodb"]),
         ),
         "compose_filebrowser_10_2": AssetIn(
-            AssetKey([KEY, "compose_filebrowser_10_2"]),
+            AssetKey([KEY, "compose_filebrowser"]),
         ),
         "compose_grafana": AssetIn(
             AssetKey(["Grafana", "compose"])),
@@ -1981,7 +1981,7 @@ def compose_webservice_runner_10_2(
             AssetKey(["Kitsu", "compose"])),
     },
 )
-def compose_10_2(
+def compose(
         context: AssetExecutionContext,
         env_10_2: dict,
         compose_webservice_runner_10_2: dict,

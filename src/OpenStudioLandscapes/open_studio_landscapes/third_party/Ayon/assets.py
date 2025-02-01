@@ -5,7 +5,7 @@ import json
 
 from OpenStudioLandscapes.open_studio_landscapes.utils import *
 
-from docker_graph.yaml_tags.overrides import *
+from docker_compose_graph.yaml_tags.overrides import *
 
 from dagster import (
     AssetIn,
