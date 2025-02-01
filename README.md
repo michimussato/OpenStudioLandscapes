@@ -71,6 +71,8 @@ create setups for production,
 testing, debugging, development, 
 migration, DB restore etc.
 
+![Overview](docs/img/Overview.png)
+
 No more black boxes.
 No more path dependencies due to bad decisions
 made in the past. Stay flexible and adaptable 
@@ -78,7 +80,7 @@ with this modular system by reconfiguring
 your production landscape with ease:
 - Easily add, replace or remove services
 - Clone (or modify and clone) entire production landscapes for testing, debugging or development
-- Always stay on top of things with maps and node trees of code and landscapes
+- Code as source of truth: Always stay on top of things with maps and node trees of code and landscapes
 - `open-studio-landscapes` is (primarily) powered by [Dagster](https://github.com/dagster-io/) and [Docker](https://github.com/docker)
 - Fully Python based
 
