@@ -66,17 +66,17 @@ Setup and launch Deadline - your 3D Animation and VFX
 Pipeline backbone - with ease, independence
 and scalability.
 
-A toolkit to easily create reproducible 
+A toolkit to easily create reproducible
 Deadline Render Farm environment setups:
-create setups for production, 
-testing, debugging, development, 
+create setups for production,
+testing, debugging, development,
 migration, DB restore etc.
 
 ![Overview](docs/img/Overview.png)
 
 No more black boxes.
 No more path dependencies due to bad decisions
-made in the past. Stay flexible and adaptable 
+made in the past. Stay flexible and adaptable
 with this modular system by reconfiguring
 your production landscape with ease:
 - Easily add, replace or remove services
@@ -86,13 +86,13 @@ your production landscape with ease:
 - Fully Python based
 
 This platform is aimed towards small to medium-sized
-studios where only limited resources for Pipeline 
+studios where only limited resources for Pipeline
 Engineers and Technical Directors are available.
 This system allows those studios to share a common
 underlying system to build arbitrary pipeline tools
-on top of with the ability to share them among others 
-without sacrificing the technical freedom  
-to implement highly studio specific and individual solutions if 
+on top of with the ability to share them among others
+without sacrificing the technical freedom
+to implement highly studio specific and individual solutions if
 needed.
 
 ## Structure
@@ -239,7 +239,7 @@ currently implemented is Deadline. Others
 
 #### Deadline
 
-Currently only for Deadline version 10.2. 
+Currently only for Deadline version 10.2.
 Versions 10.3 and 10.4 are WIP and will be
 implemented as soon as 10.2 fully works as
 a proof of concept.
@@ -250,7 +250,7 @@ Todo:
 
 ### VFX Platform
 
-Integration of VFX Platform compatibility 
+Integration of VFX Platform compatibility
 is on the roadmap.
 
 Todo:
@@ -260,15 +260,15 @@ Todo:
 
 There are many ways to protect sensitive data.
 It is `open-studio-landscapes` does not provide a dedicated solution
-to protect your secrets - it lets (and wants you to) implement 
+to protect your secrets - it lets (and wants you to) implement
 your own solution or use existing ones if you have something
 implemented already. Dagster does handle secrets in
 its own way. This approach might be a valid candidate for
 `open-studio-landscapes` in the future. More on this here:
 https://docs.dagster.io/guides/deploy/using-environment-variables-and-secrets
 
-However, I do have sensitive data myself and I would like to 
-quickly present my approach to you here. I'm not a security 
+However, I do have sensitive data myself and I would like to
+quickly present my approach to you here. I'm not a security
 engineer, hence, I'm coming up with my personal (very basic)
 terminology.
 
@@ -290,7 +290,7 @@ Integrate/implement your own solution or make suggestions.
 
 ### Internal Secrets
 
-I'm protecting secrets from the outside world which need to 
+I'm protecting secrets from the outside world which need to
 be part of the Git repo (version controlled). I've had
 very good experience using `git-crypt` which transparently
 encrypts files and directories based on a `.gitattributes`
@@ -370,9 +370,9 @@ push everything publicly.
 ### Render Manager
 
 There are a multitude of managers available
-and I had to make a decision to begin with. 
-In general, `open-studio-landscapes` has the 
-capability to support arbitrary managers, 
+and I had to make a decision to begin with.
+In general, `open-studio-landscapes` has the
+capability to support arbitrary managers,
 however, as of now, only Deadline is considered
 integrated. The decision to go with Deadline
 was based on the following specs:
@@ -419,7 +419,7 @@ comparison:
 
 ## Docker Compose Graph
 
-Dynamic Docker Compose documentation: 
+Dynamic Docker Compose documentation:
 [`docker-compose-graph`](https://github.com/michimussato/docker-compose-graph) creates a visual representation of
 `docker-compose.yml` files for every individual
 Landscape for quick reference and context.
@@ -468,7 +468,7 @@ python -m pip install git+https://github.com/michimussato/open-studio-landscapes
 
 ### Git Repos
 
-Clone the 
+Clone the
 
 ```shell
 cd open-studio-landscapes
@@ -514,9 +514,9 @@ http://0.0.0.0:3000
 
 ### Configure Landscape
 
-Edit 
+Edit
 - `OpenStudioLandscapes.open_studio_landscapes.assets.env`
-- `OpenStudioLandscapes.open_studio_landscapes.Deadline.[...].assets.env` 
+- `OpenStudioLandscapes.open_studio_landscapes.Deadline.[...].assets.env`
 - `OpenStudioLandscapes.open_studio_landscapes.third_party.[...].assets.env`
 according to your needs.
 
@@ -665,9 +665,16 @@ docker network prune -f
 - https://pre-commit.com/
 - https://pre-commit.com/hooks.html
 
+```shell
+pre-commit install
+```
+
+```shell
+pre-commit run --all-files
+```
+
 ## nox
 
 ```shell
 nox --no-error-on-missing-interpreters --report .nox-report.json
 ```
-
