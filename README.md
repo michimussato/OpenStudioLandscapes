@@ -384,16 +384,16 @@ was based on the following specs:
 Here's a non-exhaustive list of managers in
 comparison:
 
-| Render Manager | Integrated | Cross Platform | Freely Available | Scalability (local and cloud) | Active Development | Local    | Python API | DCC agnostic |
-|----------------|------------|----------------|------------------|-------------------------------|--------------------|----------|------------|--------------|
-| Deadline 10.x  | &#x2611;   | &#x2611;       | &#x2611;         | &#x2611;                      |                    | &#x2611; | &#x2611;   | &#x2611;     |
-| OpenCue        | &#x2610;   |                |                  |                               | &#x2610;           |          |            |              |
-| Tractor        | &#x2610;   |                | &#x2610;         |                               |                    |          |            |              |
-| Flamenco       | &#x2610;   |                |                  |                               |                    |          |            | &#x2610;     |
-| RoyalRender    | &#x2610;   |                |                  |                               |                    |          |            |              |
-| Qube!          | &#x2610;   |                | &#x2610;         |                               |                    |          |            |              |
-| AFANASY        | &#x2610;   |                |                  |                               |                    |          |            |              |
-| Muster         | &#x2610;   |                |                  |                               |                    |          |            |              |
+| Render Manager | Integrated | Cross Platform | Freely Available | Scalability (local and cloud) | Active Development | Local | Python API | DCC agnostic |
+|----------------|------------|----------------|------------------|-------------------------------|--------------------|-------|------------|--------------|
+| Deadline 10.x  | ☑          | ☑              | ☑                | ☑                             | ☐                  | ☑     | ☑          | ☑            |
+| OpenCue        | ☒          | ☐              | ☐                | ☐                             | ☒                  | ☐     | ☐          | ☐            |
+| Tractor        | ☒          | ☐              | ☒                | ☐                             | ☐                  | ☐     | ☐          | ☐            |
+| Flamenco       | ☒          | ☐              | ☐                | ☐                             | ☐                  | ☐     | ☐          | ☒            |
+| RoyalRender    | ☒          | ☐              | ☐                | ☐                             | ☐                  | ☐     | ☐          | ☐            |
+| Qube!          | ☒          | ☐              | ☒                | ☐                             | ☐                  | ☐     | ☐          | ☐            |
+| AFANASY        | ☒          | ☐              | ☐                | ☐                             | ☐                  | ☐     | ☐          | ☐            |
+| Muster         | ☒          | ☐              | ☐                | ☐                             | ☐                  | ☐     | ☐          | ☐            |
 
 
 ### 3rd Party
