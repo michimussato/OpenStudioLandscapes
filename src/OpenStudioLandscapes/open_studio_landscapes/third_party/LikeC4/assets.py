@@ -113,14 +113,14 @@ def apt_packages(
             AssetKey([KEY, "env"]),
         ),
         "build_base_image": AssetIn(
-            AssetKey([KEY_BASE, "build_base_image"]),
+            AssetKey([KEY_BASE, "build_docker_image"]),
         ),
         "apt_packages": AssetIn(
             AssetKey([KEY, "apt_packages"]),
         ),
     },
 )
-def build(
+def build_docker_image(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
     build_base_image: str,  # pylint: disable=redefined-outer-name
@@ -259,7 +259,7 @@ def build(
             AssetKey([KEY, "env"]),
         ),
         "build": AssetIn(
-            AssetKey([KEY, "build"]),
+            AssetKey([KEY, "build_docker_image"]),
         ),
     },
 )

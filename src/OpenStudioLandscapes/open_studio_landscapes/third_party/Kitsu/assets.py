@@ -204,7 +204,7 @@ def apt_packages(
         ),
     },
 )
-def build(
+def build_docker_image(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
     apt_packages: dict[str, list[str]],  # pylint: disable=redefined-outer-name
@@ -572,7 +572,7 @@ def script_init_zou(
             AssetKey([KEY, "script_init_zou"]),
         ),
         "build": AssetIn(
-            AssetKey([KEY, "build"]),
+            AssetKey([KEY, "build_docker_image"]),
         ),
     },
     deps=[

@@ -400,7 +400,7 @@ def apt_packages(
         "pip_packages": AssetIn(AssetKey([KEY, "pip_packages"])),
     },
 )
-def build_base_image(
+def build_docker_image(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
     apt_packages: dict[str, list[str]],  # pylint: disable=redefined-outer-name

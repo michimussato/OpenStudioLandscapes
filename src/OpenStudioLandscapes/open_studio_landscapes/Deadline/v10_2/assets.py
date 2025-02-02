@@ -27,7 +27,7 @@ from OpenStudioLandscapes.open_studio_landscapes.constants import *
 from OpenStudioLandscapes.open_studio_landscapes.utils import *
 
 # Requirements:
-# - [ ] ERROR: failed to solve: dockerfile parse error on line 4: invalid name for build stage: "10_2__build_base_image", name can't start with a number or contain symbols
+# - [ ] ERROR: failed to solve: dockerfile parse error on line 4: invalid name for build stage: "10_2__build_docker_image", name can't start with a number or contain symbols
 # GROUP = ""
 KEY = "Deadline_10_2"
 
@@ -427,7 +427,7 @@ if BUILD_FROM_GOOGLE_DRIVE_10_2:
                 AssetKey([KEY, "env"]),
             ),
             "build_base_image": AssetIn(
-                AssetKey(["Base", "build_base_image"]),
+                AssetKey(["Base", "build_docker_image"]),
             ),
             "wget_deadline_packages_base_image_10_2": AssetIn(
                 AssetKey([KEY, "wget_deadline_packages_base_image"]),
@@ -437,7 +437,7 @@ if BUILD_FROM_GOOGLE_DRIVE_10_2:
             ),
         },
     )
-    def build_base_image(
+    def build_docker_image(
         context: AssetExecutionContext,
         env_10_2: dict,  # pylint: disable=redefined-outer-name
         build_base_image: str,  # pylint: disable=redefined-outer-name
@@ -564,14 +564,14 @@ else:
                 AssetKey([KEY, "env"]),
             ),
             "build_base_image": AssetIn(
-                AssetKey(["Base", "build_base_image"]),
+                AssetKey(["Base", "build_docker_image"]),
             ),
             "pip_packages": AssetIn(
                 AssetKey([KEY, "pip_packages"]),
             ),
         },
     )
-    def build_base_image(
+    def build_docker_image(
         context: AssetExecutionContext,
         env_10_2: dict,  # pylint: disable=redefined-outer-name
         build_base_image: str,  # pylint: disable=redefined-outer-name
@@ -774,11 +774,11 @@ def deadline_command_install_repository(
             AssetKey([KEY, "env"]),
         ),
         "build_base_image_10_2": AssetIn(
-            AssetKey([KEY, "build_base_image"]),
+            AssetKey([KEY, "build_docker_image"]),
         ),
     },
 )
-def build_repository_image(
+def build_docker_image_repository(
     context: AssetExecutionContext,
     env_10_2: dict,  # pylint: disable=redefined-outer-name
     build_base_image_10_2: str,  # pylint: disable=redefined-outer-name
@@ -878,7 +878,7 @@ def build_repository_image(
             AssetKey([KEY, "compose_networks"]),
         ),
         "build_repository_image_10_2": AssetIn(
-            AssetKey([KEY, "build_repository_image"]),
+            AssetKey([KEY, "build_docker_image_repository"]),
         ),
         "compose_mongodb_10_2": AssetIn(
             AssetKey([KEY, "compose_mongodb"]),
@@ -1002,7 +1002,7 @@ def compose_repository(
     },
     description="",
 )
-def deadline_command_build_client_image(
+def deadline_command_build_docker_image_client(
     context: AssetExecutionContext,
     env_10_2: dict,  # pylint: disable=redefined-outer-name
 ) -> list:
@@ -1063,14 +1063,14 @@ def deadline_command_build_client_image(
             AssetKey([KEY, "env"]),
         ),
         "build_base_image_10_2": AssetIn(
-            AssetKey([KEY, "build_base_image"]),
+            AssetKey([KEY, "build_docker_image"]),
         ),
         "deadline_command_build_client_image_10_2": AssetIn(
-            AssetKey([KEY, "deadline_command_build_client_image"]),
+            AssetKey([KEY, "deadline_command_build_docker_image_client"]),
         ),
     },
 )
-def build_client_image(
+def build_docker_image_client(
     context: AssetExecutionContext,
     env_10_2: dict,  # pylint: disable=redefined-outer-name
     build_base_image_10_2: str,  # pylint: disable=redefined-outer-name
@@ -1627,7 +1627,7 @@ def deadline_command_compose_rcs_runner(
             AssetKey([KEY, "env"]),
         ),
         "build_client_image_10_2": AssetIn(
-            AssetKey([KEY, "build_client_image"]),
+            AssetKey([KEY, "build_docker_image_client"]),
         ),
         "connection_ini_10_2": AssetIn(
             AssetKey([KEY, "connection_ini"]),
@@ -1752,7 +1752,7 @@ def deadline_command_compose_pulse_runner(
             AssetKey([KEY, "env"]),
         ),
         "build_client_image_10_2": AssetIn(
-            AssetKey([KEY, "build_client_image"]),
+            AssetKey([KEY, "build_docker_image_client"]),
         ),
         "deadline_ini_10_2": AssetIn(
             AssetKey([KEY, "deadline_ini"]),
@@ -1866,7 +1866,7 @@ def deadline_command_compose_worker_runner(
             AssetKey([KEY, "env"]),
         ),
         "build_client_image_10_2": AssetIn(
-            AssetKey([KEY, "build_client_image"]),
+            AssetKey([KEY, "build_docker_image_client"]),
         ),
         "deadline_ini_10_2": AssetIn(
             AssetKey([KEY, "deadline_ini"]),
@@ -1978,7 +1978,7 @@ def deadline_command_compose_webservice_runner(
             AssetKey([KEY, "env"]),
         ),
         "build_client_image_10_2": AssetIn(
-            AssetKey([KEY, "build_client_image"]),
+            AssetKey([KEY, "build_docker_image_client"]),
         ),
         "deadline_ini_10_2": AssetIn(
             AssetKey([KEY, "deadline_ini"]),
