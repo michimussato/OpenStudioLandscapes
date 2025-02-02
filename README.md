@@ -386,14 +386,14 @@ comparison:
 
 | Render Manager | Integrated | Cross Platform | Freely Available | Scalability (local and cloud) | Active Development | Local | Python API | DCC agnostic |
 |----------------|------------|----------------|------------------|-------------------------------|--------------------|-------|------------|--------------|
-| Deadline 10.x  | ☑          | ☑              | ☑                | ☑                             | ☐                  | ☑     | ☑          | ☑            |
-| OpenCue        | ☒          | ☐              | ☐                | ☐                             | ☒                  | ☐     | ☐          | ☐            |
-| Tractor        | ☒          | ☐              | ☒                | ☐                             | ☐                  | ☐     | ☐          | ☐            |
-| Flamenco       | ☒          | ☐              | ☐                | ☐                             | ☐                  | ☐     | ☐          | ☒            |
-| RoyalRender    | ☒          | ☐              | ☐                | ☐                             | ☐                  | ☐     | ☐          | ☐            |
-| Qube!          | ☒          | ☐              | ☒                | ☐                             | ☐                  | ☐     | ☐          | ☐            |
-| AFANASY        | ☒          | ☐              | ☐                | ☐                             | ☐                  | ☐     | ☐          | ☐            |
-| Muster         | ☒          | ☐              | ☐                | ☐                             | ☐                  | ☐     | ☐          | ☐            |
+| Deadline 10.x  | ✅          | ✅              | ✅                | ✅                             | ☐                  | ✅     | ✅          | ✅            |
+| OpenCue        | ❌          | ☐              | ☐                | ☐                             | ❌                  | ☐     | ☐          | ☐            |
+| Tractor        | ❌          | ☐              | ❌                | ☐                             | ☐                  | ☐     | ☐          | ☐            |
+| Flamenco       | ❌          | ☐              | ☐                | ☐                             | ☐                  | ☐     | ☐          | ❌            |
+| RoyalRender    | ❌          | ☐              | ☐                | ☐                             | ☐                  | ☐     | ☐          | ☐            |
+| Qube!          | ❌          | ☐              | ❌                | ☐                             | ☐                  | ☐     | ☐          | ☐            |
+| AFANASY        | ❌          | ☐              | ☐                | ☐                             | ☐                  | ☐     | ☐          | ☐            |
+| Muster         | ❌          | ☐              | ☐                | ☐                             | ☐                  | ☐     | ☐          | ☐            |
 
 
 ### 3rd Party
