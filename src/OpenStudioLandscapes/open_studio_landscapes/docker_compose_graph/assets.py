@@ -17,8 +17,8 @@ from OpenStudioLandscapes.open_studio_landscapes.Deadline.v10_2.assets import (
     KEY as KEY_DEADLINE_V10_2,
 )
 
-GROUP = "Viz"
-KEY = "Viz"
+GROUP = "Docker_Compose_Graph"
+KEY = "Docker_Compose_Graph"
 
 asset_header = {"group_name": GROUP, "key_prefix": [KEY], "compute_kind": "python"}
 
@@ -31,7 +31,7 @@ asset_header = {"group_name": GROUP, "key_prefix": [KEY], "compute_kind": "pytho
         ),
     },
 )
-def viz_compose_10_2(
+def docker_compose_graph_10_2(
     context: AssetExecutionContext,
     compose_10_2: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> pydot.Dot:
@@ -48,6 +48,7 @@ def viz_compose_10_2(
 
     docker_compose_dir.mkdir(parents=True, exist_ok=True)
 
+    # SVG
     svg = docker_compose_dir / f"{'__'.join(context.asset_key.path)}.svg"
     dcg.graph.write(
         path=svg,
@@ -60,6 +61,21 @@ def viz_compose_10_2(
     svg_base64 = base64.b64encode(svg_bytes).decode("utf-8")
     svg_md = f"![Image](data:image/svg+xml;base64,{svg_base64})"
 
+    # PNG
+    png = docker_compose_dir / f"{'__'.join(context.asset_key.path)}.png"
+    dcg.graph.write(
+        path=png,
+        format="png",
+    )
+
+    # SLOW
+    # with open(png, "rb") as fr:
+    #     png_bytes = fr.read()
+    #
+    # png_base64 = base64.b64encode(png_bytes).decode("utf-8")
+    # png_md = f"![Image](data:image/png;base64,{png_base64})"
+
+    # DOT
     dot = docker_compose_dir / f"{'__'.join(context.asset_key.path)}.dot"
     dcg.graph.write(
         path=dot,
@@ -72,8 +88,10 @@ def viz_compose_10_2(
         asset_key=context.asset_key,
         metadata={
             "svg": MetadataValue.md(svg_md),
+            # "png": MetadataValue.md(png_md),  # slow in Dagster UI
             "__".join(context.asset_key.path): MetadataValue.json(str(dcg.graph)),
             "svg_path": MetadataValue.path(svg),
+            "png_path": MetadataValue.path(png),
             "dot_path": MetadataValue.path(dot),
         },
     )
@@ -87,7 +105,7 @@ def viz_compose_10_2(
         ),
     },
 )
-def viz_compose_repository_10_2(
+def docker_compose_graph_repository_10_2(
     context: AssetExecutionContext,
     compose_repository_10_2: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> pydot.Dot:
@@ -106,6 +124,7 @@ def viz_compose_repository_10_2(
 
     docker_compose_dir.mkdir(parents=True, exist_ok=True)
 
+    # SVG
     svg = docker_compose_dir / f"{'__'.join(context.asset_key.path)}.svg"
     dcg.graph.write(
         path=svg,
@@ -118,6 +137,21 @@ def viz_compose_repository_10_2(
     svg_base64 = base64.b64encode(svg_bytes).decode("utf-8")
     svg_md = f"![Image](data:image/svg+xml;base64,{svg_base64})"
 
+    # PNG
+    png = docker_compose_dir / f"{'__'.join(context.asset_key.path)}.png"
+    dcg.graph.write(
+        path=png,
+        format="png",
+    )
+
+    # SLOW
+    # with open(png, "rb") as fr:
+    #     png_bytes = fr.read()
+    #
+    # png_base64 = base64.b64encode(png_bytes).decode("utf-8")
+    # png_md = f"![Image](data:image/png;base64,{png_base64})"
+
+    # DOT
     dot = docker_compose_dir / f"{'__'.join(context.asset_key.path)}.dot"
     dcg.graph.write(
         path=docker_compose_dir / f"{'__'.join(context.asset_key.path)}.dot",
@@ -130,8 +164,10 @@ def viz_compose_repository_10_2(
         asset_key=context.asset_key,
         metadata={
             "svg": MetadataValue.md(svg_md),
+            # "png": MetadataValue.md(png_md),  # slow in Dagster UI
             "__".join(context.asset_key.path): MetadataValue.json(str(dcg.graph)),
             "svg_path": MetadataValue.path(svg),
+            "png_path": MetadataValue.path(png),
             "dot_path": MetadataValue.path(dot),
         },
     )

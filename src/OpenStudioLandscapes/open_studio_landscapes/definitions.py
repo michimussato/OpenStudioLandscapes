@@ -21,7 +21,7 @@ from OpenStudioLandscapes.open_studio_landscapes.third_party.Kitsu import (
 from OpenStudioLandscapes.open_studio_landscapes.third_party.LikeC4 import (
     assets as assets_LikeC4,
 )
-from OpenStudioLandscapes.open_studio_landscapes.Visualizer import (
+from OpenStudioLandscapes.open_studio_landscapes.docker_compose_graph import (
     assets as assets_Visualizer,
 )
 
