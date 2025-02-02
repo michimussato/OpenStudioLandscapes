@@ -659,3 +659,15 @@ docker volume prune -a -f
 docker buildx prune -a -f
 docker network prune -f
 ```
+
+## pre-commit
+
+- https://pre-commit.com/
+- https://pre-commit.com/hooks.html
+
+## nox
+
+```shell
+nox --no-error-on-missing-interpreters --report .nox-report.json
+```
+
