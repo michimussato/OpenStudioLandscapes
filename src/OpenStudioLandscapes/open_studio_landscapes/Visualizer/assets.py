@@ -1,31 +1,26 @@
 import base64
-import pydot
 import pathlib
 
+import pydot
 from docker_compose_graph.docker_compose_graph import DockerComposeGraph
 
 from dagster import (
-    asset,
+    AssetExecutionContext,
     AssetIn,
     AssetKey,
-    AssetExecutionContext,
-    Output,
     AssetMaterialization,
     MetadataValue,
+    Output,
+    asset,
 )
-
-
-from OpenStudioLandscapes.open_studio_landscapes.Deadline.v10_2.assets import KEY as KEY_DEADLINE_V10_2
-
+from OpenStudioLandscapes.open_studio_landscapes.Deadline.v10_2.assets import (
+    KEY as KEY_DEADLINE_V10_2,
+)
 
 GROUP = "Viz"
 KEY = "Viz"
 
-asset_header = {
-    "group_name": GROUP,
-    "key_prefix": [KEY],
-    "compute_kind": "python"
-}
+asset_header = {"group_name": GROUP, "key_prefix": [KEY], "compute_kind": "python"}
 
 
 @asset(
@@ -37,22 +32,19 @@ asset_header = {
     },
 )
 def viz_compose_10_2(
-        context: AssetExecutionContext,
-        compose_10_2: pathlib.Path,
+    context: AssetExecutionContext,
+    compose_10_2: pathlib.Path,
 ) -> pydot.Dot:
-    """
-    """
+    """ """
 
     dcg = DockerComposeGraph()
-    trees = dcg.parse_docker_compose(
-        pathlib.Path(compose_10_2)
-    )
+    trees = dcg.parse_docker_compose(pathlib.Path(compose_10_2))
 
     context.log.info(trees)
 
     dcg.iterate_trees(trees)
 
-    docker_compose_dir = compose_10_2.parent / '__'.join(context.asset_key.path)
+    docker_compose_dir = compose_10_2.parent / "__".join(context.asset_key.path)
 
     docker_compose_dir.mkdir(parents=True, exist_ok=True)
 
@@ -96,22 +88,21 @@ def viz_compose_10_2(
     },
 )
 def viz_compose_repository_10_2(
-        context: AssetExecutionContext,
-        compose_repository_10_2: pathlib.Path,
+    context: AssetExecutionContext,
+    compose_repository_10_2: pathlib.Path,
 ) -> pydot.Dot:
-    """
-    """
+    """ """
 
     dcg = DockerComposeGraph()
-    trees = dcg.parse_docker_compose(
-        pathlib.Path(compose_repository_10_2)
-    )
+    trees = dcg.parse_docker_compose(pathlib.Path(compose_repository_10_2))
 
     context.log.info(trees)
 
     dcg.iterate_trees(trees)
 
-    docker_compose_dir = compose_repository_10_2.parent / '__'.join(context.asset_key.path)
+    docker_compose_dir = compose_repository_10_2.parent / "__".join(
+        context.asset_key.path
+    )
 
     docker_compose_dir.mkdir(parents=True, exist_ok=True)
 

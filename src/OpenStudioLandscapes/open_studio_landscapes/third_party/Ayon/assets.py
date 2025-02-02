@@ -1,33 +1,26 @@
-import pathlib
-import yaml
-import shutil
 import json
+import pathlib
+import shutil
 
-from OpenStudioLandscapes.open_studio_landscapes.utils import *
-
+import yaml
 from docker_compose_graph.yaml_tags.overrides import *
 
 from dagster import (
+    AssetExecutionContext,
     AssetIn,
     AssetKey,
-    asset,
-    AssetExecutionContext,
-    Output,
     AssetMaterialization,
-    MetadataValue
+    MetadataValue,
+    Output,
+    asset,
 )
-
 from OpenStudioLandscapes.open_studio_landscapes.assets import KEY as KEY_BASE
-
+from OpenStudioLandscapes.open_studio_landscapes.utils import *
 
 GROUP = "Ayon"
 KEY = "Ayon"
 
-asset_header = {
-    "group_name": GROUP,
-    "key_prefix": [KEY],
-    "compute_kind": "python"
-}
+asset_header = {"group_name": GROUP, "key_prefix": [KEY], "compute_kind": "python"}
 
 
 @asset(
@@ -39,8 +32,8 @@ asset_header = {
     },
 )
 def env(
-        context: AssetExecutionContext,
-        env: dict,
+    context: AssetExecutionContext,
+    env: dict,
 ) -> dict:
 
     # @formatter:off
@@ -50,7 +43,9 @@ def env(
             "repos",
             "ayon-docker",
             "docker-compose.yml",
-        ).expanduser().as_posix(),
+        )
+        .expanduser()
+        .as_posix(),
         "AYON_PORT_HOST": "5005",
         "AYON_PORT_CONTAINER": "5000",
     }
@@ -97,11 +92,10 @@ def env(
     },
 )
 def compose_override(
-        context: AssetExecutionContext,
-        env: dict,
+    context: AssetExecutionContext,
+    env: dict,
 ) -> dict[str, list[str]]:
-    """
-    """
+    """ """
 
     parent = pathlib.Path(env.get("AYON_DOCKER_COMPOSE"))
 
@@ -137,9 +131,11 @@ def compose_override(
                 #  - [ ] Need to find out whether `ports` Override
                 #  also overrides the exports in the source ayon-docker-compose.yml
                 #  "exports": OverrideArray([]),
-                "ports": OverrideArray([
-                    f"{env.get('AYON_PORT_HOST')}:{env.get('AYON_PORT_CONTAINER')}",
-                ]),
+                "ports": OverrideArray(
+                    [
+                        f"{env.get('AYON_PORT_HOST')}:{env.get('AYON_PORT_CONTAINER')}",
+                    ]
+                ),
                 "networks": [
                     "mongodb",
                     "repository",
@@ -187,7 +183,9 @@ def compose_override(
         asset_key=context.asset_key,
         metadata={
             "__".join(context.asset_key.path): MetadataValue.json(ret),
-            "cmd_docker_compose_up": MetadataValue.path(cmd_list_to_str(cmd_docker_compose_up)),
+            "cmd_docker_compose_up": MetadataValue.path(
+                cmd_list_to_str(cmd_docker_compose_up)
+            ),
             "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
         },
     )

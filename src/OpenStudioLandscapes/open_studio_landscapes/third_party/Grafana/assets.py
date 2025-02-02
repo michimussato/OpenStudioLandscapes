@@ -1,33 +1,26 @@
-import pathlib
-import yaml
 import json
+import pathlib
 
+import yaml
 from python_on_whales import docker
 
-from OpenStudioLandscapes.open_studio_landscapes.constants import *
-from OpenStudioLandscapes.open_studio_landscapes.utils import *
-
 from dagster import (
+    AssetExecutionContext,
     AssetIn,
     AssetKey,
-    AssetExecutionContext,
-    asset,
-    Output,
     AssetMaterialization,
     MetadataValue,
+    Output,
+    asset,
 )
-
 from OpenStudioLandscapes.open_studio_landscapes.assets import KEY as KEY_BASE
-
+from OpenStudioLandscapes.open_studio_landscapes.constants import *
+from OpenStudioLandscapes.open_studio_landscapes.utils import *
 
 GROUP = "Grafana"
 KEY = "Grafana"
 
-asset_header = {
-    "group_name": GROUP,
-    "key_prefix": [KEY],
-    "compute_kind": "python"
-}
+asset_header = {"group_name": GROUP, "key_prefix": [KEY], "compute_kind": "python"}
 
 
 @asset(
@@ -39,8 +32,8 @@ asset_header = {
     },
 )
 def env(
-        context: AssetExecutionContext,
-        env: dict,
+    context: AssetExecutionContext,
+    env: dict,
 ) -> dict:
 
     # @formatter:off
@@ -251,12 +244,11 @@ def env(
     },
 )
 def compose(
-        context: AssetExecutionContext,
-        env: dict,
-        # build_grafana: str,
+    context: AssetExecutionContext,
+    env: dict,
+    # build_grafana: str,
 ) -> dict:
-    """
-    """
+    """ """
 
     docker_dict = {
         "services": {
@@ -310,7 +302,9 @@ def compose(
         asset_key=context.asset_key,
         metadata={
             "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
-            "docker_dict": MetadataValue.md(f"```json\n{json.dumps(docker_dict, indent=2)}\n```"),
+            "docker_dict": MetadataValue.md(
+                f"```json\n{json.dumps(docker_dict, indent=2)}\n```"
+            ),
             "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
             "env": MetadataValue.json(env),
         },

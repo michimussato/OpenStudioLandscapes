@@ -1,12 +1,11 @@
 import pathlib
-import shutil
 import shlex
+import shutil
+
 import git
 
-from OpenStudioLandscapes.open_studio_landscapes.constants import *
-
 from dagster import MetadataValue
-
+from OpenStudioLandscapes.open_studio_landscapes.constants import *
 
 __all__ = [
     "compile_cmds",
@@ -20,10 +19,10 @@ __all__ = [
 
 
 def compile_cmds(
-        docker_file,
-        tag,
-        volumes: [list, None] = None,
-        networks: [list, None] = None,
+    docker_file,
+    tag,
+    volumes: [list, None] = None,
+    networks: [list, None] = None,
 ) -> dict[str, MetadataValue]:
 
     if volumes is None:
@@ -32,8 +31,8 @@ def compile_cmds(
     if networks is None:
         networks = []
 
-    _volumes = ' '.join([f'--volume {i}' for i in volumes])
-    _networks = ' '.join([f'--network {i}' for i in networks])
+    _volumes = " ".join([f"--volume {i}" for i in volumes])
+    _networks = " ".join([f"--network {i}" for i in networks])
 
     cmd_docker_run = [
         shutil.which("docker"),
@@ -72,36 +71,41 @@ def compile_cmds(
 
 
 def cmd_list_to_str(
-        cmd_list: list[str],
+    cmd_list: list[str],
 ) -> str:
     cmd_str = " ".join(shlex.quote(s) for s in cmd_list)
     return cmd_str
 
 
 def get_pip_install_str(
-        pip_install_packages: list[str],
+    pip_install_packages: list[str],
 ) -> str:
     pip_install_str: str = str()
     for pip_package in pip_install_packages:
-        pip_install_str += "RUN python{PYTHON_MAJ}.{PYTHON_MIN} -m pip install --root-user-action=ignore '%s'\n" % pip_package
+        pip_install_str += (
+            "RUN python{PYTHON_MAJ}.{PYTHON_MIN} -m pip install --root-user-action=ignore '%s'\n"
+            % pip_package
+        )
 
     return pip_install_str
 
 
 def get_apt_install_str(
-        apt_install_packages: list[str],
+    apt_install_packages: list[str],
 ) -> str:
     apt_install_str: str = str()
     for apt_package in apt_install_packages:
-        apt_install_str += "RUN apt-get install -y --no-install-recommends '%s'\n" % apt_package
+        apt_install_str += (
+            "RUN apt-get install -y --no-install-recommends '%s'\n" % apt_package
+        )
 
     return apt_install_str
 
 
 def get_copy_str(
-        temp_dir: str,
-        copy_packages: dict[str, str],
-        mode: [int | None] = None,
+    temp_dir: str,
+    copy_packages: dict[str, str],
+    mode: [int | None] = None,
 ) -> str:
     # Todo:
     #  - [ ] COPY vs. ADD?
@@ -114,8 +118,8 @@ def get_copy_str(
 
 
 def get_wget_str(
-        wget_packages: dict[str, str],
-        chmod_plus_x: bool = True,
+    wget_packages: dict[str, str],
+    chmod_plus_x: bool = True,
 ) -> str:
     wget_str: str = str()
     for wget_package, wget_url in wget_packages.items():
@@ -127,7 +131,7 @@ def get_wget_str(
 
 
 def get_git_root(
-        path: pathlib.Path = pathlib.Path(__file__),
+    path: pathlib.Path = pathlib.Path(__file__),
 ) -> pathlib.Path:
     git_repo = git.Repo(path, search_parent_directories=True)
     git_root = git_repo.git.rev_parse("--show-toplevel")

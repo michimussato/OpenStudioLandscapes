@@ -1,28 +1,27 @@
 import getpass
-import urllib.parse
+import json
+import pathlib
+import shutil
 import socket
+import textwrap
+import time
+import urllib.parse
 import uuid
 from datetime import datetime
-import json
-import shutil
-import textwrap
-import pathlib
-import time
-
-from OpenStudioLandscapes.open_studio_landscapes.constants import *
-from OpenStudioLandscapes.open_studio_landscapes.utils import *
 
 from python_on_whales import docker
 
 from dagster import (
     AssetExecutionContext,
-    asset,
-    Output,
+    AssetIn,
+    AssetKey,
     AssetMaterialization,
     MetadataValue,
-    AssetIn, AssetKey,
+    Output,
+    asset,
 )
-
+from OpenStudioLandscapes.open_studio_landscapes.constants import *
+from OpenStudioLandscapes.open_studio_landscapes.utils import *
 
 # GROUP = ""
 KEY = "Base"
@@ -30,7 +29,7 @@ KEY = "Base"
 asset_header = {
     # "group_name": GROUP,
     "key_prefix": [KEY],
-    "compute_kind": "python"
+    "compute_kind": "python",
 }
 
 
@@ -39,7 +38,7 @@ asset_header = {
     group_name="Environment",
 )
 def git_root(
-        context: AssetExecutionContext,
+    context: AssetExecutionContext,
 ) -> pathlib.Path:
 
     _git_root = get_git_root()
@@ -50,7 +49,6 @@ def git_root(
         asset_key=context.asset_key,
         metadata={
             "__".join(context.asset_key.path): MetadataValue.path(_git_root),
-
         },
     )
 
@@ -60,7 +58,7 @@ def git_root(
     group_name="Environment",
 )
 def landscape_id(
-        context: AssetExecutionContext,
+    context: AssetExecutionContext,
 ) -> dict:
 
     now = datetime.now()
@@ -75,7 +73,6 @@ def landscape_id(
         asset_key=context.asset_key,
         metadata={
             "__".join(context.asset_key.path): MetadataValue.json(landscape_stamp),
-
         },
     )
 
@@ -85,7 +82,7 @@ def landscape_id(
     group_name="Environment",
 )
 def secrets(
-        context: AssetExecutionContext,
+    context: AssetExecutionContext,
 ) -> dict:
     try:
         from __SECRET__.secrets import secrets as _secrets
@@ -99,7 +96,6 @@ def secrets(
         asset_key=context.asset_key,
         metadata={
             "__".join(context.asset_key.path): MetadataValue.json(_secrets),
-
         },
     )
 
@@ -114,8 +110,8 @@ def secrets(
     },
 )
 def dot_landscapes(
-        context: AssetExecutionContext,
-        git_root: pathlib.Path,
+    context: AssetExecutionContext,
+    git_root: pathlib.Path,
 ) -> pathlib.Path:
 
     dot_landscapes = git_root / ".landscapes"
@@ -130,7 +126,6 @@ def dot_landscapes(
         asset_key=context.asset_key,
         metadata={
             "__".join(context.asset_key.path): MetadataValue.path(dot_landscapes),
-
         },
     )
 
@@ -139,13 +134,12 @@ def dot_landscapes(
     **asset_header,
     group_name="Environment",
     ins={
-        "git_root": AssetIn(
-            AssetKey([KEY, "git_root"])),
+        "git_root": AssetIn(AssetKey([KEY, "git_root"])),
     },
 )
 def dot_installers(
-        context: AssetExecutionContext,
-        git_root: pathlib.Path,
+    context: AssetExecutionContext,
+    git_root: pathlib.Path,
 ) -> pathlib.Path:
 
     dot_installers = git_root / ".installers"
@@ -160,7 +154,6 @@ def dot_installers(
         asset_key=context.asset_key,
         metadata={
             "__".join(context.asset_key.path): MetadataValue.path(dot_installers),
-
         },
     )
 
@@ -169,33 +162,26 @@ def dot_installers(
     **asset_header,
     group_name="Environment",
     ins={
-        "git_root": AssetIn(
-            AssetKey([KEY, "git_root"])),
-        "secrets": AssetIn(
-            AssetKey([KEY, "secrets"])),
-        "landscape_id": AssetIn(
-            AssetKey([KEY, "landscape_id"])),
-        "dot_landscapes": AssetIn(
-            AssetKey([KEY, "dot_landscapes"])),
-        "dot_installers": AssetIn(
-            AssetKey([KEY, "dot_installers"])),
-        "nfs": AssetIn(
-            AssetKey([KEY, "nfs"])),
+        "git_root": AssetIn(AssetKey([KEY, "git_root"])),
+        "secrets": AssetIn(AssetKey([KEY, "secrets"])),
+        "landscape_id": AssetIn(AssetKey([KEY, "landscape_id"])),
+        "dot_landscapes": AssetIn(AssetKey([KEY, "dot_landscapes"])),
+        "dot_installers": AssetIn(AssetKey([KEY, "dot_installers"])),
+        "nfs": AssetIn(AssetKey([KEY, "nfs"])),
     },
 )
 def env(
-        context: AssetExecutionContext,
-        git_root: pathlib.Path,
-        secrets: dict,
-        landscape_id: dict,
-        dot_landscapes: pathlib.Path,
-        dot_installers: pathlib.Path,
-        nfs: dict,
+    context: AssetExecutionContext,
+    git_root: pathlib.Path,
+    secrets: dict,
+    landscape_id: dict,
+    dot_landscapes: pathlib.Path,
+    dot_installers: pathlib.Path,
+    nfs: dict,
 ) -> dict:
     # @formatter:off
 
     _env: dict = {
-
         "GIT_ROOT": git_root.as_posix(),
         "CONFIGS_ROOT": pathlib.Path(
             git_root,
@@ -203,26 +189,19 @@ def env(
         ).as_posix(),
         "DOT_LANDSCAPES": dot_landscapes.as_posix(),
         "DOT_INSTALLERS": dot_installers.as_posix(),
-
         "AUTHOR": "michimussato@gmail.com",
         "CREATED_BY": str(getpass.getuser()),
         "CREATED_ON": str(socket.gethostname()),
-        "CREATED_AT": str(datetime.strftime(
-            datetime.now(), '%Y-%m-%d_%H-%M-%S')
-        ),
+        "CREATED_AT": str(datetime.strftime(datetime.now(), "%Y-%m-%d_%H-%M-%S")),
         "TIMEZONE": "Europe/Zurich",
         "IMAGE_PREFIX": "michimussato",
-
         "MONGO_EXPRESS_PORT_HOST": "8181",
         "MONGO_EXPRESS_PORT_CONTAINER": "8081",
         "MONGO_DB_NAME": "deadline10db",
-
         "RCS_HTTP_PORT_HOST": "8888",
         "RCS_HTTP_PORT_CONTAINER": "8888",
-
         "WEBSERVICE_HTTP_PORT_HOST": "8899",
         "WEBSERVICE_HTTP_PORT_CONTAINER": "8899",
-
         "MONGO_DB_PORT_HOST": "21017",
         "MONGO_DB_PORT_CONTAINER": "21017",
         "DEFAULT_DBPATH_CONTAINER": "/data/db",
@@ -230,12 +209,10 @@ def env(
         "DEFAULT_CONFIG_DBPATH": "/data/configdb",
         "ROOT_DOMAIN": "farm.evil",
         # "DB_HOST": "mongodb-10-2",
-
         # https://vfxplatform.com/
         "PYTHON_MAJ": "3",
         "PYTHON_MIN": "11",
         "PYTHON_PAT": "11",
-
         # # PROD
         # "LN_NFS": "/nfs",
         # "NFS_ENTRY_POINT": "/data/share{0[LN_NFS]}",
@@ -244,16 +221,13 @@ def env(
         # "NFS_REPOSITORY": "{0[NFS_ENTRY_POINT]}/prod/DeadlineRepository10",
         # "NFS_DEADLINE": "{0[NFS_ENTRY_POINT]}/prod/Deadline10",
         # "MONGO_DB_DIR_HOST": pathlib.Path("~/git/repos/studio-landscapes/tests/fixtures/10.2/DeadlineDatabase10/mongo/data").expanduser().as_posix(),
-
         # # TEST
         # "LN_NFS": "/nfs",
         # "NFS_ENTRY_POINT": "/data/share/nfs",
         # "NFS_ENTRY_POINT_LNS": "/nfs",
         # "INSTALLERS_ROOT": "/data/share/nfs/installers",
-
         # "MONGO_DB_DIR_HOST": pathlib.Path("~/git/repos/studio-landscapes/tests/fixtures/10.2/DeadlineDatabase10/mongo/data").expanduser().as_posix(),
         # "MONGO_DB_DIR_HOST": pathlib.Path("~/git/repos/studio-landscapes/tests/fixtures/v10_2/DeadlineDatabase10").expanduser().as_posix(),
-
         # # TODO
         # # DEADLINE_CLIENT_DIR: "/opt/Thinkbox/Deadline10"
         # # DEADLINE_REPO_DIR: "/opt/Thinkbox/DeadlineRepository10"
@@ -271,13 +245,17 @@ def env(
             "filebrowser",
             "db",
             "filebrowser.db",
-        ).expanduser().as_posix(),
+        )
+        .expanduser()
+        .as_posix(),
         "FILEBROWSER_JSON": pathlib.Path(
             _env["CONFIGS_ROOT"],
             "filebrowser",
             "json",
             "filebrowser.json",
-        ).expanduser().as_posix(),
+        )
+        .expanduser()
+        .as_posix(),
     }
 
     _env_mongo_express = {
@@ -338,10 +316,9 @@ def env(
     group_name="Build_Base_Image",
 )
 def pip_packages(
-        context: AssetExecutionContext,
+    context: AssetExecutionContext,
 ) -> list:
-    """
-    """
+    """ """
 
     _pip_packages: list = [
         # Todo:
@@ -368,10 +345,9 @@ def pip_packages(
     group_name="Build_Base_Image",
 )
 def apt_packages(
-        context: AssetExecutionContext,
+    context: AssetExecutionContext,
 ) -> dict[str, list[str]]:
-    """
-    """
+    """ """
 
     _apt_packages = dict()
 
@@ -419,22 +395,18 @@ def apt_packages(
     **asset_header,
     group_name="Build_Base_Image",
     ins={
-        "env": AssetIn(
-            AssetKey([KEY, "env"])),
-        "apt_packages": AssetIn(
-            AssetKey([KEY, "apt_packages"])),
-        "pip_packages": AssetIn(
-            AssetKey([KEY, "pip_packages"])),
+        "env": AssetIn(AssetKey([KEY, "env"])),
+        "apt_packages": AssetIn(AssetKey([KEY, "apt_packages"])),
+        "pip_packages": AssetIn(AssetKey([KEY, "pip_packages"])),
     },
 )
 def build_base_image(
-        context: AssetExecutionContext,
-        env: dict,
-        apt_packages: dict[str, list[str]],
-        pip_packages: list,
+    context: AssetExecutionContext,
+    env: dict,
+    apt_packages: dict[str, list[str]],
+    pip_packages: list,
 ) -> str:
-    """
-    """
+    """ """
 
     docker_file = pathlib.Path(
         env["DOT_LANDSCAPES"],
@@ -461,56 +433,59 @@ def build_base_image(
         apt_install_packages=apt_packages["build_python311"],
     )
 
-    pip_install_str: str = get_pip_install_str(
-        pip_install_packages=pip_packages
-    )
+    pip_install_str: str = get_pip_install_str(pip_install_packages=pip_packages)
 
     # @formatter:off
-    docker_file_str = textwrap.dedent("""
+    docker_file_str = textwrap.dedent(
+        """
         # {auto_generated}
         # {dagster_url}
         FROM ubuntu:20.04 AS {image_name}
         LABEL authors="{AUTHOR}"
-        
+
         ARG DEBIAN_FRONTEND=noninteractive
-        
+
         ENV CONTAINER_TIMEZONE={TIMEZONE}
         ENV SET_CONTAINER_TIMEZONE=true
-        
+
         RUN apt-get update && apt-get upgrade -y
-        
+
         {apt_install_str_base}
-        
+
         {apt_install_str_build_python311}
-        
+
         WORKDIR /build/python
-        
+
         RUN curl "https://www.python.org/ftp/python/{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}/Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}.tgz" -o Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}.tgz
         RUN file Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}.tgz
         RUN tar -xvf Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}.tgz
-        
+
         RUN cd Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT} && ./configure --enable-optimizations  # Todo: --prefix  # https://stackoverflow.com/questions/11307465/destdir-and-prefix-of-make
         RUN cd Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT} && make -j $(nproc)
         RUN cd Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT} && make altinstall  # altinstall instead of install because the later command will overwrite the default system python3 binary.
-        
+
         RUN python{PYTHON_MAJ}.{PYTHON_MIN} -m pip install pip --upgrade
-        
+
         {pip_install_str}
         # RUN thinkbox-ssl-gen --help
-        
+
         RUN rm -rf /build/python
-        
+
         RUN apt-get clean
-        
+
         ENTRYPOINT []
-    """).format(
+    """
+    ).format(
         apt_install_str_base=apt_install_str_base,
         apt_install_str_build_python311=apt_install_str_build_python311,
         pip_install_str=pip_install_str.format(
             **env,
         ),
         auto_generated=f"AUTO-GENERATED by Dagster Asset {'__'.join(context.asset_key.path)}",
-        dagster_url=urllib.parse.quote(f"http://localhost:3000/asset-groups/{'%2F'.join(context.asset_key.path)}", safe=":/%"),
+        dagster_url=urllib.parse.quote(
+            f"http://localhost:3000/asset-groups/{'%2F'.join(context.asset_key.path)}",
+            safe=":/%",
+        ),
         image_name="__".join(context.asset_key.path).lower(),
         **env,
     )
@@ -560,7 +535,7 @@ def build_base_image(
     group_name="Environment",
 )
 def nfs(
-        context: AssetExecutionContext,
+    context: AssetExecutionContext,
 ) -> dict[str, str]:
     # @formatter:off
     _env: dict = {
