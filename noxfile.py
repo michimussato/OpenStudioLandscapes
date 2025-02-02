@@ -166,12 +166,20 @@ def docs(session):
     # nox --tags docs
     session.install("-e", ".[docs]", silent=True)
 
+    deptree_out = (
+        pathlib.Path().cwd()
+        / "docs"
+        / "dot"
+        / f"graphviz_pipdeptree.{session.name}.dot"
+    )
+    deptree_out.parent.mkdir(parents=True, exist_ok=True)
+
     # Update Dot
     # Reference: /home/michael/git/repos/My-Skeleton-Package/
     session.run(
         "bash",
         "-c",
-        f"pipdeptree --graph-output dot > docs/dot/graphviz_pipdeptree.{session.name}.dot",
+        f"pipdeptree --graph-output dot > {deptree_out}",
         env=ENV,
         external=True,
     )
