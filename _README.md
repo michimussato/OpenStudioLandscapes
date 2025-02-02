@@ -1,5 +1,5 @@
 <!-- TOC -->
-* [My Skeleton](#my-skeleton)
+* [OpenStudioLandscapes](#openstudiolandscapes)
   * [Sphinx](#sphinx)
     * [Builders](#builders)
     * [Markdown Support](#markdown-support)
@@ -15,7 +15,7 @@
 
 ---
 
-# My Skeleton
+# OpenStudioLandscapes
 
 ```
 python3.9 -venv .venv

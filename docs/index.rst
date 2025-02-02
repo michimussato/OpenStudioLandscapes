@@ -30,13 +30,13 @@ Contents
 .. toctree::
    :maxdepth: 2
 
-   Overview <readme>
+   Overview <readme_rst>
+   Readme MD <readme_md>
    Contributions & Help <contributing>
    License <license>
    Authors <authors>
    Changelog <changelog>
    Module Reference <api/modules>
-   Readme Markdown <README>
 
 
 This is an embedded Graph (Graphviz-Test):
