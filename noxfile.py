@@ -92,7 +92,11 @@ def lint(session):
 
     session.install("-e", ".[lint]")
 
-    session.run("black", "src", *session.posargs)
+    exclude = [
+        "*.svg",
+    ]
+
+    session.run("black", *exclude, "src", *session.posargs)
     session.run("isort", "--profile", "black", "src", *session.posargs)
 
     if pathlib.PosixPath(".pre-commit-config.yaml").absolute().exists():
@@ -160,10 +164,11 @@ def docs(session):
     session.install("-e", ".[docs]", silent=True)
 
     # Update Dot
+    # Reference: /home/michael/git/repos/My-Skeleton-Package/
     session.run(
         "bash",
         "-c",
-        f"pipdeptree --graph-output dot > docs/graphviz_example_pipdeptree.{session.name}.dot",
+        f"pipdeptree --graph-output dot > docs/graphviz_pipdeptree.{session.name}.dot",
         env=ENV,
         external=True,
     )
