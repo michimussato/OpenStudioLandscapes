@@ -678,3 +678,8 @@ pre-commit run --all-files
 ```shell
 nox --no-error-on-missing-interpreters --report .nox-report.json
 ```
+
+## Pylint
+
+- `# pylint: disable=redefined-outer-name`: Due to Dagsters way of piping
+  arguments into assets.

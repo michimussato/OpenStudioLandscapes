@@ -34,7 +34,7 @@ except ImportError:
     from sphinx import apidoc
 
 output_dir = os.path.join(__location__, "api")
-module_dir = os.path.join(__location__, "../src/PackageNamespace")
+module_dir = os.path.join(__location__, "../src/OpenStudioLandscapes")
 try:
     shutil.rmtree(output_dir)
 except FileNotFoundError:
@@ -89,7 +89,7 @@ source_suffix = {".rst": "restructuredtext", ".md": "markdown"}
 master_doc = "index"
 
 # General information about the project.
-project = "My-Skeleton-Package"
+project = "OpenStudioLandscapes"
 copyright = "2024, Michael Mussato"
 
 # The version info for the project you're documenting, acts as replacement for
@@ -101,7 +101,7 @@ copyright = "2024, Michael Mussato"
 # If you don’t need the separation provided between version and release,
 # just set them both to the same value.
 try:
-    from PackageNamespace.my_skeleton_package import __version__ as version
+    from OpenStudioLandscapes.open_studio_landscapes import __version__ as version
 except ImportError:
     version = ""
 
@@ -228,7 +228,7 @@ html_static_path = ["_static"]
 # html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = "My-Skeleton-Package-doc"
+htmlhelp_basename = "OpenStudioLandscapes-doc"
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -249,7 +249,7 @@ latex_documents = [
         # Todo
         "index",
         "user_guide.tex",
-        "My-Skeleton-Package Documentation",
+        "OpenStudioLandscapes Documentation",
         "Michael Mussato",
         "manual",
     )

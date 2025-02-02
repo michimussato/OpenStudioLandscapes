@@ -2,7 +2,6 @@ from dagster import (
     Definitions,
     load_assets_from_modules,
 )
-
 from OpenStudioLandscapes.open_studio_landscapes import assets as assets_base
 from OpenStudioLandscapes.open_studio_landscapes.Deadline.v10_2 import (
     assets as assets_Deadline_v10_2,
