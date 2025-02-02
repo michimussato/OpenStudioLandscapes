@@ -35,6 +35,7 @@ htmlcov/*
 .coverage.*
 .tox
 .nox
+.nox-report.json
 .sbom
 junit*.xml
 coverage.xml
@@ -49,7 +50,6 @@ docs/_rst/*
 docs/_build/*
 cover/*
 MANIFEST
-.nox-report.json
 
 # Per-project virtualenvs
 .venv*/
