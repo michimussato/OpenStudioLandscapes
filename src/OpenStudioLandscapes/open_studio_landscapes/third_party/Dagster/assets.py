@@ -37,7 +37,7 @@ asset_header = {"group_name": GROUP, "key_prefix": [KEY], "compute_kind": "pytho
 )
 def env(
     context: AssetExecutionContext,
-    env: dict,
+    env: dict,  # pylint: disable=redefined-outer-name
 ) -> dict:
 
     # @formatter:off
@@ -124,9 +124,9 @@ def pip_packages(
 )
 def build(
     context: AssetExecutionContext,
-    env: dict,
-    build_base_image: str,
-    pip_packages: list,
+    env: dict,  # pylint: disable=redefined-outer-name
+    build_base_image: str,  # pylint: disable=redefined-outer-name
+    pip_packages: list,  # pylint: disable=redefined-outer-name
 ) -> str:
     """ """
 
@@ -264,8 +264,8 @@ def build(
 )
 def compose(
     context: AssetExecutionContext,
-    env: dict,
-    build: str,
+    env: dict,  # pylint: disable=redefined-outer-name
+    build: str,  # pylint: disable=redefined-outer-name
 ) -> dict:
     """ """
 

@@ -33,7 +33,7 @@ asset_header = {"group_name": GROUP, "key_prefix": [KEY], "compute_kind": "pytho
 )
 def env(
     context: AssetExecutionContext,
-    env: dict,
+    env: dict,  # pylint: disable=redefined-outer-name
 ) -> dict:
 
     # @formatter:off
@@ -93,7 +93,7 @@ def env(
 )
 def compose_override(
     context: AssetExecutionContext,
-    env: dict,
+    env: dict,  # pylint: disable=redefined-outer-name
 ) -> dict[str, list[str]]:
     """ """
 

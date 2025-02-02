@@ -77,7 +77,7 @@ asset_header = {"group_name": GROUP, "key_prefix": [KEY], "compute_kind": "pytho
 )
 def env(
     context: AssetExecutionContext,
-    env: dict,
+    env: dict,  # pylint: disable=redefined-outer-name
 ) -> dict:
 
     # @formatter:off
@@ -206,8 +206,8 @@ def apt_packages(
 )
 def build(
     context: AssetExecutionContext,
-    env: dict,
-    apt_packages: dict[str, list[str]],
+    env: dict,  # pylint: disable=redefined-outer-name
+    apt_packages: dict[str, list[str]],  # pylint: disable=redefined-outer-name
 ) -> str:
     """ """
 
@@ -321,7 +321,7 @@ def build(
 )
 def script_prepare_db(
     context: AssetExecutionContext,
-    env: dict,
+    env: dict,  # pylint: disable=redefined-outer-name
 ) -> dict[str, str]:
 
     ret = dict()
@@ -422,8 +422,8 @@ def script_prepare_db(
 )
 def prepare_db(
     context: AssetExecutionContext,
-    env: dict,
-    script_prepare_db: dict[str, str],
+    env: dict,  # pylint: disable=redefined-outer-name
+    script_prepare_db: dict[str, str],  # pylint: disable=redefined-outer-name
 ):
 
     stdout_stderr = {
@@ -509,7 +509,7 @@ def prepare_db(
 )
 def script_init_zou(
     context: AssetExecutionContext,
-    env: dict,
+    env: dict,  # pylint: disable=redefined-outer-name
 ) -> dict[str, str]:
     """This script overrides the default
     Kitsu `/opt/zou/init_zou.sh` to be able
@@ -581,9 +581,9 @@ def script_init_zou(
 )
 def compose(
     context: AssetExecutionContext,
-    env: dict,
-    script_init_zou: dict,
-    build: str,
+    env: dict,  # pylint: disable=redefined-outer-name
+    script_init_zou: dict,  # pylint: disable=redefined-outer-name
+    build: str,  # pylint: disable=redefined-outer-name
 ) -> dict:
     """ """
 
