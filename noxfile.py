@@ -33,20 +33,20 @@ VERSIONS = [
     "3.12",
 ]
 
-ENV = {
-}
+ENV = {}
 
 
 @nox.session(python=VERSIONS, tags=["sbom"])
 def sbom(session):
     """Runs Software Bill of Materials (SBOM)."""
 
+    # https://pypi.org/project/pipdeptree/
+
     session.install("-e", ".[sbom]")
 
     target_dir = pathlib.Path().cwd() / ".sbom"
     target_dir.mkdir(parents=True, exist_ok=True)
 
-    # cyclonedx-py environment --output-format JSON --outfile {toxinidir}/.sbom
     session.run(
         "cyclonedx-py",
         "environment",
