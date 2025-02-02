@@ -3,7 +3,6 @@ from dagster import (
     load_assets_from_modules,
 )
 
-# @formatter:off
 from OpenStudioLandscapes.open_studio_landscapes import assets as assets_base
 from OpenStudioLandscapes.open_studio_landscapes.Deadline.v10_2 import (
     assets as assets_Deadline_v10_2,
@@ -26,8 +25,6 @@ from OpenStudioLandscapes.open_studio_landscapes.third_party.LikeC4 import (
 from OpenStudioLandscapes.open_studio_landscapes.Visualizer import (
     assets as assets_Visualizer,
 )
-
-# @formatter:on
 
 assets_base = load_assets_from_modules([assets_base])
 assets_10_2 = load_assets_from_modules([assets_Deadline_v10_2])

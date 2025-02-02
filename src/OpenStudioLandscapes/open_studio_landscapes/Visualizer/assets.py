@@ -33,7 +33,7 @@ asset_header = {"group_name": GROUP, "key_prefix": [KEY], "compute_kind": "pytho
 )
 def viz_compose_10_2(
     context: AssetExecutionContext,
-    compose_10_2: pathlib.Path,
+    compose_10_2: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> pydot.Dot:
     """ """
 
@@ -89,7 +89,7 @@ def viz_compose_10_2(
 )
 def viz_compose_repository_10_2(
     context: AssetExecutionContext,
-    compose_repository_10_2: pathlib.Path,
+    compose_repository_10_2: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> pydot.Dot:
     """ """
 

@@ -111,7 +111,7 @@ def secrets(
 )
 def dot_landscapes(
     context: AssetExecutionContext,
-    git_root: pathlib.Path,
+    git_root: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> pathlib.Path:
 
     dot_landscapes = git_root / ".landscapes"
@@ -139,7 +139,7 @@ def dot_landscapes(
 )
 def dot_installers(
     context: AssetExecutionContext,
-    git_root: pathlib.Path,
+    git_root: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> pathlib.Path:
 
     dot_installers = git_root / ".installers"
@@ -172,12 +172,12 @@ def dot_installers(
 )
 def env(
     context: AssetExecutionContext,
-    git_root: pathlib.Path,
-    secrets: dict,
-    landscape_id: dict,
-    dot_landscapes: pathlib.Path,
-    dot_installers: pathlib.Path,
-    nfs: dict,
+    git_root: pathlib.Path,  # pylint: disable=redefined-outer-name
+    secrets: dict,  # pylint: disable=redefined-outer-name
+    landscape_id: dict,  # pylint: disable=redefined-outer-name
+    dot_landscapes: pathlib.Path,  # pylint: disable=redefined-outer-name
+    dot_installers: pathlib.Path,  # pylint: disable=redefined-outer-name
+    nfs: dict,  # pylint: disable=redefined-outer-name
 ) -> dict:
     # @formatter:off
 
@@ -402,9 +402,9 @@ def apt_packages(
 )
 def build_base_image(
     context: AssetExecutionContext,
-    env: dict,
-    apt_packages: dict[str, list[str]],
-    pip_packages: list,
+    env: dict,  # pylint: disable=redefined-outer-name
+    apt_packages: dict[str, list[str]],  # pylint: disable=redefined-outer-name
+    pip_packages: list,  # pylint: disable=redefined-outer-name
 ) -> str:
     """ """
 
