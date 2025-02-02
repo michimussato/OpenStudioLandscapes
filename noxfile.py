@@ -1,3 +1,5 @@
+import shutil
+import os
 import nox
 import pathlib
 
@@ -190,6 +192,24 @@ def docs(session):
     # LATEX/PDF
     # session.run("sphinx-build", "--builder", "latex", "docs/", "build/pdf")
     # session.run("make", "-C", "latexmk", "docs/", "build/pdf")
+
+    # Copy images in img to build/docs/_images
+    # Relative image paths in md files outside the
+    # sphinx project are not compatible out of the box
+
+    # defining source and destination
+    # paths
+    src = pathlib.Path(__file__).parent / "img"
+    trg = pathlib.Path(__file__).parent / "build" / "docs" / "_images"
+
+    files = os.listdir(src)
+
+    # iterating over all the files in
+    # the source directory
+    for fname in files:
+        # copying the files to the
+        # destination directory
+        shutil.copy2(src / fname, trg)
 
 
 # @nox.session(name="docs-live", tags=["docs-live"])
