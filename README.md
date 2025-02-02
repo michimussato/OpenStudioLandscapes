@@ -3,7 +3,7 @@
 ---
 
 <!-- TOC -->
-* [open-studio-landscapes](#open-studio-landscapes)
+* [OpenStudioLandscapes](#openstudiolandscapes)
   * [Brief](#brief)
   * [Structure](#structure)
   * [Tested on](#tested-on)
@@ -30,7 +30,7 @@
   * [Clone](#clone)
   * [Install](#install)
     * [venv](#venv)
-    * [open-studio-landscapes](#open-studio-landscapes-1)
+    * [open-studio-landscapes](#open-studio-landscapes)
     * [Git Repos](#git-repos)
     * [DeadlineDatabase10](#deadlinedatabase10)
       * [Use Test DB](#use-test-db)
@@ -52,7 +52,7 @@
 
 ---
 
-# open-studio-landscapes
+# OpenStudioLandscapes
 
 ## Brief
 
