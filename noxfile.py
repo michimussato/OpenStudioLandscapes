@@ -92,11 +92,14 @@ def lint(session):
 
     session.install("-e", ".[lint]")
 
-    exclude = [
-        "*.svg",
-    ]
+    # exclude = [
+    #     # Add one line per exclusion:
+    #     # "--extend-exclude '^.ext'",
+    #     "--extend-exclude", "'^.svg'",
+    # ]
 
-    session.run("black", *exclude, "src", *session.posargs)
+    # session.run("black", "src", *exclude, *session.posargs)
+    session.run("black", "src", *session.posargs)
     session.run("isort", "--profile", "black", "src", *session.posargs)
 
     if pathlib.PosixPath(".pre-commit-config.yaml").absolute().exists():
@@ -168,7 +171,7 @@ def docs(session):
     session.run(
         "bash",
         "-c",
-        f"pipdeptree --graph-output dot > docs/graphviz_pipdeptree.{session.name}.dot",
+        f"pipdeptree --graph-output dot > docs/dot/graphviz_pipdeptree.{session.name}.dot",
         env=ENV,
         external=True,
     )

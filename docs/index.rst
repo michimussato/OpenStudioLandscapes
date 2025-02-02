@@ -1,8 +1,9 @@
-===================
-My-Skeleton-Package
-===================
+====================
+OpenStudioLandscapes
+====================
 
-This is the documentation of **My-Skeleton-Package**.
+This is the documentation of **OpenStudioLandscapes**.
+`Github`_
 
 .. note::
 
@@ -38,7 +39,7 @@ Contents
    Readme Markdown <README>
 
 
-This is an embedded Graph:
+This is an embedded Graph (Graphviz-Test):
 
 .. graphviz::
 
@@ -47,9 +48,9 @@ This is an embedded Graph:
    }
 
 
-And a referenced Graph:
+SBOM Graph:
 
-.. graphviz:: graphviz_example_pipdeptree.docs.dot
+.. graphviz:: dot/graphviz_pipdeptree.docs.dot
 
 
 Indices and tables
@@ -59,6 +60,7 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 
+.. _Github: https://github.com/michimussato/open-studio-landscapes
 .. _toctree: https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html
 .. _reStructuredText: https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html
 .. _references: https://www.sphinx-doc.org/en/stable/markup/inline.html

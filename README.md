@@ -54,6 +54,9 @@
     * [Deadline Monitor](#deadline-monitor)
   * [Docker](#docker)
     * [Clean](#clean)
+  * [pre-commit](#pre-commit)
+  * [nox](#nox)
+  * [Pylint](#pylint)
 <!-- TOC -->
 
 ---
@@ -681,5 +684,5 @@ nox --no-error-on-missing-interpreters --report .nox-report.json
 
 ## Pylint
 
-- `# pylint: disable=redefined-outer-name`: Due to Dagsters way of piping
+- `# pylint: disable=redefined-outer-name` ([`W0621`](https://pylint.pycqa.org/en/latest/user_guide/messages/warning/redefined-outer-name.html)): Due to Dagsters way of piping
   arguments into assets.
