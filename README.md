@@ -1,4 +1,4 @@
-![logo128.png](img/logo128.png)
+![logo128.png](_images/logo128.png)
 
 ---
 
@@ -66,7 +66,7 @@ create setups for production,
 testing, debugging, development,
 migration, DB restore etc.
 
-![Overview](img/Overview.png)
+![Overview](_images/Overview.png)
 
 No more black boxes.
 No more path dependencies due to bad decisions
@@ -407,9 +407,9 @@ comparison:
 
 ## Dagster Lineage
 
-![Global_Asset_Lineage.svg](img/Global_Asset_Lineage.svg)
+![Global_Asset_Lineage.svg](_images/Global_Asset_Lineage.svg)
 
-![dagster_cascade.png](img/dagster_cascade.png)
+![dagster_cascade.png](_images/dagster_cascade.png)
 
 ## Docker Compose Graph
 
@@ -425,13 +425,13 @@ Todo:
 
 `.landscapes/2025-02-01_00-11-08__578595276b424d1ea62550cb0b6f166f/Deadline_10_2/docker_compose/Deadline_10_2__compose_10_2/docker-compose.yml`
 
-![Viz__viz_compose_10_2.png](img/Viz__viz_compose_10_2.svg)
+![Viz__viz_compose_10_2.png](_images/Viz__viz_compose_10_2.svg)
 
 ### Repository-Installer 10.2
 
 `/home/michael/git/repos/open-studio-landscapes/.landscapes/2025-02-01_00-11-08__578595276b424d1ea62550cb0b6f166f/Deadline_10_2/docker_compose/Deadline_10_2__compose_repository_10_2/docker-compose.yml`
 
-![Viz__viz_compose_repository_10_2.png](img/Viz__viz_compose_repository_10_2.svg)
+![Viz__viz_compose_repository_10_2.png](_images/Viz__viz_compose_repository_10_2.svg)
 
 ## Clone
 
@@ -516,7 +516,7 @@ according to your needs.
 
 ### Materialize Landscape
 
-![materialize_all.png](img/materialize_all.png)
+![materialize_all.png](_images/materialize_all.png)
 
 #### Resulting Files and Directories (aka "Landscape")
 
@@ -610,13 +610,13 @@ $ tree .landscapes/2025-02-01_00-38-08__cd68a765e3394d41b5e20420f33970bb
 
 Copy/Paste command, execute and wait for it to finish:
 
-![installer_compose_up.png](img/installer_compose_up.png)
+![installer_compose_up.png](_images/installer_compose_up.png)
 
-![installer.png](img/installer.png)
+![installer.png](_images/installer.png)
 
 And `docker compose down` eventually:
 
-![installer_compose_down.png](img/installer_compose_down.png)
+![installer_compose_down.png](_images/installer_compose_down.png)
 
 ## Run Deadline Farm
 
@@ -629,17 +629,17 @@ Together with:
 
 Copy/Paste command and execute:
 
-![farm_compose_up.png](img/farm_compose_up.png)
+![farm_compose_up.png](_images/farm_compose_up.png)
 
-![runner.png](img/runner.png)
+![runner.png](_images/runner.png)
 
 ## Client
 
 ### Deadline Monitor
 
-![monitor.png](img/monitor.png)
+![monitor.png](_images/monitor.png)
 
-![monitor_2.png](img/monitor_2.png)
+![monitor_2.png](_images/monitor_2.png)
 
 ## Docker
 

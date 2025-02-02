@@ -199,7 +199,7 @@ def docs(session):
 
     # defining source and destination
     # paths
-    src = pathlib.Path(__file__).parent / "img"
+    src = pathlib.Path(__file__).parent / "_images"
     trg = pathlib.Path(__file__).parent / "build" / "docs" / "_images"
 
     files = os.listdir(src)
@@ -209,7 +209,10 @@ def docs(session):
     for fname in files:
         # copying the files to the
         # destination directory
-        shutil.copy2(src / fname, trg)
+        shutil.copy2(
+            src / fname,
+            trg
+        )
 
 
 # @nox.session(name="docs-live", tags=["docs-live"])
