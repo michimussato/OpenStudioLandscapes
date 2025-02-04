@@ -208,6 +208,27 @@ root((open-studio-landscapes))
 
 - Manjaro Linux
 
+```shell
+$ neofetch 
+██████████████████  ████████   michael@pocket3.lan 
+██████████████████  ████████   ------------------- 
+██████████████████  ████████   OS: Manjaro Linux x86_64 
+██████████████████  ████████   Host: G1621-02 
+████████            ████████   Kernel: 6.12.4-1-MANJARO 
+████████  ████████  ████████   Uptime: 5 hours, 52 mins 
+████████  ████████  ████████   Packages: 2082 (pacman), 8 (flatpak) 
+████████  ████████  ████████   Shell: bash 5.2.37 
+████████  ████████  ████████   Resolution: 2560x1080 
+████████  ████████  ████████   DE: Plasma 6.2.4 
+████████  ████████  ████████   WM: KWin 
+████████  ████████  ████████   Theme: Adwaita [GTK2/3] 
+████████  ████████  ████████   Icons: breeze-dark [GTK2/3] 
+████████  ████████  ████████   Terminal: konsole 
+                               CPU: 11th Gen Intel i7-1195G7 (8) @ 5.000GHz 
+                               GPU: Intel TigerLake-LP GT2 [Iris Xe Graphics] 
+                               Memory: 9078MiB / 15769MiB 
+```
+
 ## About the Author
 
 Michael Mussato
