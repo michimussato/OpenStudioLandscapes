@@ -49,8 +49,8 @@
   * [nox](#nox)
   * [Pylint](#pylint)
   * [SBOM](#sbom)
-    * [3.11](#311)
-    * [3.12](#312)
+    * [`python3.11`](#python311)
+    * [`python3.12`](#python312)
 * [Roadmap](#roadmap)
 <!-- TOC -->
 
@@ -249,7 +249,9 @@ Former employers, among others:
 - `docker`
 - `docker compose`
 - `git`
-- `python` (3.9 through 3.12)
+- `python`
+  - `python3.11`
+  - `python3.12`
 
 ## Limitations
 
@@ -711,13 +713,13 @@ nox --no-error-on-missing-interpreters --report .nox/nox-report.json
 
 ## SBOM
 
-### 3.11
+### `python3.11`
 
 - [cyclonedx-bom](.sbom/cyclonedx-py.sbom-3.11.json)
 - [pipdeptree (Dot)](.sbom/pipdeptree.sbom-3.11.dot)
 - [pipdeptree (Mermaid)](.sbom/pipdeptree.sbom-3.11.mermaid)
 
-### 3.12
+### `python3.12`
 
 - [cyclonedx-bom](.sbom/cyclonedx-py.sbom-3.12.json)
 - [pipdeptree (Dot)](.sbom/pipdeptree.sbom-3.12.dot)
