@@ -77,10 +77,12 @@ No more black boxes.
 No more path dependencies due to bad decisions
 made in the past. Stay flexible and adaptable
 with this modular system by reconfiguring
-your production landscape with ease:
-- Easily add, replace or remove services
-- Clone (or modify and clone) entire production landscapes for testing, debugging or development
-- Code as source of truth: Always stay on top of things with maps and node trees of code and landscapes
+any Landscape with ease:
+- Easily add, edit, replace or remove services
+- Clone (or modify and clone) entire production Landscapes for testing, debugging or development
+- Code as source of truth: 
+  - Always stay on top of things with maps and node trees of code and Landscapes
+  - Limit manual documentation to a bare minimum
 - `open-studio-landscapes` is (primarily) powered by [Dagster](https://github.com/dagster-io/) and [Docker](https://github.com/docker)
 - Fully Python based
 
@@ -89,10 +91,9 @@ studios where only limited resources for Pipeline
 Engineers and Technical Directors are available.
 This system allows those studios to share a common
 underlying system to build arbitrary pipeline tools
-on top of with the ability to share them among others
-without sacrificing the technical freedom
-to implement highly studio specific and individual solutions if
-needed.
+on top with the ability to share them among others
+without sacrificing the technical freedom to implement 
+highly studio specific and individual solutions if needed.
 
 ## Structure
 
