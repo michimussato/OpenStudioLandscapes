@@ -209,24 +209,24 @@ root((open-studio-landscapes))
 - Manjaro Linux
 
 ```shell
-$ neofetch 
-██████████████████  ████████   michael@pocket3.lan 
-██████████████████  ████████   ------------------- 
-██████████████████  ████████   OS: Manjaro Linux x86_64 
-██████████████████  ████████   Host: G1621-02 
-████████            ████████   Kernel: 6.12.4-1-MANJARO 
-████████  ████████  ████████   Uptime: 5 hours, 52 mins 
-████████  ████████  ████████   Packages: 2082 (pacman), 8 (flatpak) 
-████████  ████████  ████████   Shell: bash 5.2.37 
-████████  ████████  ████████   Resolution: 2560x1080 
-████████  ████████  ████████   DE: Plasma 6.2.4 
-████████  ████████  ████████   WM: KWin 
-████████  ████████  ████████   Theme: Adwaita [GTK2/3] 
-████████  ████████  ████████   Icons: breeze-dark [GTK2/3] 
-████████  ████████  ████████   Terminal: konsole 
-                               CPU: 11th Gen Intel i7-1195G7 (8) @ 5.000GHz 
-                               GPU: Intel TigerLake-LP GT2 [Iris Xe Graphics] 
-                               Memory: 9078MiB / 15769MiB 
+$ neofetch
+██████████████████  ████████   michael@pocket3.lan
+██████████████████  ████████   -------------------
+██████████████████  ████████   OS: Manjaro Linux x86_64
+██████████████████  ████████   Host: G1621-02
+████████            ████████   Kernel: 6.12.4-1-MANJARO
+████████  ████████  ████████   Uptime: 5 hours, 52 mins
+████████  ████████  ████████   Packages: 2082 (pacman), 8 (flatpak)
+████████  ████████  ████████   Shell: bash 5.2.37
+████████  ████████  ████████   Resolution: 2560x1080
+████████  ████████  ████████   DE: Plasma 6.2.4
+████████  ████████  ████████   WM: KWin
+████████  ████████  ████████   Theme: Adwaita [GTK2/3]
+████████  ████████  ████████   Icons: breeze-dark [GTK2/3]
+████████  ████████  ████████   Terminal: konsole
+                               CPU: 11th Gen Intel i7-1195G7 (8) @ 5.000GHz
+                               GPU: Intel TigerLake-LP GT2 [Iris Xe Graphics]
+                               Memory: 9078MiB / 15769MiB
 ```
 
 ## About the Author
@@ -725,16 +725,16 @@ nox --no-error-on-missing-interpreters --report .nox/nox-report.json
 
 # Roadmap
 
-- [ ] Landscape generation based on [VFX Reference Platform](https://vfxplatform.com/) spec
-- [ ] Integrating [Rez](https://github.com/AcademySoftwareFoundation/rez)
+- ☐ Landscape generation based on [VFX Reference Platform](https://vfxplatform.com/) spec
+- ☐ Integrating [Rez](https://github.com/AcademySoftwareFoundation/rez)
 - Integrating Render Managers
   - Deadline
-    - [ ] 10.3
-    - [ ] 10.4
-  - [OpenCue](https://github.com/AcademySoftwareFoundation/OpenCue)
-  - Tractor
-  - [Flamenco](https://flamenco.blender.org/)
+    - ☐ 10.3
+    - ☐ 10.4
+  - ☐ [OpenCue](https://github.com/AcademySoftwareFoundation/OpenCue)
+  - ☐ [Tractor](https://rmanwiki-26.pixar.com/space/TRA)
+  - ☐ [Flamenco](https://flamenco.blender.org/)
 - Dynamic Documentation
-  - [ ] LikeC4-Map
+  - ☐ [LikeC4-Map](https://likec4.dev/)
 - Third Party Container Integration
-  - [ ] [Watchtower](https://watchtower.blender.org/)
+  - ☐ [Watchtower](https://watchtower.blender.org/)
