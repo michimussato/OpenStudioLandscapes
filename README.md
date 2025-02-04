@@ -688,14 +688,16 @@ nox --no-error-on-missing-interpreters --report .nox/nox-report.json
 
 # Roadmap
 
-- [ ] Landscape generation based on VFX Reference Platform spec
-- [ ] Integrating Rez
+- [ ] Landscape generation based on [VFX Reference Platform](https://vfxplatform.com/) spec
+- [ ] Integrating [Rez](https://github.com/AcademySoftwareFoundation/rez)
 - Integrating Render Managers
   - Deadline
     - [ ] 10.3
     - [ ] 10.4
-  - OpenCue
+  - [OpenCue](https://github.com/AcademySoftwareFoundation/OpenCue)
   - Tractor
-  - Flamenco
+  - [Flamenco](https://flamenco.blender.org/)
 - Dynamic Documentation
   - [ ] LikeC4-Map
+- Third Party Container Integration
+  - [ ] [Watchtower](https://watchtower.blender.org/)
