@@ -6,6 +6,9 @@ from OpenStudioLandscapes.open_studio_landscapes import assets as assets_base
 from OpenStudioLandscapes.open_studio_landscapes.Deadline.v10_2 import (
     assets as assets_Deadline_v10_2,
 )
+from OpenStudioLandscapes.open_studio_landscapes.docker_compose_graph import (
+    assets as assets_Visualizer,
+)
 from OpenStudioLandscapes.open_studio_landscapes.third_party.Ayon import (
     assets as assets_Ayon,
 )
@@ -20,9 +23,6 @@ from OpenStudioLandscapes.open_studio_landscapes.third_party.Kitsu import (
 )
 from OpenStudioLandscapes.open_studio_landscapes.third_party.LikeC4 import (
     assets as assets_LikeC4,
-)
-from OpenStudioLandscapes.open_studio_landscapes.docker_compose_graph import (
-    assets as assets_Visualizer,
 )
 
 assets_base = load_assets_from_modules([assets_base])

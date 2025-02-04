@@ -1,7 +1,7 @@
 # .coveragerc to control coverage.py
 [run]
 branch = True
-source = PackageNamespace.my_skeleton_package
+source = OpenStudioLandscapes.open_studio_landscapes
 # omit = bad_file.py
 
 [paths]

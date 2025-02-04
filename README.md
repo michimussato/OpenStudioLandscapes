@@ -48,6 +48,10 @@
   * [pre-commit](#pre-commit)
   * [nox](#nox)
   * [Pylint](#pylint)
+  * [SBOM](#sbom)
+    * [3.11](#311)
+    * [3.12](#312)
+* [Roadmap](#roadmap)
 <!-- TOC -->
 
 ---
@@ -238,17 +242,10 @@ Versions 10.3 and 10.4 are WIP and will be
 implemented as soon as 10.2 fully works as
 a proof of concept.
 
-Todo:
-- [ ] Deadline 10.3
-- [ ] Deadline 10.4
-
 ### VFX Platform
 
 Integration of VFX Platform compatibility
 is on the roadmap.
-
-Todo:
-- [ ] VFX Platform integration
 
 ## Secrets
 
@@ -417,9 +414,6 @@ Dynamic Docker Compose documentation:
 [`docker-compose-graph`](https://github.com/michimussato/docker-compose-graph) creates a visual representation of
 `docker-compose.yml` files for every individual
 Landscape for quick reference and context.
-
-Todo:
-- [ ] LikeC4-Map
 
 ### Deadline 10.2
 
@@ -670,7 +664,7 @@ pre-commit run --all-files
 ## nox
 
 ```shell
-nox --no-error-on-missing-interpreters --report .nox-report.json
+nox --no-error-on-missing-interpreters --report .nox/nox-report.json
 ```
 
 ## Pylint
@@ -678,8 +672,30 @@ nox --no-error-on-missing-interpreters --report .nox-report.json
 - `# pylint: disable=redefined-outer-name` ([`W0621`](https://pylint.pycqa.org/en/latest/user_guide/messages/warning/redefined-outer-name.html)): Due to Dagsters way of piping
   arguments into assets.
 
+## SBOM
+
+### 3.11
+
+- [cyclonedx-bom](.sbom/cyclonedx-py.sbom-3.11.json)
+- [pipdeptree (Dot)](.sbom/pipdeptree.sbom-3.11.dot)
+- [pipdeptree (Mermaid)](.sbom/pipdeptree.sbom-3.11.mermaid)
+
+### 3.12
+
+- [cyclonedx-bom](.sbom/cyclonedx-py.sbom-3.12.json)
+- [pipdeptree (Dot)](.sbom/pipdeptree.sbom-3.12.dot)
+- [pipdeptree (Mermaid)](.sbom/pipdeptree.sbom-3.12.mermaid)
+
 # Roadmap
 
-- [ ] Integrating VFX Platform compatibility
+- [ ] Landscape generation based on VFX Reference Platform spec
 - [ ] Integrating Rez
-- 
+- Integrating Render Managers
+  - Deadline
+    - [ ] 10.3
+    - [ ] 10.4
+  - OpenCue
+  - Tractor
+  - Flamenco
+- Dynamic Documentation
+  - [ ] LikeC4-Map

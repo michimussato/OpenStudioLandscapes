@@ -44,7 +44,7 @@ def sbom(session):
 
     session.install("-e", ".[sbom]")
 
-    target_dir = pathlib.Path().cwd() / ".sbom"
+    target_dir = pathlib.Path(__file__).parent / ".sbom"
     target_dir.mkdir(parents=True, exist_ok=True)
 
     session.run(
@@ -53,14 +53,14 @@ def sbom(session):
         "--output-format",
         "JSON",
         "--outfile",
-        target_dir / f".cyclonedx-py.{session.name}.json",
+        target_dir / f"cyclonedx-py.{session.name}.json",
         env=ENV,
     )
 
     session.run(
         "bash",
         "-c",
-        f"pipdeptree --mermaid > {target_dir}/.pipdeptree.{session.name}.mermaid",
+        f"pipdeptree --mermaid > {target_dir}/pipdeptree.{session.name}.mermaid",
         env=ENV,
         external=True,
     )
@@ -68,7 +68,7 @@ def sbom(session):
     session.run(
         "bash",
         "-c",
-        f"pipdeptree --graph-output dot > {target_dir}/.pipdeptree.{session.name}.dot",
+        f"pipdeptree --graph-output dot > {target_dir}/pipdeptree.{session.name}.dot",
         env=ENV,
         external=True,
     )
@@ -84,6 +84,8 @@ def coverage(session):
         "coverage", "run", "--source", "src", "-m", "pytest", "-sv", env=ENV
     )  # ./.coverage
     session.run("coverage", "report")  # report to console
+    # session.run("coverage", "json", "-o", ".coverage", "coverage.json")  # report to json
+    session.run("coverage", "json", "-o", "coverage.json")  # report to json
     # session.run("coverage", "xml")  # ./coverage.xml
     # session.run("coverage", "html")  # ./htmlcov/
 
@@ -121,6 +123,7 @@ def lint(session):
 
 @nox.session(python=VERSIONS, tags=["test"])
 def test(session):
+    # Ex:
     # nox --session test,docs
     # nox --tags docs-live
     session.install("-e", ".[test]", silent=True)
@@ -169,7 +172,7 @@ def docs(session):
     session.install("-e", ".[docs]", silent=True)
 
     deptree_out = (
-        pathlib.Path().cwd()
+        pathlib.Path(__file__).parent
         / "docs"
         / "dot"
         / f"graphviz_pipdeptree.{session.name}.dot"
@@ -209,10 +212,7 @@ def docs(session):
     for fname in files:
         # copying the files to the
         # destination directory
-        shutil.copy2(
-            src / fname,
-            trg
-        )
+        shutil.copy2(src / fname, trg)
 
 
 # @nox.session(name="docs-live", tags=["docs-live"])

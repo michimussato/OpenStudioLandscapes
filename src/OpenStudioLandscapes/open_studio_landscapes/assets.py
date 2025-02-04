@@ -349,7 +349,11 @@ def pip_packages(
 )
 def apt_packages(
     context: AssetExecutionContext,
-) -> Generator[Output[dict[str, list[str | Any] | list[str]]] | AssetMaterialization | Any, Any, None]:
+) -> Generator[
+    Output[dict[str, list[str | Any] | list[str]]] | AssetMaterialization | Any,
+    Any,
+    None,
+]:
     """ """
 
     _apt_packages = dict()

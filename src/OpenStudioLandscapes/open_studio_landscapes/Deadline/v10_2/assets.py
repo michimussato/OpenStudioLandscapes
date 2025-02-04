@@ -1216,7 +1216,9 @@ def compose_include(
 def compose_networks(
     context: AssetExecutionContext,
     env_10_2: dict,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[dict[str, dict[str, dict[str, str]]]] | AssetMaterialization | Any, Any, None]:
+) -> Generator[
+    Output[dict[str, dict[str, dict[str, str]]]] | AssetMaterialization | Any, Any, None
+]:
     docker_dict = {
         "networks": {
             "mongodb": {
@@ -1260,8 +1262,21 @@ def compose_networks(
 def compose_mongo_express(
     context: AssetExecutionContext,
     env_10_2: dict,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[dict[str, dict[str, dict[
-    str, str | dict[str, str | None | Any] | list[str] | None | Any]]]] | AssetMaterialization | Any, Any, None]:
+) -> Generator[
+    Output[
+        dict[
+            str,
+            dict[
+                str,
+                dict[str, str | dict[str, str | None | Any] | list[str] | None | Any],
+            ],
+        ]
+    ]
+    | AssetMaterialization
+    | Any,
+    Any,
+    None,
+]:
     # @formatter:off
     docker_dict = {
         "services": {
@@ -1346,7 +1361,12 @@ def compose_filebrowser(
     context: AssetExecutionContext,
     env_10_2: dict,  # pylint: disable=redefined-outer-name
 ) -> Generator[
-    Output[dict[str, dict[str, dict[str, str | None | list[str] | Any]]]] | AssetMaterialization | Any, Any, None]:
+    Output[dict[str, dict[str, dict[str, str | None | list[str] | Any]]]]
+    | AssetMaterialization
+    | Any,
+    Any,
+    None,
+]:
 
     image = "filebrowser/filebrowser"
 
@@ -1463,8 +1483,18 @@ def compose_mongodb(
     context: AssetExecutionContext,
     env_10_2: dict,  # pylint: disable=redefined-outer-name
     script_chown_mongodb_10_2: dict[str, str],  # pylint: disable=redefined-outer-name
-) -> Generator[Output[dict[str, dict[
-    str, dict[str, str | None | list[str] | list[str | None | Any] | Any]]]] | AssetMaterialization | Any, Any, None]:
+) -> Generator[
+    Output[
+        dict[
+            str,
+            dict[str, dict[str, str | None | list[str] | list[str | None | Any] | Any]],
+        ]
+    ]
+    | AssetMaterialization
+    | Any,
+    Any,
+    None,
+]:
 
     image = "mongodb/mongodb-community-server:4.4-ubuntu2004"
 
@@ -1652,8 +1682,24 @@ def compose_rcs_runner(
     connection_ini_10_2: pathlib.Path,  # pylint: disable=redefined-outer-name
     deadline_ini_10_2: pathlib.Path,  # pylint: disable=redefined-outer-name
     deadline_command_compose_rcs_runner_10_2: list,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[dict[str, dict[str, dict[
-    str, str | dict[str, str | list[str]] | None | list[str] | list | Any]]]] | AssetMaterialization | Any, Any, None]:
+) -> Generator[
+    Output[
+        dict[
+            str,
+            dict[
+                str,
+                dict[
+                    str,
+                    str | dict[str, str | list[str]] | None | list[str] | list | Any,
+                ],
+            ],
+        ]
+    ]
+    | AssetMaterialization
+    | Any,
+    Any,
+    None,
+]:
     """ """
 
     docker_dict = {
@@ -1778,8 +1824,23 @@ def compose_pulse_runner(
     deadline_ini_10_2: pathlib.Path,  # pylint: disable=redefined-outer-name
     connection_ini_10_2: pathlib.Path,  # pylint: disable=redefined-outer-name
     deadline_command_compose_pulse_runner_10_2: list,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[dict[str, dict[str, dict[
-    str, str | dict[str, dict[str, str]] | None | list[str] | list | Any]]]] | AssetMaterialization | Any, Any, None]:
+) -> Generator[
+    Output[
+        dict[
+            str,
+            dict[
+                str,
+                dict[
+                    str, str | dict[str, dict[str, str]] | None | list[str] | list | Any
+                ],
+            ],
+        ]
+    ]
+    | AssetMaterialization
+    | Any,
+    Any,
+    None,
+]:
     """ """
 
     docker_dict = {
@@ -1893,8 +1954,23 @@ def compose_worker_runner(
     deadline_ini_10_2: pathlib.Path,  # pylint: disable=redefined-outer-name
     connection_ini_10_2: pathlib.Path,  # pylint: disable=redefined-outer-name
     deadline_command_compose_worker_runner_10_2: list,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[dict[str, dict[str, dict[
-    str, str | dict[str, dict[str, str]] | None | list[str] | list | Any]]]] | AssetMaterialization | Any, Any, None]:
+) -> Generator[
+    Output[
+        dict[
+            str,
+            dict[
+                str,
+                dict[
+                    str, str | dict[str, dict[str, str]] | None | list[str] | list | Any
+                ],
+            ],
+        ]
+    ]
+    | AssetMaterialization
+    | Any,
+    Any,
+    None,
+]:
     """ """
 
     docker_dict = {
@@ -2006,9 +2082,30 @@ def compose_webservice_runner(
     deadline_ini_10_2: pathlib.Path,  # pylint: disable=redefined-outer-name
     connection_ini_10_2: pathlib.Path,  # pylint: disable=redefined-outer-name
     deadline_command_compose_webservice_runner_10_2: list,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[dict[str, dict[str, dict[
-    str | Any, str | None | dict[str, dict[str, str]] | dict[str, str | list[str]] | list[
-        str] | list | Any]]]] | AssetMaterialization | Any, Any, None]:
+) -> Generator[
+    Output[
+        dict[
+            str,
+            dict[
+                str,
+                dict[
+                    str | Any,
+                    str
+                    | None
+                    | dict[str, dict[str, str]]
+                    | dict[str, str | list[str]]
+                    | list[str]
+                    | list
+                    | Any,
+                ],
+            ],
+        ]
+    ]
+    | AssetMaterialization
+    | Any,
+    Any,
+    None,
+]:
     """ """
 
     docker_dict = {
