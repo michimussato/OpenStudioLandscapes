@@ -202,7 +202,7 @@ def docs(session):
 
     # defining source and destination
     # paths
-    src = pathlib.Path(__file__).parent / ".img"
+    src = pathlib.Path(__file__).parent / "_images"
     trg = pathlib.Path(__file__).parent / "build" / "docs" / "_images"
 
     files = os.listdir(src)

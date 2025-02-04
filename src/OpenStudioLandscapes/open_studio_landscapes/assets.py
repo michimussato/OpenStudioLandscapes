@@ -328,7 +328,7 @@ def pip_packages(
         #  - [ ] maybe move dagster stuff to dagster image?
         # "open-studio-landscapes[dev] @ git+https://github.com/michimussato/open-studio-landscapes.git@main",
         "dagster-shared[dev] @ git+https://github.com/michimussato/dagster-shared.git@main",
-        "deadline-dagster[dev] @ git+https://github.com/michimussato/deadline-dagster.git@main",
+        # "deadline-dagster[dev] @ git+https://github.com/michimussato/deadline-dagster.git@main",
         "docker-compose-graph[dev] @ git+https://github.com/michimussato/docker-compose-graph.git@main",
         "dagster-job-processor[dev] @ git+https://github.com/michimussato/dagster-job-processor.git@main",
     ]

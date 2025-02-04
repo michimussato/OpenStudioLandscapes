@@ -45,7 +45,7 @@ digraph {
 	"open-studio-landscapes" -> gitpython [label=any]
 	"open-studio-landscapes" -> pydot [label=any]
 	"open-studio-landscapes" -> pyyaml [label=any]
-	"open-studio-landscapes" [label="open-studio-landscapes\n0.0.post1.dev318+g9b09a32.d20250204"]
+	"open-studio-landscapes" [label="open-studio-landscapes\n0.0.post1.dev324+g7432999.d20250204"]
 	"packageurl-python" [label="packageurl-python\n0.16.0"]
 	"pip-requirements-parser" -> packaging [label=any]
 	"pip-requirements-parser" -> pyparsing [label=any]
@@ -204,4 +204,3 @@ digraph {
 	wsproto -> h11 [label=">=0.9.0,<1"]
 	wsproto [label="wsproto\n1.2.0"]
 }
-

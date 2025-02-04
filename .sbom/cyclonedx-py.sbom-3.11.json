@@ -1802,7 +1802,7 @@
       "version": "0.1.2"
     },
     {
-      "bom-ref": "open-studio-landscapes==0.0.post1.dev318+g9b09a32.d20250204",
+      "bom-ref": "open-studio-landscapes==0.0.post1.dev324+g7432999.d20250204",
       "description": "A Toolkit to create dynamic Animation and VFX studio pipelines.",
       "licenses": [
         {
@@ -1812,12 +1812,12 @@
         }
       ],
       "name": "open-studio-landscapes",
-      "purl": "pkg:pypi/open-studio-landscapes@0.0.post1.dev318%2Bg9b09a32.d20250204",
+      "purl": "pkg:pypi/open-studio-landscapes@0.0.post1.dev324%2Bg7432999.d20250204",
       "type": "library",
-      "version": "0.0.post1.dev318+g9b09a32.d20250204"
+      "version": "0.0.post1.dev324+g7432999.d20250204"
     },
     {
-      "bom-ref": "BomRef.3049805774003759.21437848343770394",
+      "bom-ref": "BomRef.8306594530581223.881672554451715",
       "description": "A Toolkit to create dynamic Animation and VFX studio pipelines.",
       "externalReferences": [
         {
@@ -1835,7 +1835,7 @@
       ],
       "name": "open-studio-landscapes",
       "type": "library",
-      "version": "0.0.post1.dev318+g9b09a32.d20250204"
+      "version": "0.0.post1.dev324+g7432999.d20250204"
     },
     {
       "bom-ref": "packageurl-python==0.16.0",
@@ -3701,7 +3701,7 @@
         "python-on-whales==0.75.1",
         "setuptools==75.8.0"
       ],
-      "ref": "open-studio-landscapes==0.0.post1.dev318+g9b09a32.d20250204"
+      "ref": "open-studio-landscapes==0.0.post1.dev324+g7432999.d20250204"
     },
     {
       "dependsOn": [
@@ -3943,7 +3943,7 @@
     }
   ],
   "metadata": {
-    "timestamp": "2025-02-04T09:58:39.432397+00:00",
+    "timestamp": "2025-02-04T13:33:28.111029+00:00",
     "tools": {
       "components": [
         {
@@ -4045,7 +4045,7 @@
       ]
     }
   },
-  "serialNumber": "urn:uuid:aa2345bc-9866-4768-b381-9a885b642aca",
+  "serialNumber": "urn:uuid:6593e837-ca05-489d-a7c6-2a3108cc3aa5",
   "version": 1,
   "$schema": "http://cyclonedx.org/schema/bom-1.5.schema.json",
   "bomFormat": "CycloneDX",

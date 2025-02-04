@@ -38,7 +38,7 @@ digraph {
 	"open-studio-landscapes" -> gitpython [label=any]
 	"open-studio-landscapes" -> pydot [label=any]
 	"open-studio-landscapes" -> pyyaml [label=any]
-	"open-studio-landscapes" [label="open-studio-landscapes\n0.0.post1.dev318+g9b09a32.d20250204"]
+	"open-studio-landscapes" [label="open-studio-landscapes\n0.0.post1.dev324+g7432999.d20250204"]
 	"pydantic-core" -> "typing-extensions" [label=">=4.6.0,!=4.7.0"]
 	"pydantic-core" [label="pydantic_core\n2.27.2"]
 	"python-dotenv" [label="python-dotenv\n1.0.1"]
