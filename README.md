@@ -60,8 +60,8 @@
 
 ## Brief
 
-Setup and launch Deadline - your 3D Animation and VFX
-Pipeline backbone - with ease, independence
+Setup and launch a render farm - your 3D Animation 
+and VFX Pipeline backbone - with ease, independence
 and scalability.
 
 A toolkit - or a declarative build system
