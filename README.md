@@ -715,15 +715,15 @@ nox --no-error-on-missing-interpreters --report .nox/nox-report.json
 
 ### `python3.11`
 
-- [cyclonedx-bom](.sbom/cyclonedx-py.sbom-3.11.json)
-- [pipdeptree (Dot)](.sbom/pipdeptree.sbom-3.11.dot)
-- [pipdeptree (Mermaid)](.sbom/pipdeptree.sbom-3.11.mermaid)
+- [cyclonedx-bom](https://github.com/michimussato/open-studio-landscapes/tree/main/.sbom/cyclonedx-py.sbom-3.11.json)
+- [pipdeptree (Dot)](https://github.com/michimussato/open-studio-landscapes/tree/main/.sbom/pipdeptree.sbom-3.11.dot)
+- [pipdeptree (Mermaid)](https://github.com/michimussato/open-studio-landscapes/tree/main/.sbom/pipdeptree.sbom-3.11.mermaid)
 
 ### `python3.12`
 
-- [cyclonedx-bom](.sbom/cyclonedx-py.sbom-3.12.json)
-- [pipdeptree (Dot)](.sbom/pipdeptree.sbom-3.12.dot)
-- [pipdeptree (Mermaid)](.sbom/pipdeptree.sbom-3.12.mermaid)
+- [cyclonedx-bom](https://github.com/michimussato/open-studio-landscapes/tree/main/.sbom/cyclonedx-py.sbom-3.12.json)
+- [pipdeptree (Dot)](https://github.com/michimussato/open-studio-landscapes/tree/main/.sbom/pipdeptree.sbom-3.12.dot)
+- [pipdeptree (Mermaid)](https://github.com/michimussato/open-studio-landscapes/tree/main/.sbom/pipdeptree.sbom-3.12.mermaid)
 
 # Roadmap
 
