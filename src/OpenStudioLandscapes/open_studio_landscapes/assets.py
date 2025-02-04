@@ -8,6 +8,8 @@ import time
 import urllib.parse
 import uuid
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Generator
 
 from python_on_whales import docker
 
@@ -39,7 +41,7 @@ asset_header = {
 )
 def git_root(
     context: AssetExecutionContext,
-) -> pathlib.Path:
+) -> Generator[Output[Path] | AssetMaterialization | Any, Any, None]:
 
     _git_root = get_git_root()
 
@@ -59,7 +61,7 @@ def git_root(
 )
 def landscape_id(
     context: AssetExecutionContext,
-) -> dict:
+) -> Generator[Output[dict[str, str]] | AssetMaterialization | Any, Any, None]:
 
     now = datetime.now()
 
@@ -83,7 +85,7 @@ def landscape_id(
 )
 def secrets(
     context: AssetExecutionContext,
-) -> dict:
+) -> Generator[Output[dict | Any] | AssetMaterialization | Any, Any, None]:
     try:
         from __SECRET__.secrets import secrets as _secrets
     except ModuleNotFoundError:
@@ -112,7 +114,7 @@ def secrets(
 def dot_landscapes(
     context: AssetExecutionContext,
     git_root: pathlib.Path,  # pylint: disable=redefined-outer-name
-) -> pathlib.Path:
+) -> Generator[Output[Path] | AssetMaterialization | Any, Any, None]:
 
     dot_landscapes = git_root / ".landscapes"
     dot_landscapes.mkdir(
@@ -140,7 +142,7 @@ def dot_landscapes(
 def dot_installers(
     context: AssetExecutionContext,
     git_root: pathlib.Path,  # pylint: disable=redefined-outer-name
-) -> pathlib.Path:
+) -> Generator[Output[Path] | AssetMaterialization | Any, Any, None]:
 
     dot_installers = git_root / ".installers"
     dot_installers.mkdir(
@@ -178,7 +180,7 @@ def env(
     dot_landscapes: pathlib.Path,  # pylint: disable=redefined-outer-name
     dot_installers: pathlib.Path,  # pylint: disable=redefined-outer-name
     nfs: dict,  # pylint: disable=redefined-outer-name
-) -> dict:
+) -> Generator[Output[dict] | AssetMaterialization | Any, Any, None]:
     # @formatter:off
 
     _env: dict = {
@@ -317,7 +319,7 @@ def env(
 )
 def pip_packages(
     context: AssetExecutionContext,
-) -> list:
+) -> Generator[Output[list] | AssetMaterialization | Any, Any, None]:
     """ """
 
     _pip_packages: list = [
@@ -328,6 +330,7 @@ def pip_packages(
         "dagster-shared[dev] @ git+https://github.com/michimussato/dagster-shared.git@main",
         "deadline-dagster[dev] @ git+https://github.com/michimussato/deadline-dagster.git@main",
         "docker-compose-graph[dev] @ git+https://github.com/michimussato/docker-compose-graph.git@main",
+        "dagster-job-processor[dev] @ git+https://github.com/michimussato/dagster-job-processor.git@main",
     ]
 
     yield Output(_pip_packages)
@@ -346,7 +349,7 @@ def pip_packages(
 )
 def apt_packages(
     context: AssetExecutionContext,
-) -> dict[str, list[str]]:
+) -> Generator[Output[dict[str, list[str | Any] | list[str]]] | AssetMaterialization | Any, Any, None]:
     """ """
 
     _apt_packages = dict()
@@ -405,7 +408,7 @@ def build_docker_image(
     env: dict,  # pylint: disable=redefined-outer-name
     apt_packages: dict[str, list[str]],  # pylint: disable=redefined-outer-name
     pip_packages: list,  # pylint: disable=redefined-outer-name
-) -> str:
+) -> Generator[Output[str] | AssetMaterialization | Any, Any, None]:
     """ """
 
     docker_file = pathlib.Path(
@@ -536,7 +539,7 @@ def build_docker_image(
 )
 def nfs(
     context: AssetExecutionContext,
-) -> dict[str, str]:
+) -> Generator[Output[dict] | AssetMaterialization | Any, Any, None]:
     # @formatter:off
     _env: dict = {
         "NFS_ENTRY_POINT": pathlib.Path("/data/share/nfs").as_posix(),

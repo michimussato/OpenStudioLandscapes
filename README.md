@@ -677,3 +677,9 @@ nox --no-error-on-missing-interpreters --report .nox-report.json
 
 - `# pylint: disable=redefined-outer-name` ([`W0621`](https://pylint.pycqa.org/en/latest/user_guide/messages/warning/redefined-outer-name.html)): Due to Dagsters way of piping
   arguments into assets.
+
+# Roadmap
+
+- [ ] Integrating VFX Platform compatibility
+- [ ] Integrating Rez
+- 
