@@ -108,7 +108,6 @@ def env(
         f"REPOSITORY_INSTALL_DESTINATION_{KEY}": pathlib.Path(
             env["DOT_LANDSCAPES"],
             env.get("LANDSCAPE", "default"),
-            # "__".join(context.asset_key.path),
             KEY,
             "data",
             "opt",
@@ -127,7 +126,6 @@ def env(
         # f"DATABASE_INSTALL_DESTINATION_{KEY}": pathlib.Path(
         #         DOT_DOCKER_ROOT,
         #         env_base.get("LANDSCAPE", "default"),
-        #         # "__".join(context.asset_key.path),
         #         KEY,
         #         "data",
         #         "opt",
@@ -140,7 +138,6 @@ def env(
             "default": pathlib.Path(
                 env["DOT_LANDSCAPES"],
                 env.get("LANDSCAPE", "default"),
-                # "__".join(context.asset_key.path),
                 KEY,
                 "data",
                 "opt",
@@ -281,7 +278,7 @@ def deadline_ini(
     # {dagster_url}
     # Full Documentation
     # https://docs.thinkboxsoftware.com/products/deadline/10.2/1_User%20Manual/manual/client-config.html#client-config-conn-server-ref-label
-    [OpenStudioLandscapes]
+    [Deadline]
     # # For Remote
     # ConnectionType=Remote
     # ProxyRoot=rcs-runner-10-2:8888
