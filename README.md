@@ -64,9 +64,10 @@ Setup and launch Deadline - your 3D Animation and VFX
 Pipeline backbone - with ease, independence
 and scalability.
 
-A toolkit to easily create reproducible
-Deadline Render Farm environment setups:
-create setups for production,
+A toolkit - or a declarative build system 
+if you will - to easily create reproducible
+Render Farm environment setups:
+create Landscapes for production,
 testing, debugging, development,
 migration, DB restore etc.
 

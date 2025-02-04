@@ -377,6 +377,7 @@ def apt_packages(
 
     _apt_packages["build_python311"] = [
         "build-essential",
+        "pkg-config",
         "zlib1g-dev",
         "libncurses5-dev",
         "libgdbm-dev",
