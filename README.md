@@ -80,7 +80,7 @@ with this modular system by reconfiguring
 any Landscape with ease:
 - Easily add, edit, replace or remove services
 - Clone (or modify and clone) entire production Landscapes for testing, debugging or development
-- Code as source of truth: 
+- Code as source of truth:
   - Always stay on top of things with maps and node trees of code and Landscapes
   - Limit manual documentation to a bare minimum
 - `open-studio-landscapes` is (primarily) powered by [Dagster](https://github.com/dagster-io/) and [Docker](https://github.com/docker)
@@ -92,7 +92,7 @@ Engineers and Technical Directors are available.
 This system allows those studios to share a common
 underlying system to build arbitrary pipeline tools
 on top with the ability to share them among others
-without sacrificing the technical freedom to implement 
+without sacrificing the technical freedom to implement
 highly studio specific and individual solutions if needed.
 
 ## Structure
@@ -100,6 +100,7 @@ highly studio specific and individual solutions if needed.
 The structure of a Landscape:
 
 ```mermaid
+%% https://mermaid-js.github.io/mermaid-live-editor
 mindmap
   root(landscape)
     Deadline
@@ -122,6 +123,7 @@ The hierarchy of multiple Landscapes
 in the context of `open-studio-landscapes`:
 
 ```mermaid
+%% https://mermaid-js.github.io/mermaid-live-editor
 mindmap
 root((open-studio-landscapes))
     Landscape(Production)
