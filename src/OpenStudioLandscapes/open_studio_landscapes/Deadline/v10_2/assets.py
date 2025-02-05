@@ -1,3 +1,4 @@
+import copy
 import json
 import pathlib
 import shlex
@@ -25,6 +26,7 @@ from dagster import (
     Output,
     asset,
 )
+from OpenStudioLandscapes.open_studio_landscapes.assets import KEY as KEY_BASE
 from OpenStudioLandscapes.open_studio_landscapes.constants import *
 from OpenStudioLandscapes.open_studio_landscapes.utils import *
 
@@ -48,20 +50,25 @@ asset_header = {
     **asset_header,
     group_name="Environment_10_2",
     ins={
-        "env": AssetIn(AssetKey(["Base", "env"])),
+        "group_out_base": AssetIn(
+            AssetKey([KEY_BASE, "group_out"]),
+        ),
     },
 )
 def env(
     context: AssetExecutionContext,
-    env: dict,  # pylint: disable=redefined-outer-name
+    group_out_base: dict,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict] | AssetMaterialization | Any, Any, None]:
+
+    env_in = copy.deepcopy(group_out_base["env"])
+
     # @formatter:off
     _env: dict = {
         "DEADLINE_VERSION": "10.2.1.1",
         "MONGO_DB_HOST": "mongodb-10-2",
         f"DEADLINE_CLIENT_DEADLINE_INI_{KEY}": pathlib.Path(
-            env["DOT_LANDSCAPES"],
-            env.get("LANDSCAPE", "default"),
+            env_in["DOT_LANDSCAPES"],
+            env_in.get("LANDSCAPE", "default"),
             KEY,
             "configs",
             "Deadline10",
@@ -70,8 +77,8 @@ def env(
         .expanduser()
         .as_posix(),
         f"DEADLINE_REPOSITORY_CONNECTION_INI_{KEY}": pathlib.Path(
-            env["DOT_LANDSCAPES"],
-            env.get("LANDSCAPE", "default"),
+            env_in["DOT_LANDSCAPES"],
+            env_in.get("LANDSCAPE", "default"),
             KEY,
             "configs",
             "DeadlineRepository10",
@@ -84,21 +91,21 @@ def env(
         f"GOOGLE_ID_DeadlineClient_{KEY}": "1cGxCPkrJ1ujWqie2yXTrOpShkEgSXR0F",
         f"GOOGLE_ID_DeadlineRepository_{KEY}": "1VZhCcxvCAc4oozLAKRCv_zwQLMuVdMRz",
         f"INSTALLER_AWSPortalLink_{KEY}": pathlib.Path(
-            env["DOT_INSTALLERS"],
+            env_in["DOT_INSTALLERS"],
             KEY,
             "deadline",
             "deadline_10-2-1-1",
             "AWSPortalLink-1.2.1.0-linux-x64-installer.run",
         ).as_posix(),
         f"INSTALLER_DeadlineClient_{KEY}": pathlib.Path(
-            env["DOT_INSTALLERS"],
+            env_in["DOT_INSTALLERS"],
             KEY,
             "deadline",
             "deadline_10-2-1-1",
             "DeadlineClient-10.2.1.1-linux-x64-installer.run",
         ).as_posix(),
         f"INSTALLER_DeadlineRepository_{KEY}": pathlib.Path(
-            env["DOT_INSTALLERS"],
+            env_in["DOT_INSTALLERS"],
             KEY,
             "deadline",
             "deadline_10-2-1-1",
@@ -106,8 +113,8 @@ def env(
         ).as_posix(),
         # This is where DeadlineRepository10 will get installed to:
         f"REPOSITORY_INSTALL_DESTINATION_{KEY}": pathlib.Path(
-            env["DOT_LANDSCAPES"],
-            env.get("LANDSCAPE", "default"),
+            env_in["DOT_LANDSCAPES"],
+            env_in.get("LANDSCAPE", "default"),
             KEY,
             "data",
             "opt",
@@ -136,8 +143,8 @@ def env(
             #################################################################
             # Inside Landscape:
             "default": pathlib.Path(
-                env["DOT_LANDSCAPES"],
-                env.get("LANDSCAPE", "default"),
+                env_in["DOT_LANDSCAPES"],
+                env_in.get("LANDSCAPE", "default"),
                 KEY,
                 "data",
                 "opt",
@@ -147,7 +154,7 @@ def env(
             #################################################################
             # Test DB:
             "test_db_10_2": pathlib.Path(
-                env["GIT_ROOT"],
+                env_in["GIT_ROOT"],
                 "tests",
                 "fixtures",
                 "__".join(context.asset_key.path),
@@ -157,11 +164,11 @@ def env(
     }
     # @formatter:on
 
-    env.update(_env)
+    env_in.update(_env)
 
     env_json = pathlib.Path(
-        env["DOT_LANDSCAPES"],
-        env.get("LANDSCAPE", "default"),
+        env_in["DOT_LANDSCAPES"],
+        env_in.get("LANDSCAPE", "default"),
         KEY,
         # "__".join(context.asset_key.path),
         f"{'__'.join(context.asset_key.path)}.json",
@@ -171,19 +178,19 @@ def env(
 
     with open(env_json, "w") as fw:
         json.dump(
-            obj=env.copy(),
+            obj=env_in.copy(),
             fp=fw,
             indent=2,
             ensure_ascii=True,
             sort_keys=True,
         )
 
-    yield Output(env)
+    yield Output(env_in)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(env),
+            "__".join(context.asset_key.path): MetadataValue.json(env_in),
             "update": MetadataValue.json(_env),
             "json": MetadataValue.path(env_json),
         },
@@ -425,8 +432,8 @@ if BUILD_FROM_GOOGLE_DRIVE_10_2:
             "env_10_2": AssetIn(
                 AssetKey([KEY, "env"]),
             ),
-            "build_base_image": AssetIn(
-                AssetKey(["Base", "build_docker_image"]),
+            "group_out_base": AssetIn(
+                AssetKey([KEY_BASE, "group_out"]),
             ),
             "wget_deadline_packages_base_image_10_2": AssetIn(
                 AssetKey([KEY, "wget_deadline_packages_base_image"]),
@@ -439,13 +446,15 @@ if BUILD_FROM_GOOGLE_DRIVE_10_2:
     def build_docker_image(
         context: AssetExecutionContext,
         env_10_2: dict,  # pylint: disable=redefined-outer-name
-        build_base_image: str,  # pylint: disable=redefined-outer-name
+        group_out_base: dict,  # pylint: disable=redefined-outer-name
         wget_deadline_packages_base_image_10_2: dict[
             str, str
         ],  # pylint: disable=redefined-outer-name
         pip_packages: list,  # pylint: disable=redefined-outer-name
     ) -> Generator[Output[str] | AssetMaterialization | Any, Any, None]:
         """ """
+
+        build_base_image: str = group_out_base["docker_image"]
 
         docker_file = pathlib.Path(
             env_10_2["DOT_LANDSCAPES"],
@@ -562,8 +571,8 @@ else:
             "env_10_2": AssetIn(
                 AssetKey([KEY, "env"]),
             ),
-            "build_base_image": AssetIn(
-                AssetKey(["Base", "build_docker_image"]),
+            "group_out_base": AssetIn(
+                AssetKey([KEY_BASE, "group_out"]),
             ),
             "pip_packages": AssetIn(
                 AssetKey([KEY, "pip_packages"]),
@@ -573,10 +582,12 @@ else:
     def build_docker_image(
         context: AssetExecutionContext,
         env_10_2: dict,  # pylint: disable=redefined-outer-name
-        build_base_image: str,  # pylint: disable=redefined-outer-name
+        group_out_base: dict,  # pylint: disable=redefined-outer-name
         pip_packages: list,  # pylint: disable=redefined-outer-name
     ) -> Generator[Output[str] | AssetMaterialization | Any, Any, None]:
         """ """
+
+        build_base_image: str = group_out_base["docker_image"]
 
         docker_file = pathlib.Path(
             env_10_2["DOT_LANDSCAPES"],

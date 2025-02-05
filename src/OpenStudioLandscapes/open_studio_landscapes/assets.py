@@ -561,3 +561,34 @@ def nfs(
             "__".join(context.asset_key.path): MetadataValue.json(_env),
         },
     )
+
+
+@asset(
+    **asset_header,
+    group_name=KEY,
+    ins={
+        "env": AssetIn(AssetKey([KEY, "env"])),
+        "build_docker_image": AssetIn(
+            AssetKey([KEY, "build_docker_image"]),
+        ),
+    },
+)
+def group_out(
+    context: AssetExecutionContext,
+    env: dict,  # pylint: disable=redefined-outer-name
+    build_docker_image: str,  # pylint: disable=redefined-outer-name
+) -> dict[str, str | dict]:
+
+    out_dict: dict = dict()
+
+    out_dict["env"] = env
+    out_dict["docker_image"] = build_docker_image
+
+    yield Output(out_dict)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.json(out_dict),
+        },
+    )

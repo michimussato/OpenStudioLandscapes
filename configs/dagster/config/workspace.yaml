@@ -8,14 +8,14 @@ load_from:
   - python_module:
       # https://github.com/michimussato/deadline-dagster
       working_directory: src
-      module_name: OpenStudioLandscapes.deadline_dagster.definitions
-      location_name: "deadline_dagster Package Location"
+      module_name: OpenStudioLandscapes.dagster_job_processor.definitions
+      location_name: "dagster_job_processor Package Location"
       # executable_path: ../.venv/bin/python
-  - python_module:
-      # Todo:
-      #  - [ ] will only work after making studio-landscapes public
-      # https://github.com/michimussato/deadline-dagster
-      working_directory: src
-      module_name: OpenStudioLandscapes.open_studio_landscapes.definitions
-      location_name: "OpenStudioLandscapes.open_studio_landscapes Package Location"
-      # executable_path: ../.venv/bin/python
+#  - python_module:
+#      # Todo:
+#      #  - [ ] will only work after making studio-landscapes public
+#      # https://github.com/michimussato/deadline-dagster
+#      working_directory: src
+#      module_name: OpenStudioLandscapes.open_studio_landscapes.definitions
+#      location_name: "OpenStudioLandscapes.open_studio_landscapes Package Location"
+#      # executable_path: ../.venv/bin/python

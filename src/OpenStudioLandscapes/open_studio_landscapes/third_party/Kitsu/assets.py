@@ -1,3 +1,4 @@
+import copy
 import json
 import pathlib
 import shutil
@@ -70,15 +71,17 @@ asset_header = {"group_name": GROUP, "key_prefix": [KEY], "compute_kind": "pytho
 @asset(
     **asset_header,
     ins={
-        "env": AssetIn(
-            AssetKey([KEY_BASE, "env"]),
+        "group_out_base": AssetIn(
+            AssetKey([KEY_BASE, "group_out"]),
         ),
     },
 )
 def env(
     context: AssetExecutionContext,
-    env: dict,  # pylint: disable=redefined-outer-name
+    group_out_base: dict,  # pylint: disable=redefined-outer-name
 ) -> dict:
+
+    env_in = copy.deepcopy(group_out_base["env"])
 
     # @formatter:off
     _env = {
@@ -98,30 +101,30 @@ def env(
             #################################################################
             # Inside Landscape:
             "default": pathlib.Path(
-                env["DOT_LANDSCAPES"],
-                env.get("LANDSCAPE", "default"),
+                env_in["DOT_LANDSCAPES"],
+                env_in.get("LANDSCAPE", "default"),
                 "data",
                 "kitsu",
             ).as_posix(),
             #################################################################
             # Prod DB:
             "prod_db": pathlib.Path(
-                env["NFS_ENTRY_POINT"],
+                env_in["NFS_ENTRY_POINT"],
                 "services",
                 "kitsu",
             ).as_posix(),
             #################################################################
             # Test DB:
             "test_db": pathlib.Path(
-                env["NFS_ENTRY_POINT"],
+                env_in["NFS_ENTRY_POINT"],
                 "test_data",
                 "10.2",
                 "kitsu",
             ).as_posix(),
         }["default"],
         f"KITSU_INIT_ZOU": pathlib.Path(
-            env["DOT_LANDSCAPES"],
-            env.get("LANDSCAPE", "default"),
+            env_in["DOT_LANDSCAPES"],
+            env_in.get("LANDSCAPE", "default"),
             "configs",
             "kitsu",
             "init_zou.sh",
@@ -129,18 +132,18 @@ def env(
         .expanduser()
         .as_posix(),
         f"KITSU_TEMPLATE_DB_14": pathlib.Path(
-            env["CONFIGS_ROOT"], "kitsu", "postgres", "template_dbs", "14", "main"
+            env_in["CONFIGS_ROOT"], "kitsu", "postgres", "template_dbs", "14", "main"
         )
         .expanduser()
         .as_posix(),
     }
     # @formatter:on
 
-    env.update(_env)
+    env_in.update(_env)
 
     env_json = pathlib.Path(
-        env["DOT_LANDSCAPES"],
-        env.get("LANDSCAPE", "default"),
+        env_in["DOT_LANDSCAPES"],
+        env_in.get("LANDSCAPE", "default"),
         "third_party",
         *context.asset_key.path,
         f"{'__'.join(context.asset_key.path)}.json",
@@ -157,12 +160,12 @@ def env(
             sort_keys=True,
         )
 
-    yield Output(env)
+    yield Output(env_in)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(env),
+            "__".join(context.asset_key.path): MetadataValue.json(env_in),
             "json": MetadataValue.path(env_json),
         },
     )
@@ -715,5 +718,32 @@ def compose(
             "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
             "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)),
             "env": MetadataValue.json(env),
+        },
+    )
+
+
+@asset(
+    **asset_header,
+    ins={
+        "compose": AssetIn(
+            AssetKey([KEY, "compose"]),
+        ),
+    },
+)
+def group_out(
+    context: AssetExecutionContext,
+    compose: dict,  # pylint: disable=redefined-outer-name
+) -> dict:
+
+    out_dict: dict = dict()
+
+    out_dict["docker_compose"] = copy.deepcopy(compose)
+
+    yield Output(out_dict)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.json(out_dict),
         },
     )

@@ -1,3 +1,4 @@
+import copy
 import json
 import pathlib
 import shutil
@@ -30,15 +31,17 @@ asset_header = {"group_name": GROUP, "key_prefix": [KEY], "compute_kind": "pytho
 @asset(
     **asset_header,
     ins={
-        "env": AssetIn(
-            AssetKey([KEY_BASE, "env"]),
+        "group_out_base": AssetIn(
+            AssetKey([KEY_BASE, "group_out"]),
         ),
     },
 )
 def env(
     context: AssetExecutionContext,
-    env: dict,  # pylint: disable=redefined-outer-name
+    group_out_base: dict,  # pylint: disable=redefined-outer-name
 ) -> dict:
+
+    env_in = copy.deepcopy(group_out_base["env"])
 
     # @formatter:off
     _env = {
@@ -51,11 +54,11 @@ def env(
     }
     # @formatter:on
 
-    env.update(_env)
+    env_in.update(_env)
 
     env_json = pathlib.Path(
-        env["DOT_LANDSCAPES"],
-        env.get("LANDSCAPE", "default"),
+        env_in["DOT_LANDSCAPES"],
+        env_in.get("LANDSCAPE", "default"),
         "third_party",
         *context.asset_key.path,
         f"{'__'.join(context.asset_key.path)}.json",
@@ -72,12 +75,12 @@ def env(
             sort_keys=True,
         )
 
-    yield Output(env)
+    yield Output(env_in)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(env),
+            "__".join(context.asset_key.path): MetadataValue.json(env_in),
             "json": MetadataValue.path(env_json),
         },
     )
@@ -114,8 +117,8 @@ def pip_packages(
         "env": AssetIn(
             AssetKey([KEY, "env"]),
         ),
-        "build_base_image": AssetIn(
-            AssetKey([KEY_BASE, "build_docker_image"]),
+        "group_out_base": AssetIn(
+            AssetKey([KEY_BASE, "group_out"]),
         ),
         "pip_packages": AssetIn(
             AssetKey([KEY, "pip_packages"]),
@@ -125,10 +128,12 @@ def pip_packages(
 def build_docker_image(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
-    build_base_image: str,  # pylint: disable=redefined-outer-name
+    group_out_base: dict,  # pylint: disable=redefined-outer-name
     pip_packages: list,  # pylint: disable=redefined-outer-name
 ) -> str:
     """ """
+
+    build_base_image: str = group_out_base["docker_image"]
 
     docker_file = pathlib.Path(
         env["DOT_LANDSCAPES"],
@@ -331,5 +336,32 @@ def compose(
             ),
             "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
             "env": MetadataValue.json(env),
+        },
+    )
+
+
+@asset(
+    **asset_header,
+    ins={
+        "compose": AssetIn(
+            AssetKey([KEY, "compose"]),
+        ),
+    },
+)
+def group_out(
+    context: AssetExecutionContext,
+    compose: dict,  # pylint: disable=redefined-outer-name
+) -> dict:
+
+    out_dict: dict = dict()
+
+    out_dict["docker_compose"] = copy.deepcopy(compose)
+
+    yield Output(out_dict)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.json(out_dict),
         },
     )

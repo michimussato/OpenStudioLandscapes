@@ -1,3 +1,4 @@
+import copy
 import json
 import pathlib
 import shutil
@@ -26,20 +27,22 @@ asset_header = {"group_name": GROUP, "key_prefix": [KEY], "compute_kind": "pytho
 @asset(
     **asset_header,
     ins={
-        "env": AssetIn(
-            AssetKey([KEY_BASE, "env"]),
+        "group_out_base": AssetIn(
+            AssetKey([KEY_BASE, "group_out"]),
         ),
     },
 )
 def env(
     context: AssetExecutionContext,
-    env: dict,  # pylint: disable=redefined-outer-name
+    group_out_base: dict,  # pylint: disable=redefined-outer-name
 ) -> dict:
+
+    env_in = copy.deepcopy(group_out_base["env"])
 
     # @formatter:off
     _env = {
         "AYON_DOCKER_COMPOSE": pathlib.Path(
-            env["GIT_ROOT"],
+            env_in["GIT_ROOT"],
             "repos",
             "ayon-docker",
             "docker-compose.yml",
@@ -51,11 +54,11 @@ def env(
     }
     # @formatter:on
 
-    env.update(_env)
+    env_in.update(_env)
 
     env_json = pathlib.Path(
-        env["DOT_LANDSCAPES"],
-        env.get("LANDSCAPE", "default"),
+        env_in["DOT_LANDSCAPES"],
+        env_in.get("LANDSCAPE", "default"),
         "third_party",
         *context.asset_key.path,
         f"{'__'.join(context.asset_key.path)}.json",
@@ -72,12 +75,12 @@ def env(
             sort_keys=True,
         )
 
-    yield Output(env)
+    yield Output(env_in)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(env),
+            "__".join(context.asset_key.path): MetadataValue.json(env_in),
             "json": MetadataValue.path(env_json),
         },
     )
@@ -187,5 +190,32 @@ def compose_override(
                 cmd_list_to_str(cmd_docker_compose_up)
             ),
             "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
+        },
+    )
+
+
+@asset(
+    **asset_header,
+    ins={
+        "compose": AssetIn(
+            AssetKey([KEY, "compose_override"]),
+        ),
+    },
+)
+def group_out(
+    context: AssetExecutionContext,
+    compose: dict,  # pylint: disable=redefined-outer-name
+) -> dict:
+
+    out_dict: dict = dict()
+
+    out_dict["docker_compose"] = copy.deepcopy(compose)
+
+    yield Output(out_dict)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.json(out_dict),
         },
     )
