@@ -1807,6 +1807,9 @@ def compose_pulse_runner(
                     "repository-10-2": {
                         "condition": "service_completed_successfully",
                     },
+                    "mongodb-10-2": {
+                        "condition": "service_started",
+                    },
                     "deadline-rcs-runner-10-2": {
                         "condition": "service_started",
                     },
@@ -1939,6 +1942,9 @@ def compose_worker_runner(
                 "depends_on": {
                     "repository-10-2": {
                         "condition": "service_completed_successfully",
+                    },
+                    "mongodb-10-2": {
+                        "condition": "service_started",
                     },
                     "deadline-rcs-runner-10-2": {
                         "condition": "service_started",
@@ -2077,6 +2083,9 @@ def compose_webservice_runner(
                 "depends_on": {
                     "repository-10-2": {
                         "condition": "service_completed_successfully",
+                    },
+                    "mongodb-10-2": {
+                        "condition": "service_started",
                     },
                     "deadline-rcs-runner-10-2": {
                         "condition": "service_started",
@@ -2275,5 +2284,81 @@ def compose(
             ),
             "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
             # "env_10_2": MetadataValue.json(env_10_2),
+        },
+    )
+
+
+@asset(
+    **asset_header,
+    group_name="Write_Compose",
+    ins={
+        "env": AssetIn(
+            AssetKey([KEY, "env"]),
+        ),
+        "compose": AssetIn(
+            AssetKey([KEY, "compose"]),
+        ),
+    },
+)
+def write_compose(
+    context: AssetExecutionContext,
+    env: dict,  # pylint: disable=redefined-outer-name
+    compose: dict,  # pylint: disable=redefined-outer-name
+) -> pathlib.Path:
+    """ """
+
+    docker_yaml = yaml.dump(compose)
+
+    docker_compose = pathlib.Path(
+        env["DOT_LANDSCAPES"],
+        env.get("LANDSCAPE", "default"),
+        KEY,
+        "docker_compose",
+        "__".join(context.asset_key.path),
+        "docker-compose.yml",
+    )
+
+    docker_compose.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(docker_compose, "w") as fw:
+        fw.write(docker_yaml)
+
+    project_name = f"{'__'.join(context.asset_key.path).lower()}__{env.get('LANDSCAPE', 'default').replace('.', '-')}"
+
+    cmd_docker_compose_up = [
+        shutil.which("docker"),
+        "compose",
+        "--file",
+        docker_compose.as_posix(),
+        "--project-name",
+        project_name,
+        "up",
+        "--remove-orphans",
+    ]
+
+    cmd_docker_compose_down = [
+        shutil.which("docker"),
+        "compose",
+        "--file",
+        docker_compose.as_posix(),
+        "--project-name",
+        project_name,
+        "down",
+        "--remove-orphans",
+    ]
+
+    yield Output(docker_compose)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.path(docker_compose),
+            "cmd_docker_compose_up": MetadataValue.path(
+                " ".join(shlex.quote(s) for s in cmd_docker_compose_up)
+            ),
+            "cmd_docker_compose_down": MetadataValue.path(
+                " ".join(shlex.quote(s) for s in cmd_docker_compose_down)
+            ),
+            "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
         },
     )

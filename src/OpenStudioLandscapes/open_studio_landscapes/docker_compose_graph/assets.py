@@ -26,25 +26,25 @@ asset_header = {"group_name": GROUP, "key_prefix": [KEY], "compute_kind": "pytho
 @asset(
     **asset_header,
     ins={
-        "compose_10_2": AssetIn(
-            AssetKey([KEY_DEADLINE_V10_2, "compose"]),
+        "write_compose": AssetIn(
+            AssetKey([KEY_DEADLINE_V10_2, "write_compose"]),
         ),
     },
 )
 def docker_compose_graph_10_2(
     context: AssetExecutionContext,
-    compose_10_2: pathlib.Path,  # pylint: disable=redefined-outer-name
+    write_compose: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> pydot.Dot:
     """ """
 
     dcg = DockerComposeGraph()
-    trees = dcg.parse_docker_compose(pathlib.Path(compose_10_2))
+    trees = dcg.parse_docker_compose(pathlib.Path(write_compose))
 
     context.log.info(trees)
 
     dcg.iterate_trees(trees)
 
-    docker_compose_dir = compose_10_2.parent / "__".join(context.asset_key.path)
+    docker_compose_dir = write_compose.parent / "__".join(context.asset_key.path)
 
     docker_compose_dir.mkdir(parents=True, exist_ok=True)
 
