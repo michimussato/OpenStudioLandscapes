@@ -56,24 +56,24 @@ def env(
 
     env_in.update(_env)
 
-    env_json = pathlib.Path(
-        env_in["DOT_LANDSCAPES"],
-        env_in.get("LANDSCAPE", "default"),
-        "third_party",
-        *context.asset_key.path,
-        f"{'__'.join(context.asset_key.path)}.json",
-    )
+    # env_json = pathlib.Path(
+    #     env_in["DOT_LANDSCAPES"],
+    #     env_in.get("LANDSCAPE", "default"),
+    #     "third_party",
+    #     *context.asset_key.path,
+    #     f"{'__'.join(context.asset_key.path)}.json",
+    # )
 
-    env_json.parent.mkdir(parents=True, exist_ok=True)
-
-    with open(env_json, "w") as fw:
-        json.dump(
-            obj=_env.copy(),
-            fp=fw,
-            indent=2,
-            ensure_ascii=True,
-            sort_keys=True,
-        )
+    # env_json.parent.mkdir(parents=True, exist_ok=True)
+    #
+    # with open(env_json, "w") as fw:
+    #     json.dump(
+    #         obj=_env.copy(),
+    #         fp=fw,
+    #         indent=2,
+    #         ensure_ascii=True,
+    #         sort_keys=True,
+    #     )
 
     yield Output(env_in)
 
@@ -81,7 +81,7 @@ def env(
         asset_key=context.asset_key,
         metadata={
             "__".join(context.asset_key.path): MetadataValue.json(env_in),
-            "json": MetadataValue.path(env_json),
+            # "json": MetadataValue.path(env_json),
         },
     )
 
@@ -162,16 +162,16 @@ def compose_override(
     with open(docker_compose_override, "w") as fw:
         fw.write(docker_yaml)
 
-    cmd_docker_compose_up = [
-        shutil.which("docker"),
-        "compose",
-        "--file",
-        parent.as_posix(),
-        "--project-name",
-        "__".join(context.asset_key.path),
-        "up",
-        "--remove-orphans",
-    ]
+    # cmd_docker_compose_up = [
+    #     shutil.which("docker"),
+    #     "compose",
+    #     "--file",
+    #     parent.as_posix(),
+    #     "--project-name",
+    #     "__".join(context.asset_key.path),
+    #     "up",
+    #     "--remove-orphans",
+    # ]
 
     ret = {
         "path": [
@@ -186,9 +186,9 @@ def compose_override(
         asset_key=context.asset_key,
         metadata={
             "__".join(context.asset_key.path): MetadataValue.json(ret),
-            "cmd_docker_compose_up": MetadataValue.path(
-                cmd_list_to_str(cmd_docker_compose_up)
-            ),
+            # "cmd_docker_compose_up": MetadataValue.path(
+            #     cmd_list_to_str(cmd_docker_compose_up)
+            # ),
             "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
         },
     )

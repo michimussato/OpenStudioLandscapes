@@ -24,6 +24,9 @@ from OpenStudioLandscapes.open_studio_landscapes.third_party.Kitsu import (
 from OpenStudioLandscapes.open_studio_landscapes.third_party.LikeC4 import (
     assets as assets_LikeC4,
 )
+from OpenStudioLandscapes.open_studio_landscapes.third_party.filebrowser import (
+    assets as assets_filebrowser,
+)
 
 assets_base = load_assets_from_modules([assets_base])
 assets_10_2 = load_assets_from_modules([assets_Deadline_v10_2])
@@ -35,6 +38,7 @@ assets_grafana = load_assets_from_modules([assets_Grafana])
 assets_dagster = load_assets_from_modules([assets_Dagster])
 assets_kitsu = load_assets_from_modules([assets_Kitsu])
 assets_likec4 = load_assets_from_modules([assets_LikeC4])
+assets_filebrowser = load_assets_from_modules([assets_filebrowser])
 
 defs = Definitions(
     assets=[
@@ -46,5 +50,6 @@ defs = Definitions(
         *assets_dagster,
         *assets_kitsu,
         *assets_likec4,
+        *assets_filebrowser,
     ],
 )
