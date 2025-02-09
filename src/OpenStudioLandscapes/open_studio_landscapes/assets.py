@@ -752,7 +752,7 @@ def compose(
 
 @asset(
     **asset_header,
-    group_name=KEY,
+    group_name=f"GROUP_OUT_{KEY}",
     ins={
         "env": AssetIn(AssetKey([KEY, "env"])),
         "build_docker_image": AssetIn(

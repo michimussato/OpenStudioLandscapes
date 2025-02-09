@@ -27,6 +27,9 @@ from OpenStudioLandscapes.open_studio_landscapes.third_party.LikeC4 import (
 from OpenStudioLandscapes.open_studio_landscapes.third_party.filebrowser import (
     assets as assets_filebrowser,
 )
+from OpenStudioLandscapes.open_studio_landscapes import (
+    merge_compose as assets_merge_compose,
+)
 
 assets_base = load_assets_from_modules([assets_base])
 assets_10_2 = load_assets_from_modules([assets_Deadline_v10_2])
@@ -40,6 +43,8 @@ assets_kitsu = load_assets_from_modules([assets_Kitsu])
 assets_likec4 = load_assets_from_modules([assets_LikeC4])
 assets_filebrowser = load_assets_from_modules([assets_filebrowser])
 
+assets_merge_compose = load_assets_from_modules([assets_merge_compose])
+
 defs = Definitions(
     assets=[
         *assets_base,
@@ -51,5 +56,6 @@ defs = Definitions(
         *assets_kitsu,
         *assets_likec4,
         *assets_filebrowser,
+        *assets_merge_compose,
     ],
 )

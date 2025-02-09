@@ -27,7 +27,7 @@ from dagster import (
     asset,
 )
 from OpenStudioLandscapes.open_studio_landscapes.assets import KEY as KEY_BASE
-from OpenStudioLandscapes.open_studio_landscapes.third_party.filebrowser.assets import KEY as KEY_FILEBROWSER
+# from OpenStudioLandscapes.open_studio_landscapes.third_party.filebrowser.assets import KEY as KEY_FILEBROWSER
 from OpenStudioLandscapes.open_studio_landscapes.constants import *
 from OpenStudioLandscapes.open_studio_landscapes.utils import *
 
@@ -47,21 +47,54 @@ asset_header = {
 #  - [ ] Dockerfiles and docker_compose files to *context.asset_key.path,
 
 
+
+
+
+
+
+
+
 @asset(
     **asset_header,
-    group_name="Environment_10_2",
+    group_name=f"GROUP_IN_{KEY}",
     ins={
         "group_out_base": AssetIn(
             AssetKey([KEY_BASE, "group_out"]),
         ),
     },
 )
-def env(
+def group_in(
     context: AssetExecutionContext,
     group_out_base: dict,  # pylint: disable=redefined-outer-name
+) -> dict[str, str | dict]:
+
+    group_in_dict: dict = copy.deepcopy(group_out_base)
+
+    yield Output(group_in_dict)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.json(group_in_dict),
+        },
+    )
+
+
+@asset(
+    **asset_header,
+    group_name="Environment_10_2",
+    ins={
+        "group_in": AssetIn(
+            AssetKey([KEY, "group_in"]),
+        ),
+    },
+)
+def env(
+    context: AssetExecutionContext,
+    group_in: dict,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict] | AssetMaterialization | Any, Any, None]:
 
-    env_in = copy.deepcopy(group_out_base["env"])
+    env_in = copy.deepcopy(group_in["env"])
 
     # @formatter:off
     _env: dict = {
@@ -433,8 +466,8 @@ if BUILD_FROM_GOOGLE_DRIVE_10_2:
             "env_10_2": AssetIn(
                 AssetKey([KEY, "env"]),
             ),
-            "group_out_base": AssetIn(
-                AssetKey([KEY_BASE, "group_out"]),
+            "group_in": AssetIn(
+                AssetKey([KEY, "group_in"]),
             ),
             "wget_deadline_packages_base_image_10_2": AssetIn(
                 AssetKey([KEY, "wget_deadline_packages_base_image"]),
@@ -447,7 +480,7 @@ if BUILD_FROM_GOOGLE_DRIVE_10_2:
     def build_docker_image(
         context: AssetExecutionContext,
         env_10_2: dict,  # pylint: disable=redefined-outer-name
-        group_out_base: dict,  # pylint: disable=redefined-outer-name
+        group_in: dict,  # pylint: disable=redefined-outer-name
         wget_deadline_packages_base_image_10_2: dict[
             str, str
         ],  # pylint: disable=redefined-outer-name
@@ -455,7 +488,7 @@ if BUILD_FROM_GOOGLE_DRIVE_10_2:
     ) -> Generator[Output[str] | AssetMaterialization | Any, Any, None]:
         """ """
 
-        build_base_image: str = group_out_base["docker_image"]
+        build_base_image: str = group_in["docker_image"]
 
         docker_file = pathlib.Path(
             env_10_2["DOT_LANDSCAPES"],
@@ -572,8 +605,8 @@ else:
             "env_10_2": AssetIn(
                 AssetKey([KEY, "env"]),
             ),
-            "group_out_base": AssetIn(
-                AssetKey([KEY_BASE, "group_out"]),
+            "group_in": AssetIn(
+                AssetKey([KEY, "group_in"]),
             ),
             "pip_packages": AssetIn(
                 AssetKey([KEY, "pip_packages"]),
@@ -583,12 +616,12 @@ else:
     def build_docker_image(
         context: AssetExecutionContext,
         env_10_2: dict,  # pylint: disable=redefined-outer-name
-        group_out_base: dict,  # pylint: disable=redefined-outer-name
+        group_in: dict,  # pylint: disable=redefined-outer-name
         pip_packages: list,  # pylint: disable=redefined-outer-name
     ) -> Generator[Output[str] | AssetMaterialization | Any, Any, None]:
         """ """
 
-        build_base_image: str = group_out_base["docker_image"]
+        build_base_image: str = group_in["docker_image"]
 
         docker_file = pathlib.Path(
             env_10_2["DOT_LANDSCAPES"],
@@ -2138,13 +2171,275 @@ def compose_webservice_runner(
     )
 
 
+# @asset(
+#     **asset_header,
+#     group_name="Compose_10_2",
+#     ins={
+#         # "env_10_2": AssetIn(
+#         #     AssetKey([KEY, "env"]),
+#         # ),
+#         "compose_webservice_runner_10_2": AssetIn(
+#             AssetKey([KEY, "compose_webservice_runner"]),
+#         ),
+#         "compose_worker_runner_10_2": AssetIn(
+#             AssetKey([KEY, "compose_worker_runner"]),
+#         ),
+#         "compose_pulse_runner_10_2": AssetIn(
+#             AssetKey([KEY, "compose_pulse_runner"]),
+#         ),
+#         "compose_rcs_runner_10_2": AssetIn(
+#             AssetKey([KEY, "compose_rcs_runner"]),
+#         ),
+#         "compose_networks_10_2": AssetIn(
+#             AssetKey([KEY, "compose_networks"]),
+#         ),
+#         "compose_mongo_express_10_2": AssetIn(
+#             AssetKey([KEY, "compose_mongo_express"]),
+#         ),
+#         "compose_mongodb_10_2": AssetIn(
+#             AssetKey([KEY, "compose_mongodb"]),
+#         ),
+#         "compose_repository_10_2": AssetIn(
+#             AssetKey([KEY, "compose_repository"]),
+#         ),
+#         # "filebrowser": AssetIn(
+#         #     AssetKey([KEY_FILEBROWSER, "group_out"]),
+#         # ),
+#         # "grafana": AssetIn(AssetKey(["Grafana", "group_out"])),
+#         # "dagster": AssetIn(AssetKey(["Dagster", "group_out"])),
+#         # "likec4": AssetIn(AssetKey(["LikeC4", "group_out"])),
+#         # "kitsu": AssetIn(AssetKey(["Kitsu", "group_out"])),
+#     },
+# )
+# def compose(
+#     context: AssetExecutionContext,
+#     # env_10_2: dict,  # pylint: disable=redefined-outer-name
+#     compose_webservice_runner_10_2: dict,  # pylint: disable=redefined-outer-name
+#     compose_worker_runner_10_2: dict,  # pylint: disable=redefined-outer-name
+#     compose_pulse_runner_10_2: dict,  # pylint: disable=redefined-outer-name
+#     compose_rcs_runner_10_2: dict,  # pylint: disable=redefined-outer-name
+#     compose_networks_10_2: dict,  # pylint: disable=redefined-outer-name
+#     compose_mongo_express_10_2: dict,  # pylint: disable=redefined-outer-name
+#     compose_mongodb_10_2: dict,  # pylint: disable=redefined-outer-name
+#     compose_repository_10_2: dict,  # pylint: disable=redefined-outer-name
+#     # filebrowser: dict,  # pylint: disable=redefined-outer-name
+#     # grafana: dict,  # pylint: disable=redefined-outer-name
+#     # dagster: dict,  # pylint: disable=redefined-outer-name
+#     # likec4: dict,  # pylint: disable=redefined-outer-name
+#     # kitsu: dict,  # pylint: disable=redefined-outer-name
+# ) -> dict:
+#     """ """
+#
+#     # compose_filebrowser = copy.deepcopy(filebrowser["docker_compose"])
+#     # compose_likec4 = copy.deepcopy(likec4["docker_compose"])
+#     # compose_kitsu = copy.deepcopy(kitsu["docker_compose"])
+#     # compose_grafana = copy.deepcopy(grafana["docker_compose"])
+#     # compose_dagster = copy.deepcopy(dagster["docker_compose"])
+#
+#     docker_chainmap = ChainMap(
+#         # compose_kitsu,
+#         # compose_likec4,
+#         # compose_dagster,
+#         # compose_grafana,
+#         compose_mongodb_10_2,
+#         # compose_filebrowser,
+#         compose_mongo_express_10_2,
+#         compose_rcs_runner_10_2,
+#         compose_pulse_runner_10_2,
+#         compose_worker_runner_10_2,
+#         compose_webservice_runner_10_2,
+#         # compose_base,
+#         # compose_include_10_2,
+#         compose_networks_10_2,
+#         compose_repository_10_2,
+#     )
+#
+#     docker_dict = reduce(deep_merge, docker_chainmap.maps)
+#     docker_yaml = yaml.dump(docker_dict)
+#
+#     # docker_compose = pathlib.Path(
+#     #     env_10_2["DOT_LANDSCAPES"],
+#     #     env_10_2.get("LANDSCAPE", "default"),
+#     #     KEY,
+#     #     "docker_compose",
+#     #     "__".join(context.asset_key.path),
+#     #     "docker-compose.yml",
+#     # )
+#     #
+#     # docker_compose.parent.mkdir(parents=True, exist_ok=True)
+#     #
+#     # with open(docker_compose, "w") as fw:
+#     #     fw.write(docker_yaml)
+#
+#     # project_name = f"{'__'.join(context.asset_key.path).lower()}__{env_10_2.get('LANDSCAPE', 'default').replace('.', '-')}"
+#     #
+#     # cmd_docker_compose_up = [
+#     #     shutil.which("docker"),
+#     #     "compose",
+#     #     "--file",
+#     #     docker_compose.as_posix(),
+#     #     "--project-name",
+#     #     project_name,
+#     #     "up",
+#     #     "--remove-orphans",
+#     # ]
+#     #
+#     # cmd_docker_compose_down = [
+#     #     shutil.which("docker"),
+#     #     "compose",
+#     #     "--file",
+#     #     docker_compose.as_posix(),
+#     #     "--project-name",
+#     #     project_name,
+#     #     "down",
+#     #     "--remove-orphans",
+#     # ]
+#
+#     yield Output(docker_dict)
+#
+#     yield AssetMaterialization(
+#         asset_key=context.asset_key,
+#         metadata={
+#             # "cmd_docker_compose_up": MetadataValue.path(
+#             #     " ".join(shlex.quote(s) for s in cmd_docker_compose_up)
+#             # ),
+#             # "cmd_docker_compose_down": MetadataValue.path(
+#             #     " ".join(shlex.quote(s) for s in cmd_docker_compose_down)
+#             # ),
+#             "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
+#             # "__".join(context.asset_key.path): MetadataValue.path(docker_compose),
+#             "maps": MetadataValue.md(
+#                 f"```json\n{json.dumps(docker_chainmap.maps, indent=2)}\n```"
+#             ),
+#             "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
+#             # "env_10_2": MetadataValue.json(env_10_2),
+#         },
+#     )
+
+
+# @asset(
+#     **asset_header,
+#     group_name="Write_Compose",
+#     ins={
+#         "env": AssetIn(
+#             AssetKey([KEY, "env"]),
+#         ),
+#         "compose": AssetIn(
+#             AssetKey([KEY, "compose"]),
+#         ),
+#     },
+# )
+# def write_compose(
+#     context: AssetExecutionContext,
+#     env: dict,  # pylint: disable=redefined-outer-name
+#     compose: dict,  # pylint: disable=redefined-outer-name
+# ) -> pathlib.Path:
+#     """ """
+#
+#     docker_yaml = yaml.dump(compose)
+#
+#     docker_compose = pathlib.Path(
+#         env["DOT_LANDSCAPES"],
+#         env.get("LANDSCAPE", "default"),
+#         KEY,
+#         "docker_compose",
+#         "__".join(context.asset_key.path),
+#         "docker-compose.yml",
+#     )
+#
+#     docker_compose.parent.mkdir(parents=True, exist_ok=True)
+#
+#     with open(docker_compose, "w") as fw:
+#         fw.write(docker_yaml)
+#
+#     project_name = f"{'__'.join(context.asset_key.path).lower()}__{env.get('LANDSCAPE', 'default').replace('.', '-')}"
+#
+#     cmd_docker_compose_up = [
+#         shutil.which("docker"),
+#         "compose",
+#         "--file",
+#         docker_compose.as_posix(),
+#         "--project-name",
+#         project_name,
+#         "up",
+#         "--remove-orphans",
+#     ]
+#
+#     cmd_docker_compose_down = [
+#         shutil.which("docker"),
+#         "compose",
+#         "--file",
+#         docker_compose.as_posix(),
+#         "--project-name",
+#         project_name,
+#         "down",
+#         "--remove-orphans",
+#     ]
+#
+#     yield Output(docker_compose)
+#
+#     yield AssetMaterialization(
+#         asset_key=context.asset_key,
+#         metadata={
+#             "__".join(context.asset_key.path): MetadataValue.path(docker_compose),
+#             "cmd_docker_compose_up": MetadataValue.path(
+#                 " ".join(shlex.quote(s) for s in cmd_docker_compose_up)
+#             ),
+#             "cmd_docker_compose_down": MetadataValue.path(
+#                 " ".join(shlex.quote(s) for s in cmd_docker_compose_down)
+#             ),
+#             "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
+#         },
+#     )
+
+
+
+
+# @asset(
+#     **asset_header,
+#     group_name=f"GROUP_OUT_{KEY}",
+#     ins={
+#         "env": AssetIn(
+#             AssetKey([KEY, "env"]),
+#         ),
+#         "compose_mongodb_10_2": AssetIn(
+#             AssetKey([KEY, "compose_mongodb"]),
+#         ),
+#         "compose_repository": AssetIn(
+#             AssetKey([KEY, "compose_repository"]),
+#         ),
+#     },
+# )
+# def group_out(
+#     context: AssetExecutionContext,
+#     env: dict,  # pylint: disable=redefined-outer-name
+#     compose_mongodb_10_2: dict,  # pylint: disable=redefined-outer-name
+#     compose_repository: dict,  # pylint: disable=redefined-outer-name
+# ) -> dict:
+#
+#     out_dict: dict = dict()
+#
+#     out_dict["env"] = env
+#     out_dict["docker_compose"] = copy.deepcopy(compose_repository)
+#
+#     yield Output(out_dict)
+#
+#     yield AssetMaterialization(
+#         asset_key=context.asset_key,
+#         metadata={
+#             "__".join(context.asset_key.path): MetadataValue.json(out_dict),
+#         },
+#     )
+
+
+
 @asset(
     **asset_header,
-    group_name="Compose_10_2",
+    group_name=f"GROUP_OUT_{KEY}",
     ins={
-        # "env_10_2": AssetIn(
-        #     AssetKey([KEY, "env"]),
-        # ),
+        "env_10_2": AssetIn(
+            AssetKey([KEY, "env"]),
+        ),
         "compose_webservice_runner_10_2": AssetIn(
             AssetKey([KEY, "compose_webservice_runner"]),
         ),
@@ -2160,9 +2455,6 @@ def compose_webservice_runner(
         "compose_networks_10_2": AssetIn(
             AssetKey([KEY, "compose_networks"]),
         ),
-        "compose_base": AssetIn(
-            AssetKey([KEY_BASE, "compose"]),
-        ),
         "compose_mongo_express_10_2": AssetIn(
             AssetKey([KEY, "compose_mongo_express"]),
         ),
@@ -2172,193 +2464,46 @@ def compose_webservice_runner(
         "compose_repository_10_2": AssetIn(
             AssetKey([KEY, "compose_repository"]),
         ),
-        # "filebrowser": AssetIn(
-        #     AssetKey([KEY_FILEBROWSER, "group_out"]),
-        # ),
-        # "grafana": AssetIn(AssetKey(["Grafana", "group_out"])),
-        # "dagster": AssetIn(AssetKey(["Dagster", "group_out"])),
-        # "likec4": AssetIn(AssetKey(["LikeC4", "group_out"])),
-        # "kitsu": AssetIn(AssetKey(["Kitsu", "group_out"])),
     },
 )
-def compose(
+def group_out(
     context: AssetExecutionContext,
-    # env_10_2: dict,  # pylint: disable=redefined-outer-name
+    env_10_2: dict,
     compose_webservice_runner_10_2: dict,  # pylint: disable=redefined-outer-name
     compose_worker_runner_10_2: dict,  # pylint: disable=redefined-outer-name
     compose_pulse_runner_10_2: dict,  # pylint: disable=redefined-outer-name
     compose_rcs_runner_10_2: dict,  # pylint: disable=redefined-outer-name
     compose_networks_10_2: dict,  # pylint: disable=redefined-outer-name
-    compose_base: dict,  # pylint: disable=redefined-outer-name
     compose_mongo_express_10_2: dict,  # pylint: disable=redefined-outer-name
     compose_mongodb_10_2: dict,  # pylint: disable=redefined-outer-name
     compose_repository_10_2: dict,  # pylint: disable=redefined-outer-name
-    # filebrowser: dict,  # pylint: disable=redefined-outer-name
-    # grafana: dict,  # pylint: disable=redefined-outer-name
-    # dagster: dict,  # pylint: disable=redefined-outer-name
-    # likec4: dict,  # pylint: disable=redefined-outer-name
-    # kitsu: dict,  # pylint: disable=redefined-outer-name
 ) -> dict:
     """ """
 
-    # compose_filebrowser = copy.deepcopy(filebrowser["docker_compose"])
-    # compose_likec4 = copy.deepcopy(likec4["docker_compose"])
-    # compose_kitsu = copy.deepcopy(kitsu["docker_compose"])
-    # compose_grafana = copy.deepcopy(grafana["docker_compose"])
-    # compose_dagster = copy.deepcopy(dagster["docker_compose"])
+    out_dict: dict = dict()
+    out_dict["env"] = env_10_2
 
     docker_chainmap = ChainMap(
-        # compose_kitsu,
-        # compose_likec4,
-        # compose_dagster,
-        # compose_grafana,
         compose_mongodb_10_2,
-        # compose_filebrowser,
         compose_mongo_express_10_2,
         compose_rcs_runner_10_2,
         compose_pulse_runner_10_2,
         compose_worker_runner_10_2,
         compose_webservice_runner_10_2,
-        compose_base,
-        # compose_include_10_2,
         compose_networks_10_2,
         compose_repository_10_2,
     )
 
     docker_dict = reduce(deep_merge, docker_chainmap.maps)
+    out_dict["docker_compose"] = copy.deepcopy(docker_dict)
     docker_yaml = yaml.dump(docker_dict)
 
-    # docker_compose = pathlib.Path(
-    #     env_10_2["DOT_LANDSCAPES"],
-    #     env_10_2.get("LANDSCAPE", "default"),
-    #     KEY,
-    #     "docker_compose",
-    #     "__".join(context.asset_key.path),
-    #     "docker-compose.yml",
-    # )
-    #
-    # docker_compose.parent.mkdir(parents=True, exist_ok=True)
-    #
-    # with open(docker_compose, "w") as fw:
-    #     fw.write(docker_yaml)
-
-    # project_name = f"{'__'.join(context.asset_key.path).lower()}__{env_10_2.get('LANDSCAPE', 'default').replace('.', '-')}"
-    #
-    # cmd_docker_compose_up = [
-    #     shutil.which("docker"),
-    #     "compose",
-    #     "--file",
-    #     docker_compose.as_posix(),
-    #     "--project-name",
-    #     project_name,
-    #     "up",
-    #     "--remove-orphans",
-    # ]
-    #
-    # cmd_docker_compose_down = [
-    #     shutil.which("docker"),
-    #     "compose",
-    #     "--file",
-    #     docker_compose.as_posix(),
-    #     "--project-name",
-    #     project_name,
-    #     "down",
-    #     "--remove-orphans",
-    # ]
-
-    yield Output(docker_dict)
+    yield Output(out_dict)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            # "cmd_docker_compose_up": MetadataValue.path(
-            #     " ".join(shlex.quote(s) for s in cmd_docker_compose_up)
-            # ),
-            # "cmd_docker_compose_down": MetadataValue.path(
-            #     " ".join(shlex.quote(s) for s in cmd_docker_compose_down)
-            # ),
-            "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
-            # "__".join(context.asset_key.path): MetadataValue.path(docker_compose),
-            "maps": MetadataValue.md(
-                f"```json\n{json.dumps(docker_chainmap.maps, indent=2)}\n```"
-            ),
-            "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
-            # "env_10_2": MetadataValue.json(env_10_2),
-        },
-    )
-
-
-@asset(
-    **asset_header,
-    group_name="Write_Compose",
-    ins={
-        "env": AssetIn(
-            AssetKey([KEY, "env"]),
-        ),
-        "compose": AssetIn(
-            AssetKey([KEY, "compose"]),
-        ),
-    },
-)
-def write_compose(
-    context: AssetExecutionContext,
-    env: dict,  # pylint: disable=redefined-outer-name
-    compose: dict,  # pylint: disable=redefined-outer-name
-) -> pathlib.Path:
-    """ """
-
-    docker_yaml = yaml.dump(compose)
-
-    docker_compose = pathlib.Path(
-        env["DOT_LANDSCAPES"],
-        env.get("LANDSCAPE", "default"),
-        KEY,
-        "docker_compose",
-        "__".join(context.asset_key.path),
-        "docker-compose.yml",
-    )
-
-    docker_compose.parent.mkdir(parents=True, exist_ok=True)
-
-    with open(docker_compose, "w") as fw:
-        fw.write(docker_yaml)
-
-    project_name = f"{'__'.join(context.asset_key.path).lower()}__{env.get('LANDSCAPE', 'default').replace('.', '-')}"
-
-    cmd_docker_compose_up = [
-        shutil.which("docker"),
-        "compose",
-        "--file",
-        docker_compose.as_posix(),
-        "--project-name",
-        project_name,
-        "up",
-        "--remove-orphans",
-    ]
-
-    cmd_docker_compose_down = [
-        shutil.which("docker"),
-        "compose",
-        "--file",
-        docker_compose.as_posix(),
-        "--project-name",
-        project_name,
-        "down",
-        "--remove-orphans",
-    ]
-
-    yield Output(docker_compose)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.path(docker_compose),
-            "cmd_docker_compose_up": MetadataValue.path(
-                " ".join(shlex.quote(s) for s in cmd_docker_compose_up)
-            ),
-            "cmd_docker_compose_down": MetadataValue.path(
-                " ".join(shlex.quote(s) for s in cmd_docker_compose_down)
-            ),
+            "__".join(context.asset_key.path): MetadataValue.json(out_dict),
             "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
         },
     )

@@ -184,7 +184,7 @@ def build_docker_image(
             f"http://localhost:3000/asset-groups/{'%2F'.join(context.asset_key.path)}",
             safe=":/%",
         ),
-        image_name="__".join(context.asset_key.path),
+        image_name="__".join(context.asset_key.path).lower(),
         parent_image=build_base_image,
         **env,
     )

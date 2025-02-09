@@ -244,11 +244,28 @@ Former employers, among others:
 
 ## Requirements
 
-- `graphviz`
+Todo:
+Tests for excutables
+docker daemon `sudo systemctl start docker`
+`sudo systemctl enable --now docker`
+```shell
+# ERROR: permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Head "http://%2Fvar%2Frun%2Fdocker.sock/_ping": dial unix /var/run/docker.sock: connect: permission denied
+# https://stackoverflow.com/questions/48957195/how-to-fix-docker-got-permission-denied-issue
+sudo groupadd docker
+sudo usermod -aG docker $USER
+```
+
+- Check Deadline-Installers
+  - `.installers/Deadline_10_2/deadline/deadline_10-2-1-1`
+- Check source DBs
+
+- `graphviz` (`dot` (`docker-compose-graph`))
 - `sshpass`
 - `docker`
+- `docker-uildx`
 - `docker compose`
 - `git`
+  - `git -C repos clone https://github.com/ynput/ayon-docker.git`
 - `python`
   - `python3.11`
   - `python3.12`
