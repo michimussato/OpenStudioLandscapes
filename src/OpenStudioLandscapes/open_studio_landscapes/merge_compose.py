@@ -21,6 +21,8 @@ from dagster import (
     MetadataValue,
 )
 
+from OpenStudioLandscapes.open_studio_landscapes.assets import KEY as KEY_BASE
+from OpenStudioLandscapes.open_studio_landscapes.Deadline.v10_2.assets import KEY as KEY_DEADLINE_10_2
 
 
 GROUP = "Merge_And_Finalize"
@@ -33,11 +35,6 @@ asset_header = {
 }
 
 
-from OpenStudioLandscapes.open_studio_landscapes.assets import KEY as KEY_BASE
-from OpenStudioLandscapes.open_studio_landscapes.Deadline.v10_2.assets import KEY as KEY_DEADLINE_10_2
-
-
-
 @asset(
     **asset_header,
     ins={
@@ -45,31 +42,20 @@ from OpenStudioLandscapes.open_studio_landscapes.Deadline.v10_2.assets import KE
             AssetKey([KEY_BASE, "compose"]),
         ),
         "group_out_deadline_10_2": AssetIn(AssetKey([KEY_DEADLINE_10_2, "group_out"])),
-        # "build_docker_image": AssetIn(
-        #     AssetKey([KEY, "build_docker_image"]),
-        # ),
     },
 )
-def merge_compose(
+def docker_compose_merge(
     context: AssetExecutionContext,
     compose_base: dict,  # pylint: disable=redefined-outer-name
     group_out_deadline_10_2: dict,  # pylint: disable=redefined-outer-name
-    # build_docker_image: str,  # pylint: disable=redefined-outer-name
 ) -> dict:
 
-    # compose_merge_dict = dict()
-
     docker_chainmap = ChainMap(
-        copy.deepcopy(compose_base["docker_compose"]),
-        copy.deepcopy(group_out_deadline_10_2["docker_compose"]),
+        copy.deepcopy(compose_base),
+        copy.deepcopy(group_out_deadline_10_2),
     )
 
     docker_dict = reduce(deep_merge, docker_chainmap.maps)
-
-    # out_dict: dict = dict()
-    #
-    # out_dict["env"] = env
-    # out_dict["docker_image"] = build_docker_image
 
     yield Output(docker_dict)
 
@@ -87,19 +73,19 @@ def merge_compose(
         "env": AssetIn(
             AssetKey([KEY_BASE, "env"]),
         ),
-        "merge_compose": AssetIn(
-            AssetKey([KEY, "merge_compose"]),
+        "docker_compose_merge": AssetIn(
+            AssetKey([KEY, "docker_compose_merge"]),
         ),
     },
 )
-def write_compose(
+def docker_compose_write(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
-    merge_compose: dict,  # pylint: disable=redefined-outer-name
+    docker_compose_merge: dict,  # pylint: disable=redefined-outer-name
 ) -> pathlib.Path:
     """ """
 
-    docker_yaml = yaml.dump(merge_compose)
+    docker_yaml = yaml.dump(docker_compose_merge)
 
     docker_compose = pathlib.Path(
         env["DOT_LANDSCAPES"],
@@ -115,7 +101,7 @@ def write_compose(
     with open(docker_compose, "w") as fw:
         fw.write(docker_yaml)
 
-    project_name = f"{'__'.join(context.asset_key.path).lower()}__{env.get('LANDSCAPE', 'default').replace('.', '-')}"
+    project_name = f"{env.get('LANDSCAPE', 'default').replace('.', '-')}"
 
     cmd_docker_compose_up = [
         shutil.which("docker"),
@@ -156,29 +142,28 @@ def write_compose(
     )
 
 
-
 @asset(
     **asset_header,
     ins={
-        "write_compose": AssetIn(
-            AssetKey([KEY, "write_compose"]),
+        "docker_compose_write": AssetIn(
+            AssetKey([KEY, "docker_compose_write"]),
         ),
     },
 )
-def docker_compose_graph_10_2(
+def docker_compose_graph(
     context: AssetExecutionContext,
-    write_compose: pathlib.Path,  # pylint: disable=redefined-outer-name
+    docker_compose_write: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> pydot.Dot:
     """ """
 
     dcg = DockerComposeGraph()
-    trees = dcg.parse_docker_compose(pathlib.Path(write_compose))
+    trees = dcg.parse_docker_compose(pathlib.Path(docker_compose_write))
 
     context.log.info(trees)
 
     dcg.iterate_trees(trees)
 
-    docker_compose_dir = write_compose.parent / "__".join(context.asset_key.path)
+    docker_compose_dir = docker_compose_write.parent / "__".join(context.asset_key.path)
 
     docker_compose_dir.mkdir(parents=True, exist_ok=True)
 
@@ -229,4 +214,3 @@ def docker_compose_graph_10_2(
             "dot_path": MetadataValue.path(dot),
         },
     )
-

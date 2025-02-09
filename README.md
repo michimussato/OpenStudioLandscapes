@@ -260,10 +260,9 @@ sudo usermod -aG docker $USER
 - Check source DBs
 
 - `graphviz` (`dot` (`docker-compose-graph`))
-- `sshpass`
 - `docker`
-- `docker-uildx`
-- `docker compose`
+- `docker-buildx`
+- `docker-compose`
 - `git`
   - `git -C repos clone https://github.com/ynput/ayon-docker.git`
 - `python`
@@ -757,3 +756,11 @@ nox --no-error-on-missing-interpreters --report .nox/nox-report.json
   - ☐ [LikeC4-Map](https://likec4.dev/)
 - Third Party Container Integration
   - ☐ [Watchtower](https://watchtower.blender.org/)
+
+
+## SSH
+
+```shell
+eval "$(ssh-agent -s)"                                                                         ✔ 
+ssh-add ~/.ssh/id_ed25519.HP_2025-02-09
+```

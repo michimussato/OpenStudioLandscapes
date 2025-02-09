@@ -13,7 +13,6 @@ from datetime import datetime
 from pathlib import Path
 from collections import ChainMap
 from functools import reduce
-import shlex
 
 from typing import Any, Generator
 
@@ -572,81 +571,21 @@ def compose_include(
         ],
     }
 
-    # docker_yaml = yaml.dump(docker_dict)
-
     yield Output(docker_dict)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
             "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
-            # "docker_dict": MetadataValue.md(
-            #     f"```json\n{json.dumps(docker_dict, indent=2)}\n```"
-            # ),
             # "docker_yaml": MetadataValue.md(f"```shell\n{docker_yaml}\n```"),
         },
     )
-
-
-# @asset(
-#     **asset_header,
-#     group_name=f"{KEY}_compose",
-#     ins={
-#         "env": AssetIn(
-#             AssetKey([KEY, "env"]),
-#         ),
-#     },
-# )
-# def compose_networks(
-#     context: AssetExecutionContext,
-#     env: dict,  # pylint: disable=redefined-outer-name
-# ) -> Generator[
-#     Output[dict[str, dict[str, dict[str, str]]]] | AssetMaterialization | Any, Any, None
-# ]:
-#     docker_dict = {
-#         "networks": {
-#             "mongodb": {
-#                 "name": "network_mongodb-10-2",
-#             },
-#             "repository": {
-#                 "name": "network_repository-10-2",
-#             },
-#             "ayon": {
-#                 "name": "network_ayon-10-2",
-#             },
-#         },
-#     }
-#
-#     docker_yaml = yaml.dump(docker_dict)
-#
-#     yield Output(docker_dict)
-#
-#     yield AssetMaterialization(
-#         asset_key=context.asset_key,
-#         metadata={
-#             "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
-#             "docker_dict": MetadataValue.md(
-#                 f"```json\n{json.dumps(docker_dict, indent=2)}\n```"
-#             ),
-#             "docker_yaml": MetadataValue.md(f"```shell\n{docker_yaml}\n```"),
-#             "env_10_2": MetadataValue.json(env),
-#         },
-#     )
 
 
 @asset(
     **asset_header,
     group_name=f"{KEY}_compose",
     ins={
-        "group_out": AssetIn(
-            AssetKey([KEY, "group_out"]),
-        ),
-        # "compose_networks_10_2": AssetIn(
-        #     AssetKey([KEY, "compose_networks"]),
-        # ),
-        # "compose_include_10_2": AssetIn(
-        #     AssetKey([KEY, "compose_include"]),
-        # ),
         "filebrowser": AssetIn(AssetKey(["filebrowser", "group_out"])),
         "grafana": AssetIn(AssetKey(["Grafana", "group_out"])),
         "dagster": AssetIn(AssetKey(["Dagster", "group_out"])),
@@ -657,8 +596,6 @@ def compose_include(
 )
 def compose(
     context: AssetExecutionContext,
-    group_out: dict,  # pylint: disable=redefined-outer-name
-    # compose_networks_10_2: dict,  # pylint: disable=redefined-outer-name
     filebrowser: dict,  # pylint: disable=redefined-outer-name
     grafana: dict,  # pylint: disable=redefined-outer-name
     dagster: dict,  # pylint: disable=redefined-outer-name
@@ -668,14 +605,11 @@ def compose(
 ) -> dict:
     """ """
 
-    env = copy.deepcopy(group_out["env"])
-
     compose_filebrowser = copy.deepcopy(filebrowser["docker_compose"])
     compose_likec4 = copy.deepcopy(likec4["docker_compose"])
     compose_kitsu = copy.deepcopy(kitsu["docker_compose"])
     compose_grafana = copy.deepcopy(grafana["docker_compose"])
     compose_dagster = copy.deepcopy(dagster["docker_compose"])
-    # compose_include = copy.deepcopy(dagster["docker_compose"])
 
     docker_chainmap = ChainMap(
         compose_kitsu,
@@ -684,49 +618,10 @@ def compose(
         compose_grafana,
         compose_filebrowser,
         compose_include,
-        # compose_networks_10_2,
     )
 
     docker_dict = reduce(deep_merge, docker_chainmap.maps)
     docker_yaml = yaml.dump(docker_dict)
-
-    docker_compose = pathlib.Path(
-        env["DOT_LANDSCAPES"],
-        env.get("LANDSCAPE", "default"),
-        KEY,
-        "docker_compose",
-        "__".join(context.asset_key.path),
-        "docker-compose.yml",
-    )
-
-    docker_compose.parent.mkdir(parents=True, exist_ok=True)
-
-    with open(docker_compose, "w") as fw:
-        fw.write(docker_yaml)
-
-    # project_name = f"{'__'.join(context.asset_key.path).lower()}__{env.get('LANDSCAPE', 'default').replace('.', '-')}"
-    #
-    # cmd_docker_compose_up = [
-    #     shutil.which("docker"),
-    #     "compose",
-    #     "--file",
-    #     docker_compose.as_posix(),
-    #     "--project-name",
-    #     project_name,
-    #     "up",
-    #     "--remove-orphans",
-    # ]
-    #
-    # cmd_docker_compose_down = [
-    #     shutil.which("docker"),
-    #     "compose",
-    #     "--file",
-    #     docker_compose.as_posix(),
-    #     "--project-name",
-    #     project_name,
-    #     "down",
-    #     "--remove-orphans",
-    # ]
 
     yield Output(docker_dict)
 
@@ -734,18 +629,7 @@ def compose(
         asset_key=context.asset_key,
         metadata={
             "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
-            # "cmd_docker_compose_up": MetadataValue.path(
-            #     " ".join(shlex.quote(s) for s in cmd_docker_compose_up)
-            # ),
-            # "cmd_docker_compose_down": MetadataValue.path(
-            #     " ".join(shlex.quote(s) for s in cmd_docker_compose_down)
-            # ),
-            # "__".join(context.asset_key.path): MetadataValue.path(docker_compose),
-            # "maps": MetadataValue.md(
-            #     f"```json\n{json.dumps(docker_chainmap.maps, indent=2)}\n```"
-            # ),
             "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
-            # "env": MetadataValue.json(env),
         },
     )
 
