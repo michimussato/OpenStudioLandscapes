@@ -70,8 +70,8 @@ def docker_compose_merge(
 @asset(
     **asset_header,
     ins={
-        "env": AssetIn(
-            AssetKey([KEY_BASE, "env"]),
+        "group_out": AssetIn(
+            AssetKey([KEY_BASE, "group_out"]),
         ),
         "docker_compose_merge": AssetIn(
             AssetKey([KEY, "docker_compose_merge"]),
@@ -80,12 +80,14 @@ def docker_compose_merge(
 )
 def docker_compose_write(
     context: AssetExecutionContext,
-    env: dict,  # pylint: disable=redefined-outer-name
+    group_out: dict,  # pylint: disable=redefined-outer-name
     docker_compose_merge: dict,  # pylint: disable=redefined-outer-name
 ) -> pathlib.Path:
     """ """
 
     docker_yaml = yaml.dump(docker_compose_merge)
+
+    env = copy.deepcopy(group_out["env"])
 
     docker_compose = pathlib.Path(
         env["DOT_LANDSCAPES"],
