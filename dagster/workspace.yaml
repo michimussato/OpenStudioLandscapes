@@ -7,3 +7,8 @@ load_from:
       module_name: OpenStudioLandscapes.open_studio_landscapes.definitions
       location_name: "OpenStudioLandscapes.open_studio_landscapes"
       # executable_path: ../.venv/bin/python
+  - python_module:
+      working_directory: src
+      module_name: OpenStudioLandscapes.open_studio_landscapes.Deadline.v10_2.definitions
+      location_name: "OpenStudioLandscapes.open_studio_landscapes.Deadline.v10_2"
+      # executable_path: ../.venv/bin/python

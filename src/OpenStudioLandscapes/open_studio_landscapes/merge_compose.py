@@ -41,13 +41,13 @@ asset_header = {
         "compose_base": AssetIn(
             AssetKey([KEY_BASE, "compose"]),
         ),
-        "group_out_deadline_10_2": AssetIn(AssetKey([KEY_DEADLINE_10_2, "group_out"])),
+        # "group_out_deadline_10_2": AssetIn(AssetKey([KEY_DEADLINE_10_2, "group_out"])),
     },
 )
 def docker_compose_merge(
     context: AssetExecutionContext,
     compose_base: dict,  # pylint: disable=redefined-outer-name
-    group_out_deadline_10_2: dict,  # pylint: disable=redefined-outer-name
+    # group_out_deadline_10_2: dict,  # pylint: disable=redefined-outer-name
 ) -> dict:
 
     docker_chainmap = ChainMap(

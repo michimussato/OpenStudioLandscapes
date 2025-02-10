@@ -49,16 +49,18 @@ asset_header = {
 @asset(
     **asset_header,
     group_name=f"GROUP_IN_{KEY}",
-    ins={
-        "group_out_base": AssetIn(
-            AssetKey([KEY_BASE, "group_out"]),
-        ),
-    },
+    # ins={
+    #     "group_out_base": AssetIn(
+    #         AssetKey([KEY_BASE, "group_out"]),
+    #     ),
+    # },
 )
 def group_in(
     context: AssetExecutionContext,
-    group_out_base: dict,  # pylint: disable=redefined-outer-name
+    # group_out_base: dict,  # pylint: disable=redefined-outer-name
 ) -> dict[str, str | dict]:
+
+    group_out_base = dict()
 
     group_in_dict: dict = copy.deepcopy(group_out_base)
 
