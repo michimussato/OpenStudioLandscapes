@@ -257,6 +257,7 @@ sudo usermod -aG docker $USER
 
 - Check Deadline-Installers
   - `.installers/Deadline_10_2/deadline/deadline_10-2-1-1`
+  - `chmod a+x *.run`
 - Check source DBs
 
 - `graphviz` (`dot` (`docker-compose-graph`))
@@ -268,6 +269,43 @@ sudo usermod -aG docker $USER
 - `python`
   - `python3.11`
   - `python3.12`
+- `bzip2` (https://docs.thinkboxsoftware.com/products/deadline/10.2/1_User%20Manual/manual/system-requirements.html#system-requirements-linux-ref-label)
+- local
+  - Manjaro: `libxcrypt-compat`
+  - Deadline Client 10.2
+    - `libffi6`
+    - `python3.7`  # Needed?
+      - ```
+        System.DllNotFoundException: Unable to load shared library 'python3.7m' or one of its dependencies. In order to help diagnose loading problems, consider setting the LD_DEBUG environment variable: libpython3.7m: cannot open shared object file: No such file or directory
+           at Python.Runtime.Runtime.Py_GetVersion()
+           at Python.Runtime.PythonEngine.get_Version()
+           at FranticX.Scripting.PythonNetScriptEngine.Initialize(Boolean setUnbufferedStdioFlag, String home, String programName)
+        Exception on Startup: An Unexpected Error Occurred: Attempted python home: /opt/Thinkbox/Deadline10-2/bin/python3/../../lib/python3, Unable to load shared library 'python3.7m' or one of its dependencies. In order to help diagnose loading problems, consider setting the LD_DEBUG environment variable: libpython3.7m: cannot open shared object file: No such file or directory
+        
+        Deadline Launcher will now exit.
+        ```
+      - `sudo ldconfig /opt/Thinkbox/Deadline10-2/lib/python3/lib`
+  - Deadline Client 10.3
+  - 
+
+```
+System.TypeInitializationException: The type initializer for 'Delegates' threw an exception.
+ ---> System.DllNotFoundException: Could not load libpython3.10.so with flags RTLD_NOW | RTLD_GLOBAL: libcrypt.so.1: cannot open shared object file: No such file or directory
+   at Python.Runtime.Platform.PosixLoader.Load(String dllToLoad) in C:\thinkbox-conda\conda-bld\dotnet_pythonnet_1709944764012\work\src\runtime\Native\LibraryLoader.cs:line 61
+   at Python.Runtime.Runtime.Delegates.GetUnmanagedDll(String libraryName) in C:\thinkbox-conda\conda-bld\dotnet_pythonnet_1709944764012\work\src\runtime\Runtime.Delegates.cs:line 290
+   at Python.Runtime.Runtime.Delegates..cctor() in C:\thinkbox-conda\conda-bld\dotnet_pythonnet_1709944764012\work\src\runtime\Runtime.Delegates.cs:line 16
+   --- End of inner exception stack trace ---
+   at Python.Runtime.Runtime.Delegates.get_Py_GetVersion() in C:\thinkbox-conda\conda-bld\dotnet_pythonnet_1709944764012\work\src\runtime\Runtime.Delegates.cs:line 341
+   at Python.Runtime.Runtime.Py_GetVersion() in C:\thinkbox-conda\conda-bld\dotnet_pythonnet_1709944764012\work\src\runtime\Runtime.cs:line 826
+   at Python.Runtime.PythonEngine.get_Version() in C:\thinkbox-conda\conda-bld\dotnet_pythonnet_1709944764012\work\src\runtime\PythonEngine.cs:line 143
+   at FranticX.Scripting.PythonNetScriptEngine.Initialize(Boolean setUnbufferedStdioFlag, String home, String programName)
+Exception on Startup: An Unexpected Error Occurred: Attempted python home: /opt/Thinkbox/Deadline10/bin/python3/../../lib/python3, The type initializer for 'Delegates' threw an exception.
+
+Deadline Launcher will now exit.
+
+```
+
+Manjaro: `libxcrypt-compat`
 
 ## Limitations
 
