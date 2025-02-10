@@ -1791,12 +1791,12 @@ def compose_pulse_runner(
                 "restart": "always",
                 "image": build_client_image_10_2,
                 "depends_on": {
-                    "repository-installer-10-2": {
-                        "condition": "service_completed_successfully",
-                    },
-                    "mongodb-10-2": {
-                        "condition": "service_started",
-                    },
+                    # "repository-installer-10-2": {
+                    #     "condition": "service_completed_successfully",
+                    # },
+                    # "mongodb-10-2": {
+                    #     "condition": "service_started",
+                    # },
                     "deadline-rcs-runner-10-2": {
                         "condition": "service_started",
                     },
@@ -1927,12 +1927,12 @@ def compose_worker_runner(
                 "restart": "always",
                 "image": build_client_image_10_2,
                 "depends_on": {
-                    "repository-installer-10-2": {
-                        "condition": "service_completed_successfully",
-                    },
-                    "mongodb-10-2": {
-                        "condition": "service_started",
-                    },
+                    # "repository-installer-10-2": {
+                    #     "condition": "service_completed_successfully",
+                    # },
+                    # "mongodb-10-2": {
+                    #     "condition": "service_started",
+                    # },
                     "deadline-rcs-runner-10-2": {
                         "condition": "service_started",
                     },
@@ -2068,12 +2068,12 @@ def compose_webservice_runner(
                 "restart": "always",
                 "image": build_client_image_10_2,
                 "depends_on": {
-                    "repository-installer-10-2": {
-                        "condition": "service_completed_successfully",
-                    },
-                    "mongodb-10-2": {
-                        "condition": "service_started",
-                    },
+                    # "repository-installer-10-2": {
+                    #     "condition": "service_completed_successfully",
+                    # },
+                    # "mongodb-10-2": {
+                    #     "condition": "service_started",
+                    # },
                     "deadline-rcs-runner-10-2": {
                         "condition": "service_started",
                     },
