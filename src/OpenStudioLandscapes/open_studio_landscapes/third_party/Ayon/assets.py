@@ -18,7 +18,6 @@ from dagster import (
     asset,
 )
 from OpenStudioLandscapes.open_studio_landscapes.assets import KEY as KEY_BASE
-from OpenStudioLandscapes.open_studio_landscapes.utils import *
 
 GROUP = "Ayon"
 KEY = "Ayon"
@@ -164,12 +163,12 @@ def compose_override(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
     compose_networks: dict,  # pylint: disable=redefined-outer-name
-) -> dict[str, list[str]]:
-    """ """
+) -> dict:
+    """"""
 
     parent = pathlib.Path(env.get("AYON_DOCKER_COMPOSE"))
 
-    docker_dict = {
+    docker_dict_override = {
         "networks": compose_networks.get("networks", []),
         "services": {
             "postgres": {
@@ -212,8 +211,6 @@ def compose_override(
         },
     }
 
-    docker_yaml = yaml.dump(docker_dict)
-
     docker_compose_override = pathlib.Path(
         env["DOT_LANDSCAPES"],
         env.get("LANDSCAPE", "default"),
@@ -222,39 +219,35 @@ def compose_override(
         "docker-compose.override.yml",
     )
 
-    docker_compose_override.parent.mkdir(parents=True, exist_ok=True)
+    docker_yaml_override: str = yaml.dump(docker_dict_override)
 
     with open(docker_compose_override, "w") as fw:
-        fw.write(docker_yaml)
+        fw.write(docker_yaml_override)
 
-    # cmd_docker_compose_up = [
-    #     shutil.which("docker"),
-    #     "compose",
-    #     "--file",
-    #     parent.as_posix(),
-    #     "--project-name",
-    #     "__".join(context.asset_key.path),
-    #     "up",
-    #     "--remove-orphans",
-    # ]
+    # Write compose override to disk here to be able to reference
+    # it in the following step.
+    # It seems that it's necessary to apply overrides in
+    # include: path
 
-    ret = {
-        "path": [
-            parent.as_posix(),
-            docker_compose_override.as_posix(),
+    docker_dict_include ={
+        "include": [
+            {
+                "path": [
+                    parent.as_posix(),
+                    docker_compose_override.as_posix(),
+                ],
+            },
         ],
     }
 
-    yield Output(ret)
+    yield Output(docker_dict_include)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(ret),
-            # "cmd_docker_compose_up": MetadataValue.path(
-            #     cmd_list_to_str(cmd_docker_compose_up)
-            # ),
-            "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
+            "__".join(context.asset_key.path): MetadataValue.json(docker_dict_include),
+            "docker_yaml_override": MetadataValue.md(f"```yaml\n{docker_yaml_override}\n```"),
+            # Todo: "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)),
         },
     )
 
@@ -262,7 +255,7 @@ def compose_override(
 @asset(
     **asset_header,
     ins={
-        "compose": AssetIn(
+        "compose_override": AssetIn(
             AssetKey([KEY, "compose_override"]),
         ),
         "env": AssetIn(
@@ -272,11 +265,11 @@ def compose_override(
 )
 def group_out(
     context: AssetExecutionContext,
-    compose: dict,  # pylint: disable=redefined-outer-name
+    compose_override: dict,  # pylint: disable=redefined-outer-name
     env: dict,  # pylint: disable=redefined-outer-name
 ) -> pathlib.Path:
 
-    docker_yaml = yaml.dump(compose)
+    docker_yaml = yaml.dump(compose_override)
 
     docker_compose = pathlib.Path(
         env["DOT_LANDSCAPES"],

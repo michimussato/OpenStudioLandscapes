@@ -745,12 +745,8 @@ def compose(
         asset_key=context.asset_key,
         metadata={
             "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
-            "docker_dict": MetadataValue.md(
-                f"```json\n{json.dumps(docker_dict, indent=2)}\n```"
-            ),
             "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
             "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)),
-            "env": MetadataValue.json(env),
         },
     )
 

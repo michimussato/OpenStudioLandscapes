@@ -2,6 +2,8 @@ import copy
 import json
 import pathlib
 import importlib
+import shlex
+import shutil
 
 import yaml
 
@@ -15,8 +17,6 @@ from dagster import (
     asset,
 )
 from OpenStudioLandscapes.open_studio_landscapes.assets import KEY as KEY_BASE
-from OpenStudioLandscapes.open_studio_landscapes.constants import *
-from OpenStudioLandscapes.open_studio_landscapes.utils import *
 
 GROUP = "filebrowser"
 KEY = "filebrowser"
@@ -174,11 +174,8 @@ def compose(
         asset_key=context.asset_key,
         metadata={
             "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
-            "docker_dict": MetadataValue.md(
-                f"```json\n{json.dumps(docker_dict, indent=2)}\n```"
-            ),
             "docker_yaml": MetadataValue.md(f"```shell\n{docker_yaml}\n```"),
-            "env": MetadataValue.json(env),
+            # Todo: "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)),
         },
     )
 
@@ -189,22 +186,69 @@ def compose(
         "compose": AssetIn(
             AssetKey([KEY, "compose"]),
         ),
+        "env": AssetIn(
+            AssetKey([KEY, "env"]),
+        ),
     },
 )
 def group_out(
     context: AssetExecutionContext,
     compose: dict,  # pylint: disable=redefined-outer-name
-) -> dict:
+    env: dict,  # pylint: disable=redefined-outer-name
+) -> pathlib.Path:
 
-    out_dict: dict = dict()
+    docker_yaml = yaml.dump(compose)
 
-    out_dict["docker_compose"] = copy.deepcopy(compose)
+    docker_compose = pathlib.Path(
+        env["DOT_LANDSCAPES"],
+        env.get("LANDSCAPE", "default"),
+        KEY,
+        "docker_compose",
+        "__".join(context.asset_key.path),
+        "docker-compose.yml",
+    )
 
-    yield Output(out_dict)
+    docker_compose.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(docker_compose, "w") as fw:
+        fw.write(docker_yaml)
+
+    project_name = f"{env.get('LANDSCAPE', 'default').replace('.', '-')}"
+
+    cmd_docker_compose_up = [
+        shutil.which("docker"),
+        "compose",
+        "--file",
+        docker_compose.as_posix(),
+        "--project-name",
+        project_name,
+        "up",
+        "--remove-orphans",
+    ]
+
+    cmd_docker_compose_down = [
+        shutil.which("docker"),
+        "compose",
+        "--file",
+        docker_compose.as_posix(),
+        "--project-name",
+        project_name,
+        "down",
+        "--remove-orphans",
+    ]
+
+    yield Output(docker_compose)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(out_dict),
+            "__".join(context.asset_key.path): MetadataValue.path(docker_compose),
+            "cmd_docker_compose_up": MetadataValue.path(
+                " ".join(shlex.quote(s) for s in cmd_docker_compose_up)
+            ),
+            "cmd_docker_compose_down": MetadataValue.path(
+                " ".join(shlex.quote(s) for s in cmd_docker_compose_down)
+            ),
+            "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
         },
     )
