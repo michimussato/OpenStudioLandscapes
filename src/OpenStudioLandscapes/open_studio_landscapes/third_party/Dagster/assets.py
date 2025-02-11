@@ -31,9 +31,9 @@ asset_header = {"group_name": GROUP, "key_prefix": [KEY], "compute_kind": "pytho
 
 @asset(
     **asset_header,
-    # deps=[
-    #     AssetKey([KEY_BASE, "group_out"]),
-    # ],
+    deps=[
+        AssetKey([KEY_BASE, "group_out"]),
+    ],
 )
 def group_in(
     context: AssetExecutionContext,
