@@ -1,12 +1,6 @@
 import copy
 import importlib
-import pathlib
-import shlex
 import yaml
-import shutil
-import pydot
-import base64
-from docker_compose_graph.docker_compose_graph import DockerComposeGraph
 
 from dagster import (
     AssetExecutionContext,
@@ -16,9 +10,12 @@ from dagster import (
     MetadataValue,
     Output,
     asset,
+    AssetsDefinition,
 )
 
 from OpenStudioLandscapes.open_studio_landscapes.base.assets import KEY as KEY_BASE
+from OpenStudioLandscapes.open_studio_landscapes.base.ops import op_group_out
+from OpenStudioLandscapes.open_studio_landscapes.base.ops import op_docker_compose_graph
 
 GROUP = "Compose"
 KEY = "Compose"
@@ -134,149 +131,102 @@ def compose(
     )
 
 
-@asset(
-    **asset_header,
-    ins={
-        "compose": AssetIn(
-            AssetKey([KEY, "compose"]),
+# @asset(
+#     **asset_header,
+#     ins={
+#         "compose": AssetIn(
+#             AssetKey([KEY, "compose"]),
+#         ),
+#         "env": AssetIn(
+#             AssetKey([KEY_BASE, "env"]),
+#         ),
+#     },
+# )
+# def group_out(
+#     context: AssetExecutionContext,
+#     compose: dict,  # pylint: disable=redefined-outer-name
+#     env: dict,  # pylint: disable=redefined-outer-name
+# ) -> pathlib.Path:
+#
+#     docker_yaml = yaml.dump(compose)
+#
+#     docker_compose = pathlib.Path(
+#         env["DOT_LANDSCAPES"],
+#         env.get("LANDSCAPE", "default"),
+#         KEY,
+#         "docker_compose",
+#         "__".join(context.asset_key.path),
+#         "docker-compose.yml",
+#     )
+#
+#     docker_compose.parent.mkdir(parents=True, exist_ok=True)
+#
+#     with open(docker_compose, "w") as fw:
+#         fw.write(docker_yaml)
+#
+#     project_name = f"{env.get('LANDSCAPE', 'default').replace('.', '-')}"
+#
+#     cmd_docker_compose_up = [
+#         shutil.which("docker"),
+#         "compose",
+#         "--file",
+#         docker_compose.as_posix(),
+#         "--project-name",
+#         project_name,
+#         "up",
+#         "--remove-orphans",
+#     ]
+#
+#     cmd_docker_compose_down = [
+#         shutil.which("docker"),
+#         "compose",
+#         "--file",
+#         docker_compose.as_posix(),
+#         "--project-name",
+#         project_name,
+#         "down",
+#         "--remove-orphans",
+#     ]
+#
+#     yield Output(docker_compose)
+#
+#     yield AssetMaterialization(
+#         asset_key=context.asset_key,
+#         metadata={
+#             "__".join(context.asset_key.path): MetadataValue.path(docker_compose),
+#             "cmd_docker_compose_up": MetadataValue.path(
+#                 " ".join(shlex.quote(s) for s in cmd_docker_compose_up)
+#             ),
+#             "cmd_docker_compose_down": MetadataValue.path(
+#                 " ".join(shlex.quote(s) for s in cmd_docker_compose_down)
+#             ),
+#             "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
+#         },
+#     )
+
+
+group_out = AssetsDefinition.from_op(
+    op_group_out,
+    group_name=GROUP,
+    key_prefix=KEY,
+    keys_by_input_name={
+        "compose": AssetKey(
+            [KEY, "compose"]
         ),
-        "env": AssetIn(
-            AssetKey([KEY_BASE, "env"]),
+        "env": AssetKey(
+            [KEY_BASE, "env"]
         ),
     },
 )
-def group_out(
-    context: AssetExecutionContext,
-    compose: dict,  # pylint: disable=redefined-outer-name
-    env: dict,  # pylint: disable=redefined-outer-name
-) -> pathlib.Path:
-
-    docker_yaml = yaml.dump(compose)
-
-    docker_compose = pathlib.Path(
-        env["DOT_LANDSCAPES"],
-        env.get("LANDSCAPE", "default"),
-        KEY,
-        "docker_compose",
-        "__".join(context.asset_key.path),
-        "docker-compose.yml",
-    )
-
-    docker_compose.parent.mkdir(parents=True, exist_ok=True)
-
-    with open(docker_compose, "w") as fw:
-        fw.write(docker_yaml)
-
-    project_name = f"{env.get('LANDSCAPE', 'default').replace('.', '-')}"
-
-    cmd_docker_compose_up = [
-        shutil.which("docker"),
-        "compose",
-        "--file",
-        docker_compose.as_posix(),
-        "--project-name",
-        project_name,
-        "up",
-        "--remove-orphans",
-    ]
-
-    cmd_docker_compose_down = [
-        shutil.which("docker"),
-        "compose",
-        "--file",
-        docker_compose.as_posix(),
-        "--project-name",
-        project_name,
-        "down",
-        "--remove-orphans",
-    ]
-
-    yield Output(docker_compose)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.path(docker_compose),
-            "cmd_docker_compose_up": MetadataValue.path(
-                " ".join(shlex.quote(s) for s in cmd_docker_compose_up)
-            ),
-            "cmd_docker_compose_down": MetadataValue.path(
-                " ".join(shlex.quote(s) for s in cmd_docker_compose_down)
-            ),
-            "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
-        },
-    )
 
 
-@asset(
-    **asset_header,
-    ins={
-        "group_out": AssetIn(
-            AssetKey([KEY, "group_out"]),
+docker_compose_graph = AssetsDefinition.from_op(
+    op_docker_compose_graph,
+    group_name=GROUP,
+    key_prefix=KEY,
+    keys_by_input_name={
+        "group_out": AssetKey(
+            [KEY, "group_out"]
         ),
     },
 )
-def docker_compose_graph(
-    context: AssetExecutionContext,
-    group_out: pathlib.Path,  # pylint: disable=redefined-outer-name
-) -> pydot.Dot:
-    """ """
-
-    dcg = DockerComposeGraph()
-    trees = dcg.parse_docker_compose(pathlib.Path(group_out))
-
-    context.log.info(trees)
-
-    dcg.iterate_trees(trees)
-
-    docker_compose_dir = group_out.parent / "__".join(context.asset_key.path)
-
-    docker_compose_dir.mkdir(parents=True, exist_ok=True)
-
-    # SVG
-    svg = docker_compose_dir / f"{'__'.join(context.asset_key.path)}.svg"
-    dcg.graph.write(
-        path=svg,
-        format="svg",
-    )
-
-    with open(svg, "rb") as fr:
-        svg_bytes = fr.read()
-
-    svg_base64 = base64.b64encode(svg_bytes).decode("utf-8")
-    svg_md = f"![Image](data:image/svg+xml;base64,{svg_base64})"
-
-    # PNG
-    png = docker_compose_dir / f"{'__'.join(context.asset_key.path)}.png"
-    dcg.graph.write(
-        path=png,
-        format="png",
-    )
-
-    # SLOW
-    # with open(png, "rb") as fr:
-    #     png_bytes = fr.read()
-    #
-    # png_base64 = base64.b64encode(png_bytes).decode("utf-8")
-    # png_md = f"![Image](data:image/png;base64,{png_base64})"
-
-    # DOT
-    dot = docker_compose_dir / f"{'__'.join(context.asset_key.path)}.dot"
-    dcg.graph.write(
-        path=dot,
-        format="dot",
-    )
-
-    yield Output(dcg.graph)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "svg": MetadataValue.md(svg_md),
-            # "png": MetadataValue.md(png_md),  # slow in Dagster UI
-            "__".join(context.asset_key.path): MetadataValue.json(str(dcg.graph)),
-            "svg_path": MetadataValue.path(svg),
-            "png_path": MetadataValue.path(png),
-            "dot_path": MetadataValue.path(dot),
-        },
-    )

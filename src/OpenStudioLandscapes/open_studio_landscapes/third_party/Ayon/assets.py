@@ -2,8 +2,6 @@ import copy
 import json
 import pathlib
 import importlib
-import shlex
-import shutil
 
 import yaml
 from docker_compose_graph.yaml_tags.overrides import *
@@ -16,7 +14,11 @@ from dagster import (
     MetadataValue,
     Output,
     asset,
+    AssetsDefinition,
 )
+
+from OpenStudioLandscapes.open_studio_landscapes.base.ops import op_group_out
+from OpenStudioLandscapes.open_studio_landscapes.base.ops import op_docker_compose_graph
 from OpenStudioLandscapes.open_studio_landscapes.base.assets import KEY as KEY_BASE
 
 GROUP = "Ayon"
@@ -252,75 +254,28 @@ def compose_override(
     )
 
 
-@asset(
-    **asset_header,
-    ins={
-        "compose_override": AssetIn(
-            AssetKey([KEY, "compose_override"]),
+group_out = AssetsDefinition.from_op(
+    op_group_out,
+    group_name=GROUP,
+    key_prefix=KEY,
+    keys_by_input_name={
+        "compose": AssetKey(
+            [KEY, "compose_override"]
         ),
-        "env": AssetIn(
-            AssetKey([KEY, "env"]),
+        "env": AssetKey(
+            [KEY, "env"]
         ),
     },
 )
-def group_out(
-    context: AssetExecutionContext,
-    compose_override: dict,  # pylint: disable=redefined-outer-name
-    env: dict,  # pylint: disable=redefined-outer-name
-) -> pathlib.Path:
 
-    docker_yaml = yaml.dump(compose_override)
 
-    docker_compose = pathlib.Path(
-        env["DOT_LANDSCAPES"],
-        env.get("LANDSCAPE", "default"),
-        KEY,
-        "docker_compose",
-        "__".join(context.asset_key.path),
-        "docker-compose.yml",
-    )
-
-    docker_compose.parent.mkdir(parents=True, exist_ok=True)
-
-    with open(docker_compose, "w") as fw:
-        fw.write(docker_yaml)
-
-    project_name = f"{env.get('LANDSCAPE', 'default').replace('.', '-')}"
-
-    cmd_docker_compose_up = [
-        shutil.which("docker"),
-        "compose",
-        "--file",
-        docker_compose.as_posix(),
-        "--project-name",
-        project_name,
-        "up",
-        "--remove-orphans",
-    ]
-
-    cmd_docker_compose_down = [
-        shutil.which("docker"),
-        "compose",
-        "--file",
-        docker_compose.as_posix(),
-        "--project-name",
-        project_name,
-        "down",
-        "--remove-orphans",
-    ]
-
-    yield Output(docker_compose)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.path(docker_compose),
-            "cmd_docker_compose_up": MetadataValue.path(
-                " ".join(shlex.quote(s) for s in cmd_docker_compose_up)
-            ),
-            "cmd_docker_compose_down": MetadataValue.path(
-                " ".join(shlex.quote(s) for s in cmd_docker_compose_down)
-            ),
-            "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
-        },
-    )
+docker_compose_graph = AssetsDefinition.from_op(
+    op_docker_compose_graph,
+    group_name=GROUP,
+    key_prefix=KEY,
+    keys_by_input_name={
+        "group_out": AssetKey(
+            [KEY, "group_out"]
+        ),
+    },
+)
