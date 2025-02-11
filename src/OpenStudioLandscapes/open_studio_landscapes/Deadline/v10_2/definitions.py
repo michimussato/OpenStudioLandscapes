@@ -19,7 +19,7 @@ from OpenStudioLandscapes.open_studio_landscapes.Deadline.v10_2 import (
     jobs as jobs_Deadline_v10_2,
 )
 
-assets_10_2 = load_assets_from_modules(
+assets = load_assets_from_modules(
     modules=[assets_Deadline_v10_2],
     auto_materialize_policy=AutoMaterializePolicy.lazy().with_rules(
         AutoMaterializeRule.materialize_on_parent_updated(),
@@ -30,14 +30,14 @@ assets_10_2 = load_assets_from_modules(
 
 defs = Definitions(
     assets=[
-        *assets_10_2,
+        *assets,
         # *assets_merge_compose,
     ],
     jobs=[
-        jobs_Deadline_v10_2.job_Deadline_10_2,
+        jobs_Deadline_v10_2.job_Deadline_v10_2,
     ],
     sensors=[
         sensors_Deadline_v10_2.sensor__Base__group_out,
-        sensors_Deadline_v10_2.sensor__auto_materialize_deadline_10_2,
+        sensors_Deadline_v10_2.sensor__auto_materialize_Deadline_v10_2,
     ]
 )

@@ -1,6 +1,7 @@
 import copy
 import json
 import pathlib
+import importlib
 
 import yaml
 
@@ -23,18 +24,49 @@ asset_header = {"group_name": GROUP, "key_prefix": [KEY], "compute_kind": "pytho
 
 @asset(
     **asset_header,
+    # deps=[
+    #     AssetKey([KEY_BASE, "group_out"]),
+    # ],
+)
+def group_in(
+    context: AssetExecutionContext,
+) -> dict[str, str | dict]:
+
+    # load asset data from external code location into memory
+    # and provide it as the Output of this asset
+    load_from = AssetKey([KEY_BASE, "group_out"])
+    defs = importlib.import_module("OpenStudioLandscapes.open_studio_landscapes.definitions").defs
+    df: dict = defs.load_asset_value(
+        asset_key=load_from,
+        instance=context.instance,
+    )
+
+    context.log.info(f"loaded data from Asset {load_from}: {json.dumps(df, indent=2)}")
+
+    yield Output(df)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.json(df),
+        },
+    )
+
+
+@asset(
+    **asset_header,
     ins={
-        "group_out_base": AssetIn(
-            AssetKey([KEY_BASE, "group_out"]),
+        "group_in": AssetIn(
+            AssetKey([KEY, "group_in"]),
         ),
     },
 )
 def env(
     context: AssetExecutionContext,
-    group_out_base: dict,  # pylint: disable=redefined-outer-name
+    group_in: dict,  # pylint: disable=redefined-outer-name
 ) -> dict:
 
-    env_in = copy.deepcopy(group_out_base["env"])
+    env_in = copy.deepcopy(group_in["env"])
 
     # @formatter:off
     _env = {

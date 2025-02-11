@@ -19,7 +19,7 @@ asset_to_watch = [KEY_BASE, "group_out"]
 @asset_sensor(
     asset_key=AssetKey(asset_to_watch),
     default_status=DefaultSensorStatus.RUNNING,
-    job_name="job_Deadline_v10_2",
+    job_name="job_Kitsu",
     minimum_interval_seconds=5,
 )
 def sensor__Base__group_out(
@@ -28,8 +28,8 @@ def sensor__Base__group_out(
     return RunRequest()
 
 
-sensor__auto_materialize_Deadline_v10_2 = AutomationConditionSensorDefinition(
-    "sensor__auto_materialize_Deadline_v10_2",
+sensor__auto_materialize_Kitsu = AutomationConditionSensorDefinition(
+    "sensor__auto_materialize_Kitsu",
     target=AssetSelection.all(include_sources=True),
     minimum_interval_seconds=15,
     default_status=DefaultSensorStatus.RUNNING,

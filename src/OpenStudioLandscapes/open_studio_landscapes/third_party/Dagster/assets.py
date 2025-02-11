@@ -5,6 +5,7 @@ import shutil
 import textwrap
 import time
 import urllib.parse
+import importlib
 
 import yaml
 from python_on_whales import docker
@@ -30,18 +31,49 @@ asset_header = {"group_name": GROUP, "key_prefix": [KEY], "compute_kind": "pytho
 
 @asset(
     **asset_header,
+    # deps=[
+    #     AssetKey([KEY_BASE, "group_out"]),
+    # ],
+)
+def group_in(
+    context: AssetExecutionContext,
+) -> dict[str, str | dict]:
+
+    # load asset data from external code location into memory
+    # and provide it as the Output of this asset
+    load_from = AssetKey([KEY_BASE, "group_out"])
+    defs = importlib.import_module("OpenStudioLandscapes.open_studio_landscapes.definitions").defs
+    df: dict = defs.load_asset_value(
+        asset_key=load_from,
+        instance=context.instance,
+    )
+
+    context.log.info(f"loaded data from Asset {load_from}: {json.dumps(df, indent=2)}")
+
+    yield Output(df)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.json(df),
+        },
+    )
+
+
+@asset(
+    **asset_header,
     ins={
-        "group_out_base": AssetIn(
-            AssetKey([KEY_BASE, "group_out"]),
+        "group_in": AssetIn(
+            AssetKey([KEY, "group_in"]),
         ),
     },
 )
 def env(
     context: AssetExecutionContext,
-    group_out_base: dict,  # pylint: disable=redefined-outer-name
+    group_in: dict,  # pylint: disable=redefined-outer-name
 ) -> dict:
 
-    env_in = copy.deepcopy(group_out_base["env"])
+    env_in = copy.deepcopy(group_in["env"])
 
     # @formatter:off
     _env = {
@@ -117,9 +149,12 @@ def pip_packages(
         "env": AssetIn(
             AssetKey([KEY, "env"]),
         ),
-        "group_out_base": AssetIn(
-            AssetKey([KEY_BASE, "group_out"]),
+        "group_in": AssetIn(
+            AssetKey([KEY, "group_in"]),
         ),
+        # "group_out_base": AssetIn(
+        #     AssetKey([KEY_BASE, "group_out"]),
+        # ),
         "pip_packages": AssetIn(
             AssetKey([KEY, "pip_packages"]),
         ),
@@ -128,12 +163,13 @@ def pip_packages(
 def build_docker_image(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
-    group_out_base: dict,  # pylint: disable=redefined-outer-name
+    group_in: dict,  # pylint: disable=redefined-outer-name
     pip_packages: list,  # pylint: disable=redefined-outer-name
 ) -> str:
     """ """
 
-    build_base_image: str = group_out_base["docker_image"]
+    # env: dict = group_in["env"]
+    build_base_image: str = group_in["docker_image"]
 
     docker_file = pathlib.Path(
         env["DOT_LANDSCAPES"],

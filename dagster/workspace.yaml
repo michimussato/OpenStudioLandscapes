@@ -12,3 +12,33 @@ load_from:
       module_name: OpenStudioLandscapes.open_studio_landscapes.Deadline.v10_2.definitions
       location_name: "OpenStudioLandscapes.open_studio_landscapes.Deadline.v10_2"
       # executable_path: ../.venv/bin/python
+  - python_module:
+      working_directory: src
+      module_name: OpenStudioLandscapes.open_studio_landscapes.third_party.Ayon.definitions
+      location_name: "OpenStudioLandscapes.open_studio_landscapes.third_party.Ayon"
+      # executable_path: ../.venv/bin/python
+  - python_module:
+      working_directory: src
+      module_name: OpenStudioLandscapes.open_studio_landscapes.third_party.Dagster.definitions
+      location_name: "OpenStudioLandscapes.open_studio_landscapes.third_party.Dagster"
+      # executable_path: ../.venv/bin/python
+  - python_module:
+      working_directory: src
+      module_name: OpenStudioLandscapes.open_studio_landscapes.third_party.filebrowser.definitions
+      location_name: "OpenStudioLandscapes.open_studio_landscapes.third_party.filebrowser"
+      # executable_path: ../.venv/bin/python
+  - python_module:
+      working_directory: src
+      module_name: OpenStudioLandscapes.open_studio_landscapes.third_party.Grafana.definitions
+      location_name: "OpenStudioLandscapes.open_studio_landscapes.third_party.Grafana"
+      # executable_path: ../.venv/bin/python
+  - python_module:
+      working_directory: src
+      module_name: OpenStudioLandscapes.open_studio_landscapes.third_party.Kitsu.definitions
+      location_name: "OpenStudioLandscapes.open_studio_landscapes.third_party.Kitsu"
+      # executable_path: ../.venv/bin/python
+  - python_module:
+      working_directory: src
+      module_name: OpenStudioLandscapes.open_studio_landscapes.third_party.LikeC4.definitions
+      location_name: "OpenStudioLandscapes.open_studio_landscapes.third_party.LikeC4"
+      # executable_path: ../.venv/bin/python
