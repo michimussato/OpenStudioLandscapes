@@ -2,6 +2,8 @@ import copy
 import json
 import pathlib
 import importlib
+import shlex
+import shutil
 
 import yaml
 from docker_compose_graph.yaml_tags.overrides import *
@@ -119,21 +121,56 @@ def env(
 
 @asset(
     **asset_header,
+)
+def compose_networks(
+    context: AssetExecutionContext,
+) -> dict:
+    docker_dict = {
+        "networks": {
+            "mongodb": {
+                "name": "network_mongodb-10-2",
+            },
+            "repository": {
+                "name": "network_repository-10-2",
+            },
+            "ayon": {
+                "name": "network_ayon-10-2",
+            },
+        },
+    }
+
+    yield Output(docker_dict)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
+        },
+    )
+
+
+@asset(
+    **asset_header,
     ins={
         "env": AssetIn(
             AssetKey([KEY, "env"]),
+        ),
+        "compose_networks": AssetIn(
+            AssetKey([KEY, "compose_networks"]),
         ),
     },
 )
 def compose_override(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
+    compose_networks: dict,  # pylint: disable=redefined-outer-name
 ) -> dict[str, list[str]]:
     """ """
 
     parent = pathlib.Path(env.get("AYON_DOCKER_COMPOSE"))
 
     docker_dict = {
+        "networks": compose_networks.get("networks", []),
         "services": {
             "postgres": {
                 "container_name": "ayon-postgres",
@@ -143,10 +180,7 @@ def compose_override(
                     f"/etc/localtime:/etc/localtime:ro",
                     f"{env.get('NFS_ENTRY_POINT')}/databases/ayon/postgresql/data:/var/lib/postgresql/data",
                 ],
-                "networks": [
-                    "mongodb",
-                    "repository",
-                ],
+                "networks": list(compose_networks.get("networks", {}).keys()),
             },
             "redis": {
                 "container_name": "ayon-redis",
@@ -231,22 +265,69 @@ def compose_override(
         "compose": AssetIn(
             AssetKey([KEY, "compose_override"]),
         ),
+        "env": AssetIn(
+            AssetKey([KEY, "env"]),
+        ),
     },
 )
 def group_out(
     context: AssetExecutionContext,
     compose: dict,  # pylint: disable=redefined-outer-name
-) -> dict:
+    env: dict,  # pylint: disable=redefined-outer-name
+) -> pathlib.Path:
 
-    out_dict: dict = dict()
+    docker_yaml = yaml.dump(compose)
 
-    out_dict["docker_compose"] = copy.deepcopy(compose)
+    docker_compose = pathlib.Path(
+        env["DOT_LANDSCAPES"],
+        env.get("LANDSCAPE", "default"),
+        KEY,
+        "docker_compose",
+        "__".join(context.asset_key.path),
+        "docker-compose.yml",
+    )
 
-    yield Output(out_dict)
+    docker_compose.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(docker_compose, "w") as fw:
+        fw.write(docker_yaml)
+
+    project_name = f"{env.get('LANDSCAPE', 'default').replace('.', '-')}"
+
+    cmd_docker_compose_up = [
+        shutil.which("docker"),
+        "compose",
+        "--file",
+        docker_compose.as_posix(),
+        "--project-name",
+        project_name,
+        "up",
+        "--remove-orphans",
+    ]
+
+    cmd_docker_compose_down = [
+        shutil.which("docker"),
+        "compose",
+        "--file",
+        docker_compose.as_posix(),
+        "--project-name",
+        project_name,
+        "down",
+        "--remove-orphans",
+    ]
+
+    yield Output(docker_compose)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(out_dict),
+            "__".join(context.asset_key.path): MetadataValue.path(docker_compose),
+            "cmd_docker_compose_up": MetadataValue.path(
+                " ".join(shlex.quote(s) for s in cmd_docker_compose_up)
+            ),
+            "cmd_docker_compose_down": MetadataValue.path(
+                " ".join(shlex.quote(s) for s in cmd_docker_compose_down)
+            ),
+            "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
         },
     )
