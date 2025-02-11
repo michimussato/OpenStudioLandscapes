@@ -33,11 +33,11 @@ from docker_compose_graph.utils import *
 from OpenStudioLandscapes.open_studio_landscapes.constants import *
 from OpenStudioLandscapes.open_studio_landscapes.utils import *
 
-# GROUP = ""
+GROUP = "Base"
 KEY = "Base"
 
 asset_header = {
-    # "group_name": GROUP,
+    "group_name": GROUP,
     "key_prefix": [KEY],
     "compute_kind": "python",
 }
@@ -45,7 +45,7 @@ asset_header = {
 
 @asset(
     **asset_header,
-    group_name="Environment",
+    # group_name="Environment",
 )
 def git_root(
     context: AssetExecutionContext,
@@ -65,7 +65,7 @@ def git_root(
 
 @asset(
     **asset_header,
-    group_name="Environment",
+    # group_name="Environment",
 )
 def landscape_id(
     context: AssetExecutionContext,
@@ -89,7 +89,7 @@ def landscape_id(
 
 @asset(
     **asset_header,
-    group_name="Environment",
+    # group_name="Environment",
 )
 def secrets(
     context: AssetExecutionContext,
@@ -112,7 +112,7 @@ def secrets(
 
 @asset(
     **asset_header,
-    group_name="Environment",
+    # group_name="Environment",
     ins={
         "git_root": AssetIn(
             AssetKey([KEY, "git_root"]),
@@ -142,7 +142,7 @@ def dot_landscapes(
 
 @asset(
     **asset_header,
-    group_name="Environment",
+    # group_name="Environment",
     ins={
         "git_root": AssetIn(AssetKey([KEY, "git_root"])),
     },
@@ -170,7 +170,7 @@ def dot_installers(
 
 @asset(
     **asset_header,
-    group_name="Environment",
+    # group_name="Environment",
     ins={
         "git_root": AssetIn(AssetKey([KEY, "git_root"])),
         "secrets": AssetIn(AssetKey([KEY, "secrets"])),
@@ -301,7 +301,7 @@ def env(
 
 @asset(
     **asset_header,
-    group_name="Build_Base_Image",
+    # group_name="Build_Base_Image",
 )
 def pip_packages(
     context: AssetExecutionContext,
@@ -331,7 +331,7 @@ def pip_packages(
 
 @asset(
     **asset_header,
-    group_name="Build_Base_Image",
+    # group_name="Build_Base_Image",
 )
 def apt_packages(
     context: AssetExecutionContext,
@@ -387,7 +387,7 @@ def apt_packages(
 
 @asset(
     **asset_header,
-    group_name="Build_Base_Image",
+    # group_name="Build_Base_Image",
     ins={
         "env": AssetIn(AssetKey([KEY, "env"])),
         "apt_packages": AssetIn(AssetKey([KEY, "apt_packages"])),
@@ -526,7 +526,7 @@ def build_docker_image(
 
 @asset(
     **asset_header,
-    group_name="Environment",
+    # group_name="Environment",
 )
 def nfs(
     context: AssetExecutionContext,
@@ -549,97 +549,97 @@ def nfs(
     )
 
 
+# @asset(
+#     **asset_header,
+#     # group_name=f"{KEY}_compose",
+#     # ins={
+#     #     "ayon": AssetIn(
+#     #         AssetKey(["Ayon", "group_out"]),
+#     #     ),
+#     # },
+#     # deps=[
+#     #     AssetKey([KEY_BASE, "group_out"]),
+#     # ],
+# )
+# def compose_include(
+#     context: AssetExecutionContext,
+#     # ayon: dict,  # pylint: disable=redefined-outer-name
+# ) -> dict:
+#
+#     compose_override_ayon = copy.deepcopy(ayon["docker_compose"])
+#
+#     docker_dict = {
+#         "include": [
+#             compose_override_ayon,
+#         ],
+#     }
+#
+#     yield Output(docker_dict)
+#
+#     yield AssetMaterialization(
+#         asset_key=context.asset_key,
+#         metadata={
+#             "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
+#             # "docker_yaml": MetadataValue.md(f"```shell\n{docker_yaml}\n```"),
+#         },
+#     )
+
+
+# @asset(
+#     **asset_header,
+#     # group_name=f"{KEY}_compose",
+#     ins={
+#         # "filebrowser": AssetIn(AssetKey(["filebrowser", "group_out"])),
+#         # "grafana": AssetIn(AssetKey(["Grafana", "group_out"])),
+#         # "dagster": AssetIn(AssetKey(["Dagster", "group_out"])),
+#         # "likec4": AssetIn(AssetKey(["LikeC4", "group_out"])),
+#         # "kitsu": AssetIn(AssetKey(["Kitsu", "group_out"])),
+#         # "compose_include": AssetIn(AssetKey([KEY, "compose_include"])),
+#     },
+# )
+# def compose(
+#     context: AssetExecutionContext,
+#     # filebrowser: dict,  # pylint: disable=redefined-outer-name
+#     # grafana: dict,  # pylint: disable=redefined-outer-name
+#     # dagster: dict,  # pylint: disable=redefined-outer-name
+#     # likec4: dict,  # pylint: disable=redefined-outer-name
+#     # kitsu: dict,  # pylint: disable=redefined-outer-name
+#     # compose_include: dict,  # pylint: disable=redefined-outer-name
+# ) -> dict:
+#     """ """
+#
+#     # compose_filebrowser = copy.deepcopy(filebrowser["docker_compose"])
+#     # compose_likec4 = copy.deepcopy(likec4["docker_compose"])
+#     # compose_kitsu = copy.deepcopy(kitsu["docker_compose"])
+#     # compose_grafana = copy.deepcopy(grafana["docker_compose"])
+#     # compose_dagster = copy.deepcopy(dagster["docker_compose"])
+#
+#     docker_chainmap = ChainMap(
+#         # compose_kitsu,
+#         # compose_likec4,
+#         # compose_dagster,
+#         # compose_grafana,
+#         # compose_filebrowser,
+#         # compose_include,
+#     )
+#
+#     docker_dict = reduce(deep_merge, docker_chainmap.maps)
+#     docker_yaml = yaml.dump(docker_dict)
+#
+#     yield Output(docker_dict)
+#
+#     yield AssetMaterialization(
+#         asset_key=context.asset_key,
+#         metadata={
+#             "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
+#             "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
+#         },
+#     )
+
+
 @asset(
     **asset_header,
-    group_name=f"{KEY}_compose",
-    # ins={
-    #     "ayon": AssetIn(
-    #         AssetKey(["Ayon", "group_out"]),
-    #     ),
-    # },
-    # deps=[
-    #     AssetKey([KEY_BASE, "group_out"]),
-    # ],
-)
-def compose_include(
-    context: AssetExecutionContext,
-    # ayon: dict,  # pylint: disable=redefined-outer-name
-) -> dict:
-
-    compose_override_ayon = copy.deepcopy(ayon["docker_compose"])
-
-    docker_dict = {
-        "include": [
-            compose_override_ayon,
-        ],
-    }
-
-    yield Output(docker_dict)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
-            # "docker_yaml": MetadataValue.md(f"```shell\n{docker_yaml}\n```"),
-        },
-    )
-
-
-@asset(
-    **asset_header,
-    group_name=f"{KEY}_compose",
-    ins={
-        # "filebrowser": AssetIn(AssetKey(["filebrowser", "group_out"])),
-        # "grafana": AssetIn(AssetKey(["Grafana", "group_out"])),
-        # "dagster": AssetIn(AssetKey(["Dagster", "group_out"])),
-        # "likec4": AssetIn(AssetKey(["LikeC4", "group_out"])),
-        # "kitsu": AssetIn(AssetKey(["Kitsu", "group_out"])),
-        # "compose_include": AssetIn(AssetKey([KEY, "compose_include"])),
-    },
-)
-def compose(
-    context: AssetExecutionContext,
-    # filebrowser: dict,  # pylint: disable=redefined-outer-name
-    # grafana: dict,  # pylint: disable=redefined-outer-name
-    # dagster: dict,  # pylint: disable=redefined-outer-name
-    # likec4: dict,  # pylint: disable=redefined-outer-name
-    # kitsu: dict,  # pylint: disable=redefined-outer-name
-    # compose_include: dict,  # pylint: disable=redefined-outer-name
-) -> dict:
-    """ """
-
-    # compose_filebrowser = copy.deepcopy(filebrowser["docker_compose"])
-    # compose_likec4 = copy.deepcopy(likec4["docker_compose"])
-    # compose_kitsu = copy.deepcopy(kitsu["docker_compose"])
-    # compose_grafana = copy.deepcopy(grafana["docker_compose"])
-    # compose_dagster = copy.deepcopy(dagster["docker_compose"])
-
-    docker_chainmap = ChainMap(
-        # compose_kitsu,
-        # compose_likec4,
-        # compose_dagster,
-        # compose_grafana,
-        # compose_filebrowser,
-        # compose_include,
-    )
-
-    docker_dict = reduce(deep_merge, docker_chainmap.maps)
-    docker_yaml = yaml.dump(docker_dict)
-
-    yield Output(docker_dict)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
-            "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
-        },
-    )
-
-
-@asset(
-    **asset_header,
-    group_name=f"GROUP_OUT_{KEY}",
+    # group_name=f"GROUP_OUT_{KEY}",
     ins={
         "env": AssetIn(AssetKey([KEY, "env"])),
         "build_docker_image": AssetIn(

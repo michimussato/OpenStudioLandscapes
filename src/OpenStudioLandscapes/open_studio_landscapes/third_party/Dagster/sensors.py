@@ -9,7 +9,7 @@ from dagster import (
 )
 
 
-from OpenStudioLandscapes.open_studio_landscapes.assets import KEY as KEY_BASE
+from OpenStudioLandscapes.open_studio_landscapes.base.assets import KEY as KEY_BASE
 
 
 # Trigger `my_job` when the `Base__group_out` asset is materialized

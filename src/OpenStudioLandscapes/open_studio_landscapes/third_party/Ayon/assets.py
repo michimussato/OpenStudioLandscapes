@@ -17,7 +17,7 @@ from dagster import (
     Output,
     asset,
 )
-from OpenStudioLandscapes.open_studio_landscapes.assets import KEY as KEY_BASE
+from OpenStudioLandscapes.open_studio_landscapes.base.assets import KEY as KEY_BASE
 
 GROUP = "Ayon"
 KEY = "Ayon"
