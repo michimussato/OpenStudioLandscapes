@@ -39,7 +39,7 @@ def group_in(
     # load asset data from external code location into memory
     # and provide it as the Output of this asset
     load_from = AssetKey([KEY_BASE, "group_out"])
-    defs = importlib.import_module("OpenStudioLandscapes.open_studio_landscapes.definitions").defs
+    defs = importlib.import_module("OpenStudioLandscapes.open_studio_landscapes.base.definitions").defs
     df: dict = defs.load_asset_value(
         asset_key=load_from,
         instance=context.instance,

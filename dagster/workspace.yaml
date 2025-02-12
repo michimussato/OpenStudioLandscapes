@@ -4,8 +4,13 @@ load_from:
 #      location_name: "My Skeleton Package Location"
   - python_module:
       working_directory: src
-      module_name: OpenStudioLandscapes.open_studio_landscapes.definitions
-      location_name: "OpenStudioLandscapes.open_studio_landscapes"
+      module_name: OpenStudioLandscapes.open_studio_landscapes.base.definitions
+      location_name: "OpenStudioLandscapes.open_studio_landscapes.base"
+      # executable_path: ../.venv/bin/python
+  - python_module:
+      working_directory: src
+      module_name: OpenStudioLandscapes.open_studio_landscapes.compose.definitions
+      location_name: "OpenStudioLandscapes.open_studio_landscapes.compose"
       # executable_path: ../.venv/bin/python
   - python_module:
       working_directory: src

@@ -1,6 +1,7 @@
 import copy
 import importlib
 import yaml
+import pathlib
 
 from dagster import (
     AssetExecutionContext,
@@ -17,7 +18,7 @@ from OpenStudioLandscapes.open_studio_landscapes.base.assets import KEY as KEY_B
 from OpenStudioLandscapes.open_studio_landscapes.base.ops import op_group_out
 from OpenStudioLandscapes.open_studio_landscapes.base.ops import op_docker_compose_graph
 
-GROUP = "Compose"
+GROUP = "Compose_Hack"
 KEY = "Compose"
 
 asset_header = {
@@ -27,6 +28,7 @@ asset_header = {
 }
 
 def_locs = [
+    "OpenStudioLandscapes.open_studio_landscapes.base",
     "OpenStudioLandscapes.open_studio_landscapes.Deadline.v10_2",
     "OpenStudioLandscapes.open_studio_landscapes.third_party.Ayon",
     "OpenStudioLandscapes.open_studio_landscapes.third_party.Dagster",
@@ -61,6 +63,8 @@ def group_in(
     context: AssetExecutionContext,
 ) -> list:
 
+    # context.pdb.set_trace()
+
     # load asset data from external code location into memory
     # and provide it as the Output of this asset
 
@@ -80,7 +84,8 @@ def group_in(
     yamls = list()
 
     for dep in ins:
-        yamls.append(dep["def_dict"].as_posix())
+        yaml_path: pathlib.Path = dep["def_dict"]
+        yamls.append(yaml_path.as_posix())
 
     context.log.info(yamls)
 
@@ -100,11 +105,6 @@ def group_in(
     **asset_header,
     ins={
         "group_in": AssetIn(AssetKey([KEY, "group_in"])),
-        # "grafana": AssetIn(AssetKey(["Grafana", "group_out"])),
-        # "dagster": AssetIn(AssetKey(["Dagster", "group_out"])),
-        # "likec4": AssetIn(AssetKey(["LikeC4", "group_out"])),
-        # "kitsu": AssetIn(AssetKey(["Kitsu", "group_out"])),
-        # "compose_include": AssetIn(AssetKey([KEY, "compose_include"])),
     },
 )
 def compose(
@@ -131,80 +131,6 @@ def compose(
     )
 
 
-# @asset(
-#     **asset_header,
-#     ins={
-#         "compose": AssetIn(
-#             AssetKey([KEY, "compose"]),
-#         ),
-#         "env": AssetIn(
-#             AssetKey([KEY_BASE, "env"]),
-#         ),
-#     },
-# )
-# def group_out(
-#     context: AssetExecutionContext,
-#     compose: dict,  # pylint: disable=redefined-outer-name
-#     env: dict,  # pylint: disable=redefined-outer-name
-# ) -> pathlib.Path:
-#
-#     docker_yaml = yaml.dump(compose)
-#
-#     docker_compose = pathlib.Path(
-#         env["DOT_LANDSCAPES"],
-#         env.get("LANDSCAPE", "default"),
-#         KEY,
-#         "docker_compose",
-#         "__".join(context.asset_key.path),
-#         "docker-compose.yml",
-#     )
-#
-#     docker_compose.parent.mkdir(parents=True, exist_ok=True)
-#
-#     with open(docker_compose, "w") as fw:
-#         fw.write(docker_yaml)
-#
-#     project_name = f"{env.get('LANDSCAPE', 'default').replace('.', '-')}"
-#
-#     cmd_docker_compose_up = [
-#         shutil.which("docker"),
-#         "compose",
-#         "--file",
-#         docker_compose.as_posix(),
-#         "--project-name",
-#         project_name,
-#         "up",
-#         "--remove-orphans",
-#     ]
-#
-#     cmd_docker_compose_down = [
-#         shutil.which("docker"),
-#         "compose",
-#         "--file",
-#         docker_compose.as_posix(),
-#         "--project-name",
-#         project_name,
-#         "down",
-#         "--remove-orphans",
-#     ]
-#
-#     yield Output(docker_compose)
-#
-#     yield AssetMaterialization(
-#         asset_key=context.asset_key,
-#         metadata={
-#             "__".join(context.asset_key.path): MetadataValue.path(docker_compose),
-#             "cmd_docker_compose_up": MetadataValue.path(
-#                 " ".join(shlex.quote(s) for s in cmd_docker_compose_up)
-#             ),
-#             "cmd_docker_compose_down": MetadataValue.path(
-#                 " ".join(shlex.quote(s) for s in cmd_docker_compose_down)
-#             ),
-#             "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
-#         },
-#     )
-
-
 group_out = AssetsDefinition.from_op(
     op_group_out,
     group_name=GROUP,
@@ -214,7 +140,7 @@ group_out = AssetsDefinition.from_op(
             [KEY, "compose"]
         ),
         "env": AssetKey(
-            [KEY_BASE, "env"]
+            [KEY, "group_in"]
         ),
     },
 )

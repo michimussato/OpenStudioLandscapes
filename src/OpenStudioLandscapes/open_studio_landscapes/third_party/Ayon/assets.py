@@ -26,6 +26,10 @@ KEY = "Ayon"
 
 asset_header = {"group_name": GROUP, "key_prefix": [KEY], "compute_kind": "python"}
 
+"""
+dir(AssetSelection.all())
+assets = AssetSelection.all(include_sources=True)
+"""
 
 @asset(
     **asset_header,
@@ -40,7 +44,7 @@ def group_in(
     # load asset data from external code location into memory
     # and provide it as the Output of this asset
     load_from = AssetKey([KEY_BASE, "group_out"])
-    defs = importlib.import_module("OpenStudioLandscapes.open_studio_landscapes.definitions").defs
+    defs = importlib.import_module("OpenStudioLandscapes.open_studio_landscapes.base.definitions").defs
     df: dict = defs.load_asset_value(
         asset_key=load_from,
         instance=context.instance,
@@ -216,10 +220,13 @@ def compose_override(
     docker_compose_override = pathlib.Path(
         env["DOT_LANDSCAPES"],
         env.get("LANDSCAPE", "default"),
+        context.asset_key.path[-1],
         "docker_compose",
-        *context.asset_key.path,
+        "__".join(context.asset_key.path),
         "docker-compose.override.yml",
     )
+
+    docker_compose_override.parent.mkdir(parents=True, exist_ok=True)
 
     docker_yaml_override: str = yaml.dump(docker_dict_override)
 
@@ -249,6 +256,7 @@ def compose_override(
         metadata={
             "__".join(context.asset_key.path): MetadataValue.json(docker_dict_include),
             "docker_yaml_override": MetadataValue.md(f"```yaml\n{docker_yaml_override}\n```"),
+            "path_docker_yaml_override": MetadataValue.path(docker_compose_override),
             # Todo: "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)),
         },
     )
