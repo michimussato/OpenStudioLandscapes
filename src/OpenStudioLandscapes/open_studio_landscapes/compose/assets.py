@@ -28,7 +28,7 @@ asset_header = {
 }
 
 def_locs = [
-    "OpenStudioLandscapes.open_studio_landscapes.base",
+    # "OpenStudioLandscapes.open_studio_landscapes.base",
     "OpenStudioLandscapes.open_studio_landscapes.Deadline.v10_2",
     "OpenStudioLandscapes.open_studio_landscapes.third_party.Ayon",
     "OpenStudioLandscapes.open_studio_landscapes.third_party.Dagster",
@@ -85,6 +85,7 @@ def group_in(
 
     for dep in ins:
         yaml_path: pathlib.Path = dep["def_dict"]
+        context.log.info(yaml_path)
         yamls.append(yaml_path.as_posix())
 
     context.log.info(yamls)
@@ -131,6 +132,9 @@ def compose(
     )
 
 
+# Todo
+#  - [ ] we need the env here
+#  "OpenStudioLandscapes.open_studio_landscapes.base"
 group_out = AssetsDefinition.from_op(
     op_group_out,
     group_name=GROUP,

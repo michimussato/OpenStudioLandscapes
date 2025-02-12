@@ -1,8 +1,8 @@
 from dagster import (
     Definitions,
     load_assets_from_modules,
-    AutoMaterializePolicy,
-    AutoMaterializeRule,
+    # AutoMaterializePolicy,
+    # AutoMaterializeRule,
 )
 from OpenStudioLandscapes.open_studio_landscapes.Deadline.v10_2 import (
     assets as assets_Deadline_v10_2,
@@ -21,9 +21,9 @@ from OpenStudioLandscapes.open_studio_landscapes.Deadline.v10_2 import (
 
 assets = load_assets_from_modules(
     modules=[assets_Deadline_v10_2],
-    auto_materialize_policy=AutoMaterializePolicy.lazy().with_rules(
-        AutoMaterializeRule.materialize_on_parent_updated(),
-    )
+    # auto_materialize_policy=AutoMaterializePolicy.lazy().with_rules(
+    #     AutoMaterializeRule.materialize_on_parent_updated(),
+    # )
 )
 
 # assets_merge_compose = load_assets_from_modules([assets_merge_compose])
@@ -38,6 +38,6 @@ defs = Definitions(
     ],
     sensors=[
         sensors_Deadline_v10_2.sensor__Base__group_out,
-        sensors_Deadline_v10_2.sensor__auto_materialize_Deadline_v10_2,
+        # sensors_Deadline_v10_2.sensor__auto_materialize_Deadline_v10_2,
     ]
 )

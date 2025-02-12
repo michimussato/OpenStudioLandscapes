@@ -52,6 +52,7 @@
     * [`python3.11`](#python311)
     * [`python3.12`](#python312)
 * [Roadmap](#roadmap)
+  * [SSH](#ssh)
 <!-- TOC -->
 
 ---
@@ -259,13 +260,14 @@ sudo usermod -aG docker $USER
   - `.installers/Deadline_10_2/deadline/deadline_10-2-1-1`
   - `chmod a+x *.run`
 - Check source DBs
+  - `configs/kitsu/postgres/template_dbs/14`
 
 - `graphviz` (`dot` (`docker-compose-graph`))
 - `docker`
 - `docker-buildx`
 - `docker-compose`
 - `git`
-  - `git -C repos clone https://github.com/ynput/ayon-docker.git`
+  - `mkdir -p repos && git -C repos clone https://github.com/ynput/ayon-docker.git`
 - `python`
   - `python3.11`
   - `python3.12`

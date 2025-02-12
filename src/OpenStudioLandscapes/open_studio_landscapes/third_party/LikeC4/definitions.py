@@ -1,8 +1,8 @@
 from dagster import (
     Definitions,
     load_assets_from_modules,
-    AutoMaterializePolicy,
-    AutoMaterializeRule,
+    # AutoMaterializePolicy,
+    # AutoMaterializeRule,
 )
 from OpenStudioLandscapes.open_studio_landscapes.third_party.LikeC4 import (
     assets as assets_LikeC4,
@@ -17,9 +17,9 @@ from OpenStudioLandscapes.open_studio_landscapes.third_party.LikeC4 import (
 
 assets = load_assets_from_modules(
     modules=[assets_LikeC4],
-    auto_materialize_policy=AutoMaterializePolicy.lazy().with_rules(
-        AutoMaterializeRule.materialize_on_parent_updated(),
-    )
+    # auto_materialize_policy=AutoMaterializePolicy.lazy().with_rules(
+    #     AutoMaterializeRule.materialize_on_parent_updated(),
+    # )
 )
 
 
@@ -32,6 +32,6 @@ defs = Definitions(
     ],
     sensors=[
         sensors_LikeC4.sensor__Base__group_out,
-        sensors_LikeC4.sensor__auto_materialize_LikeC4,
+        # sensors_LikeC4.sensor__auto_materialize_LikeC4,
     ]
 )

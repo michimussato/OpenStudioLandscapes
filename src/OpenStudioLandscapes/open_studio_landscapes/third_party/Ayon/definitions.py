@@ -1,8 +1,8 @@
 from dagster import (
     Definitions,
     load_assets_from_modules,
-    AutoMaterializePolicy,
-    AutoMaterializeRule,
+    # AutoMaterializePolicy,
+    # AutoMaterializeRule,
 )
 from OpenStudioLandscapes.open_studio_landscapes.third_party.Ayon import (
     assets as assets_Ayon,
@@ -17,9 +17,9 @@ from OpenStudioLandscapes.open_studio_landscapes.third_party.Ayon import (
 
 assets = load_assets_from_modules(
     modules=[assets_Ayon],
-    auto_materialize_policy=AutoMaterializePolicy.lazy().with_rules(
-        AutoMaterializeRule.materialize_on_parent_updated(),
-    )
+    # auto_materialize_policy=AutoMaterializePolicy.lazy().with_rules(
+    #     AutoMaterializeRule.materialize_on_parent_updated(),
+    # )
 )
 
 
@@ -32,6 +32,6 @@ defs = Definitions(
     ],
     sensors=[
         sensors_Ayon.sensor__Base__group_out,
-        sensors_Ayon.sensor__auto_materialize_Ayon,
+        # sensors_Ayon.sensor__auto_materialize_Ayon,
     ]
 )

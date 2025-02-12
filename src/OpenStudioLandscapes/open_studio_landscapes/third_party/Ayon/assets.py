@@ -275,6 +275,9 @@ group_out = AssetsDefinition.from_op(
         ),
     },
 )
+# Todo
+#  error: /home/michael/git/repos/open-studio-landscapes/repos/ayon-docker/docker-compose.yml
+#  Repo not cloned
 
 
 docker_compose_graph = AssetsDefinition.from_op(

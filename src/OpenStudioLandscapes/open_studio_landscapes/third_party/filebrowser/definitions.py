@@ -1,8 +1,8 @@
 from dagster import (
     Definitions,
     load_assets_from_modules,
-    AutoMaterializePolicy,
-    AutoMaterializeRule,
+    # AutoMaterializePolicy,
+    # AutoMaterializeRule,
 )
 from OpenStudioLandscapes.open_studio_landscapes.third_party.filebrowser import (
     assets as assets_filebrowser,
@@ -17,9 +17,9 @@ from OpenStudioLandscapes.open_studio_landscapes.third_party.filebrowser import 
 
 assets = load_assets_from_modules(
     modules=[assets_filebrowser],
-    auto_materialize_policy=AutoMaterializePolicy.lazy().with_rules(
-        AutoMaterializeRule.materialize_on_parent_updated(),
-    )
+    # auto_materialize_policy=AutoMaterializePolicy.lazy().with_rules(
+    #     AutoMaterializeRule.materialize_on_parent_updated(),
+    # )
 )
 
 
@@ -32,6 +32,6 @@ defs = Definitions(
     ],
     sensors=[
         sensors_filebrowser.sensor__Base__group_out,
-        sensors_filebrowser.sensor__auto_materialize_filebrowser,
+        # sensors_filebrowser.sensor__auto_materialize_filebrowser,
     ]
 )

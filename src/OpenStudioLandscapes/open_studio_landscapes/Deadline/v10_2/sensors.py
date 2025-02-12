@@ -2,8 +2,8 @@ from dagster import (
     AssetKey,
     RunRequest,
     asset_sensor,
-    AutomationConditionSensorDefinition,
-    AssetSelection,
+    # AutomationConditionSensorDefinition,
+    # AssetSelection,
     DefaultSensorStatus,
     SensorEvaluationContext,
 )
@@ -28,9 +28,9 @@ def sensor__Base__group_out(
     return RunRequest()
 
 
-sensor__auto_materialize_Deadline_v10_2 = AutomationConditionSensorDefinition(
-    "sensor__auto_materialize_Deadline_v10_2",
-    target=AssetSelection.all(include_sources=True),
-    minimum_interval_seconds=15,
-    default_status=DefaultSensorStatus.RUNNING,
-)
+# sensor__auto_materialize_Deadline_v10_2 = AutomationConditionSensorDefinition(
+#     "sensor__auto_materialize_Deadline_v10_2",
+#     target=AssetSelection.all(include_sources=True),
+#     minimum_interval_seconds=15,
+#     default_status=DefaultSensorStatus.RUNNING,
+# )
