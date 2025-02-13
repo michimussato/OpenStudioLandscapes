@@ -17,9 +17,9 @@ from OpenStudioLandscapes.open_studio_landscapes.compose import (
 
 assets = load_assets_from_modules(
     modules=[assets_compose],
-    auto_materialize_policy=AutoMaterializePolicy.lazy().with_rules(
-        AutoMaterializeRule.materialize_on_parent_updated(),
-    )
+    # auto_materialize_policy=AutoMaterializePolicy.lazy().with_rules(
+    #     AutoMaterializeRule.materialize_on_parent_updated(),
+    # )
 )
 
 
@@ -38,6 +38,6 @@ defs = Definitions(
         sensors_compose.sensor__Grafana__group_out,
         sensors_compose.sensor__Kitsu__group_out,
         sensors_compose.sensor__LikeC4__group_out,
-        sensors_compose.sensor__auto_materialize_compose,
+        # sensors_compose.sensor__auto_materialize_compose,
     ]
 )

@@ -2,6 +2,7 @@ import copy
 import importlib
 import yaml
 import pathlib
+import json
 
 from dagster import (
     AssetExecutionContext,
@@ -38,7 +39,6 @@ def_locs = [
     "OpenStudioLandscapes.open_studio_landscapes.third_party.LikeC4",
 ]
 
-
 ins = list()
 
 for def_loc in def_locs:
@@ -53,14 +53,98 @@ for def_loc in def_locs:
     ins.append(copy.deepcopy(dep))
 
 
+# @asset(
+#     **asset_header,
+# )
+# def get_code_locations(
+#     context: AssetExecutionContext,
+# ) -> list:
+#
+#     global ins
+#
+#     context.log.info(f"{ins = }")
+#     context.log.info(f"{json.dumps(ins, indent=2) = }")
+#
+#     yield Output(ins)
+#
+#     yield AssetMaterialization(
+#         asset_key=context.asset_key,
+#         metadata={
+#             # "__".join(context.asset_key.path): MetadataValue.json(json.dumps(ins, indent=2)),
+#             context.asset_key.path: MetadataValue.str(ins),
+#         },
+#     )
+
+
 @asset(
     **asset_header,
+    # group_name="Environment",
+    deps=[
+        AssetKey([KEY_BASE, "group_out"]),
+    ],
+)
+def load_base(
+    context: AssetExecutionContext,
+) -> dict:
+    # @formatter:off
+
+    # load asset data from external code location into memory
+    # and provide it as the Output of this asset
+    load_from = AssetKey([KEY_BASE, "group_out"])
+    defs = importlib.import_module("OpenStudioLandscapes.open_studio_landscapes.base.definitions").defs
+    df: dict = defs.load_asset_value(
+        asset_key=load_from,
+        instance=context.instance,
+    )
+
+    context.log.info(f"loaded data from Asset {load_from}: {json.dumps(df, indent=2)}")
+
+    yield Output(df)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.json(df),
+        },
+    )
+
+
+@asset(
+    **asset_header,
+    # group_name="Environment",
+    ins={
+        "base": AssetIn(AssetKey([KEY, "load_base"])),
+    },
+)
+def env(
+    context: AssetExecutionContext,
+    base: dict,
+) -> dict:
+
+    ret = base.get("env", {})
+
+    yield Output(ret)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.json(ret),
+        },
+    )
+
+
+@asset(
+    **asset_header,
+    # ins={
+    #     "code_locations": AssetIn(AssetKey([KEY, "get_code_locations"])),
+    # },
     deps=[
         *[i["asset_key"] for i in ins],
     ],
 )
 def group_in(
     context: AssetExecutionContext,
+    # code_locations: list,
 ) -> list:
 
     # context.pdb.set_trace()
@@ -144,7 +228,7 @@ group_out = AssetsDefinition.from_op(
             [KEY, "compose"]
         ),
         "env": AssetKey(
-            [KEY, "group_in"]
+            [KEY, "env"]
         ),
     },
 )

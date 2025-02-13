@@ -38,6 +38,8 @@ asset_to_watch__LikeC4 = [KEY_LIKEC4, "group_out"]
 def sensor__Base__group_out(
         context: SensorEvaluationContext,
 ):
+    if context.instance.get_scheduler_settings():
+        yield SkipReason("No new files found")
     return RunRequest()
 
 
@@ -113,9 +115,9 @@ def sensor__LikeC4__group_out(
     return RunRequest()
 
 
-sensor__auto_materialize_compose = AutomationConditionSensorDefinition(
-    "sensor__auto_materialize_compose",
-    target=AssetSelection.all(include_sources=True),
-    minimum_interval_seconds=15,
-    default_status=DefaultSensorStatus.RUNNING,
-)
+# sensor__auto_materialize_compose = AutomationConditionSensorDefinition(
+#     "sensor__auto_materialize_compose",
+#     target=AssetSelection.all(include_sources=True),
+#     minimum_interval_seconds=15,
+#     default_status=DefaultSensorStatus.RUNNING,
+# )
