@@ -590,7 +590,8 @@ f"DATABASE_INSTALL_DESTINATION_{KEY}": {
 cd ~/git/repos/open-studio-landscapes
 source .venv/bin/activate
 export DAGSTER_HOME="$(pwd)/dagster/materializations"
-dagster dev --workspace "$(pwd)/dagster/workspace.yaml" --host 0.0.0.0  # --port 3000
+# dagster dev --workspace "$(pwd)/dagster/workspace.yaml" --host 0.0.0.0  # --port 3000
+dagster dev --host 0.0.0.0  # --port 3000
 ```
 
 http://0.0.0.0:3000
