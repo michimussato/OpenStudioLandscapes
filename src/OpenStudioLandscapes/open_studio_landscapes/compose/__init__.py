@@ -3,3 +3,4 @@
 # dagster project scaffold --name compose
 
 # https://medium.com/vandebron/the-why-and-how-of-dagster-user-code-deployment-automation-f67c5d10ab7c
+# https://github.com/dagster-io/dagster/tree/master/examples/deploy_docker
