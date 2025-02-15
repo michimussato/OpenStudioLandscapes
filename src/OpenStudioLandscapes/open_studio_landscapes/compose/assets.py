@@ -244,3 +244,200 @@ docker_compose_graph = AssetsDefinition.from_op(
         ),
     },
 )
+
+
+# # import copy
+# # import importlib
+# import yaml
+# # import pathlib
+# # import json
+#
+# from cyclonedx.model.definition import Definitions
+# from dagster import (
+#     AssetExecutionContext,
+#     AssetIn,
+#     AssetKey,
+#     AssetMaterialization,
+#     MetadataValue,
+#     Output,
+#     asset,
+#     AssetsDefinition,
+#     # AssetSelection,
+#     # Definitions,
+# )
+#
+# # from OpenStudioLandscapes.open_studio_landscapes.base.assets import KEY as KEY_BASE
+# # from OpenStudioLandscapes.open_studio_landscapes.Deadline.v10_2.assets import KEY as KEY_DEADLINE_V10_2
+# # from OpenStudioLandscapes.open_studio_landscapes.third_party.Ayon.assets import KEY as KEY_AYON
+# # from OpenStudioLandscapes.open_studio_landscapes.third_party.Dagster.assets import KEY as KEY_DAGSTER
+# # from OpenStudioLandscapes.open_studio_landscapes.third_party.filebrowser.assets import KEY as KEY_FILEBROWSER
+# # from OpenStudioLandscapes.open_studio_landscapes.third_party.Grafana.assets import KEY as KEY_GRAFANA
+# # from OpenStudioLandscapes.open_studio_landscapes.third_party.Kitsu.assets import KEY as KEY_KITSU
+# # from OpenStudioLandscapes.open_studio_landscapes.third_party.LikeC4.assets import KEY as KEY_LIKEC4
+# from OpenStudioLandscapes.open_studio_landscapes.base.ops import op_group_out
+# from OpenStudioLandscapes.open_studio_landscapes.base.ops import op_docker_compose_graph
+#
+# GROUP = "Compose_Hack"
+# KEY = "Compose"
+#
+# asset_header = {
+#     "group_name": GROUP,
+#     "key_prefix": [KEY],
+#     "compute_kind": "python",
+# }
+#
+#
+# @asset(
+#     **asset_header,
+#     # group_name="Environment",
+#     # ins={
+#     #     "base": AssetIn(AssetKey([KEY_BASE, "group_out"])),
+#     # },
+# )
+# def env(
+#     context: AssetExecutionContext,
+#     # base: dict,
+# ) -> dict:
+#
+#
+#
+#     ret = base.get("env", {})
+#
+#     yield Output(ret)
+#
+#     yield AssetMaterialization(
+#         asset_key=context.asset_key,
+#         metadata={
+#             "__".join(context.asset_key.path): MetadataValue.json(ret),
+#         },
+#     )
+#
+#
+# @asset(
+#     **asset_header,
+#     # ins={
+#     #     "group_in_Deadline_v10_2": AssetIn(AssetKey([KEY_DEADLINE_V10_2, "group_out"])),
+#     #     "group_in_Ayon": AssetIn(AssetKey([KEY_AYON, "group_out"])),
+#     #     "group_in_Dagster": AssetIn(AssetKey([KEY_DAGSTER, "group_out"])),
+#     #     "group_in_filebrowser": AssetIn(AssetKey([KEY_FILEBROWSER, "group_out"])),
+#     #     "group_in_Grafana": AssetIn(AssetKey([KEY_GRAFANA, "group_out"])),
+#     #     "group_in_Kitsu": AssetIn(AssetKey([KEY_KITSU, "group_out"])),
+#     #     "group_in_LikeC4": AssetIn(AssetKey([KEY_LIKEC4, "group_out"])),
+#     # },
+#     # deps=[
+#     #     *[i["asset_key"] for i in ins],
+#     # ],
+# )
+# def group_in(
+#     context: AssetExecutionContext,
+#     # group_in_Deadline_v10_2: pathlib.Path,
+#     # group_in_Ayon: pathlib.Path,
+#     # group_in_Dagster: pathlib.Path,
+#     # group_in_filebrowser: pathlib.Path,
+#     # group_in_Grafana: pathlib.Path,
+#     # group_in_Kitsu: pathlib.Path,
+#     # group_in_LikeC4: pathlib.Path,
+# ) -> list:
+#
+#     # # context.pdb.set_trace()
+#     #
+#     # # load asset data from external code location into memory
+#     # # and provide it as the Output of this asset
+#     #
+#     # # for def_loc in def_locs:
+#     # #     key = importlib.import_module(f"{def_loc}.assets").KEY
+#     # #     load_from = AssetKey([key, "group_out"])
+#     # #     defs = importlib.import_module(f"{def_loc}.definitions").defs
+#     # for dep in ins:
+#     #     dep["defs"] = importlib.import_module(f"{dep['code_location']}.definitions").defs
+#     #     dep["def_dict"]: dict = dep["defs"].load_asset_value(
+#     #         asset_key=dep["asset_key"],
+#     #         instance=context.instance,
+#     #     )
+#     #
+#     # context.log.info(ins)
+#
+#     yamls = list()
+#
+#     # for dep in ins:
+#     #     yaml_path: pathlib.Path = dep["def_dict"]
+#     #     context.log.info(yaml_path)
+#     #     yamls.append(yaml_path.as_posix())
+#     #
+#     # context.log.info(yamls)
+#
+#     # context.log.info(f"loaded data from Asset {load_from}: {json.dumps(df, indent=2)}")
+#
+#     yield Output(yamls)
+#
+#     yield AssetMaterialization(
+#         asset_key=context.asset_key,
+#         metadata={
+#             "__".join(context.asset_key.path): MetadataValue.json(yamls),
+#         },
+#     )
+#
+#
+# @asset(
+#     **asset_header,
+#     ins={
+#         "group_in": AssetIn(AssetKey([KEY, "group_in"])),
+#     },
+# )
+# def compose(
+#     context: AssetExecutionContext,
+#     group_in: list,  # pylint: disable=redefined-outer-name
+# ) -> dict:
+#     """ """
+#
+#     docker_dict = {
+#         "include": [{"path": [i]} for i in group_in],
+#     }
+#
+#     docker_yaml = yaml.dump(docker_dict)
+#
+#     yield Output(docker_dict)
+#
+#     yield AssetMaterialization(
+#         asset_key=context.asset_key,
+#         metadata={
+#             "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
+#             "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
+#             # Todo: "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)),
+#         },
+#     )
+#
+#
+# # Todo
+# #  - [ ] we need the env here
+# #  "OpenStudioLandscapes.open_studio_landscapes.base"
+# group_out = AssetsDefinition.from_op(
+#     op_group_out,
+#     group_name=GROUP,
+#     tags_by_output_name={
+#         "group_out": {
+#             "group_out": "compose",
+#         },
+#     },
+#     key_prefix=KEY,
+#     keys_by_input_name={
+#         "compose": AssetKey(
+#             [KEY, "compose"]
+#         ),
+#         "env": AssetKey(
+#             [KEY, "env"]
+#         ),
+#     },
+# )
+#
+#
+# docker_compose_graph = AssetsDefinition.from_op(
+#     op_docker_compose_graph,
+#     group_name=GROUP,
+#     key_prefix=KEY,
+#     keys_by_input_name={
+#         "group_out": AssetKey(
+#             [KEY, "group_out"]
+#         ),
+#     },
+# )

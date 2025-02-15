@@ -12,6 +12,7 @@ from dagster import (
     MetadataValue,
     op,
     In,
+    Out,
     OpExecutionContext
 )
 
@@ -90,9 +91,15 @@ def op_docker_compose_graph(
 
 @op(
     name="group_out",
+    # tags={
+    #     "domain": "marketing",
+    # },
     ins={
-        "compose": In(),
-        "env": In(),
+        "compose": In(dict),
+        "env": In(dict),
+    },
+    out={
+        "group_out": Out(pathlib.Path),
     },
 )
 def op_group_out(

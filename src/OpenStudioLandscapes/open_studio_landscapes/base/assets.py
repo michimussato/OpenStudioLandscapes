@@ -552,6 +552,9 @@ def nfs(
 @asset(
     **asset_header,
     # group_name=f"GROUP_OUT_{KEY}",
+    tags={
+        "group_out": "base",
+    },
     ins={
         "env": AssetIn(AssetKey([KEY, "env"])),
         "build_docker_image": AssetIn(

@@ -186,6 +186,11 @@ def compose(
 group_out = AssetsDefinition.from_op(
     op_group_out,
     group_name=GROUP,
+    tags_by_output_name={
+        "group_out": {
+            "group_out": "third_party",
+        },
+    },
     key_prefix=KEY,
     keys_by_input_name={
         "compose": AssetKey(
