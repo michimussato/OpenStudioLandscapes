@@ -2389,7 +2389,7 @@ def compose(
 
 group_out = AssetsDefinition.from_op(
     op_group_out,
-    group_name=f"GROUP_OUT_{KEY}",
+    group_name=GROUP,
     tags_by_output_name={
         "group_out": {
             "group_out": "third_party",
@@ -2409,7 +2409,7 @@ group_out = AssetsDefinition.from_op(
 
 docker_compose_graph = AssetsDefinition.from_op(
     op_docker_compose_graph,
-    group_name=f"GROUP_OUT_{KEY}",
+    group_name=GROUP,
     key_prefix=KEY,
     keys_by_input_name={
         "group_out": AssetKey(
