@@ -31,7 +31,7 @@ defs = Definitions(
         jobs_compose.job_compose,
     ],
     sensors=[
-        sensors_compose.sensor__Base__group_out,
+        # sensors_compose.sensor__Base__group_out,
         sensors_compose.sensor__Ayon__group_out,
         sensors_compose.sensor__Dagster__group_out,
         sensors_compose.sensor__filebrowser__group_out,

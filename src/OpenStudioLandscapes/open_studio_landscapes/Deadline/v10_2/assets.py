@@ -38,11 +38,11 @@ from OpenStudioLandscapes.open_studio_landscapes.base.ops import op_docker_compo
 
 # Requirements:
 # - [ ] ERROR: failed to solve: dockerfile parse error on line 4: invalid name for build stage: "10_2__build_docker_image", name can't start with a number or contain symbols
-# GROUP = ""
+GROUP = "Deadline_10_2"
 KEY = "Deadline_10_2"
 
 asset_header = {
-    # "group_name": GROUP,
+    "group_name": GROUP,
     "key_prefix": [KEY],
     "compute_kind": "python",
 }
@@ -54,10 +54,14 @@ asset_header = {
 
 @asset(
     **asset_header,
-    group_name=f"GROUP_IN_{KEY}",
+    # group_name=f"GROUP_IN_{KEY}",
     deps=[
         AssetKey([KEY_BASE, "group_out"]),
     ],
+    # tags={
+    #     "stage": "third_party/deadline/v10_2",
+    #     "step": "group_in",
+    # },
 )
 def group_in(
     context: AssetExecutionContext,
@@ -86,12 +90,16 @@ def group_in(
 
 @asset(
     **asset_header,
-    group_name="Environment_10_2",
+    # group_name="Environment_10_2",
     ins={
         "group_in": AssetIn(
             AssetKey([KEY, "group_in"]),
         ),
     },
+    # tags={
+    #     "stage": "third_party/deadline/v10_2",
+    #     "step": "env",
+    # },
 )
 def env(
     context: AssetExecutionContext,
@@ -237,12 +245,16 @@ def env(
 
 @asset(
     **asset_header,
-    group_name="Settings_10_2",
+    # group_name="Settings_10_2",
     ins={
         "env_10_2": AssetIn(
             AssetKey([KEY, "env"]),
         ),
     },
+    # tags={
+    #     "stage": "third_party/deadline/v10_2",
+    #     "step": "deadline/ini",
+    # },
 )
 def connection_ini(
     context: AssetExecutionContext,
@@ -305,12 +317,16 @@ def connection_ini(
 
 @asset(
     **asset_header,
-    group_name="Settings_10_2",
+    # group_name="Settings_10_2",
     ins={
         "env_10_2": AssetIn(
             AssetKey([KEY, "env"]),
         ),
     },
+    # tags={
+    #     "stage": "third_party/deadline/v10_2",
+    #     "step": "deadline/ini",
+    # },
 )
 def deadline_ini(
     context: AssetExecutionContext,
@@ -404,7 +420,11 @@ def deadline_ini(
 
 @asset(
     **asset_header,
-    group_name="Build_Images_10_2",
+    # group_name="Build_Images_10_2",
+    # tags={
+    #     "stage": "third_party/deadline/v10_2/pip",
+    #     "step": "docker/build",
+    # },
 )
 def pip_packages(
     context: AssetExecutionContext,
@@ -429,7 +449,11 @@ def pip_packages(
 
 @asset(
     **asset_header,
-    group_name="Build_Images_10_2",
+    # group_name="Build_Images_10_2",
+    # tags={
+    #     "stage": "third_party/deadline/v10_2/wget",
+    #     "step": "docker/build",
+    # },
 )
 def wget_deadline_packages_base_image(
     context: AssetExecutionContext,
@@ -465,7 +489,7 @@ if BUILD_FROM_GOOGLE_DRIVE_10_2:
 
     @asset(
         **asset_header,
-        group_name="Build_Images_10_2",
+        # group_name="Build_Images_10_2",
         ins={
             "env_10_2": AssetIn(
                 AssetKey([KEY, "env"]),
@@ -480,6 +504,10 @@ if BUILD_FROM_GOOGLE_DRIVE_10_2:
                 AssetKey([KEY, "pip_packages"]),
             ),
         },
+        # tags={
+        #     "stage": "third_party/deadline/v10_2",
+        #     "step": "docker/build",
+        # },
     )
     def build_docker_image(
         context: AssetExecutionContext,
@@ -604,7 +632,7 @@ else:
 
     @asset(
         **asset_header,
-        group_name="Build_Images_10_2",
+        # group_name="Build_Images_10_2",
         ins={
             "env_10_2": AssetIn(
                 AssetKey([KEY, "env"]),
@@ -616,6 +644,10 @@ else:
                 AssetKey([KEY, "pip_packages"]),
             ),
         },
+        # tags={
+        #     "stage": "third_party/deadline/v10_2",
+        #     "step": "docker/build",
+        # },
     )
     def build_docker_image(
         context: AssetExecutionContext,
@@ -757,7 +789,7 @@ else:
 
 @asset(
     **asset_header,
-    group_name="Repository_Installer_10_2",
+    # group_name="Repository_Installer_10_2",
     ins={
         "env_10_2": AssetIn(
             AssetKey([KEY, "env"]),
@@ -765,6 +797,10 @@ else:
     },
     description="This executes the OpenStudioLandscapes Repository Installer. "
     "Needs to be done only once.",
+    # tags={
+    #     "stage": "third_party/deadline/v10_2/repository",
+    #     "step": "docker/compose",
+    # },
 )
 def deadline_command_install_repository(
     context: AssetExecutionContext,
@@ -816,7 +852,7 @@ def deadline_command_install_repository(
 
 @asset(
     **asset_header,
-    group_name="Repository_Installer_10_2",
+    # group_name="Repository_Installer_10_2",
     ins={
         "env_10_2": AssetIn(
             AssetKey([KEY, "env"]),
@@ -825,6 +861,10 @@ def deadline_command_install_repository(
             AssetKey([KEY, "build_docker_image"]),
         ),
     },
+    # tags={
+    #     "stage": "third_party/deadline/v10_2/repository",
+    #     "step": "docker/build",
+    # },
 )
 def build_docker_image_repository(
     context: AssetExecutionContext,
@@ -917,7 +957,7 @@ def build_docker_image_repository(
 
 @asset(
     **asset_header,
-    group_name="Repository_Installer_10_2",
+    # group_name="Repository_Installer_10_2",
     ins={
         "env_10_2": AssetIn(
             AssetKey([KEY, "env"]),
@@ -937,6 +977,10 @@ def build_docker_image_repository(
     },
     description="This executes the OpenStudioLandscapes Repository Installer. "
     "Needs to be done only once.",
+    # tags={
+    #     "stage": "third_party/deadline/v10_2/repository",
+    #     "step": "docker/compose",
+    # },
 )
 def compose_repository(
     context: AssetExecutionContext,
@@ -1042,13 +1086,17 @@ def compose_repository(
 
 @asset(
     **asset_header,
-    group_name="Build_Images_10_2",
+    # group_name="Build_Images_10_2",
     ins={
         "env_10_2": AssetIn(
             AssetKey([KEY, "env"]),
         ),
     },
     description="",
+    # tags={
+    #     "stage": "third_party/deadline/v10_2/client",
+    #     "step": "docker/build",
+    # },
 )
 def deadline_command_build_docker_image_client(
     context: AssetExecutionContext,
@@ -1105,7 +1153,7 @@ def deadline_command_build_docker_image_client(
 
 @asset(
     **asset_header,
-    group_name="Build_Images_10_2",
+    # group_name="Build_Images_10_2",
     ins={
         "env_10_2": AssetIn(
             AssetKey([KEY, "env"]),
@@ -1117,6 +1165,10 @@ def deadline_command_build_docker_image_client(
             AssetKey([KEY, "deadline_command_build_docker_image_client"]),
         ),
     },
+    # tags={
+    #     "stage": "third_party/deadline/v10_2/client",
+    #     "step": "docker/build",
+    # },
 )
 def build_docker_image_client(
     context: AssetExecutionContext,
@@ -1217,11 +1269,15 @@ def build_docker_image_client(
 
 @asset(
     **asset_header,
-    group_name="Docker_Compose_10_2",
+    # group_name="Docker_Compose_10_2",
     # ins={
     #     "env_10_2": AssetIn(
     #         AssetKey([KEY, "env"]),
     #     ),
+    # },
+    # tags={
+    #     "stage": "third_party/deadline/v10_2",
+    #     "step": "docker/compose",
     # },
 )
 def compose_networks(
@@ -1263,12 +1319,16 @@ def compose_networks(
 
 @asset(
     **asset_header,
-    group_name="MongoDB_10_2",
+    # group_name="MongoDB_10_2",
     ins={
         "env_10_2": AssetIn(
             AssetKey([KEY, "env"]),
         ),
     },
+    # tags={
+    #     "stage": "third_party/deadline/v10_2/mongo_express",
+    #     "step": "docker/compose",
+    # },
 )
 def compose_mongo_express(
     context: AssetExecutionContext,
@@ -1361,12 +1421,16 @@ def compose_mongo_express(
 
 @asset(
     **asset_header,
-    group_name="MongoDB_10_2",
+    # group_name="MongoDB_10_2",
     ins={
         "env_10_2": AssetIn(
             AssetKey([KEY, "env"]),
         ),
     },
+    # tags={
+    #     "stage": "third_party/deadline/v10_2/mongodb",
+    #     "step": "docker/build",
+    # },
 )
 def script_chown_mongodb(
     context: AssetExecutionContext,
@@ -1415,7 +1479,7 @@ def script_chown_mongodb(
 
 @asset(
     **asset_header,
-    group_name="MongoDB_10_2",
+    # group_name="MongoDB_10_2",
     ins={
         "env": AssetIn(
             AssetKey([KEY, "env"]),
@@ -1424,6 +1488,10 @@ def script_chown_mongodb(
             AssetKey([KEY, "script_chown_mongodb"]),
         ),
     },
+    # tags={
+    #     "stage": "third_party/deadline/v10_2/mongodb",
+    #     "step": "docker/build",
+    # },
 )
 def compose_mongodb(
     context: AssetExecutionContext,
@@ -1567,7 +1635,7 @@ def compose_mongodb(
 
 @asset(
     **asset_header,
-    group_name="Docker_Compose_10_2",
+    # group_name="Docker_Compose_10_2",
     ins={
         "env_10_2": AssetIn(
             AssetKey([KEY, "env"]),
@@ -1575,6 +1643,10 @@ def compose_mongodb(
     },
     description="This executes the OpenStudioLandscapes Repository Installer. "
     "Needs to be done only once.",
+    # tags={
+    #     "stage": "third_party/deadline/v10_2/rcs",
+    #     "step": "docker/compose",
+    # },
 )
 def deadline_command_compose_rcs_runner(
     context: AssetExecutionContext,
@@ -1602,7 +1674,7 @@ def deadline_command_compose_rcs_runner(
 
 @asset(
     **asset_header,
-    group_name="Docker_Compose_10_2",
+    # group_name="Docker_Compose_10_2",
     ins={
         "env_10_2": AssetIn(
             AssetKey([KEY, "env"]),
@@ -1620,6 +1692,10 @@ def deadline_command_compose_rcs_runner(
             AssetKey([KEY, "deadline_command_compose_rcs_runner"]),
         ),
     },
+    # tags={
+    #     "stage": "third_party/deadline/v10_2/rcs",
+    #     "step": "docker/compose",
+    # },
 )
 def compose_rcs_runner(
     context: AssetExecutionContext,
@@ -1712,7 +1788,7 @@ def compose_rcs_runner(
 
 @asset(
     **asset_header,
-    group_name="Docker_Compose_10_2",
+    # group_name="Docker_Compose_10_2",
     ins={
         "env_10_2": AssetIn(
             AssetKey([KEY, "env"]),
@@ -1720,6 +1796,10 @@ def compose_rcs_runner(
     },
     description="This executes the OpenStudioLandscapes Repository Installer. "
     "Needs to be done only once.",
+    # tags={
+    #     "stage": "third_party/deadline/v10_2/pulse",
+    #     "step": "docker/compose",
+    # },
 )
 def deadline_command_compose_pulse_runner(
     context: AssetExecutionContext,
@@ -1749,7 +1829,7 @@ def deadline_command_compose_pulse_runner(
 
 @asset(
     **asset_header,
-    group_name="Docker_Compose_10_2",
+    # group_name="Docker_Compose_10_2",
     ins={
         "env_10_2": AssetIn(
             AssetKey([KEY, "env"]),
@@ -1767,6 +1847,10 @@ def deadline_command_compose_pulse_runner(
             AssetKey([KEY, "deadline_command_compose_pulse_runner"]),
         ),
     },
+    # tags={
+    #     "stage": "third_party/deadline/v10_2/pulse",
+    #     "step": "docker/compose",
+    # },
 )
 def compose_pulse_runner(
     context: AssetExecutionContext,
@@ -1848,7 +1932,7 @@ def compose_pulse_runner(
 
 @asset(
     **asset_header,
-    group_name="Docker_Compose_10_2",
+    # group_name="Docker_Compose_10_2",
     ins={
         "env_10_2": AssetIn(
             AssetKey([KEY, "env"]),
@@ -1856,6 +1940,10 @@ def compose_pulse_runner(
     },
     description="This executes the OpenStudioLandscapes Repository Installer. "
     "Needs to be done only once.",
+    # tags={
+    #     "stage": "third_party/deadline/v10_2/worker",
+    #     "step": "docker/compose",
+    # },
 )
 def deadline_command_compose_worker_runner(
     context: AssetExecutionContext,
@@ -1885,7 +1973,7 @@ def deadline_command_compose_worker_runner(
 
 @asset(
     **asset_header,
-    group_name="Docker_Compose_10_2",
+    # group_name="Docker_Compose_10_2",
     ins={
         "env_10_2": AssetIn(
             AssetKey([KEY, "env"]),
@@ -1903,6 +1991,10 @@ def deadline_command_compose_worker_runner(
             AssetKey([KEY, "deadline_command_compose_worker_runner"]),
         ),
     },
+    # tags={
+    #     "stage": "third_party/deadline/v10_2/worker",
+    #     "step": "docker/compose",
+    # },
 )
 def compose_worker_runner(
     context: AssetExecutionContext,
@@ -1984,7 +2076,7 @@ def compose_worker_runner(
 
 @asset(
     **asset_header,
-    group_name="Docker_Compose_10_2",
+    # group_name="Docker_Compose_10_2",
     ins={
         "env_10_2": AssetIn(
             AssetKey([KEY, "env"]),
@@ -1992,6 +2084,10 @@ def compose_worker_runner(
     },
     description="This executes the OpenStudioLandscapes Repository Installer. "
     "Needs to be done only once.",
+    # tags={
+    #     "stage": "third_party/deadline/v10_2/webservice",
+    #     "step": "docker/compose",
+    # },
 )
 def deadline_command_compose_webservice_runner(
     context: AssetExecutionContext,
@@ -2019,7 +2115,7 @@ def deadline_command_compose_webservice_runner(
 
 @asset(
     **asset_header,
-    group_name="Docker_Compose_10_2",
+    # group_name="Docker_Compose_10_2",
     ins={
         "env_10_2": AssetIn(
             AssetKey([KEY, "env"]),
@@ -2037,6 +2133,10 @@ def deadline_command_compose_webservice_runner(
             AssetKey([KEY, "deadline_command_compose_webservice_runner"]),
         ),
     },
+    # tags={
+    #     "stage": "third_party/deadline/v10_2/webserver",
+    #     "step": "docker/compose",
+    # },
 )
 def compose_webservice_runner(
     context: AssetExecutionContext,
@@ -2139,7 +2239,7 @@ def compose_webservice_runner(
 
 @asset(
     **asset_header,
-    group_name=f"GROUP_OUT_{KEY}",
+    # group_name=f"GROUP_OUT_{KEY}",
     ins={
         "compose_webservice_runner_10_2": AssetIn(
             AssetKey([KEY, "compose_webservice_runner"]),
@@ -2166,6 +2266,10 @@ def compose_webservice_runner(
             AssetKey([KEY, "compose_repository"]),
         ),
     },
+    # tags={
+    #     "stage": "third_party/deadline/v10_2",
+    #     "step": "docker/compose",
+    # },
 )
 def compose(
     context: AssetExecutionContext,

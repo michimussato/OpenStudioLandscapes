@@ -148,7 +148,10 @@ def op_group_out(
         "--remove-orphans",
     ]
 
-    yield Output(docker_compose)
+    yield Output(
+        output_name="group_out",
+        value=docker_compose,
+    )
 
     yield AssetMaterialization(
         asset_key=context.asset_key,

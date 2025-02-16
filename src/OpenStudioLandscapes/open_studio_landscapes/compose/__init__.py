@@ -7,3 +7,6 @@
 
 # https://docs.dagster.io/guides/deploy/oss-deployment-architecture
 # https://docs.dagster.io/guides/deploy/code-locations/managing-code-locations-with-definitions
+# => Without command line arguments
+
+# https://dagster.io/blog/dagster-code-locations
