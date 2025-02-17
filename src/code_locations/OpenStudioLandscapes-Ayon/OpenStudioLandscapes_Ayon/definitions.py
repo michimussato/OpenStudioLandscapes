@@ -2,12 +2,12 @@ from dagster import (
     Definitions,
     load_assets_from_modules,
 )
-from Kitsu import (
-    assets as assets_Kitsu,
+from OpenStudioLandscapes_Ayon import (
+    assets as assets_Ayon,
 )
 
 assets = load_assets_from_modules(
-    modules=[assets_Kitsu],
+    modules=[assets_Ayon],
 )
 
 

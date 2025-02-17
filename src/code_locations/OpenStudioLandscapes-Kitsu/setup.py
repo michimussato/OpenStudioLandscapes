@@ -1,8 +1,8 @@
 from setuptools import find_packages, setup
 
 setup(
-    name="LikeC4",
-    packages=find_packages(exclude=["LikeC4_tests"]),
+    name="OpenStudioLandscapes_Kitsu",
+    packages=find_packages(exclude=["OpenStudioLandscapes_Kitsu_tests"]),
     install_requires=[
         "dagster",
         "dagster-cloud"

@@ -4,13 +4,13 @@ from dagster import Definitions
 
 imports = [
     "OpenStudioLandscapes.open_studio_landscapes.base.definitions",
-    "Ayon.definitions",
+    "OpenStudioLandscapes_Ayon.definitions",
     "OpenStudioLandscapes_Dagster.definitions",
     "OpenStudioLandscapes_filebrowser.definitions",
     "OpenStudioLandscapes_Grafana.definitions",
     "OpenStudioLandscapes_Deadline_10_2.definitions",
-    "LikeC4.definitions",
-    "Kitsu.definitions",
+    "OpenStudioLandscapes_LikeC4.definitions",
+    "OpenStudioLandscapes_Kitsu.definitions",
 ]
 
 modules = []

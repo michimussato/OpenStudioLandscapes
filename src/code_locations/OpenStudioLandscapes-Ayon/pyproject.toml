@@ -1,5 +1,5 @@
 [project]
-name = "LikeC4"
+name = "OpenStudioLandscapes_Ayon"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -20,8 +20,8 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [tool.dagster]
-module_name = "LikeC4.definitions"
-code_location_name = "LikeC4"
+module_name = "OpenStudioLandscapes_Ayon.definitions"
+code_location_name = "OpenStudioLandscapes_Ayon"
 
 [tool.setuptools.packages.find]
-exclude=["LikeC4_tests"]
+exclude=["OpenStudioLandscapes_Ayon_tests"]

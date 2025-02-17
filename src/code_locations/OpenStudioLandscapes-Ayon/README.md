@@ -1,4 +1,4 @@
-# Kitsu
+# OpenStudioLandscapes_Ayon
 
 This is a [Dagster](https://dagster.io/) project scaffolded with [`dagster project scaffold`](https://docs.dagster.io/guides/build/projects/creating-a-new-project).
 
@@ -18,7 +18,7 @@ dagster dev
 
 Open http://localhost:3000 with your browser to see the project.
 
-You can start writing assets in `Kitsu/assets.py`. The assets are automatically loaded into the Dagster code location as you define them.
+You can start writing assets in `OpenStudioLandscapes_Ayon/assets.py`. The assets are automatically loaded into the Dagster code location as you define them.
 
 ## Development
 
@@ -28,10 +28,10 @@ You can specify new Python dependencies in `setup.py`.
 
 ### Unit testing
 
-Tests are in the `Kitsu_tests` directory and you can run tests using `pytest`:
+Tests are in the `OpenStudioLandscapes_Ayon_tests` directory and you can run tests using `pytest`:
 
 ```bash
-pytest Kitsu_tests
+pytest OpenStudioLandscapes_Ayon_tests
 ```
 
 ### Schedules and sensors
