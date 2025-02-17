@@ -71,7 +71,7 @@ def env(
         "group_in_filebrowser": AssetIn(AssetKey([KEY_FILEBROWSER, "group_out"])),
         "group_in_Grafana": AssetIn(AssetKey([KEY_GRAFANA, "group_out"])),
         "group_in_Kitsu": AssetIn(AssetKey([KEY_KITSU, "group_out"])),
-        "group_in_LikeC4": AssetIn(AssetKey([KEY_LIKEC4, "group_out"])),
+        # "group_in_LikeC4": AssetIn(AssetKey([KEY_LIKEC4, "group_out"])),
     },
 )
 def compose(
@@ -82,7 +82,7 @@ def compose(
     group_in_filebrowser: pathlib.Path,  # pylint: disable=redefined-outer-name
     group_in_Grafana: pathlib.Path,  # pylint: disable=redefined-outer-name
     group_in_Kitsu: pathlib.Path,  # pylint: disable=redefined-outer-name
-    group_in_LikeC4: pathlib.Path,  # pylint: disable=redefined-outer-name
+    # group_in_LikeC4: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> dict:
     """ """
 
@@ -93,12 +93,14 @@ def compose(
         group_in_filebrowser,
         group_in_Grafana,
         group_in_Kitsu,
-        group_in_LikeC4,
+        # group_in_LikeC4,
     ]
 
     docker_dict = {
-        "include": [{"path": [i]} for i in _group_in],
+        "include": [{"path": [i.as_posix()]} for i in _group_in],
     }
+
+    # context.log.info(docker_dict)
 
     docker_yaml = yaml.dump(docker_dict)
 
