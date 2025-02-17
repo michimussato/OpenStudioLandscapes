@@ -2,12 +2,12 @@ from dagster import (
     Definitions,
     load_assets_from_modules,
 )
-from LikeC4 import (
-    assets as assets_LikeC4,
+from Kitsu import (
+    assets as assets_Kitsu,
 )
 
 assets = load_assets_from_modules(
-    modules=[assets_LikeC4],
+    modules=[assets_Kitsu],
 )
 
 

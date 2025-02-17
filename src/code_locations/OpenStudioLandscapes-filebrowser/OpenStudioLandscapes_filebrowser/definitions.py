@@ -2,12 +2,12 @@ from dagster import (
     Definitions,
     load_assets_from_modules,
 )
-from LikeC4 import (
-    assets as assets_LikeC4,
+from OpenStudioLandscapes_filebrowser import (
+    assets as assets_filebrowser,
 )
 
 assets = load_assets_from_modules(
-    modules=[assets_LikeC4],
+    modules=[assets_filebrowser],
 )
 
 

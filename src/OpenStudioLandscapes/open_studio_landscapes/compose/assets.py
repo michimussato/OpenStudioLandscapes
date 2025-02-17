@@ -30,13 +30,11 @@ asset_header = {
 
 def_locs = [
     # "OpenStudioLandscapes.open_studio_landscapes.base",
-    "OpenStudioLandscapes.open_studio_landscapes.Deadline.v10_2",
-    "OpenStudioLandscapes.open_studio_landscapes.third_party.Ayon",
-    "OpenStudioLandscapes.open_studio_landscapes.third_party.Dagster",
-    "OpenStudioLandscapes.open_studio_landscapes.third_party.filebrowser",
-    "OpenStudioLandscapes.open_studio_landscapes.third_party.Grafana",
-    "OpenStudioLandscapes.open_studio_landscapes.third_party.Kitsu",
-    "LikeC4",
+    # "OpenStudioLandscapes.open_studio_landscapes.Deadline.v10_2",
+    # "OpenStudioLandscapes.open_studio_landscapes.third_party.Ayon",
+    # "OpenStudioLandscapes.open_studio_landscapes.third_party.Dagster",
+    # "OpenStudioLandscapes.open_studio_landscapes.third_party.filebrowser",
+    # "OpenStudioLandscapes.open_studio_landscapes.third_party.Grafana",
 ]
 
 ins = list()
