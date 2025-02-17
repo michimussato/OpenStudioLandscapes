@@ -54,46 +54,10 @@ asset_header = {
 
 @asset(
     **asset_header,
-    # group_name=f"GROUP_IN_{KEY}",
-    deps=[
-        AssetKey([KEY_BASE, "group_out"]),
-    ],
-    # tags={
-    #     "stage": "third_party/deadline/v10_2",
-    #     "step": "group_in",
-    # },
-)
-def group_in(
-    context: AssetExecutionContext,
-) -> dict[str, str | dict]:
-
-    # load asset data from external code location into memory
-    # and provide it as the Output of this asset
-    load_from = AssetKey([KEY_BASE, "group_out"])
-    defs = importlib.import_module("OpenStudioLandscapes.open_studio_landscapes.base.definitions").defs
-    df: dict = defs.load_asset_value(
-        asset_key=load_from,
-        instance=context.instance,
-    )
-
-    context.log.info(f"loaded data from Asset {load_from}: {json.dumps(df, indent=2)}")
-
-    yield Output(df)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(df),
-        },
-    )
-
-
-@asset(
-    **asset_header,
     # group_name="Environment_10_2",
     ins={
         "group_in": AssetIn(
-            AssetKey([KEY, "group_in"]),
+            AssetKey([KEY_BASE, "group_out"])
         ),
     },
     # tags={
@@ -495,7 +459,7 @@ if BUILD_FROM_GOOGLE_DRIVE_10_2:
                 AssetKey([KEY, "env"]),
             ),
             "group_in": AssetIn(
-                AssetKey([KEY, "group_in"]),
+                AssetKey([KEY_BASE, "group_out"])
             ),
             "wget_deadline_packages_base_image_10_2": AssetIn(
                 AssetKey([KEY, "wget_deadline_packages_base_image"]),
@@ -638,7 +602,7 @@ else:
                 AssetKey([KEY, "env"]),
             ),
             "group_in": AssetIn(
-                AssetKey([KEY, "group_in"]),
+                AssetKey([KEY_BASE, "group_out"])
             ),
             "pip_packages": AssetIn(
                 AssetKey([KEY, "pip_packages"]),

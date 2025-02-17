@@ -16,10 +16,17 @@ from dagster import (
 )
 
 from OpenStudioLandscapes.open_studio_landscapes.base.assets import KEY as KEY_BASE
+from OpenStudioLandscapes_Dagster.assets import KEY as KEY_DAGSTER
+from OpenStudioLandscapes_Ayon.assets import KEY as KEY_AYON
+from OpenStudioLandscapes_Deadline_10_2.assets import KEY as KEY_DEADLINE_10_2
+from OpenStudioLandscapes_filebrowser.assets import KEY as KEY_FILEBROWSER
+from OpenStudioLandscapes_Grafana.assets import KEY as KEY_GRAFANA
+from OpenStudioLandscapes_Kitsu.assets import KEY as KEY_KITSU
+from OpenStudioLandscapes_LikeC4.assets import KEY as KEY_LIKEC4
 from OpenStudioLandscapes.open_studio_landscapes.base.ops import op_group_out
 from OpenStudioLandscapes.open_studio_landscapes.base.ops import op_docker_compose_graph
 
-GROUP = "Compose_Hack"
+GROUP = "Compose"
 KEY = "Compose"
 
 asset_header = {
@@ -28,98 +35,22 @@ asset_header = {
     "compute_kind": "python",
 }
 
-def_locs = [
-    # "OpenStudioLandscapes.open_studio_landscapes.base",
-    # "OpenStudioLandscapes.open_studio_landscapes.Deadline.v10_2",
-    # "OpenStudioLandscapes.open_studio_landscapes.third_party.Ayon",
-    # "OpenStudioLandscapes.open_studio_landscapes.third_party.Dagster",
-    # "OpenStudioLandscapes.open_studio_landscapes.third_party.filebrowser",
-    # "OpenStudioLandscapes.open_studio_landscapes.third_party.Grafana",
-]
-
-ins = list()
-
-for def_loc in def_locs:
-    dep = dict()
-    key = importlib.import_module(f"{def_loc}.assets").KEY
-    load_from = AssetKey([key, "group_out"])
-    dep["code_location"] = def_loc
-    dep["asset_key"] = load_from
-    dep["defs"] = None
-    dep["def_dict"] = None
-
-    ins.append(copy.deepcopy(dep))
-
-
-# @asset(
-#     **asset_header,
-# )
-# def get_code_locations(
-#     context: AssetExecutionContext,
-# ) -> list:
-#
-#     global ins
-#
-#     context.log.info(f"{ins = }")
-#     context.log.info(f"{json.dumps(ins, indent=2) = }")
-#
-#     yield Output(ins)
-#
-#     yield AssetMaterialization(
-#         asset_key=context.asset_key,
-#         metadata={
-#             # "__".join(context.asset_key.path): MetadataValue.json(json.dumps(ins, indent=2)),
-#             context.asset_key.path: MetadataValue.str(ins),
-#         },
-#     )
-
-
-@asset(
-    **asset_header,
-    # group_name="Environment",
-    deps=[
-        AssetKey([KEY_BASE, "group_out"]),
-    ],
-)
-def load_base(
-    context: AssetExecutionContext,
-) -> dict:
-    # @formatter:off
-
-    # load asset data from external code location into memory
-    # and provide it as the Output of this asset
-    load_from = AssetKey([KEY_BASE, "group_out"])
-    defs = importlib.import_module("OpenStudioLandscapes.open_studio_landscapes.base.definitions").defs
-    df: dict = defs.load_asset_value(
-        asset_key=load_from,
-        instance=context.instance,
-    )
-
-    context.log.info(f"loaded data from Asset {load_from}: {json.dumps(df, indent=2)}")
-
-    yield Output(df)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(df),
-        },
-    )
-
 
 @asset(
     **asset_header,
     # group_name="Environment",
     ins={
-        "base": AssetIn(AssetKey([KEY, "load_base"])),
+        "group_in": AssetIn(
+            AssetKey([KEY_BASE, "group_out"])
+        ),
     },
 )
 def env(
     context: AssetExecutionContext,
-    base: dict,
+    group_in: dict,
 ) -> dict:
 
-    ret = base.get("env", {})
+    ret = group_in.get("env", {})
 
     yield Output(ret)
 
@@ -133,71 +64,40 @@ def env(
 
 @asset(
     **asset_header,
-    # ins={
-    #     "code_locations": AssetIn(AssetKey([KEY, "get_code_locations"])),
-    # },
-    deps=[
-        *[i["asset_key"] for i in ins],
-    ],
-)
-def group_in(
-    context: AssetExecutionContext,
-    # code_locations: list,
-) -> list:
-
-    # context.pdb.set_trace()
-
-    # load asset data from external code location into memory
-    # and provide it as the Output of this asset
-
-    # for def_loc in def_locs:
-    #     key = importlib.import_module(f"{def_loc}.assets").KEY
-    #     load_from = AssetKey([key, "group_out"])
-    #     defs = importlib.import_module(f"{def_loc}.definitions").defs
-    for dep in ins:
-        dep["defs"] = importlib.import_module(f"{dep['code_location']}.definitions").defs
-        dep["def_dict"]: dict = dep["defs"].load_asset_value(
-            asset_key=dep["asset_key"],
-            instance=context.instance,
-        )
-
-    context.log.info(ins)
-
-    yamls = list()
-
-    for dep in ins:
-        yaml_path: pathlib.Path = dep["def_dict"]
-        context.log.info(yaml_path)
-        yamls.append(yaml_path.as_posix())
-
-    context.log.info(yamls)
-
-    # context.log.info(f"loaded data from Asset {load_from}: {json.dumps(df, indent=2)}")
-
-    yield Output(yamls)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(yamls),
-        },
-    )
-
-
-@asset(
-    **asset_header,
     ins={
-        "group_in": AssetIn(AssetKey([KEY, "group_in"])),
+        "group_in_Ayon": AssetIn(AssetKey([KEY_AYON, "group_out"])),
+        "group_in_Dagster": AssetIn(AssetKey([KEY_DAGSTER, "group_out"])),
+        "group_in_Deadline_10_2": AssetIn(AssetKey([KEY_DEADLINE_10_2, "group_out"])),
+        "group_in_filebrowser": AssetIn(AssetKey([KEY_FILEBROWSER, "group_out"])),
+        "group_in_Grafana": AssetIn(AssetKey([KEY_GRAFANA, "group_out"])),
+        "group_in_Kitsu": AssetIn(AssetKey([KEY_KITSU, "group_out"])),
+        "group_in_LikeC4": AssetIn(AssetKey([KEY_LIKEC4, "group_out"])),
     },
 )
 def compose(
     context: AssetExecutionContext,
-    group_in: list,  # pylint: disable=redefined-outer-name
+    group_in_Ayon: pathlib.Path,  # pylint: disable=redefined-outer-name
+    group_in_Dagster: pathlib.Path,  # pylint: disable=redefined-outer-name
+    group_in_Deadline_10_2: pathlib.Path,  # pylint: disable=redefined-outer-name
+    group_in_filebrowser: pathlib.Path,  # pylint: disable=redefined-outer-name
+    group_in_Grafana: pathlib.Path,  # pylint: disable=redefined-outer-name
+    group_in_Kitsu: pathlib.Path,  # pylint: disable=redefined-outer-name
+    group_in_LikeC4: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> dict:
     """ """
 
+    _group_in = [
+        group_in_Ayon,
+        group_in_Dagster,
+        group_in_Deadline_10_2,
+        group_in_filebrowser,
+        group_in_Grafana,
+        group_in_Kitsu,
+        group_in_LikeC4,
+    ]
+
     docker_dict = {
-        "include": [{"path": [i]} for i in group_in],
+        "include": [{"path": [i]} for i in _group_in],
     }
 
     docker_yaml = yaml.dump(docker_dict)

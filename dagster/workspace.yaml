@@ -7,8 +7,3 @@ load_from:
       module_name: OpenStudioLandscapes.open_studio_landscapes.definitions
       location_name: "OpenStudioLandscapes.open_studio_landscapes"
       # executable_path: ../.venv/bin/python
-  - python_module:
-      working_directory: src
-      module_name: OpenStudioLandscapes.open_studio_landscapes.compose.definitions
-      location_name: "OpenStudioLandscapes.open_studio_landscapes.compose"
-      # executable_path: ../.venv/bin/python

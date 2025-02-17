@@ -4,6 +4,7 @@ from dagster import Definitions
 
 imports = [
     "OpenStudioLandscapes.open_studio_landscapes.base.definitions",
+    "OpenStudioLandscapes.open_studio_landscapes.compose.definitions",
     "OpenStudioLandscapes_Ayon.definitions",
     "OpenStudioLandscapes_Dagster.definitions",
     "OpenStudioLandscapes_filebrowser.definitions",
