@@ -4,14 +4,14 @@ from dagster import (
     # AutoMaterializePolicy,
     # AutoMaterializeRule,
 )
-from OpenStudioLandscapes.open_studio_landscapes.third_party.LikeC4 import (
+from LikeC4 import (
     assets as assets_LikeC4,
 )
-from OpenStudioLandscapes.open_studio_landscapes.third_party.LikeC4 import (
+from LikeC4 import (
     sensors as sensors_LikeC4,
 )
 
-from OpenStudioLandscapes.open_studio_landscapes.third_party.LikeC4 import (
+from LikeC4 import (
     jobs as jobs_LikeC4,
 )
 

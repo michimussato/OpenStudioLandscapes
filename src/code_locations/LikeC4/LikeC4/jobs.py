@@ -3,7 +3,7 @@ from dagster import (
     AssetSelection,
 )
 
-from OpenStudioLandscapes.open_studio_landscapes.third_party.LikeC4.sensors import asset_to_watch
+from LikeC4.sensors import asset_to_watch
 
 
 job_LikeC4 = define_asset_job(

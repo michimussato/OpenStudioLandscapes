@@ -36,7 +36,7 @@ def_locs = [
     "OpenStudioLandscapes.open_studio_landscapes.third_party.filebrowser",
     "OpenStudioLandscapes.open_studio_landscapes.third_party.Grafana",
     "OpenStudioLandscapes.open_studio_landscapes.third_party.Kitsu",
-    "OpenStudioLandscapes.open_studio_landscapes.third_party.LikeC4",
+    "LikeC4",
 ]
 
 ins = list()

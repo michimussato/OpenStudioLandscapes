@@ -10,7 +10,7 @@ from OpenStudioLandscapes.open_studio_landscapes.third_party.Dagster.assets impo
 from OpenStudioLandscapes.open_studio_landscapes.third_party.filebrowser.assets import KEY as KEY_FILEBRWOSER
 from OpenStudioLandscapes.open_studio_landscapes.third_party.Grafana.assets import KEY as KEY_GRAFANA
 from OpenStudioLandscapes.open_studio_landscapes.third_party.Kitsu.assets import KEY as KEY_KITSU
-from OpenStudioLandscapes.open_studio_landscapes.third_party.LikeC4.assets import KEY as KEY_LIKEC4
+from LikeC4.assets import KEY as KEY_LIKEC4
 
 
 job_compose = define_asset_job(
