@@ -55,7 +55,7 @@ MANIFEST
 .python-version
 
 # Dagster
-dagster/materializations/*/
+.dagster/*/
 tmp*/
 
 **.run
