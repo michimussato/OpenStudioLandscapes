@@ -8,7 +8,7 @@ IMPORTS = [
     "OpenStudioLandscapes_filebrowser.definitions",
     "OpenStudioLandscapes_Grafana.definitions",
     "OpenStudioLandscapes_Deadline_10_2.definitions",
-    # "OpenStudioLandscapes_LikeC4.definitions",
+    "OpenStudioLandscapes_LikeC4.definitions",
     "OpenStudioLandscapes_Kitsu.definitions",
 ]
 
