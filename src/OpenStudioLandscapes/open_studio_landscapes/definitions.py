@@ -2,9 +2,7 @@ import importlib
 
 from dagster import Definitions
 
-imports = [
-    "OpenStudioLandscapes.open_studio_landscapes.base.definitions",
-    "OpenStudioLandscapes.open_studio_landscapes.compose.definitions",
+IMPORTS = [
     "OpenStudioLandscapes_Ayon.definitions",
     "OpenStudioLandscapes_Dagster.definitions",
     "OpenStudioLandscapes_filebrowser.definitions",
@@ -14,9 +12,17 @@ imports = [
     "OpenStudioLandscapes_Kitsu.definitions",
 ]
 
+
+imports_with_base = [
+    "OpenStudioLandscapes.open_studio_landscapes.base.definitions",
+    "OpenStudioLandscapes.open_studio_landscapes.compose.definitions",
+    *IMPORTS,
+]
+
+
 modules = []
 
-for module in imports:
+for module in imports_with_base:
     try:
         module_object = importlib.import_module(module)
         modules.append(module_object)
