@@ -582,8 +582,6 @@ cd ~/git/repos/OpenStudioLandscapes
 source .venv/bin/activate
 export DAGSTER_HOME="$(pwd)/.dagster"
 dagster dev --host 0.0.0.0  # --port 3000
-#dagster dev --workspace "$(pwd)/dagster/workspace.yaml" --host 0.0.0.0  # --port 3000
-#dagster dev --host 0.0.0.0  # --port 3000
 ```
 
 http://0.0.0.0:3000
