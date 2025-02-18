@@ -11,7 +11,7 @@ from dagster import (
     AssetsDefinition,
 )
 
-from OpenStudioLandscapes.open_studio_landscapes.definitions import IMPORTS
+from OpenStudioLandscapes.open_studio_landscapes.constants import THIRD_PARTY
 from OpenStudioLandscapes.open_studio_landscapes.base.assets import KEY as KEY_BASE
 from OpenStudioLandscapes.open_studio_landscapes.base.ops import op_group_out
 from OpenStudioLandscapes.open_studio_landscapes.base.ops import op_docker_compose_graph
@@ -54,7 +54,7 @@ def env(
 # Dynamic inputs based on the imported
 # third party code locations
 ins = {}
-for i in IMPORTS:
+for i in THIRD_PARTY:
     # ex: i = "OpenStudioLandscapes_Ayon.definitions"
     s = i.split(".")[0]  # s = "OpenStudioLandscapes_Ayon"
     key = s.split("_", maxsplit=1)[1]  # key = "Ayon"

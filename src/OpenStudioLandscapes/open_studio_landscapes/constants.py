@@ -3,6 +3,7 @@ __all__ = [
     "MONGODB_INSIDE_CONTAINER",
     "KITSUDB_INSIDE_CONTAINER",
     "BUILD_FROM_GOOGLE_DRIVE_10_2",
+    "THIRD_PARTY",
 ]
 
 
@@ -10,3 +11,14 @@ DOCKER_USE_CACHE = False
 MONGODB_INSIDE_CONTAINER = False
 KITSUDB_INSIDE_CONTAINER = False
 BUILD_FROM_GOOGLE_DRIVE_10_2 = False
+
+
+THIRD_PARTY = [
+    "OpenStudioLandscapes_Ayon.definitions",
+    "OpenStudioLandscapes_Dagster.definitions",
+    "OpenStudioLandscapes_filebrowser.definitions",
+    "OpenStudioLandscapes_Grafana.definitions",
+    "OpenStudioLandscapes_Deadline_10_2.definitions",
+    "OpenStudioLandscapes_LikeC4.definitions",
+    "OpenStudioLandscapes_Kitsu.definitions",
+]
