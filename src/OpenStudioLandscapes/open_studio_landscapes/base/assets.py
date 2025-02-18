@@ -8,9 +8,8 @@ import time
 import urllib.parse
 import uuid
 from datetime import datetime
-from pathlib import Path
 
-from typing import Any, Generator
+from typing import Generator
 
 from python_on_whales import docker
 
@@ -43,7 +42,7 @@ asset_header = {
 )
 def git_root(
     context: AssetExecutionContext,
-) -> Generator[Output[Path] | AssetMaterialization | Any, Any, None]:
+) -> Generator[Output[pathlib.Path] | AssetMaterialization]:
 
     _git_root = get_git_root()
 
@@ -63,7 +62,7 @@ def git_root(
 )
 def landscape_id(
     context: AssetExecutionContext,
-) -> Generator[Output[dict[str, str]] | AssetMaterialization | Any, Any, None]:
+) -> Generator[Output[dict[str, str]] | AssetMaterialization]:
 
     now = datetime.now()
 
@@ -87,7 +86,7 @@ def landscape_id(
 )
 def secrets(
     context: AssetExecutionContext,
-) -> Generator[Output[dict | Any] | AssetMaterialization | Any, Any, None]:
+) -> Generator[Output[dict] | AssetMaterialization]:
     try:
         from __SECRET__.secrets import secrets as _secrets
     except ModuleNotFoundError:
@@ -116,7 +115,7 @@ def secrets(
 def dot_landscapes(
     context: AssetExecutionContext,
     git_root: pathlib.Path,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[Path] | AssetMaterialization | Any, Any, None]:
+) -> Generator[Output[pathlib.Path] | AssetMaterialization]:
 
     dot_landscapes = git_root / ".landscapes"
     dot_landscapes.mkdir(
@@ -144,7 +143,7 @@ def dot_landscapes(
 def dot_installers(
     context: AssetExecutionContext,
     git_root: pathlib.Path,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[Path] | AssetMaterialization | Any, Any, None]:
+) -> Generator[Output[pathlib.Path] | AssetMaterialization]:
 
     dot_installers = git_root / ".installers"
     dot_installers.mkdir(
@@ -182,7 +181,7 @@ def env(
     dot_landscapes: pathlib.Path,  # pylint: disable=redefined-outer-name
     dot_installers: pathlib.Path,  # pylint: disable=redefined-outer-name
     nfs: dict,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[dict] | AssetMaterialization | Any, Any, None]:
+) -> Generator[Output[dict] | AssetMaterialization]:
     # @formatter:off
 
     _env: dict = {
@@ -299,7 +298,7 @@ def env(
 )
 def pip_packages(
     context: AssetExecutionContext,
-) -> Generator[Output[list] | AssetMaterialization | Any, Any, None]:
+) -> Generator[Output[list] | AssetMaterialization]:
     """ """
 
     _pip_packages: list = [
@@ -330,10 +329,7 @@ def pip_packages(
 def apt_packages(
     context: AssetExecutionContext,
 ) -> Generator[
-    Output[dict[str, list[str | Any] | list[str]]] | AssetMaterialization | Any,
-    Any,
-    None,
-]:
+    Output[dict] | AssetMaterialization]:
     """ """
 
     _apt_packages = dict()
@@ -393,7 +389,7 @@ def build_docker_image(
     env: dict,  # pylint: disable=redefined-outer-name
     apt_packages: dict[str, list[str]],  # pylint: disable=redefined-outer-name
     pip_packages: list,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[str] | AssetMaterialization | Any, Any, None]:
+) -> Generator[Output[str] | AssetMaterialization]:
     """ """
 
     docker_file = pathlib.Path(
@@ -524,7 +520,7 @@ def build_docker_image(
 )
 def nfs(
     context: AssetExecutionContext,
-) -> Generator[Output[dict] | AssetMaterialization | Any, Any, None]:
+) -> Generator[Output[dict] | AssetMaterialization]:
     # @formatter:off
     _env: dict = {
         "NFS_ENTRY_POINT": pathlib.Path("/data/share/nfs").as_posix(),
@@ -560,7 +556,7 @@ def group_out(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
     build_docker_image: str,  # pylint: disable=redefined-outer-name
-) -> dict[str, str | dict]:
+) -> Generator[Output[dict[str, str | dict]] | AssetMaterialization]:
 
     out_dict: dict = dict()
 

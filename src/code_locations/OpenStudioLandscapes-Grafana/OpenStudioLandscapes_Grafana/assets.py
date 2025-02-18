@@ -1,6 +1,7 @@
 import copy
 import json
 import pathlib
+from typing import Generator
 
 import yaml
 
@@ -36,7 +37,7 @@ asset_header = {"group_name": GROUP, "key_prefix": [KEY], "compute_kind": "pytho
 def env(
     context: AssetExecutionContext,
     group_in: dict,  # pylint: disable=redefined-outer-name
-) -> dict:
+) -> Generator[Output[dict] | AssetMaterialization]:
 
     env_in = copy.deepcopy(group_in["env"])
 
@@ -90,7 +91,7 @@ def env(
 def compose(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
-) -> dict:
+) -> Generator[Output[dict] | AssetMaterialization]:
     """ """
 
     docker_dict = {

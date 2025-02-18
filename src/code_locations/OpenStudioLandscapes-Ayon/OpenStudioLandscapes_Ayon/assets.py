@@ -1,5 +1,7 @@
 import copy
 import pathlib
+from typing import Generator
+
 import git
 from git.exc import GitCommandError
 
@@ -43,7 +45,7 @@ assets = AssetSelection.all(include_sources=True)
 def env(
     context: AssetExecutionContext,
     group_in: dict,  # pylint: disable=redefined-outer-name
-) -> dict:
+) -> Generator[Output[dict] | AssetMaterialization]:
 
     env_in = copy.deepcopy(group_in["env"])
 
@@ -72,7 +74,7 @@ def env(
 )
 def repository_ayon(
     context: AssetExecutionContext,
-) -> dict[str, str | None]:
+) -> Generator[Output[dict[str, str | None]] | AssetMaterialization]:
     repository_dict = {
         "branch": "main",
         "repository_dir": "ayon-docker",
@@ -105,7 +107,7 @@ def clone_repository(
     context: AssetExecutionContext,
     env: dict,
     repository_ayon: dict[str, str | None],
-) -> dict[str, str]:
+) -> Generator[Output[dict[str, str]] | AssetMaterialization]:
 
     repo_dir = pathlib.Path(
         env["DOT_LANDSCAPES"],
@@ -148,7 +150,7 @@ def clone_repository(
 )
 def compose_networks(
     context: AssetExecutionContext,
-) -> dict:
+) -> Generator[Output[dict[str, dict[str, dict[str, str]]]] | AssetMaterialization]:
     docker_dict = {
         "networks": {
             "mongodb": {
@@ -192,7 +194,7 @@ def compose_override(
     env: dict,  # pylint: disable=redefined-outer-name
     compose_networks: dict,  # pylint: disable=redefined-outer-name
     clone_repository: dict,  # pylint: disable=redefined-outer-name
-) -> dict:
+) -> Generator[Output[dict[str, list[dict[str, list[str]]]]] | AssetMaterialization]:
     """"""
 
     parent = pathlib.Path(clone_repository["repository_dir_full"]) / "docker-compose.yml"

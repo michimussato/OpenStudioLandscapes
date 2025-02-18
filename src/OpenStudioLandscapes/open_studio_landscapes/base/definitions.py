@@ -3,10 +3,10 @@ from dagster import (
     load_assets_from_modules,
 )
 
-from OpenStudioLandscapes.open_studio_landscapes.base import assets as assets_base
+import OpenStudioLandscapes.open_studio_landscapes.base.assets
 
 
-assets_base = load_assets_from_modules([assets_base])
+assets_base = load_assets_from_modules([OpenStudioLandscapes.open_studio_landscapes.base.assets])
 
 
 defs = Definitions(

@@ -5,6 +5,7 @@ import shutil
 import textwrap
 import time
 import urllib.parse
+from typing import Generator
 
 import yaml
 from python_on_whales import docker
@@ -43,7 +44,7 @@ asset_header = {"group_name": GROUP, "key_prefix": [KEY], "compute_kind": "pytho
 def env(
     context: AssetExecutionContext,
     group_in: dict,  # pylint: disable=redefined-outer-name
-) -> dict:
+) -> Generator[Output[dict] | AssetMaterialization]:
 
     env_in = copy.deepcopy(group_in["env"])
 
@@ -92,7 +93,7 @@ def env(
 )
 def apt_packages(
     context: AssetExecutionContext,
-) -> dict[str, list[str]]:
+) -> Generator[Output[dict[str, list[str]]] | AssetMaterialization]:
     """ """
 
     _apt_packages = dict()
@@ -132,7 +133,7 @@ def build_docker_image(
     env: dict,  # pylint: disable=redefined-outer-name
     group_in: dict,  # pylint: disable=redefined-outer-name
     apt_packages: dict[str, list[str]],  # pylint: disable=redefined-outer-name
-) -> str:
+) -> Generator[Output[str] | AssetMaterialization]:
     """ """
 
     build_base_image: str = group_in["docker_image"]
@@ -267,7 +268,7 @@ def build_docker_image(
 )
 def compose_networks(
     context: AssetExecutionContext,
-) -> dict:
+) -> Generator[Output[dict] | AssetMaterialization]:
     docker_dict = {
         "networks": {
             "mongodb": {
@@ -311,7 +312,7 @@ def compose(
     env: dict,  # pylint: disable=redefined-outer-name
     build: str,  # pylint: disable=redefined-outer-name
     compose_networks: dict,  # pylint: disable=redefined-outer-name
-) -> dict:
+) -> Generator[Output[dict] | AssetMaterialization]:
     """ """
 
     docker_dict = {

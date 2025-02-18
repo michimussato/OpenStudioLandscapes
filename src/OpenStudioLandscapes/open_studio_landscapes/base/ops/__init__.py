@@ -1,4 +1,6 @@
 import pathlib
+from typing import Generator
+
 import pydot
 import base64
 import yaml
@@ -26,7 +28,7 @@ from dagster import (
 def op_docker_compose_graph(
     context: OpExecutionContext,
     group_out: pathlib.Path,  # pylint: disable=redefined-outer-name
-) -> pydot.Dot:
+) -> Generator[Output[pydot.Dot] | AssetMaterialization]:
     """ """
 
     dcg = DockerComposeGraph()
@@ -106,7 +108,7 @@ def op_group_out(
     context: OpExecutionContext,
     compose: dict,  # pylint: disable=redefined-outer-name
     env: dict,  # pylint: disable=redefined-outer-name
-) -> pathlib.Path:
+) -> Generator[Output[pathlib.Path] | AssetMaterialization]:
 
     docker_yaml = yaml.dump(compose)
 

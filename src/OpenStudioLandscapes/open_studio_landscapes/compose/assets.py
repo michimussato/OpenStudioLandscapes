@@ -1,3 +1,5 @@
+from typing import Any, Generator
+
 import yaml
 
 from dagster import (
@@ -37,7 +39,7 @@ asset_header = {
 def env(
     context: AssetExecutionContext,
     group_in: dict,
-) -> dict:
+) -> Generator[Output[dict[Any, Any]] | AssetMaterialization]:
 
     ret = group_in.get("env", {})
 
@@ -70,7 +72,7 @@ for i in THIRD_PARTY:
 def compose(
     context: AssetExecutionContext,
     **kwargs,
-) -> dict:
+) -> Generator[Output[dict[str, list[dict[str, list[Any]]]]] | AssetMaterialization]:
     """ """
 
     context.log.info(kwargs)

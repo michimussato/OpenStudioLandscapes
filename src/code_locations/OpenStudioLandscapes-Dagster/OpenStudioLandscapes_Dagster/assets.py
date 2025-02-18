@@ -5,6 +5,7 @@ import shutil
 import textwrap
 import time
 import urllib.parse
+from typing import Generator
 
 import yaml
 from python_on_whales import docker
@@ -42,7 +43,7 @@ asset_header = {"group_name": GROUP, "key_prefix": [KEY], "compute_kind": "pytho
 def env(
     context: AssetExecutionContext,
     group_in: dict,  # pylint: disable=redefined-outer-name
-) -> dict:
+) -> Generator[Output[dict] | AssetMaterialization]:
 
     env_in = copy.deepcopy(group_in["env"])
 
@@ -94,7 +95,7 @@ def env(
 )
 def pip_packages(
     context: AssetExecutionContext,
-) -> list:
+) -> Generator[Output[list] | AssetMaterialization]:
     """ """
 
     # Todo
@@ -133,7 +134,7 @@ def build_docker_image(
     env: dict,  # pylint: disable=redefined-outer-name
     group_in: dict,  # pylint: disable=redefined-outer-name
     pip_packages: list,  # pylint: disable=redefined-outer-name
-) -> str:
+) -> Generator[Output[str] | AssetMaterialization]:
     """ """
 
     # env: dict = group_in["env"]
@@ -276,7 +277,7 @@ def compose(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
     build: str,  # pylint: disable=redefined-outer-name
-) -> dict:
+) -> Generator[Output[dict] | AssetMaterialization]:
     """ """
 
     docker_dict = {
