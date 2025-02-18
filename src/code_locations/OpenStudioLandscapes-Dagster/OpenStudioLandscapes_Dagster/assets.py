@@ -146,8 +146,9 @@ def build_docker_image(
     docker_file = pathlib.Path(
         env["DOT_LANDSCAPES"],
         env.get("LANDSCAPE", "default"),
+        KEY,
+        "__".join(context.asset_key.path),
         "Dockerfiles",
-        *context.asset_key.path,
         "Dockerfile",
     )
 

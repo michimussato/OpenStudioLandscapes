@@ -31,7 +31,6 @@
   * [Install](#install)
     * [venv](#venv)
     * [open-studio-landscapes](#open-studio-landscapes)
-    * [Git Repos](#git-repos)
     * [DeadlineDatabase10](#deadlinedatabase10)
       * [Use Test DB](#use-test-db)
   * [Create Landscape](#create-landscape)
@@ -549,16 +548,6 @@ python -m pip install --upgrade pip setuptools
 
 ```shell
 python -m pip install git+https://github.com/michimussato/open-studio-landscapes.git@main
-```
-
-### Git Repos
-
-Clone the
-
-```shell
-cd open-studio-landscapes
-mkdir -p repos
-git -C repos clone https://github.com/ynput/ayon-docker.git
 ```
 
 ### DeadlineDatabase10

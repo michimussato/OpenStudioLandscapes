@@ -1,5 +1,4 @@
 import copy
-import importlib
 import json
 import pathlib
 import shlex
@@ -2275,82 +2274,6 @@ def compose(
     )
 
 
-# @asset(
-#     **asset_header,
-#     group_name=f"GROUP_OUT_{KEY}",
-#     ins={
-#         "compose": AssetIn(
-#             AssetKey([KEY, "compose"]),
-#         ),
-#         "env": AssetIn(
-#             AssetKey([KEY, "env"]),
-#         ),
-#     },
-# )
-# def group_out(
-#     context: AssetExecutionContext,
-#     compose: dict,  # pylint: disable=redefined-outer-name
-#     env: dict,  # pylint: disable=redefined-outer-name
-# ) -> pathlib.Path:
-#     """ """
-#
-#     docker_yaml = yaml.dump(compose)
-#
-#     docker_compose = pathlib.Path(
-#         env["DOT_LANDSCAPES"],
-#         env.get("LANDSCAPE", "default"),
-#         KEY,
-#         "docker_compose",
-#         "__".join(context.asset_key.path),
-#         "docker-compose.yml",
-#     )
-#
-#     docker_compose.parent.mkdir(parents=True, exist_ok=True)
-#
-#     with open(docker_compose, "w") as fw:
-#         fw.write(docker_yaml)
-#
-#     project_name = f"{env.get('LANDSCAPE', 'default').replace('.', '-')}"
-#
-#     cmd_docker_compose_up = [
-#         shutil.which("docker"),
-#         "compose",
-#         "--file",
-#         docker_compose.as_posix(),
-#         "--project-name",
-#         project_name,
-#         "up",
-#         "--remove-orphans",
-#     ]
-#
-#     cmd_docker_compose_down = [
-#         shutil.which("docker"),
-#         "compose",
-#         "--file",
-#         docker_compose.as_posix(),
-#         "--project-name",
-#         project_name,
-#         "down",
-#         "--remove-orphans",
-#     ]
-#
-#     yield Output(docker_compose)
-#
-#     yield AssetMaterialization(
-#         asset_key=context.asset_key,
-#         metadata={
-#             "__".join(context.asset_key.path): MetadataValue.path(docker_compose),
-#             "cmd_docker_compose_up": MetadataValue.path(
-#                 " ".join(shlex.quote(s) for s in cmd_docker_compose_up)
-#             ),
-#             "cmd_docker_compose_down": MetadataValue.path(
-#                 " ".join(shlex.quote(s) for s in cmd_docker_compose_down)
-#             ),
-#             "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
-#         },
-#     )
-
-
 group_out = AssetsDefinition.from_op(
     op_group_out,
     group_name=GROUP,
@@ -2381,4 +2304,3 @@ docker_compose_graph = AssetsDefinition.from_op(
         ),
     },
 )
-
