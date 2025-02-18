@@ -44,7 +44,7 @@ asset_header = {"group_name": GROUP, "key_prefix": [KEY], "compute_kind": "pytho
 def env(
     context: AssetExecutionContext,
     group_in: dict,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[dict] | AssetMaterialization]:
+) -> Generator[Output[dict] | AssetMaterialization, None, None]:
 
     env_in = copy.deepcopy(group_in["env"])
 
@@ -93,7 +93,7 @@ def env(
 )
 def apt_packages(
     context: AssetExecutionContext,
-) -> Generator[Output[dict[str, list[str]]] | AssetMaterialization]:
+) -> Generator[Output[dict[str, list[str]]] | AssetMaterialization, None, None]:
     """ """
 
     _apt_packages = dict()
@@ -133,7 +133,7 @@ def build_docker_image(
     env: dict,  # pylint: disable=redefined-outer-name
     group_in: dict,  # pylint: disable=redefined-outer-name
     apt_packages: dict[str, list[str]],  # pylint: disable=redefined-outer-name
-) -> Generator[Output[str] | AssetMaterialization]:
+) -> Generator[Output[str] | AssetMaterialization, None, None]:
     """ """
 
     build_base_image: str = group_in["docker_image"]
@@ -268,7 +268,7 @@ def build_docker_image(
 )
 def compose_networks(
     context: AssetExecutionContext,
-) -> Generator[Output[dict] | AssetMaterialization]:
+) -> Generator[Output[dict] | AssetMaterialization, None, None]:
     docker_dict = {
         "networks": {
             "mongodb": {
@@ -312,7 +312,7 @@ def compose(
     env: dict,  # pylint: disable=redefined-outer-name
     build: str,  # pylint: disable=redefined-outer-name
     compose_networks: dict,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[dict] | AssetMaterialization]:
+) -> Generator[Output[dict] | AssetMaterialization, None, None]:
     """ """
 
     docker_dict = {

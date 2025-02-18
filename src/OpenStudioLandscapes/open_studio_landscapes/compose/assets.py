@@ -39,7 +39,7 @@ asset_header = {
 def env(
     context: AssetExecutionContext,
     group_in: dict,
-) -> Generator[Output[dict[Any, Any]] | AssetMaterialization]:
+) -> Generator[Output[dict[Any, Any]] | AssetMaterialization, None, None]:
 
     ret = group_in.get("env", {})
 
@@ -72,7 +72,7 @@ for i in THIRD_PARTY:
 def compose(
     context: AssetExecutionContext,
     **kwargs,
-) -> Generator[Output[dict[str, list[dict[str, list[Any]]]]] | AssetMaterialization]:
+) -> Generator[Output[dict[str, list[dict[str, list[Any]]]]] | AssetMaterialization, None, None]:
     """ """
 
     context.log.info(kwargs)

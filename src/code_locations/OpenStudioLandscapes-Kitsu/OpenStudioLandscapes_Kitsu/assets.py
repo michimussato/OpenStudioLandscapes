@@ -83,7 +83,7 @@ asset_header = {"group_name": GROUP, "key_prefix": [KEY], "compute_kind": "pytho
 def env(
     context: AssetExecutionContext,
     group_in: dict,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[dict] | AssetMaterialization]:
+) -> Generator[Output[dict] | AssetMaterialization, None, None]:
 
     env_in = copy.deepcopy(group_in["env"])
 
@@ -180,7 +180,7 @@ def env(
 )
 def apt_packages(
     context: AssetExecutionContext,
-) -> Generator[Output[dict[str, list[str]]] | AssetMaterialization]:
+) -> Generator[Output[dict[str, list[str]]] | AssetMaterialization, None, None]:
     """ """
 
     _apt_packages = dict()
@@ -215,7 +215,7 @@ def build_docker_image(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
     apt_packages: dict[str, list[str]],  # pylint: disable=redefined-outer-name
-) -> Generator[Output[str] | AssetMaterialization]:
+) -> Generator[Output[str] | AssetMaterialization, None, None]:
     """ """
 
     docker_file = pathlib.Path(
@@ -330,7 +330,7 @@ def build_docker_image(
 def script_prepare_db(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[dict[str, str]] | AssetMaterialization]:
+) -> Generator[Output[dict[str, str]] | AssetMaterialization, None, None]:
 
     ret = dict()
 
@@ -518,7 +518,7 @@ def prepare_db(
 def script_init_zou(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[dict[str, str]] | AssetMaterialization]:
+) -> Generator[Output[dict[str, str]] | AssetMaterialization, None, None]:
     """This script overrides the default
     Kitsu `/opt/zou/init_zou.sh` to be able
     to specify custom DB username and password"""
@@ -592,7 +592,7 @@ def compose(
     env: dict,  # pylint: disable=redefined-outer-name
     script_init_zou: dict,  # pylint: disable=redefined-outer-name
     build: str,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[dict] | AssetMaterialization]:
+) -> Generator[Output[dict] | AssetMaterialization, None, None]:
     """ """
 
     # INIT_ZOU.SH

@@ -66,7 +66,7 @@ asset_header = {
 def env(
     context: AssetExecutionContext,
     group_in: dict,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[dict] | AssetMaterialization]:
+) -> Generator[Output[dict] | AssetMaterialization, None, None]:
 
     env_in = copy.deepcopy(group_in["env"])
 
@@ -221,7 +221,7 @@ def env(
 def connection_ini(
     context: AssetExecutionContext,
     env_10_2: dict,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[pathlib.Path] | AssetMaterialization]:
+) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
     # @formatter:off
     connection_ini = textwrap.dedent(
         """
@@ -293,7 +293,7 @@ def connection_ini(
 def deadline_ini(
     context: AssetExecutionContext,
     env_10_2: dict,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[pathlib.Path] | AssetMaterialization]:
+) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
     # @formatter:off
     deadline_ini = textwrap.dedent(
         """
@@ -390,7 +390,7 @@ def deadline_ini(
 )
 def pip_packages(
     context: AssetExecutionContext,
-) -> Generator[Output[list] | AssetMaterialization]:
+) -> Generator[Output[list] | AssetMaterialization, None, None]:
     """ """
 
     _pip_packages: list = [
@@ -419,7 +419,7 @@ def pip_packages(
 )
 def wget_deadline_packages_base_image(
     context: AssetExecutionContext,
-) -> Generator[Output[dict[str, str]] | AssetMaterialization]:
+) -> Generator[Output[dict[str, str]] | AssetMaterialization, None, None]:
     """ """
 
     ret: dict[str, str] = dict()
@@ -479,7 +479,7 @@ if BUILD_FROM_GOOGLE_DRIVE_10_2:
             str, str
         ],  # pylint: disable=redefined-outer-name
         pip_packages: list,  # pylint: disable=redefined-outer-name
-    ) -> Generator[Output[str] | AssetMaterialization]:
+    ) -> Generator[Output[str] | AssetMaterialization, None, None]:
         """ """
 
         build_base_image: str = group_in["docker_image"]
@@ -616,7 +616,7 @@ else:
         env_10_2: dict,  # pylint: disable=redefined-outer-name
         group_in: dict,  # pylint: disable=redefined-outer-name
         pip_packages: list,  # pylint: disable=redefined-outer-name
-    ) -> Generator[Output[str] | AssetMaterialization]:
+    ) -> Generator[Output[str] | AssetMaterialization, None, None]:
         """ """
 
         build_base_image: str = group_in["docker_image"]
@@ -767,7 +767,7 @@ else:
 def deadline_command_install_repository(
     context: AssetExecutionContext,
     env_10_2: dict,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[list] | AssetMaterialization]:
+) -> Generator[Output[list] | AssetMaterialization, None, None]:
     """ """
 
     deadline_command = [
@@ -832,7 +832,7 @@ def build_docker_image_repository(
     context: AssetExecutionContext,
     env_10_2: dict,  # pylint: disable=redefined-outer-name
     build_base_image_10_2: str,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[str] | AssetMaterialization]:
+) -> Generator[Output[str] | AssetMaterialization, None, None]:
     """ """
 
     docker_file = pathlib.Path(
@@ -951,7 +951,7 @@ def compose_repository(
     build_repository_image_10_2: str,  # pylint: disable=redefined-outer-name
     compose_mongodb_10_2: dict,  # pylint: disable=redefined-outer-name
     deadline_command_install_repository_10_2: list,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[MutableMapping] | AssetMaterialization]:
+) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
     """ """
 
     docker_dict = {
@@ -1012,7 +1012,7 @@ def compose_repository(
 def deadline_command_build_docker_image_client(
     context: AssetExecutionContext,
     env_10_2: dict,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[list] | AssetMaterialization]:
+) -> Generator[Output[list] | AssetMaterialization, None, None]:
     """ """
 
     # @formatter:off
@@ -1086,7 +1086,7 @@ def build_docker_image_client(
     env_10_2: dict,  # pylint: disable=redefined-outer-name
     build_base_image_10_2: str,  # pylint: disable=redefined-outer-name
     deadline_command_build_client_image_10_2: list,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[str] | AssetMaterialization]:
+) -> Generator[Output[str] | AssetMaterialization, None, None]:
     """ """
 
     docker_file = pathlib.Path(
@@ -1189,7 +1189,7 @@ def build_docker_image_client(
 def compose_networks(
     context: AssetExecutionContext,
 ) -> Generator[
-    Output[dict[str, dict[str, dict[str, str]]]] | AssetMaterialization]:
+    Output[dict[str, dict[str, dict[str, str]]]] | AssetMaterialization, None, None]:
     docker_dict = {
         "networks": {
             "mongodb": {
@@ -1236,7 +1236,7 @@ def compose_networks(
 def compose_mongo_express(
     context: AssetExecutionContext,
     env_10_2: dict,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[ dict[str, dict[str, dict]]] | AssetMaterialization]:
+) -> Generator[Output[ dict[str, dict[str, dict]]] | AssetMaterialization, None, None]:
     # @formatter:off
     docker_dict = {
         "services": {
@@ -1324,7 +1324,7 @@ def compose_mongo_express(
 def script_chown_mongodb(
     context: AssetExecutionContext,
     env_10_2: dict,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[dict[str, str]] | AssetMaterialization]:
+) -> Generator[Output[dict[str, str]] | AssetMaterialization, None, None]:
 
     ret = dict()
 
@@ -1386,7 +1386,7 @@ def compose_mongodb(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
     script_chown_mongodb_10_2: dict[str, str],  # pylint: disable=redefined-outer-name
-) -> Generator[Output[dict[str, dict[str, dict]]] | AssetMaterialization]:
+) -> Generator[Output[dict[str, dict[str, dict]]] | AssetMaterialization, None, None]:
 
     image = "mongodb/mongodb-community-server:4.4-ubuntu2004"
 
@@ -1529,7 +1529,7 @@ def compose_mongodb(
 def deadline_command_compose_rcs_runner(
     context: AssetExecutionContext,
     env_10_2: dict,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[list[str]] | AssetMaterialization]:
+) -> Generator[Output[list[str]] | AssetMaterialization, None, None]:
     """ """
 
     deadline_command = [
@@ -1582,7 +1582,7 @@ def compose_rcs_runner(
     connection_ini_10_2: pathlib.Path,  # pylint: disable=redefined-outer-name
     deadline_ini_10_2: pathlib.Path,  # pylint: disable=redefined-outer-name
     deadline_command_compose_rcs_runner_10_2: list,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[dict[str, dict[str, dict]]] | AssetMaterialization]:
+) -> Generator[Output[dict[str, dict[str, dict]]] | AssetMaterialization, None, None]:
     """ """
 
     docker_dict = {
@@ -1665,7 +1665,7 @@ def compose_rcs_runner(
 def deadline_command_compose_pulse_runner(
     context: AssetExecutionContext,
     env_10_2: dict,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[list[str]] | AssetMaterialization]:
+) -> Generator[Output[list[str]] | AssetMaterialization, None, None]:
     """ """
 
     deadline_command = [
@@ -1720,7 +1720,7 @@ def compose_pulse_runner(
     deadline_ini_10_2: pathlib.Path,  # pylint: disable=redefined-outer-name
     connection_ini_10_2: pathlib.Path,  # pylint: disable=redefined-outer-name
     deadline_command_compose_pulse_runner_10_2: list,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[dict[str, dict[str, dict]]] | AssetMaterialization]:
+) -> Generator[Output[dict[str, dict[str, dict]]] | AssetMaterialization, None, None]:
     """ """
 
     docker_dict = {
@@ -1787,7 +1787,7 @@ def compose_pulse_runner(
 def deadline_command_compose_worker_runner(
     context: AssetExecutionContext,
     env_10_2: dict,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[list[str]] | AssetMaterialization]:
+) -> Generator[Output[list[str]] | AssetMaterialization, None, None]:
     """ """
 
     deadline_command = [
@@ -1842,7 +1842,7 @@ def compose_worker_runner(
     deadline_ini_10_2: pathlib.Path,  # pylint: disable=redefined-outer-name
     connection_ini_10_2: pathlib.Path,  # pylint: disable=redefined-outer-name
     deadline_command_compose_worker_runner_10_2: list,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[dict[str, dict[str, dict]]] | AssetMaterialization]:
+) -> Generator[Output[dict[str, dict[str, dict]]] | AssetMaterialization, None, None]:
     """ """
 
     docker_dict = {
@@ -1909,7 +1909,7 @@ def compose_worker_runner(
 def deadline_command_compose_webservice_runner(
     context: AssetExecutionContext,
     env_10_2: dict,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[list[str]] | AssetMaterialization]:
+) -> Generator[Output[list[str]] | AssetMaterialization, None, None]:
     """ """
 
     deadline_command = [
@@ -1962,7 +1962,7 @@ def compose_webservice_runner(
     deadline_ini_10_2: pathlib.Path,  # pylint: disable=redefined-outer-name
     connection_ini_10_2: pathlib.Path,  # pylint: disable=redefined-outer-name
     deadline_command_compose_webservice_runner_10_2: list,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[dict[str, dict[str, dict]]] | AssetMaterialization]:
+) -> Generator[Output[dict[str, dict[str, dict]]] | AssetMaterialization, None, None]:
     """ """
 
     docker_dict = {
@@ -2069,7 +2069,7 @@ def compose(
     compose_mongo_express_10_2: dict,  # pylint: disable=redefined-outer-name
     compose_mongodb_10_2: dict,  # pylint: disable=redefined-outer-name
     compose_repository_10_2: dict,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[MutableMapping] | AssetMaterialization]:
+) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
     """ """
 
     docker_chainmap = ChainMap(

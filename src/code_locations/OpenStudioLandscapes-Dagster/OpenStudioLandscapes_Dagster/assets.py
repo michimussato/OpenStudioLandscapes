@@ -43,7 +43,7 @@ asset_header = {"group_name": GROUP, "key_prefix": [KEY], "compute_kind": "pytho
 def env(
     context: AssetExecutionContext,
     group_in: dict,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[dict] | AssetMaterialization]:
+) -> Generator[Output[dict] | AssetMaterialization, None, None]:
 
     env_in = copy.deepcopy(group_in["env"])
 
@@ -95,7 +95,7 @@ def env(
 )
 def pip_packages(
     context: AssetExecutionContext,
-) -> Generator[Output[list] | AssetMaterialization]:
+) -> Generator[Output[list] | AssetMaterialization, None, None]:
     """ """
 
     # Todo
@@ -134,7 +134,7 @@ def build_docker_image(
     env: dict,  # pylint: disable=redefined-outer-name
     group_in: dict,  # pylint: disable=redefined-outer-name
     pip_packages: list,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[str] | AssetMaterialization]:
+) -> Generator[Output[str] | AssetMaterialization, None, None]:
     """ """
 
     # env: dict = group_in["env"]
@@ -277,7 +277,7 @@ def compose(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
     build: str,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[dict] | AssetMaterialization]:
+) -> Generator[Output[dict] | AssetMaterialization, None, None]:
     """ """
 
     docker_dict = {

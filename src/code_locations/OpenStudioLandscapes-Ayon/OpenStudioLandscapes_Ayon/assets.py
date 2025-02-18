@@ -45,7 +45,7 @@ assets = AssetSelection.all(include_sources=True)
 def env(
     context: AssetExecutionContext,
     group_in: dict,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[dict] | AssetMaterialization]:
+) -> Generator[Output[dict] | AssetMaterialization, None, None]:
 
     env_in = copy.deepcopy(group_in["env"])
 
@@ -74,7 +74,7 @@ def env(
 )
 def repository_ayon(
     context: AssetExecutionContext,
-) -> Generator[Output[dict[str, str | None]] | AssetMaterialization]:
+) -> Generator[Output[dict[str, str | None]] | AssetMaterialization, None, None]:
     repository_dict = {
         "branch": "main",
         "repository_dir": "ayon-docker",
@@ -107,7 +107,7 @@ def clone_repository(
     context: AssetExecutionContext,
     env: dict,
     repository_ayon: dict[str, str | None],
-) -> Generator[Output[dict[str, str]] | AssetMaterialization]:
+) -> Generator[Output[dict[str, str]] | AssetMaterialization, None, None]:
 
     repo_dir = pathlib.Path(
         env["DOT_LANDSCAPES"],
@@ -150,7 +150,7 @@ def clone_repository(
 )
 def compose_networks(
     context: AssetExecutionContext,
-) -> Generator[Output[dict[str, dict[str, dict[str, str]]]] | AssetMaterialization]:
+) -> Generator[Output[dict[str, dict[str, dict[str, str]]]] | AssetMaterialization, None, None]:
     docker_dict = {
         "networks": {
             "mongodb": {
@@ -194,7 +194,7 @@ def compose_override(
     env: dict,  # pylint: disable=redefined-outer-name
     compose_networks: dict,  # pylint: disable=redefined-outer-name
     clone_repository: dict,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[dict[str, list[dict[str, list[str]]]]] | AssetMaterialization]:
+) -> Generator[Output[dict[str, list[dict[str, list[str]]]]] | AssetMaterialization, None, None]:
     """"""
 
     parent = pathlib.Path(clone_repository["repository_dir_full"]) / "docker-compose.yml"
