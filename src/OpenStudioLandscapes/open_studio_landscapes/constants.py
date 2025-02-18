@@ -19,6 +19,6 @@ THIRD_PARTY = [
     "OpenStudioLandscapes_filebrowser.definitions",
     "OpenStudioLandscapes_Grafana.definitions",
     "OpenStudioLandscapes_Deadline_10_2.definitions",
-    "OpenStudioLandscapes_LikeC4.definitions",
+    # "OpenStudioLandscapes_LikeC4.definitions",  # Errors atm; minor issue
     "OpenStudioLandscapes_Kitsu.definitions",
 ]

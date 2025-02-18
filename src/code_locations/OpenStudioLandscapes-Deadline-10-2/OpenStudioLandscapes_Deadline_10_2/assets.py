@@ -770,6 +770,9 @@ def deadline_command_install_repository(
 ) -> Generator[Output[list] | AssetMaterialization, None, None]:
     """ """
 
+    # Todo
+    #  - [ ] skip installation if already installed
+
     deadline_command = [
         "/installers/DeadlineRepository.run",
         "--mode",
