@@ -5,7 +5,7 @@ import shutil
 import git
 
 from dagster import MetadataValue
-from OpenStudioLandscapes.open_studio_landscapes.constants import *
+from OpenStudioLandscapes.engine.constants import *
 
 __all__ = [
     "compile_cmds",

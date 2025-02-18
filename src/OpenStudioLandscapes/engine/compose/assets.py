@@ -13,10 +13,10 @@ from dagster import (
     AssetsDefinition,
 )
 
-from OpenStudioLandscapes.open_studio_landscapes.constants import THIRD_PARTY
-from OpenStudioLandscapes.open_studio_landscapes.base.assets import KEY as KEY_BASE
-from OpenStudioLandscapes.open_studio_landscapes.base.ops import op_group_out
-from OpenStudioLandscapes.open_studio_landscapes.base.ops import op_docker_compose_graph
+from OpenStudioLandscapes.engine.constants import THIRD_PARTY
+from OpenStudioLandscapes.engine.base.assets import KEY as KEY_BASE
+from OpenStudioLandscapes.engine.base.ops import op_group_out
+from OpenStudioLandscapes.engine.base.ops import op_docker_compose_graph
 
 GROUP = "Compose"
 KEY = "Compose"
@@ -57,10 +57,16 @@ def env(
 # third party code locations
 ins = {}
 for i in THIRD_PARTY:
-    # ex: i = "OpenStudioLandscapes_Ayon.definitions"
-    s = i.split(".")[0]  # s = "OpenStudioLandscapes_Ayon"
-    key = s.split("_", maxsplit=1)[1]  # key = "Ayon"
-    ins[s] = AssetIn(AssetKey([key, "group_out"]))
+    try:
+        # ex: i = "OpenStudioLandscapes_Ayon.definitions"
+        s = i.split(".")[0]  # s = "OpenStudioLandscapes_Ayon"
+        key = s.split("_", maxsplit=1)[1]  # key = "Ayon"
+        ins[s] = AssetIn(AssetKey([key, "group_out"]))
+    except IndexError:
+        # ex: i = "OpenStudioLandscapes.Ayon.definitions"
+        split = i.split(".")
+        key = split[1]  # key = "Ayon"
+        ins[f"{split[0]}_{split[1]}"] = AssetIn(AssetKey([key, "group_out"]))
 
 
 @asset(

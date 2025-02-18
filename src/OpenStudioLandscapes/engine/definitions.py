@@ -2,12 +2,12 @@ import importlib
 
 from dagster import Definitions
 
-from OpenStudioLandscapes.open_studio_landscapes.constants import THIRD_PARTY
+from OpenStudioLandscapes.engine.constants import THIRD_PARTY
 
 
 imports = [
-    "OpenStudioLandscapes.open_studio_landscapes.base.definitions",
-    "OpenStudioLandscapes.open_studio_landscapes.compose.definitions",
+    "OpenStudioLandscapes.engine.base.definitions",
+    "OpenStudioLandscapes.engine.compose.definitions",
     *THIRD_PARTY,
 ]
 

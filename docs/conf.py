@@ -102,7 +102,7 @@ copyright = "2024, Michael Mussato"
 # If you don’t need the separation provided between version and release,
 # just set them both to the same value.
 try:
-    from OpenStudioLandscapes.open_studio_landscapes import __version__ as version
+    from OpenStudioLandscapes.engine import __version__ as version
 except ImportError:
     version = ""
 

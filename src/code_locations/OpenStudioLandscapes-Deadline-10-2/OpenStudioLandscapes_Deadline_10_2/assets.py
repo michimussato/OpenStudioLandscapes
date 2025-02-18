@@ -27,12 +27,12 @@ from dagster import (
     AssetsDefinition,
 )
 
-from OpenStudioLandscapes.open_studio_landscapes.base.assets import KEY as KEY_BASE
-from OpenStudioLandscapes.open_studio_landscapes.constants import *
-from OpenStudioLandscapes.open_studio_landscapes.utils import *
+from OpenStudioLandscapes.engine.base.assets import KEY as KEY_BASE
+from OpenStudioLandscapes.engine.constants import *
+from OpenStudioLandscapes.engine.utils import *
 
-from OpenStudioLandscapes.open_studio_landscapes.base.ops import op_group_out
-from OpenStudioLandscapes.open_studio_landscapes.base.ops import op_docker_compose_graph
+from OpenStudioLandscapes.engine.base.ops import op_group_out
+from OpenStudioLandscapes.engine.base.ops import op_docker_compose_graph
 
 # Requirements:
 # - [ ] ERROR: failed to solve: dockerfile parse error on line 4: invalid name for build stage: "10_2__build_docker_image", name can't start with a number or contain symbols

@@ -23,8 +23,8 @@ from dagster import (
     asset,
 )
 
-from OpenStudioLandscapes.open_studio_landscapes.constants import *
-from OpenStudioLandscapes.open_studio_landscapes.utils import *
+from OpenStudioLandscapes.engine.constants import *
+from OpenStudioLandscapes.engine.utils import *
 
 GROUP = "Base"
 KEY = "Base"

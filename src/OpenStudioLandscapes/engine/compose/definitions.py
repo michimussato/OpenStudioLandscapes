@@ -2,7 +2,7 @@ from dagster import (
     Definitions,
     load_assets_from_modules,
 )
-from OpenStudioLandscapes.open_studio_landscapes.compose import (
+from OpenStudioLandscapes.engine.compose import (
     assets as assets_compose,
 )
 

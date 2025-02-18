@@ -578,7 +578,7 @@ f"DATABASE_INSTALL_DESTINATION_{KEY}": {
 ### Launch Dagster
 
 ```shell
-cd ~/git/repos/open-studio-landscapes
+cd ~/git/repos/OpenStudioLandscapes
 source .venv/bin/activate
 export DAGSTER_HOME="$(pwd)/dagster/materializations"
 dagster dev --workspace "$(pwd)/dagster/workspace.yaml" --host 0.0.0.0  # --port 3000
@@ -802,3 +802,56 @@ ssh-add ~/.ssh/id_ed25519.HP_2025-02-09
 ### Materialize All
 
 ![2025-02-16_16-35.png](_images/2025-02-16_16-35.png)
+
+
+# PyScaffold
+
+## Create Module
+
+### PyScaffold
+
+```
+pip install PyScaffold
+putup --package Package_1234 --force --namespace OpenStudioLandscapes --no-skeleton OpenStudioLandscapes-Package-1234
+```
+
+### `pyproject.toml`
+
+```
+[tool.dagster]
+module_name = "OpenStudioLandscapes.Package_1234.definitions"
+code_location_name = "OpenStudioLandscapes-Package-1234"
+```
+
+### `setup.cfg`
+
+```
+[metadata]
+platforms = Linux
+
+[options]
+python_requires = >=3.11
+
+install_requires = 
+    [...]
+    dagster
+    dagster-cloud
+    gitpython
+    PyYAML
+    # yaml_tags.overrides:
+    docker-compose-graph @ git+https://github.com/michimussato/docker-compose-graph.git
+    # Will work when released:
+    # OpenStudioLandscapes @ git+https://github.com/michimussato/OpenStudioLandscapes
+    [...]
+
+[options.extras_require]
+dev =
+    dagster-webserver
+    OpenStudioLandscapes-Package-1234[testing]
+
+[pyscaffold]
+package = Package_1234
+extensions =
+    namespace
+namespace = OpenStudioLandscapes
+```
