@@ -1,7 +1,7 @@
 import copy
-import json
 import pathlib
-import importlib
+import git
+from git.exc import GitCommandError
 
 import yaml
 from docker_compose_graph.yaml_tags.overrides import *
@@ -49,14 +49,14 @@ def env(
 
     # @formatter:off
     _env = {
-        "AYON_DOCKER_COMPOSE": pathlib.Path(
-            env_in["GIT_ROOT"],
-            "repos",
-            "ayon-docker",
-            "docker-compose.yml",
-        )
-        .expanduser()
-        .as_posix(),
+        # "AYON_DOCKER_COMPOSE": pathlib.Path(
+        #     env_in["GIT_ROOT"],
+        #     "repos",
+        #     "ayon-docker",
+        #     "docker-compose.yml",
+        # )
+        # .expanduser()
+        # .as_posix(),
         "AYON_PORT_HOST": "5005",
         "AYON_PORT_CONTAINER": "5000",
     }
@@ -90,6 +90,82 @@ def env(
         metadata={
             "__".join(context.asset_key.path): MetadataValue.json(env_in),
             # "json": MetadataValue.path(env_json),
+        },
+    )
+
+
+@asset(
+    **asset_header,
+)
+def repository_ayon(
+    context: AssetExecutionContext,
+) -> dict[str, str | None]:
+    repository_dict = {
+        "branch": "main",
+        "repository_dir": "ayon-docker",
+        "repository_url": "https://github.com/ynput/ayon-docker.git",
+        "repository_dir_full": None,
+    }
+
+    yield Output(repository_dict)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.json(repository_dict),
+        },
+    )
+
+
+@asset(
+    **asset_header,
+    ins={
+        "env": AssetIn(
+            AssetKey([KEY, "env"]),
+        ),
+        "repository_ayon": AssetIn(
+            AssetKey([KEY, "repository_ayon"]),
+        ),
+    },
+)
+def clone_repository(
+    context: AssetExecutionContext,
+    env: dict,
+    repository_ayon: dict[str, str | None],
+) -> dict[str, str]:
+
+    repo_dir = pathlib.Path(
+        env["DOT_LANDSCAPES"],
+        env.get("LANDSCAPE", "default"),
+        KEY,
+        "__".join(context.asset_key.path),
+        "repos",
+    )
+
+    repository_dir_full = repo_dir / repository_ayon["repository_dir"]
+    repository_dir_full.parent.mkdir(parents=True, exist_ok=True)
+
+    repository_ayon["repository_dir_full"] = repository_dir_full.as_posix()
+    context.log.info(repository_ayon["repository_dir_full"])
+
+    try:
+        git.Repo.clone_from(
+            url=repository_ayon["repository_url"],
+            to_path=repository_ayon["repository_dir_full"],
+            branch=repository_ayon["branch"],
+        )
+    except GitCommandError as e:
+        context.log.warning("Pulling from Repo (%s)" % e)
+        existing_repo = git.Repo(repository_ayon["repository_dir_full"])
+        origin = existing_repo.remotes.origin
+        origin.pull()
+
+    yield Output(repository_ayon)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.json(repository_ayon),
         },
     )
 
@@ -133,16 +209,20 @@ def compose_networks(
         "compose_networks": AssetIn(
             AssetKey([KEY, "compose_networks"]),
         ),
+        "clone_repository": AssetIn(
+            AssetKey([KEY, "clone_repository"]),
+        ),
     },
 )
 def compose_override(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
     compose_networks: dict,  # pylint: disable=redefined-outer-name
+    clone_repository: dict,  # pylint: disable=redefined-outer-name
 ) -> dict:
     """"""
 
-    parent = pathlib.Path(env.get("AYON_DOCKER_COMPOSE"))
+    parent = pathlib.Path(clone_repository["repository_dir_full"]) / "docker-compose.yml"
 
     docker_dict_override = {
         "networks": compose_networks.get("networks", []),
@@ -190,8 +270,7 @@ def compose_override(
     docker_compose_override = pathlib.Path(
         env["DOT_LANDSCAPES"],
         env.get("LANDSCAPE", "default"),
-        context.asset_key.path[-1],
-        "docker_compose",
+        KEY,
         "__".join(context.asset_key.path),
         "docker-compose.override.yml",
     )
