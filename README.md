@@ -589,9 +589,9 @@ http://0.0.0.0:3000
 ### Configure Landscape
 
 Edit
-- `OpenStudioLandscapes.open_studio_landscapes.assets.env`
-- `OpenStudioLandscapes.open_studio_landscapes.Deadline.[...].assets.env`
-- `OpenStudioLandscapes.open_studio_landscapes.third_party.[...].assets.env`
+- `OpenStudioLandscapes.engine.assets.env`
+- `OpenStudioLandscapes.Deadline[...].assets.env`
+- `OpenStudioLandscapes.third_party[...].assets.env`
 according to your needs.
 
 ### Materialize Landscape
