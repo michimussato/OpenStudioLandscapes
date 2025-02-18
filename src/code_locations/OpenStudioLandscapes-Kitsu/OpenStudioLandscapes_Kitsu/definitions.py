@@ -2,12 +2,12 @@ from dagster import (
     Definitions,
     load_assets_from_modules,
 )
-from OpenStudioLandscapes_Kitsu import (
-    assets as assets_Kitsu,
-)
+
+import OpenStudioLandscapes_Kitsu.assets
+
 
 assets = load_assets_from_modules(
-    modules=[assets_Kitsu],
+    modules=[OpenStudioLandscapes_Kitsu.assets],
 )
 
 

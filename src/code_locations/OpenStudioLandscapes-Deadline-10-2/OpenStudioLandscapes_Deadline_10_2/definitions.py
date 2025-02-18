@@ -2,12 +2,12 @@ from dagster import (
     Definitions,
     load_assets_from_modules,
 )
-from OpenStudioLandscapes_Deadline_10_2 import (
-    assets as assets_Deadline_v10_2,
-)
+
+import OpenStudioLandscapes_Deadline_10_2.assets
+
 
 assets = load_assets_from_modules(
-    modules=[assets_Deadline_v10_2],
+    modules=[OpenStudioLandscapes_Deadline_10_2.assets],
 )
 
 

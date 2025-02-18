@@ -5,7 +5,6 @@ import shutil
 import textwrap
 import time
 import urllib.parse
-import importlib
 
 import yaml
 from python_on_whales import docker
@@ -124,9 +123,6 @@ def pip_packages(
         "group_in": AssetIn(
             AssetKey([KEY_BASE, "group_out"])
         ),
-        # "group_out_base": AssetIn(
-        #     AssetKey([KEY_BASE, "group_out"]),
-        # ),
         "pip_packages": AssetIn(
             AssetKey([KEY, "pip_packages"]),
         ),

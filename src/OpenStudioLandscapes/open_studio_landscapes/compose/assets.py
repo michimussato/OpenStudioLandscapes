@@ -28,7 +28,6 @@ asset_header = {
 
 @asset(
     **asset_header,
-    # group_name="Environment",
     ins={
         "group_in": AssetIn(
             AssetKey([KEY_BASE, "group_out"])
@@ -98,9 +97,6 @@ def compose(
     )
 
 
-# Todo
-#  - [ ] we need the env here
-#  "OpenStudioLandscapes.open_studio_landscapes.base"
 group_out = AssetsDefinition.from_op(
     op_group_out,
     group_name=GROUP,

@@ -2,12 +2,12 @@ from dagster import (
     Definitions,
     load_assets_from_modules,
 )
-from OpenStudioLandscapes_Grafana import (
-    assets as assets_Grafana,
-)
+
+import OpenStudioLandscapes_Grafana.assets
+
 
 assets = load_assets_from_modules(
-    modules=[assets_Grafana],
+    modules=[OpenStudioLandscapes_Grafana.assets],
 )
 
 

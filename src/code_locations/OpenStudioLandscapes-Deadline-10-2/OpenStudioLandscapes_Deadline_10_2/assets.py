@@ -985,50 +985,6 @@ def compose_repository(
 
     docker_yaml = yaml.dump(docker_chainmap_dict)
 
-    # docker_compose = pathlib.Path(
-    #     env_10_2["DOT_LANDSCAPES"],
-    #     env_10_2.get("LANDSCAPE", "default"),
-    #     KEY,
-    #     "docker_compose",
-    #     "__".join(context.asset_key.path),
-    #     "docker-compose.yml",
-    # )
-    # docker_compose.parent.mkdir(parents=True, exist_ok=True)
-    #
-    # with open(docker_compose, "w") as fw:
-    #     fw.write(docker_yaml)
-
-    # project_name = (
-    #     f"{'__'.join(context.asset_key.path).lower()}__"
-    #     f"{env_10_2.get('LANDSCAPE', 'default').replace('.', '-')}"
-    # )
-
-    # cmd_docker_compose_up = [
-    #     shutil.which("docker"),
-    #     "compose",
-    #     "--file",
-    #     docker_compose.as_posix(),
-    #     "--project-name",
-    #     project_name,
-    #     "up",
-    #     "--remove-orphans",
-    #     "--abort-on-container-exit",
-    # ]
-    #
-    # with open(docker_compose, "w") as fw:
-    #     fw.write(docker_yaml)
-    #
-    # cmd_docker_compose_down = [
-    #     shutil.which("docker"),
-    #     "compose",
-    #     "--file",
-    #     docker_compose.as_posix(),
-    #     "--project-name",
-    #     project_name,
-    #     "down",
-    #     "--remove-orphans",
-    # ]
-
     yield Output(docker_chainmap_dict)
 
     yield AssetMaterialization(
@@ -1233,11 +1189,6 @@ def build_docker_image_client(
 @asset(
     **asset_header,
     # group_name="Docker_Compose_10_2",
-    # ins={
-    #     "env_10_2": AssetIn(
-    #         AssetKey([KEY, "env"]),
-    #     ),
-    # },
     # tags={
     #     "stage": "third_party/deadline/v10_2",
     #     "step": "docker/compose",
@@ -1245,7 +1196,6 @@ def build_docker_image_client(
 )
 def compose_networks(
     context: AssetExecutionContext,
-    # env_10_2: dict,  # pylint: disable=redefined-outer-name
 ) -> Generator[
     Output[dict[str, dict[str, dict[str, str]]]] | AssetMaterialization | Any, Any, None
 ]:
@@ -1275,7 +1225,6 @@ def compose_networks(
                 f"```json\n{json.dumps(docker_dict, indent=2)}\n```"
             ),
             "docker_yaml": MetadataValue.md(f"```shell\n{docker_yaml}\n```"),
-            # "env_10_2": MetadataValue.json(env_10_2),
         },
     )
 
@@ -1850,12 +1799,6 @@ def compose_pulse_runner(
                 "restart": "always",
                 "image": build_client_image_10_2,
                 "depends_on": {
-                    # "repository-installer-10-2": {
-                    #     "condition": "service_completed_successfully",
-                    # },
-                    # "mongodb-10-2": {
-                    #     "condition": "service_started",
-                    # },
                     "deadline-rcs-runner-10-2": {
                         "condition": "service_started",
                     },
@@ -1994,12 +1937,6 @@ def compose_worker_runner(
                 "restart": "always",
                 "image": build_client_image_10_2,
                 "depends_on": {
-                    # "repository-installer-10-2": {
-                    #     "condition": "service_completed_successfully",
-                    # },
-                    # "mongodb-10-2": {
-                    #     "condition": "service_started",
-                    # },
                     "deadline-rcs-runner-10-2": {
                         "condition": "service_started",
                     },
@@ -2143,12 +2080,6 @@ def compose_webservice_runner(
                 "restart": "always",
                 "image": build_client_image_10_2,
                 "depends_on": {
-                    # "repository-installer-10-2": {
-                    #     "condition": "service_completed_successfully",
-                    # },
-                    # "mongodb-10-2": {
-                    #     "condition": "service_started",
-                    # },
                     "deadline-rcs-runner-10-2": {
                         "condition": "service_started",
                     },

@@ -49,39 +49,12 @@ def env(
 
     # @formatter:off
     _env = {
-        # "AYON_DOCKER_COMPOSE": pathlib.Path(
-        #     env_in["GIT_ROOT"],
-        #     "repos",
-        #     "ayon-docker",
-        #     "docker-compose.yml",
-        # )
-        # .expanduser()
-        # .as_posix(),
         "AYON_PORT_HOST": "5005",
         "AYON_PORT_CONTAINER": "5000",
     }
     # @formatter:on
 
     env_in.update(_env)
-
-    # env_json = pathlib.Path(
-    #     env_in["DOT_LANDSCAPES"],
-    #     env_in.get("LANDSCAPE", "default"),
-    #     "third_party",
-    #     *context.asset_key.path,
-    #     f"{'__'.join(context.asset_key.path)}.json",
-    # )
-
-    # env_json.parent.mkdir(parents=True, exist_ok=True)
-    #
-    # with open(env_json, "w") as fw:
-    #     json.dump(
-    #         obj=_env.copy(),
-    #         fp=fw,
-    #         indent=2,
-    #         ensure_ascii=True,
-    #         sort_keys=True,
-    #     )
 
     yield Output(env_in)
 

@@ -2,12 +2,12 @@ from dagster import (
     Definitions,
     load_assets_from_modules,
 )
-from OpenStudioLandscapes_filebrowser import (
-    assets as assets_filebrowser,
-)
+
+import OpenStudioLandscapes_filebrowser.assets
+
 
 assets = load_assets_from_modules(
-    modules=[assets_filebrowser],
+    modules=[OpenStudioLandscapes_filebrowser.assets],
 )
 
 
