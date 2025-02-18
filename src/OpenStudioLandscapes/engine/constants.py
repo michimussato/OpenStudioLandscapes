@@ -15,10 +15,10 @@ BUILD_FROM_GOOGLE_DRIVE_10_2 = False
 
 THIRD_PARTY = [
     "OpenStudioLandscapes.Ayon.definitions",
-    # "OpenStudioLandscapes_Dagster.definitions",
-    # "OpenStudioLandscapes_filebrowser.definitions",
-    # "OpenStudioLandscapes_Grafana.definitions",
-    # "OpenStudioLandscapes_Deadline_10_2.definitions",
-    # # "OpenStudioLandscapes_LikeC4.definitions",  # Errors atm; minor issue
-    # "OpenStudioLandscapes_Kitsu.definitions",
+    "OpenStudioLandscapes.Dagster.definitions",
+    "OpenStudioLandscapes.Deadline_10_2.definitions",
+    "OpenStudioLandscapes.filebrowser.definitions",
+    "OpenStudioLandscapes.Grafana.definitions",
+    "OpenStudioLandscapes.Kitsu.definitions",
+    # "OpenStudioLandscapes.LikeC4.definitions",  # Errors atm; minor issue
 ]

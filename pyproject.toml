@@ -31,11 +31,11 @@ version_scheme = "no-guess-dev"
 # [build-system]
 # requires = ["setuptools"]
 # build-backend = "setuptools.build_meta"
-#
-# [tool.dagster]
-# module_name = "my_skeleton_mackage.definitions"
-# project_name = "my_skeleton_mackage"
-#
+
+ [tool.dagster]
+ module_name = "OpenStudioLandscapes.engine.definitions"
+ project_name = "OpenStudioLandscapes"
+
 # [tool.setuptools.packages.find]
 # exclude=["my_skeleton_mackage_tests"]
 

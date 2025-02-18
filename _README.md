@@ -119,7 +119,7 @@ pip install -e ".[dev]"
 Then, start the Dagster UI web server:
 
 ```bash
-export DAGSTER_HOME=$(realpath dagster/materializations)    # `realpath` vs `readlink -f`
+export DAGSTER_HOME=$(realpath dagster/.dagster)    # `realpath` vs `readlink -f`
 dagster dev --workspace $(realpath dagster/workspace.yaml)  # `realpath` vs `readlink -f`
 ```
 

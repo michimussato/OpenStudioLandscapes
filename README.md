@@ -580,8 +580,9 @@ f"DATABASE_INSTALL_DESTINATION_{KEY}": {
 ```shell
 cd ~/git/repos/OpenStudioLandscapes
 source .venv/bin/activate
-export DAGSTER_HOME="$(pwd)/dagster/materializations"
-dagster dev --workspace "$(pwd)/dagster/workspace.yaml" --host 0.0.0.0  # --port 3000
+export DAGSTER_HOME="$(pwd)/.dagster"
+dagster dev --host 0.0.0.0  # --port 3000
+#dagster dev --workspace "$(pwd)/dagster/workspace.yaml" --host 0.0.0.0  # --port 3000
 #dagster dev --host 0.0.0.0  # --port 3000
 ```
 
@@ -834,20 +835,35 @@ python_requires = >=3.11
 
 install_requires = 
     [...]
-    dagster
-    dagster-cloud
+    dagster==1.9.11
     gitpython
     PyYAML
+    python-on-whales
     # yaml_tags.overrides:
     docker-compose-graph @ git+https://github.com/michimussato/docker-compose-graph.git
-    # Will work when released:
+    # Todo: Will work when released:
     # OpenStudioLandscapes @ git+https://github.com/michimussato/OpenStudioLandscapes
     [...]
 
 [options.extras_require]
 dev =
-    dagster-webserver
+    dagster-webserver==1.9.11
     OpenStudioLandscapes-Package-1234[testing]
+    
+[tool:pytest]
+norecursedirs =
+    dist
+    build
+    .nox
+    
+[flake8]
+exclude =
+    .nox
+    .svg
+    build
+    dist
+    .eggs
+    docs/conf.py
 
 [pyscaffold]
 package = Package_1234
