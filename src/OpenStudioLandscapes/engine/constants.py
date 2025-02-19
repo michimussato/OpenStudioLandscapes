@@ -20,5 +20,6 @@ THIRD_PARTY = [
     "OpenStudioLandscapes.filebrowser.definitions",
     "OpenStudioLandscapes.Grafana.definitions",
     "OpenStudioLandscapes.Kitsu.definitions",
+    "OpenStudioLandscapes.OpenCue.definitions",
     # "OpenStudioLandscapes.LikeC4.definitions",  # Errors atm; minor issue
 ]
