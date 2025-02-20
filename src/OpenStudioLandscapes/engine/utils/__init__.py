@@ -1,12 +1,3 @@
-import pathlib
-import shlex
-import shutil
-
-import git
-from dagster import MetadataValue
-
-from OpenStudioLandscapes.engine.constants import *
-
 __all__ = [
     "compile_cmds",
     "cmd_list_to_str",
@@ -16,6 +7,16 @@ __all__ = [
     "get_copy_str",
     "get_git_root",
 ]
+
+
+import pathlib
+import shlex
+import shutil
+
+import git
+from dagster import MetadataValue
+
+from OpenStudioLandscapes.engine.constants import *
 
 
 def compile_cmds(
@@ -96,7 +97,8 @@ def get_apt_install_str(
     apt_install_str: str = str()
     for apt_package in apt_install_packages:
         apt_install_str += (
-            "RUN apt-get install -y --no-install-recommends '%s'\n" % apt_package
+            # "RUN apt-get install -y --no-install-recommends '%s'\n" % apt_package
+            f"RUN apt-get install -y --no-install-recommends '{apt_package}'\n"
         )
 
     return apt_install_str
@@ -123,9 +125,11 @@ def get_wget_str(
 ) -> str:
     wget_str: str = str()
     for wget_package, wget_url in wget_packages.items():
-        wget_str += "RUN wget -O '%s' '%s'\n" % (wget_package, wget_url)
+        # wget_str += "RUN wget -O '%s' '%s'\n" % (wget_package, wget_url)
+        wget_str += f"RUN wget -O '{wget_package}' '{wget_url}'\n"
         if chmod_plus_x:
-            wget_str += "RUN chmod a+x '%s'\n" % wget_package
+            # wget_str += "RUN chmod a+x '%s'\n" % wget_package
+            wget_str += f"RUN chmod a+x '{wget_package}'\n"
 
     return wget_str
 

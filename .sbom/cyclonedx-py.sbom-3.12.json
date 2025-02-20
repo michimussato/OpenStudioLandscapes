@@ -90,6 +90,33 @@
       "version": "1.2.18"
     },
     {
+      "bom-ref": "GitPython==3.1.44",
+      "description": "GitPython is a Python library used to interact with Git repositories",
+      "externalReferences": [
+        {
+          "comment": "from packaging metadata: Home-page",
+          "type": "website",
+          "url": "https://github.com/gitpython-developers/GitPython"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        },
+        {
+          "license": {
+            "name": "License :: OSI Approved :: BSD License"
+          }
+        }
+      ],
+      "name": "GitPython",
+      "purl": "pkg:pypi/gitpython@3.1.44",
+      "type": "library",
+      "version": "3.1.44"
+    },
+    {
       "bom-ref": "Jinja2==3.1.5",
       "description": "A very fast and expressive template engine.",
       "externalReferences": [
@@ -215,7 +242,7 @@
       "version": "3.0.2"
     },
     {
-      "bom-ref": "OpenStudioLandscapes==0.0.post1.dev385+g92c8891.d20250220",
+      "bom-ref": "OpenStudioLandscapes==0.0.post1.dev386+gd4e76fd.d20250220",
       "description": "A Toolkit to create dynamic Animation and VFX studio pipelines.",
       "licenses": [
         {
@@ -225,12 +252,12 @@
         }
       ],
       "name": "OpenStudioLandscapes",
-      "purl": "pkg:pypi/openstudiolandscapes@0.0.post1.dev385%2Bg92c8891.d20250220",
+      "purl": "pkg:pypi/openstudiolandscapes@0.0.post1.dev386%2Bgd4e76fd.d20250220",
       "type": "library",
-      "version": "0.0.post1.dev385+g92c8891.d20250220"
+      "version": "0.0.post1.dev386+gd4e76fd.d20250220"
     },
     {
-      "bom-ref": "BomRef.728452697829784.7263640771441743",
+      "bom-ref": "BomRef.4936479889287918.37829602941928475",
       "description": "A Toolkit to create dynamic Animation and VFX studio pipelines.",
       "externalReferences": [
         {
@@ -248,7 +275,7 @@
       ],
       "name": "OpenStudioLandscapes",
       "type": "library",
-      "version": "0.0.post1.dev385+g92c8891.d20250220"
+      "version": "0.0.post1.dev386+gd4e76fd.d20250220"
     },
     {
       "bom-ref": "PyScaffold==4.6",
@@ -1364,6 +1391,37 @@
       "purl": "pkg:pypi/gazu@0.10.29",
       "type": "library",
       "version": "0.10.29"
+    },
+    {
+      "bom-ref": "gitdb==4.0.12",
+      "description": "Git Object Database",
+      "externalReferences": [
+        {
+          "comment": "from packaging metadata: Home-page",
+          "type": "website",
+          "url": "https://github.com/gitpython-developers/gitdb"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "name": "License :: OSI Approved :: BSD License"
+          }
+        },
+        {
+          "license": {
+            "name": "declared license of 'gitdb'",
+            "text": {
+              "content": "BSD License",
+              "contentType": "text/plain"
+            }
+          }
+        }
+      ],
+      "name": "gitdb",
+      "purl": "pkg:pypi/gitdb@4.0.12",
+      "type": "library",
+      "version": "4.0.12"
     },
     {
       "bom-ref": "graphviz==0.20.3",
@@ -2850,6 +2908,33 @@
       "version": "1.17.0"
     },
     {
+      "bom-ref": "smmap==5.0.2",
+      "description": "A pure Python implementation of a sliding window memory map manager",
+      "externalReferences": [
+        {
+          "comment": "from packaging metadata: Home-page",
+          "type": "website",
+          "url": "https://github.com/gitpython-developers/smmap"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        },
+        {
+          "license": {
+            "name": "License :: OSI Approved :: BSD License"
+          }
+        }
+      ],
+      "name": "smmap",
+      "purl": "pkg:pypi/smmap@5.0.2",
+      "type": "library",
+      "version": "5.0.2"
+    },
+    {
       "bom-ref": "sortedcontainers==2.4.0",
       "description": "Sorted Containers -- Sorted List, Sorted Dict, Sorted Set",
       "externalReferences": [
@@ -3498,6 +3583,13 @@
     },
     {
       "dependsOn": [
+        "gitdb==4.0.12",
+        "typing_extensions==4.12.2"
+      ],
+      "ref": "GitPython==3.1.44"
+    },
+    {
+      "dependsOn": [
         "MarkupSafe==3.0.2"
       ],
       "ref": "Jinja2==3.1.5"
@@ -3513,6 +3605,7 @@
     },
     {
       "dependsOn": [
+        "GitPython==3.1.44",
         "PyScaffold==4.6",
         "PyYAML==6.0.2",
         "cyclonedx-bom==5.1.2",
@@ -3526,7 +3619,7 @@
         "python-on-whales==0.75.1",
         "setuptools==75.8.0"
       ],
-      "ref": "OpenStudioLandscapes==0.0.post1.dev385+g92c8891.d20250220"
+      "ref": "OpenStudioLandscapes==0.0.post1.dev386+gd4e76fd.d20250220"
     },
     {
       "dependsOn": [
@@ -3727,6 +3820,12 @@
         "requests==2.32.3"
       ],
       "ref": "gazu==0.10.29"
+    },
+    {
+      "dependsOn": [
+        "smmap==5.0.2"
+      ],
+      "ref": "gitdb==4.0.12"
     },
     {
       "ref": "graphviz==0.20.3"
@@ -3982,6 +4081,9 @@
       "ref": "six==1.17.0"
     },
     {
+      "ref": "smmap==5.0.2"
+    },
+    {
       "ref": "sortedcontainers==2.4.0"
     },
     {
@@ -4054,7 +4156,7 @@
     }
   ],
   "metadata": {
-    "timestamp": "2025-02-20T00:20:24.842506+00:00",
+    "timestamp": "2025-02-20T10:40:51.621852+00:00",
     "tools": {
       "components": [
         {
@@ -4156,7 +4258,7 @@
       ]
     }
   },
-  "serialNumber": "urn:uuid:f4a1da8d-97df-4d1c-8cdb-815859f106da",
+  "serialNumber": "urn:uuid:5023dbe5-48c5-49a9-b34a-bb0b447bfccd",
   "version": 1,
   "$schema": "http://cyclonedx.org/schema/bom-1.5.schema.json",
   "bomFormat": "CycloneDX",

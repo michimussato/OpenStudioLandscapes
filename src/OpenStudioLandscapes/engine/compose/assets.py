@@ -96,7 +96,6 @@ def compose(
         metadata={
             "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
             "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
-            # Todo: "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)),
         },
     )
 

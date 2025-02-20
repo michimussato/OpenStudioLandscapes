@@ -122,7 +122,7 @@ def op_group_out(
 
     docker_compose.parent.mkdir(parents=True, exist_ok=True)
 
-    with open(docker_compose, "w") as fw:
+    with open(docker_compose, mode="w", encoding="utf-8") as fw:
         fw.write(docker_yaml)
 
     project_name = f"{env.get('LANDSCAPE', 'default').replace('.', '-')}"

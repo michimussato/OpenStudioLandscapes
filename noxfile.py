@@ -28,10 +28,11 @@ nox.options.sessions = [
 ]
 
 # Python versions to test against
+# dagster==1.9.11 needs >=3.9 but 3.13 does not seem to be working
 VERSIONS = [
     "3.11",
     "3.12",
-    # "3.13",  # Dagster needs <3.13
+    # "3.13",
 ]
 
 ENV = {}

@@ -27,6 +27,8 @@ flowchart TD
     fqdn["fqdn\n1.5.1"]
     fsspec["fsspec\n2025.2.0"]
     gazu["gazu\n0.10.29"]
+    gitdb["gitdb\n4.0.12"]
+    gitpython["GitPython\n3.1.44"]
     graphviz["graphviz\n0.20.3"]
     greenlet["greenlet\n3.1.1"]
     grpcio-health-checking["grpcio-health-checking\n1.70.0"]
@@ -45,7 +47,7 @@ flowchart TD
     markdown-it-py["markdown-it-py\n3.0.0"]
     markupsafe["MarkupSafe\n3.0.2"]
     mdurl["mdurl\n0.1.2"]
-    openstudiolandscapes["OpenStudioLandscapes\n0.0.post1.dev385+g92c8891.d20250220"]
+    openstudiolandscapes["OpenStudioLandscapes\n0.0.post1.dev386+gd4e76fd.d20250220"]
     packageurl-python["packageurl-python\n0.16.0"]
     packaging["packaging\n24.2"]
     pip-requirements-parser["pip-requirements-parser\n32.0.1"]
@@ -77,6 +79,7 @@ flowchart TD
     setuptools["setuptools\n75.8.0"]
     simple-websocket["simple-websocket\n1.1.0"]
     six["six\n1.17.0"]
+    smmap["smmap\n5.0.2"]
     sortedcontainers["sortedcontainers\n2.4.0"]
     sqlalchemy["SQLAlchemy\n2.0.38"]
     structlog["structlog\n25.1.0"]
@@ -152,6 +155,8 @@ flowchart TD
     gazu -- "==1.2.18" --> deprecated
     gazu -- ">=2.25.1" --> requests
     gazu -- ">=5.11.0,<6" --> python-socketio
+    gitdb -- ">=3.0.1,<6" --> smmap
+    gitpython -- ">=4.0.1,<5" --> gitdb
     grpcio-health-checking -- ">=1.70.0" --> grpcio
     grpcio-health-checking -- ">=5.26.1,<6.0dev" --> protobuf
     isoduration -- ">=0.15.0" --> arrow
@@ -168,6 +173,7 @@ flowchart TD
     openstudiolandscapes -- "any" --> dagster-job-processor
     openstudiolandscapes -- "any" --> dagster-shared
     openstudiolandscapes -- "any" --> docker-compose-graph
+    openstudiolandscapes -- "any" --> gitpython
     openstudiolandscapes -- "any" --> pydot
     openstudiolandscapes -- "any" --> pyscaffold
     openstudiolandscapes -- "any" --> python-on-whales
@@ -211,3 +217,4 @@ flowchart TD
     sqlalchemy -- ">=4.6.0" --> typing-extensions
     universal-pathlib -- ">=2022.1.0,!=2024.3.1" --> fsspec
     wsproto -- ">=0.9.0,<1" --> h11
+

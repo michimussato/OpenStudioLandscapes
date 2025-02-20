@@ -3,9 +3,13 @@ repos:
     rev: v2.3.0
     hooks:
     -   id: check-yaml
+        exclude: ^(.sbom/|docs/|build/)
     -   id: end-of-file-fixer
+        exclude: ^(.sbom/|docs/|build/)
     -   id: trailing-whitespace
+        exclude: ^(.sbom/|docs/|build/)
 -   repo: https://github.com/psf/black
     rev: 22.10.0
     hooks:
     -   id: black
+        exclude: ^(.sbom/|docs/|build/)

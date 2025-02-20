@@ -784,7 +784,7 @@ nox --no-error-on-missing-interpreters --report .nox/nox-report.json
   - Deadline
     - ☐ 10.3
     - ☐ 10.4
-  - ☐ [OpenCue](https://github.com/AcademySoftwareFoundation/OpenCue)
+  - ✅ [OpenCue](https://github.com/AcademySoftwareFoundation/OpenCue)
   - ☐ [Tractor](https://rmanwiki-26.pixar.com/space/TRA)
   - ☐ [Flamenco](https://flamenco.blender.org/)
 - Dynamic Documentation

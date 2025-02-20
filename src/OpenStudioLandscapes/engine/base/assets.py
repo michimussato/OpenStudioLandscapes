@@ -196,65 +196,13 @@ def env(
         "CREATED_AT": str(datetime.strftime(datetime.now(), "%Y-%m-%d_%H-%M-%S")),
         "TIMEZONE": "Europe/Zurich",
         "IMAGE_PREFIX": "michimussato",
-        "MONGO_EXPRESS_PORT_HOST": "8181",
-        "MONGO_EXPRESS_PORT_CONTAINER": "8081",
-        "MONGO_DB_NAME": "deadline10db",
-        "RCS_HTTP_PORT_HOST": "8888",
-        "RCS_HTTP_PORT_CONTAINER": "8888",
-        "WEBSERVICE_HTTP_PORT_HOST": "8899",
-        "WEBSERVICE_HTTP_PORT_CONTAINER": "8899",
-        "MONGO_DB_PORT_HOST": "21017",
-        "MONGO_DB_PORT_CONTAINER": "21017",
-        "DEFAULT_DBPATH_CONTAINER": "/data/db",
-        # "DEFAULT_DBPATH_CONTAINER": "/opt/Thinkbox/DeadlineDatabase10/mongo/data",
         "DEFAULT_CONFIG_DBPATH": "/data/configdb",
         "ROOT_DOMAIN": "farm.evil",
-        # "DB_HOST": "mongodb-10-2",
         # https://vfxplatform.com/
         "PYTHON_MAJ": "3",
         "PYTHON_MIN": "11",
         "PYTHON_PAT": "11",
-        # # PROD
-        # "LN_NFS": "/nfs",
-        # "NFS_ENTRY_POINT": "/data/share{0[LN_NFS]}",
-        # "NFS_ENTRY_POINT_LNS": "{0[LN_NFS]}",
-        # "INSTALLERS_ROOT": "{0[NFS_ENTRY_POINT]}/installers",
-        # "NFS_REPOSITORY": "{0[NFS_ENTRY_POINT]}/prod/DeadlineRepository10",
-        # "NFS_DEADLINE": "{0[NFS_ENTRY_POINT]}/prod/Deadline10",
-        # "MONGO_DB_DIR_HOST": pathlib.Path("~/git/repos/studio-landscapes/tests/fixtures/10.2/DeadlineDatabase10/mongo/data").expanduser().as_posix(),
-        # # TEST
-        # "LN_NFS": "/nfs",
-        # "NFS_ENTRY_POINT": "/data/share/nfs",
-        # "NFS_ENTRY_POINT_LNS": "/nfs",
-        # "INSTALLERS_ROOT": "/data/share/nfs/installers",
-        # "MONGO_DB_DIR_HOST": pathlib.Path("~/git/repos/studio-landscapes/tests/fixtures/10.2/DeadlineDatabase10/mongo/data").expanduser().as_posix(),
-        # "MONGO_DB_DIR_HOST": pathlib.Path("~/git/repos/studio-landscapes/tests/fixtures/v10_2/DeadlineDatabase10").expanduser().as_posix(),
-        # # TODO
-        # # DEADLINE_CLIENT_DIR: "/opt/Thinkbox/Deadline10"
-        # # DEADLINE_REPO_DIR: "/opt/Thinkbox/DeadlineRepository10"
-        # # MONGO_DB_NAME: deadline10db
-        # # MONGO_DB_HOST: $DB_HOST
-        # # MONGO_DB_PROD:
-        # # MONGO_DB_TEST:
     }
-
-    _env_mongo_express = {
-        # "MONGO_PORT": "${MONGO_DB_PORT_CONTAINER}",
-        # https://docs.docker.com/compose/how-tos/environment-variables/set-environment-variables/#additional
-        # -information-1
-        # https://hub.docker.com/_/mongo-express/
-        "ME_CONFIG_BASICAUTH_USERNAME": "web",
-        "ME_CONFIG_BASICAUTH_PASSWORD": "web",
-        "ME_CONFIG_OPTIONS_EDITORTHEME": "darcula",
-        "ME_CONFIG_MONGODB_SERVER": "mongodb-10-2",
-        "ME_CONFIG_MONGODB_PORT": "{MONGO_DB_PORT_CONTAINER}",
-        # Todo:
-        #  - [ ] Verify whether MONGO_DB_PORT_CONTAINER or MONGO_DB_PORT_HOST
-        #        is actually correct
-        "ME_CONFIG_MONGODB_URL": "mongodb://admin:pass@localhost:{MONGO_DB_PORT_CONTAINER}/db?ssl=false",
-    }
-
-    _env.update(_env_mongo_express)
 
     _env.update(secrets)
     _env.update(landscape_id)
@@ -270,10 +218,11 @@ def env(
 
     env_json.parent.mkdir(parents=True, exist_ok=True)
 
-    with open(env_json, "w") as fw:
+    with open(env_json, mode="w", encoding="utf-8") as fw:
         json.dump(
             obj=_env.copy(),
-            fp=fw,
+            # https://youtrack.jetbrains.com/issue/PY-73050/openfile.txt-r-return-type-should-be-inferred-as-TextIOWrapper-instead-of-TextIO
+            fp=fw,  # Should be fixed in PyCharm 2025.1
             indent=2,
             ensure_ascii=True,
             sort_keys=True,
@@ -301,9 +250,9 @@ def pip_packages(
 
     _pip_packages: list = [
         # Todo:
-        #  - [ ] enable open-studio-landscapes after publish
+        #  - [ ] enable OpenStudioLandscapes after making it public
         #  - [ ] maybe move dagster stuff to dagster image?
-        # "open-studio-landscapes[dev] @ git+https://github.com/michimussato/open-studio-landscapes.git@main",
+        # "OpenStudioLandscapes[dev] @ git+https://github.com/michimussato/OpenStudioLandscapes.git@main",
         "dagster-shared[dev] @ git+https://github.com/michimussato/dagster-shared.git@main",
         # "deadline-dagster[dev] @ git+https://github.com/michimussato/deadline-dagster.git@main",
         "docker-compose-graph[dev] @ git+https://github.com/michimussato/docker-compose-graph.git@main",
@@ -472,10 +421,10 @@ def build_docker_image(
     )
     # @formatter:on
 
-    with open(docker_file, "w") as fw:
+    with open(docker_file, mode="w", encoding="utf-8") as fw:
         fw.write(docker_file_str)
 
-    with open(docker_file, "r") as fr:
+    with open(docker_file, mode="r") as fr:
         docker_file_content = fr.read()
 
     stream = docker.build(
@@ -555,7 +504,7 @@ def group_out(
     build_docker_image: str,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict[str, str | dict]] | AssetMaterialization, None, None]:
 
-    out_dict: dict = dict()
+    out_dict: dict = {}
 
     out_dict["env"] = env
     out_dict["docker_image"] = build_docker_image
