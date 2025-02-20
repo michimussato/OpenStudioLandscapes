@@ -3,8 +3,8 @@ import shlex
 import shutil
 
 import git
-
 from dagster import MetadataValue
+
 from OpenStudioLandscapes.engine.constants import *
 
 __all__ = [

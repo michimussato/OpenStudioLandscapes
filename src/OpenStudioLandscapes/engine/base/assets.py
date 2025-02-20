@@ -8,10 +8,7 @@ import time
 import urllib.parse
 import uuid
 from datetime import datetime
-
 from typing import Generator
-
-from python_on_whales import docker
 
 from dagster import (
     AssetExecutionContext,
@@ -22,6 +19,7 @@ from dagster import (
     Output,
     asset,
 )
+from python_on_whales import docker
 
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.utils import *
@@ -328,8 +326,7 @@ def pip_packages(
 )
 def apt_packages(
     context: AssetExecutionContext,
-) -> Generator[
-    Output[dict] | AssetMaterialization, None, None]:
+) -> Generator[Output[dict] | AssetMaterialization, None, None]:
     """ """
 
     _apt_packages = dict()

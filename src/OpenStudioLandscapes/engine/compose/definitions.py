@@ -2,13 +2,11 @@ from dagster import (
     Definitions,
     load_assets_from_modules,
 )
-from OpenStudioLandscapes.engine.compose import (
-    assets as assets_compose,
-)
 
+import OpenStudioLandscapes.engine.compose.assets
 
 assets = load_assets_from_modules(
-    modules=[assets_compose],
+    modules=[OpenStudioLandscapes.engine.compose.assets],
 )
 
 

@@ -1,22 +1,20 @@
-from typing import Any, Generator
+from typing import Generator
 
 import yaml
-
 from dagster import (
     AssetExecutionContext,
     AssetIn,
     AssetKey,
     AssetMaterialization,
+    AssetsDefinition,
     MetadataValue,
     Output,
     asset,
-    AssetsDefinition,
 )
 
-from OpenStudioLandscapes.engine.constants import THIRD_PARTY
 from OpenStudioLandscapes.engine.base.assets import KEY as KEY_BASE
-from OpenStudioLandscapes.engine.base.ops import op_group_out
-from OpenStudioLandscapes.engine.base.ops import op_docker_compose_graph
+from OpenStudioLandscapes.engine.base.ops import op_docker_compose_graph, op_group_out
+from OpenStudioLandscapes.engine.constants import THIRD_PARTY
 
 GROUP = "Compose"
 KEY = "Compose"
@@ -31,9 +29,7 @@ asset_header = {
 @asset(
     **asset_header,
     ins={
-        "group_in": AssetIn(
-            AssetKey([KEY_BASE, "group_out"])
-        ),
+        "group_in": AssetIn(AssetKey([KEY_BASE, "group_out"])),
     },
 )
 def env(
@@ -78,14 +74,12 @@ for i in THIRD_PARTY:
 def compose(
     context: AssetExecutionContext,
     **kwargs,
-) -> Generator[Output[dict[str, list[dict[str, list[Any]]]]] | AssetMaterialization, None, None]:
+) -> Generator[Output[dict[str, list[dict[str, list]]]] | AssetMaterialization, None, None]:
     """ """
 
     context.log.info(kwargs)
 
-    _group_in = [
-        *kwargs.values()
-    ]
+    _group_in = [*kwargs.values()]
 
     docker_dict = {
         "include": [{"path": [i.as_posix()]} for i in _group_in],
@@ -110,12 +104,8 @@ group_out = AssetsDefinition.from_op(
     group_name=GROUP,
     key_prefix=KEY,
     keys_by_input_name={
-        "compose": AssetKey(
-            [KEY, "compose"]
-        ),
-        "env": AssetKey(
-            [KEY, "env"]
-        ),
+        "compose": AssetKey([KEY, "compose"]),
+        "env": AssetKey([KEY, "env"]),
     },
 )
 
@@ -125,8 +115,6 @@ docker_compose_graph = AssetsDefinition.from_op(
     group_name=GROUP,
     key_prefix=KEY,
     keys_by_input_name={
-        "group_out": AssetKey(
-            [KEY, "group_out"]
-        ),
+        "group_out": AssetKey([KEY, "group_out"]),
     },
 )

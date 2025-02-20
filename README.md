@@ -54,6 +54,11 @@
   * [SSH](#ssh)
   * [Todo](#todo)
     * [Materialize All](#materialize-all)
+* [PyScaffold](#pyscaffold)
+  * [Create Module](#create-module)
+    * [PyScaffold](#pyscaffold-1)
+    * [`pyproject.toml`](#pyprojecttoml)
+    * [`setup.cfg`](#setupcfg)
 <!-- TOC -->
 
 ---
@@ -62,7 +67,7 @@
 
 ## Brief
 
-Setup and launch a render farm - your 3D Animation 
+Setup and launch a render farm - your 3D Animation
 and VFX Pipeline backbone - with ease, independence
 and scalability.
 
@@ -284,12 +289,11 @@ sudo usermod -aG docker $USER
            at Python.Runtime.PythonEngine.get_Version()
            at FranticX.Scripting.PythonNetScriptEngine.Initialize(Boolean setUnbufferedStdioFlag, String home, String programName)
         Exception on Startup: An Unexpected Error Occurred: Attempted python home: /opt/Thinkbox/Deadline10-2/bin/python3/../../lib/python3, Unable to load shared library 'python3.7m' or one of its dependencies. In order to help diagnose loading problems, consider setting the LD_DEBUG environment variable: libpython3.7m: cannot open shared object file: No such file or directory
-        
+
         Deadline Launcher will now exit.
         ```
       - `sudo ldconfig /opt/Thinkbox/Deadline10-2/lib/python3/lib`
   - Deadline Client 10.3
-  - 
 
 ```
 System.TypeInitializationException: The type initializer for 'Delegates' threw an exception.
@@ -792,7 +796,7 @@ nox --no-error-on-missing-interpreters --report .nox/nox-report.json
 ## SSH
 
 ```shell
-eval "$(ssh-agent -s)"                                                                         ✔ 
+eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_ed25519.HP_2025-02-09
 ```
 
@@ -831,7 +835,7 @@ platforms = Linux
 [options]
 python_requires = >=3.11
 
-install_requires = 
+install_requires =
     [...]
     dagster==1.9.11
     gitpython
@@ -847,13 +851,13 @@ install_requires =
 dev =
     dagster-webserver==1.9.11
     OpenStudioLandscapes-Package-1234[testing]
-    
+
 [tool:pytest]
 norecursedirs =
     dist
     build
     .nox
-    
+
 [flake8]
 exclude =
     .nox

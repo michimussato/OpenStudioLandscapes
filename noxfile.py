@@ -27,10 +27,11 @@ nox.options.sessions = [
     # "release",
 ]
 
-# Python versions to test agains
+# Python versions to test against
 VERSIONS = [
     "3.11",
     "3.12",
+    "3.13",
 ]
 
 ENV = {}

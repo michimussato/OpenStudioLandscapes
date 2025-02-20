@@ -1,22 +1,21 @@
+import base64
 import pathlib
+import shlex
+import shutil
 from typing import Generator
 
 import pydot
-import base64
 import yaml
-import shutil
-import shlex
-from docker_compose_graph.docker_compose_graph import DockerComposeGraph
-
 from dagster import (
-    Output,
     AssetMaterialization,
-    MetadataValue,
-    op,
     In,
+    MetadataValue,
+    OpExecutionContext,
     Out,
-    OpExecutionContext
+    Output,
+    op,
 )
+from docker_compose_graph.docker_compose_graph import DockerComposeGraph
 
 
 @op(

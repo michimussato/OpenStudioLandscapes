@@ -1,6 +1,58 @@
 {
   "components": [
     {
+      "bom-ref": "ConfigUpdater==3.2",
+      "description": "Parser like ConfigParser but for updating configuration files",
+      "externalReferences": [
+        {
+          "comment": "from packaging metadata Project-URL: Download",
+          "type": "distribution",
+          "url": "https://pypi.org/project/configupdater/#files"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Documentation",
+          "type": "documentation",
+          "url": "https://configupdater.readthedocs.io/"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Tracker",
+          "type": "issue-tracker",
+          "url": "https://github.com/pyscaffold/configupdater/issues"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Conda-Forge",
+          "type": "other",
+          "url": "https://anaconda.org/conda-forge/configupdater"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Source",
+          "type": "other",
+          "url": "https://github.com/pyscaffold/configupdater/"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Changelog",
+          "type": "release-notes",
+          "url": "https://configupdater.readthedocs.io/en/latest/changelog.html"
+        },
+        {
+          "comment": "from packaging metadata: Home-page",
+          "type": "website",
+          "url": "https://github.com/pyscaffold/configupdater"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "ConfigUpdater",
+      "purl": "pkg:pypi/configupdater@3.2",
+      "type": "library",
+      "version": "3.2"
+    },
+    {
       "bom-ref": "Deprecated==1.2.18",
       "description": "Python @deprecated decorator to deprecate old python classes, functions or methods.",
       "externalReferences": [
@@ -36,33 +88,6 @@
       "purl": "pkg:pypi/deprecated@1.2.18",
       "type": "library",
       "version": "1.2.18"
-    },
-    {
-      "bom-ref": "GitPython==3.1.44",
-      "description": "GitPython is a Python library used to interact with Git repositories",
-      "externalReferences": [
-        {
-          "comment": "from packaging metadata: Home-page",
-          "type": "website",
-          "url": "https://github.com/gitpython-developers/GitPython"
-        }
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "BSD-3-Clause"
-          }
-        },
-        {
-          "license": {
-            "name": "License :: OSI Approved :: BSD License"
-          }
-        }
-      ],
-      "name": "GitPython",
-      "purl": "pkg:pypi/gitpython@3.1.44",
-      "type": "library",
-      "version": "3.1.44"
     },
     {
       "bom-ref": "Jinja2==3.1.5",
@@ -107,7 +132,7 @@
       "version": "3.1.5"
     },
     {
-      "bom-ref": "Mako==1.3.8",
+      "bom-ref": "Mako==1.3.9",
       "description": "A super-fast templating language that borrows the best ideas from the existing templating languages.",
       "externalReferences": [
         {
@@ -134,9 +159,9 @@
         }
       ],
       "name": "Mako",
-      "purl": "pkg:pypi/mako@1.3.8",
+      "purl": "pkg:pypi/mako@1.3.9",
       "type": "library",
-      "version": "1.3.8"
+      "version": "1.3.9"
     },
     {
       "bom-ref": "MarkupSafe==3.0.2",
@@ -188,6 +213,99 @@
       "purl": "pkg:pypi/markupsafe@3.0.2",
       "type": "library",
       "version": "3.0.2"
+    },
+    {
+      "bom-ref": "OpenStudioLandscapes==0.0.post1.dev383+gfeb6786.d20250219",
+      "description": "A Toolkit to create dynamic Animation and VFX studio pipelines.",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "OpenStudioLandscapes",
+      "purl": "pkg:pypi/openstudiolandscapes@0.0.post1.dev383%2Bgfeb6786.d20250219",
+      "type": "library",
+      "version": "0.0.post1.dev383+gfeb6786.d20250219"
+    },
+    {
+      "bom-ref": "BomRef.20568123974723218.047422649952435725",
+      "description": "A Toolkit to create dynamic Animation and VFX studio pipelines.",
+      "externalReferences": [
+        {
+          "comment": "PackageSource: Local",
+          "type": "distribution",
+          "url": "file:///home/michael/git/repos/OpenStudioLandscapes"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "OpenStudioLandscapes",
+      "type": "library",
+      "version": "0.0.post1.dev383+gfeb6786.d20250219"
+    },
+    {
+      "bom-ref": "PyScaffold==4.6",
+      "description": "Template tool for putting up the scaffold of a Python project",
+      "externalReferences": [
+        {
+          "comment": "from packaging metadata Project-URL: Download",
+          "type": "distribution",
+          "url": "https://pypi.org/project/PyScaffold/#files"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Documentation",
+          "type": "documentation",
+          "url": "https://pyscaffold.org/"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Tracker",
+          "type": "issue-tracker",
+          "url": "https://github.com/pyscaffold/pyscaffold/issues"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Conda-Forge",
+          "type": "other",
+          "url": "https://anaconda.org/conda-forge/pyscaffold"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Source",
+          "type": "other",
+          "url": "https://github.com/pyscaffold/pyscaffold/"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Twitter",
+          "type": "other",
+          "url": "https://twitter.com/PyScaffold"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Changelog",
+          "type": "release-notes",
+          "url": "https://pyscaffold.org/en/latest/changelog.html"
+        },
+        {
+          "comment": "from packaging metadata: Home-page",
+          "type": "website",
+          "url": "https://github.com/pyscaffold/pyscaffold/"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "PyScaffold",
+      "purl": "pkg:pypi/pyscaffold@4.6",
+      "type": "library",
+      "version": "4.6"
     },
     {
       "bom-ref": "PyYAML==6.0.2",
@@ -289,7 +407,7 @@
       "version": "2.19.1"
     },
     {
-      "bom-ref": "SQLAlchemy==2.0.37",
+      "bom-ref": "SQLAlchemy==2.0.38",
       "description": "Database Abstraction Library",
       "externalReferences": [
         {
@@ -316,9 +434,9 @@
         }
       ],
       "name": "SQLAlchemy",
-      "purl": "pkg:pypi/sqlalchemy@2.0.37",
+      "purl": "pkg:pypi/sqlalchemy@2.0.38",
       "type": "library",
-      "version": "2.0.37"
+      "version": "2.0.38"
     },
     {
       "bom-ref": "alembic==1.14.1",
@@ -782,7 +900,7 @@
       "version": "5.1.2"
     },
     {
-      "bom-ref": "cyclonedx-python-lib==8.5.1",
+      "bom-ref": "cyclonedx-python-lib==8.8.0",
       "description": "Python library for CycloneDX",
       "externalReferences": [
         {
@@ -830,9 +948,9 @@
           "value": "validation"
         }
       ],
-      "purl": "pkg:pypi/cyclonedx-python-lib@8.5.1",
+      "purl": "pkg:pypi/cyclonedx-python-lib@8.8.0",
       "type": "library",
-      "version": "8.5.1"
+      "version": "8.8.0"
     },
     {
       "bom-ref": "dagster==1.9.11",
@@ -997,6 +1115,10 @@
         {
           "name": "cdx:python:package:source:vcs:commit_id",
           "value": "614f3c1c1e4a20395203911c04fd82b08e96753c"
+        },
+        {
+          "name": "cdx:python:package:source:vcs:requested_revision",
+          "value": "main"
         }
       ],
       "purl": "pkg:pypi/dagster-shared@0.0.post1.dev10%2Bg614f3c1?vcs_url=git%2Bhttps://github.com/michimussato/dagster-shared.git%40614f3c1c1e4a20395203911c04fd82b08e96753c",
@@ -1040,7 +1162,7 @@
       "version": "0.7.1"
     },
     {
-      "bom-ref": "docker-compose-graph==0.0.post1.dev155+g73157a2",
+      "bom-ref": "docker-compose-graph==0.0.post1.dev160+ga6439e4",
       "description": "Add a short description here!",
       "externalReferences": [
         {
@@ -1051,7 +1173,7 @@
         {
           "comment": "PackageSource: VCS 'git'",
           "type": "vcs",
-          "url": "https://github.com/michimussato/docker-compose-graph.git#73157a2377285581228a5bec8652e3fe33798e5e"
+          "url": "https://github.com/michimussato/docker-compose-graph.git#a6439e478d16ba4debd2e7aeecb83f1c72909600"
         },
         {
           "comment": "from packaging metadata: Home-page",
@@ -1070,12 +1192,16 @@
       "properties": [
         {
           "name": "cdx:python:package:source:vcs:commit_id",
-          "value": "73157a2377285581228a5bec8652e3fe33798e5e"
+          "value": "a6439e478d16ba4debd2e7aeecb83f1c72909600"
+        },
+        {
+          "name": "cdx:python:package:source:vcs:requested_revision",
+          "value": "main"
         }
       ],
-      "purl": "pkg:pypi/docker-compose-graph@0.0.post1.dev155%2Bg73157a2?vcs_url=git%2Bhttps://github.com/michimussato/docker-compose-graph.git%4073157a2377285581228a5bec8652e3fe33798e5e",
+      "purl": "pkg:pypi/docker-compose-graph@0.0.post1.dev160%2Bga6439e4?vcs_url=git%2Bhttps://github.com/michimussato/docker-compose-graph.git%40a6439e478d16ba4debd2e7aeecb83f1c72909600",
       "type": "library",
-      "version": "0.0.post1.dev155+g73157a2"
+      "version": "0.0.post1.dev160+ga6439e4"
     },
     {
       "bom-ref": "docstring_parser==0.16",
@@ -1214,7 +1340,7 @@
       "version": "2025.2.0"
     },
     {
-      "bom-ref": "gazu==0.10.26",
+      "bom-ref": "gazu==0.10.29",
       "description": "Gazu is a client for Zou, the API to store the data of your CG production.",
       "externalReferences": [
         {
@@ -1235,40 +1361,9 @@
         }
       ],
       "name": "gazu",
-      "purl": "pkg:pypi/gazu@0.10.26",
+      "purl": "pkg:pypi/gazu@0.10.29",
       "type": "library",
-      "version": "0.10.26"
-    },
-    {
-      "bom-ref": "gitdb==4.0.12",
-      "description": "Git Object Database",
-      "externalReferences": [
-        {
-          "comment": "from packaging metadata: Home-page",
-          "type": "website",
-          "url": "https://github.com/gitpython-developers/gitdb"
-        }
-      ],
-      "licenses": [
-        {
-          "license": {
-            "name": "License :: OSI Approved :: BSD License"
-          }
-        },
-        {
-          "license": {
-            "name": "declared license of 'gitdb'",
-            "text": {
-              "content": "BSD License",
-              "contentType": "text/plain"
-            }
-          }
-        }
-      ],
-      "name": "gitdb",
-      "purl": "pkg:pypi/gitdb@4.0.12",
-      "type": "library",
-      "version": "4.0.12"
+      "version": "0.10.29"
     },
     {
       "bom-ref": "graphviz==0.20.3",
@@ -1721,7 +1816,7 @@
       "version": "30.4.1"
     },
     {
-      "bom-ref": "lxml==5.3.0",
+      "bom-ref": "lxml==5.3.1",
       "description": "Powerful and Pythonic XML processing library combining libxml2/libxslt with the ElementTree API.",
       "externalReferences": [
         {
@@ -1748,9 +1843,9 @@
         }
       ],
       "name": "lxml",
-      "purl": "pkg:pypi/lxml@5.3.0",
+      "purl": "pkg:pypi/lxml@5.3.1",
       "type": "library",
-      "version": "5.3.0"
+      "version": "5.3.1"
     },
     {
       "bom-ref": "markdown-it-py==3.0.0",
@@ -1800,42 +1895,6 @@
       "purl": "pkg:pypi/mdurl@0.1.2",
       "type": "library",
       "version": "0.1.2"
-    },
-    {
-      "bom-ref": "open-studio-landscapes==0.0.post1.dev324+g7432999.d20250204",
-      "description": "A Toolkit to create dynamic Animation and VFX studio pipelines.",
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT"
-          }
-        }
-      ],
-      "name": "open-studio-landscapes",
-      "purl": "pkg:pypi/open-studio-landscapes@0.0.post1.dev324%2Bg7432999.d20250204",
-      "type": "library",
-      "version": "0.0.post1.dev324+g7432999.d20250204"
-    },
-    {
-      "bom-ref": "BomRef.8306594530581223.881672554451715",
-      "description": "A Toolkit to create dynamic Animation and VFX studio pipelines.",
-      "externalReferences": [
-        {
-          "comment": "PackageSource: Local",
-          "type": "distribution",
-          "url": "file:///home/michael/git/repos/open-studio-landscapes"
-        }
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT"
-          }
-        }
-      ],
-      "name": "open-studio-landscapes",
-      "type": "library",
-      "version": "0.0.post1.dev324+g7432999.d20250204"
     },
     {
       "bom-ref": "packageurl-python==0.16.0",
@@ -1892,7 +1951,7 @@
       "version": "24.2"
     },
     {
-      "bom-ref": "pip==24.3.1",
+      "bom-ref": "pip==25.0.1",
       "description": "The PyPA recommended tool for installing Python packages.",
       "externalReferences": [
         {
@@ -1924,9 +1983,9 @@
         }
       ],
       "name": "pip",
-      "purl": "pkg:pypi/pip@24.3.1",
+      "purl": "pkg:pypi/pip@25.0.1",
       "type": "library",
-      "version": "24.3.1"
+      "version": "25.0.1"
     },
     {
       "bom-ref": "pip-requirements-parser==32.0.1",
@@ -2000,6 +2059,48 @@
       "purl": "pkg:pypi/pipdeptree@2.25.0",
       "type": "library",
       "version": "2.25.0"
+    },
+    {
+      "bom-ref": "platformdirs==4.3.6",
+      "description": "A small Python package for determining appropriate platform-specific dirs, e.g. a `user data dir`.",
+      "externalReferences": [
+        {
+          "comment": "from packaging metadata Project-URL: Documentation",
+          "type": "documentation",
+          "url": "https://platformdirs.readthedocs.io"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Tracker",
+          "type": "issue-tracker",
+          "url": "https://github.com/tox-dev/platformdirs/issues"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Source",
+          "type": "other",
+          "url": "https://github.com/tox-dev/platformdirs"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Changelog",
+          "type": "release-notes",
+          "url": "https://github.com/tox-dev/platformdirs/releases"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Homepage",
+          "type": "website",
+          "url": "https://github.com/tox-dev/platformdirs"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "platformdirs",
+      "purl": "pkg:pypi/platformdirs@4.3.6",
+      "type": "library",
+      "version": "4.3.6"
     },
     {
       "bom-ref": "protobuf==5.29.3",
@@ -2658,6 +2759,48 @@
       "version": "75.8.0"
     },
     {
+      "bom-ref": "setuptools-scm==8.1.0",
+      "description": "the blessed package to manage your versions by scm tags",
+      "externalReferences": [
+        {
+          "comment": "from packaging metadata Project-URL: documentation",
+          "type": "documentation",
+          "url": "https://setuptools-scm.readthedocs.io/"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: repository",
+          "type": "vcs",
+          "url": "https://github.com/pypa/setuptools_scm/"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        },
+        {
+          "license": {
+            "name": "declared license of 'setuptools-scm'",
+            "text": {
+              "content": "Permission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.\n",
+              "contentType": "text/plain"
+            }
+          }
+        }
+      ],
+      "name": "setuptools-scm",
+      "properties": [
+        {
+          "name": "cdx:python:package:required-extra",
+          "value": "toml"
+        }
+      ],
+      "purl": "pkg:pypi/setuptools-scm@8.1.0",
+      "type": "library",
+      "version": "8.1.0"
+    },
+    {
       "bom-ref": "simple-websocket==1.1.0",
       "description": "Simple WebSocket server and client for Python",
       "externalReferences": [
@@ -2705,33 +2848,6 @@
       "purl": "pkg:pypi/six@1.17.0",
       "type": "library",
       "version": "1.17.0"
-    },
-    {
-      "bom-ref": "smmap==5.0.2",
-      "description": "A pure Python implementation of a sliding window memory map manager",
-      "externalReferences": [
-        {
-          "comment": "from packaging metadata: Home-page",
-          "type": "website",
-          "url": "https://github.com/gitpython-developers/smmap"
-        }
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "BSD-3-Clause"
-          }
-        },
-        {
-          "license": {
-            "name": "License :: OSI Approved :: BSD License"
-          }
-        }
-      ],
-      "name": "smmap",
-      "purl": "pkg:pypi/smmap@5.0.2",
-      "type": "library",
-      "version": "5.0.2"
     },
     {
       "bom-ref": "sortedcontainers==2.4.0",
@@ -2883,6 +2999,33 @@
       "purl": "pkg:pypi/tomli@2.2.1",
       "type": "library",
       "version": "2.2.1"
+    },
+    {
+      "bom-ref": "tomlkit==0.13.2",
+      "description": "Style preserving TOML library",
+      "externalReferences": [
+        {
+          "comment": "from packaging metadata Project-URL: Repository",
+          "type": "vcs",
+          "url": "https://github.com/sdispater/tomlkit"
+        },
+        {
+          "comment": "from packaging metadata: Home-page",
+          "type": "website",
+          "url": "https://github.com/sdispater/tomlkit"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "tomlkit",
+      "purl": "pkg:pypi/tomlkit@0.13.2",
+      "type": "library",
+      "version": "0.13.2"
     },
     {
       "bom-ref": "toposort==1.10",
@@ -3381,18 +3524,14 @@
   ],
   "dependencies": [
     {
+      "ref": "ConfigUpdater==3.2"
+    },
+    {
       "dependsOn": [
         "setuptools==75.8.0",
         "wrapt==1.17.2"
       ],
       "ref": "Deprecated==1.2.18"
-    },
-    {
-      "dependsOn": [
-        "gitdb==4.0.12",
-        "typing_extensions==4.12.2"
-      ],
-      "ref": "GitPython==3.1.44"
     },
     {
       "dependsOn": [
@@ -3404,10 +3543,40 @@
       "dependsOn": [
         "MarkupSafe==3.0.2"
       ],
-      "ref": "Mako==1.3.8"
+      "ref": "Mako==1.3.9"
     },
     {
       "ref": "MarkupSafe==3.0.2"
+    },
+    {
+      "dependsOn": [
+        "PyScaffold==4.6",
+        "PyYAML==6.0.2",
+        "cyclonedx-bom==5.1.2",
+        "dagster-job-processor==0.0.post1.dev38+gbaf3220",
+        "dagster-shared==0.0.post1.dev10+g614f3c1",
+        "dagster==1.9.11",
+        "docker-compose-graph==0.0.post1.dev160+ga6439e4",
+        "graphviz==0.20.3",
+        "pipdeptree==2.25.0",
+        "pydot==3.0.4",
+        "python-on-whales==0.75.1",
+        "setuptools==75.8.0"
+      ],
+      "ref": "OpenStudioLandscapes==0.0.post1.dev383+gfeb6786.d20250219"
+    },
+    {
+      "dependsOn": [
+        "ConfigUpdater==3.2",
+        "certifi==2025.1.31",
+        "packaging==24.2",
+        "platformdirs==4.3.6",
+        "setuptools-scm==8.1.0",
+        "setuptools==75.8.0",
+        "tomlkit==0.13.2",
+        "wheel==0.45.1"
+      ],
+      "ref": "PyScaffold==4.6"
     },
     {
       "ref": "PyYAML==6.0.2"
@@ -3420,12 +3589,12 @@
         "greenlet==3.1.1",
         "typing_extensions==4.12.2"
       ],
-      "ref": "SQLAlchemy==2.0.37"
+      "ref": "SQLAlchemy==2.0.38"
     },
     {
       "dependsOn": [
-        "Mako==1.3.8",
-        "SQLAlchemy==2.0.37",
+        "Mako==1.3.9",
+        "SQLAlchemy==2.0.38",
         "typing_extensions==4.12.2"
       ],
       "ref": "alembic==1.14.1"
@@ -3477,7 +3646,7 @@
     {
       "dependsOn": [
         "chardet==5.2.0",
-        "cyclonedx-python-lib==8.5.1",
+        "cyclonedx-python-lib==8.8.0",
         "packageurl-python==0.16.0",
         "packaging==24.2",
         "pip-requirements-parser==32.0.1",
@@ -3489,18 +3658,18 @@
       "dependsOn": [
         "jsonschema==4.23.0",
         "license-expression==30.4.1",
-        "lxml==5.3.0",
+        "lxml==5.3.1",
         "packageurl-python==0.16.0",
         "py-serializable==1.1.2",
         "sortedcontainers==2.4.0"
       ],
-      "ref": "cyclonedx-python-lib==8.5.1"
+      "ref": "cyclonedx-python-lib==8.8.0"
     },
     {
       "dependsOn": [
         "cyclonedx-bom==5.1.2",
         "dagster==1.9.11",
-        "gazu==0.10.26",
+        "gazu==0.10.29",
         "graphviz==0.20.3",
         "pipdeptree==2.25.0",
         "setuptools==75.8.0"
@@ -3522,7 +3691,7 @@
       "dependsOn": [
         "Jinja2==3.1.5",
         "PyYAML==6.0.2",
-        "SQLAlchemy==2.0.37",
+        "SQLAlchemy==2.0.38",
         "alembic==1.14.1",
         "antlr4-python3-runtime==4.13.2",
         "click==8.1.8",
@@ -3566,7 +3735,7 @@
         "python-dotenv==1.0.1",
         "setuptools==75.8.0"
       ],
-      "ref": "docker-compose-graph==0.0.post1.dev155+g73157a2"
+      "ref": "docker-compose-graph==0.0.post1.dev160+ga6439e4"
     },
     {
       "ref": "docstring_parser==0.16"
@@ -3596,13 +3765,7 @@
         "requests==2.32.3",
         "wheel==0.45.1"
       ],
-      "ref": "gazu==0.10.26"
-    },
-    {
-      "dependsOn": [
-        "smmap==5.0.2"
-      ],
-      "ref": "gitdb==4.0.12"
+      "ref": "gazu==0.10.29"
     },
     {
       "dependsOn": [
@@ -3674,7 +3837,7 @@
       "ref": "license-expression==30.4.1"
     },
     {
-      "ref": "lxml==5.3.0"
+      "ref": "lxml==5.3.1"
     },
     {
       "dependsOn": [
@@ -3688,24 +3851,7 @@
     },
     {
       "dependsOn": [
-        "GitPython==3.1.44",
-        "PyYAML==6.0.2",
-        "cyclonedx-bom==5.1.2",
-        "dagster-job-processor==0.0.post1.dev38+gbaf3220",
-        "dagster-shared==0.0.post1.dev10+g614f3c1",
-        "dagster==1.9.11",
-        "docker-compose-graph==0.0.post1.dev155+g73157a2",
-        "graphviz==0.20.3",
-        "pipdeptree==2.25.0",
-        "pydot==3.0.4",
-        "python-on-whales==0.75.1",
-        "setuptools==75.8.0"
-      ],
-      "ref": "open-studio-landscapes==0.0.post1.dev324+g7432999.d20250204"
-    },
-    {
-      "dependsOn": [
-        "SQLAlchemy==2.0.37",
+        "SQLAlchemy==2.0.38",
         "setuptools==75.8.0",
         "wheel==0.45.1"
       ],
@@ -3722,15 +3868,18 @@
       "ref": "pip-requirements-parser==32.0.1"
     },
     {
-      "ref": "pip==24.3.1"
+      "ref": "pip==25.0.1"
     },
     {
       "dependsOn": [
         "graphviz==0.20.3",
         "packaging==24.2",
-        "pip==24.3.1"
+        "pip==25.0.1"
       ],
       "ref": "pipdeptree==2.25.0"
+    },
+    {
+      "ref": "platformdirs==4.3.6"
     },
     {
       "ref": "protobuf==5.29.3"
@@ -3847,9 +3996,22 @@
     },
     {
       "dependsOn": [
+        "Pygments==2.19.1",
+        "packaging==24.2",
+        "rich==13.9.4",
+        "setuptools==75.8.0",
+        "tomli==2.2.1",
+        "typing_extensions==4.12.2",
+        "wheel==0.45.1"
+      ],
+      "ref": "setuptools-scm==8.1.0"
+    },
+    {
+      "dependsOn": [
         "filelock==3.17.0",
         "packaging==24.2",
-        "pip==24.3.1",
+        "pip==25.0.1",
+        "platformdirs==4.3.6",
         "tomli==2.2.1",
         "wheel==0.45.1"
       ],
@@ -3863,9 +4025,6 @@
     },
     {
       "ref": "six==1.17.0"
-    },
-    {
-      "ref": "smmap==5.0.2"
     },
     {
       "ref": "sortedcontainers==2.4.0"
@@ -3882,6 +4041,9 @@
     },
     {
       "ref": "tomli==2.2.1"
+    },
+    {
+      "ref": "tomlkit==0.13.2"
     },
     {
       "ref": "toposort==1.10"
@@ -3943,7 +4105,7 @@
     }
   ],
   "metadata": {
-    "timestamp": "2025-02-04T13:33:28.111029+00:00",
+    "timestamp": "2025-02-19T23:58:07.847376+00:00",
     "tools": {
       "components": [
         {
@@ -4040,12 +4202,12 @@
           ],
           "name": "cyclonedx-python-lib",
           "type": "library",
-          "version": "8.5.1"
+          "version": "8.8.0"
         }
       ]
     }
   },
-  "serialNumber": "urn:uuid:6593e837-ca05-489d-a7c6-2a3108cc3aa5",
+  "serialNumber": "urn:uuid:e7c2f389-4513-4f0d-94d0-8eb0b47f0987",
   "version": 1,
   "$schema": "http://cyclonedx.org/schema/bom-1.5.schema.json",
   "bomFormat": "CycloneDX",
