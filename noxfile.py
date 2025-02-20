@@ -31,7 +31,7 @@ nox.options.sessions = [
 VERSIONS = [
     "3.11",
     "3.12",
-    "3.13",
+    # "3.13",  # Dagster needs <3.13
 ]
 
 ENV = {}

@@ -802,11 +802,6 @@ ssh-add ~/.ssh/id_ed25519.HP_2025-02-09
 
 ## Todo
 
-### Materialize All
-
-![2025-02-16_16-35.png](_images/2025-02-16_16-35.png)
-
-
 # PyScaffold
 
 ## Create Module

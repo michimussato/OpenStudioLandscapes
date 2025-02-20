@@ -215,7 +215,7 @@
       "version": "3.0.2"
     },
     {
-      "bom-ref": "OpenStudioLandscapes==0.0.post1.dev383+gfeb6786.d20250219",
+      "bom-ref": "OpenStudioLandscapes==0.0.post1.dev384+gd11453e.d20250220",
       "description": "A Toolkit to create dynamic Animation and VFX studio pipelines.",
       "licenses": [
         {
@@ -225,12 +225,12 @@
         }
       ],
       "name": "OpenStudioLandscapes",
-      "purl": "pkg:pypi/openstudiolandscapes@0.0.post1.dev383%2Bgfeb6786.d20250219",
+      "purl": "pkg:pypi/openstudiolandscapes@0.0.post1.dev384%2Bgd11453e.d20250220",
       "type": "library",
-      "version": "0.0.post1.dev383+gfeb6786.d20250219"
+      "version": "0.0.post1.dev384+gd11453e.d20250220"
     },
     {
-      "bom-ref": "BomRef.05468477487256218.174093297938976",
+      "bom-ref": "BomRef.3268171538273197.8591861828974588",
       "description": "A Toolkit to create dynamic Animation and VFX studio pipelines.",
       "externalReferences": [
         {
@@ -248,7 +248,7 @@
       ],
       "name": "OpenStudioLandscapes",
       "type": "library",
-      "version": "0.0.post1.dev383+gfeb6786.d20250219"
+      "version": "0.0.post1.dev384+gd11453e.d20250220"
     },
     {
       "bom-ref": "PyScaffold==4.6",
@@ -3526,7 +3526,7 @@
         "python-on-whales==0.75.1",
         "setuptools==75.8.0"
       ],
-      "ref": "OpenStudioLandscapes==0.0.post1.dev383+gfeb6786.d20250219"
+      "ref": "OpenStudioLandscapes==0.0.post1.dev384+gd11453e.d20250220"
     },
     {
       "dependsOn": [
@@ -4054,7 +4054,7 @@
     }
   ],
   "metadata": {
-    "timestamp": "2025-02-19T23:59:31.826531+00:00",
+    "timestamp": "2025-02-20T00:10:31.991059+00:00",
     "tools": {
       "components": [
         {
@@ -4156,7 +4156,7 @@
       ]
     }
   },
-  "serialNumber": "urn:uuid:927ffea3-ad3f-43ae-86fc-5afd5cb9467f",
+  "serialNumber": "urn:uuid:d5d8d61a-1e19-4936-8784-5dcb9051f6cb",
   "version": 1,
   "$schema": "http://cyclonedx.org/schema/bom-1.5.schema.json",
   "bomFormat": "CycloneDX",

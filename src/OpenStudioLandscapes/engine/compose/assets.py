@@ -74,7 +74,9 @@ for i in THIRD_PARTY:
 def compose(
     context: AssetExecutionContext,
     **kwargs,
-) -> Generator[Output[dict[str, list[dict[str, list]]]] | AssetMaterialization, None, None]:
+) -> Generator[
+    Output[dict[str, list[dict[str, list]]]] | AssetMaterialization, None, None
+]:
     """ """
 
     context.log.info(kwargs)
