@@ -35,7 +35,7 @@ asset_header = {
 def env(
     context: AssetExecutionContext,
     group_in: dict,
-) -> Generator[Output[dict[Any, Any]] | AssetMaterialization, None, None]:
+) -> Generator[Output[dict] | AssetMaterialization, None, None]:
 
     ret = group_in.get("env", {})
 
@@ -55,7 +55,7 @@ ins = {}
 for i in THIRD_PARTY:
     try:
         # ex: i = "OpenStudioLandscapes_Ayon.definitions"
-        s = i.split(".")[0]  # s = "OpenStudioLandscapes_Ayon"
+        s = i.split(".", maxsplit=1)[0]  # s = "OpenStudioLandscapes_Ayon"
         key = s.split("_", maxsplit=1)[1]  # key = "Ayon"
         ins[s] = AssetIn(AssetKey([key, "group_out"]))
     except IndexError:

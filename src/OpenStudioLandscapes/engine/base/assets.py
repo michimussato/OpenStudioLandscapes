@@ -115,18 +115,18 @@ def dot_landscapes(
     git_root: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
 
-    dot_landscapes = git_root / ".landscapes"
-    dot_landscapes.mkdir(
+    _dot_landscapes = git_root / ".landscapes"
+    _dot_landscapes.mkdir(
         parents=True,
         exist_ok=True,
     )
 
-    yield Output(dot_landscapes)
+    yield Output(_dot_landscapes)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.path(dot_landscapes),
+            "__".join(context.asset_key.path): MetadataValue.path(_dot_landscapes),
         },
     )
 
@@ -143,18 +143,18 @@ def dot_installers(
     git_root: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
 
-    dot_installers = git_root / ".installers"
-    dot_installers.mkdir(
+    _dot_installers = git_root / ".installers"
+    _dot_installers.mkdir(
         parents=True,
         exist_ok=True,
     )
 
-    yield Output(dot_installers)
+    yield Output(_dot_installers)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.path(dot_installers),
+            "__".join(context.asset_key.path): MetadataValue.path(_dot_installers),
         },
     )
 
@@ -329,7 +329,7 @@ def apt_packages(
 ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
     """ """
 
-    _apt_packages = dict()
+    _apt_packages = {}
 
     _apt_packages["base"] = [
         "git",

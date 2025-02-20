@@ -154,7 +154,7 @@ digraph {
 	openstudiolandscapes -> pydot [label=any]
 	openstudiolandscapes -> pyscaffold [label=any]
 	openstudiolandscapes -> pyyaml [label=any]
-	openstudiolandscapes [label="OpenStudioLandscapes\n0.0.post1.dev384+gd11453e"]
+	openstudiolandscapes [label="OpenStudioLandscapes\n0.0.post1.dev385+g92c8891"]
 	packaging [label="packaging\n24.2"]
 	pip [label="pip\n25.0.1"]
 	pipdeptree -> packaging [label=">=24.1"]
