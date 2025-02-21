@@ -1,5 +1,4 @@
 import getpass
-import json
 import pathlib
 import shutil
 import socket

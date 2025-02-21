@@ -21,7 +21,7 @@ nox.options.sessions = [
     "sbom",
     "coverage",
     "lint",
-    "test",
+    "testing",
     "docs",
     # "docs_live",
     # "release",
@@ -123,12 +123,12 @@ def lint(session):
     # C0116 (missing-function-docstring)
 
 
-@nox.session(python=VERSIONS, tags=["test"])
-def test(session):
+@nox.session(python=VERSIONS, tags=["testing"])
+def testing(session):
     # Ex:
-    # nox --session test,docs
+    # nox --session testing,docs
     # nox --tags docs-live
-    session.install("-e", ".[test]", silent=True)
+    session.install("-e", ".[testing]", silent=True)
 
     session.run(
         "pytest",
