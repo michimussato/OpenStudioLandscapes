@@ -33,8 +33,7 @@ tags
 htmlcov/*
 .coverage
 .coverage.*
-.nox
-.nox-report.json
+.nox/*/
 junit*.xml
 coverage.xml
 .pytest_cache/
@@ -62,5 +61,5 @@ tmp*/
 /sesi/
 /installers/
 
-.installers
-.landscapes
+.installers/*/
+.landscapes/*/

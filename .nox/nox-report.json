@@ -1,0 +1,86 @@
+{
+  "result": 0,
+  "sessions": [
+    {
+      "args": {},
+      "name": "sbom",
+      "result": "success",
+      "result_code": 1,
+      "signatures": [
+        "sbom-3.11"
+      ]
+    },
+    {
+      "args": {},
+      "name": "sbom",
+      "result": "success",
+      "result_code": 1,
+      "signatures": [
+        "sbom-3.12"
+      ]
+    },
+    {
+      "args": {},
+      "name": "coverage",
+      "result": "failed",
+      "result_code": 0,
+      "signatures": [
+        "coverage-3.11"
+      ]
+    },
+    {
+      "args": {},
+      "name": "coverage",
+      "result": "failed",
+      "result_code": 0,
+      "signatures": [
+        "coverage-3.12"
+      ]
+    },
+    {
+      "args": {},
+      "name": "lint",
+      "result": "success",
+      "result_code": 1,
+      "signatures": [
+        "lint-3.11"
+      ]
+    },
+    {
+      "args": {},
+      "name": "lint",
+      "result": "success",
+      "result_code": 1,
+      "signatures": [
+        "lint-3.12"
+      ]
+    },
+    {
+      "args": {},
+      "name": "testing",
+      "result": "failed",
+      "result_code": 0,
+      "signatures": [
+        "testing-3.11"
+      ]
+    },
+    {
+      "args": {},
+      "name": "testing",
+      "result": "failed",
+      "result_code": 0,
+      "signatures": [
+        "testing-3.12"
+      ]
+    },
+    {
+      "args": {},
+      "name": "docs",
+      "result": "success",
+      "result_code": 1,
+      "signatures": [
+        "docs"
+      ]
+    }
+  ]
+}
