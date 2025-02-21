@@ -185,6 +185,8 @@ def env(
     #  - [ ] Move to constants.py
     ENVIRONMENT_BASE: dict = {
         "GIT_ROOT": git_root.as_posix(),
+        # Todo
+        #  - [ ] Move CONFIGS_ROOT to individual modules
         "CONFIGS_ROOT": pathlib.Path(
             git_root,
             "configs",
