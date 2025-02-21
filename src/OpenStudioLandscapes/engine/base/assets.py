@@ -180,9 +180,11 @@ def env(
     dot_installers: pathlib.Path,  # pylint: disable=redefined-outer-name
     nfs: dict,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
-    # @formatter:off
 
-    _env: dict = {
+    # @formatter:off
+    # Todo
+    #  - [ ] Move to constants.py
+    ENVIRONMENT_BASE: dict = {
         "GIT_ROOT": git_root.as_posix(),
         "CONFIGS_ROOT": pathlib.Path(
             git_root,
@@ -204,37 +206,19 @@ def env(
         "PYTHON_PAT": "11",
     }
 
-    _env.update(secrets)
-    _env.update(landscape_id)
-    _env.update(nfs)
+    ENVIRONMENT_BASE.update(secrets)
+    ENVIRONMENT_BASE.update(landscape_id)
+    ENVIRONMENT_BASE.update(nfs)
     # @formatter:on
 
-    env_json = pathlib.Path(
-        _env["DOT_LANDSCAPES"],
-        _env.get("LANDSCAPE", "default"),
-        "__".join(context.asset_key.path),
-        f"{'__'.join(context.asset_key.path)}.json",
-    )
-
-    env_json.parent.mkdir(parents=True, exist_ok=True)
-
-    with open(env_json, mode="w", encoding="utf-8") as fw:
-        json.dump(
-            obj=_env.copy(),
-            # https://youtrack.jetbrains.com/issue/PY-73050/openfile.txt-r-return-type-should-be-inferred-as-TextIOWrapper-instead-of-TextIO
-            fp=fw,  # Should be fixed in PyCharm 2025.1
-            indent=2,
-            ensure_ascii=True,
-            sort_keys=True,
-        )
-
-    yield Output(_env)
+    yield Output(ENVIRONMENT_BASE)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(_env),
-            "json": MetadataValue.path(env_json),
+            "__".join(context.asset_key.path): MetadataValue.json(ENVIRONMENT_BASE),
+            "ENVIRONMENT_KITSU": MetadataValue.json(ENVIRONMENT_BASE),
+            # "ENVIRONMENT": MetadataValue.json(ENVIRONMENT),
         },
     )
 
