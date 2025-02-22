@@ -24,11 +24,11 @@ from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.utils import *
 
 GROUP = "Base"
-KEY = "Base"
+KEY = [GROUP]
 
 asset_header = {
     "group_name": GROUP,
-    "key_prefix": [KEY],
+    "key_prefix": KEY,
     "compute_kind": "python",
 }
 
@@ -105,7 +105,7 @@ def secrets(
     # group_name="Environment",
     ins={
         "git_root": AssetIn(
-            AssetKey([KEY, "git_root"]),
+            AssetKey([*KEY, "git_root"]),
         ),
     },
 )
@@ -134,7 +134,7 @@ def dot_landscapes(
     **asset_header,
     # group_name="Environment",
     ins={
-        "git_root": AssetIn(AssetKey([KEY, "git_root"])),
+        "git_root": AssetIn(AssetKey([*KEY, "git_root"])),
     },
 )
 def dot_installers(
@@ -162,12 +162,12 @@ def dot_installers(
     **asset_header,
     # group_name="Environment",
     ins={
-        "git_root": AssetIn(AssetKey([KEY, "git_root"])),
-        "secrets": AssetIn(AssetKey([KEY, "secrets"])),
-        "landscape_id": AssetIn(AssetKey([KEY, "landscape_id"])),
-        "dot_landscapes": AssetIn(AssetKey([KEY, "dot_landscapes"])),
-        "dot_installers": AssetIn(AssetKey([KEY, "dot_installers"])),
-        "nfs": AssetIn(AssetKey([KEY, "nfs"])),
+        "git_root": AssetIn(AssetKey([*KEY, "git_root"])),
+        "secrets": AssetIn(AssetKey([*KEY, "secrets"])),
+        "landscape_id": AssetIn(AssetKey([*KEY, "landscape_id"])),
+        "dot_landscapes": AssetIn(AssetKey([*KEY, "dot_landscapes"])),
+        "dot_installers": AssetIn(AssetKey([*KEY, "dot_installers"])),
+        "nfs": AssetIn(AssetKey([*KEY, "nfs"])),
     },
 )
 def env(
@@ -310,9 +310,9 @@ def apt_packages(
     **asset_header,
     # group_name="Build_Base_Image",
     ins={
-        "env": AssetIn(AssetKey([KEY, "env"])),
-        "apt_packages": AssetIn(AssetKey([KEY, "apt_packages"])),
-        "pip_packages": AssetIn(AssetKey([KEY, "pip_packages"])),
+        "env": AssetIn(AssetKey([*KEY, "env"])),
+        "apt_packages": AssetIn(AssetKey([*KEY, "apt_packages"])),
+        "pip_packages": AssetIn(AssetKey([*KEY, "pip_packages"])),
     },
 )
 def build_docker_image(
@@ -326,8 +326,9 @@ def build_docker_image(
     docker_file = pathlib.Path(
         env["DOT_LANDSCAPES"],
         env.get("LANDSCAPE", "default"),
-        "Dockerfiles",
+        f"{GROUP}__{'__'.join(KEY)}",
         "__".join(context.asset_key.path),
+        "Dockerfiles",
         "Dockerfile",
     )
 
@@ -477,9 +478,9 @@ def nfs(
         "group_out": "base",
     },
     ins={
-        "env": AssetIn(AssetKey([KEY, "env"])),
+        "env": AssetIn(AssetKey([*KEY, "env"])),
         "build_docker_image": AssetIn(
-            AssetKey([KEY, "build_docker_image"]),
+            AssetKey([*KEY, "build_docker_image"]),
         ),
     },
 )

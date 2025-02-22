@@ -1,10 +1,12 @@
 __all__ = [
     "DOCKER_USE_CACHE",
+    "DOCKER_USE_CACHE_GLOBAL",
     "THIRD_PARTY",
 ]
 
 
 DOCKER_USE_CACHE = False
+DOCKER_USE_CACHE_GLOBAL = False
 
 
 THIRD_PARTY = [

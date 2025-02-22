@@ -111,12 +111,26 @@ def op_group_out(
 
     docker_yaml = yaml.dump(compose)
 
+    group_names_by_key_dict = context.assets_def.group_names_by_key  # {AssetKey(['OpenCue', 'group_out']): 'OpenCue'}
+    asset_key = context.assets_def.key  # AssetKey(['OpenCue', 'group_out'])
+    GROUP = group_names_by_key_dict[asset_key]
+
+    # Todo:
+    #  Maybe there is a better way but it does not matter yet
+    #  as long as there are only AssetKey([PREFIX, KEY]) with
+    #  no sub-prefixes inbetween
+    KEY = context.asset_key.path[0]
+
+    context.log.info(group_names_by_key_dict)
+    context.log.info(GROUP)
+    # context.log.info(key)
+
     docker_compose = pathlib.Path(
         env["DOT_LANDSCAPES"],
         env.get("LANDSCAPE", "default"),
-        context.asset_key.path[-1],
-        "docker_compose",
+        f"{GROUP}__{KEY}",
         "__".join(context.asset_key.path),
+        "docker_compose",
         "docker-compose.yml",
     )
 

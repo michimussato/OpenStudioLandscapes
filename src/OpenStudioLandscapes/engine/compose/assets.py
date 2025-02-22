@@ -17,11 +17,11 @@ from OpenStudioLandscapes.engine.base.ops import op_docker_compose_graph, op_gro
 from OpenStudioLandscapes.engine.constants import THIRD_PARTY
 
 GROUP = "Compose"
-KEY = "Compose"
+KEY = [GROUP]
 
 asset_header = {
     "group_name": GROUP,
-    "key_prefix": [KEY],
+    "key_prefix": KEY,
     "compute_kind": "python",
 }
 
@@ -29,7 +29,7 @@ asset_header = {
 @asset(
     **asset_header,
     ins={
-        "group_in": AssetIn(AssetKey([KEY_BASE, "group_out"])),
+        "group_in": AssetIn(AssetKey([*KEY_BASE, "group_out"])),
     },
 )
 def env(
@@ -105,8 +105,8 @@ group_out = AssetsDefinition.from_op(
     group_name=GROUP,
     key_prefix=KEY,
     keys_by_input_name={
-        "compose": AssetKey([KEY, "compose"]),
-        "env": AssetKey([KEY, "env"]),
+        "compose": AssetKey([*KEY, "compose"]),
+        "env": AssetKey([*KEY, "env"]),
     },
 )
 
@@ -116,6 +116,6 @@ docker_compose_graph = AssetsDefinition.from_op(
     group_name=GROUP,
     key_prefix=KEY,
     keys_by_input_name={
-        "group_out": AssetKey([KEY, "group_out"]),
+        "group_out": AssetKey([*KEY, "group_out"]),
     },
 )
