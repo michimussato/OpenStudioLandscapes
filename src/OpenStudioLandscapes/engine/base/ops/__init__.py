@@ -152,6 +152,18 @@ def op_group_out(
         "--remove-orphans",
     ]
 
+    cmd_docker_compose_pull_up = [
+        shutil.which("docker"),
+        "compose",
+        "--file",
+        docker_compose.as_posix(),
+        "--project-name",
+        project_name,
+        "pull",
+        "&&",
+        *cmd_docker_compose_up,
+    ]
+
     cmd_docker_compose_down = [
         shutil.which("docker"),
         "compose",
@@ -174,6 +186,9 @@ def op_group_out(
             "__".join(context.asset_key.path): MetadataValue.path(docker_compose),
             "cmd_docker_compose_up": MetadataValue.path(
                 " ".join(shlex.quote(s) for s in cmd_docker_compose_up)
+            ),
+            "cmd_docker_compose_pull_up": MetadataValue.path(
+                " ".join(shlex.quote(s) if not s in ["&&", ";"] else s for s in cmd_docker_compose_pull_up)
             ),
             "cmd_docker_compose_down": MetadataValue.path(
                 " ".join(shlex.quote(s) for s in cmd_docker_compose_down)
