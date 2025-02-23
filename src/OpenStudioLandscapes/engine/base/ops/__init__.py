@@ -160,6 +160,7 @@ def op_group_out(
         "--project-name",
         project_name,
         "pull",
+        "--ignore-pull-failures",
         "&&",
         *cmd_docker_compose_up,
     ]
