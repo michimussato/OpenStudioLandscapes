@@ -40,8 +40,8 @@
     {
       "args": {},
       "name": "lint",
-      "result": "success",
-      "result_code": 1,
+      "result": "failed",
+      "result_code": 0,
       "signatures": [
         "lint-3.11"
       ]

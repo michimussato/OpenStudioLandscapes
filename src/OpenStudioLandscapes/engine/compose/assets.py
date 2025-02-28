@@ -22,7 +22,12 @@ from OpenStudioLandscapes.engine.constants import *
         "group_in": AssetIn(AssetKey([*KEY_BASE, "group_out"])),
     },
     deps=[
-        AssetKey([*ASSET_HEADER_COMPOSE['key_prefix'], f"constants_{ASSET_HEADER_COMPOSE['group_name']}"])
+        AssetKey(
+            [
+                *ASSET_HEADER_COMPOSE["key_prefix"],
+                f"constants_{ASSET_HEADER_COMPOSE['group_name']}",
+            ]
+        )
     ],
 )
 def env(

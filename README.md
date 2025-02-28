@@ -53,7 +53,6 @@
 * [Roadmap](#roadmap)
   * [SSH](#ssh)
   * [Todo](#todo)
-    * [Materialize All](#materialize-all)
 * [PyScaffold](#pyscaffold)
   * [Create Module](#create-module)
     * [PyScaffold](#pyscaffold-1)
@@ -216,24 +215,25 @@ root((open-studio-landscapes))
 - Manjaro Linux
 
 ```shell
-$ neofetch
-██████████████████  ████████   michael@pocket3.lan
-██████████████████  ████████   -------------------
-██████████████████  ████████   OS: Manjaro Linux x86_64
-██████████████████  ████████   Host: G1621-02
-████████            ████████   Kernel: 6.12.4-1-MANJARO
-████████  ████████  ████████   Uptime: 5 hours, 52 mins
-████████  ████████  ████████   Packages: 2082 (pacman), 8 (flatpak)
-████████  ████████  ████████   Shell: bash 5.2.37
-████████  ████████  ████████   Resolution: 2560x1080
-████████  ████████  ████████   DE: Plasma 6.2.4
-████████  ████████  ████████   WM: KWin
-████████  ████████  ████████   Theme: Adwaita [GTK2/3]
-████████  ████████  ████████   Icons: breeze-dark [GTK2/3]
-████████  ████████  ████████   Terminal: konsole
-                               CPU: 11th Gen Intel i7-1195G7 (8) @ 5.000GHz
-                               GPU: Intel TigerLake-LP GT2 [Iris Xe Graphics]
-                               Memory: 9078MiB / 15769MiB
+$ neofetch                                                               INT ✘ 
+██████████████████  ████████   michael@lenovo 
+██████████████████  ████████   -------------- 
+██████████████████  ████████   OS: Manjaro Linux x86_64 
+██████████████████  ████████   Host: 82K1 IdeaPad Gaming 3 15IHU6 
+████████            ████████   Kernel: 6.12.12-2-MANJARO 
+████████  ████████  ████████   Uptime: 2 hours, 45 mins 
+████████  ████████  ████████   Packages: 1341 (pacman) 
+████████  ████████  ████████   Shell: bash 5.2.37 
+████████  ████████  ████████   Resolution: 2560x1080 
+████████  ████████  ████████   DE: Plasma 6.2.5 
+████████  ████████  ████████   WM: kwin 
+████████  ████████  ████████   Theme: Breeze-Dark [GTK2], Breeze [GTK3] 
+████████  ████████  ████████   Icons: breeze [GTK2/3] 
+████████  ████████  ████████   Terminal: konsole 
+                               CPU: 11th Gen Intel i5-11320H (8) @ 4.500GHz 
+                               GPU: Intel TigerLake-LP GT2 [Iris Xe Graphics] 
+                               GPU: NVIDIA GeForce GTX 1650 Mobile / Max-Q 
+                               Memory: 12660MiB / 15776MiB 
 ```
 
 ## About the Author
@@ -472,7 +472,7 @@ comparison:
 | Render Manager | Integrated | Cross Platform | Freely Available | Scalability (local and cloud) | Active Development | Local | Python API | DCC agnostic |
 |----------------|------------|----------------|------------------|-------------------------------|--------------------|-------|------------|--------------|
 | Deadline 10.x  | ✅          | ✅              | ✅                | ✅                             | ☐                  | ✅     | ✅          | ✅            |
-| OpenCue        | ❌          | ☐              | ☐                | ☐                             | ❌                  | ☐     | ☐          | ☐            |
+| OpenCue        | ✅          | ☐              | ✅                | ☐                             | ❌                  | ✅     | ✅          | ✅            |
 | Tractor        | ❌          | ☐              | ❌                | ☐                             | ☐                  | ☐     | ☐          | ☐            |
 | Flamenco       | ❌          | ☐              | ☐                | ☐                             | ☐                  | ☐     | ☐          | ❌            |
 | RoyalRender    | ❌          | ☐              | ☐                | ☐                             | ☐                  | ☐     | ☐          | ☐            |
@@ -585,7 +585,7 @@ f"DATABASE_INSTALL_DESTINATION_{KEY}": {
 cd ~/git/repos/OpenStudioLandscapes
 source .venv/bin/activate
 export DAGSTER_HOME="$(pwd)/.dagster"
-dagster dev --host 0.0.0.0  # --port 3000
+dagster dev
 ```
 
 http://0.0.0.0:3000
@@ -593,9 +593,9 @@ http://0.0.0.0:3000
 ### Configure Landscape
 
 Edit
-- `OpenStudioLandscapes.engine.assets.env`
-- `OpenStudioLandscapes.Deadline[...].assets.env`
-- `OpenStudioLandscapes.third_party[...].assets.env`
+- `OpenStudioLandscapes.engine.constants`
+- `OpenStudioLandscapes.Deadline[...].constants`
+- `OpenStudioLandscapes.third_party[...].constants`
 according to your needs.
 
 ### Materialize Landscape
@@ -605,20 +605,49 @@ according to your needs.
 #### Resulting Files and Directories (aka "Landscape")
 
 ```shell
-$ tree .landscapes/2025-02-01_00-38-08__cd68a765e3394d41b5e20420f33970bb
-.landscapes/2025-02-01_00-38-08__cd68a765e3394d41b5e20420f33970bb
-├── Base__env
-│   └── Base__env.json
-├── configs
-│   └── kitsu
-│       └── init_zou.sh
-├── data
-│   └── kitsu
-│       ├── postgresql
-│       │   └── 14
-│       │       └── main  [error opening dir]
-│       └── previews
-├── Deadline_10_2
+$ tree .landscapes/2025-02-28_13-24-43__4ade7f1cc21d4e39bb90b1363f807e79
+.landscapes/2025-02-28_13-24-43__4ade7f1cc21d4e39bb90b1363f807e79
+├── Ayon__Ayon
+│   ├── Ayon__clone_repository
+│   │   └── repos
+│   │       └── ayon-docker
+│   │           └── [...]
+│   ├── Ayon__compose_override
+│   │   └── docker-compose.override.yml
+│   └── Ayon__group_out
+│       └── docker_compose
+│           ├── Ayon__docker_compose_graph
+│           │   ├── Ayon__docker_compose_graph.dot
+│           │   ├── Ayon__docker_compose_graph.png
+│           │   └── Ayon__docker_compose_graph.svg
+│           └── docker-compose.yml
+├── Base__Base
+│   └── Base__build_docker_image
+│       └── Dockerfiles
+│           └── Dockerfile
+├── Compose__Compose
+│   └── Compose__group_out
+│       └── docker_compose
+│           ├── Compose__docker_compose_graph
+│           │   ├── Compose__docker_compose_graph.dot
+│           │   ├── Compose__docker_compose_graph.png
+│           │   └── Compose__docker_compose_graph.svg
+│           └── docker-compose.yml
+├── Dagster__Dagster
+│   ├── Dagster__build_docker_image
+│   │   └── Dockerfiles
+│   │       ├── Dockerfile
+│   │       └── payload
+│   │           ├── dagster.yaml
+│   │           └── workspace.yaml
+│   └── Dagster__group_out
+│       └── docker_compose
+│           ├── Dagster__docker_compose_graph
+│           │   ├── Dagster__docker_compose_graph.dot
+│           │   ├── Dagster__docker_compose_graph.png
+│           │   └── Dagster__docker_compose_graph.svg
+│           └── docker-compose.yml
+├── Deadline_10_2__Deadline_10_2
 │   ├── configs
 │   │   ├── Deadline10
 │   │   │   └── deadline.ini
@@ -629,65 +658,91 @@ $ tree .landscapes/2025-02-01_00-38-08__cd68a765e3394d41b5e20420f33970bb
 │   │   └── opt
 │   │       └── Thinkbox
 │   │           └── DeadlineDatabase10
-│   ├── Deadline_10_2__env_10_2.json
-│   ├── docker_compose
-│   │   ├── Deadline_10_2__compose_10_2
-│   │   │   ├── docker-compose.yml
-│   │   │   └── Viz__viz_compose_10_2
-│   │   │       ├── Viz__viz_compose_10_2.dot
-│   │   │       └── Viz__viz_compose_10_2.svg
-│   │   └── Deadline_10_2__compose_repository_10_2
+│   ├── Deadline_10_2__build_docker_image
+│   │   └── Dockerfiles
+│   │       └── Dockerfile
+│   ├── Deadline_10_2__build_docker_image_client
+│   │   └── Dockerfiles
+│   │       └── Dockerfile
+│   ├── Deadline_10_2__build_docker_image_repository
+│   │   └── Dockerfiles
+│   │       └── Dockerfile
+│   └── Deadline_10_2__group_out
+│       └── docker_compose
+│           ├── Deadline_10_2__docker_compose_graph
+│           │   ├── Deadline_10_2__docker_compose_graph.dot
+│           │   ├── Deadline_10_2__docker_compose_graph.png
+│           │   └── Deadline_10_2__docker_compose_graph.svg
+│           └── docker-compose.yml
+├── filebrowser__filebrowser
+│   └── filebrowser__group_out
+│       └── docker_compose
+│           ├── docker-compose.yml
+│           └── filebrowser__docker_compose_graph
+│               ├── filebrowser__docker_compose_graph.dot
+│               ├── filebrowser__docker_compose_graph.png
+│               └── filebrowser__docker_compose_graph.svg
+├── Grafana__Grafana
+│   └── Grafana__group_out
+│       └── docker_compose
+│           ├── docker-compose.yml
+│           └── Grafana__docker_compose_graph
+│               ├── Grafana__docker_compose_graph.dot
+│               ├── Grafana__docker_compose_graph.png
+│               └── Grafana__docker_compose_graph.svg
+├── Kitsu__Kitsu
+│   ├── data
+│   │   └── kitsu
+│   │       ├── postgresql
+│   │       └── previews
+│   ├── Kitsu__build_docker_image
+│   │   └── Dockerfiles
+│   │       ├── Dockerfile
+│   │       └── scripts
+│   │           ├── init_db.sh
+│   │           └── postgresql.conf
+│   ├── Kitsu__group_out
+│   │   └── docker_compose
 │   │       ├── docker-compose.yml
-│   │       └── Viz__viz_compose_repository_10_2
-│   │           ├── Viz__viz_compose_repository_10_2.dot
-│   │           └── Viz__viz_compose_repository_10_2.svg
-│   └── Dockerfiles
-│       ├── Deadline_10_2__build_client_image_10_2
-│       │   └── Dockerfile
-│       └── Deadline_10_2__build_repository_image_10_2
-│           └── Dockerfile
-├── docker_compose
-│   └── Ayon
-│       └── compose_override
-│           └── docker-compose.override.yml
-├── Dockerfiles
-│   ├── Base__build_base_image
-│   │   └── Dockerfile
-│   ├── Dagster
-│   │   └── build
+│   │       └── Kitsu__docker_compose_graph
+│   │           ├── Kitsu__docker_compose_graph.dot
+│   │           ├── Kitsu__docker_compose_graph.png
+│   │           └── Kitsu__docker_compose_graph.svg
+│   └── Kitsu__script_init_db
+│       └── init_db.sh
+├── LikeC4__LikeC4
+│   ├── LikeC4__build_docker_image
+│   │   └── Dockerfiles
 │   │       ├── Dockerfile
 │   │       └── payload
-│   │           ├── dagster.yaml
-│   │           └── workspace.yaml
-│   ├── Deadline_10_2__build_base_image_10_2
-│   │   └── Dockerfile
-│   ├── Kitsu
-│   │   └── build
-│   │       └── Dockerfile
-│   └── LikeC4
-│       └── build
-│           ├── Dockerfile
-│           └── payload
-│               ├── run.sh
-│               └── setup.sh
-└── third_party
-    ├── Ayon
-    │   └── env
-    │       └── Ayon__env.json
-    ├── Dagster
-    │   └── env
-    │       └── Dagster__env.json
-    ├── Grafana
-    │   └── env
-    │       └── Grafana__env.json
-    ├── Kitsu
-    │   └── env
-    │       └── Kitsu__env.json
-    └── LikeC4
-        └── env
-            └── LikeC4__env.json
+│   │           ├── run.sh
+│   │           └── setup.sh
+│   └── LikeC4__group_out
+│       └── docker_compose
+│           ├── docker-compose.yml
+│           └── LikeC4__docker_compose_graph
+│               ├── LikeC4__docker_compose_graph.dot
+│               ├── LikeC4__docker_compose_graph.png
+│               └── LikeC4__docker_compose_graph.svg
+└── OpenCue__OpenCue
+    ├── OpenCue__clone_repository
+    │   └── repos
+    │       └── OpenCue
+    │           └── [...]
+    ├── OpenCue__compose_override
+    │   └── docker-compose.override.yml
+    ├── OpenCue__group_out
+    │   └── docker_compose
+    │       ├── docker-compose.yml
+    │       └── OpenCue__docker_compose_graph
+    │           ├── OpenCue__docker_compose_graph.dot
+    │           ├── OpenCue__docker_compose_graph.png
+    │           └── OpenCue__docker_compose_graph.svg
+    └── OpenCue__prepare_volumes
+        ├── logs
+        └── shots
 
-52 directories, 28 files
+282 directories, 1310 files
 ```
 
 ## Run Repository Installer

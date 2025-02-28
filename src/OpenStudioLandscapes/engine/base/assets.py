@@ -170,7 +170,12 @@ def dot_installers(
         "nfs": AssetIn(AssetKey([*KEY_BASE, "nfs"])),
     },
     deps=[
-        AssetKey([*ASSET_HEADER_BASE['key_prefix'], f"constants_{ASSET_HEADER_BASE['group_name']}"])
+        AssetKey(
+            [
+                *ASSET_HEADER_BASE["key_prefix"],
+                f"constants_{ASSET_HEADER_BASE['group_name']}",
+            ]
+        )
     ],
 )
 def env(

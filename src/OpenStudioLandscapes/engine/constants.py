@@ -13,13 +13,12 @@ __all__ = [
 from typing import Generator, MutableMapping
 
 from dagster import (
-    asset,
-    Output,
+    AssetExecutionContext,
     AssetMaterialization,
     MetadataValue,
-    AssetExecutionContext,
+    Output,
+    asset,
 )
-
 
 DOCKER_USE_CACHE = False
 DOCKER_USE_CACHE_GLOBAL = False
@@ -53,7 +52,7 @@ THIRD_PARTY = [
     "OpenStudioLandscapes.Grafana.definitions",
     "OpenStudioLandscapes.Kitsu.definitions",
     "OpenStudioLandscapes.OpenCue.definitions",
-    # "OpenStudioLandscapes.LikeC4.definitions",  # Errors atm; minor issue
+    "OpenStudioLandscapes.LikeC4.definitions",  # Errors atm; minor issue
 ]
 
 
@@ -69,12 +68,12 @@ def constants_base(
 ) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
     """ """
 
-    _constants = dict()
-
-    _constants["DOCKER_USE_CACHE"] = DOCKER_USE_CACHE
-    _constants["DOCKER_USE_CACHE_GLOBAL"] = DOCKER_USE_CACHE_GLOBAL
-    _constants["ASSET_HEADER_BASE"] = ASSET_HEADER_BASE
-    _constants["THIRD_PARTY"] = THIRD_PARTY
+    _constants = {
+        "DOCKER_USE_CACHE": DOCKER_USE_CACHE,
+        "DOCKER_USE_CACHE_GLOBAL": DOCKER_USE_CACHE_GLOBAL,
+        "ASSET_HEADER_BASE": ASSET_HEADER_BASE,
+        "THIRD_PARTY": THIRD_PARTY,
+    }
 
     yield Output(_constants)
 
@@ -98,11 +97,11 @@ def constants_compose(
 ) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
     """ """
 
-    _constants = dict()
-
-    _constants["DOCKER_USE_CACHE"] = DOCKER_USE_CACHE
-    _constants["ASSET_HEADER_COMPOSE"] = ASSET_HEADER_COMPOSE
-    _constants["THIRD_PARTY"] = THIRD_PARTY
+    _constants = {
+        "DOCKER_USE_CACHE": DOCKER_USE_CACHE,
+        "ASSET_HEADER_COMPOSE": ASSET_HEADER_COMPOSE,
+        "THIRD_PARTY": THIRD_PARTY,
+    }
 
     yield Output(_constants)
 

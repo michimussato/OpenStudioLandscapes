@@ -242,7 +242,7 @@
       "version": "3.0.2"
     },
     {
-      "bom-ref": "OpenStudioLandscapes==0.0.post1.dev390+g6118468.d20250221",
+      "bom-ref": "OpenStudioLandscapes==0.0.post1.dev398+gc4b6a84.d20250228",
       "description": "A Toolkit to create dynamic Animation and VFX studio pipelines.",
       "licenses": [
         {
@@ -252,12 +252,12 @@
         }
       ],
       "name": "OpenStudioLandscapes",
-      "purl": "pkg:pypi/openstudiolandscapes@0.0.post1.dev390%2Bg6118468.d20250221",
+      "purl": "pkg:pypi/openstudiolandscapes@0.0.post1.dev398%2Bgc4b6a84.d20250228",
       "type": "library",
-      "version": "0.0.post1.dev390+g6118468.d20250221"
+      "version": "0.0.post1.dev398+gc4b6a84.d20250228"
     },
     {
-      "bom-ref": "BomRef.8420771515840075.7011162594234122",
+      "bom-ref": "BomRef.8176069488229858.03912745247986893",
       "description": "A Toolkit to create dynamic Animation and VFX studio pipelines.",
       "externalReferences": [
         {
@@ -275,7 +275,7 @@
       ],
       "name": "OpenStudioLandscapes",
       "type": "library",
-      "version": "0.0.post1.dev390+g6118468.d20250221"
+      "version": "0.0.post1.dev398+gc4b6a84.d20250228"
     },
     {
       "bom-ref": "PyScaffold==4.6",
@@ -1189,7 +1189,7 @@
       "version": "0.7.1"
     },
     {
-      "bom-ref": "docker-compose-graph==0.0.post1.dev160+ga6439e4",
+      "bom-ref": "docker-compose-graph==0.0.post1.dev161+g3a428a9",
       "description": "Add a short description here!",
       "externalReferences": [
         {
@@ -1200,7 +1200,7 @@
         {
           "comment": "PackageSource: VCS 'git'",
           "type": "vcs",
-          "url": "https://github.com/michimussato/docker-compose-graph.git#a6439e478d16ba4debd2e7aeecb83f1c72909600"
+          "url": "https://github.com/michimussato/docker-compose-graph.git#3a428a9113d1efba0771ddd2c1f824d358a007a7"
         },
         {
           "comment": "from packaging metadata: Home-page",
@@ -1219,16 +1219,16 @@
       "properties": [
         {
           "name": "cdx:python:package:source:vcs:commit_id",
-          "value": "a6439e478d16ba4debd2e7aeecb83f1c72909600"
+          "value": "3a428a9113d1efba0771ddd2c1f824d358a007a7"
         },
         {
           "name": "cdx:python:package:source:vcs:requested_revision",
           "value": "main"
         }
       ],
-      "purl": "pkg:pypi/docker-compose-graph@0.0.post1.dev160%2Bga6439e4?vcs_url=git%2Bhttps://github.com/michimussato/docker-compose-graph.git%40a6439e478d16ba4debd2e7aeecb83f1c72909600",
+      "purl": "pkg:pypi/docker-compose-graph@0.0.post1.dev161%2Bg3a428a9?vcs_url=git%2Bhttps://github.com/michimussato/docker-compose-graph.git%403a428a9113d1efba0771ddd2c1f824d358a007a7",
       "type": "library",
-      "version": "0.0.post1.dev160+ga6439e4"
+      "version": "0.0.post1.dev161+g3a428a9"
     },
     {
       "bom-ref": "docstring_parser==0.16",
@@ -3612,14 +3612,14 @@
         "dagster-job-processor==0.0.post1.dev38+gbaf3220",
         "dagster-shared==0.0.post1.dev10+g614f3c1",
         "dagster==1.9.11",
-        "docker-compose-graph==0.0.post1.dev160+ga6439e4",
+        "docker-compose-graph==0.0.post1.dev161+g3a428a9",
         "graphviz==0.20.3",
         "pipdeptree==2.25.0",
         "pydot==3.0.4",
         "python-on-whales==0.75.1",
         "setuptools==75.8.0"
       ],
-      "ref": "OpenStudioLandscapes==0.0.post1.dev390+g6118468.d20250221"
+      "ref": "OpenStudioLandscapes==0.0.post1.dev398+gc4b6a84.d20250228"
     },
     {
       "dependsOn": [
@@ -3790,7 +3790,7 @@
         "python-dotenv==1.0.1",
         "setuptools==75.8.0"
       ],
-      "ref": "docker-compose-graph==0.0.post1.dev160+ga6439e4"
+      "ref": "docker-compose-graph==0.0.post1.dev161+g3a428a9"
     },
     {
       "ref": "docstring_parser==0.16"
@@ -4156,7 +4156,7 @@
     }
   ],
   "metadata": {
-    "timestamp": "2025-02-21T09:21:54.132663+00:00",
+    "timestamp": "2025-02-28T11:25:20.357593+00:00",
     "tools": {
       "components": [
         {
@@ -4258,7 +4258,7 @@
       ]
     }
   },
-  "serialNumber": "urn:uuid:f72bd9ef-4adf-4cae-950d-2961e91a4652",
+  "serialNumber": "urn:uuid:53213577-fdd7-41a3-af11-614d3031664d",
   "version": 1,
   "$schema": "http://cyclonedx.org/schema/bom-1.5.schema.json",
   "bomFormat": "CycloneDX",
