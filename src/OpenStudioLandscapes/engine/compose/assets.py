@@ -12,25 +12,18 @@ from dagster import (
     asset,
 )
 
-from OpenStudioLandscapes.engine.base.assets import KEY as KEY_BASE
 from OpenStudioLandscapes.engine.base.ops import op_docker_compose_graph, op_group_out
-from OpenStudioLandscapes.engine.constants import THIRD_PARTY
-
-GROUP = "Compose"
-KEY = [GROUP]
-
-asset_header = {
-    "group_name": GROUP,
-    "key_prefix": KEY,
-    "compute_kind": "python",
-}
+from OpenStudioLandscapes.engine.constants import *
 
 
 @asset(
-    **asset_header,
+    **ASSET_HEADER_COMPOSE,
     ins={
         "group_in": AssetIn(AssetKey([*KEY_BASE, "group_out"])),
     },
+    deps=[
+        AssetKey([*ASSET_HEADER_COMPOSE['key_prefix'], f"constants_{ASSET_HEADER_COMPOSE['group_name']}"])
+    ],
 )
 def env(
     context: AssetExecutionContext,
@@ -66,7 +59,7 @@ for i in THIRD_PARTY:
 
 
 @asset(
-    **asset_header,
+    **ASSET_HEADER_COMPOSE,
     ins={
         **ins,
     },
@@ -102,20 +95,20 @@ def compose(
 
 group_out = AssetsDefinition.from_op(
     op_group_out,
-    group_name=GROUP,
-    key_prefix=KEY,
+    group_name=GROUP_COMPOSE,
+    key_prefix=KEY_COMPOSE,
     keys_by_input_name={
-        "compose": AssetKey([*KEY, "compose"]),
-        "env": AssetKey([*KEY, "env"]),
+        "compose": AssetKey([*KEY_COMPOSE, "compose"]),
+        "env": AssetKey([*KEY_COMPOSE, "env"]),
     },
 )
 
 
 docker_compose_graph = AssetsDefinition.from_op(
     op_docker_compose_graph,
-    group_name=GROUP,
-    key_prefix=KEY,
+    group_name=GROUP_COMPOSE,
+    key_prefix=KEY_COMPOSE,
     keys_by_input_name={
-        "group_out": AssetKey([*KEY, "group_out"]),
+        "group_out": AssetKey([*KEY_COMPOSE, "group_out"]),
     },
 )

@@ -23,18 +23,18 @@ from python_on_whales import docker
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.utils import *
 
-GROUP = "Base"
-KEY = [GROUP]
-
-asset_header = {
-    "group_name": GROUP,
-    "key_prefix": KEY,
-    "compute_kind": "python",
-}
+# GROUP = "Base"
+# KEY = [GROUP]
+#
+# ASSET_HEADER = {
+#     "group_name": GROUP,
+#     "key_prefix": KEY,
+#     "compute_kind": "python",
+# }
 
 
 @asset(
-    **asset_header,
+    **ASSET_HEADER_BASE,
     # group_name="Environment",
 )
 def git_root(
@@ -54,7 +54,7 @@ def git_root(
 
 
 @asset(
-    **asset_header,
+    **ASSET_HEADER_BASE,
     # group_name="Environment",
 )
 def landscape_id(
@@ -78,7 +78,7 @@ def landscape_id(
 
 
 @asset(
-    **asset_header,
+    **ASSET_HEADER_BASE,
     # group_name="Environment",
 )
 def secrets(
@@ -101,11 +101,11 @@ def secrets(
 
 
 @asset(
-    **asset_header,
+    **ASSET_HEADER_BASE,
     # group_name="Environment",
     ins={
         "git_root": AssetIn(
-            AssetKey([*KEY, "git_root"]),
+            AssetKey([*KEY_BASE, "git_root"]),
         ),
     },
 )
@@ -131,10 +131,10 @@ def dot_landscapes(
 
 
 @asset(
-    **asset_header,
+    **ASSET_HEADER_BASE,
     # group_name="Environment",
     ins={
-        "git_root": AssetIn(AssetKey([*KEY, "git_root"])),
+        "git_root": AssetIn(AssetKey([*KEY_BASE, "git_root"])),
     },
 )
 def dot_installers(
@@ -159,16 +159,19 @@ def dot_installers(
 
 
 @asset(
-    **asset_header,
+    **ASSET_HEADER_BASE,
     # group_name="Environment",
     ins={
-        "git_root": AssetIn(AssetKey([*KEY, "git_root"])),
-        "secrets": AssetIn(AssetKey([*KEY, "secrets"])),
-        "landscape_id": AssetIn(AssetKey([*KEY, "landscape_id"])),
-        "dot_landscapes": AssetIn(AssetKey([*KEY, "dot_landscapes"])),
-        "dot_installers": AssetIn(AssetKey([*KEY, "dot_installers"])),
-        "nfs": AssetIn(AssetKey([*KEY, "nfs"])),
+        "git_root": AssetIn(AssetKey([*KEY_BASE, "git_root"])),
+        "secrets": AssetIn(AssetKey([*KEY_BASE, "secrets"])),
+        "landscape_id": AssetIn(AssetKey([*KEY_BASE, "landscape_id"])),
+        "dot_landscapes": AssetIn(AssetKey([*KEY_BASE, "dot_landscapes"])),
+        "dot_installers": AssetIn(AssetKey([*KEY_BASE, "dot_installers"])),
+        "nfs": AssetIn(AssetKey([*KEY_BASE, "nfs"])),
     },
+    deps=[
+        AssetKey([*ASSET_HEADER_BASE['key_prefix'], f"constants_{ASSET_HEADER_BASE['group_name']}"])
+    ],
 )
 def env(
     context: AssetExecutionContext,
@@ -225,7 +228,7 @@ def env(
 
 
 @asset(
-    **asset_header,
+    **ASSET_HEADER_BASE,
     # group_name="Build_Base_Image",
 )
 def pip_packages(
@@ -255,7 +258,7 @@ def pip_packages(
 
 
 @asset(
-    **asset_header,
+    **ASSET_HEADER_BASE,
     # group_name="Build_Base_Image",
 )
 def apt_packages(
@@ -307,12 +310,12 @@ def apt_packages(
 
 
 @asset(
-    **asset_header,
+    **ASSET_HEADER_BASE,
     # group_name="Build_Base_Image",
     ins={
-        "env": AssetIn(AssetKey([*KEY, "env"])),
-        "apt_packages": AssetIn(AssetKey([*KEY, "apt_packages"])),
-        "pip_packages": AssetIn(AssetKey([*KEY, "pip_packages"])),
+        "env": AssetIn(AssetKey([*KEY_BASE, "env"])),
+        "apt_packages": AssetIn(AssetKey([*KEY_BASE, "apt_packages"])),
+        "pip_packages": AssetIn(AssetKey([*KEY_BASE, "pip_packages"])),
     },
 )
 def build_docker_image(
@@ -326,7 +329,7 @@ def build_docker_image(
     docker_file = pathlib.Path(
         env["DOT_LANDSCAPES"],
         env.get("LANDSCAPE", "default"),
-        f"{GROUP}__{'__'.join(KEY)}",
+        f"{GROUP_BASE}__{'__'.join(KEY_BASE)}",
         "__".join(context.asset_key.path),
         "Dockerfiles",
         "Dockerfile",
@@ -447,7 +450,7 @@ def build_docker_image(
 
 
 @asset(
-    **asset_header,
+    **ASSET_HEADER_BASE,
     # group_name="Environment",
 )
 def nfs(
@@ -472,15 +475,15 @@ def nfs(
 
 
 @asset(
-    **asset_header,
+    **ASSET_HEADER_BASE,
     # group_name=f"GROUP_OUT_{KEY}",
     tags={
         "group_out": "base",
     },
     ins={
-        "env": AssetIn(AssetKey([*KEY, "env"])),
+        "env": AssetIn(AssetKey([*KEY_BASE, "env"])),
         "build_docker_image": AssetIn(
-            AssetKey([*KEY, "build_docker_image"]),
+            AssetKey([*KEY_BASE, "build_docker_image"]),
         ),
     },
 )
