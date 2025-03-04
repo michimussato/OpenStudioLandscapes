@@ -52,7 +52,8 @@ THIRD_PARTY = [
     "OpenStudioLandscapes.Grafana.definitions",
     "OpenStudioLandscapes.Kitsu.definitions",
     "OpenStudioLandscapes.OpenCue.definitions",
-    "OpenStudioLandscapes.LikeC4.definitions",  # Errors atm; minor issue
+    "OpenStudioLandscapes.LikeC4.definitions",
+    "OpenStudioLandscapes.Syncthing.definitions",
 ]
 
 
