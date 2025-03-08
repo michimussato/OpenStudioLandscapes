@@ -594,8 +594,7 @@ http://0.0.0.0:3000
 
 Edit
 - `OpenStudioLandscapes.engine.constants`
-- `OpenStudioLandscapes.Deadline[...].constants`
-- `OpenStudioLandscapes.third_party[...].constants`
+- `OpenStudioLandscapes.<third_party_module>.constants`
 according to your needs.
 
 ### Materialize Landscape
