@@ -48,6 +48,7 @@ THIRD_PARTY = [
     "OpenStudioLandscapes.Ayon.definitions",
     "OpenStudioLandscapes.Dagster.definitions",
     "OpenStudioLandscapes.Deadline_10_2.definitions",
+    "OpenStudioLandscapes.Deadline_10_2_Worker.definitions",
     "OpenStudioLandscapes.filebrowser.definitions",
     "OpenStudioLandscapes.Grafana.definitions",
     "OpenStudioLandscapes.Kitsu.definitions",
