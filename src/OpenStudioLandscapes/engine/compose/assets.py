@@ -1,3 +1,4 @@
+import pathlib
 from typing import Generator
 
 import yaml
@@ -79,7 +80,12 @@ def compose(
 
     context.log.info(kwargs)
 
-    _group_in = [*kwargs.values()]
+    _group_in = []
+
+    for v in kwargs.values():
+        # Filter None from Dummy Out
+        if isinstance(v, pathlib.Path):
+            _group_in.append(v)
 
     docker_dict = {
         "include": [{"path": [i.as_posix()]} for i in _group_in],
