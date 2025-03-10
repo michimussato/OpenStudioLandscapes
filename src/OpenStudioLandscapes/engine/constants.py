@@ -11,8 +11,10 @@ __all__ = [
     "KEY_COMPOSE_WORKER",
     "ASSET_HEADER_COMPOSE_WORKER",
     "THIRD_PARTY",
+    "ComposeScope",
 ]
 
+import enum
 from typing import Generator, MutableMapping
 
 from dagster import (
@@ -22,6 +24,12 @@ from dagster import (
     Output,
     asset,
 )
+
+
+class ComposeScope(enum.StrEnum):
+    DEFAULT = "default"
+    WORKER = "worker"
+
 
 DOCKER_USE_CACHE = False
 DOCKER_USE_CACHE_GLOBAL = False
@@ -37,7 +45,7 @@ ASSET_HEADER_BASE = {
 }
 
 
-GROUP_COMPOSE = "Compose"
+GROUP_COMPOSE = f"Compose_{ComposeScope.DEFAULT}"
 KEY_COMPOSE = [GROUP_COMPOSE]
 
 ASSET_HEADER_COMPOSE = {
@@ -47,7 +55,7 @@ ASSET_HEADER_COMPOSE = {
 }
 
 
-GROUP_COMPOSE_WORKER = "Compose_Worker"
+GROUP_COMPOSE_WORKER = f"Compose_{ComposeScope.WORKER}"
 KEY_COMPOSE_WORKER = [GROUP_COMPOSE_WORKER]
 
 ASSET_HEADER_COMPOSE_WORKER = {
@@ -58,16 +66,56 @@ ASSET_HEADER_COMPOSE_WORKER = {
 
 
 THIRD_PARTY = [
-    # "OpenStudioLandscapes.Ayon.definitions",
-    "OpenStudioLandscapes.Dagster.definitions",
-    "OpenStudioLandscapes.Deadline_10_2.definitions",
-    "OpenStudioLandscapes.Deadline_10_2_Worker.definitions",
-    # "OpenStudioLandscapes.filebrowser.definitions",
-    # "OpenStudioLandscapes.Grafana.definitions",
-    "OpenStudioLandscapes.Kitsu.definitions",
-    # "OpenStudioLandscapes.OpenCue.definitions",
-    # "OpenStudioLandscapes.LikeC4.definitions",
-    # "OpenStudioLandscapes.Syncthing.definitions",
+    # {
+    #     "enabled": False,
+    #     "module": "OpenStudioLandscapes.Ayon.definitions",
+    #     "compose_scope": ComposeScope.DEFAULT,
+    # },
+    {
+        "enabled": True,
+        "module": "OpenStudioLandscapes.Dagster.definitions",
+        "compose_scope": ComposeScope.DEFAULT,
+    },
+    {
+        "enabled": True,
+        "module": "OpenStudioLandscapes.Deadline_10_2.definitions",
+        "compose_scope": ComposeScope.DEFAULT,
+    },
+    {
+        "enabled": True,
+        "module": "OpenStudioLandscapes.Deadline_10_2_Worker.definitions",
+        "compose_scope": ComposeScope.WORKER,
+    },
+    # {
+    #     "enabled": False,
+    #     "module": "OpenStudioLandscapes.filebrowser.definitions",
+    #     "compose_scope": ComposeScope.DEFAULT,
+    # },
+    # {
+    #     "enabled": False,
+    #     "module": "OpenStudioLandscapes.Grafana.definitions",
+    #     "compose_scope": ComposeScope.DEFAULT,
+    # },
+    {
+        "enabled": True,
+        "module": "OpenStudioLandscapes.Kitsu.definitions",
+        "compose_scope": ComposeScope.DEFAULT,
+    },
+    # {
+    #     "enabled": False,
+    #     "module": "OpenStudioLandscapes.OpenCue.definitions",
+    #     "compose_scope": ComposeScope.DEFAULT,
+    # },
+    # {
+    #     "enabled": False,
+    #     "module": "OpenStudioLandscapes.LikeC4.definitions",
+    #     "compose_scope": ComposeScope.DEFAULT,
+    # },
+    # {
+    #     "enabled": False,
+    #     "module": "OpenStudioLandscapes.Syncthing.definitions",
+    #     "compose_scope": ComposeScope.DEFAULT,
+    # },
 ]
 
 

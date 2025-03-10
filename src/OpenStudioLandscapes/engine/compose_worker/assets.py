@@ -38,6 +38,12 @@ def env(
 
     ret = group_in.get("env", {})
 
+    ret.update(
+        {
+            "COMPOSE_SCOPE": ComposeScope.WORKER,
+        }
+    )
+
     yield Output(ret)
 
     yield AssetMaterialization(
@@ -52,10 +58,36 @@ def env(
 # third party code locations
 ins = {}
 for i in THIRD_PARTY:
-    # ex: i = "OpenStudioLandscapes.Ayon.definitions"
-    split = i.split(".")
-    key = split[1]  # key = "Ayon"
-    ins[f"{split[0]}_{split[1]}"] = AssetIn(AssetKey([key, "group_out"]))
+    enabled = i["enabled"]
+    if not enabled:
+        continue
+    # ex: module = "OpenStudioLandscapes.Ayon.definitions"
+    module = i["module"]
+    compose_scope = i["compose_scope"]
+    if compose_scope == ComposeScope.WORKER:
+
+        # @asset(
+        #     # **ASSET_HEADER,
+        # )
+        # def compose_scope(
+        #         context: AssetExecutionContext,
+        # ) -> Generator[Output[str] | AssetMaterialization, None, None]:
+        #     """ """
+        #
+        #     compose_scope = ComposeScope.WORKER
+        #
+        #     yield Output(compose_scope)
+        #
+        #     yield AssetMaterialization(
+        #         asset_key=context.asset_key,
+        #         metadata={
+        #             "__".join(context.asset_key.path): MetadataValue.text(compose_scope),
+        #         },
+        #     )
+
+        split = module.split(".")
+        key = split[1]  # key = "Ayon"
+        ins[f"{split[0]}_{split[1]}"] = AssetIn(AssetKey([key, "group_out"]))
 
 
 @asset(

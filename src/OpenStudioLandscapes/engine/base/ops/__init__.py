@@ -16,6 +16,37 @@ from dagster import (
     op,
 )
 from docker_compose_graph.docker_compose_graph import DockerComposeGraph
+#
+# from OpenStudioLandscapes.engine.constants import ComposeScope
+#
+#
+# @op(
+#     name="compose_scope",
+#     out={
+#         "compose_scope": Out(ComposeScope),
+#     },
+# )
+# def op_compose_scope(
+#     context: OpExecutionContext,
+#     compose_scope: pathlib.Path,  # pylint: disable=redefined-outer-name
+# ) -> Generator[Output[ComposeScope] | AssetMaterialization, None, None]:
+#     """ """
+#
+#     compose_scope_value = ComposeScope
+#
+#     yield Output(Comp)
+#
+#     yield AssetMaterialization(
+#         asset_key=context.asset_key,
+#         metadata={
+#             "svg": MetadataValue.md(svg_md),
+#             # "png": MetadataValue.md(png_md),  # slow in Dagster UI
+#             "__".join(context.asset_key.path): MetadataValue.json(str(dcg.graph)),
+#             "svg_path": MetadataValue.path(svg),
+#             "png_path": MetadataValue.path(png),
+#             "dot_path": MetadataValue.path(dot),
+#         },
+#     )
 
 
 @op(
@@ -98,6 +129,7 @@ def op_docker_compose_graph(
     ins={
         "compose": In(dict),
         "env": In(dict),
+        # "compose_scope": In(ComposeScope),
     },
     out={
         "group_out": Out(pathlib.Path),
@@ -107,6 +139,7 @@ def op_group_out(
     context: OpExecutionContext,
     compose: dict,  # pylint: disable=redefined-outer-name
     env: dict,  # pylint: disable=redefined-outer-name
+    # compose_scope: ComposeScope,
 ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
 
     docker_yaml = yaml.dump(compose)
@@ -141,7 +174,8 @@ def op_group_out(
     with open(docker_compose, mode="w", encoding="utf-8") as fw:
         fw.write(docker_yaml)
 
-    project_name = f"{env.get('LANDSCAPE', 'default').replace('.', '-')}"
+    # project_name = f"{env.get('LANDSCAPE', 'default').replace('.', '-')}-{ComposeScope.value}"
+    project_name = f"{env.get('LANDSCAPE', 'default').replace('.', '-')}-{env['COMPOSE_SCOPE']}"
 
     cmd_docker_compose_up = [
         shutil.which("docker"),
@@ -204,24 +238,24 @@ def op_group_out(
     )
 
 
-@op(
-    name="group_out_dummy",
-    # tags={
-    #     "domain": "marketing",
-    # },
-    out={
-        "group_out": Out(None),
-    },
-    description="Dummy Out. Returns `None`",
-)
-def op_group_out_dummy(
-    context: OpExecutionContext,
-) -> Output[None]:
-
-    return Output(
-        output_name="group_out",
-        value=None,
-    )
+# @op(
+#     name="group_out_dummy",
+#     # tags={
+#     #     "domain": "marketing",
+#     # },
+#     out={
+#         "group_out": Out(None),
+#     },
+#     description="Dummy Out. Returns `None`",
+# )
+# def op_group_out_dummy(
+#     context: OpExecutionContext,
+# ) -> Output[None]:
+#
+#     return Output(
+#         output_name="group_out",
+#         value=None,
+#     )
 
 
 # @op(

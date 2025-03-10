@@ -8,7 +8,7 @@ imports = [
     "OpenStudioLandscapes.engine.base.definitions",
     "OpenStudioLandscapes.engine.compose.definitions",
     "OpenStudioLandscapes.engine.compose_worker.definitions",
-    *THIRD_PARTY,
+    *[i["module"] for i in THIRD_PARTY if i["enabled"]],
 ]
 
 
