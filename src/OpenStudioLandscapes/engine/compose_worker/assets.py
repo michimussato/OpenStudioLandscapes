@@ -65,26 +65,6 @@ for i in THIRD_PARTY:
     module = i["module"]
     compose_scope = i["compose_scope"]
     if compose_scope == ComposeScope.WORKER:
-
-        # @asset(
-        #     # **ASSET_HEADER,
-        # )
-        # def compose_scope(
-        #         context: AssetExecutionContext,
-        # ) -> Generator[Output[str] | AssetMaterialization, None, None]:
-        #     """ """
-        #
-        #     compose_scope = ComposeScope.WORKER
-        #
-        #     yield Output(compose_scope)
-        #
-        #     yield AssetMaterialization(
-        #         asset_key=context.asset_key,
-        #         metadata={
-        #             "__".join(context.asset_key.path): MetadataValue.text(compose_scope),
-        #         },
-        #     )
-
         split = module.split(".")
         key = split[1]  # key = "Ayon"
         ins[f"{split[0]}_{split[1]}"] = AssetIn(AssetKey([key, "group_out"]))

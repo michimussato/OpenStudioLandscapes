@@ -23,15 +23,6 @@ from python_on_whales import docker
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.utils import *
 
-# GROUP = "Base"
-# KEY = [GROUP]
-#
-# ASSET_HEADER = {
-#     "group_name": GROUP,
-#     "key_prefix": KEY,
-#     "compute_kind": "python",
-# }
-
 
 @asset(
     **ASSET_HEADER_BASE,
