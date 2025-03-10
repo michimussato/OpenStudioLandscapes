@@ -2,11 +2,14 @@ __all__ = [
     "DOCKER_USE_CACHE",
     "DOCKER_USE_CACHE_GLOBAL",
     "GROUP_BASE",
-    "GROUP_COMPOSE",
     "KEY_BASE",
-    "KEY_COMPOSE",
     "ASSET_HEADER_BASE",
+    "GROUP_COMPOSE",
+    "KEY_COMPOSE",
     "ASSET_HEADER_COMPOSE",
+    "GROUP_COMPOSE_WORKER",
+    "KEY_COMPOSE_WORKER",
+    "ASSET_HEADER_COMPOSE_WORKER",
     "THIRD_PARTY",
 ]
 
@@ -44,17 +47,27 @@ ASSET_HEADER_COMPOSE = {
 }
 
 
+GROUP_COMPOSE_WORKER = "Compose_Worker"
+KEY_COMPOSE_WORKER = [GROUP_COMPOSE_WORKER]
+
+ASSET_HEADER_COMPOSE_WORKER = {
+    "group_name": GROUP_COMPOSE_WORKER,
+    "key_prefix": KEY_COMPOSE_WORKER,
+    "compute_kind": "python",
+}
+
+
 THIRD_PARTY = [
-    "OpenStudioLandscapes.Ayon.definitions",
+    # "OpenStudioLandscapes.Ayon.definitions",
     "OpenStudioLandscapes.Dagster.definitions",
     "OpenStudioLandscapes.Deadline_10_2.definitions",
     "OpenStudioLandscapes.Deadline_10_2_Worker.definitions",
-    "OpenStudioLandscapes.filebrowser.definitions",
-    "OpenStudioLandscapes.Grafana.definitions",
+    # "OpenStudioLandscapes.filebrowser.definitions",
+    # "OpenStudioLandscapes.Grafana.definitions",
     "OpenStudioLandscapes.Kitsu.definitions",
-    "OpenStudioLandscapes.OpenCue.definitions",
-    "OpenStudioLandscapes.LikeC4.definitions",
-    "OpenStudioLandscapes.Syncthing.definitions",
+    # "OpenStudioLandscapes.OpenCue.definitions",
+    # "OpenStudioLandscapes.LikeC4.definitions",
+    # "OpenStudioLandscapes.Syncthing.definitions",
 ]
 
 
@@ -102,6 +115,34 @@ def constants_compose(
     _constants = {
         "DOCKER_USE_CACHE": DOCKER_USE_CACHE,
         "ASSET_HEADER_COMPOSE": ASSET_HEADER_COMPOSE,
+        "THIRD_PARTY": THIRD_PARTY,
+    }
+
+    yield Output(_constants)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.json(_constants),
+        },
+    )
+
+
+@asset(
+    name=f"constants_{GROUP_COMPOSE_WORKER}",
+    group_name="Constants",
+    key_prefix=KEY_COMPOSE_WORKER,
+    compute_kind="python",
+    description="",
+)
+def constants_compose_worker(
+    context: AssetExecutionContext,
+) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
+    """ """
+
+    _constants = {
+        "DOCKER_USE_CACHE": DOCKER_USE_CACHE,
+        "ASSET_HEADER_COMPOSE": ASSET_HEADER_COMPOSE_WORKER,
         "THIRD_PARTY": THIRD_PARTY,
     }
 

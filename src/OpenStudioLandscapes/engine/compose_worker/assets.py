@@ -18,15 +18,15 @@ from OpenStudioLandscapes.engine.constants import *
 
 
 @asset(
-    **ASSET_HEADER_COMPOSE,
+    **ASSET_HEADER_COMPOSE_WORKER,
     ins={
         "group_in": AssetIn(AssetKey([*KEY_BASE, "group_out"])),
     },
     deps=[
         AssetKey(
             [
-                *ASSET_HEADER_COMPOSE["key_prefix"],
-                f"constants_{ASSET_HEADER_COMPOSE['group_name']}",
+                *ASSET_HEADER_COMPOSE_WORKER["key_prefix"],
+                f"constants_{ASSET_HEADER_COMPOSE_WORKER['group_name']}",
             ]
         )
     ],
@@ -59,7 +59,7 @@ for i in THIRD_PARTY:
 
 
 @asset(
-    **ASSET_HEADER_COMPOSE,
+    **ASSET_HEADER_COMPOSE_WORKER,
     ins={
         **ins,
     },
@@ -100,20 +100,20 @@ def compose(
 
 group_out = AssetsDefinition.from_op(
     op_group_out,
-    group_name=GROUP_COMPOSE,
-    key_prefix=KEY_COMPOSE,
+    group_name=GROUP_COMPOSE_WORKER,
+    key_prefix=KEY_COMPOSE_WORKER,
     keys_by_input_name={
-        "compose": AssetKey([*KEY_COMPOSE, "compose"]),
-        "env": AssetKey([*KEY_COMPOSE, "env"]),
+        "compose": AssetKey([*KEY_COMPOSE_WORKER, "compose"]),
+        "env": AssetKey([*KEY_COMPOSE_WORKER, "env"]),
     },
 )
 
 
 docker_compose_graph = AssetsDefinition.from_op(
     op_docker_compose_graph,
-    group_name=GROUP_COMPOSE,
-    key_prefix=KEY_COMPOSE,
+    group_name=GROUP_COMPOSE_WORKER,
+    key_prefix=KEY_COMPOSE_WORKER,
     keys_by_input_name={
-        "group_out": AssetKey([*KEY_COMPOSE, "group_out"]),
+        "group_out": AssetKey([*KEY_COMPOSE_WORKER, "group_out"]),
     },
 )
