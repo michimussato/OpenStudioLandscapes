@@ -293,6 +293,7 @@ def apt_packages(
         "libffi-dev",
         "libsqlite3-dev",
         "libbz2-dev",
+        "iproute2",
     ]
 
     yield Output(_apt_packages)
