@@ -101,6 +101,11 @@ THIRD_PARTY = [
         "module": "OpenStudioLandscapes.Kitsu.definitions",
         "compose_scope": ComposeScope.DEFAULT,
     },
+    {
+        "enabled": True,
+        "module": "OpenStudioLandscapes.SESI_gcc_9_3_Houdini_20.definitions",
+        "compose_scope": ComposeScope.DEFAULT,
+    },
     # {
     #     "enabled": False,
     #     "module": "OpenStudioLandscapes.OpenCue.definitions",
