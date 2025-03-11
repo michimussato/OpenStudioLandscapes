@@ -1,3 +1,4 @@
+import os
 import pathlib
 from typing import Generator
 
@@ -73,11 +74,15 @@ for i in THIRD_PARTY:
 @asset(
     **ASSET_HEADER_COMPOSE_WORKER,
     ins={
+        "env": AssetIn(
+            AssetKey([*KEY_COMPOSE_WORKER, "env"]),
+        ),
         **ins,
     },
 )
 def compose(
     context: AssetExecutionContext,
+    env: dict,  # pylint: disable=redefined-outer-name
     **kwargs,
 ) -> Generator[
     Output[dict[str, list[dict[str, list]]]] | AssetMaterialization, None, None
@@ -88,10 +93,26 @@ def compose(
 
     _group_in = []
 
+    docker_compose = pathlib.PurePosixPath(
+        env["DOT_LANDSCAPES"],
+        env.get("LANDSCAPE", "default"),
+        f"{GROUP_COMPOSE_WORKER}__{'__'.join(KEY_COMPOSE_WORKER)}",
+        "__".join(context.asset_key.path),
+        "docker_compose",
+        "docker-compose.yml",
+    )
+
+    context.log.info(docker_compose)
+    context.log.info(type(docker_compose))
+
     for v in kwargs.values():
-        # Filter None from Dummy Out
-        if isinstance(v, pathlib.Path):
-            _group_in.append(v)
+        _rel_path = os.path.relpath(
+            path=v.as_posix(),
+            start=docker_compose.parent.as_posix(),
+        )
+        rel_path = pathlib.Path(_rel_path)
+
+        _group_in.append(rel_path)
 
     docker_dict = {
         "include": [{"path": [i.as_posix()]} for i in _group_in],
