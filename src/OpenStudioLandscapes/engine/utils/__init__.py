@@ -6,6 +6,9 @@ __all__ = [
     "get_wget_str",
     "get_copy_str",
     "get_git_root",
+    "get_configs_root",
+    "get_data_root",
+    "get_bin_root",
 ]
 
 
