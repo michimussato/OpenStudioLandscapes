@@ -57,11 +57,6 @@ MANIFEST
 .dagster/*/
 tmp*/
 
-**.run
-/sesi/
-/installers/
-
-.installers/*/
 .landscapes/*/
 
 .payload/data/
