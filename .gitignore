@@ -63,3 +63,6 @@ tmp*/
 
 .installers/*/
 .landscapes/*/
+
+.payload/data/
+.payload/bin/
