@@ -20,6 +20,7 @@ import git
 from dagster import MetadataValue
 
 from OpenStudioLandscapes.engine.constants import *
+from OpenStudioLandscapes.engine.enums import *
 
 
 def compile_cmds(
@@ -140,6 +141,7 @@ def get_wget_str(
 def get_git_root(
     path: pathlib.Path = pathlib.Path(__file__),
 ) -> pathlib.Path:
+    """Get the Git base path of a file which is lives inside a repository."""
     git_repo = git.Repo(path, search_parent_directories=True)
     git_root = git_repo.git.rev_parse("--show-toplevel")
     return pathlib.Path(git_root)
@@ -167,3 +169,10 @@ def get_bin_root(
     git_root: pathlib.Path = get_git_root(path)
     bin_root: pathlib.Path = git_root / ".payload" / "bin"
     return bin_root
+
+
+def get_compose_network(
+    network_dict: dict,
+    network_mode: ComposeNetworkMode = ComposeNetworkMode.DEFAULT,
+) -> dict:
+    pass
