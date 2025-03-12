@@ -1,13 +1,16 @@
 import base64
-import json
+import copy
 import os
 import pathlib
 import shlex
 import shutil
-from typing import Generator
+from functools import reduce
+from keyword import kwlist
+from typing import Generator, MutableMapping
 
-import pydot
 import yaml
+from docker_compose_graph.utils import *
+import pydot
 
 from dagster import (
     AssetMaterialization,
@@ -23,9 +26,59 @@ from docker_compose_graph.docker_compose_graph import DockerComposeGraph
 
 
 @op(
+    name="compose",
+    ins={
+        "compose_networks": In(dict),
+        "compose_maps": In(list),
+    },
+    out={
+        "compose": Out(dict),
+    },
+)
+def op_compose(
+    context: OpExecutionContext,
+    compose_networks: dict,  # pylint: disable=redefined-outer-name
+    # **kwargs,  # pylint: disable=redefined-outer-name
+    compose_maps: list[dict],  # pylint: disable=redefined-outer-name
+) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
+    """ """
+
+    if "networks" in compose_networks:
+        network_dict = copy.deepcopy(compose_networks)
+    else:
+        network_dict = {}
+
+    docker_chainmap = ChainMap(
+        network_dict,
+        *compose_maps,
+    )
+
+    docker_dict = reduce(deep_merge, docker_chainmap.maps)
+
+    docker_yaml = yaml.dump(docker_dict)
+
+    yield Output(
+        output_name="compose",
+        value=docker_dict,
+    )
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
+            "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
+            # Todo: "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)),
+        },
+    )
+
+
+@op(
     name="docker_compose_graph",
     ins={
         "group_out": In(),
+    },
+    out={
+        "docker_compose_graph": Out(pydot.Dot),
     },
 )
 def op_docker_compose_graph(
@@ -79,7 +132,10 @@ def op_docker_compose_graph(
         format="dot",
     )
 
-    yield Output(dcg.graph)
+    yield Output(
+        output_name="docker_compose_graph",
+        value=dcg.graph,
+    )
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
