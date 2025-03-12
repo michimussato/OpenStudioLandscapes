@@ -66,11 +66,11 @@ ASSET_HEADER_COMPOSE_WORKER = {
 
 
 THIRD_PARTY = [
-    # {
-    #     "enabled": False,
-    #     "module": "OpenStudioLandscapes.Ayon.definitions",
-    #     "compose_scope": ComposeScope.DEFAULT,
-    # },
+    {
+        "enabled": True,
+        "module": "OpenStudioLandscapes.Ayon.definitions",
+        "compose_scope": ComposeScope.DEFAULT,
+    },
     {
         "enabled": True,
         "module": "OpenStudioLandscapes.Dagster.definitions",

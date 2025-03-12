@@ -121,32 +121,32 @@ def dot_landscapes(
     )
 
 
-@asset(
-    **ASSET_HEADER_BASE,
-    # group_name="Environment",
-    ins={
-        "git_root": AssetIn(AssetKey([*KEY_BASE, "git_root"])),
-    },
-)
-def dot_installers(
-    context: AssetExecutionContext,
-    git_root: pathlib.Path,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
-
-    _dot_installers = git_root / ".installers"
-    _dot_installers.mkdir(
-        parents=True,
-        exist_ok=True,
-    )
-
-    yield Output(_dot_installers)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.path(_dot_installers),
-        },
-    )
+# @asset(
+#     **ASSET_HEADER_BASE,
+#     # group_name="Environment",
+#     ins={
+#         "git_root": AssetIn(AssetKey([*KEY_BASE, "git_root"])),
+#     },
+# )
+# def dot_installers(
+#     context: AssetExecutionContext,
+#     git_root: pathlib.Path,  # pylint: disable=redefined-outer-name
+# ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
+#
+#     _dot_installers = git_root / ".installers"
+#     _dot_installers.mkdir(
+#         parents=True,
+#         exist_ok=True,
+#     )
+#
+#     yield Output(_dot_installers)
+#
+#     yield AssetMaterialization(
+#         asset_key=context.asset_key,
+#         metadata={
+#             "__".join(context.asset_key.path): MetadataValue.path(_dot_installers),
+#         },
+#     )
 
 
 @asset(
@@ -157,7 +157,7 @@ def dot_installers(
         "secrets": AssetIn(AssetKey([*KEY_BASE, "secrets"])),
         "landscape_id": AssetIn(AssetKey([*KEY_BASE, "landscape_id"])),
         "dot_landscapes": AssetIn(AssetKey([*KEY_BASE, "dot_landscapes"])),
-        "dot_installers": AssetIn(AssetKey([*KEY_BASE, "dot_installers"])),
+        # "dot_installers": AssetIn(AssetKey([*KEY_BASE, "dot_installers"])),
         "nfs": AssetIn(AssetKey([*KEY_BASE, "nfs"])),
     },
     deps=[
@@ -175,7 +175,7 @@ def env(
     secrets: dict,  # pylint: disable=redefined-outer-name
     landscape_id: dict,  # pylint: disable=redefined-outer-name
     dot_landscapes: pathlib.Path,  # pylint: disable=redefined-outer-name
-    dot_installers: pathlib.Path,  # pylint: disable=redefined-outer-name
+    # dot_installers: pathlib.Path,  # pylint: disable=redefined-outer-name
     nfs: dict,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
 
@@ -191,7 +191,7 @@ def env(
             "configs",
         ).as_posix(),
         "DOT_LANDSCAPES": dot_landscapes.as_posix(),
-        "DOT_INSTALLERS": dot_installers.as_posix(),
+        # "DOT_INSTALLERS": dot_installers.as_posix(),
         "AUTHOR": "michimussato@gmail.com",
         "CREATED_BY": str(getpass.getuser()),
         "CREATED_ON": str(socket.gethostname()),
