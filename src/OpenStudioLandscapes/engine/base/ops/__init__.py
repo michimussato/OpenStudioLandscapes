@@ -4,8 +4,8 @@ import os
 import pathlib
 import shlex
 import shutil
+from collections import ChainMap
 from functools import reduce
-from keyword import kwlist
 from typing import Generator, MutableMapping
 
 import yaml
