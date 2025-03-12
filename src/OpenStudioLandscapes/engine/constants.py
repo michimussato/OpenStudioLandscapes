@@ -86,16 +86,16 @@ THIRD_PARTY = [
         "module": "OpenStudioLandscapes.Deadline_10_2_Worker.definitions",
         "compose_scope": ComposeScope.WORKER,
     },
-    # {
-    #     "enabled": False,
-    #     "module": "OpenStudioLandscapes.filebrowser.definitions",
-    #     "compose_scope": ComposeScope.DEFAULT,
-    # },
-    # {
-    #     "enabled": False,
-    #     "module": "OpenStudioLandscapes.Grafana.definitions",
-    #     "compose_scope": ComposeScope.DEFAULT,
-    # },
+    {
+        "enabled": True,
+        "module": "OpenStudioLandscapes.filebrowser.definitions",
+        "compose_scope": ComposeScope.DEFAULT,
+    },
+    {
+        "enabled": True,
+        "module": "OpenStudioLandscapes.Grafana.definitions",
+        "compose_scope": ComposeScope.DEFAULT,
+    },
     {
         "enabled": True,
         "module": "OpenStudioLandscapes.Kitsu.definitions",
@@ -106,21 +106,21 @@ THIRD_PARTY = [
         "module": "OpenStudioLandscapes.SESI_gcc_9_3_Houdini_20.definitions",
         "compose_scope": ComposeScope.DEFAULT,
     },
-    # {
-    #     "enabled": False,
-    #     "module": "OpenStudioLandscapes.OpenCue.definitions",
-    #     "compose_scope": ComposeScope.DEFAULT,
-    # },
+    {
+        "enabled": True,
+        "module": "OpenStudioLandscapes.OpenCue.definitions",
+        "compose_scope": ComposeScope.DEFAULT,
+    },
     # {
     #     "enabled": False,
     #     "module": "OpenStudioLandscapes.LikeC4.definitions",
     #     "compose_scope": ComposeScope.DEFAULT,
     # },
-    # {
-    #     "enabled": False,
-    #     "module": "OpenStudioLandscapes.Syncthing.definitions",
-    #     "compose_scope": ComposeScope.DEFAULT,
-    # },
+    {
+        "enabled": True,
+        "module": "OpenStudioLandscapes.Syncthing.definitions",
+        "compose_scope": ComposeScope.DEFAULT,
+    },
 ]
 
 
