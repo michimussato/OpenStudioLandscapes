@@ -1,6 +1,6 @@
 {
   "command_timeout": 5,
-  "templates_folder": "_files/templates/templater",
+  "templates_folder": "obsidian/Templates/templater",
   "templates_pairs": [
     [
       "",
