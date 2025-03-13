@@ -96,7 +96,7 @@ def op_docker_compose_graph(
     """ """
 
     dcg = DockerComposeGraph(
-        # label_root_service=
+        label_root_service=compose_project_name,
     )
     trees = dcg.parse_docker_compose(pathlib.Path(group_out))
 
