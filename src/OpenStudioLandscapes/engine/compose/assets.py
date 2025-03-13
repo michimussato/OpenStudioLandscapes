@@ -130,6 +130,7 @@ def compose(
 
 group_out = AssetsDefinition.from_op(
     op_group_out,
+    can_subset=True,
     group_name=GROUP_COMPOSE,
     key_prefix=KEY_COMPOSE,
     keys_by_input_name={
@@ -145,5 +146,6 @@ docker_compose_graph = AssetsDefinition.from_op(
     key_prefix=KEY_COMPOSE,
     keys_by_input_name={
         "group_out": AssetKey([*KEY_COMPOSE, "group_out"]),
+        "compose_project_name": AssetKey([*KEY_COMPOSE, "compose_project_name"]),
     },
 )
