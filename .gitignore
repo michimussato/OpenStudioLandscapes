@@ -63,6 +63,9 @@ tmp*/
 .payload/bin/
 
 # Obsidian
+.obsidian/hotkeys.json
 .obsidian_config/hotkeys.json
+.obsidian/workspace.json
 .obsidian_config/workspace.json
+.obsidian/workspaces.json
 .obsidian_config/workspaces.json

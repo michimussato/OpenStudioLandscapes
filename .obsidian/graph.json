@@ -1,0 +1,37 @@
+{
+  "collapse-filter": false,
+  "search": "",
+  "showTags": true,
+  "showAttachments": true,
+  "hideUnresolved": true,
+  "showOrphans": true,
+  "collapse-color-groups": false,
+  "colorGroups": [
+    {
+      "query": "path:Dailies  ",
+      "color": {
+        "a": 1,
+        "rgb": 16711680
+      }
+    },
+    {
+      "query": "[\"excalidraw-plugin\":",
+      "color": {
+        "a": 1,
+        "rgb": 7616767
+      }
+    }
+  ],
+  "collapse-display": true,
+  "showArrow": false,
+  "textFadeMultiplier": -3,
+  "nodeSizeMultiplier": 2.82128027681661,
+  "lineSizeMultiplier": 2.87214532871972,
+  "collapse-forces": true,
+  "centerStrength": 0.140138408304498,
+  "repelStrength": 11.7993079584775,
+  "linkStrength": 1,
+  "linkDistance": 500,
+  "scale": 0.05877914393000316,
+  "close": true
+}
