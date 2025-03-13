@@ -1,0 +1,8 @@
+{
+  "snapToObjects": true,
+  "snapToGrid": false,
+  "newFileLocation": "folder",
+  "newFileFolderPath": "obsidian/Canvas",
+  "defaultWheelBehavior": "zoom",
+  "zoomBreakpoint": 2.15
+}

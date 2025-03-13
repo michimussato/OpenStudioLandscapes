@@ -1,0 +1,6 @@
+{
+  "folder": "obsidian/Dailies",
+  "template": "obsidian/_src/templates/dailies/Dailies",
+  "autorun": true,
+  "format": "YYYY-MM-DD__HH-MM-SS"
+}
