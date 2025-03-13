@@ -86,13 +86,14 @@ def op_compose(
     },
     out={
         "docker_compose_graph": Out(pydot.Dot),
+        "docker_compose_graph_dot": Out(pathlib.Path),
     },
 )
 def op_docker_compose_graph(
     context: OpExecutionContext,
     group_out: pathlib.Path,  # pylint: disable=redefined-outer-name
     compose_project_name: str,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[pydot.Dot] | AssetMaterialization, None, None]:
+) -> Generator[Output[pydot.Dot] | Output[pathlib.Path] | AssetMaterialization, None, None]:
     """ """
 
     dcg = DockerComposeGraph(
@@ -104,12 +105,12 @@ def op_docker_compose_graph(
 
     dcg.iterate_trees(trees)
 
-    docker_compose_dir = group_out.parent / "__".join(context.asset_key.path)
+    docker_compose_dir = group_out.parent / "__".join(context.asset_key_for_output("docker_compose_graph").path)
 
     docker_compose_dir.mkdir(parents=True, exist_ok=True)
 
     # SVG
-    svg = docker_compose_dir / f"{'__'.join(context.asset_key.path)}.svg"
+    svg = docker_compose_dir / f"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.svg"
     dcg.graph.write(
         path=svg,
         format="svg",
@@ -122,7 +123,7 @@ def op_docker_compose_graph(
     svg_md = f"![Image](data:image/svg+xml;base64,{svg_base64})"
 
     # PNG
-    png = docker_compose_dir / f"{'__'.join(context.asset_key.path)}.png"
+    png = docker_compose_dir / f"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.png"
     dcg.graph.write(
         path=png,
         format="png",
@@ -136,7 +137,7 @@ def op_docker_compose_graph(
     # png_md = f"![Image](data:image/png;base64,{png_base64})"
 
     # DOT
-    dot = docker_compose_dir / f"{'__'.join(context.asset_key.path)}.dot"
+    dot = docker_compose_dir / f"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.dot"
     dcg.graph.write(
         path=dot,
         format="dot",
@@ -148,14 +149,27 @@ def op_docker_compose_graph(
     )
 
     yield AssetMaterialization(
-        asset_key=context.asset_key,
+        asset_key=context.asset_key_for_output("docker_compose_graph"),
         metadata={
             "svg": MetadataValue.md(svg_md),
             # "png": MetadataValue.md(png_md),  # slow in Dagster UI
-            "__".join(context.asset_key.path): MetadataValue.json(str(dcg.graph)),
+            # "__".join(context.asset_key.path): MetadataValue.json(str(dcg.graph)),
+            "__".join(context.asset_key_for_output("docker_compose_graph").path): MetadataValue.json(str(dcg.graph)),
             "svg_path": MetadataValue.path(svg),
             "png_path": MetadataValue.path(png),
-            "dot_path": MetadataValue.path(dot),
+            # "dot_path": MetadataValue.path(dot),
+        },
+    )
+
+    yield Output(
+        output_name="docker_compose_graph_dot",
+        value=dot,
+    )
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key_for_output("docker_compose_graph_dot"),
+        metadata={
+            "__".join(context.asset_key_for_output("docker_compose_graph_dot").path): MetadataValue.path(dot),
         },
     )
 

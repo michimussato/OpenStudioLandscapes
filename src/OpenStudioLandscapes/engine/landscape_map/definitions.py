@@ -3,10 +3,10 @@ from dagster import (
     load_assets_from_modules,
 )
 
-import OpenStudioLandscapes.engine.world_map.assets
+import OpenStudioLandscapes.engine.landscape_map.assets
 
 assets = load_assets_from_modules(
-    modules=[OpenStudioLandscapes.engine.world_map.assets],
+    modules=[OpenStudioLandscapes.engine.landscape_map.assets],
 )
 
 

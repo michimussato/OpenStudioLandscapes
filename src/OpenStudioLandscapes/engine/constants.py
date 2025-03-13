@@ -4,9 +4,9 @@ __all__ = [
     "GROUP_BASE",
     "KEY_BASE",
     "ASSET_HEADER_BASE",
-    "GROUP_WORLD_MAP",
-    "KEY_WORLD_MAP",
-    "ASSET_HEADER_WORLD_MAP",
+    "GROUP_LANDSCAPE_MAP",
+    "KEY_LANDSCAPE_MAP",
+    "ASSET_HEADER_LANDSCAPE_MAP",
     "GROUP_COMPOSE",
     "KEY_COMPOSE",
     "ASSET_HEADER_COMPOSE",
@@ -48,12 +48,12 @@ ASSET_HEADER_BASE = {
 }
 
 
-GROUP_WORLD_MAP = "World_Map"
-KEY_WORLD_MAP = [GROUP_BASE]
+GROUP_LANDSCAPE_MAP = "Landscape_Map"
+KEY_LANDSCAPE_MAP = [GROUP_LANDSCAPE_MAP]
 
-ASSET_HEADER_WORLD_MAP = {
-    "group_name": GROUP_WORLD_MAP,
-    "key_prefix": KEY_WORLD_MAP,
+ASSET_HEADER_LANDSCAPE_MAP = {
+    "group_name": GROUP_LANDSCAPE_MAP,
+    "key_prefix": KEY_LANDSCAPE_MAP,
     "compute_kind": "python",
 }
 
