@@ -9,6 +9,12 @@
   * [Tested on](#tested-on)
   * [About the Author](#about-the-author)
   * [Requirements](#requirements)
+    * [Ubuntu](#ubuntu)
+      * [20.04](#2004)
+        * [Python 3.11](#python-311)
+      * [Manjaro](#manjaro)
+        * [Official](#official)
+        * [AUR](#aur)
   * [Limitations](#limitations)
     * [Render Farms](#render-farms)
       * [Deadline](#deadline)
@@ -251,48 +257,130 @@ Former employers, among others:
 
 ## Requirements
 
-Todo:
-Tests for excutables
-docker daemon `sudo systemctl start docker`
-`sudo systemctl enable --now docker`
-```shell
-# ERROR: permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Head "http://%2Fvar%2Frun%2Fdocker.sock/_ping": dial unix /var/run/docker.sock: connect: permission denied
-# https://stackoverflow.com/questions/48957195/how-to-fix-docker-got-permission-denied-issue
+- `python3.11`
+- `graphviz`
+- `docker`
+- `git`
+- `git-crypt`
+
+### Ubuntu
+
+#### 20.04
+
+```
+sudo apt-key adv --refresh-keys
+```
+
+https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository
+```
+# Add Docker's official GPG key:
+sudo apt-get update
+sudo apt-get -y install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# Add the repository to Apt sources:
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+```
+
+```
+sudo apt-get -y install docker.io graphviz git git-crypt
+```
+
+```
+sudo systemctl enable --now docker
+```
+
+##### Python 3.11
+
+```
+sudo apt-get -y install \
+    build-essential \
+    pkg-config \
+    zlib1g-dev \
+    libncurses5-dev \
+    libgdbm-dev \
+    libnss3-dev \
+    libssl-dev \
+    libreadline-dev \
+    libffi-dev \
+    libsqlite3-dev \
+    libbz2-dev \
+    iproute2
+
+apt-get clean
+```
+
+```    
+pushd $(mktemp -d)
+
+export PYTHON_MAJ=3
+export PYTHON_MIN=11
+export PYTHON_PAT=11
+
+curl "https://www.python.org/ftp/python/${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}/Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}.tgz" -o Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}.tgz
+file Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}.tgz
+tar -xvf Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}.tgz
+
+cd Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT} 
+./configure --enable-optimizations  # Todo: --prefix  # https://stackoverflow.com/questions/11307465/destdir-and-prefix-of-make
+make -j $(nproc)
+make altinstall  # altinstall instead of install because the later command will overwrite the default system python3 binary.
+
+python${PYTHON_MAJ}.${PYTHON_MIN} -m pip install pip --upgrade
+
+rm -rf $(pwd) && popd
+```
+
+#### Manjaro
+
+##### Official
+
+```
+sudo pacman -Syyu docker docker-buildx docker-compose graphviz git git-crypt
+```
+
+```
+sudo systemctl enable --now docker
+```
+
+If you get something like:
+
+```
+ERROR: permission denied while trying to connect to the Docker 
+daemon socket at unix:///var/run/docker.sock: 
+Head "http://%2Fvar%2Frun%2Fdocker.sock/_ping": 
+dial unix /var/run/docker.sock: connect: permission denied
+```
+
+Add user `docker` to group `docker`:
+- https://stackoverflow.com/questions/48957195/how-to-fix-docker-got-permission-denied-issue
+
+```
 sudo groupadd docker
 sudo usermod -aG docker $USER
 ```
 
-- Check Deadline-Installers
-  - `.installers/Deadline_10_2/deadline/deadline_10-2-1-1`
-  - `chmod a+x *.run`
-- Check source DBs
-  - `configs/kitsu/postgres/template_dbs/14`
+##### AUR
 
-- `graphviz` (`dot` (`docker-compose-graph`))
-- `docker`
-- `docker-buildx`
-- `docker-compose`
-- `git`
-  - `mkdir -p repos && git -C repos clone https://github.com/ynput/ayon-docker.git`
-- `python`
-  - `python3.11`
-  - `python3.12`
-- `bzip2` (https://docs.thinkboxsoftware.com/products/deadline/10.2/1_User%20Manual/manual/system-requirements.html#system-requirements-linux-ref-label)
+```
+sudo pamac install python311
+```
+
+
+
+
+
+
 - local
   - Manjaro: `libxcrypt-compat`
   - Deadline Client 10.2
     - `libffi6`
-    - `python3.7`  # Needed?
-      - ```
-        System.DllNotFoundException: Unable to load shared library 'python3.7m' or one of its dependencies. In order to help diagnose loading problems, consider setting the LD_DEBUG environment variable: libpython3.7m: cannot open shared object file: No such file or directory
-           at Python.Runtime.Runtime.Py_GetVersion()
-           at Python.Runtime.PythonEngine.get_Version()
-           at FranticX.Scripting.PythonNetScriptEngine.Initialize(Boolean setUnbufferedStdioFlag, String home, String programName)
-        Exception on Startup: An Unexpected Error Occurred: Attempted python home: /opt/Thinkbox/Deadline10-2/bin/python3/../../lib/python3, Unable to load shared library 'python3.7m' or one of its dependencies. In order to help diagnose loading problems, consider setting the LD_DEBUG environment variable: libpython3.7m: cannot open shared object file: No such file or directory
-
-        Deadline Launcher will now exit.
-        ```
-      - `sudo ldconfig /opt/Thinkbox/Deadline10-2/lib/python3/lib`
   - Deadline Client 10.3
 
 ```
@@ -488,7 +576,7 @@ comparison:
 - [Kitsu](https://kitsu.cg-wire.com/)
 - [Ayon](https://ayon.ynput.io/)
 - [mongo-express](https://hub.docker.com/_/mongo-express)
-- [filebrowser/filebrowser](https://hub.docker.com/r/filebrowser/filebrowser)
+- [filebrodockerwser/filebrowser](https://hub.docker.com/r/filebrowser/filebrowser)
 
 ## Dagster Lineage
 
@@ -922,3 +1010,13 @@ extensions =
     namespace
 namespace = OpenStudioLandscapes
 ```
+
+## Docker
+
+Docker caches can take up a lot of disk space. If there 
+is only limited space available for Docker caches, here is some
+further reading:
+
+- https://docs.docker.com/build/cache/
+- https://docs.docker.com/build/cache/backends/
+- https://docs.docker.com/build/cache/backends/local/
