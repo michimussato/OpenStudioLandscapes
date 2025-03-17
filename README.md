@@ -64,6 +64,7 @@
     * [PyScaffold](#pyscaffold-1)
     * [`pyproject.toml`](#pyprojecttoml)
     * [`setup.cfg`](#setupcfg)
+  * [Docker](#docker-1)
 <!-- TOC -->
 
 ---

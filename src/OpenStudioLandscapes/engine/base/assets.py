@@ -418,6 +418,8 @@ def build_docker_image(
         cache=DOCKER_USE_CACHE,
         tags=tags,
         stream_logs=True,
+        cache_to=dict(type="local", dest="/share/docker_cache", mode="max"),
+        cache_from=dict(type="local", src="/share/docker_cache"),
     )
 
     log: str = ""
