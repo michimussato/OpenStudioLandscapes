@@ -34,8 +34,8 @@ class ComposeScope(enum.StrEnum):
     WORKER = "worker"
 
 
-DOCKER_USE_CACHE = False
 DOCKER_USE_CACHE_GLOBAL = True
+DOCKER_USE_CACHE = DOCKER_USE_CACHE_GLOBAL or False
 
 
 GROUP_BASE = "Base"
