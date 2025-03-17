@@ -420,6 +420,7 @@ def build_docker_image(
         stream_logs=True,
         cache_to=dict(type="local", dest="/share/docker_cache", mode="max"),
         cache_from=dict(type="local", src="/share/docker_cache"),
+        builder="container",
     )
 
     log: str = ""
