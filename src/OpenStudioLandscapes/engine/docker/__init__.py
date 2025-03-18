@@ -6,7 +6,7 @@ import os
 import pathlib
 from typing import Iterator, List
 from python_on_whales import docker, Builder, Image
-from python_on_whales import DockerClient
+# from python_on_whales import DockerClient
 
 from dagster import (
     AssetExecutionContext,
@@ -25,38 +25,45 @@ def docker_build(
     # https://docs.docker.com/build/cache/backends/local/
 
     # docker run --rm -p 5010:5000 --name registry registry:latest
+    # docker push localhost:5010/michimussato/base__build_docker_image:latest
+    # docker pull localhost:5010/michimussato/base__build_docker_image:latest
+    # docker run --rm -v /home/michael/git/repos/OpenStudioLandscapes/daemon.json:/etc/docker/daemon.json -p 5010:5000 --name registry registry:latest
 
-    _extra_args = {}
-
-    if docker_use_cache:
-        # https://docs.docker.com/reference/cli/docker/buildx/build/#cache-from
-        # _extra_args["cache_from"] = f"type=local,src={cache_dir.as_posix()}"
-        _extra_args["cache_from"] = f"type=registry"
-        # https://docs.docker.com/reference/cli/docker/buildx/build/#cache-to
-        # _extra_args["cache_to"] = f"type=local,dest={cache_dir.as_posix()},compression=zstd,compression-level=22"
-        _extra_args["cache_to"] = f"type=registry"
-        # https://docs.docker.com/reference/cli/docker/buildx/build/#output
-        # https://docs.docker.com/build/exporters/oci-docker/#synopsis
-        # _image_name = "__".join(context.asset_key.path).lower()
-        # _tar = f"{pathlib.Path(images_dir / _image_name).as_posix()}"
-        _extra_args["output"] = {
-            # "type": "oci",
-            # "type": "tar",
-            # "type": "local",
-            "type": "registry",
-            "push": "true",
-            # "dest": _tar,
-            # "name": f"michimussato/{_image_name}",
-            # "compression": "zstd",
-            # "compression": "gzip",
-            # "compression_level": "22",
-            # "compression_level": "9",
-            # # https://docs.docker.com/build/exporters/oci-docker/#annotations
-            # "annotation.io.containerd.image.name": tags[-1].split(":")[0],
-            # "annotation.org.opencontainers.image.ref.name": tags[-1].split(":")[-1],
-        }
-
-        # "annotations":{"io.containerd.image.name":"docker.io/michimussato/base__build_docker_image:2025-03-18_09-19-42__166f3f88e138406a8f88e879a505cbba","org.opencontainers.image.created":"2025-03-18T08:20:08Z","org.opencontainers.image.ref.name":"2025-03-18_09-19-42__166f3f88e138406a8f88e879a505cbba"}
+    # _extra_args = {}
+    #
+    # if docker_use_cache:
+    #     # https://docs.docker.com/reference/cli/docker/buildx/build/#cache-from
+    #     # _extra_args["cache_from"] = f"type=local,src={cache_dir.as_posix()}"
+    #     # _extra_args["cache_from"] = f"type=registry,ref=localhost:5010"
+    #     _extra_args["cache_from"] = f"type=registry,ref=localhost:5010/{tags[0]}"
+    #     # _extra_args["cache_from"] = f"type=registry"
+    #     # # https://docs.docker.com/reference/cli/docker/buildx/build/#cache-to
+    #     # # _extra_args["cache_to"] = f"type=local,dest={cache_dir.as_posix()},compression=zstd,compression-level=22"
+    #     _extra_args["cache_to"] = f"type=registry,ref=localhost:5010"
+    #     # _extra_args["cache_to"] = f"type=registry,ref=localhost:5010/{tags[0]}"
+    #     # https://docs.docker.com/reference/cli/docker/buildx/build/#output
+    #     # https://docs.docker.com/build/exporters/oci-docker/#synopsis
+    #     # _image_name = "__".join(context.asset_key.path).lower()
+    #     # _tar = f"{pathlib.Path(images_dir / _image_name).as_posix()}"
+    #     _extra_args["output"] = {
+    #         # "type": "oci",
+    #         # "type": "tar",
+    #         # "type": "local",
+    #         "type": "image",
+    #         "push": "false",
+    #         "registry.insecure": "true",
+    #         # "dest": _tar,
+    #         # "name": f"michimussato/{_image_name}",
+    #         # "compression": "zstd",
+    #         # "compression": "gzip",
+    #         # "compression_level": "22",
+    #         # "compression_level": "9",
+    #         # # https://docs.docker.com/build/exporters/oci-docker/#annotations
+    #         # "annotation.io.containerd.image.name": tags[-1].split(":")[0],
+    #         # "annotation.org.opencontainers.image.ref.name": tags[-1].split(":")[-1],
+    #     }
+    #
+    #     # "annotations":{"io.containerd.image.name":"docker.io/michimussato/base__build_docker_image:2025-03-18_09-19-42__166f3f88e138406a8f88e879a505cbba","org.opencontainers.image.created":"2025-03-18T08:20:08Z","org.opencontainers.image.ref.name":"2025-03-18_09-19-42__166f3f88e138406a8f88e879a505cbba"}
 
     # img: Image = docker.build(
     #     context_path=context_path.as_posix(),
@@ -93,9 +100,10 @@ def docker_build(
         tags=tags,
         stream_logs=True,
         builder=_get_builder(),
+        # add_hosts={"localhost": "http://localhost:5010"},
         # push=True,
         pull=True,
-        # load=True,
+        load=True,
         # **_extra_args,
     )
 
@@ -110,12 +118,19 @@ def docker_build(
     #         source=_tar,
     #     )
 
-        # for tag in tags:
-        #     img.tag(
-        #         new_tag=tag
-        #
+    for tag in tags:
+        # docker tag michimussato/base__build_docker_image:2025-03-18_14-02-09__55959d1912a941c4a3f981ff4e560687 localhost:5010/michimussato/base__build_docker_image:2025-03-18_14-41-23__8f401ef0889649138d7f82b8661390b2
+        # repo, tag = tag.split(":")  # michimussato/base__build_docker_image, 2025-03-18_14-02-09__55959d1912a941c4a3f981ff4e560687
 
-    os.system(f"docker push localhost:5010/{tags[0]}")
+        os.system(f"docker tag {tag} localhost:5010/{tag}")
+        # os.system(f"docker tag localhost:5010/{tag}")
+        # img.tag(
+        #     new_tag=tag
+        # )
+
+
+    for tag in tags:
+        os.system(f"docker push localhost:5010/{tag}")
 
     return log
 

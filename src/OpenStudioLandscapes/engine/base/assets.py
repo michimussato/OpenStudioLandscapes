@@ -394,11 +394,11 @@ def build_docker_image(
     #  - [ ] this is not accurate anymore
     cmds_docker = compile_cmds(
         docker_file=docker_file,
-        tag=tags[1],
+        tag=tags[0],
         volumes=[],
     )
 
-    yield Output(tags[1])
+    yield Output(tags[0])
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
@@ -525,7 +525,7 @@ def group_out(
     out_dict: dict = {}
 
     out_dict["env"] = env
-    out_dict["docker_image"] = build_docker_image
+    out_dict["docker_image"] = f"localhost:5010/{build_docker_image}"
 
     yield Output(out_dict)
 
