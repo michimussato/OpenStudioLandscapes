@@ -581,32 +581,32 @@ def docker_cache(
         "build_docker_image": AssetIn(
             AssetKey([*KEY_BASE, "build_docker_image"]),
         ),
-        "docker_builder": AssetIn(
-            AssetKey([*KEY_BASE, "docker_builder"]),
-        ),
+        # "docker_builder": AssetIn(
+        #     AssetKey([*KEY_BASE, "docker_builder"]),
+        # ),
     },
 )
 def group_out(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
     build_docker_image: str,  # pylint: disable=redefined-outer-name
-    docker_builder: Builder,  # pylint: disable=redefined-outer-name
+    # docker_builder: Builder,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict[str, str | dict]] | AssetMaterialization, None, None]:
 
     out_dict: dict = {}
 
     out_dict["env"] = env
     out_dict["docker_image"] = build_docker_image
-    out_dict["docker_builder"] = docker_builder
+    # out_dict["docker_builder"] = docker_builder
 
     yield Output(out_dict)
 
-    out_dict["docker_builder"] = {
-        "name": docker_builder.name,
-        "driver": docker_builder.driver,
-        "platforms": docker_builder.platforms,
-        "status": docker_builder.status,
-    }
+    # out_dict["docker_builder"] = {
+    #     "name": docker_builder.name,
+    #     "driver": docker_builder.driver,
+    #     "platforms": docker_builder.platforms,
+    #     "status": docker_builder.status,
+    # }
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
