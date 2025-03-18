@@ -18,6 +18,7 @@ __all__ = [
 ]
 
 import enum
+import pathlib
 from typing import Generator, MutableMapping
 
 from dagster import (
@@ -36,6 +37,8 @@ class ComposeScope(enum.StrEnum):
 
 DOCKER_USE_CACHE_GLOBAL = True
 DOCKER_USE_CACHE = DOCKER_USE_CACHE_GLOBAL or False
+# DOCKER_CACHE_DIR = pathlib.Path("/nfs/docker/cache")
+# DOCKER_CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 
 GROUP_BASE = "Base"
@@ -154,6 +157,7 @@ def constants_base(
         "DOCKER_USE_CACHE_GLOBAL": DOCKER_USE_CACHE_GLOBAL,
         "ASSET_HEADER_BASE": ASSET_HEADER_BASE,
         "THIRD_PARTY": THIRD_PARTY,
+        # "DOCKER_CACHE_DIR": DOCKER_CACHE_DIR.as_posix(),
     }
 
     yield Output(_constants)
