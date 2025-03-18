@@ -1,0 +1,151 @@
+__all__ = [
+    "docker_build",
+]
+
+import os
+import pathlib
+from typing import Iterator, List
+from python_on_whales import docker, Builder, Image
+from python_on_whales import DockerClient
+
+from dagster import (
+    AssetExecutionContext,
+    OpExecutionContext,
+)
+
+
+def docker_build(
+        context: AssetExecutionContext,
+        context_path: pathlib.Path,
+        tags: List[str],
+        docker_use_cache: bool = True,
+        cache_dir: pathlib.Path = None,
+        images_dir: pathlib.Path = None,
+) -> str:
+    # https://docs.docker.com/build/cache/backends/local/
+
+    # docker run --rm -p 5010:5000 --name registry registry:latest
+
+    _extra_args = {}
+
+    if docker_use_cache:
+        # https://docs.docker.com/reference/cli/docker/buildx/build/#cache-from
+        # _extra_args["cache_from"] = f"type=local,src={cache_dir.as_posix()}"
+        _extra_args["cache_from"] = f"type=registry"
+        # https://docs.docker.com/reference/cli/docker/buildx/build/#cache-to
+        # _extra_args["cache_to"] = f"type=local,dest={cache_dir.as_posix()},compression=zstd,compression-level=22"
+        _extra_args["cache_to"] = f"type=registry"
+        # https://docs.docker.com/reference/cli/docker/buildx/build/#output
+        # https://docs.docker.com/build/exporters/oci-docker/#synopsis
+        # _image_name = "__".join(context.asset_key.path).lower()
+        # _tar = f"{pathlib.Path(images_dir / _image_name).as_posix()}"
+        _extra_args["output"] = {
+            # "type": "oci",
+            # "type": "tar",
+            # "type": "local",
+            "type": "registry",
+            "push": "true",
+            # "dest": _tar,
+            # "name": f"michimussato/{_image_name}",
+            # "compression": "zstd",
+            # "compression": "gzip",
+            # "compression_level": "22",
+            # "compression_level": "9",
+            # # https://docs.docker.com/build/exporters/oci-docker/#annotations
+            # "annotation.io.containerd.image.name": tags[-1].split(":")[0],
+            # "annotation.org.opencontainers.image.ref.name": tags[-1].split(":")[-1],
+        }
+
+        # "annotations":{"io.containerd.image.name":"docker.io/michimussato/base__build_docker_image:2025-03-18_09-19-42__166f3f88e138406a8f88e879a505cbba","org.opencontainers.image.created":"2025-03-18T08:20:08Z","org.opencontainers.image.ref.name":"2025-03-18_09-19-42__166f3f88e138406a8f88e879a505cbba"}
+
+    # img: Image = docker.build(
+    #     context_path=context_path.as_posix(),
+    #     cache=docker_use_cache,
+    #     # tags=tags[-1],
+    #     stream_logs=False,
+    #     builder=_get_builder(),
+    #     push=True,
+    #     pull=True,
+    #     load=True,
+    #     **_extra_args,
+    # )
+
+    # for tag in tags:
+    #     img.tag(
+    #         new_tag=tag
+    #     )
+
+    # docker_client = DockerClient(
+    #     client_call=["docker"],
+    # )
+
+    # docker_client.login(
+    #     server="localhost:5010",
+    #     username='""',
+    #     password='""',
+    # )
+
+    # docker_client.buildx.
+
+    stream: Iterator[str] = docker.build(
+        context_path=context_path.as_posix(),
+        cache=docker_use_cache,
+        tags=tags,
+        stream_logs=True,
+        builder=_get_builder(),
+        # push=True,
+        pull=True,
+        # load=True,
+        # **_extra_args,
+    )
+
+    log: str = ""
+
+    for msg in stream:
+        context.log.debug(msg)
+        log += msg
+
+    # if docker_use_cache:
+    #     img: Image = docker.import_(
+    #         source=_tar,
+    #     )
+
+        # for tag in tags:
+        #     img.tag(
+        #         new_tag=tag
+        #
+
+    os.system(f"docker push localhost:5010/{tags[0]}")
+
+    return log
+
+
+def _get_builder(
+        # client: DockerClient,
+) -> Builder:
+
+    builder_name = "Driver-OpenStudioLandscapes"
+
+    try:
+        builder: Builder = docker.buildx.inspect(
+            x=builder_name,
+            bootstrap=True,
+        )
+    # except docker.errors.BuildError as e:
+    except Exception as e:
+        builder: Builder = docker.create(
+            driver=[
+                "docker",
+                "docker-container",
+                "kubernetes",
+                "remote",
+            ][1],
+            name=builder_name,
+            platforms=[
+                "linux/amd64",
+            ],
+            use=True,
+            bootstrap=True,
+        )
+
+    return builder

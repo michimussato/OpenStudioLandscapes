@@ -103,7 +103,7 @@ THIRD_PARTY = [
         "compose_scope": ComposeScope.WORKER,
     },
     {
-        "enabled": True,
+        "enabled": False,
         "module": "OpenStudioLandscapes.filebrowser.definitions",
         "compose_scope": ComposeScope.DEFAULT,
     },
@@ -123,15 +123,15 @@ THIRD_PARTY = [
         "compose_scope": ComposeScope.DEFAULT,
     },
     {
-        "enabled": True,
+        "enabled": False,
         "module": "OpenStudioLandscapes.OpenCue.definitions",
         "compose_scope": ComposeScope.DEFAULT,
     },
-    # {
-    #     "enabled": False,
-    #     "module": "OpenStudioLandscapes.LikeC4.definitions",
-    #     "compose_scope": ComposeScope.DEFAULT,
-    # },
+    {
+        "enabled": False,
+        "module": "OpenStudioLandscapes.LikeC4.definitions",
+        "compose_scope": ComposeScope.DEFAULT,
+    },
     {
         "enabled": True,
         "module": "OpenStudioLandscapes.Syncthing.definitions",

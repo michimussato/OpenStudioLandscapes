@@ -38,19 +38,21 @@ if bool(ins):
     @asset(
         **ASSET_HEADER_LANDSCAPE_MAP,
         ins={
-            "env": AssetIn(
-                AssetKey([*KEY_BASE, "env"]),
+            "group_out": AssetIn(
+                AssetKey([*KEY_BASE, "group_out"]),
             ),
             **ins
         },
     )
     def landscape_map(
         context: AssetExecutionContext,
-        env: dict,  # pylint: disable=redefined-outer-name
+        group_out: dict,  # pylint: disable=redefined-outer-name
         **kwargs,
     ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
 
         context.log.warning(kwargs)
+
+        env = group_out.get("env", {})
 
         landscape_packed_out = pathlib.Path(
             env["DOT_LANDSCAPES"],
