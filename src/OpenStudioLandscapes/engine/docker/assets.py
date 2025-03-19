@@ -1,3 +1,4 @@
+import pathlib
 import shlex
 import shutil
 from typing import Generator
@@ -13,6 +14,7 @@ from dagster import (
 )
 
 from OpenStudioLandscapes.engine.constants import *
+from OpenStudioLandscapes.engine.utils import *
 
 
 """
@@ -172,7 +174,9 @@ sudo systemctl restart docker
             volumes=(
                 [
                     (
-                        "/home/michael/git/repos/OpenStudioLandscapes/daemon.json",
+                        pathlib.Path(
+                            get_git_root(path=pathlib.Path(__file__)) / "src" / "OpenStudioLandscapes" / "engine" / "docker" / "daemon.json"
+                        ).as_posix(),
                         "/etc/docker/daemon.json",
                         "ro",
                     ),
@@ -211,19 +215,19 @@ sudo systemctl restart docker
 
     cmd_stop = [
         shutil.which("docker"),
-        "buildx",
+        "container",
         "stop",
         # container_name,
         container.id,
     ]
 
-    cmd_rm = [
-        shutil.which("docker"),
-        "buildx",
-        "rm",
-        # container_name,
-        container.id,
-    ]
+    # cmd_rm = [
+    #     shutil.which("docker"),
+    #     # "buildx",
+    #     "rm",
+    #     # container_name,
+    #     container.id,
+    # ]
 
     # context.pdb.set_trace()
     # NetworkSettings(bridge='', sandbox_id='267e9c32fe946b9a4665b52627ccf9b26b3f50cedf08920ed0c1e903e1ce77cf', hairpin_mode=False, link_local_ipv6_address='', link_local_ipv6_prefix_length=0, ports={'5000/tcp': [{'HostIp': '0.0.0.0', 'HostPort': '5000'}, {'HostIp': '::', 'HostPort': '5000'}]}, sandbox_key=PosixPath('/var/run/docker/netns/267e9c32fe94'), secondary_ip_addresses=None, secondary_ipv6_addresses=None, endpoint_id='34685ce658074786f8d9d54d9e66ebfd33ce767073c58ae3a6e0a494d0380db2', gateway='172.17.0.1', global_ipv6_address='', global_ipv6_prefix_length=0, ip_address='172.17.0.3', ip_prefix_length=16, ipv6_gateway='', mac_address='9a:47:f7:2f:05:51', networks={'bridge': NetworkInspectResult(ipam_config=None, links=None, aliases=None, network_id='472718e79828dfb762c3b2792802238587d661be25e4e5c7795f150009e15190', endpoint_id='34685ce658074786f8d9d54d9e66ebfd33ce767073c58ae3a6e0a494d0380db2', gateway='172.17.0.1', ip_address='172.17.0.3', ip_prefix_length=16, ipv6_gateway='', global_ipv6_address='', global_ipv6_prefix_length=0, mac_address='9a:47:f7:2f:05:51', driver_options=None)})
@@ -248,6 +252,6 @@ sudo systemctl restart docker
             "interactive": MetadataValue.path(shlex.join(cmd_interactive)),
             "logs": MetadataValue.path(shlex.join(cmd_logs)),
             "stop": MetadataValue.path(shlex.join(cmd_stop)),
-            "rm": MetadataValue.path(shlex.join(cmd_rm)),
+            # "rm": MetadataValue.path(shlex.join(cmd_rm)),
         },
     )

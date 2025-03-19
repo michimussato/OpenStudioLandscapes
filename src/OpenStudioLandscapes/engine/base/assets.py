@@ -523,6 +523,7 @@ def docker_images(
     },
     ins={
         "env": AssetIn(AssetKey([*KEY_BASE, "env"])),
+        "run_builder": AssetIn(AssetKey([*KEY_BASE, "run_builder"])),
         "build_docker_image": AssetIn(
             AssetKey([*KEY_BASE, "build_docker_image"]),
         ),
@@ -531,12 +532,14 @@ def docker_images(
 def group_out(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
+    run_builder: Builder,  # pylint: disable=redefined-outer-name
     build_docker_image: str,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict[str, str | dict]] | AssetMaterialization, None, None]:
 
     out_dict: dict = {}
 
     out_dict["env"] = env
+    out_dict["docker_builder"] = run_builder.name
     out_dict["docker_image"] = build_docker_image
 
     yield Output(out_dict)

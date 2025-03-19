@@ -1,5 +1,6 @@
 __all__ = [
     "docker_build",
+    "get_builder_by_name",
 ]
 
 import pathlib
@@ -15,14 +16,14 @@ from dagster import (
 
 
 def docker_build(
-        context: AssetExecutionContext,
-        context_path: pathlib.Path,
-        tags: List[str],
-        builder: Builder,
-        docker_use_cache: bool = True,
-        parent_image: str = None,
-        # cache_dir: pathlib.Path = None,
-        # images_dir: pathlib.Path = None,
+    context: AssetExecutionContext,
+    context_path: pathlib.Path,
+    tags: List[str],
+    builder: Builder,
+    docker_use_cache: bool = True,
+    parent_image: str = None,
+    # cache_dir: pathlib.Path = None,
+    # images_dir: pathlib.Path = None,
 ) -> str:
     # https://docs.docker.com/build/cache/backends/local/
 
@@ -96,8 +97,17 @@ def docker_build(
 
     # docker_client.buildx.
 
-    # if parent_image is not None:
-    #     os.system(f"docker pull localhost:5000/{parent_image}")
+    if parent_image is not None:
+        stdout = subprocess.check_output(
+            [
+                f"{shutil.which('docker')}",
+                "pull",
+                "--all",
+                f"{parent_image}",
+            ]
+        )
+
+        context.log.info(stdout.decode("utf-8"))
 
     stream: Iterator[str] = docker.build(
         context_path=context_path.as_posix(),
@@ -133,51 +143,74 @@ def docker_build(
     #     #     new_tag=tag
     #     # )
 
-
     for tag in tags:
         stdout = subprocess.check_output(
             [
                 f"{shutil.which('docker')}",
                 "push",
+                # "--all-tags",
                 f"{tag}",
             ]
         )
         # os.system(f"docker push {tag}")
 
-        context.log.info(stdout)
+        context.log.info(stdout.decode("utf-8"))
 
     return log
 
 
-def _get_builder(
-        # client: DockerClient,
+def get_builder_by_name(
+    context: AssetExecutionContext,
+    builder_name: str,
 ) -> Builder:
 
-    builder_name = "Driver-OpenStudioLandscapes"
+    _builder = None
 
-    try:
-        builder: Builder = docker.buildx.inspect(
-            x=builder_name,
-            bootstrap=True,
-        )
-    # except docker.errors.BuildError as e:
-    except Exception as e:
-        builder: Builder = docker.create(
-            driver=[
-                "docker",
-                "docker-container",
-                "kubernetes",
-                "remote",
-            ][1],
-            name=builder_name,
-            platforms=[
-                "linux/amd64",
-            ],
-            use=True,
-            bootstrap=True,
-        )
+    builders = docker.buildx.list()
+    context.log.info(builders)
 
-    return builder
+    if not bool(builders):
+        raise Exception("No builders found")
+
+    for builder_ in builders:
+        if builder_.name == builder_name:
+            _builder = builder_
+
+    if _builder is None:
+        raise Exception(f"No builder called \"{builder_name}\" found")
+
+    return _builder
+
+
+# def _get_builder(
+#         # client: DockerClient,
+# ) -> Builder:
+#
+#     builder_name = "Driver-OpenStudioLandscapes"
+#
+#     try:
+#         builder: Builder = docker.buildx.inspect(
+#             x=builder_name,
+#             bootstrap=True,
+#         )
+#     # except docker.errors.BuildError as e:
+#     except Exception as e:
+#         builder: Builder = docker.create(
+#             driver=[
+#                 "docker",
+#                 "docker-container",
+#                 "kubernetes",
+#                 "remote",
+#             ][1],
+#             name=builder_name,
+#             platforms=[
+#                 "linux/amd64",
+#             ],
+#             use=True,
+#             bootstrap=True,
+#         )
+#
+#     return builder
 
 
 """
