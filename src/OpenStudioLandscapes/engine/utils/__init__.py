@@ -9,12 +9,17 @@ __all__ = [
     "get_configs_root",
     "get_data_root",
     "get_bin_root",
+    "get_ip",
+    "get_port",
 ]
 
 
 import pathlib
 import shlex
 import shutil
+import socket
+
+from python_on_whales import Container
 
 import git
 from dagster import MetadataValue
@@ -176,3 +181,32 @@ def get_compose_network(
     network_mode: ComposeNetworkMode = ComposeNetworkMode.DEFAULT,
 ) -> dict:
     pass
+
+
+def get_ip():
+    # https://stackoverflow.com/a/28950776
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.settimeout(0)
+    try:
+        # doesn't even have to be reachable
+        s.connect(('10.254.254.254', 1))
+        ip = s.getsockname()[0]
+    except Exception:
+        ip = '127.0.0.1'
+    finally:
+        s.close()
+    return ip
+
+
+def get_port(
+        container: Container,
+):
+    # ip_address = container.network_settings.ip_address
+    ports = container.network_settings.ports["5000/tcp"]
+    for port in ports:
+        if port["HostIp"] != "::":
+            host_port = port["HostPort"]
+            # host_ip = port["HostIp"]
+            break
+
+    return host_port

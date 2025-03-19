@@ -9,6 +9,8 @@ import uuid
 from datetime import datetime
 from typing import Generator
 
+from python_on_whales import Container, Builder
+
 from dagster import (
     AssetExecutionContext,
     AssetIn,
@@ -279,6 +281,8 @@ def apt_packages(
         "env": AssetIn(AssetKey([*KEY_BASE, "env"])),
         "apt_packages": AssetIn(AssetKey([*KEY_BASE, "apt_packages"])),
         "pip_packages": AssetIn(AssetKey([*KEY_BASE, "pip_packages"])),
+        "run_registry": AssetIn(AssetKey([*KEY_BASE, "run_registry"])),
+        "run_builder": AssetIn(AssetKey([*KEY_BASE, "run_builder"])),
     },
 )
 def build_docker_image(
@@ -286,6 +290,8 @@ def build_docker_image(
     env: dict,  # pylint: disable=redefined-outer-name
     apt_packages: dict[str, list[str]],  # pylint: disable=redefined-outer-name
     pip_packages: list,  # pylint: disable=redefined-outer-name
+    run_registry: Container,  # pylint: disable=redefined-outer-name
+    run_builder: Builder,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[str] | AssetMaterialization, None, None]:
     """ """
 
@@ -302,9 +308,13 @@ def build_docker_image(
 
     docker_file.parent.mkdir(parents=True, exist_ok=True)
 
+    # ip = get_ip()
+    ip = "localhost"
+    port_registry = get_port(run_registry)
+
     tags = [
-        f"{env.get('IMAGE_PREFIX')}/{'__'.join(context.asset_key.path).lower()}:latest",
-        f"{env.get('IMAGE_PREFIX')}/{'__'.join(context.asset_key.path).lower()}:{env.get('LANDSCAPE', str(time.time()))}",
+        f"{ip}:{port_registry}/{env.get('IMAGE_PREFIX')}/{'__'.join(context.asset_key.path).lower()}:latest",
+        f"{ip}:{port_registry}/{env.get('IMAGE_PREFIX')}/{'__'.join(context.asset_key.path).lower()}:{env.get('LANDSCAPE', str(time.time()))}",
         # f"localhost:5010/{env.get('IMAGE_PREFIX')}/{'__'.join(context.asset_key.path).lower()}:latest",
         # f"localhost:5010/{env.get('IMAGE_PREFIX')}/{'__'.join(context.asset_key.path).lower()}:{env.get('LANDSCAPE', str(time.time()))}",
     ]
@@ -386,24 +396,26 @@ def build_docker_image(
         context_path=docker_file.parent,
         tags=tags,
         docker_use_cache=DOCKER_USE_CACHE,
-        cache_dir=pathlib.Path(env.get('DOCKER_CACHE_DIR')),
-        images_dir=pathlib.Path(env.get('DOCKER_IMAGES_DIR')),
+        builder=run_builder,
+        # cache_dir=pathlib.Path(env.get('DOCKER_CACHE_DIR')),
+        # images_dir=pathlib.Path(env.get('DOCKER_IMAGES_DIR')),
+        parent_image=None,
     )
 
     # Todo
     #  - [ ] this is not accurate anymore
     cmds_docker = compile_cmds(
         docker_file=docker_file,
-        tag=tags[0],
+        tag=tags[-1],
         volumes=[],
     )
 
-    yield Output(tags[0])
+    yield Output(tags[-1])
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.path(tags[1]),
+            "__".join(context.asset_key.path): MetadataValue.path(tags[-1]),
             "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
             **cmds_docker,
             "build_logs": MetadataValue.md(f"```shell\n{log}\n```"),
@@ -525,7 +537,7 @@ def group_out(
     out_dict: dict = {}
 
     out_dict["env"] = env
-    out_dict["docker_image"] = f"localhost:5010/{build_docker_image}"
+    out_dict["docker_image"] = build_docker_image
 
     yield Output(out_dict)
 

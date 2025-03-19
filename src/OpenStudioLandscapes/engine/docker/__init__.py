@@ -2,15 +2,15 @@ __all__ = [
     "docker_build",
 ]
 
-import os
 import pathlib
+import shutil
+import subprocess
 from typing import Iterator, List
 from python_on_whales import docker, Builder, Image
 # from python_on_whales import DockerClient
 
 from dagster import (
     AssetExecutionContext,
-    OpExecutionContext,
 )
 
 
@@ -18,9 +18,11 @@ def docker_build(
         context: AssetExecutionContext,
         context_path: pathlib.Path,
         tags: List[str],
+        builder: Builder,
         docker_use_cache: bool = True,
-        cache_dir: pathlib.Path = None,
-        images_dir: pathlib.Path = None,
+        parent_image: str = None,
+        # cache_dir: pathlib.Path = None,
+        # images_dir: pathlib.Path = None,
 ) -> str:
     # https://docs.docker.com/build/cache/backends/local/
 
@@ -94,15 +96,18 @@ def docker_build(
 
     # docker_client.buildx.
 
+    # if parent_image is not None:
+    #     os.system(f"docker pull localhost:5000/{parent_image}")
+
     stream: Iterator[str] = docker.build(
         context_path=context_path.as_posix(),
         cache=docker_use_cache,
         tags=tags,
         stream_logs=True,
-        builder=_get_builder(),
+        builder=builder,
         # add_hosts={"localhost": "http://localhost:5010"},
         # push=True,
-        pull=True,
+        # pull=True,
         load=True,
         # **_extra_args,
     )
@@ -118,19 +123,28 @@ def docker_build(
     #         source=_tar,
     #     )
 
+    # for tag in tags:
+    #     # docker tag michimussato/base__build_docker_image:2025-03-18_14-02-09__55959d1912a941c4a3f981ff4e560687 localhost:5010/michimussato/base__build_docker_image:2025-03-18_14-41-23__8f401ef0889649138d7f82b8661390b2
+    #     # repo, tag = tag.split(":")  # michimussato/base__build_docker_image, 2025-03-18_14-02-09__55959d1912a941c4a3f981ff4e560687
+    #
+    #     os.system(f"docker tag {tag} localhost:5000/{tag}")
+    #     # os.system(f"docker tag localhost:5010/{tag}")
+    #     # img.tag(
+    #     #     new_tag=tag
+    #     # )
+
+
     for tag in tags:
-        # docker tag michimussato/base__build_docker_image:2025-03-18_14-02-09__55959d1912a941c4a3f981ff4e560687 localhost:5010/michimussato/base__build_docker_image:2025-03-18_14-41-23__8f401ef0889649138d7f82b8661390b2
-        # repo, tag = tag.split(":")  # michimussato/base__build_docker_image, 2025-03-18_14-02-09__55959d1912a941c4a3f981ff4e560687
+        stdout = subprocess.check_output(
+            [
+                f"{shutil.which('docker')}",
+                "push",
+                f"{tag}",
+            ]
+        )
+        # os.system(f"docker push {tag}")
 
-        os.system(f"docker tag {tag} localhost:5010/{tag}")
-        # os.system(f"docker tag localhost:5010/{tag}")
-        # img.tag(
-        #     new_tag=tag
-        # )
-
-
-    for tag in tags:
-        os.system(f"docker push localhost:5010/{tag}")
+        context.log.info(stdout)
 
     return log
 
@@ -164,3 +178,40 @@ def _get_builder(
         )
 
     return builder
+
+
+"""
+# Run Registry
+# https://k21academy.com/docker-kubernetes/how-to-set-up-your-own-local-docker-registry-a-step-by-step-guide/
+docker run --rm -v /home/michael/git/repos/OpenStudioLandscapes/daemon.json:/etc/docker/daemon.json -p 5000:5000 --name local-registry registry:latest
+
+# Create Builder
+export BUILDER_NAME=openstudiolandscapes-builder
+docker buildx create --driver "docker-container" --name "${BUILDER_NAME}" --platform "linux/amd64" --bootstrap
+# docker buildx use --builder "${BUILDER_NAME}"
+# docker buildx use --builder "${BUILDER_NAME}" --default --global
+
+    --cache-to "type=registry,ref=localhost:5000/michimussato/base__build_docker_image:1234" \
+    --cache-to "type=registry,ref=localhost:5000/michimussato/base__build_docker_image:5678" \
+    
+
+# Build Image
+docker buildx build \
+    --load \
+    --output "type=registry" \
+    --builder "${BUILDER_NAME}" \
+    --tag localhost:5000/michimussato/base__build_docker_image:1234 \
+    --tag localhost:5000/michimussato/base__build_docker_image:5678 \
+    --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-03-18_15-51-53__ed200ac53c1445c7b0b89c113fd43164/Base__Base/Base__build_docker_image/Dockerfiles/Dockerfile \
+    /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-03-18_15-51-53__ed200ac53c1445c7b0b89c113fd43164/Base__Base/Base__build_docker_image/Dockerfiles
+    
+# Push Image
+# docker push localhost:5000/michimussato/base__build_docker_image:1234
+docker push --all-tags localhost:5000/michimussato/base__build_docker_image
+
+# Pull Image
+docker pull localhost:5000/michimussato/base__build_docker_image:1234
+
+# Remove Builder
+docker buildx rm "${BUILDER_NAME}"
+"""
