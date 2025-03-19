@@ -189,7 +189,7 @@ def env(
         asset_key=context.asset_key,
         metadata={
             "__".join(context.asset_key.path): MetadataValue.json(ENVIRONMENT_BASE),
-            "ENVIRONMENT_KITSU": MetadataValue.json(ENVIRONMENT_BASE),
+            # "ENVIRONMENT_BASE": MetadataValue.json(ENVIRONMENT_BASE),
         },
     )
 
@@ -308,8 +308,7 @@ def build_docker_image(
 
     docker_file.parent.mkdir(parents=True, exist_ok=True)
 
-    # ip = get_ip()
-    ip = "localhost"
+    ip = get_ip()
     port_registry = get_port(run_registry)
 
     tags = [

@@ -83,7 +83,7 @@ ASSET_HEADER_COMPOSE_WORKER = {
 
 THIRD_PARTY = [
     {
-        "enabled": True,
+        "enabled": False,
         "module": "OpenStudioLandscapes.Ayon.definitions",
         "compose_scope": ComposeScope.DEFAULT,
     },
@@ -98,7 +98,7 @@ THIRD_PARTY = [
         "compose_scope": ComposeScope.DEFAULT,
     },
     {
-        "enabled": True,
+        "enabled": False,
         "module": "OpenStudioLandscapes.Deadline_10_2_Worker.definitions",
         "compose_scope": ComposeScope.WORKER,
     },
@@ -108,17 +108,17 @@ THIRD_PARTY = [
         "compose_scope": ComposeScope.DEFAULT,
     },
     {
-        "enabled": True,
+        "enabled": False,
         "module": "OpenStudioLandscapes.Grafana.definitions",
         "compose_scope": ComposeScope.DEFAULT,
     },
     {
-        "enabled": True,
+        "enabled": False,
         "module": "OpenStudioLandscapes.Kitsu.definitions",
         "compose_scope": ComposeScope.DEFAULT,
     },
     {
-        "enabled": True,
+        "enabled": False,
         "module": "OpenStudioLandscapes.SESI_gcc_9_3_Houdini_20.definitions",
         "compose_scope": ComposeScope.DEFAULT,
     },
@@ -133,7 +133,7 @@ THIRD_PARTY = [
         "compose_scope": ComposeScope.DEFAULT,
     },
     {
-        "enabled": True,
+        "enabled": False,
         "module": "OpenStudioLandscapes.Syncthing.definitions",
         "compose_scope": ComposeScope.DEFAULT,
     },
