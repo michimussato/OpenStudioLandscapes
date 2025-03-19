@@ -212,7 +212,6 @@ sudo systemctl restart docker
     cmd_stop = [
         shutil.which("docker"),
         "buildx",
-        # "container",
         "stop",
         # container_name,
         container.id,
@@ -221,7 +220,6 @@ sudo systemctl restart docker
     cmd_rm = [
         shutil.which("docker"),
         "buildx",
-        # "container",
         "rm",
         # container_name,
         container.id,
