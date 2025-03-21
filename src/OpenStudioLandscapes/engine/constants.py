@@ -18,7 +18,6 @@ __all__ = [
 ]
 
 import enum
-import pathlib
 from typing import Generator, MutableMapping
 
 from dagster import (
@@ -37,8 +36,6 @@ class ComposeScope(enum.StrEnum):
 
 DOCKER_USE_CACHE_GLOBAL = True
 DOCKER_USE_CACHE = DOCKER_USE_CACHE_GLOBAL or False
-# DOCKER_CACHE_DIR = pathlib.Path("/nfs/docker/cache")
-# DOCKER_CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 
 GROUP_BASE = "Base"
@@ -93,7 +90,7 @@ THIRD_PARTY = [
         "compose_scope": ComposeScope.DEFAULT,
     },
     {
-        "enabled": True,
+        "enabled": False,
         "module": "OpenStudioLandscapes.Deadline_10_2.definitions",
         "compose_scope": ComposeScope.DEFAULT,
     },

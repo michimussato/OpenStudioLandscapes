@@ -9,7 +9,7 @@ import uuid
 from datetime import datetime
 from typing import Generator
 
-from python_on_whales import Container, Builder
+from python_on_whales import Builder
 
 from dagster import (
     AssetExecutionContext,
@@ -22,6 +22,7 @@ from dagster import (
 )
 
 from OpenStudioLandscapes.engine.constants import *
+from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.utils import *
 from OpenStudioLandscapes.engine.docker import *
 
@@ -127,8 +128,6 @@ def dot_landscapes(
         "landscape_id": AssetIn(AssetKey([*KEY_BASE, "landscape_id"])),
         "dot_landscapes": AssetIn(AssetKey([*KEY_BASE, "dot_landscapes"])),
         "nfs": AssetIn(AssetKey([*KEY_BASE, "nfs"])),
-        "docker_cache": AssetIn(AssetKey([*KEY_BASE, "docker_cache"])),
-        "docker_images": AssetIn(AssetKey([*KEY_BASE, "docker_images"])),
     },
     deps=[
         AssetKey(
@@ -146,8 +145,6 @@ def env(
     landscape_id: dict,  # pylint: disable=redefined-outer-name
     dot_landscapes: pathlib.Path,  # pylint: disable=redefined-outer-name
     nfs: dict,  # pylint: disable=redefined-outer-name
-    docker_cache: dict,  # pylint: disable=redefined-outer-name
-    docker_images: dict,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
 
     # @formatter:off
@@ -167,7 +164,7 @@ def env(
         "CREATED_ON": str(socket.gethostname()),
         "CREATED_AT": str(datetime.strftime(datetime.now(), "%Y-%m-%d_%H-%M-%S")),
         "TIMEZONE": "Europe/Zurich",
-        "IMAGE_PREFIX": "michimussato",
+        # "IMAGE_PREFIX": "michimussato",
         "DEFAULT_CONFIG_DBPATH": "/data/configdb",
         "ROOT_DOMAIN": "farm.evil",
         # https://vfxplatform.com/
@@ -179,8 +176,6 @@ def env(
     ENVIRONMENT_BASE.update(secrets)
     ENVIRONMENT_BASE.update(landscape_id)
     ENVIRONMENT_BASE.update(nfs)
-    ENVIRONMENT_BASE.update(docker_cache)
-    ENVIRONMENT_BASE.update(docker_images)
     # @formatter:on
 
     yield Output(ENVIRONMENT_BASE)
@@ -279,20 +274,25 @@ def apt_packages(
     **ASSET_HEADER_BASE,
     ins={
         "env": AssetIn(AssetKey([*KEY_BASE, "env"])),
+        "docker_config": AssetIn(AssetKey([*KEY_BASE, "docker_config"])),
         "apt_packages": AssetIn(AssetKey([*KEY_BASE, "apt_packages"])),
         "pip_packages": AssetIn(AssetKey([*KEY_BASE, "pip_packages"])),
-        "run_registry": AssetIn(AssetKey([*KEY_BASE, "run_registry"])),
+        # "run_registry": AssetIn(AssetKey([*KEY_BASE, "run_registry"])),
         "run_builder": AssetIn(AssetKey([*KEY_BASE, "run_builder"])),
     },
+    # deps=[
+    #     AssetKey([*KEY_BASE, "run_registry"])
+    # ],
 )
 def build_docker_image(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
+    docker_config: DockerConfig,  # pylint: disable=redefined-outer-name
     apt_packages: dict[str, list[str]],  # pylint: disable=redefined-outer-name
     pip_packages: list,  # pylint: disable=redefined-outer-name
-    run_registry: Container,  # pylint: disable=redefined-outer-name
+    # run_registry: Container,  # pylint: disable=redefined-outer-name
     run_builder: Builder,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[str] | AssetMaterialization, None, None]:
+) -> Generator[Output[dict[str, str | list[str]]] | AssetMaterialization, None, None]:
     """ """
 
     docker_file = pathlib.Path(
@@ -308,14 +308,14 @@ def build_docker_image(
 
     docker_file.parent.mkdir(parents=True, exist_ok=True)
 
-    ip = get_ip()
-    port_registry = get_port(run_registry)
+    image_name = get_image_name(context=context)
+    image_path = parse_docker_image_path(
+        image_name=image_name,
+        docker_config=docker_config,
+    )
 
     tags = [
-        f"{ip}:{port_registry}/{env.get('IMAGE_PREFIX')}/{'__'.join(context.asset_key.path).lower()}:latest",
-        f"{ip}:{port_registry}/{env.get('IMAGE_PREFIX')}/{'__'.join(context.asset_key.path).lower()}:{env.get('LANDSCAPE', str(time.time()))}",
-        # f"localhost:5010/{env.get('IMAGE_PREFIX')}/{'__'.join(context.asset_key.path).lower()}:latest",
-        # f"localhost:5010/{env.get('IMAGE_PREFIX')}/{'__'.join(context.asset_key.path).lower()}:{env.get('LANDSCAPE', str(time.time()))}",
+        f"{env.get('LANDSCAPE', str(time.time()))}",
     ]
 
     apt_install_str_base: str = get_apt_install_str(
@@ -379,7 +379,7 @@ def build_docker_image(
             f"http://localhost:3000/asset-groups/{'%2F'.join(context.asset_key.path)}",
             safe=":/%",
         ),
-        image_name="__".join(context.asset_key.path).lower(),
+        image_name=image_name,
         **env,
     )
     # @formatter:on
@@ -390,33 +390,38 @@ def build_docker_image(
     with open(docker_file, mode="r") as fr:
         docker_file_content = fr.read()
 
+    image_data = {
+        "image_name": image_name,
+        "image_path": image_path,
+        "image_tags": tags,
+        "image_parent": {},
+    }
+
     log: str = docker_build(
         context=context,
+        docker_config=docker_config,
         context_path=docker_file.parent,
-        tags=tags,
         docker_use_cache=DOCKER_USE_CACHE,
         builder=run_builder,
-        # cache_dir=pathlib.Path(env.get('DOCKER_CACHE_DIR')),
-        # images_dir=pathlib.Path(env.get('DOCKER_IMAGES_DIR')),
-        parent_image=None,
+        image_data=image_data,
     )
 
-    # Todo
-    #  - [ ] this is not accurate anymore
-    cmds_docker = compile_cmds(
-        docker_file=docker_file,
-        tag=tags[-1],
-        volumes=[],
-    )
+    # # Todo
+    # #  - [ ] this is not accurate anymore
+    # cmds_docker = compile_cmds(
+    #     docker_file=docker_file,
+    #     tag=tags[-1],
+    #     volumes=[],
+    # )
 
-    yield Output(tags[-1])
+    yield Output(image_data)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
             "__".join(context.asset_key.path): MetadataValue.path(tags[-1]),
             "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
-            **cmds_docker,
+            # **cmds_docker,
             "build_logs": MetadataValue.md(f"```shell\n{log}\n```"),
             "env": MetadataValue.json(env),
         },
@@ -449,68 +454,19 @@ def nfs(
 
 @asset(
     **ASSET_HEADER_BASE,
-    ins={
-        "nfs": AssetIn(AssetKey([*KEY_BASE, "nfs"])),
-    },
 )
-def docker_cache(
+def docker_config(
     context: AssetExecutionContext,
-    nfs: dict,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[dict] | AssetMaterialization, None, None]:
+) -> Generator[Output[DockerConfig] | AssetMaterialization, None, None]:
 
-    _docker_cache = pathlib.Path(
-        nfs["NFS_ENTRY_POINT"],
-        "docker",
-        "cache",
-    )
-    _docker_cache.mkdir(parents=True, exist_ok=True)
+    _docker_config = DockerConfig.DOCKER_HUB
 
-    # @formatter:off
-    _env: dict = {
-        "DOCKER_CACHE_DIR": _docker_cache.as_posix(),
-    }
-    # @formatter:on
-
-    yield Output(_env)
+    yield Output(_docker_config)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(_env),
-        },
-    )
-
-
-@asset(
-    **ASSET_HEADER_BASE,
-    ins={
-        "nfs": AssetIn(AssetKey([*KEY_BASE, "nfs"])),
-    },
-)
-def docker_images(
-    context: AssetExecutionContext,
-    nfs: dict,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[dict] | AssetMaterialization, None, None]:
-
-    _docker_images = pathlib.Path(
-        nfs["NFS_ENTRY_POINT"],
-        "docker",
-        "images",
-    )
-    _docker_images.mkdir(parents=True, exist_ok=True)
-
-    # @formatter:off
-    _env: dict = {
-        "DOCKER_IMAGES_DIR": _docker_images.as_posix(),
-    }
-    # @formatter:on
-
-    yield Output(_env)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(_env),
+            "__".join(context.asset_key.path): MetadataValue.json(_docker_config.value),
         },
     )
 
@@ -522,6 +478,7 @@ def docker_images(
     },
     ins={
         "env": AssetIn(AssetKey([*KEY_BASE, "env"])),
+        "docker_config": AssetIn(AssetKey([*KEY_BASE, "docker_config"])),
         "run_builder": AssetIn(AssetKey([*KEY_BASE, "run_builder"])),
         "build_docker_image": AssetIn(
             AssetKey([*KEY_BASE, "build_docker_image"]),
@@ -531,14 +488,16 @@ def docker_images(
 def group_out(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
+    docker_config: DockerConfig,  # pylint: disable=redefined-outer-name
     run_builder: Builder,  # pylint: disable=redefined-outer-name
-    build_docker_image: str,  # pylint: disable=redefined-outer-name
+    build_docker_image: dict,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict[str, str | dict]] | AssetMaterialization, None, None]:
 
     out_dict: dict = {}
 
     out_dict["env"] = env
-    out_dict["docker_builder"] = run_builder.name
+    out_dict["docker_config"] = docker_config
+    out_dict["docker_builder"] = run_builder
     out_dict["docker_image"] = build_docker_image
 
     yield Output(out_dict)
@@ -546,6 +505,9 @@ def group_out(
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(out_dict),
+            "env": MetadataValue.json(env),
+            "docker_config": MetadataValue.json(docker_config.value),
+            "run_builder": MetadataValue.path(run_builder.name),
+            "docker_image": MetadataValue.json(build_docker_image),
         },
     )

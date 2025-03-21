@@ -139,6 +139,7 @@ group_out = AssetsDefinition.from_op(
     keys_by_input_name={
         "compose": AssetKey([*KEY_COMPOSE_WORKER, "compose"]),
         "env": AssetKey([*KEY_COMPOSE_WORKER, "env"]),
+        "group_in": AssetKey([*KEY_BASE, "group_out"]),
     },
 )
 

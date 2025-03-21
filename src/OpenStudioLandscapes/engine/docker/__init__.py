@@ -4,27 +4,29 @@ __all__ = [
 ]
 
 import pathlib
-import shutil
-import subprocess
-from typing import Iterator, List
-from python_on_whales import docker, Builder, Image
-# from python_on_whales import DockerClient
+from typing import Iterator
+from python_on_whales import docker, Builder, DockerClient, DockerException
 
 from dagster import (
     AssetExecutionContext,
 )
 
+from OpenStudioLandscapes.engine.enums import *
+
 
 def docker_build(
     context: AssetExecutionContext,
+    docker_config: DockerConfig,
     context_path: pathlib.Path,
-    tags: List[str],
     builder: Builder,
     docker_use_cache: bool = True,
-    parent_image: str = None,
-    # cache_dir: pathlib.Path = None,
-    # images_dir: pathlib.Path = None,
+    image_data: dict = None,
+    pull_all_tags: bool = True,
+    push_all_tags: bool = True,
 ) -> str:
+
+    _docker_config = docker_config.value
+
     # https://docs.docker.com/build/cache/backends/local/
 
     # docker run --rm -p 5010:5000 --name registry registry:latest
@@ -32,129 +34,69 @@ def docker_build(
     # docker pull localhost:5010/michimussato/base__build_docker_image:latest
     # docker run --rm -v /home/michael/git/repos/OpenStudioLandscapes/daemon.json:/etc/docker/daemon.json -p 5010:5000 --name registry registry:latest
 
-    # _extra_args = {}
-    #
-    # if docker_use_cache:
-    #     # https://docs.docker.com/reference/cli/docker/buildx/build/#cache-from
-    #     # _extra_args["cache_from"] = f"type=local,src={cache_dir.as_posix()}"
-    #     # _extra_args["cache_from"] = f"type=registry,ref=localhost:5010"
-    #     _extra_args["cache_from"] = f"type=registry,ref=localhost:5010/{tags[0]}"
-    #     # _extra_args["cache_from"] = f"type=registry"
-    #     # # https://docs.docker.com/reference/cli/docker/buildx/build/#cache-to
-    #     # # _extra_args["cache_to"] = f"type=local,dest={cache_dir.as_posix()},compression=zstd,compression-level=22"
-    #     _extra_args["cache_to"] = f"type=registry,ref=localhost:5010"
-    #     # _extra_args["cache_to"] = f"type=registry,ref=localhost:5010/{tags[0]}"
-    #     # https://docs.docker.com/reference/cli/docker/buildx/build/#output
-    #     # https://docs.docker.com/build/exporters/oci-docker/#synopsis
-    #     # _image_name = "__".join(context.asset_key.path).lower()
-    #     # _tar = f"{pathlib.Path(images_dir / _image_name).as_posix()}"
-    #     _extra_args["output"] = {
-    #         # "type": "oci",
-    #         # "type": "tar",
-    #         # "type": "local",
-    #         "type": "image",
-    #         "push": "false",
-    #         "registry.insecure": "true",
-    #         # "dest": _tar,
-    #         # "name": f"michimussato/{_image_name}",
-    #         # "compression": "zstd",
-    #         # "compression": "gzip",
-    #         # "compression_level": "22",
-    #         # "compression_level": "9",
-    #         # # https://docs.docker.com/build/exporters/oci-docker/#annotations
-    #         # "annotation.io.containerd.image.name": tags[-1].split(":")[0],
-    #         # "annotation.org.opencontainers.image.ref.name": tags[-1].split(":")[-1],
-    #     }
-    #
-    #     # "annotations":{"io.containerd.image.name":"docker.io/michimussato/base__build_docker_image:2025-03-18_09-19-42__166f3f88e138406a8f88e879a505cbba","org.opencontainers.image.created":"2025-03-18T08:20:08Z","org.opencontainers.image.ref.name":"2025-03-18_09-19-42__166f3f88e138406a8f88e879a505cbba"}
-
-    # img: Image = docker.build(
-    #     context_path=context_path.as_posix(),
-    #     cache=docker_use_cache,
-    #     # tags=tags[-1],
-    #     stream_logs=False,
-    #     builder=_get_builder(),
-    #     push=True,
-    #     pull=True,
-    #     load=True,
-    #     **_extra_args,
-    # )
-
-    # for tag in tags:
-    #     img.tag(
-    #         new_tag=tag
-    #     )
-
-    # docker_client = DockerClient(
-    #     client_call=["docker"],
-    # )
-
-    # docker_client.login(
-    #     server="localhost:5010",
-    #     username='""',
-    #     password='""',
-    # )
-
-    # docker_client.buildx.
-
-    if parent_image is not None:
-        stdout = subprocess.check_output(
-            [
-                f"{shutil.which('docker')}",
-                "pull",
-                "--all",
-                f"{parent_image}",
-            ]
-        )
-
-        context.log.info(stdout.decode("utf-8"))
-
-    stream: Iterator[str] = docker.build(
-        context_path=context_path.as_posix(),
-        cache=docker_use_cache,
-        tags=tags,
-        stream_logs=True,
-        builder=builder,
-        # add_hosts={"localhost": "http://localhost:5010"},
-        # push=True,
-        # pull=True,
-        load=True,
-        # **_extra_args,
+    docker_client = DockerClient(
+        client_call=["docker"],
+        client_type="docker",
     )
+
+    # in case we are logged in
+    docker_client.logout()
 
     log: str = ""
 
-    for msg in stream:
-        context.log.debug(msg)
-        log += msg
+    try:
 
-    # if docker_use_cache:
-    #     img: Image = docker.import_(
-    #         source=_tar,
-    #     )
+        if not _docker_config["docker_use_local"]:
+            server = _docker_config["docker_registry_url"]
+            username = _docker_config.get("docker_registry_username", None)
+            password = _docker_config.get("docker_registry_password", None)
 
-    # for tag in tags:
-    #     # docker tag michimussato/base__build_docker_image:2025-03-18_14-02-09__55959d1912a941c4a3f981ff4e560687 localhost:5010/michimussato/base__build_docker_image:2025-03-18_14-41-23__8f401ef0889649138d7f82b8661390b2
-    #     # repo, tag = tag.split(":")  # michimussato/base__build_docker_image, 2025-03-18_14-02-09__55959d1912a941c4a3f981ff4e560687
-    #
-    #     os.system(f"docker tag {tag} localhost:5000/{tag}")
-    #     # os.system(f"docker tag localhost:5010/{tag}")
-    #     # img.tag(
-    #     #     new_tag=tag
-    #     # )
+            if not all([username, password]):
+                raise Exception("Both username and password are required")
 
-    for tag in tags:
-        stdout = subprocess.check_output(
-            [
-                f"{shutil.which('docker')}",
-                "push",
-                # "--all-tags",
-                f"{tag}",
-            ]
+            context.log.debug("Attempting registry authentication...")
+            try:
+                docker_client.login(
+                    server=server,
+                    username=username,
+                    password=password,
+                )
+                context.log.debug("Authentication successful.")
+            except DockerException as e:
+                context.log.exception(e)
+
+        context.log.info(docker_client.info())
+
+        image_path = image_data["image_path"]
+        image_tags = image_data["image_tags"]
+        parent_image: dict = image_data["image_parent"]
+
+        tags = [f"{image_path}:{tag}" for tag in image_tags]
+
+        stream: Iterator[str] = docker_client.buildx.build(
+            context_path=context_path.as_posix(),
+            cache=docker_use_cache,
+            tags=tags,
+            stream_logs=True,
+            builder=builder,
+            push=True,
+            # pull=True,
+            load=True,
+            # **_extra_args,
         )
-        # os.system(f"docker push {tag}")
 
-        context.log.info(stdout.decode("utf-8"))
+        for msg in stream:
+            context.log.debug(msg)
+            log += msg
+
+    except Exception as e:
+
+        context.log.exception(e)
+        raise e
+
+    finally:
+
+        docker_client.logout()
 
     return log
 
@@ -163,6 +105,8 @@ def get_builder_by_name(
     context: AssetExecutionContext,
     builder_name: str,
 ) -> Builder:
+
+    assert isinstance(builder_name, str)
 
     _builder = None
 

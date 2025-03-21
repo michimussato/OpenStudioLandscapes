@@ -31,6 +31,8 @@ from dagster import (
 
 from docker_compose_graph.docker_compose_graph import DockerComposeGraph
 
+from OpenStudioLandscapes.engine.enums import *
+
 
 @op(
     name="compose",
@@ -189,6 +191,7 @@ def op_docker_compose_graph(
     ins={
         "compose": In(dict),
         "env": In(dict),
+        "group_in": In(dict),
     },
     out={
         "group_out": Out(pathlib.Path),
@@ -200,6 +203,7 @@ def op_group_out(
     context: OpExecutionContext,
     compose: dict,  # pylint: disable=redefined-outer-name
     env: dict,  # pylint: disable=redefined-outer-name
+    group_in: dict,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[pathlib.Path] | Output[str] | Output[list] | AssetMaterialization, None, None]:
 
     docker_yaml = yaml.dump(compose)
@@ -207,6 +211,9 @@ def op_group_out(
     context.log.warning(context.asset_key_for_output("group_out"))
     context.log.warning(context.asset_key_for_output("compose_project_name"))
     context.log.warning(context.selected_output_names)
+
+    build_base_docker_config: DockerConfig = group_in["docker_config"]
+    build_base_docker_config_value = build_base_docker_config.value
 
     compose_project_name = f"{env.get('LANDSCAPE', 'default').replace('.', '-')}-{env['COMPOSE_SCOPE']}"
 
@@ -279,6 +286,47 @@ def op_group_out(
         "--remove-orphans",
     ]
     script_cmd_docker_compose_down = docker_compose.parent / "docker_compose_down.sh"
+
+    # In case we need to log in to the registry
+    if not build_base_docker_config_value["docker_use_local"]:
+
+        if build_base_docker_config_value["docker_repository_type"] == DockerRepositoryType.PRIVATE:
+
+            server = build_base_docker_config_value["docker_registry_url"]
+            username = build_base_docker_config_value.get("docker_registry_username", None)
+            password = build_base_docker_config_value.get("docker_registry_password", None)
+
+            if not all([username, password]):
+                raise Exception("Both username and password are required")
+
+            cmd_docker_login = [
+                shutil.which("docker"),
+                "login",
+                "--username", username,
+                "--password", password,
+                server,
+            ]
+
+            cmd_docker_logout = [
+                shutil.which("docker"),
+                "logout",
+            ]
+
+            cmd_docker_compose_up = [
+                *cmd_docker_login,
+                "&&",
+                *cmd_docker_compose_up,
+                "&&",
+                *cmd_docker_logout,
+            ]
+
+            cmd_docker_compose_pull_up =  [
+                *cmd_docker_login,
+                "&&",
+                *cmd_docker_compose_pull_up,
+                "&&",
+                *cmd_docker_logout,
+            ]
 
     docker_script = dict()
     scripts = []
@@ -396,7 +444,10 @@ def op_group_out(
                 #     f"```shell\n{' '.join(shlex.quote(s) for s in cmd_docker_compose_up)}\n```"
                 # ),
                 "cmd_docker_compose_up": MetadataValue.path(
-                    " ".join(shlex.quote(s) for s in cmd_docker_compose_up)
+                    " ".join(
+                        shlex.quote(s) if not s in ["&&", ";"] else s
+                        for s in cmd_docker_compose_up
+                    )
                 ),
                 "cmd_docker_compose_pull_up": MetadataValue.path(
                     " ".join(
@@ -405,54 +456,10 @@ def op_group_out(
                     )
                 ),
                 "cmd_docker_compose_down": MetadataValue.path(
-                    " ".join(shlex.quote(s) for s in cmd_docker_compose_down)
+                    " ".join(
+                        shlex.quote(s) if not s in ["&&", ";"] else s
+                        for s in cmd_docker_compose_down
+                    )
                 ),
             },
         )
-
-
-# @op(
-#     name="compose",
-#     ins={
-#         "compose_networks": In(dict),
-#         "compose_maps": In(list),
-#     },
-#     out={
-#         "compose": Out(dict),
-#     },
-# )
-# def op_docker_compose_up(
-#     context: OpExecutionContext,
-#     compose_networks: dict,  # pylint: disable=redefined-outer-name
-#     # **kwargs,  # pylint: disable=redefined-outer-name
-#     compose_maps: list[dict],  # pylint: disable=redefined-outer-name
-# ) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
-#     """ """
-#
-#     if "networks" in compose_networks:
-#         network_dict = copy.deepcopy(compose_networks)
-#     else:
-#         network_dict = {}
-#
-#     docker_chainmap = ChainMap(
-#         network_dict,
-#         *compose_maps,
-#     )
-#
-#     docker_dict = reduce(deep_merge, docker_chainmap.maps)
-#
-#     docker_yaml = yaml.dump(docker_dict)
-#
-#     yield Output(
-#         output_name="compose",
-#         value=docker_dict,
-#     )
-#
-#     yield AssetMaterialization(
-#         asset_key=context.asset_key,
-#         metadata={
-#             "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
-#             "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
-#             # Todo: "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)),
-#         },
-#     )

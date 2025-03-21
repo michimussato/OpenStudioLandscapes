@@ -9,20 +9,17 @@ __all__ = [
     "get_configs_root",
     "get_data_root",
     "get_bin_root",
-    "get_ip",
-    "get_port",
+    "get_image_name",
+    "parse_docker_image_path",
 ]
 
 
 import pathlib
 import shlex
 import shutil
-import socket
-
-from python_on_whales import Container
 
 import git
-from dagster import MetadataValue
+from dagster import MetadataValue, AssetExecutionContext
 
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.enums import *
@@ -176,38 +173,51 @@ def get_bin_root(
     return bin_root
 
 
-def get_compose_network(
-    network_dict: dict,
-    network_mode: ComposeNetworkMode = ComposeNetworkMode.DEFAULT,
-) -> dict:
-    pass
+def get_image_name(
+    context: AssetExecutionContext,
+) -> str:
+    return "_".join(context.asset_key.path).lower()
 
 
-def get_ip():
-    return "localhost"  # for now
-    # # https://stackoverflow.com/a/28950776
-    # s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    # s.settimeout(0)
-    # try:
-    #     # doesn't even have to be reachable
-    #     s.connect(('10.254.254.254', 1))
-    #     ip = s.getsockname()[0]
-    # except Exception:
-    #     ip = '127.0.0.1'
-    # finally:
-    #     s.close()
-    # return ip
+# def get_compose_network(
+#     network_dict: dict,
+#     network_mode: ComposeNetworkMode = ComposeNetworkMode.DEFAULT,
+# ) -> NotImplementedError:
+#     raise NotImplementedError
 
 
-def get_port(
-        container: Container,
-):
-    # ip_address = container.network_settings.ip_address
-    ports = container.network_settings.ports["5000/tcp"]
-    for port in ports:
-        if port["HostIp"] != "::":
-            host_port = port["HostPort"]
-            # host_ip = port["HostIp"]
-            break
+def parse_docker_image_path(
+    image_name: str,
+    docker_config: [DockerConfig, dict],
+    tag: str = None,
+) -> str:
 
-    return host_port
+    if tag is not None:
+        image_name = f"{image_name}:{tag}"
+
+    if isinstance(docker_config, DockerConfig):
+        _docker_config: dict = docker_config.value
+    elif isinstance(docker_config, dict):
+        _docker_config: dict = docker_config
+    else:
+        raise TypeError
+
+    _repository_name = _docker_config.get("docker_repository", None)
+    if bool(_repository_name):
+        repository_name = f"{_repository_name}/"
+    else:
+        repository_name = ""
+
+    if _docker_config["docker_use_local"]:
+        return f"{repository_name}{image_name}"
+
+    else:
+        # docker.io is the docker default in none is explicitly specified
+        _docker_registry_url = _docker_config.get("docker_registry_url", "docker.io")
+        _docker_registry_port = _docker_config.get("docker_registry_port", None)
+        if bool(_docker_registry_port):
+            docker_registry = f"{_docker_registry_url}:{_docker_registry_port}/"
+        else:
+            docker_registry = f"{_docker_registry_url}/"
+
+        return f"{docker_registry}{repository_name}{image_name}"
