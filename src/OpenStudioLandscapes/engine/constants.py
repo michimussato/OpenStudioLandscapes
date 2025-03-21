@@ -80,7 +80,7 @@ ASSET_HEADER_COMPOSE_WORKER = {
 
 THIRD_PARTY = [
     {
-        "enabled": False,
+        "enabled": True,
         "module": "OpenStudioLandscapes.Ayon.definitions",
         "compose_scope": ComposeScope.DEFAULT,
     },
@@ -110,7 +110,7 @@ THIRD_PARTY = [
         "compose_scope": ComposeScope.DEFAULT,
     },
     {
-        "enabled": False,
+        "enabled": True,
         "module": "OpenStudioLandscapes.Kitsu.definitions",
         "compose_scope": ComposeScope.DEFAULT,
     },
