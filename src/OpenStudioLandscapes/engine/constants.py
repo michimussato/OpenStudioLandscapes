@@ -90,12 +90,12 @@ THIRD_PARTY = [
         "compose_scope": ComposeScope.DEFAULT,
     },
     {
-        "enabled": False,
+        "enabled": True,
         "module": "OpenStudioLandscapes.Deadline_10_2.definitions",
         "compose_scope": ComposeScope.DEFAULT,
     },
     {
-        "enabled": False,
+        "enabled": True,
         "module": "OpenStudioLandscapes.Deadline_10_2_Worker.definitions",
         "compose_scope": ComposeScope.WORKER,
     },
