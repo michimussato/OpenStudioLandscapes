@@ -39,6 +39,7 @@ class ComposeNetworkMode(enum.StrEnum):
 class DockerRegistry(enum.StrEnum):
     DOCKER = "docker.io"
     GIT_HUB = "ghcr.io"
+    GOOGLE = "gcr.io"
     LOCAL_LOCALHOST = "localhost"
     LOCAL_192_168_1_162 = "192.168.1.162"
     # HARBOR = ""  # https://goharbor.io/

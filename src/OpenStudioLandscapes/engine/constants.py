@@ -110,7 +110,7 @@ THIRD_PARTY = [
         "compose_scope": ComposeScope.DEFAULT,
     },
     {
-        "enabled": True,  # test not yet successful
+        "enabled": False,  # docker push not yet successful
         "module": "OpenStudioLandscapes.SESI_gcc_9_3_Houdini_20.definitions",
         "compose_scope": ComposeScope.DEFAULT,
     },
@@ -120,7 +120,8 @@ THIRD_PARTY = [
         "compose_scope": ComposeScope.DEFAULT,
     },
     {
-        "enabled": True,
+        "enabled": False,
+        # error This project's package.json defines "packageManager": "yarn@pnpm@10.6.2". However the current global version of Yarn is 1.22.22.
         "module": "OpenStudioLandscapes.LikeC4.definitions",
         "compose_scope": ComposeScope.DEFAULT,
     },
