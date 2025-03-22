@@ -115,7 +115,8 @@ THIRD_PARTY = [
         "compose_scope": ComposeScope.DEFAULT,
     },
     {
-        "enabled": True,
+        "enabled": False,
+        # error: no health check configured
         "module": "OpenStudioLandscapes.OpenCue.definitions",
         "compose_scope": ComposeScope.DEFAULT,
     },
