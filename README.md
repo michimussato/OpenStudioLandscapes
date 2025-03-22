@@ -107,6 +107,22 @@ on top with the ability to share them among others
 without sacrificing the technical freedom to implement
 highly studio specific and individual solutions if needed.
 
+The scope of this are users with some technical skills with a
+desire for a somewhat pre-made solution to set up their 
+service environments. OpenStudioLandscapes is therefore
+a somewhat opinionated solution for working environments that
+lack the fundamental skills or budget to write a solution like
+OpenStudioLandscapes by themselves while being flexible enough
+for everyone *with* the technical skills to make their way through
+configuring a Landscape or even writing their own OpenStudioLandscapes
+modules for custom or proprietary services to fully fit their needs.
+
+I guess this is a good starting point to open the project up to
+the animation and VFX community to find out where (or where else) 
+exactly the needs are to make sure small studios keep growing 
+in a (from a technical perspective) healthy way without ending up
+in high tech dept dead end.
+
 ## Structure
 
 The structure of a Landscape:

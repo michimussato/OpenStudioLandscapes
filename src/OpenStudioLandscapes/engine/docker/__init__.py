@@ -65,7 +65,7 @@ def docker_build(
             except DockerException as e:
                 context.log.exception(e)
 
-        context.log.info(docker_client.info())
+        context.log.debug("docker_client.info() = %s", docker_client.info())
 
         image_path = image_data["image_path"]
         image_tags = image_data["image_tags"]

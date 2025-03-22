@@ -315,7 +315,7 @@ def build_docker_image(
     )
 
     tags = [
-        f"{env.get('LANDSCAPE', str(time.time()))}",
+        env.get('LANDSCAPE', str(time.time())),
     ]
 
     apt_install_str_base: str = get_apt_install_str(

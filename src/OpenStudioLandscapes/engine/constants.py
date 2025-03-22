@@ -14,10 +14,8 @@ __all__ = [
     "KEY_COMPOSE_WORKER",
     "ASSET_HEADER_COMPOSE_WORKER",
     "THIRD_PARTY",
-    "ComposeScope",
 ]
 
-import enum
 from typing import Generator, MutableMapping
 
 from dagster import (
@@ -28,10 +26,7 @@ from dagster import (
     asset,
 )
 
-
-class ComposeScope(enum.StrEnum):
-    DEFAULT = "default"
-    WORKER = "worker"
+from OpenStudioLandscapes.engine.enums import *
 
 
 DOCKER_USE_CACHE_GLOBAL = True
@@ -100,12 +95,12 @@ THIRD_PARTY = [
         "compose_scope": ComposeScope.WORKER,
     },
     {
-        "enabled": False,
+        "enabled": True,
         "module": "OpenStudioLandscapes.filebrowser.definitions",
         "compose_scope": ComposeScope.DEFAULT,
     },
     {
-        "enabled": False,
+        "enabled": True,
         "module": "OpenStudioLandscapes.Grafana.definitions",
         "compose_scope": ComposeScope.DEFAULT,
     },
@@ -115,22 +110,22 @@ THIRD_PARTY = [
         "compose_scope": ComposeScope.DEFAULT,
     },
     {
-        "enabled": False,
+        "enabled": True,  # test not yet successful
         "module": "OpenStudioLandscapes.SESI_gcc_9_3_Houdini_20.definitions",
         "compose_scope": ComposeScope.DEFAULT,
     },
     {
-        "enabled": False,
+        "enabled": True,
         "module": "OpenStudioLandscapes.OpenCue.definitions",
         "compose_scope": ComposeScope.DEFAULT,
     },
     {
-        "enabled": False,
+        "enabled": True,
         "module": "OpenStudioLandscapes.LikeC4.definitions",
         "compose_scope": ComposeScope.DEFAULT,
     },
     {
-        "enabled": False,
+        "enabled": True,
         "module": "OpenStudioLandscapes.Syncthing.definitions",
         "compose_scope": ComposeScope.DEFAULT,
     },

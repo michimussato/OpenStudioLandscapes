@@ -16,6 +16,7 @@ from dagster import (
 
 from OpenStudioLandscapes.engine.base.ops import op_docker_compose_graph, op_group_out
 from OpenStudioLandscapes.engine.constants import *
+from OpenStudioLandscapes.engine.enums import *
 
 
 @asset(

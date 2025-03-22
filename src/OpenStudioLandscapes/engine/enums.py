@@ -1,5 +1,5 @@
 __all__ = [
-    # "ComposeScope",
+    "ComposeScope",
     "ComposeNetworkMode",
     "DockerRepositoryType",
     "DockerConfig",
@@ -18,10 +18,9 @@ except ModuleNotFoundError:
     _secrets: dict = {}
 
 
-# Todo:
-# class ComposeScope(enum.StrEnum):
-#     DEFAULT = "default"
-#     WORKER = "worker"
+class ComposeScope(enum.StrEnum):
+    DEFAULT = "default"
+    WORKER = "worker"
 
 
 class ComposeNetworkMode(enum.StrEnum):
@@ -35,6 +34,28 @@ class ComposeNetworkMode(enum.StrEnum):
     OVERLAY = "overlay"
     IPVLAN = "ipvlan"
     MACVLAN = "macvlan"
+
+
+class DockerRegistry(enum.StrEnum):
+    DOCKER = "docker.io"
+    GIT_HUB = "ghcr.io"
+    LOCAL_LOCALHOST = "localhost"
+    LOCAL_192_168_1_162 = "192.168.1.162"
+    # HARBOR = ""  # https://goharbor.io/
+
+
+class RegistryCredentials(enum.Enum):
+    DOCKER_HUB_LOGIN1 = {
+        "registry_type": DockerRegistry.DOCKER,
+        "registry_username": _secrets.get("SECRET_DOCKER_DOCKERHUB_USERNAME"),
+        "registry_password": _secrets.get("SECRET_DOCKER_DOCKERHUB_PASSWORD"),
+    }
+    # Example:
+    GIT_HUB_LOGIN1 = {
+        "registry_type": DockerRegistry.GIT_HUB,
+        "registry_username": _secrets.get(""),
+        "registry_password": _secrets.get(""),
+    }
 
 
 class DockerRepositoryType(enum.StrEnum):
@@ -58,7 +79,7 @@ class DockerConfig(enum.Enum):
     }
     REGISTRY_LOCAL = {
         "docker_use_local": False,
-        "docker_registry_url": "localhost",
+        "docker_registry_url": DockerRegistry.LOCAL_192_168_1_162.value,
         "docker_registry_port": "5000",
         "docker_registry_username": None,
         "docker_registry_password": None,
