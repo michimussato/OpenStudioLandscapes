@@ -18,6 +18,7 @@ from dagster import (
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.utils import *
+from OpenStudioLandscapes.engine.docker import *
 
 
 """
@@ -131,7 +132,8 @@ def run_registry(
     context: AssetExecutionContext,
     # env: dict,  # pylint: disable=redefined-outer-name
     docker_config: DockerConfig,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[Container] | AssetMaterialization, None, None]:
+):
+# ) -> Generator[Output[Container] | AssetMaterialization, None, None]:
 
     # Insecure Registries:
     # https://wiki.archlinux.org/title/Docker
@@ -163,118 +165,152 @@ sudo systemctl daemon-reload
 sudo systemctl restart docker
     """
 
-    meta_data = {}
-
-    # Only launch if "docker_use_local" is True:
-    if docker_config.value["docker_use_local"]:
-
-        _container = None
-        container_name = "openstudiolandscapes-registry"
-
-        containers = docker.container.list()
-
-        context.log.info(containers)
-
-        for container_ in containers:
-            if container_.name == container_name:
-                _container = container_
-
-        if _container is None:
-            # /usr/bin/docker buildx build --builder openstudiolandscapes-builder --pull --load --tag localhost:5000/michimussato/base_build_docker_image:2025-03-22_15-34-40__3769b1bdf71b4ef8a5c94002fce3b98f /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-03-22_15-34-40__3769b1bdf71b4ef8a5c94002fce3b98f/Base__Base/Base__build_docker_image/Dockerfiles
-            # /usr/bin/docker push localhost:5000/michimussato/base_build_docker_image:2025-03-22_15-34-40__3769b1bdf71b4ef8a5c94002fce3b98f
-            # # /usr/bin/docker push --all-tags localhost:5000/michimussato/base__build_docker_image
-            container: Container = docker.container.run(
-                detach=True,
-                remove=True,
-                domainname="farm.evil",
-                # network_mode="host",  # does not exist
-                hostname=container_name,
-                image="registry:2",  # 3 is RC
-                name=container_name,
-                publish=[
-                    (int(docker_config.value["docker_registry_port"]) or 5000, 5000),
-                ],
-                volumes=(
-                    [
-                        (
-                            pathlib.Path(
-                                get_git_root(path=pathlib.Path(__file__)) / "src" / "OpenStudioLandscapes" / "engine" / "docker" / "daemon.json"
-                            ).as_posix(),
-                            "/etc/docker/daemon.json",
-                            "ro",
-                        ),
-                    ]
-                ),
-                mounts=(
-                    [
-                        (
-                            "source=local-registry-vol",
-                            "destination=/var/lib/registry",
-                        )
-                    ]
-                )
-            )
-
-        else:
-            container: Container = _container
-
-        cmd_interactive = [
-            shutil.which("docker"),
-            "exec",
-            "--interactive",
-            "--tty",
-            # container_name,
-            container.id,
-            "sh"
+    container = docker_run_registry(
+        context=context,
+        docker_config=docker_config,
+        detach=False,
+        domainname="farm.evil",
+        container_name="openstudiolandscapes-registry",
+        host_name="openstudiolandscapes-registry",
+        # publish=[
+        #     f"{str(docker_config.value['docker_registry_port']) or '5000'}:5000",
+        # ],
+        volumes=[
+            (
+                pathlib.Path(
+                    get_git_root(path=pathlib.Path(
+                        __file__)) / "src" / "OpenStudioLandscapes" / "engine" / "docker" / "daemon.json"
+                ).as_posix(),
+                "/etc/docker/daemon.json",
+                "ro",
+            ),
+        ],
+        mounts=[
+            {
+                "source": "local-registry-vol",
+                "target": "/var/lib/registry",
+            }
         ]
-
-        cmd_logs = [
-            shutil.which("docker"),
-            "logs",
-            "--follow",
-            # container_name,
-            container.id,
-        ]
-
-        cmd_stop = [
-            shutil.which("docker"),
-            "container",
-            "stop",
-            # container_name,
-            container.id,
-        ]
-
-        # cmd_rm = [
-        #     shutil.which("docker"),
-        #     # "buildx",
-        #     "rm",
-        #     # container_name,
-        #     container.id,
-        # ]
-
-        # context.pdb.set_trace()
-        # NetworkSettings(bridge='', sandbox_id='267e9c32fe946b9a4665b52627ccf9b26b3f50cedf08920ed0c1e903e1ce77cf', hairpin_mode=False, link_local_ipv6_address='', link_local_ipv6_prefix_length=0, ports={'5000/tcp': [{'HostIp': '0.0.0.0', 'HostPort': '5000'}, {'HostIp': '::', 'HostPort': '5000'}]}, sandbox_key=PosixPath('/var/run/docker/netns/267e9c32fe94'), secondary_ip_addresses=None, secondary_ipv6_addresses=None, endpoint_id='34685ce658074786f8d9d54d9e66ebfd33ce767073c58ae3a6e0a494d0380db2', gateway='172.17.0.1', global_ipv6_address='', global_ipv6_prefix_length=0, ip_address='172.17.0.3', ip_prefix_length=16, ipv6_gateway='', mac_address='9a:47:f7:2f:05:51', networks={'bridge': NetworkInspectResult(ipam_config=None, links=None, aliases=None, network_id='472718e79828dfb762c3b2792802238587d661be25e4e5c7795f150009e15190', endpoint_id='34685ce658074786f8d9d54d9e66ebfd33ce767073c58ae3a6e0a494d0380db2', gateway='172.17.0.1', ip_address='172.17.0.3', ip_prefix_length=16, ipv6_gateway='', global_ipv6_address='', global_ipv6_prefix_length=0, mac_address='9a:47:f7:2f:05:51', driver_options=None)})
-        # ip_address = container.network_settings.ip_address
-        # ports = container.network_settings.ports["5000/tcp"]
-        # for port in ports:
-        #     if port["HostIp"] != "::":
-        #         host_port = port["HostIp"]
-        #         host_ip = port["HostPort"]
-        #         break
-
-        meta_data["__".join(context.asset_key.path)] = MetadataValue.path(str(container))
-        meta_data["dir"] = MetadataValue.json(dir(container))
-        meta_data["name"] = MetadataValue.path(container.name)
-        meta_data["id"] = MetadataValue.path(container.id)
-        meta_data["interactive"] = MetadataValue.path(shlex.join(cmd_interactive))
-        meta_data["logs"] = MetadataValue.path(shlex.join(cmd_logs))
-        meta_data["stop"] = MetadataValue.path(shlex.join(cmd_stop))
-
-        yield Output(container)
-
-    # meta_data["launched"] = MetadataValue.bool(docker_config.value["docker_use_local"]),
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata=meta_data,
     )
+
+    context.log.info(dir(container))
+
+    return None
+
+    # meta_data = {}
+    #
+    # # Only launch if "docker_use_local" is True:
+    # if docker_config.value["docker_use_local"]:
+    #
+    #     _container = None
+    #     container_name = "openstudiolandscapes-registry"
+    #
+    #     containers = docker.container.list()
+    #
+    #     context.log.info(containers)
+    #
+    #     for container_ in containers:
+    #         if container_.name == container_name:
+    #             _container = container_
+    #
+    #     if _container is None:
+    #         # /usr/bin/docker buildx build --builder openstudiolandscapes-builder --pull --load --tag localhost:5000/michimussato/base_build_docker_image:2025-03-22_15-34-40__3769b1bdf71b4ef8a5c94002fce3b98f /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-03-22_15-34-40__3769b1bdf71b4ef8a5c94002fce3b98f/Base__Base/Base__build_docker_image/Dockerfiles
+    #         # /usr/bin/docker push localhost:5000/michimussato/base_build_docker_image:2025-03-22_15-34-40__3769b1bdf71b4ef8a5c94002fce3b98f
+    #         # # /usr/bin/docker push --all-tags localhost:5000/michimussato/base__build_docker_image
+    #
+    #         # /usr/bin/docker container run --detach --domainname farm.evil --hostname openstudiolandscapes-registry --mount source=local-registry-vol,destination=/var/lib/registry --name openstudiolandscapes-registry -p 5000:5000 --rm --volume /home/michael/git/repos/OpenStudioLandscapes/src/OpenStudioLandscapes/engine/docker/daemon.json:/etc/docker/daemon.json:ro registry:2
+    #         container: Container = docker.container.run(
+    #             detach=True,
+    #             remove=True,
+    #             domainname="farm.evil",
+    #             # network_mode="host",  # does not exist
+    #             hostname=container_name,
+    #             image="registry:2",  # 3 is RC
+    #             name=container_name,
+    #             publish=[
+    #                 (int(docker_config.value["docker_registry_port"]) or 5000, 5000),
+    #             ],
+    #             volumes=(
+    #                 [
+    #                     (
+    #                         pathlib.Path(
+    #                             get_git_root(path=pathlib.Path(__file__)) / "src" / "OpenStudioLandscapes" / "engine" / "docker" / "daemon.json"
+    #                         ).as_posix(),
+    #                         "/etc/docker/daemon.json",
+    #                         "ro",
+    #                     ),
+    #                 ]
+    #             ),
+    #             mounts=(
+    #                 [
+    #                     (
+    #                         "source=local-registry-vol",
+    #                         "destination=/var/lib/registry",
+    #                     )
+    #                 ]
+    #             )
+    #         )
+    #
+    #     else:
+    #         container: Container = _container
+    #
+    #     cmd_interactive = [
+    #         shutil.which("docker"),
+    #         "exec",
+    #         "--interactive",
+    #         "--tty",
+    #         # container_name,
+    #         container.id,
+    #         "sh"
+    #     ]
+    #
+    #     cmd_logs = [
+    #         shutil.which("docker"),
+    #         "logs",
+    #         "--follow",
+    #         # container_name,
+    #         container.id,
+    #     ]
+    #
+    #     cmd_stop = [
+    #         shutil.which("docker"),
+    #         "container",
+    #         "stop",
+    #         # container_name,
+    #         container.id,
+    #     ]
+    #
+    #     # cmd_rm = [
+    #     #     shutil.which("docker"),
+    #     #     # "buildx",
+    #     #     "rm",
+    #     #     # container_name,
+    #     #     container.id,
+    #     # ]
+    #
+    #     # context.pdb.set_trace()
+    #     # NetworkSettings(bridge='', sandbox_id='267e9c32fe946b9a4665b52627ccf9b26b3f50cedf08920ed0c1e903e1ce77cf', hairpin_mode=False, link_local_ipv6_address='', link_local_ipv6_prefix_length=0, ports={'5000/tcp': [{'HostIp': '0.0.0.0', 'HostPort': '5000'}, {'HostIp': '::', 'HostPort': '5000'}]}, sandbox_key=PosixPath('/var/run/docker/netns/267e9c32fe94'), secondary_ip_addresses=None, secondary_ipv6_addresses=None, endpoint_id='34685ce658074786f8d9d54d9e66ebfd33ce767073c58ae3a6e0a494d0380db2', gateway='172.17.0.1', global_ipv6_address='', global_ipv6_prefix_length=0, ip_address='172.17.0.3', ip_prefix_length=16, ipv6_gateway='', mac_address='9a:47:f7:2f:05:51', networks={'bridge': NetworkInspectResult(ipam_config=None, links=None, aliases=None, network_id='472718e79828dfb762c3b2792802238587d661be25e4e5c7795f150009e15190', endpoint_id='34685ce658074786f8d9d54d9e66ebfd33ce767073c58ae3a6e0a494d0380db2', gateway='172.17.0.1', ip_address='172.17.0.3', ip_prefix_length=16, ipv6_gateway='', global_ipv6_address='', global_ipv6_prefix_length=0, mac_address='9a:47:f7:2f:05:51', driver_options=None)})
+    #     # ip_address = container.network_settings.ip_address
+    #     # ports = container.network_settings.ports["5000/tcp"]
+    #     # for port in ports:
+    #     #     if port["HostIp"] != "::":
+    #     #         host_port = port["HostIp"]
+    #     #         host_ip = port["HostPort"]
+    #     #         break
+    #
+    #     meta_data["__".join(context.asset_key.path)] = MetadataValue.path(str(container))
+    #     meta_data["dir"] = MetadataValue.json(dir(container))
+    #     meta_data["name"] = MetadataValue.path(container.name)
+    #     meta_data["id"] = MetadataValue.path(container.id)
+    #     meta_data["interactive"] = MetadataValue.path(shlex.join(cmd_interactive))
+    #     meta_data["logs"] = MetadataValue.path(shlex.join(cmd_logs))
+    #     meta_data["stop"] = MetadataValue.path(shlex.join(cmd_stop))
+    #
+    #     yield Output(container)
+    #
+    # # meta_data["launched"] = MetadataValue.bool(docker_config.value["docker_use_local"]),
+    #
+    # yield AssetMaterialization(
+    #     asset_key=context.asset_key,
+    #     metadata=meta_data,
+    # )
