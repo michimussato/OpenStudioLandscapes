@@ -277,12 +277,11 @@ def apt_packages(
         "docker_config": AssetIn(AssetKey([*KEY_BASE, "docker_config"])),
         "apt_packages": AssetIn(AssetKey([*KEY_BASE, "apt_packages"])),
         "pip_packages": AssetIn(AssetKey([*KEY_BASE, "pip_packages"])),
-        # "run_registry": AssetIn(AssetKey([*KEY_BASE, "run_registry"])),
         "run_builder": AssetIn(AssetKey([*KEY_BASE, "run_builder"])),
     },
-    # deps=[
-    #     AssetKey([*KEY_BASE, "run_registry"])
-    # ],
+    deps=[
+        AssetKey([*KEY_BASE, "run_registry"])
+    ],
 )
 def build_docker_image(
     context: AssetExecutionContext,
@@ -290,7 +289,6 @@ def build_docker_image(
     docker_config: DockerConfig,  # pylint: disable=redefined-outer-name
     apt_packages: dict[str, list[str]],  # pylint: disable=redefined-outer-name
     pip_packages: list,  # pylint: disable=redefined-outer-name
-    # run_registry: Container,  # pylint: disable=redefined-outer-name
     run_builder: Builder,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict[str, str | list[str]]] | AssetMaterialization, None, None]:
     """ """
@@ -397,14 +395,24 @@ def build_docker_image(
         "image_parent": {},
     }
 
-    log: str = docker_build(
+    logs = docker_buildx_build(
         context=context,
         docker_config=docker_config,
         context_path=docker_file.parent,
-        docker_use_cache=DOCKER_USE_CACHE,
-        builder=run_builder,
+        docker_file=docker_file,
+        # docker_use_cache=DOCKER_USE_CACHE,
+        # builder=run_builder,
         image_data=image_data,
     )
+
+    # log: str = docker_build(
+    #     context=context,
+    #     docker_config=docker_config,
+    #     context_path=docker_file.parent,
+    #     docker_use_cache=DOCKER_USE_CACHE,
+    #     builder=run_builder,
+    #     image_data=image_data,
+    # )
 
     # # Todo
     # #  - [ ] this is not accurate anymore
@@ -422,7 +430,8 @@ def build_docker_image(
             "__".join(context.asset_key.path): MetadataValue.path(tags[-1]),
             "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
             # **cmds_docker,
-            "build_logs": MetadataValue.md(f"```shell\n{log}\n```"),
+            "logs": MetadataValue.md(f"```shell\n{logs}\n```"),
+            # "logs": MetadataValue.json(logs),
             "env": MetadataValue.json(env),
         },
     )
@@ -459,7 +468,7 @@ def docker_config(
     context: AssetExecutionContext,
 ) -> Generator[Output[DockerConfig] | AssetMaterialization, None, None]:
 
-    _docker_config = DockerConfig.DOCKER_HUB
+    _docker_config = DockerConfig.LOCAL_LOCALHOST
 
     yield Output(_docker_config)
 

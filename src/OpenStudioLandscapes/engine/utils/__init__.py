@@ -11,12 +11,15 @@ __all__ = [
     "get_bin_root",
     "get_image_name",
     "parse_docker_image_path",
+    "iterate_fds",
 ]
 
 
 import pathlib
 import shlex
 import shutil
+import select
+import typing
 
 import git
 from dagster import MetadataValue, AssetExecutionContext
@@ -203,10 +206,13 @@ def parse_docker_image_path(
         raise TypeError
 
     _repository_name = _docker_config.get("docker_repository", None)
-    if bool(_repository_name):
-        repository_name = f"{_repository_name}/"
+    _repository_url = _docker_config.get("docker_registry_url", None)
+    _repository_port = _docker_config.get("docker_registry_port", "5000")
+
+    if bool(_repository_url):
+        repository_name = f"{_repository_url}:{_repository_port}/{_repository_name}/"
     else:
-        repository_name = ""
+        repository_name = f"{_repository_name}/"
 
     if _docker_config["docker_use_local"]:
         return f"{repository_name}{image_name}"
@@ -221,3 +227,95 @@ def parse_docker_image_path(
             docker_registry = f"{_docker_registry_url}/"
 
         return f"{docker_registry}{repository_name}{image_name}"
+
+
+def iterate_fds(
+        *,
+        handles: tuple[
+            typing.Optional[typing.IO[bytes]],
+            typing.Optional[typing.IO[bytes]],
+        ],
+        labels: tuple[str, str],
+        functions: tuple[
+            callable, callable,
+        ],
+        live_print=False,
+) -> dict[str, bytes]:
+    """
+    Can be used to live-feed stdout and stderr of a
+    subprocess.Popen.stdout/stderr stream to an
+    appropriate logging stream like info and warning.
+    stdout -> logging.info
+    stderr -> logging.warning
+
+    Usage:
+
+    ```
+    proc = subprocess.Popen(
+        cmd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+
+    handles = (proc.stdout, proc.stderr)
+    labels = ("stdout", "stderr")
+    functions = (context.log.info, context.log.warning)
+    logs = helpers.iterate_fds(
+        handles=handles,
+        labels=labels,
+        functions=functions,
+        live_print=False,
+    )
+
+    # for _label, _function in zip(labels, functions):
+    #     if bool(logs[_label]):
+    #         _function(logs[_label].decode("utf-8"))
+    ```
+
+    Reference:
+
+    https://alexandre.deverteuil.net/post/monitor-python-subprocess-output-streams-real-time/
+
+    Args:
+        handles (tuple[
+                typing.Optional[typing.IO[bytes]],
+                typing.Optional[typing.IO[bytes]],
+            ]): io.BufferedReader
+        labels (tuple[str, str]):
+        functions (tuple[
+                callable, callable,
+            ]): bound method (Logger.info, Logger.warning)
+        live_print (bool): Do you want to live_print? (False is equivalent to "summarize")
+
+    Returns: dict[callable, bytes]
+
+    """
+
+    ret = dict()
+
+    for label in labels:
+        ret[label] = bytes()
+
+    methods = dict(zip(handles, zip(labels, functions)))
+
+    while methods:
+        for handle in select.select(methods.keys(), tuple(), tuple())[0]:
+
+            label = methods[handle][0]
+            function = methods[handle][1]
+            line = handle.readline()
+
+            if line:
+                if live_print:
+                    function(line.decode("utf-8"))
+                ret[label] += line
+
+                # This is from the reference, but can't
+                # tell the difference so far other than
+                # not cutting off the last character in
+                # a line without \n
+                # methods[handle](line[:-1].decode("utf-8"))
+            else:
+                methods.pop(handle)
+
+    return ret

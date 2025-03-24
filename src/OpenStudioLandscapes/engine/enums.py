@@ -7,7 +7,7 @@ __all__ = [
 
 
 import enum
-
+import os
 
 # Todo
 #  - maybe use env var for secret
@@ -41,6 +41,7 @@ class DockerRegistry(enum.StrEnum):
     GIT_HUB = "ghcr.io"
     GOOGLE = "gcr.io"
     LOCAL_LOCALHOST = "localhost"
+    LOCAL_MINIBOSS = os.environ.get("IP_MASTER", "localhost")
     LOCAL_192_168_1_162 = "192.168.1.162"
     # HARBOR = ""  # https://goharbor.io/
 
@@ -87,10 +88,19 @@ class DockerConfig(enum.Enum):
         "docker_repository": _REPOSITORY_NAME,
         "docker_repository_type": DockerRepositoryType.PUBLIC,
     }
-    LOCAL = {
+    LOCAL_LOCALHOST = {
         "docker_use_local": True,
-        "docker_registry_url": None,
-        "docker_registry_port": None,
+        "docker_registry_url": DockerRegistry.LOCAL_LOCALHOST.value,
+        "docker_registry_port": "5000",
+        "docker_registry_username": None,
+        "docker_registry_password": None,
+        "docker_repository": _REPOSITORY_NAME,
+        "docker_repository_type": DockerRepositoryType.PUBLIC,
+    }
+    LOCAL_MINIBOSS = {
+        "docker_use_local": True,
+        "docker_registry_url": DockerRegistry.LOCAL_MINIBOSS.value,
+        "docker_registry_port": "5000",
         "docker_registry_username": None,
         "docker_registry_password": None,
         "docker_repository": _REPOSITORY_NAME,
