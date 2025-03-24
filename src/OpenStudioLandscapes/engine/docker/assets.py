@@ -123,6 +123,7 @@ def run_builder(
 
 @asset(
     **ASSET_HEADER_BASE,
+    name="Run_Local_Registry",
     ins={
         # "env": AssetIn(AssetKey([*KEY_BASE, "env"])),
         "docker_config": AssetIn(AssetKey([*KEY_BASE, "docker_config"])),
@@ -176,7 +177,7 @@ sudo systemctl restart docker
     # if not helpful, just return container instance
     for container in containers:
         if container.name == container_name:
-            context.log.info(f"Container {container.name} is running already. Leaving as is.")
+            context.log.info(f"Container {container.name} is running already.")
             context.log.info(f"Stopping...")
             container.stop()
             context.log.info(f"Stopped.")
