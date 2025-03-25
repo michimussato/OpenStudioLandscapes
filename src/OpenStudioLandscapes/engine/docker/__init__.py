@@ -136,7 +136,7 @@ def get_cmd_docker_build(
         "buildx",
         "build",
         "--progress", ["auto", "quiet", "plain", "tty", "rawjson"][2],
-        "--debug",
+        # "--debug",
         "--load",
         # "--output", "\"type=registry\"",
         # "--builder", f"\"{builder.name}\"",

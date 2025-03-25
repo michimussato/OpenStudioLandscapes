@@ -56,7 +56,7 @@ def landscape_id(
     now = datetime.now()
 
     landscape_stamp = {
-        "LANDSCAPE": f"{datetime.strftime(now, '%Y-%m-%d_%H-%M-%S')}__{uuid.uuid4().hex}",
+        "LANDSCAPE": f"{datetime.strftime(now, '%Y-%m-%d_%H-%M-%S')}__{uuid.uuid4().hex}".replace("__", "_").replace("_", "-"),
     }
 
     yield Output(landscape_stamp)
@@ -395,7 +395,7 @@ def build_docker_image(
         "image_parent": {},
     }
 
-    tags_dict = docker_build(
+    tags_dict: dict = docker_build(
         context=context,
         docker_config=docker_config,
         context_path=docker_file.parent,

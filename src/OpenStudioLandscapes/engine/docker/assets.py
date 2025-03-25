@@ -125,14 +125,14 @@ def run_builder(
     **ASSET_HEADER_BASE,
     # name="Run_Local_Registry",
     ins={
-        # "env": AssetIn(AssetKey([*KEY_BASE, "env"])),
+        "env": AssetIn(AssetKey([*KEY_BASE, "env"])),
         "docker_config": AssetIn(AssetKey([*KEY_BASE, "docker_config"])),
     },
     description="https://www.youtube.com/watch?v=fVXkh7NVvww&ab_channel=ProgrammerGuide",
 )
 def run_registry(
     context: AssetExecutionContext,
-    # env: dict,  # pylint: disable=redefined-outer-name
+    env: dict,  # pylint: disable=redefined-outer-name
     docker_config: DockerConfig,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
 
@@ -184,6 +184,18 @@ sudo systemctl restart docker
     host_name="openstudiolandscapes-registry"
     container_name="openstudiolandscapes-registry"
 
+
+
+    repo_dir = pathlib.Path(
+        env["DOT_LANDSCAPES"],
+        env.get("LANDSCAPE", "default"),
+        f"{GROUP_BASE}__{'__'.join(KEY_BASE)}",
+        "__".join(context.asset_key.path),
+        "repo_dir",
+    )
+
+    repo_dir.parent.mkdir(parents=True, exist_ok=True)
+
     # stopping running instance helpful for debugging probably.
     # if not helpful, just return container instance
     for container in containers:
@@ -210,12 +222,17 @@ sudo systemctl restart docker
             "/etc/docker/daemon.json",
             "ro",
         ),
+        (
+            repo_dir.as_posix(),
+            "/var/lib/registry",
+            "rw",
+        ),
     ]
     mounts=[
-        {
-            "source": "local-registry-vol",
-            "target": "/var/lib/registry",
-        }
+        # {
+        #     "source": "local-registry-vol",
+        #     "target": "/var/lib/registry",
+        # }
     ]
 
     publish = {
