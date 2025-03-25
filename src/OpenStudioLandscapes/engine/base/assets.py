@@ -395,15 +395,28 @@ def build_docker_image(
         "image_parent": {},
     }
 
-    logs = docker_buildx_build(
+    tags_dict = docker_build(
         context=context,
         docker_config=docker_config,
         context_path=docker_file.parent,
         docker_file=docker_file,
-        # docker_use_cache=DOCKER_USE_CACHE,
+        docker_use_cache=DOCKER_USE_CACHE,
         # builder=run_builder,
         image_data=image_data,
     )
+
+    context.log.debug(f"{tags_dict = }")
+
+    # Todo:
+    #  - [ ] python-on-whales seems to deliver unpredictable results, maybe try docker-py here instead
+    # client = docker_py.from_env()
+
+    # image = client.images.build(
+    #     path=docker_file.parent,
+    #     dockerfile=docker_file,
+    # )
+    #
+    # docker.models.images.Image.build
 
     # log: str = docker_build(
     #     context=context,
@@ -414,24 +427,14 @@ def build_docker_image(
     #     image_data=image_data,
     # )
 
-    # # Todo
-    # #  - [ ] this is not accurate anymore
-    # cmds_docker = compile_cmds(
-    #     docker_file=docker_file,
-    #     tag=tags[-1],
-    #     volumes=[],
-    # )
-
     yield Output(image_data)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.path(tags[-1]),
+            "__".join(context.asset_key.path): MetadataValue.json(image_data),
+            "tags_dict": MetadataValue.json(tags_dict),
             "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
-            # **cmds_docker,
-            "logs": MetadataValue.md(f"```shell\n{logs}\n```"),
-            # "logs": MetadataValue.json(logs),
             "env": MetadataValue.json(env),
         },
     )

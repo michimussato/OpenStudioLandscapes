@@ -123,7 +123,7 @@ def run_builder(
 
 @asset(
     **ASSET_HEADER_BASE,
-    name="Run_Local_Registry",
+    # name="Run_Local_Registry",
     ins={
         # "env": AssetIn(AssetKey([*KEY_BASE, "env"])),
         "docker_config": AssetIn(AssetKey([*KEY_BASE, "docker_config"])),
@@ -135,6 +135,17 @@ def run_registry(
     # env: dict,  # pylint: disable=redefined-outer-name
     docker_config: DockerConfig,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
+
+    # Target command:
+    # /usr/bin/docker container run \
+    #     --domainname farm.evil \
+    #     --hostname openstudiolandscapes-registry \
+    #     --name openstudiolandscapes-registry \
+    #     --rm \
+    #     --publish 5000:5000 \
+    #     --volume /home/michael/git/repos/OpenStudioLandscapes/src/OpenStudioLandscapes/engine/docker/daemon.json:/etc/docker/daemon.json:ro \
+    #     --mount source=local-registry-vol,destination=/var/lib/registry \
+    #     registry:2
 
     # Insecure Registries:
     # https://wiki.archlinux.org/title/Docker
