@@ -66,3 +66,7 @@ tmp*/
 .obsidian/hotkeys.json
 .obsidian/workspace.json
 .obsidian/workspaces.json
+
+# Registry
+.registry/*/
+.registry/registry.env
