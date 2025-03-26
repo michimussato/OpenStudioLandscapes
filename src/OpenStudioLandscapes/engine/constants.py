@@ -30,7 +30,7 @@ from dagster import (
 from OpenStudioLandscapes.engine.enums import *
 
 
-DOCKER_CONFIG = DockerConfig.REGISTRY_LOCAL_192_168_1_163
+DOCKER_CONFIG = DockerConfig.DOCKER_HUB
 DOCKER_USE_CACHE_GLOBAL = True
 DOCKER_USE_CACHE = DOCKER_USE_CACHE_GLOBAL or False
 

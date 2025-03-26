@@ -274,7 +274,7 @@ def apt_packages(
 deps_ = []
 if DOCKER_CONFIG.value["docker_use_local"]:
     deps_.append(
-        AssetKey([*KEY_BASE, "run_registry"])
+        AssetKey([*KEY_BASE, "write_registry_env"])
     )
 @asset(
     **ASSET_HEADER_BASE,
