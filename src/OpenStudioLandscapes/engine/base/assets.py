@@ -399,15 +399,7 @@ def build_docker_image(
         "image_parent": {},
     }
 
-    # tags_dict: dict = docker_build(
-    #     context=context,
-    #     docker_config=docker_config,
-    #     context_path=docker_file.parent,
-    #     docker_file=docker_file,
-    #     docker_use_cache=DOCKER_USE_CACHE,
-    #     # builder=run_builder,
-    #     image_data=image_data,
-    # )
+    context.log.debug(image_data)
 
     docker_client = get_docker_client(
         context=context,
@@ -424,8 +416,6 @@ def build_docker_image(
         use_cache=DOCKER_USE_CACHE,
         image_data=image_data,
     )
-
-    context.log.debug(image_data)
 
     # _tags_local = get_tags(
     #     context=context,
@@ -447,7 +437,7 @@ def build_docker_image(
         success = docker_client.tag(
             image=image_id,
             repository=image_path,
-            tag=f"0000-{tag}",
+            tag=tag,
         )
 
         if not success:
@@ -457,30 +447,8 @@ def build_docker_image(
             context=context,
             docker_client=docker_client,
             image_path=image_path,
-            tag=f"0000-{tag}",
+            tag=tag,
         )
-
-    # context.log.debug(f"{tags_dict = }")
-
-    # Todo:
-    #  - [ ] python-on-whales seems to deliver unpredictable results, maybe try docker-py here instead
-    # client = docker_py.from_env()
-
-    # image = client.images.build(
-    #     path=docker_file.parent,
-    #     dockerfile=docker_file,
-    # )
-    #
-    # docker.models.images.Image.build
-
-    # log: str = docker_build(
-    #     context=context,
-    #     docker_config=docker_config,
-    #     context_path=docker_file.parent,
-    #     docker_use_cache=DOCKER_USE_CACHE,
-    #     builder=run_builder,
-    #     image_data=image_data,
-    # )
 
     yield Output(image_data)
 

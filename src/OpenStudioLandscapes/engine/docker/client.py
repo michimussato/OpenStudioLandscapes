@@ -17,6 +17,7 @@ from OpenStudioLandscapes.engine.enums import DockerConfig
 
 
 def get_docker_client(
+    *,
     context: AssetExecutionContext,
     docker_config: DockerConfig,
     timeout: int = 600,
@@ -61,6 +62,21 @@ def build(
     use_cache: bool,
     image_data: dict,
 ) -> str:
+    """
+    A dead end...
+
+    Exception: the --chmod option requires BuildKit.
+    Refer to https://docs.docker.com/go/buildkit/ to
+    learn how to build images with BuildKit enabled
+    (Detail: {'message': 'the --chmod option requires
+    BuildKit. Refer to https://docs.docker.com/go/buildkit/
+    to learn how to build images with BuildKit enabled'})
+
+    https://github.com/docker/docker-py/issues/2230
+
+    TL;DR: No buildx support from docker-py which would
+    be needed for --chmod in a Dockerfile.
+    """
 
     _docker_config = docker_config.value
 
@@ -78,6 +94,9 @@ def build(
     for chunk in response:
         recurse_chunk(context, chunk)
 
+    context.log.debug(final_msg)
+    if "error" in final_msg:
+        raise Exception(f"{final_msg['error']} (Detail: {final_msg['errorDetail']})")
     context.log.debug(final_msg["stream"])
     image_id = str(final_msg["stream"]).rstrip().split(" ")[-1]
     context.log.info(f"{image_id = }")
@@ -86,6 +105,7 @@ def build(
 
 
 def docker_push(
+    *,
     context: AssetExecutionContext,
     docker_client: docker.APIClient,
     image_path: str,
@@ -96,15 +116,6 @@ def docker_push(
     """
     Limit concurrent uploads:
     - https://stackoverflow.com/a/48348339
-
-    ```
-    Open /etc/docker/daemon.json and add:
-
-    {
-        "max-concurrent-uploads": 1
-    }
-    ```
-
     """
 
     retries = 5
@@ -145,8 +156,9 @@ def docker_push(
 
 
 def recurse_chunk(
-        context: AssetExecutionContext,
-        chunk: Union[dict, str],
+    # *,
+    context: AssetExecutionContext,
+    chunk: Union[dict, str],
 ) -> None:
 
     if isinstance(chunk, dict):

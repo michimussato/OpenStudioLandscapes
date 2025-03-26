@@ -43,6 +43,7 @@ class DockerRegistry(enum.StrEnum):
     LOCAL_LOCALHOST = "localhost"
     LOCAL_MINIBOSS = os.environ.get("IP_MASTER", "localhost")
     LOCAL_192_168_1_162 = "192.168.1.162"
+    LOCAL_192_168_1_163 = "192.168.1.163"
     # HARBOR = ""  # https://goharbor.io/
 
 
@@ -79,9 +80,9 @@ class DockerConfig(enum.Enum):
         "docker_repository": _REPOSITORY_NAME,
         "docker_repository_type": DockerRepositoryType.PUBLIC,
     }
-    REGISTRY_LOCAL = {
-        "docker_use_local": False,
-        "docker_registry_url": DockerRegistry.LOCAL_192_168_1_162.value,
+    REGISTRY_LOCAL_192_168_1_163 = {
+        "docker_use_local": True,
+        "docker_registry_url": DockerRegistry.LOCAL_192_168_1_163.value,
         "docker_registry_port": "5000",
         "docker_registry_username": None,
         "docker_registry_password": None,

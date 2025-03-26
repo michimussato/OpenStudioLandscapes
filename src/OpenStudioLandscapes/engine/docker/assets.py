@@ -136,6 +136,8 @@ if DOCKER_CONFIG.value["docker_use_local"]:
         env: dict,  # pylint: disable=redefined-outer-name
         # docker_config: DockerConfig,  # pylint: disable=redefined-outer-name
     ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
+        # Todo
+        #  - [ ] Write daemon for this
 
         docker_config = DOCKER_CONFIG
 
@@ -153,41 +155,12 @@ if DOCKER_CONFIG.value["docker_use_local"]:
         # Insecure Registries:
         # https://wiki.archlinux.org/title/Docker
 
-        """
-    sudo bash -c 'mkdir -p /etc/docker
-    
-    cat > /etc/docker/daemon.json << EOF
-    {
-      "insecure-registries" : [
-        "192.168.1.162:5000",
-        "127.0.0.1:5000",
-        "localhost:5000",
-        "10.1.2.15:5000",
-        "0.0.0.0:5000",
-        "[::1]:5000",
-        "http://192.168.1.162:5000",
-        "http://127.0.0.1:5000",
-        "http://localhost:5000",
-        "http://10.1.2.15:5000",
-        "http://0.0.0.0:5000",
-        "http://[::1]:5000"
-      ]
-    }
-    
-    EOF'
-    
-    sudo systemctl daemon-reload
-    sudo systemctl restart docker
-        """
-
         client = docker_py.from_env()
         containers = client.containers.list()
 
         domainname = "farm.evil"
         host_name="openstudiolandscapes-registry"
         container_name="openstudiolandscapes-registry"
-
-
 
         repo_dir = pathlib.Path(
             env["DOT_LANDSCAPES"],
