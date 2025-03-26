@@ -206,27 +206,30 @@ def parse_docker_image_path(
         raise TypeError
 
     _repository_name = _docker_config.get("docker_repository", None)
-    _repository_url = _docker_config.get("docker_registry_url", None)
-    _repository_port = _docker_config.get("docker_registry_port", "5000")
+    _docker_registry_url = _docker_config.get("docker_registry_url", "docker.io")
+    _repository_port = _docker_config.get("docker_registry_port", None)
 
-    if bool(_repository_url):
-        repository_name = f"{_repository_url}:{_repository_port}/{_repository_name}/"
+    registry_port_ = "" if _repository_port is None else f":{_repository_port}"
+    # tag = f"{registry_url}{registry_port_}/{tag}"
+    registry = f"{_docker_registry_url}{registry_port_}/"
+
+    # if _docker_config["docker_use_local"]:
+    if _repository_name is None:
+        repository_name = ""
     else:
         repository_name = f"{_repository_name}/"
+    return f"{registry}{repository_name}{image_name}"
 
-    if _docker_config["docker_use_local"]:
-        return f"{repository_name}{image_name}"
-
-    else:
-        # docker.io is the docker default in none is explicitly specified
-        _docker_registry_url = _docker_config.get("docker_registry_url", "docker.io")
-        _docker_registry_port = _docker_config.get("docker_registry_port", None)
-        if bool(_docker_registry_port):
-            docker_registry = f"{_docker_registry_url}:{_docker_registry_port}/"
-        else:
-            docker_registry = f"{_docker_registry_url}/"
-
-        return f"{docker_registry}{repository_name}{image_name}"
+    # else:
+    #     # docker.io is the docker default in none is explicitly specified
+    #     _docker_registry_url = _docker_config.get("docker_registry_url", "docker.io")
+    #     _docker_registry_port = _docker_config.get("docker_registry_port", None)
+    #     if bool(_docker_registry_port):
+    #         docker_registry = f"{_docker_registry_url}:{_docker_registry_port}/"
+    #     else:
+    #         docker_registry = f"{_docker_registry_url}/"
+    #
+    #     return f"{docker_registry}{registry}{image_name}"
 
 
 def iterate_fds(

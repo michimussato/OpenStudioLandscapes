@@ -1,4 +1,5 @@
 __all__ = [
+    "DOCKER_CONFIG",
     "DOCKER_USE_CACHE",
     "DOCKER_USE_CACHE_GLOBAL",
     "GROUP_BASE",
@@ -29,6 +30,7 @@ from dagster import (
 from OpenStudioLandscapes.engine.enums import *
 
 
+DOCKER_CONFIG = DockerConfig.DOCKER_HUB
 DOCKER_USE_CACHE_GLOBAL = True
 DOCKER_USE_CACHE = DOCKER_USE_CACHE_GLOBAL or False
 
@@ -151,6 +153,7 @@ def constants_base(
         "DOCKER_USE_CACHE_GLOBAL": DOCKER_USE_CACHE_GLOBAL,
         "ASSET_HEADER_BASE": ASSET_HEADER_BASE,
         "THIRD_PARTY": THIRD_PARTY,
+        "DOCKER_CONFIG": DOCKER_CONFIG.value,
         # "DOCKER_CACHE_DIR": DOCKER_CACHE_DIR.as_posix(),
     }
 

@@ -1,5 +1,6 @@
 __all__ = [
     "docker_buildx_build",
+    "get_tags",
     "docker_build",
     "get_builder_by_name",
 ]
@@ -25,6 +26,30 @@ def docker_buildx_build(
     raise NotImplementedError()
 
 
+def get_tags(
+        context: AssetExecutionContext,
+        docker_repository: str,
+        image_name: str,
+        image_tags: list[str],
+        registry_url: str = None,
+        registry_port: str = "5000",
+) -> list:
+
+    _tags = []
+    for image_tag in image_tags:
+        tag = f"{docker_repository}/{image_name}:{image_tag}"  # michimussato/base_build_docker_image:2025-03-23_14-56-19__586373b4553841cfadf3713e37d2e9e1
+
+        if registry_url is not None:
+            registry_port_ = "" if registry_port is None else f":{registry_port}"
+            tag = f"{registry_url}{registry_port_}/{tag}"
+
+        _tags.append(tag)
+
+    context.log.debug(f"{_tags = }")
+
+    return _tags
+
+
 def _get_tags(
         context: AssetExecutionContext,
         docker_repository: str,
@@ -39,7 +64,8 @@ def _get_tags(
         tag = f"{docker_repository}/{image_name}:{image_tag}"  # michimussato/base_build_docker_image:2025-03-23_14-56-19__586373b4553841cfadf3713e37d2e9e1
 
         if registry_url is not None:
-            tag = f"{registry_url}:{registry_port}/{tag}"
+            registry_port_ = "" if registry_port is None else f":{registry_port}"
+            tag = f"{registry_url}{registry_port_}/{tag}"
 
         _tags.append(tag)
 

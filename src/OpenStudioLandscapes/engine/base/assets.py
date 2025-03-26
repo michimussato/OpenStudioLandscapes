@@ -25,6 +25,7 @@ from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.utils import *
 from OpenStudioLandscapes.engine.docker import *
+from OpenStudioLandscapes.engine.docker.client import *
 
 
 @asset(
@@ -270,28 +271,31 @@ def apt_packages(
     )
 
 
+deps_ = []
+if DOCKER_CONFIG.value["docker_use_local"]:
+    deps_.append(
+        AssetKey([*KEY_BASE, "run_registry"])
+    )
 @asset(
     **ASSET_HEADER_BASE,
     ins={
         "env": AssetIn(AssetKey([*KEY_BASE, "env"])),
-        "docker_config": AssetIn(AssetKey([*KEY_BASE, "docker_config"])),
         "apt_packages": AssetIn(AssetKey([*KEY_BASE, "apt_packages"])),
         "pip_packages": AssetIn(AssetKey([*KEY_BASE, "pip_packages"])),
         "run_builder": AssetIn(AssetKey([*KEY_BASE, "run_builder"])),
     },
-    deps=[
-        AssetKey([*KEY_BASE, "run_registry"])
-    ],
+    deps=deps_,
 )
 def build_docker_image(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
-    docker_config: DockerConfig,  # pylint: disable=redefined-outer-name
     apt_packages: dict[str, list[str]],  # pylint: disable=redefined-outer-name
     pip_packages: list,  # pylint: disable=redefined-outer-name
     run_builder: Builder,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict[str, str | list[str]]] | AssetMaterialization, None, None]:
     """ """
+
+    docker_config = DOCKER_CONFIG
 
     docker_file = pathlib.Path(
         env["DOT_LANDSCAPES"],
@@ -395,17 +399,68 @@ def build_docker_image(
         "image_parent": {},
     }
 
-    tags_dict: dict = docker_build(
+    # tags_dict: dict = docker_build(
+    #     context=context,
+    #     docker_config=docker_config,
+    #     context_path=docker_file.parent,
+    #     docker_file=docker_file,
+    #     docker_use_cache=DOCKER_USE_CACHE,
+    #     # builder=run_builder,
+    #     image_data=image_data,
+    # )
+
+    docker_client = get_docker_client(
         context=context,
         docker_config=docker_config,
-        context_path=docker_file.parent,
+        timeout=600,
+    )
+
+    image_id = build(
+        context=context,
+        client=docker_client,
+        docker_config=docker_config,
+        docker_context=docker_file.parent,
         docker_file=docker_file,
-        docker_use_cache=DOCKER_USE_CACHE,
-        # builder=run_builder,
+        use_cache=DOCKER_USE_CACHE,
         image_data=image_data,
     )
 
-    context.log.debug(f"{tags_dict = }")
+    context.log.debug(image_data)
+
+    # _tags_local = get_tags(
+    #     context=context,
+    #     docker_repository=docker_repository,
+    #     image_name=image_name,
+    #     image_tags=image_tags,
+    # )
+    #
+    # _tags_registry = get_tags(
+    #     context=context,
+    #     docker_repository=docker_repository,
+    #     image_name=image_name,
+    #     image_tags=image_tags,
+    #     registry_url=docker_registry_url,
+    #     registry_port=docker_registry_port,
+    # )
+
+    for tag in tags:
+        success = docker_client.tag(
+            image=image_id,
+            repository=image_path,
+            tag=f"0000-{tag}",
+        )
+
+        if not success:
+            raise RuntimeError(f"Failed to tag image {image_path}")
+
+        docker_push(
+            context=context,
+            docker_client=docker_client,
+            image_path=image_path,
+            tag=f"0000-{tag}",
+        )
+
+    # context.log.debug(f"{tags_dict = }")
 
     # Todo:
     #  - [ ] python-on-whales seems to deliver unpredictable results, maybe try docker-py here instead
@@ -433,7 +488,7 @@ def build_docker_image(
         asset_key=context.asset_key,
         metadata={
             "__".join(context.asset_key.path): MetadataValue.json(image_data),
-            "tags_dict": MetadataValue.json(tags_dict),
+            # "tags_dict": MetadataValue.json(tags_dict),
             "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
             "env": MetadataValue.json(env),
         },
@@ -464,23 +519,23 @@ def nfs(
     )
 
 
-@asset(
-    **ASSET_HEADER_BASE,
-)
-def docker_config(
-    context: AssetExecutionContext,
-) -> Generator[Output[DockerConfig] | AssetMaterialization, None, None]:
-
-    _docker_config = DockerConfig.LOCAL_LOCALHOST
-
-    yield Output(_docker_config)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(_docker_config.value),
-        },
-    )
+# @asset(
+#     **ASSET_HEADER_BASE,
+# )
+# def docker_config(
+#     context: AssetExecutionContext,
+# ) -> Generator[Output[DockerConfig] | AssetMaterialization, None, None]:
+#
+#     _docker_config = DockerConfig.DOCKER_HUB
+#
+#     yield Output(_docker_config)
+#
+#     yield AssetMaterialization(
+#         asset_key=context.asset_key,
+#         metadata={
+#             "__".join(context.asset_key.path): MetadataValue.json(_docker_config.value),
+#         },
+#     )
 
 
 @asset(
@@ -490,7 +545,7 @@ def docker_config(
     },
     ins={
         "env": AssetIn(AssetKey([*KEY_BASE, "env"])),
-        "docker_config": AssetIn(AssetKey([*KEY_BASE, "docker_config"])),
+        # "docker_config": AssetIn(AssetKey([*KEY_BASE, "docker_config"])),
         "run_builder": AssetIn(AssetKey([*KEY_BASE, "run_builder"])),
         "build_docker_image": AssetIn(
             AssetKey([*KEY_BASE, "build_docker_image"]),
@@ -500,7 +555,7 @@ def docker_config(
 def group_out(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
-    docker_config: DockerConfig,  # pylint: disable=redefined-outer-name
+    # docker_config: DockerConfig,  # pylint: disable=redefined-outer-name
     run_builder: Builder,  # pylint: disable=redefined-outer-name
     build_docker_image: dict,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict[str, str | dict]] | AssetMaterialization, None, None]:
@@ -508,7 +563,7 @@ def group_out(
     out_dict: dict = {}
 
     out_dict["env"] = env
-    out_dict["docker_config"] = docker_config
+    out_dict["docker_config"] = DOCKER_CONFIG
     out_dict["docker_builder"] = run_builder
     out_dict["docker_image"] = build_docker_image
 
@@ -518,7 +573,7 @@ def group_out(
         asset_key=context.asset_key,
         metadata={
             "env": MetadataValue.json(env),
-            "docker_config": MetadataValue.json(docker_config.value),
+            # "docker_config": MetadataValue.json(out_dict["docker_config"].value),
             "run_builder": MetadataValue.path(run_builder.name),
             "docker_image": MetadataValue.json(build_docker_image),
         },
