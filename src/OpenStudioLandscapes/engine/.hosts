@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+
+sudo bash -c 'cat > /etc/hosts << EOF
+# Standard host addresses
+127.0.0.1  localhost
+::1        localhost ip6-localhost ip6-loopback
+ff02::1    ip6-allnodes
+ff02::2    ip6-allrouters
+# This host address
+127.0.1.1  lenovo
+
+# OpenStudioLandscapes
+# # Harbor
+192.168.43.249  harbor.farm.evil
+
+EOF
+
+chmod 0644 /etc/hosts
+chown root:root /etc/hosts'

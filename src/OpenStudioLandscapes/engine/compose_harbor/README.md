@@ -17,6 +17,7 @@ cd harbor
 vi harbor.yml
 
 vi /etc/docker/daemon.json
+# harbor.farm.evil:80
 #{
 #    "log-level":        "error",
 #    "insecure-registries": ["your server:8086"]

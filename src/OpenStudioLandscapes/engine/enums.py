@@ -42,7 +42,7 @@ class DockerRegistry(enum.StrEnum):
     GIT_HUB = "ghcr.io"
     GOOGLE = "gcr.io"
     LOCAL_LOCALHOST = "localhost"
-    LOCAL_HARBOR = "localhost"
+    LOCAL_HARBOR = "harbor.farm.evil"
     LOCAL_MINIBOSS = os.environ.get("IP_MASTER", "localhost")
     LOCAL_192_168_1_162 = "192.168.1.162"
     LOCAL_192_168_1_163 = "192.168.1.163"
@@ -93,7 +93,7 @@ class DockerConfig(enum.Enum):
         "docker_registry_username": _secrets.get("SECRET_DOCKER_DOCKERHUB_USERNAME"),
         "docker_registry_password": _secrets.get("SECRET_DOCKER_DOCKERHUB_PASSWORD"),
         "docker_repository": _REPOSITORY_NAME,
-        "docker_repository_type": DockerRepositoryType.PUBLIC,
+        "docker_repository_type": DockerRepositoryType.PUBLIC.value,
     }
     REGISTRY_LOCAL_192_168_1_163 = {
         "docker_push": True,
@@ -120,7 +120,7 @@ class DockerConfig(enum.Enum):
         # https://medium.com/@Shamimw/setting-up-harbor-docker-registry-installation-and-pushing-docker-images-a8b3db6fca6a
         "docker_push": True,
         "docker_use_local": False,
-        "docker_registry_url": DockerRegistry.LOCAL_192_168_1_164.value,
+        "docker_registry_url": DockerRegistry.LOCAL_HARBOR.value,
         "docker_registry_port": "80",
         "docker_registry_username": "admin",
         "docker_registry_password": "Harbor12345",

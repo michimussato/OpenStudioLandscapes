@@ -5,7 +5,6 @@ from typing import Generator
 import requests
 import tarfile
 import copy
-import getpass
 
 import yaml
 
@@ -242,7 +241,8 @@ def prepare(
         # env: dict,
         # write_yaml: pathlib.Path,
         get_harbor: pathlib.Path,
-) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
+# ) -> Generator[Output[pathlib.Path, None] | AssetMaterialization, None, None]:
+):
 
     cmd_prepare = [
         shutil.which("sudo"),
@@ -250,6 +250,7 @@ def prepare(
         pathlib.Path(get_harbor / "prepare").as_posix(),
     ]
 
+    # MUST run as root apparently
     # cmd_chmod = [
     #     shutil.which("sudo"),
     #     shutil.which("chmod"),
@@ -259,16 +260,65 @@ def prepare(
     # ]
 
     if not pathlib.Path(get_harbor / "docker-compose.yml").exists():
-        raise FileNotFoundError(f"Run prepare first: '{shlex.join(cmd_prepare)}'")
+        # raise FileNotFoundError(f"Run prepare first: '{shlex.join(cmd_prepare)}'")
 
-    yield Output(get_harbor / "docker-compose.yml")
+        # ret = Exception("Run `cmd_prepare` to continue")
+
+        yield Output(None)
+
+        yield AssetMaterialization(asset_key=context.asset_key,
+            metadata={
+                "__".join(context.asset_key.path): MetadataValue.path(get_harbor / "docker-compose.yml"),
+                "ATTENTION": MetadataValue.text("Run `cmd_prepare` to continue"),
+                "cmd_prepare": MetadataValue.path(shlex.join(cmd_prepare)),
+                # "cmd_chmod": MetadataValue.path(shlex.join(cmd_chmod)),
+            },
+        )
+
+        # raise ret
+
+    else:
+
+        yield Output(get_harbor / "docker-compose.yml")
+
+        yield AssetMaterialization(
+            asset_key=context.asset_key,
+            metadata={
+                "__".join(context.asset_key.path): MetadataValue.path(get_harbor / "docker-compose.yml"),
+                "cmd_prepare": MetadataValue.path(shlex.join(cmd_prepare)),
+                # "harbor_yml": MetadataValue.md(f"```yaml\n{harbor_yml}\n```"),
+                # "01_cmd_prepare": MetadataValue.path(shlex.join(cmd_prepare)),
+                # "cmd_chmod": MetadataValue.path(shlex.join(cmd_chmod)),
+            },
+        )
+
+
+@asset(
+    **ASSET_HEADER_HARBOR,
+    ins={
+        "prepare": AssetIn(
+            AssetKey([*KEY_HARBOR, "prepare"]),
+        ),
+    },
+)
+def ready(
+        context: AssetExecutionContext,
+        prepare,
+# ) -> Generator[Output[pathlib.Path, None] | AssetMaterialization, None, None]:
+):
+
+    if prepare is None:
+
+        raise Exception("Run `cmd_prepare` to continue")
+
+    yield Output(prepare)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.path(get_harbor / "docker-compose.yml"),
+            "ready": MetadataValue.bool(bool(prepare)),
             # "harbor_yml": MetadataValue.md(f"```yaml\n{harbor_yml}\n```"),
-            # "01_cmd_prepare": MetadataValue.path(shlex.join(cmd_prepare)),
+            "docker_compose": MetadataValue.path(prepare),
             # "cmd_chmod": MetadataValue.path(shlex.join(cmd_chmod)),
         },
     )
@@ -277,9 +327,6 @@ def prepare(
 @asset(
     **ASSET_HEADER_HARBOR,
     ins={
-        # "env": AssetIn(
-        #     AssetKey([*KEY_BASE, "env"]),
-        # ),
         "registry_data_root": AssetIn(
             AssetKey([*KEY_HARBOR, "registry_data_root"]),
         ),
@@ -290,7 +337,6 @@ def prepare(
 )
 def write_yaml(
         context: AssetExecutionContext,
-        # env: dict,
         registry_data_root: pathlib.Path,
         get_harbor: pathlib.Path,
 ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
@@ -298,7 +344,7 @@ def write_yaml(
     yaml_out = get_harbor / "harbor.yml"
 
     harbor_dict = {
-        'hostname': '192.168.1.164',
+        'hostname': 'harbor.farm.evil',
         'http': {'port': 80},
         'harbor_admin_password': 'Harbor12345',
         'database': {
@@ -372,8 +418,8 @@ def write_yaml(
 @asset(
     **ASSET_HEADER_HARBOR,
     ins={
-        "prepare": AssetIn(
-            AssetKey([*KEY_HARBOR, "prepare"]),
+        "ready": AssetIn(
+            AssetKey([*KEY_HARBOR, "ready"]),
         ),
         "env": AssetIn(
             AssetKey([*KEY_HARBOR, "env"]),
@@ -385,7 +431,7 @@ def write_yaml(
 )
 def compose(
         context: AssetExecutionContext,
-        prepare: pathlib.Path,
+        ready: pathlib.Path,
         env: dict,
 ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
 
@@ -396,7 +442,7 @@ def compose(
 
     # This docker-compse was dynamically created by the
     # Harbor install script (./install.sh)
-    docker_compose = prepare
+    docker_compose = ready
 
     with open(docker_compose, "r") as fw:
         docker_compose_yaml = fw.read()

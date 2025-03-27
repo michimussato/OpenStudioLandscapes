@@ -271,7 +271,7 @@ def apt_packages(
 
 
 deps_ = [
-    AssetKey([*KEY_HARBOR, "prepare"])
+    AssetKey([*KEY_HARBOR, "ready"])
 ]
 if DOCKER_CONFIG.value["docker_use_local"]:
     deps_.append(
@@ -486,6 +486,7 @@ def group_out(
         asset_key=context.asset_key,
         metadata={
             "env": MetadataValue.json(env),
+            "docker_config": MetadataValue.json(DOCKER_CONFIG.value),
             "run_builder": MetadataValue.path(run_builder.name),
             "docker_image": MetadataValue.json(build_docker_image),
         },
