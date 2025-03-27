@@ -889,6 +889,7 @@ Copy/Paste command and execute:
 ### Clean
 
 ```shell
+sudo systemctl stop openstudiolandscapes-registry.service
 docker stop $(docker ps -q)
 docker container prune -f
 docker image prune -a -f

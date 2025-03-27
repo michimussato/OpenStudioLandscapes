@@ -87,6 +87,7 @@ def run_builder(
             bootstrap=True,
             platforms=["linux/amd64"],
             buildkitd_flags=shlex.join(buildkitd_flags),
+            config=pathlib.Path("/home/michael/git/repos/OpenStudioLandscapes/src/OpenStudioLandscapes/engine/docker/builder.toml")
         )
     else:
         builder: Builder = _builder
@@ -316,6 +317,24 @@ if DOCKER_CONFIG.value["docker_use_local"]:
             "rw",
         )
 
+        certs_root = registry_root.parent / "OpenStudioLandscapes-RootCA"
+
+        certs_root_volume: tuple = (
+            certs_root.as_posix(),
+            "/certs",
+            "ro",
+        )
+
+        ca_cert = registry_root.parent / "OpenStudioLandscapes-RootCA" / "OpenStudioLandscapes-RootCA.crt"
+
+        ca_cert_volume: tuple = (
+            ca_cert.as_posix(),
+            "/usr/local/share/ca-certificates/OpenStudioLandscapes-RootCA.crt",
+            "ro",
+        )
+
+        port_container = "443"
+
         registry_env_str = textwrap.dedent(
             """
             DOMAIN_NAME="{domain_name}"
@@ -324,16 +343,27 @@ if DOCKER_CONFIG.value["docker_use_local"]:
             PUBLISH="{publish}"
             DAEMON_JSON="{daemon_json}"
             REGISTRY_ROOT="{registry_root}"
+            CERTS_ROOT="{certs_root}"
+            CA_CERT="{ca_cert}"
             REGISTRY="{registry}"
+            ENV_REGISTRY_HTTP_ADDR="{env_registry_http_addr}"
+            ENV_REGISTRY_HTTP_TLS_CERTIFICATE="{env_registry_http_tls_certificate}"
+            ENV_REGISTRY_HTTP_TLS_KEY="{env_registry_http_tls_key}"
             """
         ).format(
             domain_name = "farm.evil",
             host_name="openstudiolandscapes-registry",
             container_name="openstudiolandscapes-registry",
-            publish=f"{str(docker_config.value['docker_registry_port']) or '5000'}:5000",
+            publish=f"{str(docker_config.value['docker_registry_port']) or '5000'}:{port_container}",
+            # publish=f"443:{port_container}",
             daemon_json=":".join(daemon_json),
             registry_root=":".join(registry_root_volume),
+            certs_root=":".join(certs_root_volume),
+            ca_cert=":".join(ca_cert_volume),
             registry="docker.io/registry:2",
+            env_registry_http_addr=f"REGISTRY_HTTP_ADDR=0.0.0.0:{port_container}",
+            env_registry_http_tls_certificate=f"REGISTRY_HTTP_TLS_CERTIFICATE=/certs/openstudiolandscapes-registry.crt",
+            env_registry_http_tls_key=f"REGISTRY_HTTP_TLS_KEY=/certs/openstudiolandscapes-registry.key",
         )
 
         with open(registry_env, "w") as fw:
@@ -344,6 +374,15 @@ if DOCKER_CONFIG.value["docker_use_local"]:
 
         cmd_restart = f"sudo {shutil.which('systemctl')} restart openstudiolandscapes-registry.service"
         cmd_journalctl = f"sudo {shutil.which('journalctl')} --follow --unit openstudiolandscapes-registry.service"
+
+        cmd_interactive = [
+            shutil.which("docker"),
+            "exec",
+            "--interactive",
+            "--tty",
+            "<container_id>",
+            "sh"
+        ]
 
         yield Output(registry_env)
 
@@ -357,5 +396,6 @@ if DOCKER_CONFIG.value["docker_use_local"]:
                 "registry_root": MetadataValue.path(registry_root),
                 "cmd_restart": MetadataValue.path(cmd_restart),
                 "cmd_journalctl": MetadataValue.path(cmd_journalctl),
+                "cmd_interactive": MetadataValue.path(shlex.join(cmd_interactive)),
             },
         )

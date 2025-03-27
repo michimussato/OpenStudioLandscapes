@@ -20,7 +20,7 @@ Requires=docker.service
 Type=simple
 EnvironmentFile=/home/michael/git/repos/OpenStudioLandscapes/.registry/registry.env
 WorkingDirectory=/home/michael/git/repos/OpenStudioLandscapes/.registry
-ExecStart=/usr/bin/docker container run --env \${ENV_REGISTRY_HTTP_ADDR} --env \${ENV_REGISTRY_HTTP_TLS_CERTIFICATE} --env \${ENV_REGISTRY_HTTP_TLS_KEY} --domainname \${DOMAIN_NAME} --hostname \${HOST_NAME} --name \${CONTAINER_NAME} --rm --publish \${PUBLISH} --volume \${DAEMON_JSON} --volume \${REGISTRY_ROOT} --volume \${CERTS_ROOT} \${REGISTRY}
+ExecStart=/usr/bin/docker container run --env \${ENV_REGISTRY_HTTP_ADDR} --env \${ENV_REGISTRY_HTTP_TLS_CERTIFICATE} --env \${ENV_REGISTRY_HTTP_TLS_KEY} --domainname \${DOMAIN_NAME} --hostname \${HOST_NAME} --name \${CONTAINER_NAME} --rm --publish \${PUBLISH} --volume \${REGISTRY_ROOT} --volume \${CERTS_ROOT} --volume \${CA_CERT} \${REGISTRY}
 ExecReload=/bin/kill -HUP \${MAINPID}
 
 [Install]

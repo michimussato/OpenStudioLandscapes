@@ -22,10 +22,9 @@ from dagster import (
 )
 
 from OpenStudioLandscapes.engine.constants import *
-from OpenStudioLandscapes.engine.enums import *
+# from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.utils import *
-from OpenStudioLandscapes.engine.docker import *
-from OpenStudioLandscapes.engine.docker.client import *
+from OpenStudioLandscapes.engine.docker.whales import *
 
 
 @asset(
@@ -311,9 +310,13 @@ def build_docker_image(
     docker_file.parent.mkdir(parents=True, exist_ok=True)
 
     image_name = get_image_name(context=context)
-    image_path = parse_docker_image_path(
-        image_name=image_name,
+    image_prefix_local = parse_docker_image_path(
         docker_config=docker_config,
+        prepend_registry=False,
+    )
+    image_prefix_full = parse_docker_image_path(
+        docker_config=docker_config,
+        prepend_registry=True,
     )
 
     tags = [
@@ -394,61 +397,22 @@ def build_docker_image(
 
     image_data = {
         "image_name": image_name,
-        "image_path": image_path,
+        "image_prefix_local": image_prefix_local,
+        "image_prefix_full": image_prefix_full,
         "image_tags": tags,
         "image_parent": {},
     }
 
-    context.log.debug(image_data)
+    context.log.info(image_data)
 
-    docker_client = get_docker_client(
+    tags_list: list = docker_build(
         context=context,
         docker_config=docker_config,
-        timeout=600,
-    )
-
-    image_id = build(
-        context=context,
-        client=docker_client,
-        docker_config=docker_config,
-        docker_context=docker_file.parent,
         docker_file=docker_file,
-        use_cache=DOCKER_USE_CACHE,
+        context_path=docker_file.parent,
+        docker_use_cache=DOCKER_USE_CACHE,
         image_data=image_data,
     )
-
-    # _tags_local = get_tags(
-    #     context=context,
-    #     docker_repository=docker_repository,
-    #     image_name=image_name,
-    #     image_tags=image_tags,
-    # )
-    #
-    # _tags_registry = get_tags(
-    #     context=context,
-    #     docker_repository=docker_repository,
-    #     image_name=image_name,
-    #     image_tags=image_tags,
-    #     registry_url=docker_registry_url,
-    #     registry_port=docker_registry_port,
-    # )
-
-    for tag in tags:
-        success = docker_client.tag(
-            image=image_id,
-            repository=image_path,
-            tag=tag,
-        )
-
-        if not success:
-            raise RuntimeError(f"Failed to tag image {image_path}")
-
-        docker_push(
-            context=context,
-            docker_client=docker_client,
-            image_path=image_path,
-            tag=tag,
-        )
 
     yield Output(image_data)
 
@@ -456,7 +420,7 @@ def build_docker_image(
         asset_key=context.asset_key,
         metadata={
             "__".join(context.asset_key.path): MetadataValue.json(image_data),
-            # "tags_dict": MetadataValue.json(tags_dict),
+            "tags_list": MetadataValue.json(tags_list),
             "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
             "env": MetadataValue.json(env),
         },
@@ -487,25 +451,6 @@ def nfs(
     )
 
 
-# @asset(
-#     **ASSET_HEADER_BASE,
-# )
-# def docker_config(
-#     context: AssetExecutionContext,
-# ) -> Generator[Output[DockerConfig] | AssetMaterialization, None, None]:
-#
-#     _docker_config = DockerConfig.DOCKER_HUB
-#
-#     yield Output(_docker_config)
-#
-#     yield AssetMaterialization(
-#         asset_key=context.asset_key,
-#         metadata={
-#             "__".join(context.asset_key.path): MetadataValue.json(_docker_config.value),
-#         },
-#     )
-
-
 @asset(
     **ASSET_HEADER_BASE,
     tags={
@@ -513,7 +458,6 @@ def nfs(
     },
     ins={
         "env": AssetIn(AssetKey([*KEY_BASE, "env"])),
-        # "docker_config": AssetIn(AssetKey([*KEY_BASE, "docker_config"])),
         "run_builder": AssetIn(AssetKey([*KEY_BASE, "run_builder"])),
         "build_docker_image": AssetIn(
             AssetKey([*KEY_BASE, "build_docker_image"]),
@@ -523,7 +467,6 @@ def nfs(
 def group_out(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
-    # docker_config: DockerConfig,  # pylint: disable=redefined-outer-name
     run_builder: Builder,  # pylint: disable=redefined-outer-name
     build_docker_image: dict,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict[str, str | dict]] | AssetMaterialization, None, None]:
@@ -541,7 +484,6 @@ def group_out(
         asset_key=context.asset_key,
         metadata={
             "env": MetadataValue.json(env),
-            # "docker_config": MetadataValue.json(out_dict["docker_config"].value),
             "run_builder": MetadataValue.path(run_builder.name),
             "docker_image": MetadataValue.json(build_docker_image),
         },
