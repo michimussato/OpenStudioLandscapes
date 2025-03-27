@@ -2,6 +2,9 @@ __all__ = [
     "DOCKER_CONFIG",
     "DOCKER_USE_CACHE",
     "DOCKER_USE_CACHE_GLOBAL",
+    "GROUP_HARBOR",
+    "KEY_HARBOR",
+    "ASSET_HEADER_HARBOR",
     "GROUP_BASE",
     "KEY_BASE",
     "ASSET_HEADER_BASE",
@@ -33,6 +36,16 @@ from OpenStudioLandscapes.engine.enums import *
 DOCKER_CONFIG = DockerConfig.LOCAL_HARBOR
 DOCKER_USE_CACHE_GLOBAL = True
 DOCKER_USE_CACHE = DOCKER_USE_CACHE_GLOBAL or False
+
+
+GROUP_HARBOR = "Harbor"
+KEY_HARBOR = [GROUP_HARBOR]
+
+ASSET_HEADER_HARBOR = {
+    "group_name": GROUP_HARBOR,
+    "key_prefix": KEY_HARBOR,
+    "compute_kind": "python",
+}
 
 
 GROUP_BASE = "Base"
@@ -134,6 +147,33 @@ THIRD_PARTY = [
         "compose_scope": ComposeScope.DEFAULT,
     },
 ]
+
+
+@asset(
+    name=f"constants_{GROUP_HARBOR}",
+    group_name="Constants",
+    key_prefix=KEY_HARBOR,
+    compute_kind="python",
+    description="",
+)
+def constants_harbor(
+    context: AssetExecutionContext,
+) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
+    """ """
+
+    _constants = {
+        "HARBOR_ADMIN": "admin",
+        "HARBOR_PASSWORD": "Harbor12345",
+    }
+
+    yield Output(_constants)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.json(_constants),
+        },
+    )
 
 
 @asset(

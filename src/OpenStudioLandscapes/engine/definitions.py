@@ -6,6 +6,7 @@ from OpenStudioLandscapes.engine.constants import THIRD_PARTY
 
 imports = [
     "OpenStudioLandscapes.engine.base.definitions",
+    "OpenStudioLandscapes.engine.harbor.definitions",
     "OpenStudioLandscapes.engine.docker.definitions",
     "OpenStudioLandscapes.engine.landscape_map.definitions",
     "OpenStudioLandscapes.engine.compose.definitions",
