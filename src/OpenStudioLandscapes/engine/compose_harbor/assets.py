@@ -4,10 +4,13 @@ import shutil
 from typing import Generator
 import requests
 import tarfile
+import copy
+import getpass
 
 import yaml
 
 from dagster import (
+    AssetsDefinition,
     AssetExecutionContext,
     AssetIn,
     AssetKey,
@@ -18,7 +21,50 @@ from dagster import (
 )
 
 from OpenStudioLandscapes.engine.constants import *
+from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.utils import *
+from OpenStudioLandscapes.engine.base.ops import (
+    op_compose,
+    op_docker_compose_graph,
+    op_group_out,
+)
+
+
+@asset(
+    **ASSET_HEADER_HARBOR,
+    ins={
+        "group_in": AssetIn(
+            AssetKey([*KEY_BASE, "group_out"])
+        ),
+    },
+    deps=[
+        AssetKey([*ASSET_HEADER_HARBOR['key_prefix'], f"constants_{ASSET_HEADER_HARBOR['group_name']}"])
+    ],
+)
+def env(
+    context: AssetExecutionContext,
+    group_in: dict,  # pylint: disable=redefined-outer-name
+) -> Generator[Output[dict] | AssetMaterialization, None, None]:
+
+    env_in = copy.deepcopy(group_in["env"])
+
+    env_in.update(ENVIRONMENT_HARBOR)
+
+    env_in.update(
+        {
+            "COMPOSE_SCOPE": ComposeScope.HARBOR,
+        },
+    )
+
+    yield Output(env_in)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.json(env_in),
+            "ENVIRONMENT_HARBOR": MetadataValue.json(ENVIRONMENT_HARBOR),
+        },
+    )
 
 
 # @asset(
@@ -106,12 +152,20 @@ def get_harbor(
     }
 
     tarball_dir = pathlib.Path(
-        env["DOT_LANDSCAPES"],
-        env.get("LANDSCAPE", "default"),
-        f"{GROUP_HARBOR}__{'__'.join(KEY_HARBOR)}",
-        "__".join(context.asset_key.path),
+        get_git_root(__file__),
+        ".registry",
         "tarball",
     )
+
+    tarball_dir.mkdir(parents=True, exist_ok=True)
+
+    # tarball_dir = pathlib.Path(
+    #     env["DOT_LANDSCAPES"],
+    #     env.get("LANDSCAPE", "default"),
+    #     f"{GROUP_HARBOR}__{'__'.join(KEY_HARBOR)}",
+    #     "__".join(context.asset_key.path),
+    #     "tarball",
+    # )
 
     extract_dir = tarball_dir.parent
 
@@ -134,23 +188,25 @@ def get_harbor(
         asset_key=context.asset_key,
         metadata={
             "__".join(context.asset_key.path): MetadataValue.path(extract_dir / "harbor"),
+            # "01_cmd_prepare": MetadataValue.path(shlex.join(cmd_prepare)),
+            # "02_cmd_chmod": MetadataValue.path(shlex.join(cmd_chmod)),
         },
     )
 
 
 @asset(
     **ASSET_HEADER_HARBOR,
-    ins={},
+    ins={
+        "get_harbor": AssetIn(
+            AssetKey([*KEY_HARBOR, "get_harbor"]),
+        ),},
 )
 def registry_data_root(
         context: AssetExecutionContext,
+        get_harbor: pathlib.Path,
 ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
 
-    registry_root = pathlib.Path(
-        get_git_root(__file__),
-        ".registry",
-        "harbor",
-    )
+    registry_root = pathlib.Path(get_harbor.parent / "data")
 
     registry_root.mkdir(parents=True, exist_ok=True)
 
@@ -160,6 +216,60 @@ def registry_data_root(
         asset_key=context.asset_key,
         metadata={
             "__".join(context.asset_key.path): MetadataValue.path(registry_root),
+        },
+    )
+
+
+@asset(
+    **ASSET_HEADER_HARBOR,
+    ins={
+        # "env": AssetIn(
+        #     AssetKey([*KEY_BASE, "env"]),
+        # ),
+        # "write_yaml": AssetIn(
+        #     AssetKey([*KEY_HARBOR, "write_yaml"]),
+        # ),
+        "get_harbor": AssetIn(
+            AssetKey([*KEY_HARBOR, "get_harbor"]),
+        ),
+    },
+    deps=[
+        AssetKey([*KEY_HARBOR, "write_yaml"])
+    ]
+)
+def prepare(
+        context: AssetExecutionContext,
+        # env: dict,
+        # write_yaml: pathlib.Path,
+        get_harbor: pathlib.Path,
+) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
+
+    cmd_prepare = [
+        shutil.which("sudo"),
+        shutil.which("bash"),
+        pathlib.Path(get_harbor / "prepare").as_posix(),
+    ]
+
+    # cmd_chmod = [
+    #     shutil.which("sudo"),
+    #     shutil.which("chmod"),
+    #     "-R",
+    #     "a+r",
+    #     pathlib.Path(get_harbor).as_posix(),
+    # ]
+
+    if not pathlib.Path(get_harbor / "docker-compose.yml").exists():
+        raise FileNotFoundError(f"Run prepare first: '{shlex.join(cmd_prepare)}'")
+
+    yield Output(get_harbor / "docker-compose.yml")
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.path(get_harbor / "docker-compose.yml"),
+            # "harbor_yml": MetadataValue.md(f"```yaml\n{harbor_yml}\n```"),
+            # "01_cmd_prepare": MetadataValue.path(shlex.join(cmd_prepare)),
+            # "cmd_chmod": MetadataValue.path(shlex.join(cmd_chmod)),
         },
     )
 
@@ -262,36 +372,37 @@ def write_yaml(
 @asset(
     **ASSET_HEADER_HARBOR,
     ins={
-        "get_harbor": AssetIn(
-            AssetKey([*KEY_HARBOR, "get_harbor"]),
+        "prepare": AssetIn(
+            AssetKey([*KEY_HARBOR, "prepare"]),
+        ),
+        "env": AssetIn(
+            AssetKey([*KEY_HARBOR, "env"]),
         ),
     },
-    deps=[
-        AssetKey([*KEY_HARBOR, "write_yaml"]),
-    ]
+    # deps=[
+    #     AssetKey([*KEY_HARBOR, "write_yaml"]),
+    # ]
 )
-def docker_compose(
+def compose(
         context: AssetExecutionContext,
-        get_harbor: pathlib.Path,
+        prepare: pathlib.Path,
+        env: dict,
 ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
 
-    cmd_cwd = [
-        "cd",
-        get_harbor.as_posix(),
-    ]
-
-    cmd_install = [
-        shutil.which("sudo"),
-        "./install.sh",
-    ]
+    # cmd_prepare = [
+    #     shutil.which("bash"),
+    #     pathlib.Path(get_harbor / "prepare"),
+    # ]
 
     # This docker-compse was dynamically created by the
     # Harbor install script (./install.sh)
-    docker_compose = get_harbor / "docker-compose.yml"
+    docker_compose = prepare
 
     with open(docker_compose, "r") as fw:
         docker_compose_yaml = fw.read()
         docker_compose_dict = yaml.safe_load(docker_compose_yaml)
+
+    compose_project_name = f"{env.get('LANDSCAPE', 'default').replace('.', '-')}-{env['COMPOSE_SCOPE']}"
 
     cmd_docker_compose_up = [
         shutil.which("sudo"),
@@ -300,7 +411,7 @@ def docker_compose(
         "--file",
         docker_compose.as_posix(),
         "--project-name",
-        "harbor",
+        compose_project_name,
         "up",
         "--remove-orphans",
     ]
@@ -312,7 +423,7 @@ def docker_compose(
         "--file",
         docker_compose.as_posix(),
         "--project-name",
-        "harbor",
+        compose_project_name,
         "down",
     ]
 
@@ -323,15 +434,13 @@ def docker_compose(
         metadata={
             "__".join(context.asset_key.path): MetadataValue.json(docker_compose_dict),
             "docker_compose_yaml": MetadataValue.md(f"```yaml\n{docker_compose_yaml}\n```"),
-            "01_cmd_cwd": MetadataValue.path(shlex.join(cmd_cwd)),
-            "02_cmd_install": MetadataValue.path(shlex.join(cmd_install)),
-            "03_cmd_docker_compose_up": MetadataValue.path(
+            "cmd_docker_compose_up": MetadataValue.path(
                 " ".join(
                     shlex.quote(s) if not s in ["&&", ";"] else s
                     for s in cmd_docker_compose_up
                 )
             ),
-            "04_cmd_docker_compose_down": MetadataValue.path(
+            "cmd_docker_compose_down": MetadataValue.path(
                 " ".join(
                     shlex.quote(s) if not s in ["&&", ";"] else s
                     for s in cmd_docker_compose_down
@@ -339,3 +448,46 @@ def docker_compose(
             ),
         },
     )
+
+
+# Todo
+#  - [ ] cmd_docker_compose_up creates an additional docker-compose.yaml which
+#        is undesirable in this instance as it creates the wrong paths while docker compose up
+#        ignore for now
+group_out = AssetsDefinition.from_op(
+    op_group_out,
+    can_subset=True,
+    group_name=GROUP_HARBOR,
+    tags_by_output_name={
+        "group_out": {
+            "group_out": "third_party",
+        },
+    },
+    key_prefix=KEY_HARBOR,
+    keys_by_input_name={
+        "compose": AssetKey(
+            [*KEY_HARBOR, "compose"]
+        ),
+        "env": AssetKey(
+            [*KEY_HARBOR, "env"]
+        ),
+        "group_in": AssetKey(
+            [*KEY_BASE, "group_out"]
+        ),
+    },
+)
+
+
+docker_compose_graph = AssetsDefinition.from_op(
+    op_docker_compose_graph,
+    group_name=GROUP_HARBOR,
+    key_prefix=KEY_HARBOR,
+    keys_by_input_name={
+        "group_out": AssetKey(
+            [*KEY_HARBOR, "group_out"]
+        ),
+        "compose_project_name": AssetKey(
+            [*KEY_HARBOR, "compose_project_name"]
+        ),
+    },
+)

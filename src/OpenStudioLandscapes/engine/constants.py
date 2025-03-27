@@ -5,6 +5,7 @@ __all__ = [
     "GROUP_HARBOR",
     "KEY_HARBOR",
     "ASSET_HEADER_HARBOR",
+    "ENVIRONMENT_HARBOR",
     "GROUP_BASE",
     "KEY_BASE",
     "ASSET_HEADER_BASE",
@@ -38,13 +39,18 @@ DOCKER_USE_CACHE_GLOBAL = True
 DOCKER_USE_CACHE = DOCKER_USE_CACHE_GLOBAL or False
 
 
-GROUP_HARBOR = "Harbor"
+GROUP_HARBOR = f"Compose_{ComposeScope.HARBOR}"
 KEY_HARBOR = [GROUP_HARBOR]
 
 ASSET_HEADER_HARBOR = {
     "group_name": GROUP_HARBOR,
     "key_prefix": KEY_HARBOR,
     "compute_kind": "python",
+}
+
+ENVIRONMENT_HARBOR = {
+    "HARBOR_ADMIN": "admin",
+    "HARBOR_PASSWORD": "Harbor12345",
 }
 
 
@@ -161,10 +167,11 @@ def constants_harbor(
 ) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
     """ """
 
-    _constants = {
-        "HARBOR_ADMIN": "admin",
-        "HARBOR_PASSWORD": "Harbor12345",
-    }
+    _constants = ENVIRONMENT_HARBOR
+    # {
+    #     "HARBOR_ADMIN": "admin",
+    #     "HARBOR_PASSWORD": "Harbor12345",
+    # }
 
     yield Output(_constants)
 

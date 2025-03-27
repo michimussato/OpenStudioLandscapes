@@ -26,3 +26,6 @@ sudo systemctl restart docker.service
 
 sudo ./install.sh
 ```
+
+If push/pull over HTTP, we need to set up a Builder that allows
+for insecure connections. See [builder.toml](../docker/builder.toml).

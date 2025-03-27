@@ -21,6 +21,7 @@ except ModuleNotFoundError:
 class ComposeScope(enum.StrEnum):
     DEFAULT = "default"
     WORKER = "worker"
+    HARBOR = "harbor"
 
 
 class ComposeNetworkMode(enum.StrEnum):
