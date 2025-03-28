@@ -131,7 +131,7 @@ THIRD_PARTY = [
         "compose_scope": ComposeScope.DEFAULT,
     },
     {
-        "enabled": False,  # docker push not yet successful
+        "enabled": True,  # docker push not yet successful
         "module": "OpenStudioLandscapes.SESI_gcc_9_3_Houdini_20.definitions",
         "compose_scope": ComposeScope.DEFAULT,
     },
