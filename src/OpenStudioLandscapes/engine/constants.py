@@ -131,24 +131,24 @@ THIRD_PARTY = [
         "compose_scope": ComposeScope.DEFAULT,
     },
     {
-        "enabled": True,  # docker push not yet successful
+        "enabled": True,
         "module": "OpenStudioLandscapes.SESI_gcc_9_3_Houdini_20.definitions",
         "compose_scope": ComposeScope.DEFAULT,
     },
+    # {
+    #     "enabled": False,
+    #     # error: no health check configured
+    #     "module": "OpenStudioLandscapes.OpenCue.definitions",
+    #     "compose_scope": ComposeScope.DEFAULT,
+    # },
+    # {
+    #     "enabled": False,
+    #     # error This project's package.json defines "packageManager": "yarn@pnpm@10.6.2". However the current global version of Yarn is 1.22.22.
+    #     "module": "OpenStudioLandscapes.LikeC4.definitions",
+    #     "compose_scope": ComposeScope.DEFAULT,
+    # },
     {
-        "enabled": False,
-        # error: no health check configured
-        "module": "OpenStudioLandscapes.OpenCue.definitions",
-        "compose_scope": ComposeScope.DEFAULT,
-    },
-    {
-        "enabled": False,
-        # error This project's package.json defines "packageManager": "yarn@pnpm@10.6.2". However the current global version of Yarn is 1.22.22.
-        "module": "OpenStudioLandscapes.LikeC4.definitions",
-        "compose_scope": ComposeScope.DEFAULT,
-    },
-    {
-        "enabled": False,
+        "enabled": True,
         "module": "OpenStudioLandscapes.Syncthing.definitions",
         "compose_scope": ComposeScope.DEFAULT,
     },
