@@ -58,6 +58,7 @@ MANIFEST
 tmp*/
 
 .landscapes/*/
+!.landscapes/.harbor/
 
 .payload/data/
 .payload/bin/
