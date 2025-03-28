@@ -1,0 +1,50 @@
+_version: 2.12.0
+cache:
+  enabled: false
+  expire_hours: 24
+data_volume: /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.harbor/data
+database:
+  conn_max_idle_time: 0
+  max_idle_conns: 100
+  max_open_conns: 900
+  password: root123
+harbor_admin_password: Harbor12345
+hostname: harbor.farm.evil
+http:
+  port: 80
+jobservice:
+  job_loggers:
+  - STD_OUTPUT
+  - FILE
+  logger_sweeper_duration: 1
+  max_job_workers: 10
+log:
+  level: info
+  local:
+    location: /var/log/harbor
+    rotate_count: 50
+    rotate_size: 200M
+notification:
+  webhook_job_http_client_timeout: 3
+  webhook_job_max_retry: 3
+proxy:
+  components:
+  - core
+  - jobservice
+  - trivy
+  http_proxy: null
+  https_proxy: null
+  no_proxy: null
+trivy:
+  ignore_unfixed: false
+  insecure: false
+  offline_scan: false
+  security_check: vuln
+  skip_java_db_update: false
+  skip_update: false
+  timeout: 5m0s
+upload_purging:
+  age: 168h
+  dryrun: false
+  enabled: true
+  interval: 24h

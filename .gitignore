@@ -60,6 +60,11 @@ tmp*/
 .landscapes/*/
 !.landscapes/.harbor/
 
+.landscapes/.harbor/bin/*
+!.landscapes/.harbor/bin/.gitkeep
+!.landscapes/.harbor/bin/harbor.yml
+!.landscapes/.harbor/bin/docker-compose.yml
+
 .payload/data/
 .payload/bin/
 
