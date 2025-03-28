@@ -116,7 +116,7 @@ THIRD_PARTY = [
         "compose_scope": ComposeScope.WORKER,
     },
     {
-        "enabled": False,
+        "enabled": True,
         "module": "OpenStudioLandscapes.filebrowser.definitions",
         "compose_scope": ComposeScope.DEFAULT,
     },
