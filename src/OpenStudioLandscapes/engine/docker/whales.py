@@ -98,7 +98,9 @@ def docker_build(
             *tags_full,
         ]
 
-        context.log.warning(tags)
+        context.log.debug(tags)
+
+        context.log.info(f"Building docker image {image_name}...")
 
         # maybe build and push in separate steps?
 
@@ -112,16 +114,18 @@ def docker_build(
             pull=True,
         )
 
-        context.log.info(f"Result: {image}")
+        context.log.info(f"Docker image successfully built: {image_name} ({image})")
 
         push = _docker_config["docker_push"]
         context.log.debug(f"Pushing image is {push}...")
         if push:
+            context.log.debug(f"Pushing image {image_name}...")
             _docker_push(
                 context=context,
                 docker_client=docker_client,
                 tags_full=tags_full,
             )
+            context.log.debug(f"Push successful.")
 
     except Exception as e:
 

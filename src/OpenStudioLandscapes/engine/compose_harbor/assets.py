@@ -231,22 +231,23 @@ def write_yaml(
         "prepare": AssetIn(
             AssetKey([*KEY_HARBOR, "prepare"]),
         ),
-        "env": AssetIn(
-            AssetKey([*KEY_HARBOR, "env"]),
-        ),
+        # "env": AssetIn(
+        #     AssetKey([*KEY_HARBOR, "env"]),
+        # ),
     },
 )
 def compose(
         context: AssetExecutionContext,
         prepare: pathlib.Path,
-        env: dict,
+        # env: dict,
 ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
 
     with open(prepare, "r") as fw:
         docker_compose_yaml = fw.read()
         docker_compose_dict = yaml.safe_load(docker_compose_yaml)
 
-    compose_project_name = f"{env.get('LANDSCAPE', 'default').replace('.', '-')}-{env['COMPOSE_SCOPE']}"
+    # compose_project_name = f"{env.get('LANDSCAPE', 'default').replace('.', '-')}-{env['COMPOSE_SCOPE']}"
+    compose_project_name = "openstudiolandscapes-harbor"
 
     cmd_docker_compose_up = [
         shutil.which("sudo"),

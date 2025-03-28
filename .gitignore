@@ -60,6 +60,9 @@ tmp*/
 .landscapes/*/
 !.landscapes/.harbor/
 
+.landscapes/.harbor/data/*
+!.landscapes/.harbor/data/.gitkeep
+
 .landscapes/.harbor/bin/*
 !.landscapes/.harbor/bin/.gitkeep
 !.landscapes/.harbor/bin/harbor.yml
