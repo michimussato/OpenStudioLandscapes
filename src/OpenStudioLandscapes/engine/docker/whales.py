@@ -3,9 +3,7 @@ __all__ = [
 ]
 
 import pathlib
-from typing import Iterator
 
-from gazu.files import new_working_file
 from python_on_whales import DockerClient, Image, Builder, DockerException
 
 from dagster import (
@@ -43,8 +41,6 @@ def docker_build(
     builder: Builder = None,
     docker_use_cache: bool = True,
     image_data: dict = None,
-    # pull_all_tags: bool = True,
-    # push_all_tags: bool = True,
 ) -> list[str] | None:
 
     _docker_config = docker_config.value
@@ -106,25 +102,17 @@ def docker_build(
 
         # maybe build and push in separate steps?
 
-        stream: Iterator[str] = docker_client.buildx.build(
-            # file=docker_file.as_posix(),
+        # After an odyssey of trial and error frustration
+        # using buildx I decided to continue with legacy_build here
+        image: Image = docker_client.legacy_build(
+            file=docker_file.as_posix(),
             context_path=context_path.as_posix(),
             cache=docker_use_cache,
             tags=tags,
-            stream_logs=True,
-            builder="openstudiolandscapes-builder",
-            # push=_docker_config["docker_push"],
-            push=False,
             pull=True,
-            load=True,
-            # **_extra_args,
         )
 
-        # context.log.warning(image)
-
-        for msg in stream:
-            context.log.debug(msg)
-            log += msg
+        context.log.info(f"Result: {image}")
 
         push = _docker_config["docker_push"]
         context.log.debug(f"Pushing image is {push}...")

@@ -121,9 +121,15 @@ def get_copy_str(
     # Todo:
     #  - [ ] COPY vs. ADD?
     copy_str: str = str()
-    _mode = "" if mode is None else f"--chmod={str(mode).zfill(4)}"
+    # --chmod is a buildx feature. Trying to avoid that because
+    # buildx is causing problems if the registry is only reachable
+    # by inscure HTTP
+    # _mode = "" if mode is None else f"--chmod={str(mode).zfill(4)}"
+    _mode = "" if mode is None else str(mode).zfill(4)
     for copy_package in copy_packages.keys():
-        copy_str += f"COPY {_mode} ./{pathlib.Path(temp_dir).name}/{copy_package} .\n"
+        copy_str += f"COPY ./{pathlib.Path(temp_dir).name}/{copy_package} .\n"
+        if bool(_mode):
+            copy_str += f"RUN chmod {str(mode).zfill(4)} {copy_package}\n"
 
     return copy_str
 
