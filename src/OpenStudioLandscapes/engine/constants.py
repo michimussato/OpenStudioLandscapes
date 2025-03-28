@@ -101,7 +101,7 @@ THIRD_PARTY = [
         "compose_scope": ComposeScope.DEFAULT,
     },
     {
-        "enabled": False,
+        "enabled": True,
         "module": "OpenStudioLandscapes.Dagster.definitions",
         "compose_scope": ComposeScope.DEFAULT,
     },
