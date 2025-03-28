@@ -96,7 +96,7 @@ ASSET_HEADER_COMPOSE_WORKER = {
 
 THIRD_PARTY = [
     {
-        "enabled": False,
+        "enabled": True,
         "module": "OpenStudioLandscapes.Ayon.definitions",
         "compose_scope": ComposeScope.DEFAULT,
     },
