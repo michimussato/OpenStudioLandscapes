@@ -16,12 +16,16 @@ __all__ = [
     "GROUP_LANDSCAPE_MAP",
     "KEY_LANDSCAPE_MAP",
     "ASSET_HEADER_LANDSCAPE_MAP",
+    "GROUP_COMPOSE_LICENSE_SERVER",
+    "KEY_COMPOSE_LICENSE_SERVER",
+    "ASSET_HEADER_COMPOSE_LICENSE_SERVER",
     "GROUP_COMPOSE",
     "KEY_COMPOSE",
     "ASSET_HEADER_COMPOSE",
     "GROUP_COMPOSE_WORKER",
     "KEY_COMPOSE_WORKER",
     "ASSET_HEADER_COMPOSE_WORKER",
+    "ASSET_HEADER_COMPOSE_LICENSE_SERVER",
     "THIRD_PARTY",
 ]
 
@@ -108,6 +112,16 @@ ASSET_HEADER_COMPOSE_WORKER = {
 }
 
 
+GROUP_COMPOSE_LICENSE_SERVER = f"Compose_{ComposeScope.LICENSE_SERVER}"
+KEY_COMPOSE_LICENSE_SERVER = [GROUP_COMPOSE_LICENSE_SERVER]
+
+ASSET_HEADER_COMPOSE_LICENSE_SERVER = {
+    "group_name": GROUP_COMPOSE_LICENSE_SERVER,
+    "key_prefix": KEY_COMPOSE_LICENSE_SERVER,
+    "compute_kind": "python",
+}
+
+
 THIRD_PARTY = [
     {
         "enabled": True,
@@ -141,8 +155,13 @@ THIRD_PARTY = [
     },
     {
         "enabled": True,
+        "module": "OpenStudioLandscapes.SESI_gcc_9_3_Houdini_20.definitions",
+        "compose_scope": ComposeScope.LICENSE_SERVER,
+    },
+    {
+        "enabled": True,
         "module": "OpenStudioLandscapes.NukeRLM_8.definitions",
-        "compose_scope": ComposeScope.DEFAULT,
+        "compose_scope": ComposeScope.LICENSE_SERVER,
     },
     # {
     #     "enabled": False,
@@ -266,6 +285,34 @@ def constants_compose_worker(
     _constants = {
         "DOCKER_USE_CACHE": DOCKER_USE_CACHE,
         "ASSET_HEADER_COMPOSE": ASSET_HEADER_COMPOSE_WORKER,
+        "THIRD_PARTY": THIRD_PARTY,
+    }
+
+    yield Output(_constants)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.json(_constants),
+        },
+    )
+
+
+@asset(
+    name=f"constants_{GROUP_COMPOSE_LICENSE_SERVER}",
+    group_name="Constants",
+    key_prefix=KEY_COMPOSE_LICENSE_SERVER,
+    compute_kind="python",
+    description="",
+)
+def constants_compose_license_server(
+    context: AssetExecutionContext,
+) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
+    """ """
+
+    _constants = {
+        "DOCKER_USE_CACHE": DOCKER_USE_CACHE,
+        "ASSET_HEADER_LICENSE_SERVER": ASSET_HEADER_COMPOSE_LICENSE_SERVER,
         "THIRD_PARTY": THIRD_PARTY,
     }
 

@@ -22,6 +22,7 @@ class ComposeScope(enum.StrEnum):
     DEFAULT = "default"
     WORKER = "worker"
     HARBOR = "harbor"
+    LICENSE_SERVER = "license_server"
 
 
 class ComposeNetworkMode(enum.StrEnum):

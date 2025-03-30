@@ -733,7 +733,7 @@ comparison:
 
 | Render Manager | Integrated | Cross Platform | Freely Available | Scalability (local and cloud) | Active Development | Local | Python API | DCC agnostic |
 |----------------|------------|----------------|------------------|-------------------------------|--------------------|-------|------------|--------------|
-| Deadline 10.x  | ✅          | ✅              | ✅                | ✅                             | ☐                  | ✅     | ✅          | ✅            |
+| Deadline 10.x  | ✅          | ✅              | ✅                | ✅                             | ❌                  | ✅     | ✅          | ✅            |
 | OpenCue        | ✅          | ☐              | ✅                | ☐                             | ❌                  | ✅     | ✅          | ✅            |
 | Tractor        | ❌          | ☐              | ❌                | ☐                             | ☐                  | ☐     | ☐          | ☐            |
 | Flamenco       | ❌          | ☐              | ☐                | ☐                             | ☐                  | ☐     | ☐          | ❌            |
@@ -766,6 +766,8 @@ comparison:
   - https://github.com/michimussato/OpenStudioLandscapes-Syncthing
 - [x] [SESI Houdini 20](https://www.sidefx.com/docs/houdini/ref/utils/sesinetd.html)
   - https://github.com/michimussato/OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20
+- [x] [NukeRLM-8](https://learn.foundry.com/licensing/Content/local-licensing.html)
+  - https://github.com/michimussato/OpenStudioLandscapes-NukeRLM-8
 
 #### WIP
 
@@ -779,7 +781,6 @@ comparison:
 #### To Do
 
 - [ ] [Watchtower](https://watchtower.blender.org/)
-- [ ] Nuke License Server
 
 ## Dagster Lineage
 
