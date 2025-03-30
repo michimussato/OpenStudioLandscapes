@@ -208,9 +208,9 @@ def op_group_out(
 
     docker_yaml = yaml.dump(compose)
 
-    context.log.warning(context.asset_key_for_output("group_out"))
-    context.log.warning(context.asset_key_for_output("compose_project_name"))
-    context.log.warning(context.selected_output_names)
+    context.log.debug(context.asset_key_for_output("group_out"))
+    context.log.debug(context.asset_key_for_output("compose_project_name"))
+    context.log.debug(context.selected_output_names)
 
     build_base_docker_config: DockerConfig = group_in["docker_config"]
     build_base_docker_config_value = build_base_docker_config.value
@@ -225,7 +225,7 @@ def op_group_out(
     # {AssetKey(['OpenCue', 'group_out']): 'OpenCue'}
     # Multiple Outputs:
     # {AssetKey(['Compose_default', 'group_out']): 'Compose_default', AssetKey(['Compose_default', 'compose_project_name']): 'Compose_default'}
-    context.log.warning(group_names_by_key_dict)
+    context.log.debug(group_names_by_key_dict)
     asset_key_group_out = context.asset_key_for_output("group_out")  # AssetKey(['OpenCue', 'group_out'])
     group_group_out = group_names_by_key_dict[asset_key_group_out]
 
