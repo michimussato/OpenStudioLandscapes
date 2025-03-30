@@ -10,7 +10,6 @@ import os
 import pathlib
 import shlex
 import shutil
-import subprocess
 from collections import ChainMap
 from functools import reduce
 from typing import Generator, MutableMapping
@@ -286,6 +285,16 @@ def op_group_out(
         "--remove-orphans",
     ]
     script_cmd_docker_compose_down = docker_compose.parent / "docker_compose_down.sh"
+
+    # Todo
+    #  cmd_docker_exec_it = [
+    #      shutil.which("docker"),
+    #      "exec",
+    #      "--tty",
+    #      "--interactive",
+    #      "sh",  # or bash
+    #  ]
+    #  script_cmd_docker_exec_it = docker_compose.parent / "docker_exec.sh"
 
     # In case we need to log in to the registry
     if not build_base_docker_config_value["docker_use_local"]:
