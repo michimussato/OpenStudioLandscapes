@@ -141,12 +141,7 @@ THIRD_PARTY = [
     },
     {
         "enabled": True,
-        "module": "OpenStudioLandscapes.Kitsu.definitions",
-        "compose_scope": ComposeScope.DEFAULT,
-    },
-    {
-        "enabled": True,
-        "module": "OpenStudioLandscapes.SESI_gcc_9_3_Houdini_20.definitions",
+        "module": "OpenStudioLandscapes.NukeRLM_8.definitions",
         "compose_scope": ComposeScope.DEFAULT,
     },
     # {
