@@ -4,15 +4,12 @@ from dagster import (
 )
 
 import OpenStudioLandscapes.engine.base.assets
-import OpenStudioLandscapes.engine.constants
 
 assets_base = load_assets_from_modules([OpenStudioLandscapes.engine.base.assets])
-constants = load_assets_from_modules([OpenStudioLandscapes.engine.constants])
 
 
 defs = Definitions(
     assets=[
         *assets_base,
-        *constants,
     ],
 )

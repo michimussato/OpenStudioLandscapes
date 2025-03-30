@@ -6,6 +6,10 @@ __all__ = [
     "KEY_HARBOR",
     "ASSET_HEADER_HARBOR",
     "ENVIRONMENT_HARBOR",
+    "GROUP_BASE_ENV",
+    "KEY_BASE_ENV",
+    "ASSET_HEADER_BASE_ENV",
+    "GROUP_BASE_ENV",
     "GROUP_BASE",
     "KEY_BASE",
     "ASSET_HEADER_BASE",
@@ -54,7 +58,17 @@ ENVIRONMENT_HARBOR = {
 }
 
 
-GROUP_BASE = "Base"
+GROUP_BASE_ENV = "OpenStudioLandscapes_Env"
+KEY_BASE_ENV = [GROUP_BASE_ENV]
+
+ASSET_HEADER_BASE_ENV = {
+    "group_name": GROUP_BASE_ENV,
+    "key_prefix": KEY_BASE_ENV,
+    "compute_kind": "python",
+}
+
+
+GROUP_BASE = "OpenStudioLandscapes_Base"
 KEY_BASE = [GROUP_BASE]
 
 ASSET_HEADER_BASE = {

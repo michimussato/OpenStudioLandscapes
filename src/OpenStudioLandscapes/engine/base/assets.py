@@ -1,15 +1,9 @@
-import getpass
 import pathlib
 import shutil
-import socket
 import textwrap
 import time
 import urllib.parse
-import uuid
-from datetime import datetime
 from typing import Generator
-
-from python_on_whales import Builder
 
 from dagster import (
     AssetExecutionContext,
@@ -22,171 +16,8 @@ from dagster import (
 )
 
 from OpenStudioLandscapes.engine.constants import *
-# from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.utils import *
 from OpenStudioLandscapes.engine.docker.whales import *
-
-
-@asset(
-    **ASSET_HEADER_BASE,
-)
-def git_root(
-    context: AssetExecutionContext,
-) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
-
-    _git_root = get_git_root()
-
-    yield Output(_git_root)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.path(_git_root),
-        },
-    )
-
-
-@asset(
-    **ASSET_HEADER_BASE,
-)
-def landscape_id(
-    context: AssetExecutionContext,
-) -> Generator[Output[dict[str, str]] | AssetMaterialization, None, None]:
-
-    now = datetime.now()
-
-    landscape_stamp = {
-        "LANDSCAPE": f"{datetime.strftime(now, '%Y-%m-%d_%H-%M-%S')}__{uuid.uuid4().hex}".replace("__", "_").replace("_", "-"),
-    }
-
-    yield Output(landscape_stamp)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(landscape_stamp),
-        },
-    )
-
-
-@asset(
-    **ASSET_HEADER_BASE,
-)
-def secrets(
-    context: AssetExecutionContext,
-) -> Generator[Output[dict] | AssetMaterialization, None, None]:
-    try:
-        from __SECRET__.secrets import secrets as _secrets
-    except ModuleNotFoundError:
-        context.log.exception("Failed to import secrets from __SECRET__.secrets")
-        _secrets: dict = {}
-
-    yield Output(_secrets)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(_secrets),
-        },
-    )
-
-
-@asset(
-    **ASSET_HEADER_BASE,
-    ins={
-        "git_root": AssetIn(
-            AssetKey([*KEY_BASE, "git_root"]),
-        ),
-    },
-)
-def dot_landscapes(
-    context: AssetExecutionContext,
-    git_root: pathlib.Path,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
-
-    _dot_landscapes = git_root / ".landscapes"
-    _dot_landscapes.mkdir(
-        parents=True,
-        exist_ok=True,
-    )
-
-    yield Output(_dot_landscapes)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.path(_dot_landscapes),
-        },
-    )
-
-
-@asset(
-    **ASSET_HEADER_BASE,
-    ins={
-        "git_root": AssetIn(AssetKey([*KEY_BASE, "git_root"])),
-        "secrets": AssetIn(AssetKey([*KEY_BASE, "secrets"])),
-        "landscape_id": AssetIn(AssetKey([*KEY_BASE, "landscape_id"])),
-        "dot_landscapes": AssetIn(AssetKey([*KEY_BASE, "dot_landscapes"])),
-        "nfs": AssetIn(AssetKey([*KEY_BASE, "nfs"])),
-    },
-    deps=[
-        AssetKey(
-            [
-                *ASSET_HEADER_BASE["key_prefix"],
-                f"constants_{ASSET_HEADER_BASE['group_name']}",
-            ]
-        )
-    ],
-)
-def env(
-    context: AssetExecutionContext,
-    git_root: pathlib.Path,  # pylint: disable=redefined-outer-name
-    secrets: dict,  # pylint: disable=redefined-outer-name
-    landscape_id: dict,  # pylint: disable=redefined-outer-name
-    dot_landscapes: pathlib.Path,  # pylint: disable=redefined-outer-name
-    nfs: dict,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[dict] | AssetMaterialization, None, None]:
-
-    # @formatter:off
-    # Todo
-    #  - [ ] Move to constants.py
-    ENVIRONMENT_BASE: dict = {
-        "GIT_ROOT": git_root.as_posix(),
-        # Todo
-        #  - [ ] Move CONFIGS_ROOT to individual modules
-        "CONFIGS_ROOT": pathlib.Path(
-            git_root,
-            "configs",
-        ).as_posix(),
-        "DOT_LANDSCAPES": dot_landscapes.as_posix(),
-        "AUTHOR": "michimussato@gmail.com",
-        "CREATED_BY": str(getpass.getuser()),
-        "CREATED_ON": str(socket.gethostname()),
-        "CREATED_AT": str(datetime.strftime(datetime.now(), "%Y-%m-%d_%H-%M-%S")),
-        "TIMEZONE": "Europe/Zurich",
-        # "IMAGE_PREFIX": "michimussato",
-        "DEFAULT_CONFIG_DBPATH": "/data/configdb",
-        "ROOT_DOMAIN": "farm.evil",
-        # https://vfxplatform.com/
-        "PYTHON_MAJ": "3",
-        "PYTHON_MIN": "11",
-        "PYTHON_PAT": "11",
-    }
-
-    ENVIRONMENT_BASE.update(secrets)
-    ENVIRONMENT_BASE.update(landscape_id)
-    ENVIRONMENT_BASE.update(nfs)
-    # @formatter:on
-
-    yield Output(ENVIRONMENT_BASE)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(ENVIRONMENT_BASE),
-            # "ENVIRONMENT_BASE": MetadataValue.json(ENVIRONMENT_BASE),
-        },
-    )
 
 
 @asset(
@@ -278,10 +109,9 @@ if DOCKER_CONFIG.value["docker_use_local"]:
 @asset(
     **ASSET_HEADER_BASE,
     ins={
-        "env": AssetIn(AssetKey([*KEY_BASE, "env"])),
+        "env": AssetIn(AssetKey([*KEY_BASE_ENV, "env"])),
         "apt_packages": AssetIn(AssetKey([*KEY_BASE, "apt_packages"])),
         "pip_packages": AssetIn(AssetKey([*KEY_BASE, "pip_packages"])),
-        "run_builder": AssetIn(AssetKey([*KEY_BASE, "run_builder"])),
     },
     deps=deps_,
 )
@@ -290,7 +120,6 @@ def build_docker_image(
     env: dict,  # pylint: disable=redefined-outer-name
     apt_packages: dict[str, list[str]],  # pylint: disable=redefined-outer-name
     pip_packages: list,  # pylint: disable=redefined-outer-name
-    run_builder: Builder,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict[str, str | list[str]]] | AssetMaterialization, None, None]:
     """ """
 
@@ -429,36 +258,11 @@ def build_docker_image(
 
 @asset(
     **ASSET_HEADER_BASE,
-)
-def nfs(
-    context: AssetExecutionContext,
-) -> Generator[Output[dict] | AssetMaterialization, None, None]:
-    # @formatter:off
-    _env: dict = {
-        "NFS_ENTRY_POINT": pathlib.Path("/data/share/nfs").as_posix(),
-        "NFS_ENTRY_POINT_LNS": pathlib.Path("/nfs").as_posix(),
-        "INSTALLERS_ROOT": pathlib.Path("/data/share/nfs/installers").as_posix(),
-    }
-    # @formatter:on
-
-    yield Output(_env)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(_env),
-        },
-    )
-
-
-@asset(
-    **ASSET_HEADER_BASE,
     tags={
         "group_out": "base",
     },
     ins={
-        "env": AssetIn(AssetKey([*KEY_BASE, "env"])),
-        "run_builder": AssetIn(AssetKey([*KEY_BASE, "run_builder"])),
+        "env": AssetIn(AssetKey([*KEY_BASE_ENV, "env"])),
         "build_docker_image": AssetIn(
             AssetKey([*KEY_BASE, "build_docker_image"]),
         ),
@@ -467,7 +271,6 @@ def nfs(
 def group_out(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
-    run_builder: Builder,  # pylint: disable=redefined-outer-name
     build_docker_image: dict,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict[str, str | dict]] | AssetMaterialization, None, None]:
 
@@ -475,7 +278,6 @@ def group_out(
 
     out_dict["env"] = env
     out_dict["docker_config"] = DOCKER_CONFIG
-    out_dict["docker_builder"] = run_builder
     out_dict["docker_image"] = build_docker_image
 
     yield Output(out_dict)
@@ -485,7 +287,6 @@ def group_out(
         metadata={
             "env": MetadataValue.json(env),
             "docker_config": MetadataValue.json(DOCKER_CONFIG.value),
-            "run_builder": MetadataValue.path(run_builder.name),
             "docker_image": MetadataValue.json(build_docker_image),
         },
     )

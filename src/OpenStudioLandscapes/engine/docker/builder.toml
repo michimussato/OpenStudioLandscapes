@@ -1,5 +1,0 @@
-# Error (Buildx): http: server gave HTTP response to HTTPS client
-# https://github.com/docker/buildx/issues/2226#issuecomment-2463603613
-[registry."harbor.farm.evil:80"]
-  insecure = true
-  http = true

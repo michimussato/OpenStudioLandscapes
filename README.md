@@ -10,6 +10,7 @@
   * [About the Author](#about-the-author)
   * [Requirements](#requirements)
     * [Harbor](#harbor)
+    * [Dagster](#dagster)
     * [Ubuntu](#ubuntu)
       * [20.04](#2004)
         * [Python 3.11](#python-311)
@@ -669,12 +670,41 @@ comparison:
 
 ### 3rd Party
 
-- [Dagster](https://dagster.io/)
-- [LikeC4](https://likec4.dev/)
-- [Kitsu](https://kitsu.cg-wire.com/)
-- [Ayon](https://ayon.ynput.io/)
-- [mongo-express](https://hub.docker.com/_/mongo-express)
-- [filebrodockerwser/filebrowser](https://hub.docker.com/r/filebrowser/filebrowser)
+[Template](https://github.com/michimussato/OpenStudioLandscapes-Template)
+
+#### Container Registry
+
+- [x] Harbor
+
+#### Completed
+
+- [x] [Dagster](https://dagster.io/)
+  - https://github.com/michimussato/OpenStudioLandscapes-Dagster
+- [x] [Kitsu](https://kitsu.cg-wire.com/)
+  - https://github.com/michimussato/OpenStudioLandscapes-Kitsu
+- [x] [Ayon](https://ayon.ynput.io/)
+  - https://github.com/michimussato/OpenStudioLandscapes-Ayon
+- [x] [mongo-express](https://hub.docker.com/_/mongo-express)
+- [x] [filebrodockerwser/filebrowser](https://hub.docker.com/r/filebrowser/filebrowser)
+  - https://github.com/michimussato/OpenStudioLandscapes-filebrowser
+- [x] [Syncthing](https://github.com/syncthing/syncthing/blob/main/README-Docker.md)
+  - https://github.com/michimussato/OpenStudioLandscapes-Syncthing
+- [x] [SESI Houdini 20](https://www.sidefx.com/docs/houdini/ref/utils/sesinetd.html)
+  - https://github.com/michimussato/OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20
+
+#### WIP
+
+- [x] [LikeC4](https://likec4.dev/)
+  - https://github.com/michimussato/OpenStudioLandscapes-LikeC4
+- [x] [Grafana](https://grafana.com/)
+  - https://github.com/michimussato/OpenStudioLandscapes-Grafana
+- [x] [OpenCue](https://www.opencue.io/)
+  - https://github.com/michimussato/OpenStudioLandscapes-OpenCue
+
+#### To Do
+
+- [ ] [Watchtower](https://watchtower.blender.org/)
+- [ ] Nuke License Server
 
 ## Dagster Lineage
 
