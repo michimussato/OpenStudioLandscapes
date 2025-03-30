@@ -17,7 +17,7 @@ from dagster import (
 
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.utils import *
-from OpenStudioLandscapes.engine.docker.whales import *
+from OpenStudioLandscapes.engine.utils.docker.whales import *
 
 
 @asset(
