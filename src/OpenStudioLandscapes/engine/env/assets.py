@@ -124,8 +124,8 @@ def dot_landscapes(
     deps=[
         AssetKey(
             [
-                *ASSET_HEADER_BASE["key_prefix"],
-                f"constants_{ASSET_HEADER_BASE['group_name']}",
+                *ASSET_HEADER_BASE_ENV["key_prefix"],
+                "constants_base",
             ]
         )
     ],

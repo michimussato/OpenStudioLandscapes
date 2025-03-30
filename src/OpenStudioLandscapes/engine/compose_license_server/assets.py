@@ -26,10 +26,7 @@ from OpenStudioLandscapes.engine.enums import *
     },
     deps=[
         AssetKey(
-            [
-                *ASSET_HEADER_COMPOSE_LICENSE_SERVER["key_prefix"],
-                f"constants_{ASSET_HEADER_COMPOSE_LICENSE_SERVER['group_name']}",
-            ]
+            [*ASSET_HEADER_COMPOSE_LICENSE_SERVER['key_prefix'], "constants_compose_license_server"]
         )
     ],
 )

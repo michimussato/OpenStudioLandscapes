@@ -184,10 +184,7 @@ THIRD_PARTY = [
 
 
 @asset(
-    name=f"constants_{GROUP_HARBOR}",
-    group_name="Constants",
-    key_prefix=KEY_HARBOR,
-    compute_kind="python",
+    **ASSET_HEADER_HARBOR,
     description="",
 )
 def constants_harbor(
@@ -212,10 +209,7 @@ def constants_harbor(
 
 
 @asset(
-    name=f"constants_{GROUP_BASE}",
-    group_name="Constants",
-    key_prefix=KEY_BASE,
-    compute_kind="python",
+    **ASSET_HEADER_BASE_ENV,
     description="",
 )
 def constants_base(
@@ -243,10 +237,7 @@ def constants_base(
 
 
 @asset(
-    name=f"constants_{GROUP_COMPOSE}",
-    group_name="Constants",
-    key_prefix=KEY_COMPOSE,
-    compute_kind="python",
+    **ASSET_HEADER_COMPOSE,
     description="",
 )
 def constants_compose(
@@ -271,10 +262,7 @@ def constants_compose(
 
 
 @asset(
-    name=f"constants_{GROUP_COMPOSE_WORKER}",
-    group_name="Constants",
-    key_prefix=KEY_COMPOSE_WORKER,
-    compute_kind="python",
+    **ASSET_HEADER_COMPOSE_WORKER,
     description="",
 )
 def constants_compose_worker(
@@ -299,10 +287,7 @@ def constants_compose_worker(
 
 
 @asset(
-    name=f"constants_{GROUP_COMPOSE_LICENSE_SERVER}",
-    group_name="Constants",
-    key_prefix=KEY_COMPOSE_LICENSE_SERVER,
-    compute_kind="python",
+    **ASSET_HEADER_COMPOSE_LICENSE_SERVER,
     description="",
 )
 def constants_compose_license_server(

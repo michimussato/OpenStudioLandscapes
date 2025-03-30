@@ -28,7 +28,7 @@ from OpenStudioLandscapes.engine.enums import *
         AssetKey(
             [
                 *ASSET_HEADER_COMPOSE_WORKER["key_prefix"],
-                f"constants_{ASSET_HEADER_COMPOSE_WORKER['group_name']}",
+                "constants_compose_worker",
             ]
         )
     ],
