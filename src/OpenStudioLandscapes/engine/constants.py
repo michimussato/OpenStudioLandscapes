@@ -57,8 +57,10 @@ ASSET_HEADER_HARBOR = {
 }
 
 ENVIRONMENT_HARBOR = {
+    "HARBOR_HOSTNAME": "harbor.farm.evil",
     "HARBOR_ADMIN": "admin",
     "HARBOR_PASSWORD": "Harbor12345",
+    "HARBOR_PORT": "80",
 }
 
 

@@ -2,6 +2,7 @@ import pathlib
 import shlex
 import shutil
 from typing import Generator
+import copy
 
 import yaml
 
@@ -16,50 +17,51 @@ from dagster import (
 )
 
 from OpenStudioLandscapes.engine.constants import *
-
-
-# @asset(
-#     **ASSET_HEADER_HARBOR,
-#     ins={
-#         "group_in": AssetIn(
-#             AssetKey([*KEY_BASE, "group_out"])
-#         ),
-#     },
-#     deps=[
-#         AssetKey([*ASSET_HEADER_HARBOR['key_prefix'], f"constants_{ASSET_HEADER_HARBOR['group_name']}"])
-#     ],
-# )
-# def env(
-#     context: AssetExecutionContext,
-#     group_in: dict,  # pylint: disable=redefined-outer-name
-# ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
-#
-#     env_in = copy.deepcopy(group_in["env"])
-#
-#     env_in.update(ENVIRONMENT_HARBOR)
-#
-#     env_in.update(
-#         {
-#             "COMPOSE_SCOPE": ComposeScope.HARBOR,
-#         },
-#     )
-#
-#     yield Output(env_in)
-#
-#     yield AssetMaterialization(
-#         asset_key=context.asset_key,
-#         metadata={
-#             "__".join(context.asset_key.path): MetadataValue.json(env_in),
-#             "ENVIRONMENT_HARBOR": MetadataValue.json(ENVIRONMENT_HARBOR),
-#         },
-#     )
+from OpenStudioLandscapes.engine.enums import *
 
 
 @asset(
     **ASSET_HEADER_HARBOR,
     ins={
         "env": AssetIn(
-            AssetKey([*KEY_BASE_ENV, "env"]),
+            AssetKey([*KEY_BASE_ENV, "env"])
+        ),
+    },
+    deps=[
+        AssetKey([*ASSET_HEADER_HARBOR['key_prefix'], "constants_harbor"])
+    ],
+)
+def env(
+    context: AssetExecutionContext,
+    env: dict,  # pylint: disable=redefined-outer-name
+) -> Generator[Output[dict] | AssetMaterialization, None, None]:
+
+    env_in = copy.deepcopy(env)
+
+    env_in.update(ENVIRONMENT_HARBOR)
+
+    env_in.update(
+        {
+            "COMPOSE_SCOPE": ComposeScope.HARBOR,
+        },
+    )
+
+    yield Output(env_in)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.json(env_in),
+            "ENVIRONMENT_HARBOR": MetadataValue.json(ENVIRONMENT_HARBOR),
+        },
+    )
+
+
+@asset(
+    **ASSET_HEADER_HARBOR,
+    ins={
+        "env": AssetIn(
+            AssetKey([*KEY_HARBOR, "env"]),
         ),
     },
 )
@@ -130,6 +132,7 @@ def prepare(
         metadata={
             "harbor_yml": MetadataValue.path(write_yaml),
             "docker_compose_yml": MetadataValue.path(docker_compose),
+            "cmd_prepare": MetadataValue.path(shlex.join(cmd_prepare)),
         },
     )
 
@@ -140,21 +143,25 @@ def prepare(
         "harbor_root": AssetIn(
             AssetKey([*KEY_HARBOR, "harbor_root"]),
         ),
+        "env": AssetIn(
+            AssetKey([*KEY_HARBOR, "env"]),
+        ),
     },
     description="Returns the docker-compose path."
 )
 def write_yaml(
         context: AssetExecutionContext,
         harbor_root: pathlib.Path,
+        env: dict,
 ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
 
     yaml_out = harbor_root / "bin" / "harbor.yml"
     registry_data_root = harbor_root / "data"
 
     harbor_dict = {
-        'hostname': 'harbor.farm.evil',
-        'http': {'port': 80},
-        'harbor_admin_password': 'Harbor12345',
+        'hostname': env["HARBOR_HOSTNAME"],
+        'http': {'port': env["HARBOR_PORT"]},
+        'harbor_admin_password': env["HARBOR_PASSWORD"],
         'database': {
             'password': 'root123',
             'max_idle_conns': 100,

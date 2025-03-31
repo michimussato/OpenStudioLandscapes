@@ -343,7 +343,14 @@ ff02::2    ip6-allrouters
 
 # OpenStudioLandscapes
 # # Harbor
-192.168.1.164  harbor.farm.evil
+# 192.168.1.164  harbor.farm.evil
+127.0.0.1  harbor.farm.evil
+
+# SESI
+127.0.0.1  sesi-gcc-9-3-houdini-20.farm.evil
+
+# RLM
+127.0.0.1  nuke-rlm-8.farm.evil
 
 EOF
 

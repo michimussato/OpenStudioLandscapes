@@ -72,7 +72,7 @@ class DockerRepositoryType(enum.StrEnum):
 
 
 class DockerConfig(enum.Enum):
-    _REPOSITORY_NAME = "michimussato".lower()
+    _REPOSITORY_NAME = "openstudiolandscapes".lower()
     # Do not:
     # - repeat special characters multiple times (like "__")
     # - use capitals in repository names
@@ -84,7 +84,7 @@ class DockerConfig(enum.Enum):
         "docker_registry_username": None,
         "docker_registry_password": None,
         "docker_repository": _REPOSITORY_NAME,
-        "docker_repository_type": DockerRepositoryType.PUBLIC,
+        "docker_repository_type": DockerRepositoryType.PUBLIC.value,
     }
     DOCKER_HUB = {
         "docker_push": True,
@@ -104,7 +104,7 @@ class DockerConfig(enum.Enum):
         "docker_registry_username": None,
         "docker_registry_password": None,
         "docker_repository": _REPOSITORY_NAME,
-        "docker_repository_type": DockerRepositoryType.PUBLIC,
+        "docker_repository_type": DockerRepositoryType.PUBLIC.value,
     }
     LOCAL_LOCALHOST = {
         "docker_push": True,
@@ -114,7 +114,7 @@ class DockerConfig(enum.Enum):
         "docker_registry_username": None,
         "docker_registry_password": None,
         "docker_repository": _REPOSITORY_NAME,
-        "docker_repository_type": DockerRepositoryType.PUBLIC,
+        "docker_repository_type": DockerRepositoryType.PUBLIC.value,
     }
     LOCAL_HARBOR = {
         # https://github.com/goharbor/harbor
@@ -126,7 +126,7 @@ class DockerConfig(enum.Enum):
         "docker_registry_username": "admin",
         "docker_registry_password": "Harbor12345",
         "docker_repository": _REPOSITORY_NAME,
-        "docker_repository_type": DockerRepositoryType.PUBLIC,
+        "docker_repository_type": DockerRepositoryType.PUBLIC.value,
     }
     LOCAL_MINIBOSS = {
         "docker_push": True,
@@ -136,5 +136,5 @@ class DockerConfig(enum.Enum):
         "docker_registry_username": None,
         "docker_registry_password": None,
         "docker_repository": _REPOSITORY_NAME,
-        "docker_repository_type": DockerRepositoryType.PUBLIC,
+        "docker_repository_type": DockerRepositoryType.PUBLIC.value,
     }
