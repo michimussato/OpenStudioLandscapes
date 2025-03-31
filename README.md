@@ -346,11 +346,40 @@ ff02::2    ip6-allrouters
 # 192.168.1.164  harbor.farm.evil
 127.0.0.1  harbor.farm.evil
 
+# Deadline 10.2
+127.0.0.1  deadline-rcs-runner-10-2.farm.evil
+127.0.0.1  mongo-express-10-2.farm.evil
+127.0.0.1  mongodb-10-2.farm.evil
+127.0.0.1  deadline-pulse-runner-10-2.farm.evil
+127.0.0.1  repository-installer-10-2.farm.evil  # ephemeral
+127.0.0.1  deadline-webservice-runner-10-2.farm.evil
+127.0.0.1  deadline-worker-runner-10-2.farm.evil
+# 127.0.0.1  deadline-10-2-pulse-worker-XX.farm.evil
+
+# filebrowser
+127.0.0.1  filebrowser.farm.evil
+
+# Kitsu
+127.0.0.1  kitsu-init-db.farm.evil  # ephemeral
+127.0.0.1  kitsu.farm.evil
+
+# Syncthing
+127.0.0.1  syncthing.farm.evil
+
 # SESI
 127.0.0.1  sesi-gcc-9-3-houdini-20.farm.evil
 
 # RLM
 127.0.0.1  nuke-rlm-8.farm.evil
+
+# Dagster
+127.0.0.1  dagster.farm.evil
+
+# Ayon
+127.0.0.1  ayon-server.farm.evil
+
+# Template
+# 127.0.0.1  template.farm.evil
 
 EOF
 
