@@ -3,8 +3,8 @@ run_queue:
   max_concurrent_runs: 1
   block_op_concurrency_limited_runs:
     enabled: true
-concurrency:
-  default_op_concurrency_limit: 1
+#concurrency:
+#  default_op_concurrency_limit: 1
 telemetry:
   enabled: false
 #run_monitoring:

@@ -50,7 +50,7 @@ if bool(ins):
         **kwargs,
     ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
 
-        context.log.warning(kwargs)
+        context.log.debug(kwargs)
 
         env = group_out.get("env", {})
 

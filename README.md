@@ -896,6 +896,7 @@ Resources:
 - https://docs.dagster.io/api/python-api/libraries/dagster-postgres
 - https://docs.dagster.io/guides/deploy/deployment-options/docker
 - https://github.com/docker-library/docs/blob/master/postgres/README.md
+- https://www.getorchestra.io/guides/dagster-open-source-pipelines-postgresql-integration
 
 #### Postgres
 
