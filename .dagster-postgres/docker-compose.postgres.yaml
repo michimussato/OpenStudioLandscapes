@@ -1,0 +1,33 @@
+# Use postgres/example user/password credentials
+# (example from https://github.com/docker-library/docs/blob/master/postgres/README.md#-via-docker-compose-or-docker-stack-deploy)
+version: '3.9'
+
+services:
+
+  db:
+    container_name: postgres-dagster
+    domainname: farm.evil
+    hostname: postgres-dagster.farm.evil
+    image: docker.io/postgres
+    restart: always
+    # set shared memory limit when using docker-compose
+    shm_size: 128mb
+    # or set shared memory limit when deploy via swarm stack
+    #volumes:
+    #  - type: tmpfs
+    #    target: /dev/shm
+    #    tmpfs:
+    #      size: 134217728 # 128*2^20 bytes = 128Mb
+    environment:
+      # https://github.com/docker-library/docs/blob/master/postgres/README.md#environment-variables
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mysecretpassword
+    ports:
+      - 5432:5432
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080

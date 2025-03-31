@@ -55,6 +55,7 @@ MANIFEST
 
 # Dagster
 .dagster/*/
+.dagster-postgres/*/
 tmp*/
 
 .landscapes/*/

@@ -345,6 +345,8 @@ ff02::2    ip6-allrouters
 # # Harbor
 # 192.168.1.164  harbor.farm.evil
 127.0.0.1  harbor.farm.evil
+# # Postgres
+127.0.0.1  postgres-dagster.farm.evil
 
 # Deadline 10.2
 127.0.0.1  deadline-rcs-runner-10-2.farm.evil
@@ -432,46 +434,6 @@ sudo systemctl restart docker
 
 Todo
 - [ ] `dagster dev` is not for production (https://docs.dagster.io/guides/deploy/deployment-options)
-- [ ] Switch to postgres
-  - https://docs.dagster.io/guides/deploy/deployment-options/docker
-```
-sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) database is locked
-[SQL: INSERT INTO event_logs (run_id, event, dagster_event_type, timestamp, step_key, asset_key, partition) VALUES (?, ?, ?, ?, ?, ?, ?)]
-[parameters: ('5b09c7fc-dccb-41b1-8374-7edf3866d262', '{"__class__": "EventLogEntry", "dagster_event": null, "error_info": null, "level": 10, "message": "", "pipeline_name": "__ASSET_JOB", "run_id": "5b09 ... (133 characters truncated) ... essage": "Loading file from: /home/michael/git/repos/OpenStudioLandscapes/.dagster/storage/Base/group_out using PickledObjectFilesystemIOManager..."}', None, '2025-03-28 23:30:38.580043', 'SESI_gcc_9_3_Houdini_20__build_docker_image', None, None)]
-(Background on this error at: https://sqlalche.me/e/20/e3q8)
-  File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/instance/__init__.py", line 260, in emit
-    self._instance.handle_new_event(
-  File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/instance/__init__.py", line 2451, in handle_new_event
-    self._event_storage.store_event(events[0])
-  File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/storage/event_log/sqlite/sqlite_event_log.py", line 258, in store_event
-    conn.execute(insert_event_statement)
-  File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1416, in execute
-    return meth(
-           ^^^^^
-  File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/sqlalchemy/sql/elements.py", line 516, in _execute_on_connection
-    return connection._execute_clauseelement(
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1638, in _execute_clauseelement
-    ret = self._execute_context(
-          ^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1843, in _execute_context
-    return self._exec_single_context(
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1983, in _exec_single_context
-    self._handle_dbapi_exception(
-  File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 2352, in _handle_dbapi_exception
-    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
-  File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1964, in _exec_single_context
-    self.dialect.do_execute(
-  File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 942, in do_execute
-    cursor.execute(statement, parameters)
-The above exception was caused by the following exception:
-sqlite3.OperationalError: database is locked
-  File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1964, in _exec_single_context
-    self.dialect.do_execute(
-  File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 942, in do_execute
-    cursor.execute(statement, parameters)
-```
 
 ### Ubuntu
 
@@ -913,6 +875,55 @@ f"DATABASE_INSTALL_DESTINATION_{KEY}": {
 cd ~/git/repos/OpenStudioLandscapes
 source .venv/bin/activate
 export DAGSTER_HOME="$(pwd)/.dagster"
+dagster dev
+```
+
+### Launch Dagster Postgres
+
+This could be useful in case you're hitting a
+SQLite concurrency issue like this:
+
+```
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) database is locked
+  [...]
+The above exception was caused by the following exception:
+sqlite3.OperationalError: database is locked
+  [...]
+```
+
+Resources:
+- https://docs.dagster.io/guides/deploy/dagster-instance-configuration
+- https://docs.dagster.io/api/python-api/libraries/dagster-postgres
+- https://docs.dagster.io/guides/deploy/deployment-options/docker
+- https://github.com/docker-library/docs/blob/master/postgres/README.md
+
+#### Postgres
+
+```shell
+# https://github.com/docker-library/docs/blob/master/postgres/README.md
+
+cd OpenStudioLandscapes/.dagster-postgres
+
+docker run \
+    --name postgres-dagster \
+    --domainname farm.evil \
+    --hostname postgres-dagster.farm.evil \
+    --env POSTGRES_USER=postgres \
+    --env POSTGRES_PASSWORD=mysecretpassword \
+    --env POSTGRES_DB=postgres \
+	--env PGDATA=/var/lib/postgresql/data/pgdata \
+	--volume ./.postgres:/var/lib/postgresql/data \
+	--publish 5432:5432 \
+	--rm \
+    docker.io/postgres
+```
+
+#### Dagster
+
+```shell
+cd ~/git/repos/OpenStudioLandscapes
+source .venv/bin/activate
+export DAGSTER_HOME="$(pwd)/.dagster-postgres"
 dagster dev
 ```
 
