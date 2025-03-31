@@ -141,6 +141,11 @@ THIRD_PARTY = [
     },
     {
         "enabled": True,
+        "module": "OpenStudioLandscapes.Kitsu.definitions",
+        "compose_scope": ComposeScope.DEFAULT,
+    },
+    {
+        "enabled": True,
         "module": "OpenStudioLandscapes.Dagster.definitions",
         "compose_scope": ComposeScope.DEFAULT,
     },
