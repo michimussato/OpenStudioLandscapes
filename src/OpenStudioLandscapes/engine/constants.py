@@ -47,21 +47,40 @@ DOCKER_USE_CACHE_GLOBAL = True
 DOCKER_USE_CACHE = DOCKER_USE_CACHE_GLOBAL or False
 
 
-GROUP_HARBOR = f"Compose_{ComposeScope.HARBOR}"
-KEY_HARBOR = [GROUP_HARBOR]
+from OpenStudioLandscapes.engine.compose_harbor import constants as constants_compose_harbor
 
-ASSET_HEADER_HARBOR = {
-    "group_name": GROUP_HARBOR,
-    "key_prefix": KEY_HARBOR,
-    "compute_kind": "python",
-}
+GROUP_HARBOR = constants_compose_harbor.GROUP
+KEY_HARBOR = constants_compose_harbor.KEY
+ASSET_HEADER_HARBOR = constants_compose_harbor.ASSET_HEADER
+ENVIRONMENT_HARBOR = constants_compose_harbor.ENVIRONMENT
+DOCKER_USE_CACHE_HARBOR = DOCKER_USE_CACHE_GLOBAL or constants_compose_harbor.DOCKER_USE_CACHE
 
-ENVIRONMENT_HARBOR = {
-    "HARBOR_HOSTNAME": "harbor.farm.evil",
-    "HARBOR_ADMIN": "admin",
-    "HARBOR_PASSWORD": "Harbor12345",
-    "HARBOR_PORT": 80,
-}
+
+from OpenStudioLandscapes.engine.compose_license_server import constants as constants_compose_license_server
+
+GROUP_COMPOSE_LICENSE_SERVER= constants_compose_license_server.GROUP
+KEY_COMPOSE_LICENSE_SERVER = constants_compose_license_server.KEY
+ASSET_HEADER_COMPOSE_LICENSE_SERVER = constants_compose_license_server.ASSET_HEADER
+ENVIRONMENT_COMPOSE_LICENSE_SERVER = constants_compose_license_server.ENVIRONMENT
+DOCKER_USE_CACHE_COMPOSE_LICENSE_SERVER = DOCKER_USE_CACHE_GLOBAL or constants_compose_license_server.DOCKER_USE_CACHE
+
+
+from OpenStudioLandscapes.engine.compose import constants as constants_compose
+
+GROUP_COMPOSE= constants_compose.GROUP
+KEY_COMPOSE = constants_compose.KEY
+ASSET_HEADER_COMPOSE = constants_compose.ASSET_HEADER
+ENVIRONMENT_COMPOSE = constants_compose.ENVIRONMENT
+DOCKER_USE_CACHE_COMPOSE = DOCKER_USE_CACHE_GLOBAL or constants_compose.DOCKER_USE_CACHE
+
+
+from OpenStudioLandscapes.engine.compose_worker import constants as constants_compose_worker
+
+GROUP_COMPOSE_WORKER= constants_compose_worker.GROUP
+KEY_COMPOSE_WORKER = constants_compose_worker.KEY
+ASSET_HEADER_COMPOSE_WORKER = constants_compose_worker.ASSET_HEADER
+ENVIRONMENT_COMPOSE_WORKER = constants_compose_worker.ENVIRONMENT
+DOCKER_USE_CACHE_COMPOSE_WORKER = DOCKER_USE_CACHE_GLOBAL or constants_compose_worker.DOCKER_USE_CACHE
 
 
 GROUP_BASE_ENV = "OpenStudioLandscapes_Env"
@@ -110,16 +129,6 @@ KEY_COMPOSE_WORKER = [GROUP_COMPOSE_WORKER]
 ASSET_HEADER_COMPOSE_WORKER = {
     "group_name": GROUP_COMPOSE_WORKER,
     "key_prefix": KEY_COMPOSE_WORKER,
-    "compute_kind": "python",
-}
-
-
-GROUP_COMPOSE_LICENSE_SERVER = f"Compose_{ComposeScope.LICENSE_SERVER}"
-KEY_COMPOSE_LICENSE_SERVER = [GROUP_COMPOSE_LICENSE_SERVER]
-
-ASSET_HEADER_COMPOSE_LICENSE_SERVER = {
-    "group_name": GROUP_COMPOSE_LICENSE_SERVER,
-    "key_prefix": KEY_COMPOSE_LICENSE_SERVER,
     "compute_kind": "python",
 }
 
@@ -186,31 +195,6 @@ THIRD_PARTY = [
 
 
 @asset(
-    **ASSET_HEADER_HARBOR,
-    description="",
-)
-def constants_harbor(
-    context: AssetExecutionContext,
-) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
-    """ """
-
-    _constants = ENVIRONMENT_HARBOR
-    # {
-    #     "HARBOR_ADMIN": "admin",
-    #     "HARBOR_PASSWORD": "Harbor12345",
-    # }
-
-    yield Output(_constants)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(_constants),
-        },
-    )
-
-
-@asset(
     **ASSET_HEADER_BASE_ENV,
     description="",
 )
@@ -226,81 +210,6 @@ def constants_base(
         "THIRD_PARTY": THIRD_PARTY,
         "DOCKER_CONFIG": DOCKER_CONFIG.value,
         # "DOCKER_CACHE_DIR": DOCKER_CACHE_DIR.as_posix(),
-    }
-
-    yield Output(_constants)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(_constants),
-        },
-    )
-
-
-@asset(
-    **ASSET_HEADER_COMPOSE,
-    description="",
-)
-def constants_compose(
-    context: AssetExecutionContext,
-) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
-    """ """
-
-    _constants = {
-        "DOCKER_USE_CACHE": DOCKER_USE_CACHE,
-        "ASSET_HEADER_COMPOSE": ASSET_HEADER_COMPOSE,
-        "THIRD_PARTY": THIRD_PARTY,
-    }
-
-    yield Output(_constants)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(_constants),
-        },
-    )
-
-
-@asset(
-    **ASSET_HEADER_COMPOSE_WORKER,
-    description="",
-)
-def constants_compose_worker(
-    context: AssetExecutionContext,
-) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
-    """ """
-
-    _constants = {
-        "DOCKER_USE_CACHE": DOCKER_USE_CACHE,
-        "ASSET_HEADER_COMPOSE": ASSET_HEADER_COMPOSE_WORKER,
-        "THIRD_PARTY": THIRD_PARTY,
-    }
-
-    yield Output(_constants)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(_constants),
-        },
-    )
-
-
-@asset(
-    **ASSET_HEADER_COMPOSE_LICENSE_SERVER,
-    description="",
-)
-def constants_compose_license_server(
-    context: AssetExecutionContext,
-) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
-    """ """
-
-    _constants = {
-        "DOCKER_USE_CACHE": DOCKER_USE_CACHE,
-        "ASSET_HEADER_LICENSE_SERVER": ASSET_HEADER_COMPOSE_LICENSE_SERVER,
-        "THIRD_PARTY": THIRD_PARTY,
     }
 
     yield Output(_constants)

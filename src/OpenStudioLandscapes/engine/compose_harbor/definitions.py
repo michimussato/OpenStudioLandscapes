@@ -4,15 +4,15 @@ from dagster import (
 )
 
 import OpenStudioLandscapes.engine.compose_harbor.assets
-# import OpenStudioLandscapes.engine.constants
+import OpenStudioLandscapes.engine.compose_harbor.constants
 
 assets = load_assets_from_modules([OpenStudioLandscapes.engine.compose_harbor.assets])
-# constants = load_assets_from_modules([OpenStudioLandscapes.engine.constants])
+constants = load_assets_from_modules([OpenStudioLandscapes.engine.compose_harbor.constants])
 
 
 defs = Definitions(
     assets=[
         *assets,
-        # *constants,
+        *constants,
     ],
 )
