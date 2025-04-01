@@ -50,6 +50,9 @@
       * [Use Test DB](#use-test-db)
   * [Create Landscape](#create-landscape)
     * [Launch Dagster](#launch-dagster)
+    * [Launch Dagster Postgres](#launch-dagster-postgres)
+      * [Postgres](#postgres)
+      * [Dagster](#dagster-1)
     * [Configure Landscape](#configure-landscape)
     * [Materialize Landscape](#materialize-landscape)
       * [Resulting Files and Directories (aka "Landscape")](#resulting-files-and-directories-aka-landscape)
@@ -903,7 +906,7 @@ Resources:
 ```shell
 # https://github.com/docker-library/docs/blob/master/postgres/README.md
 
-cd OpenStudioLandscapes/.dagster-postgres
+cd ~/git/repos/OpenStudioLandscapes/.dagster-postgres/
 
 docker run \
     --name postgres-dagster \
