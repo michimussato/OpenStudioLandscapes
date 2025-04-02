@@ -101,8 +101,8 @@ migration, DB restore etc.
 No more black boxes.
 No more path dependencies due to bad decisions
 made in the past. Stay flexible and adaptable
-with this modular system by reconfiguring
-any Landscape with ease:
+with this modular and declarative system by reconfiguring
+any production environment with ease:
 - Easily add, edit, replace or remove services
 - Clone (or modify and clone) entire production Landscapes for testing, debugging or development
 - Code as source of truth:
@@ -121,10 +121,10 @@ without sacrificing the technical freedom to implement
 highly studio specific and individual solutions if needed.
 
 The scope of this are users with some technical skills with a
-desire for a somewhat pre-made solution to set up their 
-service environments. OpenStudioLandscapes is therefore
+desire for a somewhat pre-made solution to set up their production
+services environments. OpenStudioLandscapes is therefore
 a somewhat opinionated solution for working environments that
-lack the fundamental skills or budget to write a solution like
+lack the fundamental skills and/or budget to write a solution like
 OpenStudioLandscapes by themselves while being flexible enough
 for everyone *with* the technical skills to make their way through
 configuring a Landscape or even writing their own OpenStudioLandscapes
@@ -135,6 +135,30 @@ the animation and VFX community to find out where (or where else)
 exactly the needs are to make sure small studios keep growing 
 in a (from a technical perspective) healthy way without ending up
 in high tech dept dead end.
+
+What problem does OpenStudioLandscapes solve?
+
+What's separating the men from the boys is the production back bone.
+Large studio spent years and years of man (and woman) hours and
+millions of dineros to build robust automation in their 
+production while smaller ones are (in those regards - no matter
+how recent and advanced the tools they use are) decades behind.
+So, in one sense, OpenStudioLandscapes gives you the ability to
+jump a few years ahead by giving you a pre-made production environment.
+
+The second problem it is trying to solve is one that you (as a small
+company) do not have **yet**. Ideally, before you start to automate things,
+you want to have a robust underlying system. What usually happens is that
+studio build their systems (again, while they are still small with no 
+budget and/or understanding for professional automation) the other way around:
+around their small scripts and build everything else on top of that. This
+leads inevitably to tech dept in the future when growth has happened - 
+a house of cards built upside down. So, you wanna replace or remove your
+old little script that you wrote 5 years ago which is being used in so many
+places you can't even remember? There you have it. Better don't touch. Better
+continue building your system around it. Right? Wrong! OpenStudioLandscapes
+is here to make sure your future you is not going to regret decisions you are
+making right now!
 
 ## Structure
 
