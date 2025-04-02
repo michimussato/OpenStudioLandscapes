@@ -149,9 +149,14 @@ def _docker_push(
 
     context.log.info(f"Pushing {', '.join(tags_full)}...")
 
-    docker_client.push(
-        x=tags_full
-    )
+    try:
+        docker_client.push(
+            x=tags_full
+        )
+    except DockerException as e:
+        context.log.exception(e)
+        raise Exception("Can't push. Is Harbor running? Check "
+                        "http://127.0.0.1:3000/assets/Compose_harbor/compose") from e
 
     context.log.info(f"Pushed {len(tags_full)} tag(s).")
 
