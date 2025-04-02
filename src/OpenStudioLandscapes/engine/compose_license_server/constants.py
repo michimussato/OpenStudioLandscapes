@@ -9,9 +9,10 @@ from dagster import (
 )
 
 from OpenStudioLandscapes.engine.enums import *
+from OpenStudioLandscapes.engine.constants import DOCKER_USE_CACHE_GLOBAL
 
 
-DOCKER_USE_CACHE = False
+DOCKER_USE_CACHE = DOCKER_USE_CACHE_GLOBAL or False
 
 
 GROUP = f"Compose_{ComposeScope.LICENSE_SERVER}"
