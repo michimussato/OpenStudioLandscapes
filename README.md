@@ -1308,3 +1308,8 @@ further reading:
 - https://docs.docker.com/build/cache/
 - https://docs.docker.com/build/cache/backends/
 - https://docs.docker.com/build/cache/backends/local/
+
+## Community
+
+- [Discord](https://discord.com/channels/1357343453364748419/1357343454065328202)
+- [Slack](https://openstudiolandscapes.slack.com)
