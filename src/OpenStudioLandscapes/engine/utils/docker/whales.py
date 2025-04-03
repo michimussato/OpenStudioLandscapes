@@ -106,13 +106,18 @@ def docker_build(
 
         # After an odyssey of trial and error frustration
         # using buildx I decided to continue with legacy_build here
-        image: Image = docker_client.legacy_build(
-            file=docker_file.as_posix(),
-            context_path=context_path.as_posix(),
-            cache=docker_use_cache,
-            tags=tags,
-            pull=True,
-        )
+        try:
+            image: Image = docker_client.legacy_build(
+                file=docker_file.as_posix(),
+                context_path=context_path.as_posix(),
+                cache=docker_use_cache,
+                tags=tags,
+                pull=True,
+            )
+        except DockerException as docker_e:
+
+            context.log.exception(docker_e)
+            raise Exception("Is Harbor running?") from docker_e
 
         context.log.info(f"Docker image successfully built: {image_name} ({image})")
 
