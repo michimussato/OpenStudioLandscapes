@@ -176,6 +176,11 @@ THIRD_PARTY = [
         "module": "OpenStudioLandscapes.Syncthing.definitions",
         "compose_scope": ComposeScope.DEFAULT,
     },
+    {
+        "enabled": True,
+        "module": "OpenStudioLandscapes.Watchtower.definitions",
+        "compose_scope": ComposeScope.DEFAULT,
+    },
 ]
 
 
