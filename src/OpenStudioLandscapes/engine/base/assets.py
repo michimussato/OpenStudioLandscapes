@@ -29,14 +29,10 @@ def pip_packages(
     """ """
 
     _pip_packages: list = [
+        # Content moved to OpenStudioLandscapes.Dagster.assets.pip_packages
         # Todo:
         #  - [ ] enable OpenStudioLandscapes after making it public
-        #  - [ ] maybe move dagster stuff to dagster image?
-        # "OpenStudioLandscapes[dev] @ git+https://github.com/michimussato/OpenStudioLandscapes.git@main",
-        "dagster-shared[dev] @ git+https://github.com/michimussato/dagster-shared.git@main",
-        # "deadline-dagster[dev] @ git+https://github.com/michimussato/deadline-dagster.git@main",
-        "docker-compose-graph[dev] @ git+https://github.com/michimussato/docker-compose-graph.git@main",
-        "dagster-job-processor[dev] @ git+https://github.com/michimussato/dagster-job-processor.git@main",
+        #  - [x] maybe move dagster stuff to dagster image?
     ]
 
     yield Output(_pip_packages)
@@ -239,7 +235,7 @@ def build_docker_image(
         docker_config=docker_config,
         docker_file=docker_file,
         context_path=docker_file.parent,
-        docker_use_cache=DOCKER_USE_CACHE,
+        docker_use_cache=DOCKER_USE_CACHE_BASE,
         image_data=image_data,
     )
 
