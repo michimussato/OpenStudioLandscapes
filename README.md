@@ -1224,6 +1224,11 @@ ssh-add ~/.ssh/id_ed25519.HP_2025-02-09
 
 ## Todo
 
+- [ ] Implement Caddy for HTTPS
+  - https://caddyserver.com/
+  - https://github.com/caddyserver/caddy
+  - https://hub.docker.com/_/caddy
+
 # PyScaffold
 
 ## Create Module
