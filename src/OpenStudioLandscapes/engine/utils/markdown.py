@@ -530,7 +530,7 @@ def main(constants):
     discord = "https://discord.com/channels/1357343453364748419"
     discord_channels = [
         {
-            "name": "OpenStudioLandscapes-General",
+            "name": "# openstudiolandscapes-general",
             "channel_id": "1357343454065328202",
         },
         {
@@ -538,7 +538,7 @@ def main(constants):
             "channel_id": "1357722468336271411",
         },
         {
-            "name": "OpenStudioLandscapes-Kitsu",
+            "name": "# openstudiolandscapes-kitsu",
             "channel_id": "1357638253632688231",
         },
     ]
@@ -565,7 +565,7 @@ def main(constants):
     slack = "https://app.slack.com/client/T08L6M6L0S3"
     slack_channels = [
         {
-            "name": "OpenStudioLandscapes-General",
+            "name": "# openstudiolandscapes-general",
             "channel_id": "C08LK80NBFF",
         },
         {
@@ -573,7 +573,7 @@ def main(constants):
             "channel_id": "C08LLBC7CB0",
         },
         {
-            "name": "OpenStudioLandscapes-Kitsu",
+            "name": "# openstudiolandscapes-kitsu",
             "channel_id": "C08L6M70ZB9",
         },
     ]
