@@ -488,106 +488,90 @@ def main(constants):
         level=2,
     )
 
-    ### Github
-
-    doc.add_heading(
-        text="Github",
-        level=3,
-    )
-
-    github = gh_prefix
-    github_repos = [
-        {
-            "name": "OpenStudioLandscapes",
-        },
-        {
-            "name": "OpenStudioLandscapes-Ayon",
-        },
-        {
-            "name": "OpenStudioLandscapes-Kitsu",
-        },
-    ]
-
-    github_list = []
-
-    for c in github_repos:
-        channel = f"[{c['name']}]({github}{c['name']})"
-        github_list.append(channel)
-
-    doc.add_unordered_list(
-        [
-            *github_list,
-        ]
-    )
-
-    ### Discord
-
-    doc.add_heading(
-        text="Discord",
-        level=3,
-    )
-
     discord = "https://discord.com/channels/1357343453364748419"
-    discord_channels = [
-        {
-            "name": "# openstudiolandscapes-general",
-            "channel_id": "1357343454065328202",
-        },
-        {
-            "name": "# openstudiolandscapes-ayon",
-            "channel_id": "1357722468336271411",
-        },
-        {
-            "name": "# openstudiolandscapes-kitsu",
-            "channel_id": "1357638253632688231",
-        },
-    ]
-
-    discord_list = []
-
-    for c in discord_channels:
-        channel = f"[{c['name']}]({discord}/{c['channel_id']})"
-        discord_list.append(channel)
-
-    doc.add_unordered_list(
-        [
-            *discord_list,
-        ]
-    )
-
-    ### Slack
-
-    doc.add_heading(
-        text="Slack",
-        level=3,
-    )
-
     slack = "https://app.slack.com/client/T08L6M6L0S3"
-    slack_channels = [
-        {
-            "name": "# openstudiolandscapes-general",
-            "channel_id": "C08LK80NBFF",
+
+    community_channels = {
+        "OpenStudioLandscapes": {
+            "github": {
+                "repo_name": "OpenStudioLandscapes",
+            },
+            "discord": {
+                "channel_name": "# openstudiolandscapes-general",
+                "channel_id": "1357343454065328202",
+            },
+            "slack": {
+                "channel_name": "# openstudiolandscapes-general",
+                "channel_id": "C08LK80NBFF",
+            },
         },
-        {
-            "name": "# openstudiolandscapes-ayon",
-            "channel_id": "C08LLBC7CB0",
+        "OpenStudioLandscapes-Ayon": {
+            "github": {
+                "repo_name": "OpenStudioLandscapes-Ayon",
+            },
+            "discord": {
+                "channel_name": "# openstudiolandscapes-ayon",
+                "channel_id": "1357722468336271411",
+            },
+            "slack": {
+                "channel_name": "# openstudiolandscapes-ayon",
+                "channel_id": "C08LLBC7CB0",
+            },
         },
-        {
-            "name": "# openstudiolandscapes-kitsu",
-            "channel_id": "C08L6M70ZB9",
+        "OpenStudioLandscapes-Kitsu": {
+            "github": {
+                "repo_name": "OpenStudioLandscapes-Kitsu",
+            },
+            "discord": {
+                "channel_name": "# openstudiolandscapes-kitsu",
+                "channel_id": "1357638253632688231",
+            },
+            "slack": {
+                "channel_name": "# openstudiolandscapes-kitsu",
+                "channel_id": "C08L6M70ZB9",
+            },
         },
+        # # Template
+        # "openstudiolandscapes-template": {
+        #     "github": {
+        #         "repo_name": "",
+        #     },
+        #     "discord": {
+        #         "channel_id": "",
+        #         "channel_name": "",
+        #     },
+        #     "slack": {
+        #         "channel_id": "",
+        #         "channel_name": "",
+        #     },
+        # },
+    }
+
+    header = [
+        # "Module",
+        "GitHub",
+        "Discord",
+        "Slack",
     ]
 
-    slack_list = []
+    rows = []
 
-    for c in slack_channels:
-        channel = f"[{c['name']}]({slack}/{c['channel_id']})"
-        slack_list.append(channel)
-
-    doc.add_unordered_list(
-        [
-            *slack_list,
+    for _, value in community_channels.items():
+        github_ = value["github"]
+        discord_ = value["discord"]
+        slack_ = value["slack"]
+        row = [
+            # module,
+            f"[{github_['repo_name']}]({gh_prefix}{github_['repo_name']})",  # github
+            f"[{discord_['channel_name']}]({discord}/{discord_['channel_id']})",  # discord
+            f"[{slack_['channel_name']}]({slack}/{slack_['channel_id']})"  # slack
         ]
+
+        rows.append(row)
+
+    doc.add_table(
+        header=header,
+        data=rows,
     )
 
     # Dump
