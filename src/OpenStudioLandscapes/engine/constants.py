@@ -114,11 +114,11 @@ ASSET_HEADER_LANDSCAPE_MAP = {
 
 
 THIRD_PARTY = [
-    # {
-    #     "enabled": True,
-    #     "module": "OpenStudioLandscapes.Ayon.definitions",
-    #     "compose_scope": ComposeScope.DEFAULT,
-    # },
+    {
+        "enabled": True,
+        "module": "OpenStudioLandscapes.Ayon.definitions",
+        "compose_scope": ComposeScope.DEFAULT,
+    },
     {
         "enabled": True,
         "module": "OpenStudioLandscapes.Kitsu.definitions",

@@ -501,6 +501,9 @@ def main(constants):
             "name": "OpenStudioLandscapes",
         },
         {
+            "name": "OpenStudioLandscapes-Ayon",
+        },
+        {
             "name": "OpenStudioLandscapes-Kitsu",
         },
     ]
@@ -531,6 +534,10 @@ def main(constants):
             "channel_id": "1357343454065328202",
         },
         {
+            "name": "# openstudiolandscapes-ayon",
+            "channel_id": "1357722468336271411",
+        },
+        {
             "name": "OpenStudioLandscapes-Kitsu",
             "channel_id": "1357638253632688231",
         },
@@ -539,7 +546,7 @@ def main(constants):
     discord_list = []
 
     for c in discord_channels:
-        channel = f"[Discord {c['name']}]({discord}/{c['channel_id']})"
+        channel = f"[{c['name']}]({discord}/{c['channel_id']})"
         discord_list.append(channel)
 
     doc.add_unordered_list(
@@ -562,6 +569,10 @@ def main(constants):
             "channel_id": "C08LK80NBFF",
         },
         {
+            "name": "# openstudiolandscapes-ayon",
+            "channel_id": "C08LLBC7CB0",
+        },
+        {
             "name": "OpenStudioLandscapes-Kitsu",
             "channel_id": "C08L6M70ZB9",
         },
@@ -570,7 +581,7 @@ def main(constants):
     slack_list = []
 
     for c in slack_channels:
-        channel = f"[Slack {c['name']}]({slack}/{c['channel_id']})"
+        channel = f"[{c['name']}]({slack}/{c['channel_id']})"
         slack_list.append(channel)
 
     doc.add_unordered_list(
