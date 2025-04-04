@@ -9,8 +9,8 @@
 export OSL_ROOT=~/git/repos
 
 
-for dir in ${OSL_ROOT}/OpenStudioLandscapes-*/; do
-    pushd ${dir}
+for dir in "${OSL_ROOT}"/OpenStudioLandscapes-*/; do
+    pushd "${dir}" || exit
     source .venv/bin/activate
     echo "activated."
     if [[ -f generate_readme.py ]]; then
@@ -20,5 +20,5 @@ for dir in ${OSL_ROOT}/OpenStudioLandscapes-*/; do
     fi;
     deactivate
     echo "deactivated."
-    popd
+    popd || exit
 done;
