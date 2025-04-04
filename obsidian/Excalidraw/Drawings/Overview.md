@@ -86,11 +86,11 @@ Containers ^Anjthx2r
 & ^TUc5JCCa
 
 ## Embedded Files
-f7ede71b08544d51839abfc82d7f13992ebb31cb: [[obsidian/Attachments/Pasted Image 20250401150138_189.png]]
+f7ede71b08544d51839abfc82d7f13992ebb31cb: [[_images/Pasted Image 20250401150138_189.png]]
 
-e030b80834738b65f9f3eb9f627cbc9d773a8832: [[obsidian/Attachments/Pasted Image 20250401150517_367.png]]
+e030b80834738b65f9f3eb9f627cbc9d773a8832: [[_images/Pasted Image 20250401150517_367.png]]
 
-d63d646e9804d26867fafb263600d8e9b9819a5d: [[obsidian/Attachments/Pasted Image 20250402014632_526.png]]
+d63d646e9804d26867fafb263600d8e9b9819a5d: [[_images/Pasted Image 20250402014632_526.png]]
 
 %%
 ## Drawing
