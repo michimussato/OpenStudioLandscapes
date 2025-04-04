@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# This script updates the README.md files
+# of all OpenStudioLandscapes-Modules based on
+# the template in
+# OpenStudioLandscapes/src/OpenStudioLandscapes/engine/utils/markdown.py
+
 
 export OSL_ROOT=~/git/repos
 
