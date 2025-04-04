@@ -71,11 +71,6 @@
 * [Roadmap](#roadmap)
   * [SSH](#ssh)
   * [Todo](#todo)
-* [PyScaffold](#pyscaffold)
-  * [Create Module](#create-module)
-    * [PyScaffold](#pyscaffold-1)
-    * [`pyproject.toml`](#pyprojecttoml)
-    * [`setup.cfg`](#setupcfg)
   * [Docker](#docker-1)
   * [Community](#community)
 <!-- TOC -->

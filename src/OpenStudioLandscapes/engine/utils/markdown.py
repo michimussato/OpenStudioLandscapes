@@ -44,6 +44,25 @@ def main(constants):
 
     doc = snakemd.Document()
 
+    # Logo
+
+    doc.add_paragraph(
+        snakemd.Inline(
+            text=textwrap.dedent(
+                """
+                Logo OpenStudioLandscapes
+                """
+            ),
+            image={
+                "OpenStudioLandscapes": "https://github.com/michimussato/OpenStudioLandscapes/raw/main/_images/logo128.png",
+                "test": "https://www.snakemd.io/en/latest/_static/icon.png"
+            }["OpenStudioLandscapes"],
+            link="https://github.com/michimussato/OpenStudioLandscapes",
+        ).__str__()
+    )
+
+    doc.add_horizontal_rule()
+
     # TOC
 
     doc.add_table_of_contents(
@@ -64,23 +83,6 @@ def main(constants):
     doc.add_heading(
         text="Brief",
         level=2,
-    )
-
-    ### Logo
-
-    doc.add_paragraph(
-        snakemd.Inline(
-            text=textwrap.dedent(
-                """
-                Logo OpenStudioLandscapes
-                """
-            ),
-            image={
-                "OpenStudioLandscapes": "https://github.com/michimussato/OpenStudioLandscapes/raw/main/_images/logo128.png",
-                "test": "https://www.snakemd.io/en/latest/_static/icon.png"
-            }["OpenStudioLandscapes"],
-            link="https://github.com/michimussato/OpenStudioLandscapes",
-        ).__str__()
     )
 
     ### Text
