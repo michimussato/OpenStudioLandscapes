@@ -1280,18 +1280,19 @@ done;
 
 ## Sync Directories across Repositories
 
-Todo
-
-```shell
-#!/usr/bin/env bash
-
-# This script updates the README.md files
-# of all OpenStudioLandscapes-Modules based on
-# the template in
-# OpenStudioLandscapes/src/OpenStudioLandscapes/engine/utils/markdown.py
-
-
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
-# i.e. rsync
-```
+While syncing files across directories may
+seem like a sound thing to do, it could be 
+easier to hardlink files across repositories
+that are always identical. While the GitHub
+repository still treats them as separate files,
+on the local file system, both files (inodes)
+are pointing to the exact same data. 
+Say, if you edit OpenStudioLandscapes/noxfile.py,
+that would mean that OpenStudioLandscapes-Ayon/noxfile.py
+(which are both hard links) will also receive the edits - 
+both inodes reference the exact same data on disk.
+Less work to do.
+While this works well for files on the same physical drive,
+that does neither work for directories in general nor
+for inodes that want to point to data which lives on 
+a different physical drive.
