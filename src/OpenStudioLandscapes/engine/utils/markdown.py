@@ -151,6 +151,17 @@ def main(constants):
     )
 
     # str_ = "\\'{repo_}[dev] @ git+{gh_repo}@main\\'"
+    # ```
+    # python3.9 -venv .venv
+    # source .venv/bin/activate
+    # pip install --upgrade pip
+    # pip install -e git+https://github.com/michimussato/My-Skeleton-Package.git@main
+    # ```
+    #
+    # ```
+    # pip install --upgrade pip
+    # pip install --upgrade pyscaffold
+    # ```
 
     # doc.add_code(
     #     code=textwrap.dedent(

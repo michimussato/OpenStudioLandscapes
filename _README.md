@@ -15,39 +15,9 @@
 
 ---
 
+To remove...
+
 # OpenStudioLandscapes
-
-```
-python3.9 -venv .venv
-source .venv/bin/activate
-pip install --upgrade pip
-pip install -e git+https://github.com/michimussato/My-Skeleton-Package.git@main
-```
-
-```
-pip install --upgrade pip
-pip install --upgrade pyscaffold
-```
-
-```
-putup --namespace PackageNamespace --name My-Skeleton-Package --package my_skeleton_package ./My-Skeleton-Package
-```
-
-```
-pip install -e ./My-Skeleton-Package[testing]
-```
-
-```
-tox -e docs  # to build your documentation
-tox -e build  # to build your package distribution
-tox -e publish  # to test your project uploads correctly in test.pypi.org
-tox -e publish -- --repository pypi  # to release your package to PyPI
-tox -av  # to list all the tasks available
-```
-
-```
-gh repo create animallogic-sandbox/My-Skeleton-Package --push --disable-issues --disable-wiki --internal --source ./My-Skeleton-Package --remote=upstream
-```
 
 ## Sphinx
 
