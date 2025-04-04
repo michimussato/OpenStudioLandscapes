@@ -1296,3 +1296,12 @@ While this works well for files on the same physical drive,
 that does neither work for directories in general nor
 for inodes that want to point to data which lives on 
 a different physical drive.
+
+Example:
+
+```shell
+cd OpenStudioLandscapes-Ayon
+ln -f ../OpenStudioLandscapes/noxfile.py noxfile.py
+# to force if noxfile.py already exists:
+# ln -f ../OpenStudioLandscapes/noxfile.py noxfile.py
+```
