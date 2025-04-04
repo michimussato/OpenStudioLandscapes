@@ -114,11 +114,11 @@ ASSET_HEADER_LANDSCAPE_MAP = {
 
 
 THIRD_PARTY = [
-    {
-        "enabled": True,
-        "module": "OpenStudioLandscapes.Ayon.definitions",
-        "compose_scope": ComposeScope.DEFAULT,
-    },
+    # {
+    #     "enabled": True,
+    #     "module": "OpenStudioLandscapes.Ayon.definitions",
+    #     "compose_scope": ComposeScope.DEFAULT,
+    # },
     {
         "enabled": True,
         "module": "OpenStudioLandscapes.Kitsu.definitions",
@@ -139,16 +139,16 @@ THIRD_PARTY = [
         "module": "OpenStudioLandscapes.Deadline_10_2_Worker.definitions",
         "compose_scope": ComposeScope.WORKER,
     },
-    {
-        "enabled": True,
-        "module": "OpenStudioLandscapes.filebrowser.definitions",
-        "compose_scope": ComposeScope.DEFAULT,
-    },
-    {
-        "enabled": False,
-        "module": "OpenStudioLandscapes.Grafana.definitions",
-        "compose_scope": ComposeScope.DEFAULT,
-    },
+    # {
+    #     "enabled": True,
+    #     "module": "OpenStudioLandscapes.filebrowser.definitions",
+    #     "compose_scope": ComposeScope.DEFAULT,
+    # },
+    # {
+    #     "enabled": False,
+    #     "module": "OpenStudioLandscapes.Grafana.definitions",
+    #     "compose_scope": ComposeScope.DEFAULT,
+    # },
     {
         "enabled": True,
         "module": "OpenStudioLandscapes.SESI_gcc_9_3_Houdini_20.definitions",
@@ -171,16 +171,16 @@ THIRD_PARTY = [
     #     "module": "OpenStudioLandscapes.LikeC4.definitions",
     #     "compose_scope": ComposeScope.DEFAULT,
     # },
-    {
-        "enabled": True,
-        "module": "OpenStudioLandscapes.Syncthing.definitions",
-        "compose_scope": ComposeScope.DEFAULT,
-    },
-    {
-        "enabled": True,
-        "module": "OpenStudioLandscapes.Watchtower.definitions",
-        "compose_scope": ComposeScope.DEFAULT,
-    },
+    # {
+    #     "enabled": True,
+    #     "module": "OpenStudioLandscapes.Syncthing.definitions",
+    #     "compose_scope": ComposeScope.DEFAULT,
+    # },
+    # {
+    #     "enabled": False,
+    #     "module": "OpenStudioLandscapes.Watchtower.definitions",
+    #     "compose_scope": ComposeScope.DEFAULT,
+    # },
 ]
 
 
