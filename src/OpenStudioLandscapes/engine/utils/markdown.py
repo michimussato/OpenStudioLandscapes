@@ -55,7 +55,7 @@ def main(constants):
     # Title
 
     doc.add_heading(
-        text=module_,
+        text=repo_,
         level=1,
     )
 
@@ -92,6 +92,28 @@ def main(constants):
             OpenStudioLandscapes is available [here](https://github.com/michimussato/OpenStudioLandscapes).
             """
         )
+    )
+
+    doc.add_paragraph(
+        text=textwrap.dedent(
+            """
+            You feel like writing your own module? Go and check out the 
+            [OpenStudioLandscapes-Template](https://github.com/michimussato/OpenStudioLandscapes-Template). 
+            """
+        )
+    )
+
+    ## Requirements
+
+    doc.add_heading(
+        text="Requirements",
+        level=2,
+    )
+
+    doc.add_unordered_list(
+        [
+            "`python-3.11`",
+        ]
     )
 
     ## Install
@@ -332,6 +354,13 @@ def main(constants):
         )
     )
 
+    doc.add_unordered_list(
+        [
+            "`cyclone-dx`",
+            "`pipdeptree` (Dot)",
+            "`pipdeptree` (Mermaid)",
+        ]
+    )
     doc.add_paragraph(
         text=textwrap.dedent(
             f"""
@@ -340,11 +369,12 @@ def main(constants):
         )
     )
 
+    # Todo
+    #  - [ ] make this dynamic
     doc.add_unordered_list(
         [
-            "`cyclone-dx`",
-            "`pipdeptree` (Dot)",
-            "`pipdeptree` (Mermaid)",
+            "`python3.11`",
+            "`python3.12`",
         ]
     )
 
@@ -437,6 +467,106 @@ def main(constants):
         ],
         indent=0,
     )
+
+    ## Community
+
+    doc.add_heading(
+        text="Community",
+        level=2,
+    )
+
+    ### Github
+
+    doc.add_heading(
+        text="Github",
+        level=3,
+    )
+
+    github = gh_prefix
+    github_repos = [
+        {
+            "name": "OpenStudioLandscapes",
+        },
+        {
+            "name": "OpenStudioLandscapes-Kitsu",
+        },
+    ]
+
+    github_list = []
+
+    for c in github_repos:
+        channel = f"[{c['name']}]({github}{c['name']})"
+        github_list.append(channel)
+
+    doc.add_unordered_list(
+        [
+            *github_list,
+        ]
+    )
+
+    ### Discord
+
+    doc.add_heading(
+        text="Discord",
+        level=3,
+    )
+
+    discord = "https://discord.com/channels/1357343453364748419"
+    discord_channels = [
+        {
+            "name": "OpenStudioLandscapes-General",
+            "channel_id": "1357343454065328202",
+        },
+        {
+            "name": "OpenStudioLandscapes-Kitsu",
+            "channel_id": "1357638253632688231",
+        },
+    ]
+
+    discord_list = []
+
+    for c in discord_channels:
+        channel = f"[Discord {c['name']}]({discord}/{c['channel_id']})"
+        discord_list.append(channel)
+
+    doc.add_unordered_list(
+        [
+            *discord_list,
+        ]
+    )
+
+    ### Slack
+
+    doc.add_heading(
+        text="Slack",
+        level=3,
+    )
+
+    slack = "https://app.slack.com/client/T08L6M6L0S3"
+    slack_channels = [
+        {
+            "name": "OpenStudioLandscapes-General",
+            "channel_id": "C08LK80NBFF",
+        },
+        {
+            "name": "OpenStudioLandscapes-Kitsu",
+            "channel_id": "C08L6M70ZB9",
+        },
+    ]
+
+    slack_list = []
+
+    for c in slack_channels:
+        channel = f"[Slack {c['name']}]({slack}/{c['channel_id']})"
+        slack_list.append(channel)
+
+    doc.add_unordered_list(
+        [
+            *slack_list,
+        ]
+    )
+
+    # Dump
 
     doc.dump(str(pathlib.Path(rel_path).parent.parent.parent.parent / "README"))
 

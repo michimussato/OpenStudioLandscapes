@@ -77,6 +77,7 @@
     * [`pyproject.toml`](#pyprojecttoml)
     * [`setup.cfg`](#setupcfg)
   * [Docker](#docker-1)
+  * [Community](#community)
 <!-- TOC -->
 
 ---
