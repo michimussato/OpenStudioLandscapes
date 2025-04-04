@@ -73,6 +73,8 @@
   * [Todo](#todo)
   * [Docker](#docker-1)
   * [Community](#community)
+  * [Generate README.md](#generate-readmemd)
+  * [Sync Directories across Repositories](#sync-directories-across-repositories)
 <!-- TOC -->
 
 ---
@@ -1274,4 +1276,22 @@ for dir in "${SCRIPT_DIR}"/../OpenStudioLandscapes-*/; do
     echo "deactivated."
     popd || exit
 done;
+```
+
+## Sync Directories across Repositories
+
+Todo
+
+```shell
+#!/usr/bin/env bash
+
+# This script updates the README.md files
+# of all OpenStudioLandscapes-Modules based on
+# the template in
+# OpenStudioLandscapes/src/OpenStudioLandscapes/engine/utils/markdown.py
+
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# i.e. rsync
 ```
