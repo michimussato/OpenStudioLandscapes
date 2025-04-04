@@ -74,7 +74,7 @@
   * [Docker](#docker-1)
   * [Community](#community)
   * [Generate README.md](#generate-readmemd)
-  * [Sync Directories across Repositories](#sync-directories-across-repositories)
+  * [Sync Files and Directories across Repositories](#sync-files-and-directories-across-repositories)
 <!-- TOC -->
 
 ---
@@ -1278,7 +1278,7 @@ for dir in "${SCRIPT_DIR}"/../OpenStudioLandscapes-*/; do
 done;
 ```
 
-## Sync Directories across Repositories
+## Sync Files and Directories across Repositories
 
 While syncing files across directories may
 seem like a sound thing to do, it could be 
