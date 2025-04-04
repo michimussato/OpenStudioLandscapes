@@ -33,6 +33,7 @@ tags
 htmlcov/*
 .coverage
 .coverage.*
+.tox/*/
 .nox/*/
 junit*.xml
 coverage.xml

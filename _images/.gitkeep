@@ -1,0 +1,7 @@
+This is the default place for all images that are
+related to documentation. Due to how Sphinx handles
+builds, this was the most generic approach I could
+come up with to make sure that *if* the README.md
+content needs to live *also* in the Sphinx documentation,
+the links and references to these images work across both
+versions (Sphinx and README).
