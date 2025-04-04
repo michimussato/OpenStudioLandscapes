@@ -12,7 +12,13 @@ export OSL_ROOT=~/git/repos
 for dir in ${OSL_ROOT}/OpenStudioLandscapes-*/; do
     pushd ${dir}
     source .venv/bin/activate
-    python3.11 generate_readme.py
+    echo "activated."
+    if [[ -f generate_readme.py ]]; then
+        python3.11 generate_readme.py
+    else
+        echo "ERROR: generate_readme.py does not exist in ${dir}"
+    fi;
     deactivate
+    echo "deactivated."
     popd
 done;
