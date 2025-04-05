@@ -1312,36 +1312,33 @@ From `OpenStudioLandscapes` into every module, except:
 - `OpenStudioLandscapes-Template`
 
 ```shell
-#".obsidian/plugins/obsidian-excalidraw-plugin/data.json" \
 declare -a identical_files=( \
 ".obsidian/plugins/obsidian-excalidraw-plugin/main.js" \
+".obsidian/plugins/obsidian-excalidraw-plugin/manifest.json" \
+".obsidian/plugins/obsidian-excalidraw-plugin/styles.css" \
+".obsidian/plugins/templater-obsidian/data.json" \
+".obsidian/plugins/templater-obsidian/main.js" \
+".obsidian/plugins/templater-obsidian/manifest.json" \
+".obsidian/plugins/templater-obsidian/styles.css" \
+".obsidian/app.json" \
+".obsidian/appearance.json" \
+".obsidian/canvas.json" \
+".obsidian/community-plugins.json" \
+".obsidian/core-plugins.json" \
+".obsidian/core-plugins-migration.json" \
+".obsidian/daily-notes.json" \
+".obsidian/graph.json" \
+".obsidian/hotkeys.json" \
+".obsidian/templates.json" \
+".obsidian/types.json" \
+".obsidian/workspace.json" \
+".obsidian/workspaces.json" \
+".gitattributes" \
+".gitignore" \
+".pre-commit-config.yaml" \
+".readthedocs.yml" \
 "noxfile.py" \
 )
-#".obsidian/plugins/obsidian-excalidraw-plugin/manifest.json" \
-#".obsidian/plugins/obsidian-excalidraw-plugin/styles.css" \
-#".obsidian/plugins/templater-obsidian/data.json" \
-#".obsidian/plugins/templater-obsidian/main.js" \
-#".obsidian/plugins/templater-obsidian/manifest.json" \
-#".obsidian/plugins/templater-obsidian/styles.css" \
-#".obsidian/app.json" \
-#".obsidian/appearance.json" \
-#".obsidian/canvas.json" \
-#".obsidian/community-plugins.json" \
-#".obsidian/core-plugins.json" \
-#".obsidian/core-plugins-migration.json" \
-#".obsidian/daily-notes.json" \
-#".obsidian/graph.json" \
-#".obsidian/hotkeys.json" \
-#".obsidian/templates.json" \
-#".obsidian/types.json" \
-#".obsidian/workspace.json" \
-#".obsidian/workspaces.json" \
-#".gitattributes" \
-#".gitignore" \
-#".pre-commit-config.yaml" \
-#".readthedocs.yml" \
-#"noxfile.py" \
-#)
 
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -1359,27 +1356,25 @@ for dir in "${SCRIPT_DIR}"/../OpenStudioLandscapes-*/; do
     echo ""
     
     pushd "${dir}" || exit
-#    pwd
     
     if [[ $(pwd) == *"/OpenStudioLandscapes-Template"* ]]; then
         echo "$(pwd) skipped."
         popd || exit
         continue
     fi;
-#    pwd
     for f in "${identical_files[@]}"; do
         echo "---------------------"
         echo "Current file: ${f}"
         
-#        echo $f
-#        dirname "${f}"
         cd "${dir}/$(dirname ${f})"
         echo "CWD: $(pwd)"
         echo "---------------------"
         TARGET="${SCRIPT_DIR}/${f}"
         echo "${TARGET}"
         LINK_NAME="${f}"
-        ln --interactive --backup=numbered ${TARGET} $(basename ${LINK_NAME})
+        # ln --interactive --backup=numbered ${TARGET} $(basename ${LINK_NAME})
+        ln --force --backup=numbered ${TARGET} $(basename ${LINK_NAME})
+        
     done;
     popd || exit
     
