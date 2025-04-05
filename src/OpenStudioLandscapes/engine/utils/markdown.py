@@ -154,12 +154,12 @@ def main(constants):
     # ```
     # python3.9 -venv .venv
     # source .venv/bin/activate
-    # pip install --upgrade pip
+    # pip install --upgrade pip setuptools
     # pip install -e git+https://github.com/michimussato/My-Skeleton-Package.git@main
     # ```
     #
     # ```
-    # pip install --upgrade pip
+    # pip install --upgrade pip setuptools
     # pip install --upgrade pyscaffold
     # ```
 
@@ -210,7 +210,7 @@ def main(constants):
             f"""
             python3.11 -m venv .venv
             source .venv/bin/activate
-            pip install setuptools --upgrade
+            pip install --upgrade pip setuptools
             """
         ),
         lang="shell",
