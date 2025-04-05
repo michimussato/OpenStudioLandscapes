@@ -1252,7 +1252,7 @@ further reading:
 
 ## Generate README.md
 
-Todo: This might be better 
+Todo: Something like this might be better located in `noxfile.py`
 
 ```shell
 #!/usr/bin/env bash
