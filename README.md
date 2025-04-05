@@ -1311,6 +1311,16 @@ I'm doing that for the following set of files:
 From `OpenStudioLandscapes` into every module, except:
 - `OpenStudioLandscapes-Template`
 
+```mermaid
+%% https://mermaid-js.github.io/mermaid-live-editor
+mindmap
+  root(OpenStudioLandscapes)
+    OpenStudioLandscapes-Template
+    ::icon(fa fa-times)
+    OpenStudioLandscapes-Ayon
+    ::icon(fa fa-check)
+```
+
 ```shell
 declare -a identical_files=( \
 ".obsidian/plugins/obsidian-excalidraw-plugin/main.js" \
@@ -1379,4 +1389,10 @@ for dir in "${SCRIPT_DIR}"/../OpenStudioLandscapes-*/; do
     popd || exit
     
 done;
+```
+
+## Generate README.md's
+
+```shell
+
 ```
