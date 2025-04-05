@@ -79,6 +79,7 @@
       * [Fix: Enable in `OpenStudioLandscapes.engine.constants`](#fix-enable-in-openstudiolandscapesengineconstants)
       * [Fix: `pip install -e ../OpenStudioLandscapes-Deadline-10-2/[dev]`](#fix-pip-install--e-openstudiolandscapes-deadline-10-2dev)
       * [Fix: `pip install -e ../OpenStudioLandscapes-Kitsu/[dev]`](#fix-pip-install--e-openstudiolandscapes-kitsudev)
+  * [Run nox](#run-nox)
   * [Sync Files and Directories across Repositories](#sync-files-and-directories-across-repositories)
 <!-- TOC -->
 
@@ -1236,6 +1237,8 @@ ssh-add ~/.ssh/id_ed25519.HP_2025-02-09
   - https://caddyserver.com/
   - https://github.com/caddyserver/caddy
   - https://hub.docker.com/_/caddy
+- [ ] Create a `.blend` video template file
+      for screen recordings.
 
 ## Docker
 
@@ -1373,6 +1376,10 @@ Traceback (most recent call last):
     from OpenStudioLandscapes.Kitsu.constants import KEY as KEY_KITSU
 ModuleNotFoundError: No module named 'OpenStudioLandscapes.Kitsu
 ```
+
+## Run nox
+
+Todo
 
 ## Sync Files and Directories across Repositories
 
