@@ -780,7 +780,7 @@ comparison:
 
 #### Container Registry
 
-- [x] Harbor
+- [x] [Harbor](#harbor)
 
 #### Completed
 
@@ -802,16 +802,18 @@ comparison:
 
 #### WIP
 
-- [x] [LikeC4](https://likec4.dev/)
+- [LikeC4](https://likec4.dev/)
   - https://github.com/michimussato/OpenStudioLandscapes-LikeC4
-- [x] [Grafana](https://grafana.com/)
+- [Grafana](https://grafana.com/)
   - https://github.com/michimussato/OpenStudioLandscapes-Grafana
-- [x] [OpenCue](https://www.opencue.io/)
+- [OpenCue](https://www.opencue.io/)
   - https://github.com/michimussato/OpenStudioLandscapes-OpenCue
+- [Watchtower](https://watchtower.blender.org/)
+  - https://github.com/michimussato/OpenStudioLandscapes-Watchtower
 
 #### To Do
 
-- [ ] [Watchtower](https://watchtower.blender.org/)
+None
 
 ## Dagster Lineage
 
