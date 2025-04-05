@@ -1241,6 +1241,7 @@ ssh-add ~/.ssh/id_ed25519.HP_2025-02-09
       for screen recordings.
 - [ ] A weekly video with instructions
 - [ ] Clean up this `README.md`
+- [ ] Improve tests (`noxfile.py`)
 
 ## Docker
 
