@@ -45,7 +45,7 @@
   * [Clone](#clone)
   * [Install](#install)
     * [venv](#venv)
-    * [open-studio-landscapes](#open-studio-landscapes)
+    * [OpenStudioLandscapes](#openstudiolandscapes-1)
     * [DeadlineDatabase10](#deadlinedatabase10)
       * [Use Test DB](#use-test-db)
   * [Create Landscape](#create-landscape)
@@ -111,7 +111,7 @@ any production environment with ease:
 - Code as source of truth:
   - Always stay on top of things with maps and node trees of code and Landscapes
   - Limit manual documentation to a bare minimum
-- `open-studio-landscapes` is (primarily) powered by [Dagster](https://github.com/dagster-io/) and [Docker](https://github.com/docker)
+- `OpenStudioLandscapes` is (primarily) powered by [Dagster](https://github.com/dagster-io/) and [Docker](https://github.com/docker)
 - Fully Python based
 
 This platform is aimed towards small to medium-sized
@@ -188,12 +188,12 @@ mindmap
 ```
 
 The hierarchy of multiple Landscapes
-in the context of `open-studio-landscapes`:
+in the context of `OpenStudioLandscapes`:
 
 ```mermaid
 %% https://mermaid-js.github.io/mermaid-live-editor
 mindmap
-root((open-studio-landscapes))
+root((OpenStudioLandscapes))
     Landscape(Production)
       Deadline
           RCS
@@ -631,12 +631,12 @@ is on the roadmap.
 ## Secrets
 
 There are many ways to protect sensitive data.
-It is `open-studio-landscapes` does not provide a dedicated solution
+It is `OpenStudioLandscapes` does not provide a dedicated solution
 to protect your secrets - it lets (and wants you to) implement
 your own solution or use existing ones if you have something
 implemented already. Dagster does handle secrets in
 its own way. This approach might be a valid candidate for
-`open-studio-landscapes` in the future. More on this here:
+`OpenStudioLandscapes` in the future. More on this here:
 https://docs.dagster.io/guides/deploy/using-environment-variables-and-secrets
 
 However, I do have sensitive data myself and I would like to
@@ -652,7 +652,7 @@ only using two in practice:
   > Secrets that all individuals within an entity can know
     but not the outside world
 - Public
-  > Everything that comes with the public `michimussato/open-studio-landscapes`
+  > Everything that comes with the public `michimussato/OpenStudioLandscapes`
     Git repository
 
 ### Personal Secrets
@@ -743,7 +743,7 @@ push everything publicly.
 
 There are a multitude of managers available
 and I had to make a decision to begin with.
-In general, `open-studio-landscapes` has the
+In general, `OpenStudioLandscapes` has the
 capability to support arbitrary managers,
 however, as of now, only Deadline is considered
 integrated. The decision to go with Deadline
@@ -853,8 +853,8 @@ docker-compose-graph --yaml .landscapes/2025-02-01_00-11-08__578595276b424d1ea62
 ## Clone
 
 ```shell
-git clone https://github.com/michimussato/open-studio-landscapes.git
-cd open-studio-landscapes
+git clone https://github.com/michimussato/OpenStudioLandscapes.git
+cd OpenStudioLandscapes
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip setuptools
@@ -871,10 +871,10 @@ source .venv/bin/activate
 python -m pip install --upgrade pip setuptools
 ```
 
-### open-studio-landscapes
+### OpenStudioLandscapes
 
 ```shell
-python -m pip install git+https://github.com/michimussato/open-studio-landscapes.git@main
+python -m pip install git+https://github.com/michimussato/OpenStudioLandscapes.git@main
 ```
 
 ### DeadlineDatabase10
@@ -1194,15 +1194,15 @@ nox --no-error-on-missing-interpreters --report .nox/nox-report.json
 
 ### `python3.11`
 
-- [cyclonedx-bom](https://github.com/michimussato/open-studio-landscapes/tree/main/.sbom/cyclonedx-py.sbom-3.11.json)
-- [pipdeptree (Dot)](https://github.com/michimussato/open-studio-landscapes/tree/main/.sbom/pipdeptree.sbom-3.11.dot)
-- [pipdeptree (Mermaid)](https://github.com/michimussato/open-studio-landscapes/tree/main/.sbom/pipdeptree.sbom-3.11.mermaid)
+- [cyclonedx-bom](https://github.com/michimussato/OpenStudioLandscapes/tree/main/.sbom/cyclonedx-py.sbom-3.11.json)
+- [pipdeptree (Dot)](https://github.com/michimussato/OpenStudioLandscapes/tree/main/.sbom/pipdeptree.sbom-3.11.dot)
+- [pipdeptree (Mermaid)](https://github.com/michimussato/OpenStudioLandscapes/tree/main/.sbom/pipdeptree.sbom-3.11.mermaid)
 
 ### `python3.12`
 
-- [cyclonedx-bom](https://github.com/michimussato/open-studio-landscapes/tree/main/.sbom/cyclonedx-py.sbom-3.12.json)
-- [pipdeptree (Dot)](https://github.com/michimussato/open-studio-landscapes/tree/main/.sbom/pipdeptree.sbom-3.12.dot)
-- [pipdeptree (Mermaid)](https://github.com/michimussato/open-studio-landscapes/tree/main/.sbom/pipdeptree.sbom-3.12.mermaid)
+- [cyclonedx-bom](https://github.com/michimussato/OpenStudioLandscapes/tree/main/.sbom/cyclonedx-py.sbom-3.12.json)
+- [pipdeptree (Dot)](https://github.com/michimussato/OpenStudioLandscapes/tree/main/.sbom/pipdeptree.sbom-3.12.dot)
+- [pipdeptree (Mermaid)](https://github.com/michimussato/OpenStudioLandscapes/tree/main/.sbom/pipdeptree.sbom-3.12.mermaid)
 
 # Roadmap
 
