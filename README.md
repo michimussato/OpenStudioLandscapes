@@ -1239,6 +1239,8 @@ ssh-add ~/.ssh/id_ed25519.HP_2025-02-09
   - https://hub.docker.com/_/caddy
 - [ ] Create a `.blend` video template file
       for screen recordings.
+- [ ] A weekly video with instructions
+- [ ] Clean up this `README.md`
 
 ## Docker
 
