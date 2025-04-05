@@ -74,6 +74,9 @@
   * [Docker](#docker-1)
   * [Community](#community)
   * [Generate README.md](#generate-readmemd)
+    * [Issues](#issues)
+      * [Fix: `pip install -e ../OpenStudioLandscapes/[dev]`](#fix-pip-install--e-openstudiolandscapesdev)
+      * [Fix: Enable in `OpenStudioLandscapes.engine.constants`](#fix-enable-in-openstudiolandscapesengineconstants)
   * [Sync Files and Directories across Repositories](#sync-files-and-directories-across-repositories)
 <!-- TOC -->
 
@@ -1247,6 +1250,8 @@ further reading:
 
 ## Generate README.md
 
+Todo: This might be better 
+
 ```shell
 #!/usr/bin/env bash
 
@@ -1265,17 +1270,52 @@ for dir in "${SCRIPT_DIR}"/../OpenStudioLandscapes-*/; do
     pushd "${dir}" || exit
     source .venv/bin/activate
     echo "activated."
-    if [[ -f generate_readme.py ]]; then
+    # Updating dev env
+    # To make sure we are not running into
+    # below (#issues) mentioned problems
+    pip install -e ../OpenStudioLandscapes/[dev]
+    if [[ -f readme_generator.py ]]; then
         echo "Updating ${dir}README.md..."
-        python3.11 generate_readme.py
+        python3.11 readme_generator.py
         echo "Update done."
     else
-        echo "ERROR: generate_readme.py does not exist in ${dir}"
+        echo "ERROR: readme_generator.py does not exist in ${dir}"
     fi;
     deactivate
     echo "deactivated."
     popd || exit
 done;
+```
+
+### Issues
+
+#### Fix: `pip install -e ../OpenStudioLandscapes/[dev]`
+
+```
+Traceback (most recent call last):
+  File "/home/michael/git/repos/OpenStudioLandscapes-Deadline-10-2/readme_generator.py", line 1, in <module>
+    from OpenStudioLandscapes.engine.utils import markdown
+  File "/home/michael/git/repos/OpenStudioLandscapes/src/OpenStudioLandscapes/engine/utils/markdown.py", line 3, in <module>
+    import snakemd
+ModuleNotFoundError: No module named 'snakemd'
+```
+
+```
+Traceback (most recent call last):
+  File "/home/michael/git/repos/OpenStudioLandscapes-NukeRLM-8/readme_generator.py", line 1, in <module>
+    from OpenStudioLandscapes.engine.utils import markdown
+ModuleNotFoundError: No module named 'OpenStudioLandscapes.engine'
+```
+
+#### Fix: Enable in `OpenStudioLandscapes.engine.constants`
+
+```
+Traceback (most recent call last):
+  File "/home/michael/git/repos/OpenStudioLandscapes-OpenCue/readme_generator.py", line 5, in <module>
+    from OpenStudioLandscapes.OpenCue import constants
+  File "/home/michael/git/repos/OpenStudioLandscapes-OpenCue/src/OpenStudioLandscapes/OpenCue/constants.py", line 63, in <module>
+    raise Exception("No compose_scope found for module '%s'" % _module)
+Exception: No compose_scope found for module 'OpenStudioLandscapes.OpenCue.constants'
 ```
 
 ## Sync Files and Directories across Repositories
@@ -1318,6 +1358,10 @@ mindmap
     OpenStudioLandscapes-Template
     ::icon(mdi mdi-close)
     OpenStudioLandscapes-Ayon
+    ::icon(mdi mdi-check)
+    OpenStudioLandscapes-Kitsu
+    ::icon(mdi mdi-check)
+    OpenStudioLandscapes-[...]
     ::icon(mdi mdi-check)
 ```
 
@@ -1389,10 +1433,4 @@ for dir in "${SCRIPT_DIR}"/../OpenStudioLandscapes-*/; do
     popd || exit
     
 done;
-```
-
-## Generate README.md's
-
-```shell
-
 ```
