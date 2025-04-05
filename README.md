@@ -77,6 +77,7 @@
     * [Issues](#issues)
       * [Fix: `pip install -e ../OpenStudioLandscapes/[dev]`](#fix-pip-install--e-openstudiolandscapesdev)
       * [Fix: Enable in `OpenStudioLandscapes.engine.constants`](#fix-enable-in-openstudiolandscapesengineconstants)
+      * [Fix: `pip install -e ../OpenStudioLandscapes-Deadline-10-2/[dev]`](#fix-pip-install--e-openstudiolandscapes-deadline-10-2dev)
   * [Sync Files and Directories across Repositories](#sync-files-and-directories-across-repositories)
 <!-- TOC -->
 
@@ -1316,6 +1317,58 @@ Traceback (most recent call last):
   File "/home/michael/git/repos/OpenStudioLandscapes-OpenCue/src/OpenStudioLandscapes/OpenCue/constants.py", line 63, in <module>
     raise Exception("No compose_scope found for module '%s'" % _module)
 Exception: No compose_scope found for module 'OpenStudioLandscapes.OpenCue.constants'
+```
+
+#### Fix: `pip install -e ../OpenStudioLandscapes-Deadline-10-2/[dev]`
+
+This should not happen anymore once the repos are public and
+the dependencies in `setup.cfg` are added and publicly accessible.
+
+```
+cd OpenStudioLandscapes-Deadline-10-2-Worker
+source .venv/bin/activate
+# Hint on zsh:
+# $ pip install -e ../OpenStudioLandscapes/[dev]
+# zsh: no matches found: ../OpenStudioLandscapes/[dev]
+# Solution:
+# use bash
+pip install -e ../OpenStudioLandscapes/[dev]
+pip install -e ../OpenStudioLandscapes-Deadline-10-2/[dev]
+```
+
+```
+Traceback (most recent call last):
+  File "/home/michael/git/repos/OpenStudioLandscapes-Deadline-10-2-Worker/readme_generator.py", line 5, in <module>
+    from OpenStudioLandscapes.Deadline_10_2_Worker import constants
+  File "/home/michael/git/repos/OpenStudioLandscapes-Deadline-10-2-Worker/src/OpenStudioLandscapes/Deadline_10_2_Worker/constants.py", line 26, in <module>
+    from OpenStudioLandscapes.Deadline_10_2.constants import KEY as KEY_MASTER
+ModuleNotFoundError: No module named 'OpenStudioLandscapes.Deadline_10_2'
+```
+
+#### Fix: 
+
+This should not happen anymore once the repos are public and
+the dependencies in `setup.cfg` are added and publicly accessible.
+
+```
+cd OpenStudioLandscapes-Watchtower
+source .venv/bin/activate
+# Hint on zsh:
+# $ pip install -e ../OpenStudioLandscapes/[dev]
+# zsh: no matches found: ../OpenStudioLandscapes/[dev]
+# Solution:
+# use bash
+pip install -e ../OpenStudioLandscapes/[dev]
+pip install -e ../OpenStudioLandscapes-Kitsu/[dev]
+```
+
+```
+Traceback (most recent call last):
+  File "/home/michael/git/repos/OpenStudioLandscapes-Watchtower/readme_generator.py", line 9, in <module>
+    from OpenStudioLandscapes.Watchtower import constants
+  File "/home/michael/git/repos/OpenStudioLandscapes-Watchtower/src/OpenStudioLandscapes/Watchtower/constants.py", line 26, in <module>
+    from OpenStudioLandscapes.Kitsu.constants import KEY as KEY_KITSU
+ModuleNotFoundError: No module named 'OpenStudioLandscapes.Kitsu
 ```
 
 ## Sync Files and Directories across Repositories
