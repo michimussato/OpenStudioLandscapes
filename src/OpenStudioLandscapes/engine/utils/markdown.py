@@ -518,6 +518,97 @@ def main(constants):
                 "channel_id": "C08LLBC7CB0",
             },
         },
+        "OpenStudioLandscapes-Dagster": {
+            "github": {
+                "repo_name": "OpenStudioLandscapes-Dagster",
+            },
+            "discord": {
+                "channel_id": "1358016764608249856",
+                "channel_name": "# openstudiolandscapes-dagster",
+            },
+            "slack": {
+                "channel_id": "C08LZR5JFA6",
+                "channel_name": "# openstudiolandscapes-dagster",
+            },
+        },
+        "OpenStudioLandscapes-deadline-10-2": {
+            "github": {
+                "repo_name": "OpenStudioLandscapes-Deadline-10-2",
+            },
+            "discord": {
+                "channel_id": "1357343453364748419",
+                "channel_name": "# openstudiolandscapes-deadline-10-2",
+            },
+            "slack": {
+                "channel_id": "C08LZR963A6",
+                "channel_name": "# openstudiolandscapes-deadline-10-2",
+            },
+        },
+        "OpenStudioLandscapes-Deadline-10-2-Worker": {
+            "github": {
+                "repo_name": "OpenStudioLandscapes-Deadline-10-2-Worker",
+            },
+            "discord": {
+                "channel_id": "1357343453364748419",
+                "channel_name": "# openstudiolandscapes-deadline-10-2-worker",
+            },
+            "slack": {
+                "channel_id": "C08LZSBM998",
+                "channel_name": "# openstudiolandscapes-deadline-10-2-worker",
+            },
+        },
+        # "OpenStudioLandscapes-filebrowser": {
+        #     "github": {
+        #         "repo_name": "",
+        #     },
+        #     "discord": {
+        #         "channel_id": "",
+        #         "channel_name": "",
+        #     },
+        #     "slack": {
+        #         "channel_id": "",
+        #         "channel_name": "",
+        #     },
+        # },
+        "OpenStudioLandscapes-NukeRLM-8": {
+            "github": {
+                "repo_name": "OpenStudioLandscapes-NukeRLM-8",
+            },
+            "discord": {
+                "channel_id": "1358017656732782672",
+                "channel_name": "# openstudiolandscapes-nukerlm-8",
+            },
+            "slack": {
+                "channel_id": "C08LZDLFTMH",
+                "channel_name": "# openstudiolandscapes-nukerlm-8",
+            },
+        },
+        "OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20": {
+            "github": {
+                "repo_name": "OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20",
+            },
+            "discord": {
+                "channel_id": "1357343453364748419",
+                "channel_name": "# openstudiolandscapes-sesi-gcc-9-3-houdini-20",
+            },
+            "slack": {
+                "channel_id": "C08LUTR1WG5",
+                "channel_name": "# openstudiolandscapes-sesi-gcc-9-3-houdini-20",
+            },
+        },
+        # "OpenStudioLandscapes-Syncthing": {
+        #     "github": {
+        #         "repo_name": "",
+        #     },
+        #     "discord": {
+        #         "channel_id": "",
+        #         "channel_name": "",
+        #     },
+        #     "slack": {
+        #         "channel_id": "",
+        #         "channel_name": "",
+        #     },
+        # },
         "OpenStudioLandscapes-Kitsu": {
             "github": {
                 "repo_name": "OpenStudioLandscapes-Kitsu",
@@ -531,8 +622,21 @@ def main(constants):
                 "channel_id": "C08L6M70ZB9",
             },
         },
+        # "OpenStudioLandscapes-Watchtower": {
+        #     "github": {
+        #         "repo_name": "",
+        #     },
+        #     "discord": {
+        #         "channel_id": "",
+        #         "channel_name": "",
+        #     },
+        #     "slack": {
+        #         "channel_id": "",
+        #         "channel_name": "",
+        #     },
+        # },
         # # Template
-        # "openstudiolandscapes-template": {
+        # "OpenStudioLandscapes-template": {
         #     "github": {
         #         "repo_name": "",
         #     },
