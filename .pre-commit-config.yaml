@@ -3,13 +3,13 @@ repos:
     rev: v2.3.0
     hooks:
     -   id: check-yaml
-        exclude: ^(.dagster/|.dagster-postgres/|.landscapes/|.nox/|.payload/|.registry/|.sbom/|docs/|build/|.obsidian/|obsidian/)
+        exclude: ^(README.md|.dagster/|.dagster-postgres/|.landscapes/|.nox/|.payload/|.registry/|.sbom/|docs/|build/|.obsidian/|obsidian/)
     -   id: end-of-file-fixer
-        exclude: ^(.dagster/|.dagster-postgres/|.landscapes/|.nox/|.payload/|.registry/|.sbom/|docs/|build/|.obsidian/|obsidian/)
+        exclude: ^(README.md|.dagster/|.dagster-postgres/|.landscapes/|.nox/|.payload/|.registry/|.sbom/|docs/|build/|.obsidian/|obsidian/)
     -   id: trailing-whitespace
-        exclude: ^(.dagster/|.dagster-postgres/|.landscapes/|.nox/|.payload/|.registry/|.sbom/|docs/|build/|.obsidian/|obsidian/)
+        exclude: ^(README.md|.dagster/|.dagster-postgres/|.landscapes/|.nox/|.payload/|.registry/|.sbom/|docs/|build/|.obsidian/|obsidian/)
 -   repo: https://github.com/psf/black
     rev: 22.10.0
     hooks:
     -   id: black
-        exclude: ^(.dagster/|.dagster-postgres/|.landscapes/|.nox/|.payload/|.registry/|.sbom/|docs/|build/|.obsidian/|obsidian/)
+        exclude: ^(README.md|.dagster/|.dagster-postgres/|.landscapes/|.nox/|.payload/|.registry/|.sbom/|docs/|build/|.obsidian/|obsidian/)
