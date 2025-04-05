@@ -78,6 +78,7 @@
       * [Fix: `pip install -e ../OpenStudioLandscapes/[dev]`](#fix-pip-install--e-openstudiolandscapesdev)
       * [Fix: Enable in `OpenStudioLandscapes.engine.constants`](#fix-enable-in-openstudiolandscapesengineconstants)
       * [Fix: `pip install -e ../OpenStudioLandscapes-Deadline-10-2/[dev]`](#fix-pip-install--e-openstudiolandscapes-deadline-10-2dev)
+      * [Fix: `pip install -e ../OpenStudioLandscapes-Kitsu/[dev]`](#fix-pip-install--e-openstudiolandscapes-kitsudev)
   * [Sync Files and Directories across Repositories](#sync-files-and-directories-across-repositories)
 <!-- TOC -->
 
@@ -1345,7 +1346,7 @@ Traceback (most recent call last):
 ModuleNotFoundError: No module named 'OpenStudioLandscapes.Deadline_10_2'
 ```
 
-#### Fix: 
+#### Fix: `pip install -e ../OpenStudioLandscapes-Kitsu/[dev]`
 
 This should not happen anymore once the repos are public and
 the dependencies in `setup.cfg` are added and publicly accessible.
