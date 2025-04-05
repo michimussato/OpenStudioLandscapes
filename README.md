@@ -1316,9 +1316,9 @@ From `OpenStudioLandscapes` into every module, except:
 mindmap
   root(OpenStudioLandscapes)
     OpenStudioLandscapes-Template
-    ::icon(fas fa-times)
+    ::icon(mdi mdi-close)
     OpenStudioLandscapes-Ayon
-    ::icon(fas fa-check)
+    ::icon(mdi mdi-check)
 ```
 
 ```shell
