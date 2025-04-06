@@ -73,7 +73,9 @@
   * [Todo](#todo)
   * [Docker](#docker-1)
   * [Community](#community)
-  * [Generate README.md](#generate-readmemd)
+  * [Batch Jobs](#batch-jobs)
+    * [Nox](#nox-1)
+    * [Generate README.md](#generate-readmemd)
     * [Issues](#issues)
       * [Fix: `pip install -e ../OpenStudioLandscapes/[dev]`](#fix-pip-install--e-openstudiolandscapesdev)
       * [Fix: Enable in `OpenStudioLandscapes.engine.constants`](#fix-enable-in-openstudiolandscapesengineconstants)
@@ -81,6 +83,10 @@
       * [Fix: `pip install -e ../OpenStudioLandscapes-Kitsu/[dev]`](#fix-pip-install--e-openstudiolandscapes-kitsudev)
   * [Run nox](#run-nox)
   * [Sync Files and Directories across Repositories](#sync-files-and-directories-across-repositories)
+  * [OBS](#obs)
+    * [Load Settings](#load-settings)
+  * [Blender](#blender)
+    * [Masking](#masking)
 <!-- TOC -->
 
 ---
@@ -1258,9 +1264,11 @@ further reading:
 - [Discord](https://discord.com/channels/1357343453364748419/1357343454065328202)
 - [Slack](https://openstudiolandscapes.slack.com)
 
-## Generate README.md
+## Batch Jobs
 
-Todo: Something like this might be better located in `noxfile.py`
+### Nox
+
+Todo: Something like this might be better located in `noxfile.py` but as Prove of Concept, this is fine for now.
 
 ```shell
 #!/usr/bin/env bash
@@ -1290,6 +1298,45 @@ for dir in "${SCRIPT_DIR}"/../OpenStudioLandscapes-*/; do
         echo "Update done."
     else
         echo "ERROR: readme_generator.py does not exist in ${dir}"
+    fi;
+    deactivate
+    echo "deactivated."
+    popd || exit
+done;
+```
+
+### Generate README.md
+
+Todo: Something like this might be better located in `noxfile.py` but as Prove of Concept, this is fine for now.
+
+```shell
+#!/usr/bin/env bash
+
+# This script updates the README.md files
+# of all OpenStudioLandscapes-Modules based on
+# the template in
+# OpenStudioLandscapes/src/OpenStudioLandscapes/engine/utils/markdown.py
+
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# The script assumes that all module repos live in the same root dir
+# as this one
+
+
+for dir in "${SCRIPT_DIR}"/../OpenStudioLandscapes-*/; do
+    pushd "${dir}" || exit
+    source .venv/bin/activate
+    echo "activated."
+    # Updating dev env
+    # To make sure we are not running into
+    # below (#issues) mentioned problems
+    pip install -e ../OpenStudioLandscapes/[dev]
+    if [[ -f readme_generator.py ]]; then
+        echo "Running nox in ${dir}..."
+        nox --no-error-on-missing-interpreters --report .nox/nox-report.json
+        echo "nox done."
+    else
+        echo "ERROR in ${dir}"
     fi;
     deactivate
     echo "deactivated."
