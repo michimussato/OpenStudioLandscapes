@@ -81,3 +81,5 @@ tmp*/
 # Registry
 .registry/*/
 .registry/registry.env
+/media/Blender/.out/*
+!/media/Blender/.out/.gitkeep
