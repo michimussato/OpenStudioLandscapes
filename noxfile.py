@@ -18,6 +18,7 @@ nox.options.reuse_existing_virtualenvs = True
 # or
 # nox --tag [TAG] [TAG] [...]
 nox.options.sessions = [
+    "readme",
     "sbom",
     "coverage",
     "lint",
@@ -33,6 +34,9 @@ VERSIONS = [
     "3.11",
     "3.12",
     # "3.13",
+]
+VERSIONS_README = [
+    "3.11",
 ]
 
 ENV = {}
@@ -135,6 +139,16 @@ def testing(session):
         *session.posargs,
         env=ENV,
     )
+
+
+@nox.session(python=VERSIONS_README, tags=["readme"])
+def readme(session):
+    # Ex:
+    # nox --session testing,docs
+    # nox --tags docs-live
+    session.install("-e", ".[readme]", silent=True)
+
+    session.run("generate-readme", "--versions", *VERSIONS)
 
 
 @nox.session(python=VERSIONS, tags=["release"])
