@@ -15,10 +15,10 @@ try:
     from __SECRET__.secrets import secrets as _secrets
 except ModuleNotFoundError as e:
     # context.log.exception("Failed to import secrets from __SECRET__.secrets")
-    print(e)
+    print(f"ModuleNotFoundError captured: {e}")
     _secrets: dict = {}
 except SyntaxError as e:
-    print(e)
+    print(f"SyntaxError captured: {e}")
     # SyntaxError can happen when nox testing from within a different module.
     # OpenStudioLandscapes is cloned to local tmp directory while the local clone
     # is *of course* not git-crypt unlock'ed.
