@@ -74,8 +74,8 @@
   * [Docker](#docker-1)
   * [Community](#community)
   * [Batch Jobs](#batch-jobs)
-    * [Nox](#nox-1)
-    * [Generate README.md](#generate-readmemd)
+    * [README.md](#readmemd)
+    * [nox](#nox-1)
     * [Issues](#issues)
       * [Fix: `pip install -e ../OpenStudioLandscapes/[dev]`](#fix-pip-install--e-openstudiolandscapesdev)
       * [Fix: Enable in `OpenStudioLandscapes.engine.constants`](#fix-enable-in-openstudiolandscapesengineconstants)
@@ -1266,9 +1266,12 @@ further reading:
 
 ## Batch Jobs
 
-### Nox
+### README.md
 
-Todo: Something like this might be better located in `noxfile.py` but as Prove of Concept, this is fine for now.
+Every module has a nox `readme` session.
+To create a `README.md`, run:
+
+`nox --session readme`
 
 ```shell
 #!/usr/bin/env bash
@@ -1292,12 +1295,13 @@ for dir in "${SCRIPT_DIR}"/../OpenStudioLandscapes-*/; do
     # To make sure we are not running into
     # below (#issues) mentioned problems
     pip install -e ../OpenStudioLandscapes/[dev]
+    
     if [[ -f readme_generator.py ]]; then
-        echo "Updating ${dir}README.md..."
-        python3.11 readme_generator.py
-        echo "Update done."
+        echo "Generating README.md in ${dir}..."
+        nox --session readme
+        echo "nox done."
     else
-        echo "ERROR: readme_generator.py does not exist in ${dir}"
+        echo "ERROR in ${dir}"
     fi;
     deactivate
     echo "deactivated."
@@ -1305,9 +1309,9 @@ for dir in "${SCRIPT_DIR}"/../OpenStudioLandscapes-*/; do
 done;
 ```
 
-### Generate README.md
+### nox
 
-Todo: Something like this might be better located in `noxfile.py` but as Prove of Concept, this is fine for now.
+`nox --no-error-on-missing-interpreters --report .nox/nox-report.json`
 
 ```shell
 #!/usr/bin/env bash
