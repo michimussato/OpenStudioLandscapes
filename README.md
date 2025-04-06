@@ -1500,3 +1500,14 @@ for dir in "${SCRIPT_DIR}"/../OpenStudioLandscapes-*/; do
     
 done;
 ```
+
+## OBS
+
+Plugins
+- [obs-backgroundremoval](https://github.com/locaal-ai/obs-backgroundremoval)
+
+### Load Settings
+
+Import Profile:
+
+OBS -> Profile -> Import -> OpenStudioLandscapes/media/OBS/Profiles/Profile_OpenStuidioLandscapes
