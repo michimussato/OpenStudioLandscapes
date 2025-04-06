@@ -1504,10 +1504,22 @@ done;
 ## OBS
 
 Plugins
-- [obs-backgroundremoval](https://github.com/locaal-ai/obs-backgroundremoval)
+- [x] [obs-backgroundremoval](https://github.com/locaal-ai/obs-backgroundremoval)
+  - https://www.youtube.com/watch?v=veqNEsMqEE0&ab_channel=RoyShilkrot
+  - https://obsproject.com/forum/resources/background-removal-virtual-green-screen-low-light-enhance.1260/
 
 ### Load Settings
 
 Import Profile:
 
 OBS -> Profile -> Import -> OpenStudioLandscapes/media/OBS/Profiles/Profile_OpenStuidioLandscapes
+
+## Blender
+
+### Masking
+
+- https://www.youtube.com/watch?v=Gi3gbuipUJQ&ab_channel=MichaelChu
+- https://www.youtube.com/watch?v=wGjmNkjl5BM&ab_channel=MichaelChu
+- https://www.youtube.com/watch?v=30DkcuQnO5s&ab_channel=MichaelChu
+
+- https://www.youtube.com/watch?v=4-MmX0AVAUY&ab_channel=BlenderFrenzy
