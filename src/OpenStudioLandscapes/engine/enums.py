@@ -13,8 +13,15 @@ import os
 #  - maybe use env var for secret
 try:
     from __SECRET__.secrets import secrets as _secrets
-except (ModuleNotFoundError, SyntaxError):
+except ModuleNotFoundError as e:
     # context.log.exception("Failed to import secrets from __SECRET__.secrets")
+    print(e)
+    _secrets: dict = {}
+except SyntaxError as e:
+    print(e)
+    # SyntaxError can happen when nox testing from within a different module.
+    # OpenStudioLandscapes is cloned to local tmp directory while the local clone
+    # is *of course* not git-crypt unlock'ed.
     _secrets: dict = {}
 
 
