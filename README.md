@@ -1296,13 +1296,10 @@ for dir in "${SCRIPT_DIR}"/../OpenStudioLandscapes-*/; do
     # below (#issues) mentioned problems
     pip install -e ../OpenStudioLandscapes/[dev]
     
-    if [[ -f readme_generator.py ]]; then
-        echo "Generating README.md in ${dir}..."
-        nox --session readme
-        echo "nox done."
-    else
-        echo "ERROR in ${dir}"
-    fi;
+    echo "Generating README.md in ${dir}..."
+    nox --session readme
+    echo "nox done."
+    
     deactivate
     echo "deactivated."
     popd || exit
@@ -1335,13 +1332,11 @@ for dir in "${SCRIPT_DIR}"/../OpenStudioLandscapes-*/; do
     # To make sure we are not running into
     # below (#issues) mentioned problems
     pip install -e ../OpenStudioLandscapes/[dev]
-    if [[ -f readme_generator.py ]]; then
-        echo "Running nox in ${dir}..."
-        nox --no-error-on-missing-interpreters --report .nox/nox-report.json
-        echo "nox done."
-    else
-        echo "ERROR in ${dir}"
-    fi;
+    
+    echo "Running nox in ${dir}..."
+    nox --no-error-on-missing-interpreters --report .nox/nox-report.json
+    echo "nox done."
+        
     deactivate
     echo "deactivated."
     popd || exit
