@@ -13,7 +13,7 @@ import os
 #  - maybe use env var for secret
 try:
     from __SECRET__.secrets import secrets as _secrets
-except ModuleNotFoundError:
+except (ModuleNotFoundError, SyntaxError):
     # context.log.exception("Failed to import secrets from __SECRET__.secrets")
     _secrets: dict = {}
 
