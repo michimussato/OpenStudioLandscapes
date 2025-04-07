@@ -1403,6 +1403,14 @@ pre-commit run --all-files
 
 ## nox
 
+```shell
+nox --help
+```
+
+```shell
+nox --list-sessions
+```
+
 ### Generate Report
 
 ```shell
