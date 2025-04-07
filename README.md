@@ -10,8 +10,11 @@
   * [About the Author](#about-the-author)
   * [Requirements](#requirements)
     * [Harbor](#harbor)
+      * [Installation](#installation)
       * [Harbor DNS](#harbor-dns)
       * [Trust Harbor Registry](#trust-harbor-registry)
+      * [Start Harbor](#start-harbor)
+      * [Stop Harbor](#stop-harbor)
       * [Upload Failures](#upload-failures)
     * [Dagster](#dagster)
     * [Ubuntu](#ubuntu)
@@ -31,62 +34,80 @@
       * [Workflow "unlock"](#workflow-unlock)
       * [Remove git History of a Secrets file](#remove-git-history-of-a-secrets-file)
     * [Public](#public)
-  * [Integrated Tools](#integrated-tools)
-    * [Render Manager](#render-manager)
-    * [3rd Party](#3rd-party)
-      * [Container Registry](#container-registry)
-      * [Completed](#completed)
-      * [WIP](#wip)
-      * [Roadmap](#roadmap)
-  * [Dagster Lineage](#dagster-lineage)
-  * [Docker Compose Graph](#docker-compose-graph)
-    * [Deadline 10.2](#deadline-102)
-    * [Repository-Installer 10.2](#repository-installer-102)
-  * [Clone](#clone)
-  * [Install](#install)
-    * [venv](#venv)
-    * [OpenStudioLandscapes](#openstudiolandscapes-1)
-    * [DeadlineDatabase10](#deadlinedatabase10)
-      * [Use Test DB](#use-test-db)
-  * [Create Landscape](#create-landscape)
-    * [Launch Dagster](#launch-dagster)
-    * [Launch Dagster Postgres](#launch-dagster-postgres)
-      * [Postgres](#postgres)
-      * [Dagster](#dagster-1)
-    * [Configure Landscape](#configure-landscape)
-    * [Materialize Landscape](#materialize-landscape)
-      * [Resulting Files and Directories (aka "Landscape")](#resulting-files-and-directories-aka-landscape)
-  * [Run Repository Installer](#run-repository-installer)
-  * [Run Deadline Farm](#run-deadline-farm)
-  * [Client](#client)
-    * [Deadline Monitor](#deadline-monitor)
-  * [Docker](#docker)
-    * [Clean](#clean)
-  * [pre-commit](#pre-commit)
-  * [nox](#nox)
-  * [Pylint](#pylint)
-  * [SBOM](#sbom)
-    * [`python3.11`](#python311)
-    * [`python3.12`](#python312)
-* [Roadmap](#roadmap-1)
-  * [SSH](#ssh)
-  * [Todo](#todo)
-  * [Docker](#docker-1)
+  * [Overview](#overview)
+    * [Integrated Tools](#integrated-tools)
+      * [Render Manager](#render-manager)
+      * [3rd Party](#3rd-party)
+        * [Container Registry](#container-registry)
+        * [Completed](#completed)
+        * [WIP](#wip)
+        * [Roadmap](#roadmap)
+    * [Dagster Lineage](#dagster-lineage)
+    * [Docker Compose Graph](#docker-compose-graph)
+      * [Deadline 10.2](#deadline-102)
+      * [Repository-Installer 10.2](#repository-installer-102)
+    * [Clone](#clone)
+    * [Install](#install)
+      * [venv](#venv)
+      * [OpenStudioLandscapes](#openstudiolandscapes-1)
+      * [DeadlineDatabase10](#deadlinedatabase10)
+        * [Use Test DB](#use-test-db)
+    * [Create Landscape](#create-landscape)
+      * [Launch Dagster](#launch-dagster)
+      * [Launch Dagster Postgres](#launch-dagster-postgres)
+        * [Postgres](#postgres)
+        * [Dagster](#dagster-1)
+      * [Configure Landscape](#configure-landscape)
+      * [Materialize Landscape](#materialize-landscape)
+        * [Resulting Files and Directories (aka "Landscape")](#resulting-files-and-directories-aka-landscape)
+    * [Run Repository Installer](#run-repository-installer)
+    * [Run Deadline Farm](#run-deadline-farm)
+    * [Client](#client)
+      * [Deadline Monitor](#deadline-monitor)
+  * [Guides](#guides)
+    * [Github: SSH Authentication](#github-ssh-authentication)
+    * [Hard Links: Sync Files and Directories across Repositories](#hard-links-sync-files-and-directories-across-repositories)
+    * [OBS Studio](#obs-studio)
+      * [Background Removal](#background-removal)
+      * [Load Settings](#load-settings)
+        * [Profile](#profile)
+        * [Scene Collection](#scene-collection)
+    * [Docker](#docker)
+      * [Clean](#clean)
+    * [Blender](#blender)
+      * [Masking](#masking)
   * [Community](#community)
-  * [Batch Jobs](#batch-jobs)
-    * [README.md](#readmemd)
-    * [nox](#nox-1)
-    * [Issues](#issues)
-      * [Fix: `pip install -e ../OpenStudioLandscapes/[dev]`](#fix-pip-install--e-openstudiolandscapesdev)
-      * [Fix: Enable in `OpenStudioLandscapes.engine.constants`](#fix-enable-in-openstudiolandscapesengineconstants)
-      * [Fix: `pip install -e ../OpenStudioLandscapes-Deadline-10-2/[dev]`](#fix-pip-install--e-openstudiolandscapes-deadline-10-2dev)
-      * [Fix: `pip install -e ../OpenStudioLandscapes-Kitsu/[dev]`](#fix-pip-install--e-openstudiolandscapes-kitsudev)
-  * [Run nox](#run-nox)
-  * [Sync Files and Directories across Repositories](#sync-files-and-directories-across-repositories)
-  * [OBS](#obs)
-    * [Load Settings](#load-settings)
-  * [Blender](#blender)
-    * [Masking](#masking)
+  * [pre-commit](#pre-commit)
+    * [Install](#install-1)
+    * [Run](#run)
+  * [nox](#nox)
+    * [Generate Report](#generate-report)
+    * [Python Versions](#python-versions)
+    * [Engine](#engine)
+      * [Harbor](#harbor-1)
+        * [harbor_up](#harbor_up)
+        * [harbor_down](#harbor_down)
+      * [Dagster](#dagster-2)
+        * [MySQL](#mysql)
+        * [Postgres](#postgres-1)
+      * [SBOM](#sbom)
+        * [Python 3.11](#python-311-1)
+        * [Python 3.12](#python-312)
+      * [Coverage](#coverage)
+      * [Lint (pylint)](#lint-pylint)
+      * [Testing (pytest)](#testing-pytest)
+      * [Readme](#readme)
+      * [Release](#release)
+      * [Docs](#docs)
+    * [Batch Jobs (for Modules)](#batch-jobs-for-modules)
+      * [Generate README.md for Modules](#generate-readmemd-for-modules)
+      * [nox Report](#nox-report)
+      * [Issues](#issues)
+        * [Fix: `pip install -e ../OpenStudioLandscapes/[dev]`](#fix-pip-install--e-openstudiolandscapesdev)
+        * [Fix: Enable in `OpenStudioLandscapes.engine.constants`](#fix-enable-in-openstudiolandscapesengineconstants)
+        * [Fix: `pip install -e ../OpenStudioLandscapes-Deadline-10-2/[dev]`](#fix-pip-install--e-openstudiolandscapes-deadline-10-2dev)
+        * [Fix: `pip install -e ../OpenStudioLandscapes-Kitsu/[dev]`](#fix-pip-install--e-openstudiolandscapes-kitsudev)
+* [Roadmap/Todo](#roadmaptodo)
 <!-- TOC -->
 
 ---
@@ -329,6 +350,8 @@ Former employers, among others:
 
 ### Harbor
 
+#### Installation
+
 Use offline installer or online installer based
 on network availability
 
@@ -354,7 +377,7 @@ And then, continue inside Dagster (`compose_Harbor` group) to:
 - generate `docker-compose.yml`
 - generate `docker compose` commands
 
-Once Harbor is running, log in and create a project that reflects the name
+[Once Harbor is running](#start-harbor), log in and create a project that reflects the name
 of the docker registry repository name that is used to prefix the docker
 containers generated by OpenStudioLandscapes (see
 [`enums.py`](OpenStudioLandscapes/engine/enums/DockerConfig._REPOSITORY_NAME))
@@ -450,6 +473,14 @@ EOF'
 sudo systemctl daemon-reload
 sudo systemctl restart docker
 ```
+
+#### Start Harbor
+
+See [`nox --session harbor_up`](#harbor_up)
+
+#### Stop Harbor
+
+See [`nox --session harbor_down`](#harbor_down)
 
 #### Upload Failures
 
@@ -742,11 +773,13 @@ More info: https://github.com/AGWA/git-crypt
 You clone (or fork-clone) the repo, make your modification and
 push everything publicly.
 
-## Integrated Tools
+## Overview
+
+### Integrated Tools
 
 - [docker-compose-graph](https://github.com/michimussato/docker-compose-graph)
 
-### Render Manager
+#### Render Manager
 
 There are a multitude of managers available
 and I had to make a decision to begin with.
@@ -781,15 +814,15 @@ comparison:
 | Muster         | ❌          | ☐              | ☐                | ☐                             | ☐                  | ☐     | ☐          | ☐            |
 
 
-### 3rd Party
+#### 3rd Party
 
 [Template](https://github.com/michimussato/OpenStudioLandscapes-Template)
 
-#### Container Registry
+##### Container Registry
 
 - [x] [Harbor](#harbor)
 
-#### Completed
+##### Completed
 
 - [x] [Dagster](https://dagster.io/)
   - https://github.com/michimussato/OpenStudioLandscapes-Dagster
@@ -807,7 +840,7 @@ comparison:
 - [x] [NukeRLM-8](https://learn.foundry.com/licensing/Content/local-licensing.html)
   - https://github.com/michimussato/OpenStudioLandscapes-NukeRLM-8
 
-#### WIP
+##### WIP
 
 - [LikeC4](https://likec4.dev/)
   - https://github.com/michimussato/OpenStudioLandscapes-LikeC4
@@ -818,24 +851,24 @@ comparison:
 - [Watchtower](https://watchtower.blender.org/)
   - https://github.com/michimussato/OpenStudioLandscapes-Watchtower
 
-#### Roadmap
+##### Roadmap
 
 None
 
-## Dagster Lineage
+### Dagster Lineage
 
 ![Global_Asset_Lineage.svg](_images/Global_Asset_Lineage.svg)
 
 ![dagster_cascade.png](_images/dagster_cascade.png)
 
-## Docker Compose Graph
+### Docker Compose Graph
 
 Dynamic Docker Compose documentation:
 [`docker-compose-graph`](https://github.com/michimussato/docker-compose-graph) creates a visual representation of
 `docker-compose.yml` files for every individual
 Landscape for quick reference and context.
 
-### Deadline 10.2
+#### Deadline 10.2
 
 `.landscapes/2025-02-01_00-11-08__578595276b424d1ea62550cb0b6f166f/Deadline_10_2/docker_compose/Deadline_10_2__compose_10_2/docker-compose.yml`
 
@@ -847,7 +880,7 @@ Manual (via CLI):
 docker-compose-graph --yaml .landscapes/2025-02-01_00-11-08__578595276b424d1ea62550cb0b6f166f/Deadline_10_2/docker_compose/Deadline_10_2__compose_10_2/docker-compose.yml --outfile Docker_Compose_Graph__docker_compose_graph_10_2.png -f png
 ```
 
-### Repository-Installer 10.2
+#### Repository-Installer 10.2
 
 `.landscapes/2025-02-01_00-11-08__578595276b424d1ea62550cb0b6f166f/Deadline_10_2/docker_compose/Deadline_10_2__compose_repository_10_2/docker-compose.yml`
 
@@ -859,7 +892,7 @@ Manual (via CLI):
 docker-compose-graph --yaml .landscapes/2025-02-01_00-11-08__578595276b424d1ea62550cb0b6f166f/Deadline_10_2/docker_compose/Deadline_10_2__compose_repository_10_2/docker-compose.yml --outfile Docker_Compose_Graph__docker_compose_graph_repository_10_2.png -f png
 ```
 
-## Clone
+### Clone
 
 ```shell
 git clone https://github.com/michimussato/OpenStudioLandscapes.git
@@ -870,9 +903,9 @@ python -m pip install --upgrade pip setuptools
 pip install -e .[dev]
 ```
 
-## Install
+### Install
 
-### venv
+#### venv
 
 ```shell
 python3 -m venv .venv
@@ -880,15 +913,15 @@ source .venv/bin/activate
 python -m pip install --upgrade pip setuptools
 ```
 
-### OpenStudioLandscapes
+#### OpenStudioLandscapes
 
 ```shell
 python -m pip install git+https://github.com/michimussato/OpenStudioLandscapes.git@main
 ```
 
-### DeadlineDatabase10
+#### DeadlineDatabase10
 
-#### Use Test DB
+##### Use Test DB
 
 Make sure that the `DeadlineDatabase10` directory has
 appropriate ownership:
@@ -909,9 +942,9 @@ f"DATABASE_INSTALL_DESTINATION_{KEY}": {
 }["test_db_10_2"]                         # <--- Set to value to be used
 ```
 
-## Create Landscape
+### Create Landscape
 
-### Launch Dagster
+#### Launch Dagster
 
 ```shell
 cd ~/git/repos/OpenStudioLandscapes
@@ -920,7 +953,7 @@ export DAGSTER_HOME="$(pwd)/.dagster"
 dagster dev
 ```
 
-### Launch Dagster Postgres
+#### Launch Dagster Postgres
 
 This could be useful in case you're hitting a
 SQLite concurrency issue like this:
@@ -940,7 +973,7 @@ Resources:
 - https://github.com/docker-library/docs/blob/master/postgres/README.md
 - https://www.getorchestra.io/guides/dagster-open-source-pipelines-postgresql-integration
 
-#### Postgres
+##### Postgres
 
 ```shell
 # https://github.com/docker-library/docs/blob/master/postgres/README.md
@@ -961,7 +994,7 @@ docker run \
     docker.io/postgres
 ```
 
-#### Dagster
+##### Dagster
 
 ```shell
 cd ~/git/repos/OpenStudioLandscapes
@@ -972,18 +1005,18 @@ dagster dev
 
 http://0.0.0.0:3000
 
-### Configure Landscape
+#### Configure Landscape
 
 Edit
 - `OpenStudioLandscapes.engine.constants`
 - `OpenStudioLandscapes.<third_party_module>.constants`
 according to your needs.
 
-### Materialize Landscape
+#### Materialize Landscape
 
 ![materialize_all.png](_images/materialize_all.png)
 
-#### Resulting Files and Directories (aka "Landscape")
+##### Resulting Files and Directories (aka "Landscape")
 
 ```shell
 $ tree .landscapes/2025-02-28_13-24-43__4ade7f1cc21d4e39bb90b1363f807e79
@@ -1126,7 +1159,7 @@ $ tree .landscapes/2025-02-28_13-24-43__4ade7f1cc21d4e39bb90b1363f807e79
 282 directories, 1310 files
 ```
 
-## Run Repository Installer
+### Run Repository Installer
 
 Copy/Paste command, execute and wait for it to finish:
 
@@ -1138,7 +1171,7 @@ And `docker compose down` eventually:
 
 ![installer_compose_down.png](_images/installer_compose_down.png)
 
-## Run Deadline Farm
+### Run Deadline Farm
 
 Together with:
 - Kitsu
@@ -1153,284 +1186,23 @@ Copy/Paste command and execute:
 
 ![runner.png](_images/runner.png)
 
-## Client
+### Client
 
-### Deadline Monitor
+#### Deadline Monitor
 
 ![monitor.png](_images/monitor.png)
 
 ![monitor_2.png](_images/monitor_2.png)
 
-## Docker
+## Guides
 
-### Clean
+### Github: SSH Authentication
 
-```shell
-sudo systemctl stop openstudiolandscapes-registry.service
-docker stop $(docker ps -q)
-docker container prune -f
-docker image prune -a -f
-docker volume prune -a -f
-docker buildx prune -a -f
-docker network prune -f
-```
+1. https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
+2. https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
+3. https://github.com/settings/keys
 
-## pre-commit
-
-- https://pre-commit.com/
-- https://pre-commit.com/hooks.html
-
-```shell
-pre-commit install
-```
-
-```shell
-pre-commit run --all-files
-```
-
-## nox
-
-```shell
-nox --no-error-on-missing-interpreters --report .nox/nox-report.json
-```
-
-## Pylint
-
-- `# pylint: disable=redefined-outer-name` ([`W0621`](https://pylint.pycqa.org/en/latest/user_guide/messages/warning/redefined-outer-name.html)): Due to Dagsters way of piping
-  arguments into assets.
-
-## SBOM
-
-### `python3.11`
-
-- [cyclonedx-bom](https://github.com/michimussato/OpenStudioLandscapes/tree/main/.sbom/cyclonedx-py.sbom-3.11.json)
-- [pipdeptree (Dot)](https://github.com/michimussato/OpenStudioLandscapes/tree/main/.sbom/pipdeptree.sbom-3.11.dot)
-- [pipdeptree (Mermaid)](https://github.com/michimussato/OpenStudioLandscapes/tree/main/.sbom/pipdeptree.sbom-3.11.mermaid)
-
-### `python3.12`
-
-- [cyclonedx-bom](https://github.com/michimussato/OpenStudioLandscapes/tree/main/.sbom/cyclonedx-py.sbom-3.12.json)
-- [pipdeptree (Dot)](https://github.com/michimussato/OpenStudioLandscapes/tree/main/.sbom/pipdeptree.sbom-3.12.dot)
-- [pipdeptree (Mermaid)](https://github.com/michimussato/OpenStudioLandscapes/tree/main/.sbom/pipdeptree.sbom-3.12.mermaid)
-
-# Roadmap
-
-- ☐ Landscape generation based on [VFX Reference Platform](https://vfxplatform.com/) spec
-- ☐ Integrating [Rez](https://github.com/AcademySoftwareFoundation/rez)
-- Integrating Render Managers
-  - Deadline
-    - ☐ 10.3
-    - ☐ 10.4
-  - ✅ [OpenCue](https://github.com/AcademySoftwareFoundation/OpenCue)
-  - ☐ [Tractor](https://rmanwiki-26.pixar.com/space/TRA)
-  - ☐ [Flamenco](https://flamenco.blender.org/)
-- Dynamic Documentation
-  - ☐ [LikeC4-Map](https://likec4.dev/)
-- Third Party Container Integration
-  - ☐ [Watchtower](https://watchtower.blender.org/)
-
-
-## SSH
-
-```shell
-eval "$(ssh-agent -s)"
-ssh-add ~/.ssh/id_ed25519.HP_2025-02-09
-```
-
-## Todo
-
-- [ ] Implement Caddy for HTTPS
-  - https://caddyserver.com/
-  - https://github.com/caddyserver/caddy
-  - https://hub.docker.com/_/caddy
-- [ ] Create a `.blend` video template file
-      for screen recordings.
-- [ ] A weekly video with instructions
-- [ ] Clean up this `README.md`
-- [ ] Improve tests (`noxfile.py`)
-
-## Docker
-
-Docker caches can take up a lot of disk space. If there 
-is only limited space available for Docker caches, here is some
-further reading:
-
-- https://docs.docker.com/build/cache/
-- https://docs.docker.com/build/cache/backends/
-- https://docs.docker.com/build/cache/backends/local/
-
-## Community
-
-- [Discord](https://discord.com/channels/1357343453364748419/1357343454065328202)
-- [Slack](https://openstudiolandscapes.slack.com)
-
-## Batch Jobs
-
-### README.md
-
-Every module has a nox `readme` session.
-To create a `README.md`, run:
-
-`nox --session readme`
-
-```shell
-#!/usr/bin/env bash
-
-# This script updates the README.md files
-# of all OpenStudioLandscapes-Modules based on
-# the template in
-# OpenStudioLandscapes/src/OpenStudioLandscapes/engine/utils/markdown.py
-
-
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-# The script assumes that all module repos live in the same root dir
-# as this one
-
-
-for dir in "${SCRIPT_DIR}"/../OpenStudioLandscapes-*/; do
-    pushd "${dir}" || exit
-    source .venv/bin/activate
-    echo "activated."
-    # Updating dev env
-    # To make sure we are not running into
-    # below (#issues) mentioned problems
-    pip install -e ../OpenStudioLandscapes/[dev]
-    
-    echo "Generating README.md in ${dir}..."
-    nox --session readme
-    echo "nox done."
-    
-    deactivate
-    echo "deactivated."
-    popd || exit
-done;
-```
-
-### nox
-
-`nox --no-error-on-missing-interpreters --report .nox/nox-report.json`
-
-```shell
-#!/usr/bin/env bash
-
-# This script updates the README.md files
-# of all OpenStudioLandscapes-Modules based on
-# the template in
-# OpenStudioLandscapes/src/OpenStudioLandscapes/engine/utils/markdown.py
-
-
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-# The script assumes that all module repos live in the same root dir
-# as this one
-
-
-for dir in "${SCRIPT_DIR}"/../OpenStudioLandscapes-*/; do
-    pushd "${dir}" || exit
-    source .venv/bin/activate
-    echo "activated."
-    # Updating dev env
-    # To make sure we are not running into
-    # below (#issues) mentioned problems
-    pip install -e ../OpenStudioLandscapes/[dev]
-    
-    echo "Running nox in ${dir}..."
-    nox --no-error-on-missing-interpreters --report .nox/nox-report.json
-    echo "nox done."
-        
-    deactivate
-    echo "deactivated."
-    popd || exit
-done;
-```
-
-### Issues
-
-#### Fix: `pip install -e ../OpenStudioLandscapes/[dev]`
-
-```
-Traceback (most recent call last):
-  File "/home/michael/git/repos/OpenStudioLandscapes-Deadline-10-2/readme_generator.py", line 1, in <module>
-    from OpenStudioLandscapes.engine.utils import markdown
-  File "/home/michael/git/repos/OpenStudioLandscapes/src/OpenStudioLandscapes/engine/utils/markdown.py", line 3, in <module>
-    import snakemd
-ModuleNotFoundError: No module named 'snakemd'
-```
-
-```
-Traceback (most recent call last):
-  File "/home/michael/git/repos/OpenStudioLandscapes-NukeRLM-8/readme_generator.py", line 1, in <module>
-    from OpenStudioLandscapes.engine.utils import markdown
-ModuleNotFoundError: No module named 'OpenStudioLandscapes.engine'
-```
-
-#### Fix: Enable in `OpenStudioLandscapes.engine.constants`
-
-```
-Traceback (most recent call last):
-  File "/home/michael/git/repos/OpenStudioLandscapes-OpenCue/readme_generator.py", line 5, in <module>
-    from OpenStudioLandscapes.OpenCue import constants
-  File "/home/michael/git/repos/OpenStudioLandscapes-OpenCue/src/OpenStudioLandscapes/OpenCue/constants.py", line 63, in <module>
-    raise Exception("No compose_scope found for module '%s'" % _module)
-Exception: No compose_scope found for module 'OpenStudioLandscapes.OpenCue.constants'
-```
-
-#### Fix: `pip install -e ../OpenStudioLandscapes-Deadline-10-2/[dev]`
-
-This should not happen anymore once the repos are public and
-the dependencies in `setup.cfg` are added and publicly accessible.
-
-```
-cd OpenStudioLandscapes-Deadline-10-2-Worker
-source .venv/bin/activate
-# Hint on zsh:
-# $ pip install -e ../OpenStudioLandscapes/[dev]
-# zsh: no matches found: ../OpenStudioLandscapes/[dev]
-# Solution:
-# use bash
-pip install -e ../OpenStudioLandscapes/[dev]
-pip install -e ../OpenStudioLandscapes-Deadline-10-2/[dev]
-```
-
-```
-Traceback (most recent call last):
-  File "/home/michael/git/repos/OpenStudioLandscapes-Deadline-10-2-Worker/readme_generator.py", line 5, in <module>
-    from OpenStudioLandscapes.Deadline_10_2_Worker import constants
-  File "/home/michael/git/repos/OpenStudioLandscapes-Deadline-10-2-Worker/src/OpenStudioLandscapes/Deadline_10_2_Worker/constants.py", line 26, in <module>
-    from OpenStudioLandscapes.Deadline_10_2.constants import KEY as KEY_MASTER
-ModuleNotFoundError: No module named 'OpenStudioLandscapes.Deadline_10_2'
-```
-
-#### Fix: `pip install -e ../OpenStudioLandscapes-Kitsu/[dev]`
-
-This should not happen anymore once the repos are public and
-the dependencies in `setup.cfg` are added and publicly accessible.
-
-```
-cd OpenStudioLandscapes-Watchtower
-source .venv/bin/activate
-# Hint on zsh:
-# $ pip install -e ../OpenStudioLandscapes/[dev]
-# zsh: no matches found: ../OpenStudioLandscapes/[dev]
-# Solution:
-# use bash
-pip install -e ../OpenStudioLandscapes/[dev]
-pip install -e ../OpenStudioLandscapes-Kitsu/[dev]
-```
-
-```
-Traceback (most recent call last):
-  File "/home/michael/git/repos/OpenStudioLandscapes-Watchtower/readme_generator.py", line 9, in <module>
-    from OpenStudioLandscapes.Watchtower import constants
-  File "/home/michael/git/repos/OpenStudioLandscapes-Watchtower/src/OpenStudioLandscapes/Watchtower/constants.py", line 26, in <module>
-    from OpenStudioLandscapes.Kitsu.constants import KEY as KEY_KITSU
-ModuleNotFoundError: No module named 'OpenStudioLandscapes.Kitsu
-```
-
-## Run nox
-
-Todo
-
-## Sync Files and Directories across Repositories
+### Hard Links: Sync Files and Directories across Repositories
 
 While syncing files across directories may
 seem like a sound thing to do, it could be 
@@ -1547,25 +1319,426 @@ for dir in "${SCRIPT_DIR}"/../OpenStudioLandscapes-*/; do
 done;
 ```
 
-## OBS
+### OBS Studio
+
+Version: [`31.0.1 (64 bit)`](https://github.com/obsproject/obs-studio/releases/31.0.1)
+
+#### Background Removal
 
 Plugins
 - [x] [obs-backgroundremoval](https://github.com/locaal-ai/obs-backgroundremoval)
   - https://www.youtube.com/watch?v=veqNEsMqEE0&ab_channel=RoyShilkrot
   - https://obsproject.com/forum/resources/background-removal-virtual-green-screen-low-light-enhance.1260/
 
-### Load Settings
+#### Load Settings
+
+##### Profile
 
 Import Profile:
 
 OBS -> Profile -> Import -> OpenStudioLandscapes/media/OBS/Profiles/Profile_OpenStuidioLandscapes
 
-## Blender
+##### Scene Collection
 
-### Masking
+Import Scene Collection:
+
+OBS -> Scene Collection -> Add or Import -> OpenStudioLandscapes/media/OBS/Profiles/SceneCollection_OpenStuidioLandscapes
+
+### Docker
+
+Docker caches can take up a lot of disk space. If there 
+is only limited space available for Docker caches, here is some
+further reading:
+
+- https://docs.docker.com/build/cache/
+- https://docs.docker.com/build/cache/backends/
+- https://docs.docker.com/build/cache/backends/local/
+
+#### Clean
+
+Clean filesystem from Docker items (quick and dirty)
+
+```shell
+sudo systemctl stop openstudiolandscapes-registry.service
+docker stop $(docker ps -q)
+docker container prune -f
+docker image prune -a -f
+docker volume prune -a -f
+docker buildx prune -a -f
+docker network prune -f
+```
+
+### Blender
+
+#### Masking
 
 - https://www.youtube.com/watch?v=Gi3gbuipUJQ&ab_channel=MichaelChu
 - https://www.youtube.com/watch?v=wGjmNkjl5BM&ab_channel=MichaelChu
 - https://www.youtube.com/watch?v=30DkcuQnO5s&ab_channel=MichaelChu
 
 - https://www.youtube.com/watch?v=4-MmX0AVAUY&ab_channel=BlenderFrenzy
+
+## Community
+
+- [Discord](https://discord.com/channels/1357343453364748419/1357343454065328202)
+- [Slack](https://openstudiolandscapes.slack.com)
+
+## pre-commit
+
+- https://pre-commit.com/
+- https://pre-commit.com/hooks.html
+
+### Install
+
+```shell
+pre-commit install
+```
+
+### Run
+
+```shell
+pre-commit run --all-files
+```
+
+## nox
+
+### Generate Report
+
+```shell
+nox --no-error-on-missing-interpreters --report .nox/nox-report.json
+```
+
+Scope:
+- [x] Engine
+- [x] Modules
+
+### Python Versions
+
+- `python3.11`
+- `python3.12`
+
+### Engine
+
+#### Harbor
+
+##### harbor_up
+
+```shell
+nox --session harbor_up
+```
+
+Scope:
+- [x] Engine
+- [ ] Modules
+
+##### harbor_down
+
+```shell
+nox --session harbor_down
+```
+    
+Scope:
+- [x] Engine
+- [ ] Modules
+
+#### Dagster
+
+##### MySQL
+
+```shell
+nox --session dagster_mysql
+```
+    
+Scope:
+- [x] Engine
+- [ ] Modules
+
+##### Postgres
+
+```shell
+nox --session dagster_postgres
+```
+    
+Scope:
+- [x] Engine
+- [ ] Modules
+
+#### SBOM
+
+```shell
+nox --session sbom
+```
+    
+Scope:
+- [x] Engine
+- [x] Modules
+
+##### Python 3.11
+
+- [cyclonedx-bom](https://github.com/michimussato/OpenStudioLandscapes/tree/main/.sbom/cyclonedx-py.sbom-3.11.json)
+- [pipdeptree (Dot)](https://github.com/michimussato/OpenStudioLandscapes/tree/main/.sbom/pipdeptree.sbom-3.11.dot)
+- [pipdeptree (Mermaid)](https://github.com/michimussato/OpenStudioLandscapes/tree/main/.sbom/pipdeptree.sbom-3.11.mermaid)
+
+##### Python 3.12
+
+- [cyclonedx-bom](https://github.com/michimussato/OpenStudioLandscapes/tree/main/.sbom/cyclonedx-py.sbom-3.12.json)
+- [pipdeptree (Dot)](https://github.com/michimussato/OpenStudioLandscapes/tree/main/.sbom/pipdeptree.sbom-3.12.dot)
+- [pipdeptree (Mermaid)](https://github.com/michimussato/OpenStudioLandscapes/tree/main/.sbom/pipdeptree.sbom-3.12.mermaid)
+
+#### Coverage
+
+```shell
+nox --session coverate
+```
+    
+Scope:
+- [x] Engine
+- [x] Modules
+
+#### Lint (pylint)
+
+```shell
+nox --session lint
+```
+    
+Scope:
+- [x] Engine
+- [x] Modules
+
+- `# pylint: disable=redefined-outer-name` ([`W0621`](https://pylint.pycqa.org/en/latest/user_guide/messages/warning/redefined-outer-name.html)): Due to Dagsters way of piping
+  arguments into assets.
+
+#### Testing (pytest)
+
+```shell
+nox --session testing
+```
+    
+Scope:
+- [x] Engine
+- [x] Modules
+
+#### Readme
+
+```shell
+nox --session readme
+```
+    
+Scope:
+- [ ] Engine
+- [x] Modules
+
+#### Release
+
+Not implemented.
+
+```shell
+nox --session release
+```
+    
+Scope:
+- [x] Engine
+- [x] Modules
+
+#### Docs
+
+```shell
+nox --session docs
+```
+    
+Scope:
+- [x] Engine
+- [x] Modules
+
+### Batch Jobs (for Modules)
+
+#### Generate README.md for Modules
+
+Every module has a nox `readme` session.
+To create a `README.md`, run:
+
+`nox --session readme`
+
+on each module:
+
+```shell
+#!/usr/bin/env bash
+
+# This script updates the README.md files
+# of all OpenStudioLandscapes-Modules based on
+# the template in
+# OpenStudioLandscapes/src/OpenStudioLandscapes/engine/utils/markdown.py
+
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# The script assumes that all module repos live in the same root dir
+# as this one
+
+
+for dir in "${SCRIPT_DIR}"/../OpenStudioLandscapes-*/; do
+    pushd "${dir}" || exit
+    source .venv/bin/activate
+    echo "activated."
+    # Updating dev env
+    # To make sure we are not  running into
+    # below (#issues) mentioned problems
+    pip install -e ../OpenStudioLandscapes/[dev]
+    
+    echo "Generating README.md in ${dir}..."
+    nox --session readme
+    echo "nox done."
+    
+    deactivate
+    echo "deactivated."
+    popd || exit
+done;
+```
+
+#### nox Report
+
+To update the `nox-report.json`, run
+
+`nox --no-error-on-missing-interpreters --report .nox/nox-report.json`
+
+on each module:
+
+```shell
+#!/usr/bin/env bash
+
+# This script updates the README.md files
+# of all OpenStudioLandscapes-Modules based on
+# the template in
+# OpenStudioLandscapes/src/OpenStudioLandscapes/engine/utils/markdown.py
+
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# The script assumes that all module repos live in the same root dir
+# as this one
+
+
+for dir in "${SCRIPT_DIR}"/../OpenStudioLandscapes-*/; do
+    pushd "${dir}" || exit
+    source .venv/bin/activate
+    echo "activated."
+    # Updating dev env
+    # To make sure we are not running into
+    # below (#issues) mentioned problems
+    pip install -e ../OpenStudioLandscapes/[dev]
+    
+    echo "Running nox in ${dir}..."
+    nox --no-error-on-missing-interpreters --report .nox/nox-report.json
+    echo "nox done."
+        
+    deactivate
+    echo "deactivated."
+    popd || exit
+done;
+```
+
+#### Issues
+
+##### Fix: `pip install -e ../OpenStudioLandscapes/[dev]`
+
+```
+Traceback (most recent call last):
+  File "/home/michael/git/repos/OpenStudioLandscapes-Deadline-10-2/readme_generator.py", line 1, in <module>
+    from OpenStudioLandscapes.engine.utils import markdown
+  File "/home/michael/git/repos/OpenStudioLandscapes/src/OpenStudioLandscapes/engine/utils/markdown.py", line 3, in <module>
+    import snakemd
+ModuleNotFoundError: No module named 'snakemd'
+```
+
+```
+Traceback (most recent call last):
+  File "/home/michael/git/repos/OpenStudioLandscapes-NukeRLM-8/readme_generator.py", line 1, in <module>
+    from OpenStudioLandscapes.engine.utils import markdown
+ModuleNotFoundError: No module named 'OpenStudioLandscapes.engine'
+```
+
+##### Fix: Enable in `OpenStudioLandscapes.engine.constants`
+
+```
+Traceback (most recent call last):
+  File "/home/michael/git/repos/OpenStudioLandscapes-OpenCue/readme_generator.py", line 5, in <module>
+    from OpenStudioLandscapes.OpenCue import constants
+  File "/home/michael/git/repos/OpenStudioLandscapes-OpenCue/src/OpenStudioLandscapes/OpenCue/constants.py", line 63, in <module>
+    raise Exception("No compose_scope found for module '%s'" % _module)
+Exception: No compose_scope found for module 'OpenStudioLandscapes.OpenCue.constants'
+```
+
+##### Fix: `pip install -e ../OpenStudioLandscapes-Deadline-10-2/[dev]`
+
+This should not happen anymore once the repos are public and
+the dependencies in `setup.cfg` are added and publicly accessible.
+
+```
+cd OpenStudioLandscapes-Deadline-10-2-Worker
+source .venv/bin/activate
+# Hint on zsh:
+# $ pip install -e ../OpenStudioLandscapes/[dev]
+# zsh: no matches found: ../OpenStudioLandscapes/[dev]
+# Solution:
+# use bash
+pip install -e ../OpenStudioLandscapes/[dev]
+pip install -e ../OpenStudioLandscapes-Deadline-10-2/[dev]
+```
+
+```
+Traceback (most recent call last):
+  File "/home/michael/git/repos/OpenStudioLandscapes-Deadline-10-2-Worker/readme_generator.py", line 5, in <module>
+    from OpenStudioLandscapes.Deadline_10_2_Worker import constants
+  File "/home/michael/git/repos/OpenStudioLandscapes-Deadline-10-2-Worker/src/OpenStudioLandscapes/Deadline_10_2_Worker/constants.py", line 26, in <module>
+    from OpenStudioLandscapes.Deadline_10_2.constants import KEY as KEY_MASTER
+ModuleNotFoundError: No module named 'OpenStudioLandscapes.Deadline_10_2'
+```
+
+##### Fix: `pip install -e ../OpenStudioLandscapes-Kitsu/[dev]`
+
+This should not happen anymore once the repos are public and
+the dependencies in `setup.cfg` are added and publicly accessible.
+
+```
+cd OpenStudioLandscapes-Watchtower
+source .venv/bin/activate
+# Hint on zsh:
+# $ pip install -e ../OpenStudioLandscapes/[dev]
+# zsh: no matches found: ../OpenStudioLandscapes/[dev]
+# Solution:
+# use bash
+pip install -e ../OpenStudioLandscapes/[dev]
+pip install -e ../OpenStudioLandscapes-Kitsu/[dev]
+```
+
+```
+Traceback (most recent call last):
+  File "/home/michael/git/repos/OpenStudioLandscapes-Watchtower/readme_generator.py", line 9, in <module>
+    from OpenStudioLandscapes.Watchtower import constants
+  File "/home/michael/git/repos/OpenStudioLandscapes-Watchtower/src/OpenStudioLandscapes/Watchtower/constants.py", line 26, in <module>
+    from OpenStudioLandscapes.Kitsu.constants import KEY as KEY_KITSU
+ModuleNotFoundError: No module named 'OpenStudioLandscapes.Kitsu
+```
+
+# Roadmap/Todo
+
+- [ ] Landscape generation based on [VFX Reference Platform](https://vfxplatform.com/) spec
+- [ ] Integrating [Rez](https://github.com/AcademySoftwareFoundation/rez)
+- Integrating Render Managers
+  - Deadline
+    - [ ] 10.3
+    - [ ] 10.4
+  - [x] [OpenCue](https://github.com/AcademySoftwareFoundation/OpenCue)
+  - [ ] [Tractor](https://rmanwiki-26.pixar.com/space/TRA)
+  - [ ] [Flamenco](https://flamenco.blender.org/)
+- Dynamic Documentation
+  - [ ] [LikeC4-Map](https://likec4.dev/)
+- Third Party Container Integration
+  - [ ] [Watchtower](https://watchtower.blender.org/)
+- [ ] Implement Caddy for HTTPS
+  - https://caddyserver.com/
+  - https://github.com/caddyserver/caddy
+  - https://hub.docker.com/_/caddy
+- [x] Create a `.blend` video template file
+      for screen recordings.
+- [ ] A weekly video with instructions
+- [ ] Clean up this `README.md`
+- [ ] Improve tests (`noxfile.py`)
