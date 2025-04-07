@@ -43,8 +43,65 @@ ENV = {}
 
 
 # Todo
-#  - [ ] session for harbor_start? (for OpenStudioLandscapes only)
+#  - [x] session for harbor_start? (for OpenStudioLandscapes only)
 #  - [x] session for dagster_postgres_start? (for OpenStudioLandscapes only)
+
+
+@nox.session(python=None, tags=["harbor_up"])
+def harbor_up(session):
+    """Start Harbor."""
+
+    # /usr/bin/sudo \
+    #     /usr/bin/docker \
+    #     compose \
+    #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.harbor/bin/docker-compose.yml \
+    #     --project-name openstudiolandscapes-harbor up --remove-orphans
+
+    compose = (
+        pathlib.Path.cwd() / ".landscapes" / ".harbor" / "bin" / "docker-compose.yml"
+    )
+
+    session.run(
+        shutil.which("sudo"),
+        shutil.which("docker"),
+        "compose",
+        "--file",
+        compose.as_posix(),
+        "--project-name",
+        "openstudiolandscapes-harbor",
+        "up",
+        "--remove-orphans",
+        env=ENV,
+        external=True,
+    )
+
+
+@nox.session(python=None, tags=["harbor_down"])
+def harbor_down(session):
+    """Start Harbor."""
+
+    # /usr/bin/sudo \
+    #     /usr/bin/docker \
+    #     compose \
+    #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.harbor/bin/docker-compose.yml \
+    #     --project-name openstudiolandscapes-harbor down
+
+    compose = (
+        pathlib.Path.cwd() / ".landscapes" / ".harbor" / "bin" / "docker-compose.yml"
+    )
+
+    session.run(
+        shutil.which("sudo"),
+        shutil.which("docker"),
+        "compose",
+        "--file",
+        compose.as_posix(),
+        "--project-name",
+        "openstudiolandscapes-harbor",
+        "down",
+        env=ENV,
+        external=True,
+    )
 
 
 @nox.session(python=None, tags=["dagster_mysql"])
