@@ -1295,11 +1295,12 @@ for dir in "${SCRIPT_DIR}"/../OpenStudioLandscapes-*/; do
     
     pushd "${dir}" || exit
     
-    if [[ $(pwd) == *"/OpenStudioLandscapes-Template"* ]]; then
-        echo "$(pwd) skipped."
-        popd || exit
-        continue
-    fi;
+    # if [[ $(pwd) == *"/OpenStudioLandscapes-Template"* ]]; then
+    #     echo "$(pwd) skipped."
+    #     popd || exit
+    #     continue
+    # fi;
+    
     for f in "${identical_files[@]}"; do
         echo "---------------------"
         echo "Current file: ${f}"
@@ -1577,6 +1578,15 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 for dir in "${SCRIPT_DIR}"/../OpenStudioLandscapes-*/; do
     pushd "${dir}" || exit
+    
+    if [[ $(pwd) == *"/OpenStudioLandscapes-Template"* ]]; then
+        # Skip README generation for 
+        # OpenStudioLandscapes-Template
+        echo "$(pwd) skipped."
+        popd || exit
+        continue
+    fi
+      
     source .venv/bin/activate
     echo "activated."
     # Updating dev env
