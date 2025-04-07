@@ -1592,6 +1592,7 @@ for dir in "${SCRIPT_DIR}"/../OpenStudioLandscapes-*/; do
     # Updating dev env
     # To make sure we are not  running into
     # below (#issues) mentioned problems
+    # 
     # Todo:
     #  - [ ] Is this necessary?
     # pip install -e ../OpenStudioLandscapes/[dev]
@@ -1639,7 +1640,14 @@ for dir in "${SCRIPT_DIR}"/../OpenStudioLandscapes-*/; do
     # Updating dev env
     # To make sure we are not running into
     # below (#issues) mentioned problems
-    pip install -e ../OpenStudioLandscapes/[dev]
+    # 
+    # Todo:
+    #  - [ ] Is this necessary?
+    # pip install -e ../OpenStudioLandscapes/[dev]
+    # maybe simply 
+    pip install nox
+    # or
+    # pip install -e ../OpenStudioLandscapes/[nox]
     
     echo "Running nox in ${dir}..."
     nox --no-error-on-missing-interpreters --report .nox/nox-report.json
