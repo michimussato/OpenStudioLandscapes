@@ -42,6 +42,99 @@ VERSIONS_README = [
 ENV = {}
 
 
+# Todo
+#  - [ ] session for harbor_start? (for OpenStudioLandscapes only)
+#  - [x] session for dagster_postgres_start? (for OpenStudioLandscapes only)
+
+
+@nox.session(python=None, tags=["dagster_mysql"])
+def dagster_mysql(session):
+    """Start Dagster with MySQL (default) as backend."""
+
+    # cd ~/git/repos/OpenStudioLandscapes
+    # source .venv/bin/activate
+    # export DAGSTER_HOME="$(pwd)/.dagster"
+    # dagster dev
+    session.run(
+        shutil.which("dagster"),
+        "dev",
+        env={"DAGSTER_HOME": f"{pathlib.Path.cwd()}/.dagster"},
+        external=True,
+    )
+
+
+@nox.session(python=None, tags=["dagster_postgres"])
+def dagster_postgres(session):
+    """Start Dagster with Postgres as backend."""
+
+    # docker run \
+    #     --name postgres-dagster \
+    #     --domainname farm.evil \
+    #     --hostname postgres-dagster.farm.evil \
+    #     --env POSTGRES_USER=postgres \
+    #     --env POSTGRES_PASSWORD=mysecretpassword \
+    #     --env POSTGRES_DB=postgres \
+    # 	--env PGDATA=/var/lib/postgresql/data/pgdata \
+    # 	--volume ./.postgres:/var/lib/postgresql/data \
+    # 	--publish 5432:5432 \
+    # 	--rm \
+    #     docker.io/postgres
+    try:
+        with session.chdir(".dagster-postgres"):
+            session.run(
+                shutil.which("docker"),
+                "run",
+                "--detach",
+                "--name",
+                "postgres-dagster",
+                "--domainname",
+                "farm.evil",
+                "--hostname",
+                "postgres-dagster.farm.evil",
+                "--env",
+                "POSTGRES_USER=postgres",
+                "--env",
+                "POSTGRES_PASSWORD=mysecretpassword",
+                "--env",
+                "POSTGRES_DB=postgres",
+                "--env",
+                "PGDATA=/var/lib/postgresql/data/pgdata",
+                "--volume",
+                "./.postgres:/var/lib/postgresql/data",
+                "--publish",
+                "5432:5432",
+                "--rm",
+                "docker.io/postgres",
+                # env={
+                #
+                # },
+                external=True,
+            )
+    except Exception as e:
+        print(f"PostgreSQL is already running, skipping ({e})")
+
+    # cd ~/git/repos/OpenStudioLandscapes
+    # source .venv/bin/activate
+    # export DAGSTER_HOME="$(pwd)/.dagster-postgres"
+    # dagster dev
+    # with session.chdir(".dagster-postgres"):
+    session.run(
+        shutil.which("dagster"),
+        "dev",
+        env={"DAGSTER_HOME": f"{pathlib.Path.cwd()}/.dagster-postgres"},
+        external=True,
+    )
+
+
+# Harbor
+
+
+"""
+The Harbor command is created dynamically in Dagster.
+Can we somehow fetch it and use it in here?
+"""
+
+
 @nox.session(python=VERSIONS, tags=["sbom"])
 def sbom(session):
     """Runs Software Bill of Materials (SBOM)."""
