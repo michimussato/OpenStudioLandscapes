@@ -4,6 +4,12 @@ import nox
 import pathlib
 
 
+# nox Configuration & API
+# https://nox.thea.codes/en/stable/config.html
+# # nox.sessions.Session.run
+# https://nox.thea.codes/en/stable/config.html#nox.sessions.Session.run
+
+
 # https://www.youtube.com/watch?v=ImBvrDvK-1U&ab_channel=HynekSchlawack
 # https://codewitholi.com/_posts/python-nox-automation/
 
@@ -35,21 +41,23 @@ VERSIONS = [
     "3.12",
     # "3.13",
 ]
-VERSIONS_README = [
-    "3.11",
-]
+
+VERSIONS_README = VERSIONS[0]
 
 ENV = {}
 
 
-# Todo
-#  - [x] session for harbor_start? (for OpenStudioLandscapes only)
-#  - [x] session for dagster_postgres_start? (for OpenStudioLandscapes only)
-
-
+#######################################################################################################################
+# Harbor
+# # Harbor up
 @nox.session(python=None, tags=["harbor_up"])
 def harbor_up(session):
-    """Start Harbor."""
+    """
+    Start Harbor with `sudo`.
+    """
+    # Ex:
+    # nox --session harbor_up
+    # nox --tags harbor_up
 
     # /usr/bin/sudo \
     #     /usr/bin/docker \
@@ -76,9 +84,15 @@ def harbor_up(session):
     )
 
 
+# # Harbor Down
 @nox.session(python=None, tags=["harbor_down"])
 def harbor_down(session):
-    """Start Harbor."""
+    """
+    Stop Harbor with `sudo`.
+    """
+    # Ex:
+    # nox --session harbor_down
+    # nox --tags harbor_down
 
     # /usr/bin/sudo \
     #     /usr/bin/docker \
@@ -104,9 +118,20 @@ def harbor_down(session):
     )
 
 
+#######################################################################################################################
+
+
+#######################################################################################################################
+# Dagster
+# # Dagster MySQL
 @nox.session(python=None, tags=["dagster_mysql"])
 def dagster_mysql(session):
-    """Start Dagster with MySQL (default) as backend."""
+    """
+    Start Dagster with MySQL (default) as backend.
+    """
+    # Ex:
+    # nox --session dagster_mysql
+    # nox --tags dagster_mysql
 
     # cd ~/git/repos/OpenStudioLandscapes
     # source .venv/bin/activate
@@ -120,9 +145,15 @@ def dagster_mysql(session):
     )
 
 
+# # Dagster Postgres
 @nox.session(python=None, tags=["dagster_postgres"])
 def dagster_postgres(session):
-    """Start Dagster with Postgres as backend."""
+    """
+    Start Dagster with Postgres as backend.
+    """
+    # Ex:
+    # nox --session dagster_postgres
+    # nox --tags dagster_postgres
 
     # docker run \
     #     --name postgres-dagster \
@@ -183,18 +214,19 @@ def dagster_postgres(session):
     )
 
 
-# Harbor
+#######################################################################################################################
 
 
-"""
-The Harbor command is created dynamically in Dagster.
-Can we somehow fetch it and use it in here?
-"""
-
-
+#######################################################################################################################
+# SBOM
 @nox.session(python=VERSIONS, tags=["sbom"])
 def sbom(session):
-    """Runs Software Bill of Materials (SBOM)."""
+    """
+    Runs Software Bill of Materials (SBOM).
+    """
+    # Ex:
+    # nox --session sbom
+    # nox --tags sbom
 
     # https://pypi.org/project/pipdeptree/
 
@@ -230,9 +262,19 @@ def sbom(session):
     )
 
 
+#######################################################################################################################
+
+
+#######################################################################################################################
+# Coverage
 @nox.session(python=VERSIONS, tags=["coverage"])
 def coverage(session):
-    """Runs coverage"""
+    """
+    Runs coverage
+    """
+    # Ex:
+    # nox --session coverage
+    # nox --tags coverage
 
     session.install("-e", ".[coverage]")
 
@@ -246,9 +288,19 @@ def coverage(session):
     # session.run("coverage", "html")  # ./htmlcov/
 
 
+#######################################################################################################################
+
+
+#######################################################################################################################
+# Lint
 @nox.session(python=VERSIONS, tags=["lint"])
 def lint(session):
-    """Runs linters and fixers"""
+    """
+    Runs linters and fixers
+    """
+    # Ex:
+    # nox --session lint
+    # nox --tags lint
 
     session.install("-e", ".[lint]")
 
@@ -277,11 +329,20 @@ def lint(session):
     # C0116 (missing-function-docstring)
 
 
+#######################################################################################################################
+
+
+#######################################################################################################################
+# Testing
 @nox.session(python=VERSIONS, tags=["testing"])
 def testing(session):
+    """
+    Runs pytests.
+    """
     # Ex:
-    # nox --session testing,docs
-    # nox --tags docs-live
+    # nox --session testing
+    # nox --tags testing
+
     session.install("-e", ".[testing]", silent=True)
 
     session.run(
@@ -291,19 +352,41 @@ def testing(session):
     )
 
 
+#######################################################################################################################
+
+
+#######################################################################################################################
+# Readme
 @nox.session(python=VERSIONS_README, tags=["readme"])
 def readme(session):
+    """
+    Generate dynamically created README file for
+    OpenStudioLandscapes modules.
+    """
     # Ex:
-    # nox --session testing,docs
-    # nox --tags docs-live
+    # nox --session readme
+    # nox --tags readme
+
     session.install("-e", ".[readme]", silent=True)
 
     session.run("generate-readme", "--versions", *VERSIONS)
 
 
+#######################################################################################################################
+
+
+#######################################################################################################################
+# Release
+# Todo
 @nox.session(python=VERSIONS, tags=["release"])
 def release(session):
-    """Build and release to a repository"""
+    """
+    Build and release to a repository
+    """
+    # Ex:
+    # nox --session release
+    # nox --tags release
+
     session.install("-e", ".[release]")
 
     session.skip("Not implemented")
@@ -331,10 +414,20 @@ def release(session):
     # )
 
 
+#######################################################################################################################
+
+
+#######################################################################################################################
+# Docs
 @nox.session(reuse_venv=True, tags=["docs"])
 def docs(session):
+    """
+    Creates Sphinx documentation.
+    """
+    # Ex:
     # nox --session docs
     # nox --tags docs
+
     session.install("-e", ".[docs]", silent=True)
 
     deptree_out = (
@@ -379,6 +472,9 @@ def docs(session):
         # copying the files to the
         # destination directory
         shutil.copy2(src / fname, trg)
+
+
+#######################################################################################################################
 
 
 # @nox.session(name="docs-live", tags=["docs-live"])
