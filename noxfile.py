@@ -54,6 +54,10 @@ ENV = {}
 def harbor_up(session):
     """
     Start Harbor with `sudo`.
+
+    Scope:
+    - [x] Engine
+    - [ ] Modules
     """
     # Ex:
     # nox --session harbor_up
@@ -89,6 +93,10 @@ def harbor_up(session):
 def harbor_down(session):
     """
     Stop Harbor with `sudo`.
+
+    Scope:
+    - [x] Engine
+    - [ ] Modules
     """
     # Ex:
     # nox --session harbor_down
@@ -128,6 +136,10 @@ def harbor_down(session):
 def dagster_mysql(session):
     """
     Start Dagster with MySQL (default) as backend.
+
+    Scope:
+    - [x] Engine
+    - [ ] Modules
     """
     # Ex:
     # nox --session dagster_mysql
@@ -150,6 +162,10 @@ def dagster_mysql(session):
 def dagster_postgres(session):
     """
     Start Dagster with Postgres as backend.
+
+    Scope:
+    - [x] Engine
+    - [ ] Modules
     """
     # Ex:
     # nox --session dagster_postgres
@@ -223,6 +239,10 @@ def dagster_postgres(session):
 def sbom(session):
     """
     Runs Software Bill of Materials (SBOM).
+
+    Scope:
+    - [x] Engine
+    - [x] Modules
     """
     # Ex:
     # nox --session sbom
@@ -271,6 +291,10 @@ def sbom(session):
 def coverage(session):
     """
     Runs coverage
+
+    Scope:
+    - [x] Engine
+    - [x] Modules
     """
     # Ex:
     # nox --session coverage
@@ -297,6 +321,10 @@ def coverage(session):
 def lint(session):
     """
     Runs linters and fixers
+
+    Scope:
+    - [x] Engine
+    - [x] Modules
     """
     # Ex:
     # nox --session lint
@@ -338,6 +366,10 @@ def lint(session):
 def testing(session):
     """
     Runs pytests.
+
+    Scope:
+    - [x] Engine
+    - [x] Modules
     """
     # Ex:
     # nox --session testing
@@ -362,6 +394,10 @@ def readme(session):
     """
     Generate dynamically created README file for
     OpenStudioLandscapes modules.
+
+    Scope:
+    - [ ] Engine
+    - [x] Modules
     """
     # Ex:
     # nox --session readme
@@ -382,6 +418,10 @@ def readme(session):
 def release(session):
     """
     Build and release to a repository
+
+    Scope:
+    - [x] Engine
+    - [x] Modules
     """
     # Ex:
     # nox --session release
@@ -423,6 +463,10 @@ def release(session):
 def docs(session):
     """
     Creates Sphinx documentation.
+
+    Scope:
+    - [x] Engine
+    - [x] Modules
     """
     # Ex:
     # nox --session docs
