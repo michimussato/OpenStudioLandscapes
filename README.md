@@ -107,6 +107,21 @@
         * [Fix: Enable in `OpenStudioLandscapes.engine.constants`](#fix-enable-in-openstudiolandscapesengineconstants)
         * [Fix: `pip install -e ../OpenStudioLandscapes-Deadline-10-2/[dev]`](#fix-pip-install--e-openstudiolandscapes-deadline-10-2dev)
         * [Fix: `pip install -e ../OpenStudioLandscapes-Kitsu/[dev]`](#fix-pip-install--e-openstudiolandscapes-kitsudev)
+  * [Documentation (Sphinx)](#documentation-sphinx)
+    * [Builders](#builders)
+    * [Markdown Support](#markdown-support)
+      * [Install `myst-parser`](#install-myst-parser)
+    * [Mermaid Support](#mermaid-support)
+    * [Graphviz Support](#graphviz-support)
+      * [Install](#install-2)
+      * [Embed Graphviz Graph](#embed-graphviz-graph)
+      * [Reference Graphviz Graph](#reference-graphviz-graph)
+  * [Dagster](#dagster-3)
+  * [Development](#development)
+    * [Adding new Python dependencies](#adding-new-python-dependencies)
+    * [Unit testing](#unit-testing)
+    * [Schedules and sensors](#schedules-and-sensors)
+  * [Deploy on Dagster Cloud](#deploy-on-dagster-cloud)
 * [Roadmap/Todo](#roadmaptodo)
 <!-- TOC -->
 
@@ -1749,6 +1764,132 @@ Traceback (most recent call last):
     from OpenStudioLandscapes.Kitsu.constants import KEY as KEY_KITSU
 ModuleNotFoundError: No module named 'OpenStudioLandscapes.Kitsu
 ```
+
+## Documentation (Sphinx)
+
+### Builders
+
+The different types of builders are listed here:
+https://www.sphinx-doc.org/en/master/usage/builders/index.html#builders
+
+### Markdown Support
+
+Sphinx does not support `markdown` natively. 
+To use contents from `README.md` files directly in ReST
+(they come in `markdown`), the `myst-parser` extension
+needs to be installed:
+https://www.sphinx-doc.org/en/master/usage/markdown.html
+
+It looks like we can't reference this Markdown
+if it lives in a parent directory - this seems
+to be working for `.rst` with the
+`.. include:: ../MyFile.rst` directive.
+
+#### Install `myst-parser`
+
+```
+pip install myst-parser
+```
+
+1. Add `"myst_parser"` to `docs/conf.py:extensions`
+2. Edit `docs/conf.py:souce_suffix = {".rst": "restructuredtext", ".md": "markdown"}`
+  - https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-source_suffix
+
+Optional: (configure `myst-parser`)[https://myst-parser.readthedocs.io/en/latest/syntax/optional.html]
+
+### Mermaid Support
+
+https://github.com/mgaitan/sphinxcontrib-mermaid
+
+### Graphviz Support
+
+https://www.sphinx-doc.org/en/master/usage/extensions/graphviz.html#module-sphinx.ext.graphviz
+
+#### Install
+
+Add `"sphinx.ext.graphviz"` to `docs/conf.py:extensions`
+
+#### Embed Graphviz Graph
+
+```
+.. graphviz::
+
+   digraph foo {
+      "bar" -> "baz";
+   }
+```
+
+#### Reference Graphviz Graph
+
+Reference:
+
+```
+.. graphviz:: external.dot
+```
+
+## Dagster
+
+```
+dagster project scaffold --name my-skeleton-package
+```
+
+First, install your Dagster code location as a Python package. By using the --editable flag, pip will install your Python package in ["editable mode"](https://pip.pypa.io/en/latest/topics/local-project-installs/#editable-installs) so that as you develop, local code changes will automatically apply.
+
+```bash
+pip install -e ".[dev]"
+```
+
+Then, start the Dagster UI web server:
+
+```bash
+export DAGSTER_HOME=$(realpath dagster/.dagster)    # `realpath` vs `readlink -f`
+dagster dev --workspace $(realpath dagster/workspace.yaml)  # `realpath` vs `readlink -f`
+```
+
+Open http://localhost:3000 with your browser to see 
+the project.
+
+You can start writing assets in 
+`My_Skeleton_Package.my_skeleton_mackage/assets.py`. 
+The assets are automatically loaded into the Dagster 
+code location as you define them.
+
+## Development
+
+### Adding new Python dependencies
+
+You can specify new Python dependencies in `setup.py`.
+
+### Unit testing
+
+Tests are in the `my_skeleton_mackage_tests` 
+directory and you can run tests using `pytest`:
+
+```bash
+pytest my_skeleton_mackage_tests
+```
+
+```bash
+nox -s test
+```
+
+### Schedules and sensors
+
+If you want to enable Dagster [Schedules](https://docs.dagster.io/concepts/partitions-schedules-sensors/schedules) 
+or [Sensors](https://docs.dagster.io/concepts/partitions-schedules-sensors/sensors) for your jobs, the [Dagster Daemon](https://docs.dagster.io/deployment/dagster-daemon) 
+process must be running. This is done automatically 
+when you run `dagster dev`.
+
+Once your Dagster Daemon is running, you can start 
+turning on schedules and sensors for your jobs.
+
+## Deploy on Dagster Cloud
+
+The easiest way to deploy your Dagster project is 
+to use Dagster Cloud.
+
+Check out the [Dagster Cloud Documentation](https://docs.dagster.cloud) 
+to learn more.
 
 # Roadmap/Todo
 
