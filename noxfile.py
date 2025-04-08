@@ -152,6 +152,8 @@ def dagster_mysql(session):
     session.run(
         shutil.which("dagster"),
         "dev",
+        "--host",
+        "0.0.0.0",
         env={"DAGSTER_HOME": f"{pathlib.Path.cwd()}/.dagster"},
         external=True,
     )
