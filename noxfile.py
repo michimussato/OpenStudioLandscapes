@@ -50,6 +50,35 @@ ENV = {}
 #######################################################################################################################
 # Harbor
 # # Harbor up
+@nox.session(python=None, tags=["harbor_prepare"])
+def harbor_prepare(session):
+    """
+    Prepare Harbor with `sudo`.
+
+    Scope:
+    - [x] Engine
+    - [ ] Modules
+    """
+    # Ex:
+    # nox --session harbor_prepare
+    # nox --tags harbor_prepare
+
+    # /usr/bin/sudo \
+    #     /usr/bin/bash
+    #     /data/share/nfs/git/repos/OpenStudioLandscapes/OpenStudioLandscapes/.landscapes/.harbor/bin/prepare
+
+    compose = pathlib.Path.cwd() / ".landscapes" / ".harbor" / "bin" / "prepare"
+
+    session.run(
+        shutil.which("sudo"),
+        shutil.which("bash"),
+        compose.as_posix(),
+        env=ENV,
+        external=True,
+    )
+
+
+# # Harbor up
 @nox.session(python=None, tags=["harbor_up"])
 def harbor_up(session):
     """
