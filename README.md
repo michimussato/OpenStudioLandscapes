@@ -396,6 +396,7 @@ And then
   root directory as OpenStudioLandscapes engine itself
 - Install all OpenStudioLandscapes Modules as desired:
   ```shell
+  pip install "OpenStudioLandscapes @ git+https://github.com/michimussato/OpenStudioLandscapes@main"
   pip install "OpenStudioLandscapes-Ayon @ git+https://github.com/michimussato/OpenStudioLandscapes-Ayon@main"
   pip install "OpenStudioLandscapes-Dagster @ git+https://github.com/michimussato/OpenStudioLandscapes-Dagster@main"
   pip install "OpenStudioLandscapes-Deadline-10-2 @ git+https://github.com/michimussato/OpenStudioLandscapes-Deadline-10-2@main"

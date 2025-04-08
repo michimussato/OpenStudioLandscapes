@@ -88,6 +88,46 @@ def harbor_up(session):
     )
 
 
+# # Harbor detach
+@nox.session(python=None, tags=["harbor_up_detach"])
+def harbor_up_detach(session):
+    """
+    Start Harbor with `sudo` and detach.
+
+    Scope:
+    - [x] Engine
+    - [ ] Modules
+    """
+    # Ex:
+    # nox --session harbor_up
+    # nox --tags harbor_up
+
+    # /usr/bin/sudo \
+    #     /usr/bin/docker \
+    #     compose \
+    #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.harbor/bin/docker-compose.yml \
+    #     --project-name openstudiolandscapes-harbor up --remove-orphans
+
+    compose = (
+        pathlib.Path.cwd() / ".landscapes" / ".harbor" / "bin" / "docker-compose.yml"
+    )
+
+    session.run(
+        shutil.which("sudo"),
+        shutil.which("docker"),
+        "compose",
+        "--file",
+        compose.as_posix(),
+        "--project-name",
+        "openstudiolandscapes-harbor",
+        "up",
+        "--remove-orphans",
+        "--detach",
+        env=ENV,
+        external=True,
+    )
+
+
 # # Harbor Down
 @nox.session(python=None, tags=["harbor_down"])
 def harbor_down(session):
