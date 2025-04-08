@@ -128,14 +128,14 @@ def harbor_up_detach(session):
     - [ ] Modules
     """
     # Ex:
-    # nox --session harbor_up
-    # nox --tags harbor_up
+    # nox --session harbor_up_detach
+    # nox --tags harbor_up_detach
 
     # /usr/bin/sudo \
     #     /usr/bin/docker \
     #     compose \
     #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.harbor/bin/docker-compose.yml \
-    #     --project-name openstudiolandscapes-harbor up --remove-orphans
+    #     --project-name openstudiolandscapes-harbor up --remove-orphans --detach
 
     compose = (
         pathlib.Path.cwd() / ".landscapes" / ".harbor" / "bin" / "docker-compose.yml"
