@@ -373,7 +373,7 @@ on network availability
 Releases: https://github.com/goharbor/harbor/releases
 
 ```shell
-cd OpenStudioLandscapes/.landscapes/.harbor
+pushd .landscapes/.harbor
 
 export HARBOR_RELEASE=v2.12.2
 
@@ -384,10 +384,42 @@ export INSTALLER_OFFLINE=https://github.com/goharbor/harbor/releases/download/${
 export TEMP_DIR=$(mktemp --directory)
 wget -O ${TEMP_DIR}/${HARBOR_INSTALLER} ${INSTALLER_ONLINE}
 
-tar -xvf --strip-components=1 ${TEMP_DIR}/${HARBOR_INSTALLER} -C ./bin/
+tar -xvf ${TEMP_DIR}/${HARBOR_INSTALLER} --strip-components=1 -C ./bin/
+popd
 ```
 
-And then, continue inside Dagster (`compose_Harbor` group) to:
+And then
+- Create `venv`: `python3.11 -m venv .venv`
+- Activate: `source .venv/bin/activate`
+- Install OpenStudioLandscapes into `venv`: `pip install -e .[dev]`
+- Clone all OpenStudioLandscapes Modules as desired into the same
+  root directory as OpenStudioLandscapes engine itself
+- Install all OpenStudioLandscapes Modules as desired:
+  ```shell
+  pip install "OpenStudioLandscapes-Ayon @ git+https://github.com/michimussato/OpenStudioLandscapes-Ayon@main"
+  pip install "OpenStudioLandscapes-Dagster @ git+https://github.com/michimussato/OpenStudioLandscapes-Dagster@main"
+  pip install "OpenStudioLandscapes-Deadline-10-2 @ git+https://github.com/michimussato/OpenStudioLandscapes-Deadline-10-2@main"
+  pip install "OpenStudioLandscapes-Deadline-10-2-Worker @ git+https://github.com/michimussato/OpenStudioLandscapes-Deadline-10-2-Worker@main"
+  pip install "OpenStudioLandscapes-filebrowser @ git+https://github.com/michimussato/OpenStudioLandscapes-filebrowser@main"
+  pip install "OpenStudioLandscapes-Grafana @ git+https://github.com/michimussato/OpenStudioLandscapes-Grafana@main"
+  pip install "OpenStudioLandscapes-Kitsu @ git+https://github.com/michimussato/OpenStudioLandscapes-Kitsu@main"
+  pip install "OpenStudioLandscapes-LikeC4 @ git+https://github.com/michimussato/OpenStudioLandscapes-LikeC4@main"
+  pip install "OpenStudioLandscapes-NukeRLM-8 @ git+https://github.com/michimussato/OpenStudioLandscapes-NukeRLM-8@main"
+  pip install "OpenStudioLandscapes-OpenCue @ git+https://github.com/michimussato/OpenStudioLandscapes-OpenCue@main"
+  pip install "OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20 @ git+https://github.com/michimussato/OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20@main"
+  pip install "OpenStudioLandscapes-Syncthing @ git+https://github.com/michimussato/OpenStudioLandscapes-Syncthing@main"
+  pip install "OpenStudioLandscapes-Watchtower @ git+https://github.com/michimussato/OpenStudioLandscapes-Watchtower@main"
+  ```
+  ```shell
+  for dir in /nfs/git/repos/OpenStudioLandscapes/*/; do
+      pushd ${dir}
+      pip install -e .[dev]
+      popd
+  done;
+  ```
+- Add `127.0.0.1  postgres-dagster.farm.evil` to `/etc/hosts` 
+- Launch Dagster: `nox --session dagster_mysql` or `nox --session dagster_postgres` 
+and continue inside Dagster (`compose_Harbor` group) to:
 - [configure `harbor.yml`](OpenStudioLandscapes/engine/compose_harbor/assets.py:write_yaml)
 - generate `docker-compose.yml`
 - generate `docker compose` commands

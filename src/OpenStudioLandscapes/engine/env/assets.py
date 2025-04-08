@@ -69,8 +69,11 @@ def secrets(
 ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
     try:
         from __SECRET__.secrets import secrets as _secrets
-    except ModuleNotFoundError:
-        context.log.exception("Failed to import secrets from __SECRET__.secrets")
+    except ModuleNotFoundError as e:
+        context.log.exception(f"Failed to import secrets from __SECRET__.secrets: {e}")
+        _secrets: dict = {}
+    except SyntaxError as e:
+        context.log.exception(f"Failed to import secrets from __SECRET__.secrets: {e}")
         _secrets: dict = {}
 
     yield Output(_secrets)
