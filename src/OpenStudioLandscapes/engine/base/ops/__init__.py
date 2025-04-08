@@ -195,7 +195,7 @@ def op_docker_compose_graph(
     out={
         "group_out": Out(pathlib.Path),
         "compose_project_name": Out(str),
-        "cmd_docker_compose_up": Out(list),
+        "cmd_docker_compose_up": Out(dict[str, list]),
     },
 )
 def op_group_out(
@@ -203,7 +203,7 @@ def op_group_out(
     compose: dict,  # pylint: disable=redefined-outer-name
     env: dict,  # pylint: disable=redefined-outer-name
     group_in: dict,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[pathlib.Path] | Output[str] | Output[list] | AssetMaterialization, None, None]:
+) -> Generator[Output[pathlib.Path] | Output[dict] | Output[str] | Output[list] | AssetMaterialization, None, None]:
 
     docker_yaml = yaml.dump(compose)
 
@@ -259,6 +259,18 @@ def op_group_out(
         "--remove-orphans",
     ]
     script_cmd_docker_compose_up = docker_compose.parent / "docker_compose_up.sh"
+
+    cmd_docker_compose_logs = [
+        shutil.which("docker"),
+        "compose",
+        "--file",
+        docker_compose.as_posix(),
+        "--project-name",
+        compose_project_name,
+        "logs",
+        "--follow",
+    ]
+    script_cmd_docker_compose_logs = docker_compose.parent / "docker_compose_logs.sh"
 
     cmd_docker_compose_pull_up = [
         shutil.which("docker"),
@@ -394,6 +406,21 @@ def op_group_out(
     )
     scripts.append(script_cmd_docker_compose_down.as_posix())
 
+    with open(
+        file=script_cmd_docker_compose_logs,
+        mode="w",
+        encoding="utf-8",
+    ) as fw:
+        fw.write(docker_script["script"])
+        fw.write(f"{shlex.join(cmd_docker_compose_logs)}\n".replace(docker_compose.parent.as_posix(), '"${SCRIPT_DIR}"'))
+        fw.write("\n")
+        fw.write("exit 0;\n")
+    os.chmod(
+        script_cmd_docker_compose_logs,
+        mode=os.stat(script_cmd_docker_compose_logs).st_mode | 0o111,
+    )
+    scripts.append(script_cmd_docker_compose_logs.as_posix())
+
     if "group_out" in context.selected_output_names:
 
         # Todo
@@ -443,7 +470,12 @@ def op_group_out(
 
         yield Output(
             output_name="cmd_docker_compose_up",
-            value=cmd_docker_compose_up,
+            value={
+                "cmd_docker_compose_up": cmd_docker_compose_up,
+                "cmd_docker_compose_pull_up": cmd_docker_compose_pull_up,
+                "cmd_docker_compose_down": cmd_docker_compose_down,
+                "cmd_docker_compose_logs": cmd_docker_compose_logs,
+            },
         )
 
         yield AssetMaterialization(
@@ -468,6 +500,12 @@ def op_group_out(
                     " ".join(
                         shlex.quote(s) if not s in ["&&", ";"] else s
                         for s in cmd_docker_compose_down
+                    )
+                ),
+                "cmd_docker_compose_logs": MetadataValue.path(
+                    " ".join(
+                        shlex.quote(s) if not s in ["&&", ";"] else s
+                        for s in cmd_docker_compose_logs
                     )
                 ),
             },
