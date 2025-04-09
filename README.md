@@ -13,7 +13,9 @@
       * [Installation](#installation)
       * [Harbor DNS](#harbor-dns)
       * [Trust Harbor Registry](#trust-harbor-registry)
+      * [Prepare Harbor](#prepare-harbor)
       * [Start Harbor](#start-harbor)
+      * [Start Harbor (detached)](#start-harbor-detached)
       * [Stop Harbor](#stop-harbor)
       * [Upload Failures](#upload-failures)
     * [Dagster](#dagster)
@@ -86,6 +88,8 @@
     * [Engine](#engine)
       * [Harbor](#harbor-1)
         * [harbor_up](#harbor_up)
+        * [harbor_up_detach](#harbor_up_detach)
+        * [harbor_prepare](#harbor_prepare)
         * [harbor_down](#harbor_down)
       * [Dagster](#dagster-2)
         * [MySQL](#mysql)
@@ -419,11 +423,35 @@ And then
   done;
   ```
 - Add `127.0.0.1  postgres-dagster.farm.evil` to `/etc/hosts` 
+- Add `127.0.0.1  harbor.farm.evil` to `/etc/hosts` 
 - Launch Dagster: `nox --session dagster_mysql` or `nox --session dagster_postgres` 
 and continue inside Dagster (`compose_Harbor` group) to:
 - [configure `harbor.yml`](OpenStudioLandscapes/engine/compose_harbor/assets.py:write_yaml)
 - generate `docker-compose.yml`
 - generate `docker compose` commands
+
+
+
+1. Launch Dagster:
+   ```shell
+   nox --session dagster_postgres
+   ```
+2. Run `Compose_harbor / write_yaml`
+3. Prepare Harbor:
+   ```shell
+   nox --session harbor_prepare
+   ```
+4. Launch Harbor:
+   ```shell
+   nox --session harbor_up
+   ```
+   or
+   ```shell
+   nox --session harbor_up_detach
+   ```
+5. Create Project `openstudiolandscapes` in Harbor Web UI
+   - Private: Authentication is necessary
+   - Public: No Authentication is necessary (simple approach)
 
 [Once Harbor is running](#start-harbor), log in and create a project that reflects the name
 of the docker registry repository name that is used to prefix the docker
@@ -522,9 +550,17 @@ sudo systemctl daemon-reload
 sudo systemctl restart docker
 ```
 
+#### Prepare Harbor
+
+See [`nox --session harbor_prepare`](#harbor_prepare)
+
 #### Start Harbor
 
 See [`nox --session harbor_up`](#harbor_up)
+
+#### Start Harbor (detached)
+
+See [`nox --session harbor_up_detach`](#harbor_up_detach)
 
 #### Stop Harbor
 
@@ -1482,6 +1518,26 @@ Scope:
 
 ```shell
 nox --session harbor_up
+```
+
+Scope:
+- [x] Engine
+- [ ] Modules
+
+##### harbor_up_detach
+
+```shell
+nox --session harbor_up_detach
+```
+
+Scope:
+- [x] Engine
+- [ ] Modules
+
+##### harbor_prepare
+
+```shell
+nox --session harbor_prepare
 ```
 
 Scope:
