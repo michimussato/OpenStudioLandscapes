@@ -1,7 +1,9 @@
+"""
+This is the Feature discovery engine for OpenStudioLandscapes.
+"""
 __all__ = [
     "DISCOVERED_MODULE",
     "IMPORTABLE_FEATURES",
-    # "IMPORTS",
     "IMPORTED_FEATURES",
 ]
 
@@ -35,8 +37,8 @@ for feature in THIRD_PARTY:
     IMPORTABLE_FEATURES.append(feature)
 
 
-IMPORTS = []
-IMPORTED_FEATURES = []
+IMPORTS = []  # used in definitions.py (list of <module> objects)
+IMPORTED_FEATURES = []  # used in dynamic asset imports
 
 
 for feature in IMPORTABLE_FEATURES:
@@ -46,4 +48,3 @@ for feature in IMPORTABLE_FEATURES:
         IMPORTED_FEATURES.append(feature)
     except ModuleNotFoundError as e:
         print(f"Import of {feature['module']} failed as it is not importable ({e})")
-        # raise e
