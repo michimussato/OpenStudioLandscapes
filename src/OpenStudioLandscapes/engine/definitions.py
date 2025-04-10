@@ -1,9 +1,10 @@
 import importlib
 
-from dagster import Definitions
+from dagster import Definitions, get_dagster_logger
 
 from OpenStudioLandscapes.engine.discovery.discovery import IMPORTS
 
+LOGGER = get_dagster_logger(__name__)
 
 imports_engine = [
     "OpenStudioLandscapes.engine.base.definitions",
@@ -24,7 +25,7 @@ for core in imports_engine:
         module_object = importlib.import_module(core)
         modules.append(module_object)
     except ModuleNotFoundError as e:
-        print(e)
+        LOGGER.error(f"Engine setup failed to complete: {e}")
         raise e
 
 

@@ -125,7 +125,7 @@ THIRD_PARTY = [
         "compose_scope": ComposeScope.DEFAULT,
     },
     {
-        "enabled": False,
+        "enabled": True,
         "module": "OpenStudioLandscapes.Kitsu.definitions",
         "compose_scope": ComposeScope.DEFAULT,
     },
