@@ -2002,5 +2002,18 @@ to learn more.
 - [x] Create a `.blend` video template file
       for screen recordings.
 - [ ] A weekly video with instructions
+- [x] Integrate Harbor
 - [ ] Clean up this `README.md`
-- [ ] Improve tests (`noxfile.py`)
+- [ ] Implement tests (`noxfile.py`)
+- [x] Improve Feature discovery
+- [ ] Implement framework-wide terminology and glossary:
+  - "Feature"
+  - "Landscape"
+
+---
+
+```shell
+nox --session harbor_prepare
+nox --session harbor_up
+nox --session dagster_postgres
+```
