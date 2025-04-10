@@ -57,8 +57,6 @@
     * [Create Landscape](#create-landscape)
       * [Launch Dagster](#launch-dagster)
       * [Launch Dagster Postgres](#launch-dagster-postgres)
-        * [Postgres](#postgres)
-        * [Dagster](#dagster-1)
       * [Configure Landscape](#configure-landscape)
       * [Materialize Landscape](#materialize-landscape)
         * [Resulting Files and Directories (aka "Landscape")](#resulting-files-and-directories-aka-landscape)
@@ -91,9 +89,9 @@
         * [harbor_up_detach](#harbor_up_detach)
         * [harbor_prepare](#harbor_prepare)
         * [harbor_down](#harbor_down)
-      * [Dagster](#dagster-2)
+      * [Dagster](#dagster-1)
         * [MySQL](#mysql)
-        * [Postgres](#postgres-1)
+        * [Postgres](#postgres)
       * [SBOM](#sbom)
         * [Python 3.11](#python-311-1)
         * [Python 3.12](#python-312)
@@ -120,7 +118,6 @@
       * [Install](#install-2)
       * [Embed Graphviz Graph](#embed-graphviz-graph)
       * [Reference Graphviz Graph](#reference-graphviz-graph)
-  * [Dagster](#dagster-3)
   * [Development](#development)
     * [Adding new Python dependencies](#adding-new-python-dependencies)
     * [Unit testing](#unit-testing)
@@ -1031,10 +1028,7 @@ f"DATABASE_INSTALL_DESTINATION_{KEY}": {
 #### Launch Dagster
 
 ```shell
-cd ~/git/repos/OpenStudioLandscapes
-source .venv/bin/activate
-export DAGSTER_HOME="$(pwd)/.dagster"
-dagster dev
+nox --session dagster_mysql
 ```
 
 #### Launch Dagster Postgres
@@ -1050,6 +1044,8 @@ sqlite3.OperationalError: database is locked
   [...]
 ```
 
+So, launching Dagster in this way __should__ be the default.
+
 Resources:
 - https://docs.dagster.io/guides/deploy/dagster-instance-configuration
 - https://docs.dagster.io/api/python-api/libraries/dagster-postgres
@@ -1057,43 +1053,35 @@ Resources:
 - https://github.com/docker-library/docs/blob/master/postgres/README.md
 - https://www.getorchestra.io/guides/dagster-open-source-pipelines-postgresql-integration
 
-##### Postgres
-
 ```shell
-# https://github.com/docker-library/docs/blob/master/postgres/README.md
-
-cd ~/git/repos/OpenStudioLandscapes/.dagster-postgres/
-
-docker run \
-    --name postgres-dagster \
-    --domainname farm.evil \
-    --hostname postgres-dagster.farm.evil \
-    --env POSTGRES_USER=postgres \
-    --env POSTGRES_PASSWORD=mysecretpassword \
-    --env POSTGRES_DB=postgres \
-	--env PGDATA=/var/lib/postgresql/data/pgdata \
-	--volume ./.postgres:/var/lib/postgresql/data \
-	--publish 5432:5432 \
-	--rm \
-    docker.io/postgres
-```
-
-##### Dagster
-
-```shell
-cd ~/git/repos/OpenStudioLandscapes
-source .venv/bin/activate
-export DAGSTER_HOME="$(pwd)/.dagster-postgres"
-dagster dev
+nox --session dagster_postgres
 ```
 
 http://0.0.0.0:3000
 
 #### Configure Landscape
 
+Clone the Feature into `.features`:
+
+```shell
+cd OpenStudioLandscapes
+git -C ./.features/ https://github.com/michimussato/OpenStudioLandscapes-<Feature>
+```
+
+Install Feature into `venv`:
+
+```shell
+cd OpenStudioLandscapes
+source .venv/bin/activate
+
+pip install -e ./.features/OpenStudioLandscapes-<Feature>
+
+deactivate
+```
+
 Edit
-- `OpenStudioLandscapes.engine.constants`
-- `OpenStudioLandscapes.<third_party_module>.constants`
+- `OpenStudioLandscapes.engine.constants.THIRD_PARTY`
+- `OpenStudioLandscapes.<Feature>.constants`
 according to your needs.
 
 #### Materialize Landscape
@@ -1364,26 +1352,19 @@ declare -a identical_files=( \
 
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-# The script assumes that all module repos live in the same root dir
-# as this one
+# The script assumes that all Feature repos live in .features
 
 
-for dir in "${SCRIPT_DIR}"/../OpenStudioLandscapes-*/; do
+for dir in "${SCRIPT_DIR}"/.features/; do
   
     echo ""
     echo ""
     echo "################################"
-    echo "Current Module: ${dir}"
+    echo "Current Feature: ${dir}"
     echo "################################"
     echo ""
     
     pushd "${dir}" || exit
-    
-    # if [[ $(pwd) == *"/OpenStudioLandscapes-Template"* ]]; then
-    #     echo "$(pwd) skipped."
-    #     popd || exit
-    #     continue
-    # fi;
     
     for f in "${identical_files[@]}"; do
         echo "---------------------"
@@ -1667,12 +1648,14 @@ Scope:
 
 #### Generate README.md for Modules
 
-Every module has a nox `readme` session.
+Every Feature has a nox `readme` session.
 To create a `README.md`, run:
 
-`nox --session readme`
+```shell
+nox --session readme
+```
 
-on each module:
+on each Feature:
 
 ```shell
 #!/usr/bin/env bash
@@ -1684,25 +1667,20 @@ on each module:
 
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-# The script assumes that all module repos live in the same root dir
-# as this one
+# The script assumes that all Feature repos live in .features
 
 
 for dir in "${SCRIPT_DIR}"/.features/; do
     pushd "${dir}" || exit
     
-    # if [[ $(pwd) == *"/OpenStudioLandscapes-Template"* ]]; then
-    #     # Skip README generation for 
-    #     # OpenStudioLandscapes-Template
-    #     echo "$(pwd) skipped."
-    #     popd || exit
-    #     continue
-    # fi
-      
+    if [ ! -d .venv ]; then
+        python3.11 -m venv .venv
+    fi;
+    
     source .venv/bin/activate
     echo "activated."
     # Updating dev env
-    # To make sure we are not  running into
+    # To make sure we are not running into
     # below (#issues) mentioned problems
     # 
     # Todo:
@@ -1727,26 +1705,31 @@ done;
 
 To update the `nox-report.json`, run
 
-`nox --no-error-on-missing-interpreters --report .nox/nox-report.json`
+```shell
+nox --no-error-on-missing-interpreters --report .nox/nox-report.json
+```
 
-on each module:
+on each Feature:
 
 ```shell
 #!/usr/bin/env bash
 
 # This script updates the README.md files
-# of all OpenStudioLandscapes-Modules based on
-# the template in
-# OpenStudioLandscapes/src/OpenStudioLandscapes/engine/utils/markdown.py
+# of all OpenStudioLandscapes-Features based on
+# the template in OpenStudioLandscpaesUtil.ReadmeGenerator.readme_generator
 
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-# The script assumes that all module repos live in the same root dir
-# as this one
+# The script assumes that all Feature repos live in .features
 
 
 for dir in "${SCRIPT_DIR}"/.features/; do
     pushd "${dir}" || exit
+    
+    if [ ! -d .venv ]; then
+        python3.11 -m venv .venv
+    fi;
+    
     source .venv/bin/activate
     echo "activated."
     # Updating dev env
@@ -1876,7 +1859,7 @@ to be working for `.rst` with the
 
 #### Install `myst-parser`
 
-```
+```shell
 pip install myst-parser
 ```
 
@@ -1915,33 +1898,6 @@ Reference:
 ```
 .. graphviz:: external.dot
 ```
-
-## Dagster
-
-```
-dagster project scaffold --name my-skeleton-package
-```
-
-First, install your Dagster code location as a Python package. By using the --editable flag, pip will install your Python package in ["editable mode"](https://pip.pypa.io/en/latest/topics/local-project-installs/#editable-installs) so that as you develop, local code changes will automatically apply.
-
-```bash
-pip install -e ".[dev]"
-```
-
-Then, start the Dagster UI web server:
-
-```bash
-export DAGSTER_HOME=$(realpath dagster/.dagster)    # `realpath` vs `readlink -f`
-dagster dev --workspace $(realpath dagster/workspace.yaml)  # `realpath` vs `readlink -f`
-```
-
-Open http://localhost:3000 with your browser to see 
-the project.
-
-You can start writing assets in 
-`My_Skeleton_Package.my_skeleton_mackage/assets.py`. 
-The assets are automatically loaded into the Dagster 
-code location as you define them.
 
 ## Development
 
@@ -2009,6 +1965,10 @@ to learn more.
 - [ ] Implement framework-wide terminology and glossary:
   - "Feature"
   - "Landscape"
+- [ ] Jump-Start / Quick-Start
+- [ ] Separate README.md content
+  - [ ] Batch stuff to OpenStudioLandscapes README.md
+  - [ ] Non batch stuff (single lines) to Feature README.md
 
 ---
 
