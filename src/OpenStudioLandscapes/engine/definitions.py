@@ -2,9 +2,10 @@ import importlib
 
 from dagster import Definitions
 
-from OpenStudioLandscapes.engine.constants import THIRD_PARTY
+from OpenStudioLandscapes.engine.discovery.discovery import IMPORTS
 
-imports = [
+
+imports_engine = [
     "OpenStudioLandscapes.engine.base.definitions",
     "OpenStudioLandscapes.engine.env.definitions",
     "OpenStudioLandscapes.engine.compose_harbor.definitions",
@@ -12,19 +13,23 @@ imports = [
     "OpenStudioLandscapes.engine.landscape_map.definitions",
     "OpenStudioLandscapes.engine.compose.definitions",
     "OpenStudioLandscapes.engine.compose_worker.definitions",
-    *[i["module"] for i in THIRD_PARTY if i["enabled"]],
 ]
 
 
 modules = []
 
-for module in imports:
+
+for core in imports_engine:
     try:
-        module_object = importlib.import_module(module)
+        module_object = importlib.import_module(core)
         modules.append(module_object)
     except ModuleNotFoundError as e:
         print(e)
         raise e
+
+
+modules.extend(IMPORTS)
+
 
 defs = Definitions.merge(
     *[i.defs for i in modules],

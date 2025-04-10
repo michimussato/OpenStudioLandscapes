@@ -217,7 +217,7 @@ def dagster_mysql(session):
     # cd ~/git/repos/OpenStudioLandscapes
     # source .venv/bin/activate
     # export DAGSTER_HOME="$(pwd)/.dagster"
-    # dagster dev
+    # dagster dev --host 0.0.0.0
     session.run(
         shutil.which("dagster"),
         "dev",
@@ -291,7 +291,7 @@ def dagster_postgres(session):
     # cd ~/git/repos/OpenStudioLandscapes
     # source .venv/bin/activate
     # export DAGSTER_HOME="$(pwd)/.dagster-postgres"
-    # dagster dev
+    # dagster dev --host 0.0.0.0
     # with session.chdir(".dagster-postgres"):
     session.run(
         shutil.which("dagster"),

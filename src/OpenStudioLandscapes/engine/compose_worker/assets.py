@@ -16,6 +16,7 @@ from dagster import (
 
 from OpenStudioLandscapes.engine.base.ops import op_docker_compose_graph, op_group_out
 from OpenStudioLandscapes.engine.constants import *
+from OpenStudioLandscapes.engine.discovery.discovery import *
 from OpenStudioLandscapes.engine.enums import *
 
 
@@ -59,10 +60,7 @@ def env(
 # Dynamic inputs based on the imported
 # third party code locations
 ins = {}
-for i in THIRD_PARTY:
-    enabled = i["enabled"]
-    if not enabled:
-        continue
+for i in IMPORTED_FEATURES:
     # ex: module = "OpenStudioLandscapes.Ayon.definitions"
     module = i["module"]
     compose_scope = i["compose_scope"]

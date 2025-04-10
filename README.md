@@ -1444,7 +1444,7 @@ further reading:
 Clean filesystem from Docker items (quick and dirty)
 
 ```shell
-sudo systemctl stop openstudiolandscapes-registry.service
+# sudo systemctl stop openstudiolandscapes-registry.service
 docker stop $(docker ps -q)
 docker container prune -f
 docker image prune -a -f
@@ -1688,16 +1688,16 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # as this one
 
 
-for dir in "${SCRIPT_DIR}"/../OpenStudioLandscapes-*/; do
+for dir in "${SCRIPT_DIR}"/.features/; do
     pushd "${dir}" || exit
     
-    if [[ $(pwd) == *"/OpenStudioLandscapes-Template"* ]]; then
-        # Skip README generation for 
-        # OpenStudioLandscapes-Template
-        echo "$(pwd) skipped."
-        popd || exit
-        continue
-    fi
+    # if [[ $(pwd) == *"/OpenStudioLandscapes-Template"* ]]; then
+    #     # Skip README generation for 
+    #     # OpenStudioLandscapes-Template
+    #     echo "$(pwd) skipped."
+    #     popd || exit
+    #     continue
+    # fi
       
     source .venv/bin/activate
     echo "activated."
@@ -1745,7 +1745,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # as this one
 
 
-for dir in "${SCRIPT_DIR}"/../OpenStudioLandscapes-*/; do
+for dir in "${SCRIPT_DIR}"/.features/; do
     pushd "${dir}" || exit
     source .venv/bin/activate
     echo "activated."
