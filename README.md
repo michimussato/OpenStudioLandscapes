@@ -66,7 +66,7 @@
       * [Deadline Monitor](#deadline-monitor)
   * [Guides](#guides)
     * [Github: SSH Authentication](#github-ssh-authentication)
-    * [Hard Links: Sync Files and Directories across Repositories](#hard-links-sync-files-and-directories-across-repositories)
+    * [Hard Links: Sync Files and Directories across Repositories (De-Duplication)](#hard-links-sync-files-and-directories-across-repositories-de-duplication)
     * [OBS Studio](#obs-studio)
       * [Background Removal](#background-removal)
       * [Load Settings](#load-settings)
@@ -111,10 +111,8 @@
       * [nox Documentation](#nox-documentation)
       * [nox Report](#nox-report)
       * [Issues](#issues)
-        * [Fix: `pip install -e ../OpenStudioLandscapes/[dev]`](#fix-pip-install--e-openstudiolandscapesdev)
+        * [Fix: `pip install -e "../OpenStudioLandscapes/[dev]"`](#fix-pip-install--e-openstudiolandscapesdev)
         * [Fix: Enable in `OpenStudioLandscapes.engine.constants`](#fix-enable-in-openstudiolandscapesengineconstants)
-        * [Fix: `pip install -e ../OpenStudioLandscapes-Deadline-10-2/[dev]`](#fix-pip-install--e-openstudiolandscapes-deadline-10-2dev)
-        * [Fix: `pip install -e ../OpenStudioLandscapes-Kitsu/[dev]`](#fix-pip-install--e-openstudiolandscapes-kitsudev)
   * [Documentation (Sphinx)](#documentation-sphinx)
     * [Builders](#builders)
     * [Markdown Support](#markdown-support)
@@ -1280,7 +1278,7 @@ Copy/Paste command and execute:
 2. https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
 3. https://github.com/settings/keys
 
-### Hard Links: Sync Files and Directories across Repositories
+### Hard Links: Sync Files and Directories across Repositories (De-Duplication)
 
 While syncing files across directories may
 seem like a sound thing to do, it could be 
@@ -1302,10 +1300,10 @@ a different physical drive.
 Example:
 
 ```shell
-cd OpenStudioLandscapes-Ayon
-ln -f ../OpenStudioLandscapes/noxfile.py noxfile.py
+cd .features/OpenStudioLandscapes-Ayon
+ln ../../../OpenStudioLandscapes/noxfile.py noxfile.py
 # to force if noxfile.py already exists:
-# ln -f ../OpenStudioLandscapes/noxfile.py noxfile.py
+# ln -f ../../../OpenStudioLandscapes/noxfile.py  noxfile.py
 ```
 
 I'm doing that for the following set of files:
@@ -1317,8 +1315,6 @@ From `OpenStudioLandscapes` into every Feature, except:
 %% https://mermaid-js.github.io/mermaid-live-editor
 mindmap
   root(OpenStudioLandscapes)
-    OpenStudioLandscapes-Template
-    ::icon(mdi mdi-close)
     OpenStudioLandscapes-Ayon
     ::icon(mdi mdi-check)
     OpenStudioLandscapes-Kitsu
@@ -1357,11 +1353,12 @@ declare -a identical_files=( \
 )
 
 
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-# The script assumes that all Feature repos live in .features
+LN_PWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 
-for dir in "${SCRIPT_DIR}"/.features/; do
+pushd .features || exit
+
+for dir in */; do
   
     echo ""
     echo ""
@@ -1379,16 +1376,18 @@ for dir in "${SCRIPT_DIR}"/.features/; do
         cd "${dir}/$(dirname ${f})"
         echo "CWD: $(pwd)"
         echo "---------------------"
-        TARGET="${SCRIPT_DIR}/${f}"
+        TARGET="${LN_PWD}/${f}"
         echo "${TARGET}"
         LINK_NAME="${f}"
         # ln --interactive --backup=numbered ${TARGET} $(basename ${LINK_NAME})
         ln --force --backup=numbered ${TARGET} $(basename ${LINK_NAME})
         
     done;
+
     popd || exit
-    
 done;
+
+popd || exit
 ```
 
 ### OBS Studio
