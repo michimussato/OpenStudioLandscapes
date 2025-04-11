@@ -1319,7 +1319,7 @@ mindmap
     ::icon(mdi mdi-check)
     OpenStudioLandscapes-Kitsu
     ::icon(mdi mdi-check)
-    OpenStudioLandscapes-[...]
+    OpenStudioLandscapes-Feature
     ::icon(mdi mdi-check)
 ```
 
