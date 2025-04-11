@@ -81,6 +81,7 @@
     * [Install](#install-1)
     * [Run](#run)
   * [nox](#nox)
+    * [Current Sessions](#current-sessions)
     * [Generate Report](#generate-report)
     * [Python Versions](#python-versions)
     * [Engine](#engine)
@@ -101,8 +102,13 @@
       * [Readme](#readme)
       * [Release](#release)
       * [Docs](#docs)
-    * [Batch Jobs (for Modules)](#batch-jobs-for-modules)
-      * [Generate README.md for Modules](#generate-readmemd-for-modules)
+    * [Batch Jobs (for Features)](#batch-jobs-for-features)
+      * [Clone Features](#clone-features)
+      * [Setup Feature-`venv` (`[dev]`)](#setup-feature-venv-dev)
+      * [Install Features](#install-features)
+        * [Into OpenStudioLandscapes-`venv`](#into-openstudiolandscapes-venv)
+      * [Generate README.md for Features](#generate-readmemd-for-features)
+      * [nox Documentation](#nox-documentation)
       * [nox Report](#nox-report)
       * [Issues](#issues)
         * [Fix: `pip install -e ../OpenStudioLandscapes/[dev]`](#fix-pip-install--e-openstudiolandscapesdev)
@@ -175,7 +181,7 @@ lack the fundamental skills and/or budget to write a solution like
 OpenStudioLandscapes by themselves while being flexible enough
 for everyone *with* the technical skills to make their way through
 configuring a Landscape or even writing their own OpenStudioLandscapes
-modules for custom or proprietary services to fully fit their needs.
+Features for custom or proprietary services to fully fit their needs.
 
 I guess this is a good starting point to open the project up to
 the animation and VFX community to find out where (or where else) 
@@ -392,10 +398,10 @@ popd
 And then
 - Create `venv`: `python3.11 -m venv .venv`
 - Activate: `source .venv/bin/activate`
-- Install OpenStudioLandscapes into `venv`: `pip install -e .[dev]`
-- Clone all OpenStudioLandscapes Modules as desired into the same
+- Install OpenStudioLandscapes into `venv`: `pip install -e ".[dev]"`
+- Clone all OpenStudioLandscapes Features as desired into the same
   root directory as OpenStudioLandscapes engine itself
-- Install all OpenStudioLandscapes Modules as desired:
+- Install all OpenStudioLandscapes Features as desired:
   ```shell
   pip install "OpenStudioLandscapes @ git+https://github.com/michimussato/OpenStudioLandscapes@main"
   pip install "OpenStudioLandscapes-Ayon @ git+https://github.com/michimussato/OpenStudioLandscapes-Ayon@main"
@@ -415,7 +421,7 @@ And then
   ```shell
   for dir in /nfs/git/repos/OpenStudioLandscapes/*/; do
       pushd ${dir}
-      pip install -e .[dev]
+      pip install -e ".[dev]"
       popd
   done;
   ```
@@ -981,7 +987,7 @@ cd OpenStudioLandscapes
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip setuptools
-pip install -e .[dev]
+pip install -e ".[dev]"
 ```
 
 ### Install
@@ -997,7 +1003,7 @@ python -m pip install --upgrade pip setuptools
 #### OpenStudioLandscapes
 
 ```shell
-python -m pip install git+https://github.com/michimussato/OpenStudioLandscapes.git@main
+python -m pip install "git+https://github.com/michimussato/OpenStudioLandscapes.git@main"
 ```
 
 #### DeadlineDatabase10
@@ -1074,7 +1080,7 @@ Install Feature into `venv`:
 cd OpenStudioLandscapes
 source .venv/bin/activate
 
-pip install -e ./.features/OpenStudioLandscapes-<Feature>
+pip install -e "./.features/OpenStudioLandscapes-<Feature>"
 
 deactivate
 ```
@@ -1304,7 +1310,7 @@ ln -f ../OpenStudioLandscapes/noxfile.py noxfile.py
 
 I'm doing that for the following set of files:
 
-From `OpenStudioLandscapes` into every module, except:
+From `OpenStudioLandscapes` into every Feature, except:
 - `OpenStudioLandscapes-Template`
 
 ```mermaid
@@ -1460,6 +1466,34 @@ docker network prune -f
 pre-commit install
 ```
 
+For all Features:
+
+```shell
+pushd .features || exit
+
+for dir in */; do
+    pushd "${dir}" || exit
+    
+    if [ ! -d .venv ]; then
+        python3.11 -m venv .venv
+    fi;
+    
+    source .venv/bin/activate
+    echo "venv activated."
+    
+    echo "Installing pre-commit in ${dir}..."
+    pre-commit install
+    echo "Installed."
+    
+    deactivate
+    echo "deactivated."
+
+    popd || exit
+done;
+
+popd || exit
+```
+
 ### Run
 
 ```shell
@@ -1472,8 +1506,33 @@ pre-commit run --all-files
 nox --help
 ```
 
+### Current Sessions
+
 ```shell
+OpenStudioLandscapes git:[main]
 nox --list-sessions
+Sessions defined in /home/michael/git/repos/OpenStudioLandscapes/noxfile.py:
+
+- harbor_prepare -> Prepare Harbor with `sudo`.
+- harbor_up -> Start Harbor with `sudo`.
+- harbor_up_detach -> Start Harbor with `sudo` and detach.
+- harbor_down -> Stop Harbor with `sudo`.
+- dagster_mysql -> Start Dagster with MySQL (default) as backend.
+- dagster_postgres -> Start Dagster with Postgres as backend.
+* sbom-3.11 -> Runs Software Bill of Materials (SBOM).
+* sbom-3.12 -> Runs Software Bill of Materials (SBOM).
+* coverage-3.11 -> Runs coverage
+* coverage-3.12 -> Runs coverage
+* lint-3.11 -> Runs linters and fixers
+* lint-3.12 -> Runs linters and fixers
+* testing-3.11 -> Runs pytests.
+* testing-3.12 -> Runs pytests.
+* readme -> Generate dynamically created README file for
+- release-3.11 -> Build and release to a repository
+- release-3.12 -> Build and release to a repository
+* docs -> Creates Sphinx documentation.
+
+sessions marked with * are selected, sessions marked with - are skipped
 ```
 
 ### Generate Report
@@ -1484,7 +1543,7 @@ nox --no-error-on-missing-interpreters --report .nox/nox-report.json
 
 Scope:
 - [x] Engine
-- [x] Modules
+- [x] Features
 
 ### Python Versions
 
@@ -1503,7 +1562,7 @@ nox --session harbor_up
 
 Scope:
 - [x] Engine
-- [ ] Modules
+- [ ] Features
 
 ##### harbor_up_detach
 
@@ -1513,7 +1572,7 @@ nox --session harbor_up_detach
 
 Scope:
 - [x] Engine
-- [ ] Modules
+- [ ] Features
 
 ##### harbor_prepare
 
@@ -1523,7 +1582,7 @@ nox --session harbor_prepare
 
 Scope:
 - [x] Engine
-- [ ] Modules
+- [ ] Features
 
 ##### harbor_down
 
@@ -1533,7 +1592,7 @@ nox --session harbor_down
     
 Scope:
 - [x] Engine
-- [ ] Modules
+- [ ] Features
 
 #### Dagster
 
@@ -1545,7 +1604,7 @@ nox --session dagster_mysql
     
 Scope:
 - [x] Engine
-- [ ] Modules
+- [ ] Features
 
 ##### Postgres
 
@@ -1555,7 +1614,7 @@ nox --session dagster_postgres
     
 Scope:
 - [x] Engine
-- [ ] Modules
+- [ ] Features
 
 #### SBOM
 
@@ -1565,7 +1624,7 @@ nox --session sbom
     
 Scope:
 - [x] Engine
-- [x] Modules
+- [x] Features
 
 ##### Python 3.11
 
@@ -1587,7 +1646,7 @@ nox --session coverate
     
 Scope:
 - [x] Engine
-- [x] Modules
+- [x] Features
 
 #### Lint (pylint)
 
@@ -1597,7 +1656,7 @@ nox --session lint
     
 Scope:
 - [x] Engine
-- [x] Modules
+- [x] Features
 
 - `# pylint: disable=redefined-outer-name` ([`W0621`](https://pylint.pycqa.org/en/latest/user_guide/messages/warning/redefined-outer-name.html)): Due to Dagsters way of piping
   arguments into assets.
@@ -1610,7 +1669,7 @@ nox --session testing
     
 Scope:
 - [x] Engine
-- [x] Modules
+- [x] Features
 
 #### Readme
 
@@ -1620,7 +1679,7 @@ nox --session readme
     
 Scope:
 - [ ] Engine
-- [x] Modules
+- [x] Features
 
 #### Release
 
@@ -1632,7 +1691,7 @@ nox --session release
     
 Scope:
 - [x] Engine
-- [x] Modules
+- [x] Features
 
 #### Docs
 
@@ -1642,35 +1701,34 @@ nox --session docs
     
 Scope:
 - [x] Engine
-- [x] Modules
+- [x] Features
 
-### Batch Jobs (for Modules)
+### Batch Jobs (for Features)
 
-#### Generate README.md for Modules
-
-Every Feature has a nox `readme` session.
-To create a `README.md`, run:
+#### Clone Features
 
 ```shell
-nox --session readme
+git -C .features clone https://github.com/michimussato/OpenStudioLandscapes-Ayon
+git -C .features clone https://github.com/michimussato/OpenStudioLandscapes-Dagster
+git -C .features clone https://github.com/michimussato/OpenStudioLandscapes-Deadline-10-2
+git -C .features clone https://github.com/michimussato/OpenStudioLandscapes-Deadline-10-2-Worker
+git -C .features clone https://github.com/michimussato/OpenStudioLandscapes-filebrowser
+# WIP: git -C .features clone https://github.com/michimussato/OpenStudioLandscapes-Grafana
+git -C .features clone https://github.com/michimussato/OpenStudioLandscapes-Kitsu
+# WIP: git -C .features clone https://github.com/michimussato/OpenStudioLandscapes-LikeC4
+git -C .features clone https://github.com/michimussato/OpenStudioLandscapes-NukeRLM-8
+# WIP: git -C .features clone https://github.com/michimussato/OpenStudioLandscapes-OpenCue
+git -C .features clone https://github.com/michimussato/OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20
+git -C .features clone https://github.com/michimussato/OpenStudioLandscapes-Syncthing
+# WIP: git -C .features clone https://github.com/michimussato/OpenStudioLandscapes-Watchtower
 ```
 
-on each Feature:
+#### Setup Feature-`venv` (`[dev]`)
 
 ```shell
-#!/usr/bin/env bash
+pushd .features || exit
 
-# This script updates the README.md files
-# of all OpenStudioLandscapes-Modules based on
-# the template in
-# OpenStudioLandscapes/src/OpenStudioLandscapes/engine/utils/markdown.py
-
-
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-# The script assumes that all Feature repos live in .features
-
-
-for dir in "${SCRIPT_DIR}"/.features/; do
+for dir in */; do
     pushd "${dir}" || exit
     
     if [ ! -d .venv ]; then
@@ -1678,27 +1736,109 @@ for dir in "${SCRIPT_DIR}"/.features/; do
     fi;
     
     source .venv/bin/activate
-    echo "activated."
-    # Updating dev env
-    # To make sure we are not running into
-    # below (#issues) mentioned problems
-    # 
-    # Todo:
-    #  - [ ] Is this necessary?
-    # pip install -e ../OpenStudioLandscapes/[dev]
-    # maybe simply 
-    pip install nox
-    # or
-    # pip install -e ../OpenStudioLandscapes/[nox]
+    echo "venv activated."
     
-    echo "Generating README.md in ${dir}..."
-    nox --session readme
-    echo "nox done."
+    echo "Installing [dev] in ${dir}..."
+    pip install ".[dev]"
+    echo "Installed."
     
     deactivate
     echo "deactivated."
+
     popd || exit
 done;
+
+popd || exit
+```
+
+#### Install Features
+
+##### Into OpenStudioLandscapes-`venv`
+
+```shell
+pip install -e ".features/OpenStudioLandscapes-Ayon"
+pip install -e ".features/OpenStudioLandscapes-Dagster"
+pip install -e ".features/OpenStudioLandscapes-Deadline-10-2"
+pip install -e ".features/OpenStudioLandscapes-Deadline-10-2-Worker"
+pip install -e ".features/OpenStudioLandscapes-filebrowser"
+# pip install -e ".features/OpenStudioLandscapes-Grafana"
+pip install -e ".features/OpenStudioLandscapes-Kitsu"
+# pip install -e ".features/OpenStudioLandscapes-LikeC4"
+pip install -e ".features/OpenStudioLandscapes-NukeRLM-8"
+# pip install -e ".features/OpenStudioLandscapes-OpenCue"
+pip install -e ".features/OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20"
+pip install -e ".features/OpenStudioLandscapes-Syncthing"
+# pip install -e ".features/OpenStudioLandscapes-Watchtower"
+```
+
+#### Generate README.md for Features
+
+The Feature-README.md's all follow the same basic
+structure, hence, they are created programmatically.
+
+Every Feature has a nox `readme` session.
+To create a `README.md` for a single Feature, run:
+
+```shell
+cd .features/OpenStudioLandscape-Feature
+
+nox --session readme
+```
+
+To create a batch job for all Features, run:
+
+```shell
+pushd .features || exit
+
+for dir in */; do
+    pushd "${dir}" || exit
+    
+    if [ ! -d .venv ]; then
+        python3.11 -m venv .venv
+    fi;
+    
+    source .venv/bin/activate
+    echo "venv activated."
+    
+    echo "Generating README.md in ${dir}..."
+    nox --session readme
+    echo "nox (readme) done."
+    
+    deactivate
+    echo "deactivated."
+
+    popd || exit
+done;
+
+popd || exit
+```
+
+#### nox Documentation
+
+```shell
+pushd .features || exit
+
+for dir in */; do
+    pushd "${dir}" || exit
+    
+    if [ ! -d .venv ]; then
+        python3.11 -m venv .venv
+    fi;
+    
+    source .venv/bin/activate
+    echo "venv activated."
+    
+    echo "Running nox in ${dir}..."
+    nox --session docs
+    echo "nox (docs) done."
+    
+    deactivate
+    echo "deactivated."
+
+    popd || exit
+done;
+
+popd || exit
 ```
 
 #### nox Report
@@ -1712,18 +1852,9 @@ nox --no-error-on-missing-interpreters --report .nox/nox-report.json
 on each Feature:
 
 ```shell
-#!/usr/bin/env bash
+pushd .features || exit
 
-# This script updates the README.md files
-# of all OpenStudioLandscapes-Features based on
-# the template in OpenStudioLandscpaesUtil.ReadmeGenerator.readme_generator
-
-
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-# The script assumes that all Feature repos live in .features
-
-
-for dir in "${SCRIPT_DIR}"/.features/; do
+for dir in */; do
     pushd "${dir}" || exit
     
     if [ ! -d .venv ]; then
@@ -1731,32 +1862,24 @@ for dir in "${SCRIPT_DIR}"/.features/; do
     fi;
     
     source .venv/bin/activate
-    echo "activated."
-    # Updating dev env
-    # To make sure we are not running into
-    # below (#issues) mentioned problems
-    # 
-    # Todo:
-    #  - [ ] Is this necessary?
-    # pip install -e ../OpenStudioLandscapes/[dev]
-    # maybe simply 
-    pip install nox
-    # or
-    # pip install -e ../OpenStudioLandscapes/[nox]
+    echo "venv activated."
     
     echo "Running nox in ${dir}..."
     nox --no-error-on-missing-interpreters --report .nox/nox-report.json
     echo "nox done."
-        
+    
     deactivate
     echo "deactivated."
+
     popd || exit
 done;
+
+popd || exit
 ```
 
 #### Issues
 
-##### Fix: `pip install -e ../OpenStudioLandscapes/[dev]`
+##### Fix: `pip install -e "../OpenStudioLandscapes/[dev]"`
 
 ```
 Traceback (most recent call last):
@@ -1783,58 +1906,6 @@ Traceback (most recent call last):
   File "/home/michael/git/repos/OpenStudioLandscapes-OpenCue/src/OpenStudioLandscapes/OpenCue/constants.py", line 63, in <module>
     raise Exception("No compose_scope found for module '%s'" % _module)
 Exception: No compose_scope found for module 'OpenStudioLandscapes.OpenCue.constants'
-```
-
-##### Fix: `pip install -e ../OpenStudioLandscapes-Deadline-10-2/[dev]`
-
-This should not happen anymore once the repos are public and
-the dependencies in `setup.cfg` are added and publicly accessible.
-
-```
-cd OpenStudioLandscapes-Deadline-10-2-Worker
-source .venv/bin/activate
-# Hint on zsh:
-# $ pip install -e ../OpenStudioLandscapes/[dev]
-# zsh: no matches found: ../OpenStudioLandscapes/[dev]
-# Solution:
-# use bash
-pip install -e ../OpenStudioLandscapes/[dev]
-pip install -e ../OpenStudioLandscapes-Deadline-10-2/[dev]
-```
-
-```
-Traceback (most recent call last):
-  File "/home/michael/git/repos/OpenStudioLandscapes-Deadline-10-2-Worker/readme_generator.py", line 5, in <module>
-    from OpenStudioLandscapes.Deadline_10_2_Worker import constants
-  File "/home/michael/git/repos/OpenStudioLandscapes-Deadline-10-2-Worker/src/OpenStudioLandscapes/Deadline_10_2_Worker/constants.py", line 26, in <module>
-    from OpenStudioLandscapes.Deadline_10_2.constants import KEY as KEY_MASTER
-ModuleNotFoundError: No module named 'OpenStudioLandscapes.Deadline_10_2'
-```
-
-##### Fix: `pip install -e ../OpenStudioLandscapes-Kitsu/[dev]`
-
-This should not happen anymore once the repos are public and
-the dependencies in `setup.cfg` are added and publicly accessible.
-
-```
-cd OpenStudioLandscapes-Watchtower
-source .venv/bin/activate
-# Hint on zsh:
-# $ pip install -e ../OpenStudioLandscapes/[dev]
-# zsh: no matches found: ../OpenStudioLandscapes/[dev]
-# Solution:
-# use bash
-pip install -e ../OpenStudioLandscapes/[dev]
-pip install -e ../OpenStudioLandscapes-Kitsu/[dev]
-```
-
-```
-Traceback (most recent call last):
-  File "/home/michael/git/repos/OpenStudioLandscapes-Watchtower/readme_generator.py", line 9, in <module>
-    from OpenStudioLandscapes.Watchtower import constants
-  File "/home/michael/git/repos/OpenStudioLandscapes-Watchtower/src/OpenStudioLandscapes/Watchtower/constants.py", line 26, in <module>
-    from OpenStudioLandscapes.Kitsu.constants import KEY as KEY_KITSU
-ModuleNotFoundError: No module named 'OpenStudioLandscapes.Kitsu
 ```
 
 ## Documentation (Sphinx)
@@ -1966,9 +2037,12 @@ to learn more.
   - "Feature"
   - "Landscape"
 - [ ] Jump-Start / Quick-Start
-- [ ] Separate README.md content
-  - [ ] Batch stuff to OpenStudioLandscapes README.md
-  - [ ] Non batch stuff (single lines) to Feature README.md
+- [x] Separate README.md content
+  - [x] Batch stuff to OpenStudioLandscapes README.md
+  - [x] Non batch stuff (single lines) to Feature README.md
+- [ ] Migrate to `pyproject.toml` exclusively
+- [x] Quote `pip install`s (`zsh: no matches found: .[dev]`)
+  - `pip install ".[dev]"` works in `zsh`
 
 ---
 
