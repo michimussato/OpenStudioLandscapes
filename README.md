@@ -2042,6 +2042,7 @@ to learn more.
 - [ ] Migrate to `pyproject.toml` exclusively
 - [x] Quote `pip install`s (`zsh: no matches found: .[dev]`)
   - `pip install ".[dev]"` works in `zsh`
+- [ ] Add `OpenStudioLandscapes-Pi-hole` to `readme_generator.py` (if successful)
 
 ---
 
