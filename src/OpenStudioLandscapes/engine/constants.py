@@ -186,6 +186,11 @@ THIRD_PARTY = [
         "module": "OpenStudioLandscapes.Watchtower.definitions",
         "compose_scope": ComposeScope.DEFAULT,
     },
+    {
+        "enabled": True,
+        "module": "OpenStudioLandscapes.Pi_hole.definitions",
+        "compose_scope": ComposeScope.DEFAULT,
+    },
 ]
 
 
