@@ -144,16 +144,16 @@ THIRD_PARTY = [
         "module": "OpenStudioLandscapes.Deadline_10_2_Worker.definitions",
         "compose_scope": ComposeScope.WORKER,
     },
-    # {
-    #     "enabled": True,
-    #     "module": "OpenStudioLandscapes.filebrowser.definitions",
-    #     "compose_scope": ComposeScope.DEFAULT,
-    # },
-    # {
-    #     "enabled": False,
-    #     "module": "OpenStudioLandscapes.Grafana.definitions",
-    #     "compose_scope": ComposeScope.DEFAULT,
-    # },
+    {
+        "enabled": True,
+        "module": "OpenStudioLandscapes.filebrowser.definitions",
+        "compose_scope": ComposeScope.DEFAULT,
+    },
+    {
+        "enabled": False,
+        "module": "OpenStudioLandscapes.Grafana.definitions",
+        "compose_scope": ComposeScope.DEFAULT,
+    },
     {
         "enabled": True,
         "module": "OpenStudioLandscapes.SESI_gcc_9_3_Houdini_20.definitions",
@@ -164,28 +164,28 @@ THIRD_PARTY = [
         "module": "OpenStudioLandscapes.NukeRLM_8.definitions",
         "compose_scope": ComposeScope.LICENSE_SERVER,
     },
-    # {
-    #     "enabled": False,
-    #     # error: no health check configured
-    #     "module": "OpenStudioLandscapes.OpenCue.definitions",
-    #     "compose_scope": ComposeScope.DEFAULT,
-    # },
-    # {
-    #     "enabled": False,
-    #     # error This project's package.json defines "packageManager": "yarn@pnpm@10.6.2". However the current global version of Yarn is 1.22.22.
-    #     "module": "OpenStudioLandscapes.LikeC4.definitions",
-    #     "compose_scope": ComposeScope.DEFAULT,
-    # },
-    # {
-    #     "enabled": True,
-    #     "module": "OpenStudioLandscapes.Syncthing.definitions",
-    #     "compose_scope": ComposeScope.DEFAULT,
-    # },
-    # {
-    #     "enabled": False,
-    #     "module": "OpenStudioLandscapes.Watchtower.definitions",
-    #     "compose_scope": ComposeScope.DEFAULT,
-    # },
+    {
+        "enabled": False,
+        # error: no health check configured
+        "module": "OpenStudioLandscapes.OpenCue.definitions",
+        "compose_scope": ComposeScope.DEFAULT,
+    },
+    {
+        "enabled": False,
+        # error This project's package.json defines "packageManager": "yarn@pnpm@10.6.2". However the current global version of Yarn is 1.22.22.
+        "module": "OpenStudioLandscapes.LikeC4.definitions",
+        "compose_scope": ComposeScope.DEFAULT,
+    },
+    {
+        "enabled": True,
+        "module": "OpenStudioLandscapes.Syncthing.definitions",
+        "compose_scope": ComposeScope.DEFAULT,
+    },
+    {
+        "enabled": False,
+        "module": "OpenStudioLandscapes.Watchtower.definitions",
+        "compose_scope": ComposeScope.DEFAULT,
+    },
 ]
 
 
