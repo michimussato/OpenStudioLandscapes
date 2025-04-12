@@ -49,6 +49,24 @@ ENV = {}
 
 #######################################################################################################################
 # Pi-hole
+
+compose_pi_hole = (
+    pathlib.Path.cwd()
+    / ".landscapes"
+    / ".pi-hole"
+    / "docker_compose"
+    / "docker-compose.yml"
+)
+
+cmd_pi_hole = [
+    shutil.which("docker"),
+    "compose",
+    "--file",
+    compose_pi_hole.as_posix(),
+    "--project-name",
+    "openstudiolandscapes-pi-hole",
+]
+
 # # pi_hole_up
 @nox.session(python=None, tags=["pi_hole_up"])
 def pi_hole_up(session):
@@ -68,28 +86,15 @@ def pi_hole_up(session):
     #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.pi-hole/docker_compose/docker-compose.yml \
     #     --project-name openstudiolandscapes-pi-hole up --remove-orphans
 
-    compose = (
-        pathlib.Path.cwd()
-        / ".landscapes"
-        / ".pi-hole"
-        / "docker_compose"
-        / "docker-compose.yml"
-    )
-
-    if not compose.exists():
+    if not compose_pi_hole.exists():
         raise FileNotFoundError(
-            f"Compose file not found: {compose}. "
+            f"Compose file not found: {compose_pi_hole}. "
             f"Execute `Compose_pi_hole / compose` in "
             f"Dagster to create it."
         )
 
     session.run(
-        shutil.which("docker"),
-        "compose",
-        "--file",
-        compose.as_posix(),
-        "--project-name",
-        "openstudiolandscapes-pi-hole",
+        *cmd_pi_hole,
         "up",
         "--remove-orphans",
         env=ENV,
@@ -116,28 +121,15 @@ def pi_hole_up_detach(session):
     #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.pi-hole/docker_compose/docker-compose.yml \
     #     --project-name openstudiolandscapes-pi-hole up --remove-orphans --detach
 
-    compose = (
-        pathlib.Path.cwd()
-        / ".landscapes"
-        / ".pi-hole"
-        / "docker_compose"
-        / "docker-compose.yml"
-    )
-
-    if not compose.exists():
+    if not compose_pi_hole.exists():
         raise FileNotFoundError(
-            f"Compose file not found: {compose}. "
+            f"Compose file not found: {compose_pi_hole}. "
             f"Execute `Compose_pi_hole / compose` in "
             f"Dagster to create it."
         )
 
     session.run(
-        shutil.which("docker"),
-        "compose",
-        "--file",
-        compose.as_posix(),
-        "--project-name",
-        "openstudiolandscapes-pi-hole",
+        *cmd_pi_hole,
         "up",
         "--remove-orphans",
         "--detach",
@@ -165,28 +157,15 @@ def pi_hole_down(session):
     #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.pi-hole/docker_compose/docker-compose.yml \
     #     --project-name openstudiolandscapes-pi-holw down
 
-    compose = (
-        pathlib.Path.cwd()
-        / ".landscapes"
-        / ".pi-hole"
-        / "docker_compose"
-        / "docker-compose.yml"
-    )
-
-    if not compose.exists():
+    if not compose_pi_hole.exists():
         raise FileNotFoundError(
-            f"Compose file not found: {compose}. "
+            f"Compose file not found: {compose_pi_hole}. "
             f"Execute `Compose_pi_hole / compose` in "
             f"Dagster to create it."
         )
 
     session.run(
-        shutil.which("docker"),
-        "compose",
-        "--file",
-        compose.as_posix(),
-        "--project-name",
-        "openstudiolandscapes-pi-hole",
+        *cmd_pi_hole,
         "down",
         env=ENV,
         external=True,
@@ -198,6 +177,21 @@ def pi_hole_down(session):
 
 #######################################################################################################################
 # Harbor
+
+compose_harbor = (
+    pathlib.Path.cwd() / ".landscapes" / ".harbor" / "bin" / "docker-compose.yml"
+)
+
+cmd_harbor = [
+    shutil.which("sudo"),
+    shutil.which("docker"),
+    "compose",
+    "--file",
+    compose_harbor.as_posix(),
+    "--project-name",
+    "openstudiolandscapes-harbor",
+]
+
 # # harbor_prepare
 @nox.session(python=None, tags=["harbor_prepare"])
 def harbor_prepare(session):
@@ -247,18 +241,8 @@ def harbor_up(session):
     #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.harbor/bin/docker-compose.yml \
     #     --project-name openstudiolandscapes-harbor up --remove-orphans
 
-    compose = (
-        pathlib.Path.cwd() / ".landscapes" / ".harbor" / "bin" / "docker-compose.yml"
-    )
-
     session.run(
-        shutil.which("sudo"),
-        shutil.which("docker"),
-        "compose",
-        "--file",
-        compose.as_posix(),
-        "--project-name",
-        "openstudiolandscapes-harbor",
+        *cmd_harbor,
         "up",
         "--remove-orphans",
         env=ENV,
@@ -286,19 +270,8 @@ def harbor_up_detach(session):
     #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.harbor/bin/docker-compose.yml \
     #     --project-name openstudiolandscapes-harbor up --remove-orphans --detach
 
-    compose = (
-        pathlib.Path.cwd() / ".landscapes" / ".harbor" / "bin" / "docker-compose.yml"
-    )
-
     session.run(
-        shutil.which("sudo"),
-        shutil.which("docker"),
-        "compose",
-        "--file",
-        compose.as_posix(),
-        "--project-name",
-        "openstudiolandscapes-harbor",
-        "up",
+        *cmd_harbor,
         "--remove-orphans",
         "--detach",
         env=ENV,
@@ -326,18 +299,8 @@ def harbor_down(session):
     #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.harbor/bin/docker-compose.yml \
     #     --project-name openstudiolandscapes-harbor down
 
-    compose = (
-        pathlib.Path.cwd() / ".landscapes" / ".harbor" / "bin" / "docker-compose.yml"
-    )
-
     session.run(
-        shutil.which("sudo"),
-        shutil.which("docker"),
-        "compose",
-        "--file",
-        compose.as_posix(),
-        "--project-name",
-        "openstudiolandscapes-harbor",
+        *cmd_harbor,
         "down",
         env=ENV,
         external=True,
