@@ -4,8 +4,9 @@
 
 <!-- TOC -->
 * [OpenStudioLandscapes](#openstudiolandscapes)
-  * [TL;DR - Jump Start with Kitsu](#tldr---jump-start-with-kitsu)
+  * [TL;DR - Jump Start with Feature "OpenStudioLandscapes-Kitsu"](#tldr---jump-start-with-feature-openstudiolandscapes-kitsu)
   * [Brief](#brief)
+  * [Terminology](#terminology)
   * [Structure](#structure)
   * [Tested on](#tested-on)
   * [About the Author](#about-the-author)
@@ -150,7 +151,7 @@
 
 # OpenStudioLandscapes
 
-## TL;DR - Jump Start with Kitsu
+## TL;DR - Jump Start with Feature "OpenStudioLandscapes-Kitsu"
 
 Requirements:
 - `python3.11`
@@ -284,6 +285,16 @@ places you can't even remember? There you have it. Better don't touch. Better
 continue building your system around it. Right? Wrong! OpenStudioLandscapes
 is here to make sure your future you is not going to regret decisions you are
 making right now!
+
+## Terminology
+
+| **Term**      |   |   |   |
+|---------------|---|---|---|
+| **Landscape** |   |   |   |
+| **Feature**   |   |   |   |
+| **Registry**  |   |   |   |
+| **...**       |   |   |   |
+
 
 ## Structure
 
