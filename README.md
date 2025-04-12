@@ -155,6 +155,7 @@
 
 Requirements:
 - `python3.11`
+- `git`
 - `graphviz`
 - `docker`
 - `docker compose`
