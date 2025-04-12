@@ -114,7 +114,7 @@ ENVIRONMENT_PI_HOLE = {
 }
 
 # Todo
-#  - [ ] Maybe we can create the docker-compose.yml in here directly taking into consideration
+#  - [x] Maybe we can create the docker-compose.yml in here directly taking into consideration
 #        all the variables
 
 compose_pi_hole = ENVIRONMENT_PI_HOLE["PI_HOLE_ROOT_DIR"] / "docker-compose.yml"
