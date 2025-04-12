@@ -60,6 +60,8 @@ MANIFEST
 tmp*/
 
 .landscapes/*/
+
+# Harbor
 !.landscapes/.harbor/
 
 .landscapes/.harbor/data/*
@@ -69,6 +71,14 @@ tmp*/
 !.landscapes/.harbor/bin/.gitkeep
 !.landscapes/.harbor/bin/harbor.yml
 !.landscapes/.harbor/bin/docker-compose.yml
+
+# Pi-hole
+!.landscapes/.pi-hole/
+!.landscapes/.pi-hole/.gitkeep
+
+.landscapes/.pi-hole/*/
+
+#
 
 .payload/data/
 .payload/bin/
