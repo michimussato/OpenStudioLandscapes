@@ -88,17 +88,36 @@ ENV = {}
 #######################################################################################################################
 # Pi-hole
 
+# # ENVIRONMENT
+ENVIRONMENT_PI_HOLE = {
+    "ROOT_DOMAIN": "farm.evil",
+    "PIHOLE_USE_UNBOUND": True,
+    "PIHOLE_WEB_PORT": "81",
+    "PIHOLE_WEB_PASSWORD": "myp4ssword",
+    "PIHOLE_TIMEZONE": "Europe/Zurich",
+    "PIHOLE_REV_SERVER": "false",
+    "PIHOLE_DNS_DNSSEC": "true",
+    "PIHOLE_DNS_LISTENING_MODE": [
+        "all",
+        "single",
+    ][0],
+    "PIHOLE_WEB_THEME": [
+        "default-dark",
+        "default-darker",
+        "default-light",
+        "default-auto",
+        "lcars",
+    ][0],
+    "PI_HOLE_ROOT_DIR": pathlib.Path.cwd() / ".landscapes" / ".pi-hole",
+    "PI_HOLE_ETC_PI_HOLE": "etc-pihole",
+    "PI_HOLE_ETC_DNSMASQ": "etc-dnsmasq",
+}
+
 # Todo
 #  - [ ] Maybe we can create the docker-compose.yml in here directly taking into consideration
 #        all the variables
 
-compose_pi_hole = (
-    pathlib.Path.cwd()
-    / ".landscapes"
-    / ".pi-hole"
-    / "docker_compose"
-    / "docker-compose.yml"
-)
+compose_pi_hole = ENVIRONMENT_PI_HOLE["PI_HOLE_ROOT_DIR"] / "docker-compose.yml"
 
 cmd_pi_hole = [
     shutil.which("docker"),
@@ -108,6 +127,120 @@ cmd_pi_hole = [
     "--project-name",
     "openstudiolandscapes-pi-hole",
 ]
+
+
+def write_pi_hole_yml(
+    # yaml_out: pathlib.Path,
+) -> pathlib.Path:
+
+    pi_hole_root_dir: pathlib.Path = ENVIRONMENT_PI_HOLE["PI_HOLE_ROOT_DIR"]
+    pi_hole_root_dir.mkdir(parents=True, exist_ok=True)
+
+    harbor_etc_pi_hole_dir = (
+        pi_hole_root_dir / ENVIRONMENT_PI_HOLE["PI_HOLE_ETC_PI_HOLE"]
+    )
+    harbor_etc_pi_hole_dir.mkdir(parents=True, exist_ok=True)
+
+    harbor_etc_dnsmasq_dir = (
+        pi_hole_root_dir / ENVIRONMENT_PI_HOLE["PI_HOLE_ETC_DNSMASQ"]
+    )
+    harbor_etc_dnsmasq_dir.mkdir(parents=True, exist_ok=True)
+
+    service_name = "pihole-unbound"
+    network_name = "pi-hole"
+    container_name = service_name
+    host_name = ".".join([service_name, ENVIRONMENT_PI_HOLE["ROOT_DOMAIN"]])
+
+    pi_hole_dict = {
+        "networks": {
+            network_name: {
+                "name": f"network_{network_name}",
+            },
+        },
+        "services": {
+            service_name: {
+                "container_name": container_name,
+                "hostname": host_name,
+                "domainname": ENVIRONMENT_PI_HOLE["ROOT_DOMAIN"],
+                "restart": "unless-stopped",
+                "image": "docker.io/mpgirro/pihole-unbound:latest",
+                "volumes": [
+                    # For persisting Pi-hole's databases and common configuration file
+                    f"{harbor_etc_pi_hole_dir.as_posix()}:/etc/pihole:rw",
+                    f"{harbor_etc_dnsmasq_dir.as_posix()}:/etc/dnsmasq.d:rw",
+                    # Uncomment the below if you have custom dnsmasq config files that you want to persist. Not needed for most starting fresh with Pi-hole v6. If you're upgrading from v5 you and have used this directory before, you should keep it enabled for the first v6 container start to allow for a complete migration. It can be removed afterwards. Needs environment variable FTLCONF_misc_etc_dnsmasq_d: 'true'
+                    # f"./etc-dnsmasq.d:/etc/dnsmasq.d"
+                ],
+                "networks": [network_name],
+                "ports": [
+                    # DNS Ports
+                    "53:53/tcp",
+                    "53:53/udp",
+                    # Default HTTP Port
+                    f"{ENVIRONMENT_PI_HOLE['PIHOLE_WEB_PORT']}:80/tcp",
+                    # Default HTTPs Port. FTL will generate a self-signed certificate
+                    "443:443/tcp",
+                    # Uncomment the line below if you are using Pi-hole as your DHCP server
+                    # - "67:67/udp"
+                    # Uncomment the line below if you are using Pi-hole as your NTP server
+                    # - "123:123/udp"
+                ],
+                "environment": {
+                    # Set the appropriate timezone for your location (https://en.wikipedia.org/wiki/List_of_tz_database_time_zones), e.g:
+                    "TZ": ENVIRONMENT_PI_HOLE["PIHOLE_TIMEZONE"],
+                    # Set a password to access the web interface. Not setting one will result in a random password being assigned
+                    "FTLCONF_webserver_api_password": ENVIRONMENT_PI_HOLE[
+                        "PIHOLE_WEB_PASSWORD"
+                    ],
+                    # If using Docker's default `bridge` network setting the dns listening mode should be set to 'all'
+                    # Unbound
+                    # "FTLCONF_LOCAL_IPV4": "0.0.0.0",
+                    "FTLCONF_webserver_interface_theme": ENVIRONMENT_PI_HOLE[
+                        "PIHOLE_WEB_THEME"
+                    ],
+                    # "FTLCONF_dns_revServers": "${REV_SERVER:-false},${REV_SERVER_CIDR},${REV_SERVER_TARGET},${REV_SERVER_DOMAIN}",
+                    "FTLCONF_dns_upstreams": "127.0.0.1#5335",
+                    "FTLCONF_dns_dnssec": ENVIRONMENT_PI_HOLE["PIHOLE_DNS_DNSSEC"],
+                    "FTLCONF_dns_listeningMode": ENVIRONMENT_PI_HOLE[
+                        "PIHOLE_DNS_LISTENING_MODE"
+                    ],
+                    # "FTLCONF_webserver_port": "82",
+                    "REV_SERVER": ENVIRONMENT_PI_HOLE["PIHOLE_REV_SERVER"],
+                    # If REV_SERVER is "false", these are not necessary:
+                    # "REV_SERVER_CIDR": "",
+                    # "REV_SERVER_TARGET": "",
+                    # "REV_SERVER_DOMAIN": "",
+                },
+                "cap_add": [
+                    # Todo
+                    # See https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
+                    # Required if you are using Pi-hole as your DHCP server, else not needed
+                    # "NET_ADMIN",
+                    # Required if you are using Pi-hole as your NTP client to be able to set the host's system time
+                    # "SYS_TIME",
+                    # Optional, if Pi-hole should get some more processing time
+                    # "SYS_NICE",
+                ]
+                # "healthcheck": {
+                # },
+                # "command": [
+                # ],
+            },
+        },
+    }
+
+    harbor_yml: str = yaml.dump(
+        pi_hole_dict,
+        indent=2,
+    )
+
+    with open(compose_pi_hole.as_posix(), "w") as fw:
+        fw.write(harbor_yml)
+
+    logging.debug("Contents Pi-hole docker-compose.yml: \n%s" % harbor_yml)
+
+    return compose_pi_hole
+
 
 # # pi_hole_up
 @nox.session(python=None, tags=["pi_hole_up"])
@@ -142,6 +275,77 @@ def pi_hole_up(session):
         env=ENV,
         external=True,
     )
+
+
+# # pi_hole_prepare
+@nox.session(python=None, tags=["pi_hole_prepare"])
+def pi_hole_prepare(session):
+    """
+    Prepare Pi-hole.
+
+    Scope:
+    - [x] Engine
+    - [ ] Modules
+    """
+    # Ex:
+    # nox --session pi_hole_prepare
+    # nox --tags pi_hole_prepare
+
+    # Todo:
+    #  /usr/bin/bash
+    #      /data/share/nfs/git/repos/OpenStudioLandscapes/OpenStudioLandscapes/.landscapes/.pi-hole/docker-compose/bin/prepare
+
+    if compose_pi_hole.exists():
+        logging.info(
+            "`docker-compose.yml` already present in. Use that or start fresh by "
+            "issuing `nox --session pi_hole_clear` first."
+        )
+        return
+
+    docker_compose: pathlib.Path = write_pi_hole_yml()
+
+    logging.debug("docker-compose.yml created: \n%s" % docker_compose.as_posix())
+
+    return 0
+
+
+# # pi_hole_clear
+@nox.session(python=None, tags=["pi_hole_clear"])
+def pi_hole_clear(session):
+    """
+    Clear Pi-hole.
+
+    Scope:
+    - [x] Engine
+    - [ ] Modules
+    """
+    # Ex:
+    # nox --session pi_hole_clear
+    # nox --tags pi_hole_clear
+
+    pi_hole_root_dir: pathlib.Path = ENVIRONMENT_PI_HOLE["PI_HOLE_ROOT_DIR"]
+
+    logging.debug("Clearing Pi-hole...")
+
+    if pi_hole_root_dir.exists():
+        logging.warning("Clearing out Pi-hole...\n" "Continue? Type `yes` to confirm.")
+        answer = input()
+        if answer.lower() == "yes":
+            session.run(
+                shutil.which("sudo"),
+                shutil.which("rm"),
+                "-rf",
+                pi_hole_root_dir.as_posix(),
+                env=ENV,
+                external=True,
+            )
+        else:
+            logging.info("Clearing Pi-hole was aborted.")
+            return
+
+    logging.debug("%s removed" % pi_hole_root_dir.as_posix())
+
+    return 0
 
 
 # # pi_hole_up_detach
@@ -239,6 +443,22 @@ ENVIRONMENT_HARBOR = {
     "HARBOR_DOWNLOAD_DIR": "download",
     "HARBOR_DATA_DIR": "data",
 }
+
+compose_harbor = (
+    ENVIRONMENT_HARBOR["HARBOR_ROOT_DIR"]
+    / ENVIRONMENT_HARBOR["HARBOR_BIN_DIR"]
+    / "docker-compose.yml"
+)
+
+cmd_harbor = [
+    shutil.which("sudo"),
+    shutil.which("docker"),
+    "compose",
+    "--file",
+    compose_harbor.as_posix(),
+    "--project-name",
+    "openstudiolandscapes-harbor",
+]
 
 
 def setup_harbor(
@@ -347,22 +567,6 @@ def write_harbor_yml(
 #        all the variables
 #  - [x] Maybe we can create the docker-compose.yml in here directly taking into consideration
 #        all the variables
-
-compose_harbor = (
-    ENVIRONMENT_HARBOR["HARBOR_ROOT_DIR"]
-    / ENVIRONMENT_HARBOR["HARBOR_BIN_DIR"]
-    / "docker-compose.yml"
-)
-
-cmd_harbor = [
-    shutil.which("sudo"),
-    shutil.which("docker"),
-    "compose",
-    "--file",
-    compose_harbor.as_posix(),
-    "--project-name",
-    "openstudiolandscapes-harbor",
-]
 
 # # harbor_prepare
 @nox.session(python=None, tags=["harbor_prepare"])

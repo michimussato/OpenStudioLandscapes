@@ -9,13 +9,19 @@
   * [Tested on](#tested-on)
   * [About the Author](#about-the-author)
   * [Requirements](#requirements)
-    * [Harbor](#harbor)
+    * [Create `venv` with `nox`](#create-venv-with-nox)
+    * [Pi-hole](#pi-hole)
       * [Installation](#installation)
-        * [Create `venv` with `nox`](#create-venv-with-nox)
+        * [Prepare Pi-hole](#prepare-pi-hole)
+        * [Run Pi-hole](#run-pi-hole)
+        * [Shut down Pi-hole](#shut-down-pi-hole)
+      * [Configure Pi-hole](#configure-pi-hole)
+    * [Harbor](#harbor)
+      * [Installation](#installation-1)
         * [Prepare Harbor](#prepare-harbor)
         * [Run Harbor](#run-harbor)
         * [Shut down Harbor](#shut-down-harbor)
-      * [Configuration](#configuration)
+      * [Configure Harbor](#configure-harbor)
         * [Create Project](#create-project)
         * [Harbor DNS](#harbor-dns)
         * [Trust Harbor Registry](#trust-harbor-registry)
@@ -45,7 +51,7 @@
         * [Container Registry](#container-registry)
         * [Completed](#completed)
         * [WIP](#wip)
-        * [Roadmap](#roadmap)
+        * [Planned](#planned)
     * [Dagster Lineage](#dagster-lineage)
     * [Docker Compose Graph](#docker-compose-graph)
       * [Deadline 10.2](#deadline-102)
@@ -93,9 +99,11 @@
         * [harbor_prepare](#harbor_prepare)
         * [harbor_clear](#harbor_clear)
         * [harbor_down](#harbor_down)
-      * [Pi Hole](#pi-hole)
+      * [Pi Hole](#pi-hole-1)
         * [pi_hole_up](#pi_hole_up)
         * [pi_hole_up_detach](#pi_hole_up_detach)
+        * [pi_hole_prepare](#pi_hole_prepare)
+        * [pi_hole_clear](#pi_hole_clear)
         * [pi_hole_down](#pi_hole_down)
       * [Dagster](#dagster-1)
         * [MySQL](#mysql)
@@ -373,7 +381,41 @@ Former employers, among others:
 - `docker`
 - `git`
 - `git-crypt`
+- `nox`
+- [Pi-hole](https://pi-hole.net/)
 - [Harbor](https://github.com/goharbor/harbor)
+
+### Create `venv` with `nox`
+
+```shell
+python3.11 -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"
+```
+
+### Pi-hole
+
+_Todo_
+
+#### Installation
+
+_Todo_
+
+##### Prepare Pi-hole
+
+_Todo_
+
+##### Run Pi-hole
+
+_Todo_
+
+##### Shut down Pi-hole
+
+_Todo_
+
+#### Configure Pi-hole
+
+_Todo_
 
 ### Harbor
 
@@ -387,14 +429,6 @@ or `["offline"]` for `ENVIRONMENT_HARBOR["HARBOR_INSTALLER"]`
 in `noxfile.py` .
 
 Releases: https://github.com/goharbor/harbor/releases
-
-##### Create `venv` with `nox`
-
-```shell
-python3.11 -m venv .venv
-source .venv/bin/activate
-pip install -e ".[dev]"
-```
 
 ##### Prepare Harbor
 
@@ -416,7 +450,7 @@ See [`nox --session harbor_up_detach`](#harbor_up_detach)
 
 See [`nox --session harbor_down`](#harbor_down)
 
-#### Configuration
+#### Configure Harbor
 
 ##### Create Project
 
@@ -854,7 +888,7 @@ comparison:
 - [Watchtower](https://watchtower.blender.org/)
   - https://github.com/michimussato/OpenStudioLandscapes-Watchtower
 
-##### Roadmap
+##### Planned
 
 None
 
@@ -1537,6 +1571,26 @@ Scope:
 
 ```shell
 nox --session pi_hole_up_detach
+```
+
+Scope:
+- [x] Engine
+- [ ] Features
+
+##### pi_hole_prepare
+
+```shell
+nox --session pi_hole_prepare
+```
+
+Scope:
+- [x] Engine
+- [ ] Features
+
+##### pi_hole_clear
+
+```shell
+nox --session pi_hole_clear
 ```
 
 Scope:

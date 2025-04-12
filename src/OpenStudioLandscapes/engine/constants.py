@@ -2,10 +2,6 @@ __all__ = [
     "DOCKER_CONFIG",
     "DOCKER_USE_CACHE_BASE",
     "DOCKER_USE_CACHE_GLOBAL",
-    "GROUP_PI_HOLE",
-    "KEY_PI_HOLE",
-    "ASSET_HEADER_PI_HOLE",
-    "ENVIRONMENT_PI_HOLE",
     "GROUP_BASE_ENV",
     "KEY_BASE_ENV",
     "ASSET_HEADER_BASE_ENV",
@@ -45,15 +41,6 @@ from OpenStudioLandscapes.engine.enums import *
 DOCKER_CONFIG = DockerConfig.LOCAL_HARBOR
 DOCKER_USE_CACHE_GLOBAL = True
 DOCKER_USE_CACHE_BASE = DOCKER_USE_CACHE_GLOBAL or False
-
-
-from OpenStudioLandscapes.engine.compose_pi_hole import constants as constants_compose_pi_hole
-
-GROUP_PI_HOLE = constants_compose_pi_hole.GROUP
-KEY_PI_HOLE = constants_compose_pi_hole.KEY
-ASSET_HEADER_PI_HOLE = constants_compose_pi_hole.ASSET_HEADER
-ENVIRONMENT_PI_HOLE = constants_compose_pi_hole.ENVIRONMENT
-# DOCKER_USE_CACHE_PI_HOLE = DOCKER_USE_CACHE_GLOBAL or constants_compose_pi_hole.DOCKER_USE_CACHE
 
 
 from OpenStudioLandscapes.engine.compose_license_server import constants as constants_compose_license_server
