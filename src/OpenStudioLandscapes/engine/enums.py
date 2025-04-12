@@ -28,7 +28,6 @@ except SyntaxError as e:
 class ComposeScope(enum.StrEnum):
     DEFAULT = "default"
     WORKER = "worker"
-    HARBOR = "harbor"
     PI_HOLE = "pi_hole"
     # CADDY = "caddy"
     LICENSE_SERVER = "license_server"

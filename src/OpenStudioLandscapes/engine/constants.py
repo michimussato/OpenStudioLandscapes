@@ -2,10 +2,6 @@ __all__ = [
     "DOCKER_CONFIG",
     "DOCKER_USE_CACHE_BASE",
     "DOCKER_USE_CACHE_GLOBAL",
-    "GROUP_HARBOR",
-    "KEY_HARBOR",
-    "ASSET_HEADER_HARBOR",
-    "ENVIRONMENT_HARBOR",
     "GROUP_PI_HOLE",
     "KEY_PI_HOLE",
     "ASSET_HEADER_PI_HOLE",
@@ -58,15 +54,6 @@ KEY_PI_HOLE = constants_compose_pi_hole.KEY
 ASSET_HEADER_PI_HOLE = constants_compose_pi_hole.ASSET_HEADER
 ENVIRONMENT_PI_HOLE = constants_compose_pi_hole.ENVIRONMENT
 # DOCKER_USE_CACHE_PI_HOLE = DOCKER_USE_CACHE_GLOBAL or constants_compose_pi_hole.DOCKER_USE_CACHE
-
-
-from OpenStudioLandscapes.engine.compose_harbor import constants as constants_compose_harbor
-
-GROUP_HARBOR = constants_compose_harbor.GROUP
-KEY_HARBOR = constants_compose_harbor.KEY
-ASSET_HEADER_HARBOR = constants_compose_harbor.ASSET_HEADER
-ENVIRONMENT_HARBOR = constants_compose_harbor.ENVIRONMENT
-# DOCKER_USE_CACHE_HARBOR = DOCKER_USE_CACHE_GLOBAL or constants_compose_harbor.DOCKER_USE_CACHE
 
 
 from OpenStudioLandscapes.engine.compose_license_server import constants as constants_compose_license_server

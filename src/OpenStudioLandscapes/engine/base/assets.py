@@ -97,11 +97,6 @@ def apt_packages(
     )
 
 
-deps_ = []
-if not DOCKER_CONFIG.value["docker_use_local"]:
-    deps_.append(
-        AssetKey([*KEY_HARBOR, "prepare"])
-    )
 @asset(
     **ASSET_HEADER_BASE,
     ins={
@@ -109,7 +104,6 @@ if not DOCKER_CONFIG.value["docker_use_local"]:
         "apt_packages": AssetIn(AssetKey([*KEY_BASE, "apt_packages"])),
         "pip_packages": AssetIn(AssetKey([*KEY_BASE, "pip_packages"])),
     },
-    deps=deps_,
 )
 def build_docker_image(
     context: AssetExecutionContext,

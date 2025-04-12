@@ -11,12 +11,14 @@
   * [Requirements](#requirements)
     * [Harbor](#harbor)
       * [Installation](#installation)
-      * [Harbor DNS](#harbor-dns)
-      * [Trust Harbor Registry](#trust-harbor-registry)
-      * [Prepare Harbor](#prepare-harbor)
-      * [Start Harbor](#start-harbor)
-      * [Start Harbor (detached)](#start-harbor-detached)
-      * [Stop Harbor](#stop-harbor)
+        * [Create `venv` with `nox`](#create-venv-with-nox)
+        * [Prepare Harbor](#prepare-harbor)
+        * [Run Harbor](#run-harbor)
+        * [Shut down Harbor](#shut-down-harbor)
+      * [Configuration](#configuration)
+        * [Create Project](#create-project)
+        * [Harbor DNS](#harbor-dns)
+        * [Trust Harbor Registry](#trust-harbor-registry)
       * [Upload Failures](#upload-failures)
     * [Dagster](#dagster)
     * [Ubuntu](#ubuntu)
@@ -89,6 +91,7 @@
         * [harbor_up](#harbor_up)
         * [harbor_up_detach](#harbor_up_detach)
         * [harbor_prepare](#harbor_prepare)
+        * [harbor_clear](#harbor_clear)
         * [harbor_down](#harbor_down)
       * [Pi Hole](#pi-hole)
         * [pi_hole_up](#pi_hole_up)
@@ -374,89 +377,48 @@ Former employers, among others:
 
 ### Harbor
 
+Requires `sudo`.
+
 #### Installation
 
 Use offline installer or online installer based
-on network availability
+on network availability. You can specify `["online"]` 
+or `["offline"]` for `ENVIRONMENT_HARBOR["HARBOR_INSTALLER"]` 
+in `noxfile.py` .
 
 Releases: https://github.com/goharbor/harbor/releases
 
+##### Create `venv` with `nox`
+
 ```shell
-pushd .landscapes/.harbor
-
-export HARBOR_RELEASE=v2.12.2
-
-export HARBOR_INSTALLER=harbor-online-installer-${HARBOR_RELEASE}.tgz
-export INSTALLER_ONLINE=https://github.com/goharbor/harbor/releases/download/${HARBOR_RELEASE}/${HARBOR_INSTALLER}
-export INSTALLER_OFFLINE=https://github.com/goharbor/harbor/releases/download/${HARBOR_RELEASE}/${HARBOR_INSTALLER}
-
-export TEMP_DIR=$(mktemp --directory)
-wget -O ${TEMP_DIR}/${HARBOR_INSTALLER} ${INSTALLER_ONLINE}
-
-tar -xvf ${TEMP_DIR}/${HARBOR_INSTALLER} --strip-components=1 -C ./bin/
-popd
+python3.11 -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"
 ```
 
-And then
-- Create `venv`: `python3.11 -m venv .venv`
-- Activate: `source .venv/bin/activate`
-- Install OpenStudioLandscapes into `venv`: `pip install -e ".[dev]"`
-- Clone all OpenStudioLandscapes Features as desired into the same
-  root directory as OpenStudioLandscapes engine itself
-- Install all OpenStudioLandscapes Features as desired:
-  ```shell
-  pip install "OpenStudioLandscapes @ git+https://github.com/michimussato/OpenStudioLandscapes@main"
-  pip install "OpenStudioLandscapes-Ayon @ git+https://github.com/michimussato/OpenStudioLandscapes-Ayon@main"
-  pip install "OpenStudioLandscapes-Dagster @ git+https://github.com/michimussato/OpenStudioLandscapes-Dagster@main"
-  pip install "OpenStudioLandscapes-Deadline-10-2 @ git+https://github.com/michimussato/OpenStudioLandscapes-Deadline-10-2@main"
-  pip install "OpenStudioLandscapes-Deadline-10-2-Worker @ git+https://github.com/michimussato/OpenStudioLandscapes-Deadline-10-2-Worker@main"
-  pip install "OpenStudioLandscapes-filebrowser @ git+https://github.com/michimussato/OpenStudioLandscapes-filebrowser@main"
-  pip install "OpenStudioLandscapes-Grafana @ git+https://github.com/michimussato/OpenStudioLandscapes-Grafana@main"
-  pip install "OpenStudioLandscapes-Kitsu @ git+https://github.com/michimussato/OpenStudioLandscapes-Kitsu@main"
-  pip install "OpenStudioLandscapes-LikeC4 @ git+https://github.com/michimussato/OpenStudioLandscapes-LikeC4@main"
-  pip install "OpenStudioLandscapes-NukeRLM-8 @ git+https://github.com/michimussato/OpenStudioLandscapes-NukeRLM-8@main"
-  pip install "OpenStudioLandscapes-OpenCue @ git+https://github.com/michimussato/OpenStudioLandscapes-OpenCue@main"
-  pip install "OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20 @ git+https://github.com/michimussato/OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20@main"
-  pip install "OpenStudioLandscapes-Syncthing @ git+https://github.com/michimussato/OpenStudioLandscapes-Syncthing@main"
-  pip install "OpenStudioLandscapes-Watchtower @ git+https://github.com/michimussato/OpenStudioLandscapes-Watchtower@main"
-  ```
-  ```shell
-  for dir in /nfs/git/repos/OpenStudioLandscapes/*/; do
-      pushd ${dir}
-      pip install -e ".[dev]"
-      popd
-  done;
-  ```
-- Add `127.0.0.1  postgres-dagster.farm.evil` to `/etc/hosts` 
-- Add `127.0.0.1  harbor.farm.evil` to `/etc/hosts` 
-- Launch Dagster: `nox --session dagster_mysql` or `nox --session dagster_postgres` 
-and continue inside Dagster (`compose_Harbor` group) to:
-- [configure `harbor.yml`](OpenStudioLandscapes/engine/compose_harbor/assets.py:write_yaml)
-- generate `docker-compose.yml`
-- generate `docker compose` commands
+##### Prepare Harbor
 
+See [`nox --session harbor_prepare`](#harbor_prepare)
 
+To start over (warning: data loss!)
 
-1. Launch Dagster:
-   ```shell
-   nox --session dagster_postgres
-   ```
-2. Run `Compose_harbor / write_yaml`
-3. Prepare Harbor:
-   ```shell
-   nox --session harbor_prepare
-   ```
-4. Launch Harbor:
-   ```shell
-   nox --session harbor_up
-   ```
-   or
-   ```shell
-   nox --session harbor_up_detach
-   ```
-5. Create Project `openstudiolandscapes` in Harbor Web UI
-   - Private: Authentication is necessary
-   - Public: No Authentication is necessary (simple approach)
+See [`nox --session harbor_clear`](#harbor_clear)
+
+##### Run Harbor
+
+See [`nox --session harbor_up`](#harbor_up)
+
+Detached:
+
+See [`nox --session harbor_up_detach`](#harbor_up_detach)
+
+##### Shut down Harbor
+
+See [`nox --session harbor_down`](#harbor_down)
+
+#### Configuration
+
+##### Create Project
 
 [Once Harbor is running](#start-harbor), log in and create a project that reflects the name
 of the docker registry repository name that is used to prefix the docker
@@ -468,7 +430,7 @@ containers generated by OpenStudioLandscapes (see
 You can also refer to the Swagger UI
 - http://harbor.farm.evil/devcenter-api-2.0
 
-#### Harbor DNS
+##### Harbor DNS
 
 In order for Harbor to remain persistent as a trusted
 insecure (HTTP) registry - provided we don't provide it
@@ -476,100 +438,45 @@ with a static IP and/or don't have a local DNS server
 running - we add/edit an entry in `/etc/hosts`:
 
 ```shell
-sudo bash -c 'cat > /etc/hosts << EOF
-# Standard host addresses
-127.0.0.1  localhost
-::1        localhost ip6-localhost ip6-loopback
-ff02::1    ip6-allnodes
-ff02::2    ip6-allrouters
-# This host address
-127.0.1.1  lenovo
-
-# OpenStudioLandscapes
-# # Harbor
-# 192.168.1.164  harbor.farm.evil
-127.0.0.1  harbor.farm.evil
-# # Postgres
-127.0.0.1  postgres-dagster.farm.evil
-
-# Deadline 10.2
-127.0.0.1  deadline-rcs-runner-10-2.farm.evil
-127.0.0.1  mongo-express-10-2.farm.evil
-127.0.0.1  mongodb-10-2.farm.evil
-127.0.0.1  deadline-pulse-runner-10-2.farm.evil
-127.0.0.1  repository-installer-10-2.farm.evil  # ephemeral
-127.0.0.1  deadline-webservice-runner-10-2.farm.evil
-127.0.0.1  deadline-worker-runner-10-2.farm.evil
-# 127.0.0.1  deadline-10-2-pulse-worker-XX.farm.evil
-
-# filebrowser
-127.0.0.1  filebrowser.farm.evil
-
-# Kitsu
-127.0.0.1  kitsu-init-db.farm.evil  # ephemeral
-127.0.0.1  kitsu.farm.evil
-
-# Syncthing
-127.0.0.1  syncthing.farm.evil
-
-# SESI
-127.0.0.1  sesi-gcc-9-3-houdini-20.farm.evil
-
-# RLM
-127.0.0.1  nuke-rlm-8.farm.evil
-
-# Dagster
-127.0.0.1  dagster.farm.evil
-
-# Ayon
-127.0.0.1  ayon-server.farm.evil
-
-# Template
-# 127.0.0.1  template.farm.evil
-
-EOF
-
-chmod 0644 /etc/hosts
-chown root:root /etc/hosts'
+sudo nano /etc/hosts
 ```
 
-#### Trust Harbor Registry
+and add, then save:
+
+```
+# OpenStudioLandscapes
+# # Harbor
+127.0.0.1  harbor.farm.evil
+```
+
+##### Trust Harbor Registry
 
 Furthermore, in order to use Harbor as an insecure
 registry to push to and pull from, we need to tell
 the local docker daemon that it is a trusted resource:
 
 ```shell
-sudo bash -c 'mkdir -p /etc/docker
+sudo nano /etc/docker/daemon.json
+```
 
-cat > /etc/docker/daemon.json << EOF
+and add, then save:
+
+```
 {
+  [...],
   "insecure-registries" : [
     "http://harbor.farm.evil:80",
-  ]
+  ],
+  [...],
 }
+```
 
-EOF'
+Then, reload and restart the `systemd` unit:
 
+```shell
 sudo systemctl daemon-reload
 sudo systemctl restart docker
 ```
-
-#### Prepare Harbor
-
-See [`nox --session harbor_prepare`](#harbor_prepare)
-
-#### Start Harbor
-
-See [`nox --session harbor_up`](#harbor_up)
-
-#### Start Harbor (detached)
-
-See [`nox --session harbor_up_detach`](#harbor_up_detach)
-
-#### Stop Harbor
-
-See [`nox --session harbor_down`](#harbor_down)
 
 #### Upload Failures
 
@@ -577,15 +484,22 @@ If we get timeout because of too many parallel blob uploads,
 we can limit the concurrent uploads:
 
 ```shell
-sudo bash -c 'mkdir -p /etc/docker
+sudo nano /etc/docker/daemon.json
+```
 
-cat > /etc/docker/daemon.json << EOF
+and set, then save:
+
+```
 {
+  [...],
   "max-concurrent-uploads": 1,
+  [...],
 }
+```
 
-EOF'
+Then, reload and restart the `systemd` unit:
 
+```shell
 sudo systemctl daemon-reload
 sudo systemctl restart docker
 ```
@@ -1581,6 +1495,16 @@ Scope:
 
 ```shell
 nox --session harbor_prepare
+```
+
+Scope:
+- [x] Engine
+- [ ] Features
+
+##### harbor_clear
+
+```shell
+nox --session harbor_clear
 ```
 
 Scope:
