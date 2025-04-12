@@ -50,6 +50,10 @@ ENV = {}
 #######################################################################################################################
 # Pi-hole
 
+# Todo
+#  - [ ] Maybe we can create the docker-compose.yml in here directly taking into consideration
+#        all the variables
+
 compose_pi_hole = (
     pathlib.Path.cwd()
     / ".landscapes"
@@ -177,6 +181,12 @@ def pi_hole_down(session):
 
 #######################################################################################################################
 # Harbor
+
+# Todo
+#  - [ ] Maybe we can run prepare in here directly taking into consideration
+#        all the variables
+#  - [ ] Maybe we can create the docker-compose.yml in here directly taking into consideration
+#        all the variables
 
 compose_harbor = (
     pathlib.Path.cwd() / ".landscapes" / ".harbor" / "bin" / "docker-compose.yml"
