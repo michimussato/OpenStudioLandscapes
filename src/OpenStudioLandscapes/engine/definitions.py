@@ -10,6 +10,7 @@ imports_engine = [
     "OpenStudioLandscapes.engine.base.definitions",
     "OpenStudioLandscapes.engine.env.definitions",
     "OpenStudioLandscapes.engine.compose_harbor.definitions",
+    "OpenStudioLandscapes.engine.compose_pi_hole.definitions",
     "OpenStudioLandscapes.engine.compose_license_server.definitions",
     "OpenStudioLandscapes.engine.landscape_map.definitions",
     "OpenStudioLandscapes.engine.compose.definitions",

@@ -94,6 +94,10 @@ def harbor_root(
             AssetKey([*KEY_HARBOR, "write_yaml"]),
         ),
     },
+    # deps=[
+    #     AssetKey([*KEY_PI_HOLE, "compose"])
+    # ],
+
 )
 def prepare(
         context: AssetExecutionContext,
@@ -241,7 +245,7 @@ def write_yaml(
         # ),
     },
 )
-def compose(
+def cmd_docker_compose_up(
         context: AssetExecutionContext,
         prepare: pathlib.Path,
         # env: dict,

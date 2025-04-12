@@ -160,6 +160,8 @@ def env(
         "CREATED_AT": str(datetime.strftime(datetime.now(), "%Y-%m-%d_%H-%M-%S")),
         "TIMEZONE": "Europe/Zurich",
         # "IMAGE_PREFIX": "michimussato",
+        # Todo:
+        #  - [ ] Where is this being used?
         "DEFAULT_CONFIG_DBPATH": "/data/configdb",
         "ROOT_DOMAIN": "farm.evil",
         # https://vfxplatform.com/

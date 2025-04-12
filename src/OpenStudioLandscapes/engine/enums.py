@@ -29,7 +29,8 @@ class ComposeScope(enum.StrEnum):
     DEFAULT = "default"
     WORKER = "worker"
     HARBOR = "harbor"
-    CADDY = "caddy"
+    PI_HOLE = "pi_hole"
+    # CADDY = "caddy"
     LICENSE_SERVER = "license_server"
 
 
