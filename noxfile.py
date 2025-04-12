@@ -804,6 +804,11 @@ def dagster_mysql(session):
 
 
 # # Dagster Postgres
+# Todo:
+#  - [ ] dagster_postgres_up
+#  - [ ] dagster_postgres_down
+#  or
+#  - [ ] dagster_postgres_attach
 @nox.session(python=None, tags=["dagster_postgres"])
 def dagster_postgres(session):
     """

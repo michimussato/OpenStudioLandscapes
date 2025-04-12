@@ -4,6 +4,7 @@
 
 <!-- TOC -->
 * [OpenStudioLandscapes](#openstudiolandscapes)
+  * [TL;DR - Jump Start with Kitsu](#tldr---jump-start-with-kitsu)
   * [Brief](#brief)
   * [Structure](#structure)
   * [Tested on](#tested-on)
@@ -148,6 +149,64 @@
 ---
 
 # OpenStudioLandscapes
+
+## TL;DR - Jump Start with Kitsu
+
+Requirements:
+- `python3.11`
+- `graphviz`
+- `docker`
+- `docker compose`
+
+```shell
+git clone https://github.com/michimussato/OpenStudioLandscapes
+git -C OpenStudioLandscapes/.features/ clone https://github.com/michimussato/OpenStudioLandscapes-Kitsu
+
+cd OpenStudioLandscapes
+python3.11 -m venv .venv && source .venv/bin/activate
+python -m pip install --upgrade pip setuptools
+
+pip install -e ".[dev]"
+pip install -e "./.features/OpenStudioLandscapes-Kitsu[dev]"
+
+nox --session harbor_prepare
+nox --session harbor_up_detach
+```
+
+Open Harbor URL:
+http://localhost:80
+
+Create `[x] Public` project `openstudiolandscapes`.
+(You can delete `library`)
+
+![harbor_create_project.png](_images/harbor_create_project.png)
+![harbor_new_project.png](_images/harbor_new_project.png)
+
+```shell
+nox --session dagster_postgres
+```
+
+![dagster_webserver.png](_images/dagster_webserver.png)
+
+Open Dagster URL:
+http://localhost:3000/asset-groups
+
+![dagster_tldr.svg](_images/dagster_tldr.svg)
+
+In Dagster, click `Materialize All`, and we will be presented with the following
+Landscape Map eventually:
+
+![Landscape_Map__tldr.svg](_images/Landscape_Map__tldr.svg)
+
+alongside the following command:
+
+```shell
+/usr/bin/docker compose --file /home/michael/git/repos/OpSL_test/OpenStudioLandscapes/.landscapes/2025-04-13-00-46-55-37e03a603c434c27b735f876d55863f4/Compose_default__Compose_default/Compose_default__group_out/docker_compose/docker-compose.yml --project-name 2025-04-13-00-46-55-37e03a603c434c27b735f876d55863f4-default up --remove-orphans
+```
+
+Visit http://localhost:4545; lo and behold:
+
+![kitsu_landing.png](_images/kitsu_landing_tldr.png)
 
 ## Brief
 
@@ -382,6 +441,7 @@ Former employers, among others:
 - `git`
 - `git-crypt`
 - `nox`
+- `venv`
 - [Pi-hole](https://pi-hole.net/)
 - [Harbor](https://github.com/goharbor/harbor)
 
