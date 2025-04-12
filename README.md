@@ -2043,6 +2043,7 @@ to learn more.
 - [x] Quote `pip install`s (`zsh: no matches found: .[dev]`)
   - `pip install ".[dev]"` works in `zsh`
 - [ ] Add `OpenStudioLandscapes-Pi-hole` to `readme_generator.py` (if successful)
+- [ ] `ln` for `OpenStudioLandscapes-Pi-hole`
 
 ---
 

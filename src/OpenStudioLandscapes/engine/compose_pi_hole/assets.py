@@ -247,34 +247,34 @@ def compose_pi_hole_unbound(
     )
 
 
-@asset(
-    **ASSET_HEADER_PI_HOLE,
-    ins={
-        "env": AssetIn(
-            AssetKey([*KEY_PI_HOLE, "env"]),
-        ),
-    },
-)
-def pi_hole_root(
-        context: AssetExecutionContext,
-        env: dict,
-) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
-
-    root_dir = pathlib.Path(
-        env["DOT_LANDSCAPES"],
-        ".pi_hole",
-    )
-
-    root_dir.mkdir(parents=True, exist_ok=True)
-
-    yield Output(root_dir)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.path(root_dir),
-        },
-    )
+# @asset(
+#     **ASSET_HEADER_PI_HOLE,
+#     ins={
+#         "env": AssetIn(
+#             AssetKey([*KEY_PI_HOLE, "env"]),
+#         ),
+#     },
+# )
+# def pi_hole_root(
+#         context: AssetExecutionContext,
+#         env: dict,
+# ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
+#
+#     root_dir = pathlib.Path(
+#         env["DOT_LANDSCAPES"],
+#         ".pi_hole",
+#     )
+#
+#     root_dir.mkdir(parents=True, exist_ok=True)
+#
+#     yield Output(root_dir)
+#
+#     yield AssetMaterialization(
+#         asset_key=context.asset_key,
+#         metadata={
+#             "__".join(context.asset_key.path): MetadataValue.path(root_dir),
+#         },
+#     )
 
 
 # @asset(
@@ -610,10 +610,11 @@ def cmd_docker_compose_up(
 
     docker_compose = pathlib.Path(
         env["DOT_LANDSCAPES"],
-        env.get("LANDSCAPE", "default"),
-        f"{GROUP_PI_HOLE}__{'__'.join(KEY_PI_HOLE)}",
-        # "__".join(context.asset_key_for_output("group_out").path),
-        "__".join(context.asset_key.path),
+        ".pi-hole",
+        # env.get("LANDSCAPE", "default"),
+        # f"{GROUP_PI_HOLE}__{'__'.join(KEY_PI_HOLE)}",
+        # # "__".join(context.asset_key_for_output("group_out").path),
+        # "__".join(context.asset_key.path),
         "docker_compose",
         "docker-compose.yml",
     )

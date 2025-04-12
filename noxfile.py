@@ -48,8 +48,157 @@ ENV = {}
 
 
 #######################################################################################################################
+# Pi-hole
+# # pi_hole_up
+@nox.session(python=None, tags=["pi_hole_up"])
+def pi_hole_up(session):
+    """
+    Start Harbor with `sudo`.
+
+    Scope:
+    - [x] Engine
+    - [ ] Modules
+    """
+    # Ex:
+    # nox --session pi_hole_up
+    # nox --tags pi_hole_up
+
+    # /usr/bin/docker \
+    #     compose \
+    #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.pi-hole/docker_compose/docker-compose.yml \
+    #     --project-name openstudiolandscapes-pi-hole up --remove-orphans
+
+    compose = (
+        pathlib.Path.cwd()
+        / ".landscapes"
+        / ".pi-hole"
+        / "docker_compose"
+        / "docker-compose.yml"
+    )
+
+    if not compose.exists():
+        raise FileNotFoundError(
+            f"Compose file not found: {compose}. "
+            f"Execute `Compose_pi_hole / compose` in "
+            f"Dagster to create it."
+        )
+
+    session.run(
+        shutil.which("docker"),
+        "compose",
+        "--file",
+        compose.as_posix(),
+        "--project-name",
+        "openstudiolandscapes-pi-hole",
+        "up",
+        "--remove-orphans",
+        env=ENV,
+        external=True,
+    )
+
+
+# # pi_hole_up_detach
+@nox.session(python=None, tags=["pi_hole_up_detach"])
+def pi_hole_up_detach(session):
+    """
+    Start Harbor with `sudo`.
+
+    Scope:
+    - [x] Engine
+    - [ ] Modules
+    """
+    # Ex:
+    # nox --session pi_hole_up_detach
+    # nox --tags pi_hole_up_detach
+
+    # /usr/bin/docker \
+    #     compose \
+    #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.pi-hole/docker_compose/docker-compose.yml \
+    #     --project-name openstudiolandscapes-pi-hole up --remove-orphans --detach
+
+    compose = (
+        pathlib.Path.cwd()
+        / ".landscapes"
+        / ".pi-hole"
+        / "docker_compose"
+        / "docker-compose.yml"
+    )
+
+    if not compose.exists():
+        raise FileNotFoundError(
+            f"Compose file not found: {compose}. "
+            f"Execute `Compose_pi_hole / compose` in "
+            f"Dagster to create it."
+        )
+
+    session.run(
+        shutil.which("docker"),
+        "compose",
+        "--file",
+        compose.as_posix(),
+        "--project-name",
+        "openstudiolandscapes-pi-hole",
+        "up",
+        "--remove-orphans",
+        "--detach",
+        env=ENV,
+        external=True,
+    )
+
+
+# # pi_hole_down
+@nox.session(python=None, tags=["pi_hole_down"])
+def pi_hole_down(session):
+    """
+    Start Harbor with `sudo`.
+
+    Scope:
+    - [x] Engine
+    - [ ] Modules
+    """
+    # Ex:
+    # nox --session pi_hole_down
+    # nox --tags pi_hole_down
+
+    # /usr/bin/docker \
+    #     compose \
+    #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.pi-hole/docker_compose/docker-compose.yml \
+    #     --project-name openstudiolandscapes-pi-holw down
+
+    compose = (
+        pathlib.Path.cwd()
+        / ".landscapes"
+        / ".pi-hole"
+        / "docker_compose"
+        / "docker-compose.yml"
+    )
+
+    if not compose.exists():
+        raise FileNotFoundError(
+            f"Compose file not found: {compose}. "
+            f"Execute `Compose_pi_hole / compose` in "
+            f"Dagster to create it."
+        )
+
+    session.run(
+        shutil.which("docker"),
+        "compose",
+        "--file",
+        compose.as_posix(),
+        "--project-name",
+        "openstudiolandscapes-pi-hole",
+        "down",
+        env=ENV,
+        external=True,
+    )
+
+
+#######################################################################################################################
+
+
+#######################################################################################################################
 # Harbor
-# # Harbor up
+# # harbor_prepare
 @nox.session(python=None, tags=["harbor_prepare"])
 def harbor_prepare(session):
     """
