@@ -272,6 +272,7 @@ def harbor_up_detach(session):
 
     session.run(
         *cmd_harbor,
+        "up",
         "--remove-orphans",
         "--detach",
         env=ENV,
