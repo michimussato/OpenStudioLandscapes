@@ -90,6 +90,10 @@
         * [harbor_up_detach](#harbor_up_detach)
         * [harbor_prepare](#harbor_prepare)
         * [harbor_down](#harbor_down)
+      * [Pi Hole](#pi-hole)
+        * [pi_hole_up](#pi_hole_up)
+        * [pi_hole_up_detach](#pi_hole_up_detach)
+        * [pi_hole_down](#pi_hole_down)
       * [Dagster](#dagster-1)
         * [MySQL](#mysql)
         * [Postgres](#postgres)
@@ -1593,6 +1597,38 @@ Scope:
 - [x] Engine
 - [ ] Features
 
+#### Pi Hole
+
+##### pi_hole_up
+
+```shell
+nox --session pi_hole_up
+```
+
+Scope:
+- [x] Engine
+- [ ] Features
+
+##### pi_hole_up_detach
+
+```shell
+nox --session pi_hole_up_detach
+```
+
+Scope:
+- [x] Engine
+- [ ] Features
+
+##### pi_hole_down
+
+```shell
+nox --session pi_hole_down
+```
+    
+Scope:
+- [x] Engine
+- [ ] Features
+
 #### Dagster
 
 ##### MySQL
@@ -2051,4 +2087,7 @@ to learn more.
 nox --session harbor_prepare
 nox --session harbor_up
 nox --session dagster_postgres
+
+
+nox --session pi_hole_up
 ```
