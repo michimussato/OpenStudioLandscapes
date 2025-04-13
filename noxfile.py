@@ -84,6 +84,15 @@ ENV = {}
 
 
 #######################################################################################################################
+# Feature Template
+# Todo:
+#  - [ ] Maybe create a Feature from Template via `nox`?
+
+
+#######################################################################################################################
+
+
+#######################################################################################################################
 # Git
 
 # # REPOSITORY ENGINE
@@ -617,10 +626,6 @@ ENVIRONMENT_PI_HOLE = {
     "PI_HOLE_ETC_DNSMASQ": "etc-dnsmasq",
 }
 
-# Todo
-#  - [x] Maybe we can create the docker-compose.yml in here directly taking into consideration
-#        all the variables
-
 compose_pi_hole = ENVIRONMENT_PI_HOLE["PI_HOLE_ROOT_DIR"] / "docker-compose.yml"
 
 cmd_pi_hole = [
@@ -1065,12 +1070,6 @@ def write_harbor_yml(
 
     return yaml_out
 
-
-# Todo
-#  - [x] Maybe we can run prepare in here directly taking into consideration
-#        all the variables
-#  - [x] Maybe we can create the docker-compose.yml in here directly taking into consideration
-#        all the variables
 
 # # harbor_prepare
 @nox.session(python=None, tags=["harbor_prepare"])
