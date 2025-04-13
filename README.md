@@ -1793,19 +1793,7 @@ Scope:
 #### Clone Features
 
 ```shell
-git -C .features clone https://github.com/michimussato/OpenStudioLandscapes-Ayon
-git -C .features clone https://github.com/michimussato/OpenStudioLandscapes-Dagster
-git -C .features clone https://github.com/michimussato/OpenStudioLandscapes-Deadline-10-2
-git -C .features clone https://github.com/michimussato/OpenStudioLandscapes-Deadline-10-2-Worker
-git -C .features clone https://github.com/michimussato/OpenStudioLandscapes-filebrowser
-# WIP: git -C .features clone https://github.com/michimussato/OpenStudioLandscapes-Grafana
-git -C .features clone https://github.com/michimussato/OpenStudioLandscapes-Kitsu
-# WIP: git -C .features clone https://github.com/michimussato/OpenStudioLandscapes-LikeC4
-git -C .features clone https://github.com/michimussato/OpenStudioLandscapes-NukeRLM-8
-# WIP: git -C .features clone https://github.com/michimussato/OpenStudioLandscapes-OpenCue
-git -C .features clone https://github.com/michimussato/OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20
-git -C .features clone https://github.com/michimussato/OpenStudioLandscapes-Syncthing
-# WIP: git -C .features clone https://github.com/michimussato/OpenStudioLandscapes-Watchtower
+nox --session clone_features
 ```
 
 #### Setup Feature-`venv` (`[dev]`)

@@ -5,6 +5,7 @@ import nox
 import pathlib
 import requests
 import logging
+import tarfile
 
 import yaml
 
@@ -37,9 +38,6 @@ def download(
         raise Exception(
             "Download failed: status code {}\n{}".format(r.status_code, r.text)
         )
-
-
-import tarfile
 
 
 # nox Configuration & API
@@ -88,7 +86,12 @@ ENV = {}
 #######################################################################################################################
 # Git
 
-# # REPOSITORIES
+# # REPOSITORY ENGINE
+
+REPO_ENGINE = "OpenStudioLandscapes"
+
+
+# # REPOSITORIES FEATURES
 REPOS_FEATURE = {
     "OpenStudioLandscapes-Ayon": "https://github.com/michimussato/OpenStudioLandscapes-Ayon",
     "OpenStudioLandscapes-Dagster": "https://github.com/michimussato/OpenStudioLandscapes-Dagster",
@@ -132,7 +135,7 @@ def clone_features(session):
         session.run(
             shutil.which("git"),
             "-C",
-            pathlib.Path(__file__).parent / ".features",
+            pathlib.Path.cwd() / ".features",
             "clone",
             "--tags",
             "--branch",
@@ -153,8 +156,8 @@ def pull_features(session):
     - [ ] Modules
     """
     # Ex:
-    # nox --session pi_hole_up
-    # nox --tags pi_hole_up
+    # nox --session pull_features
+    # nox --tags pull_features
 
     # /usr/bin/docker \
     #     compose \
@@ -168,7 +171,7 @@ def pull_features(session):
         session.run(
             shutil.which("git"),
             "-C",
-            pathlib.Path(__file__).parent / ".features" / name,
+            pathlib.Path.cwd() / ".features" / name,
             "pull",
             "--verbose",
             "origin",
@@ -190,8 +193,8 @@ def stash_features(session):
     - [ ] Modules
     """
     # Ex:
-    # nox --session pi_hole_up
-    # nox --tags pi_hole_up
+    # nox --session stash_features
+    # nox --tags stash_features
 
     # /usr/bin/docker \
     #     compose \
@@ -205,7 +208,7 @@ def stash_features(session):
         session.run(
             shutil.which("git"),
             "-C",
-            pathlib.Path(__file__).parent / ".features" / name,
+            pathlib.Path.cwd() / ".features" / name,
             "stash",
             external=True
         )
@@ -222,8 +225,8 @@ def stash_apply_features(session):
     - [ ] Modules
     """
     # Ex:
-    # nox --session pi_hole_up
-    # nox --tags pi_hole_up
+    # nox --session stash_apply_features
+    # nox --tags stash_apply_features
 
     # /usr/bin/docker \
     #     compose \
@@ -237,11 +240,160 @@ def stash_apply_features(session):
         session.run(
             shutil.which("git"),
             "-C",
-            pathlib.Path(__file__).parent / ".features" / name,
+            pathlib.Path.cwd() / ".features" / name,
             "stash",
             "apply",
             external=True
         )
+
+
+# # pull_engine
+@nox.session(python=None, tags=["pull_engine"])
+def pull_engine(session):
+    """
+    Start Harbor with `sudo`.
+
+    Scope:
+    - [x] Engine
+    - [ ] Modules
+    """
+    # Ex:
+    # nox --session pull_engine
+    # nox --tags pull_engine
+
+    # /usr/bin/docker \
+    #     compose \
+    #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.pi-hole/docker_compose/docker-compose.yml \
+    #     --project-name openstudiolandscapes-pi-hole up --remove-orphans
+
+
+    logging.info("Pulling %s" % REPO_ENGINE)
+
+    session.run(
+        shutil.which("git"),
+        "pull",
+        "--verbose",
+        "origin",
+        MAIN_BRANCH,
+        "--rebase=true",
+        "--tags",
+        external=True
+    )
+
+
+# # stash_engine
+@nox.session(python=None, tags=["stash_engine"])
+def stash_engine(session):
+    """
+    Start Harbor with `sudo`.
+
+    Scope:
+    - [x] Engine
+    - [ ] Modules
+    """
+    # Ex:
+    # nox --session stash_engine
+    # nox --tags stash_engine
+
+    # /usr/bin/docker \
+    #     compose \
+    #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.pi-hole/docker_compose/docker-compose.yml \
+    #     --project-name openstudiolandscapes-pi-hole up --remove-orphans
+
+    logging.info("Stashing %s" % REPO_ENGINE)
+
+    session.run(
+        shutil.which("git"),
+        "stash",
+        external=True
+    )
+
+
+# # stash_apply_engine
+@nox.session(python=None, tags=["stash_apply_engine"])
+def stash_apply_engine(session):
+    """
+    Start Harbor with `sudo`.
+
+    Scope:
+    - [x] Engine
+    - [ ] Modules
+    """
+    # Ex:
+    # nox --session stash_apply_engine
+    # nox --tags stash_apply_engine
+
+    # /usr/bin/docker \
+    #     compose \
+    #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.pi-hole/docker_compose/docker-compose.yml \
+    #     --project-name openstudiolandscapes-pi-hole up --remove-orphans
+
+    logging.info("Stashing %s" % REPO_ENGINE)
+
+    session.run(
+        shutil.which("git"),
+        "stash",
+        "apply",
+        external=True
+    )
+
+
+#######################################################################################################################
+
+
+#######################################################################################################################
+# venv
+
+# # create_venv_features
+@nox.session(python=None, tags=["create_venv_features"])
+def create_venv_features(session):
+    """
+    Start Harbor with `sudo`.
+
+    Scope:
+    - [x] Engine
+    - [ ] Modules
+    """
+    # Ex:
+    # nox --session create_venv_features
+    # nox --tags create_venv_features
+
+    # /usr/bin/docker \
+    #     compose \
+    #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.pi-hole/docker_compose/docker-compose.yml \
+    #     --project-name openstudiolandscapes-pi-hole up --remove-orphans
+
+    cwd = pathlib.Path.cwd()
+
+    features_dir = pathlib.Path.cwd() / ".features"
+
+    for dir_ in features_dir.iterdir():
+        if dir_.is_dir():
+            with session.chdir(features_dir / dir_):
+                session.run(
+                    shutil.which("python3.11"),
+                    "-m",
+                    "venv",
+                    ".venv"
+                )
+
+                session.run(
+                    ".venv/bin/python",
+                    "-m",
+                    "pip",
+                    "install",
+                    "--upgrade",
+                    "'pip setuptools'",
+                )
+
+                session.run(
+                    ".venv/bin/python",
+                    "-m",
+                    "pip",
+                    "install",
+                    "--editable",
+                    ".[dev]",
+                )
 
 
 #######################################################################################################################
