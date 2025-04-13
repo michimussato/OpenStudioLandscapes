@@ -86,6 +86,168 @@ ENV = {}
 
 
 #######################################################################################################################
+# Git
+
+# # REPOSITORIES
+REPOS_FEATURE = {
+    "OpenStudioLandscapes-Ayon": "https://github.com/michimussato/OpenStudioLandscapes-Ayon",
+    "OpenStudioLandscapes-Dagster": "https://github.com/michimussato/OpenStudioLandscapes-Dagster",
+    "OpenStudioLandscapes-Deadline-10-2": "https://github.com/michimussato/OpenStudioLandscapes-Deadline-10-2",
+    "OpenStudioLandscapes-Deadline-10-2-Worker": "https://github.com/michimussato/OpenStudioLandscapes-Deadline-10-2-Worker",
+    "OpenStudioLandscapes-filebrowser": "https://github.com/michimussato/OpenStudioLandscapes-filebrowser",
+    # "https://github.com/michimussato/OpenStudioLandscapes-Grafana",
+    "OpenStudioLandscapes-Kitsu": "https://github.com/michimussato/OpenStudioLandscapes-Kitsu",
+    # "https://github.com/michimussato/OpenStudioLandscapes-LikeC4",
+    "OpenStudioLandscapes-NukeRLM-8": "https://github.com/michimussato/OpenStudioLandscapes-NukeRLM-8",
+    # "https://github.com/michimussato/OpenStudioLandscapes-OpenCue",
+    "OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20": "https://github.com/michimussato/OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20",
+    "OpenStudioLandscapes-Syncthing": "https://github.com/michimussato/OpenStudioLandscapes-Syncthing",
+    # "https://github.com/michimussato/OpenStudioLandscapes-Watchtower",
+}
+
+# # MAIN BRANCH
+MAIN_BRANCH = "main"
+
+
+# # clone_features
+@nox.session(python=None, tags=["clone_features"])
+def clone_features(session):
+    """
+    Clone all listed Features into .features.
+
+    Scope:
+    - [x] Engine
+    - [ ] Modules
+    """
+    # Ex:
+    # nox --session clone_features
+    # nox --tags clone_features
+
+    # git -C .features clone https://github.com/michimussato/OpenStudioLandscapes-<Feature>
+
+    for name, repo in REPOS_FEATURE.items():
+
+        logging.info("Cloning %s" % name)
+
+        session.run(
+            shutil.which("git"),
+            "-C",
+            pathlib.Path(__file__).parent / ".features",
+            "clone",
+            "--tags",
+            "--branch",
+            MAIN_BRANCH,
+            "--single-branch",
+            repo,
+        )
+
+
+# # pull_features
+@nox.session(python=None, tags=["pull_features"])
+def pull_features(session):
+    """
+    Start Harbor with `sudo`.
+
+    Scope:
+    - [x] Engine
+    - [ ] Modules
+    """
+    # Ex:
+    # nox --session pi_hole_up
+    # nox --tags pi_hole_up
+
+    # /usr/bin/docker \
+    #     compose \
+    #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.pi-hole/docker_compose/docker-compose.yml \
+    #     --project-name openstudiolandscapes-pi-hole up --remove-orphans
+
+    for name, repo in REPOS_FEATURE.items():
+
+        logging.info("Pulling %s" % name)
+
+        session.run(
+            shutil.which("git"),
+            "-C",
+            pathlib.Path(__file__).parent / ".features" / name,
+            "pull",
+            "--verbose",
+            "origin",
+            MAIN_BRANCH,
+            "--rebase=true",
+            "--tags",
+            external=True
+        )
+
+
+# # stash_features
+@nox.session(python=None, tags=["stash_features"])
+def stash_features(session):
+    """
+    Start Harbor with `sudo`.
+
+    Scope:
+    - [x] Engine
+    - [ ] Modules
+    """
+    # Ex:
+    # nox --session pi_hole_up
+    # nox --tags pi_hole_up
+
+    # /usr/bin/docker \
+    #     compose \
+    #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.pi-hole/docker_compose/docker-compose.yml \
+    #     --project-name openstudiolandscapes-pi-hole up --remove-orphans
+
+    for name, repo in REPOS_FEATURE.items():
+
+        logging.info("Stashing %s" % name)
+
+        session.run(
+            shutil.which("git"),
+            "-C",
+            pathlib.Path(__file__).parent / ".features" / name,
+            "stash",
+            external=True
+        )
+
+
+# # stash_apply_features
+@nox.session(python=None, tags=["stash_apply_features"])
+def stash_apply_features(session):
+    """
+    Start Harbor with `sudo`.
+
+    Scope:
+    - [x] Engine
+    - [ ] Modules
+    """
+    # Ex:
+    # nox --session pi_hole_up
+    # nox --tags pi_hole_up
+
+    # /usr/bin/docker \
+    #     compose \
+    #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.pi-hole/docker_compose/docker-compose.yml \
+    #     --project-name openstudiolandscapes-pi-hole up --remove-orphans
+
+    for name, repo in REPOS_FEATURE.items():
+
+        logging.info("Stashing %s" % name)
+
+        session.run(
+            shutil.which("git"),
+            "-C",
+            pathlib.Path(__file__).parent / ".features" / name,
+            "stash",
+            "apply",
+            external=True
+        )
+
+
+#######################################################################################################################
+
+
+#######################################################################################################################
 # Pi-hole
 
 # # ENVIRONMENT
