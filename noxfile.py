@@ -713,7 +713,7 @@ def write_pi_hole_yml(
 @nox.session(python=None, tags=["pi_hole_up"])
 def pi_hole_up(session):
     """
-    Start Pi-hole.
+    Start Pi-hole in attached mode.
 
     Scope:
     - [x] Engine
@@ -748,7 +748,7 @@ def pi_hole_up(session):
 @nox.session(python=None, tags=["pi_hole_prepare"])
 def pi_hole_prepare(session):
     """
-    Prepare Pi-hole.
+    Prepare Pi-hole in attached mode.
 
     Scope:
     - [x] Engine
@@ -780,7 +780,7 @@ def pi_hole_prepare(session):
 @nox.session(python=None, tags=["pi_hole_clear"])
 def pi_hole_clear(session):
     """
-    Clear Pi-hole. WARNING: DATA LOSS!
+    Clear Pi-hole with `sudo`. WARNING: DATA LOSS!
 
     Scope:
     - [x] Engine
@@ -1124,6 +1124,7 @@ def harbor_clear(session):
     harbor_root_dir: pathlib.Path = ENVIRONMENT_HARBOR["HARBOR_ROOT_DIR"]
 
     logging.debug("Clearing Harbor...")
+    logging.debug("Removing Dir %s" % harbor_root_dir.as_posix())
 
     if harbor_root_dir.exists():
         logging.warning("Clearing out Harbor...\n" "Continue? Type `yes` to confirm.")
@@ -1148,7 +1149,7 @@ def harbor_clear(session):
 @nox.session(python=None, tags=["harbor_up"])
 def harbor_up(session):
     """
-    Start Harbor with `sudo`.
+    Start Harbor with `sudo` in attached mode.
 
     Scope:
     - [x] Engine
@@ -1177,7 +1178,7 @@ def harbor_up(session):
 @nox.session(python=None, tags=["harbor_up_detach"])
 def harbor_up_detach(session):
     """
-    Start Harbor with `sudo` and detach.
+    Start Harbor with `sudo` in detached mode.
 
     Scope:
     - [x] Engine
@@ -1236,44 +1237,304 @@ def harbor_down(session):
 
 #######################################################################################################################
 # Dagster
-# # Dagster MySQL
-@nox.session(python=None, tags=["dagster_mysql"])
-def dagster_mysql(session):
+
+# # ENVIRONMENT
+ENVIRONMENT_DAGSTER = {
+    "ROOT_DOMAIN": "farm.evil",
+    "DAGSTER_POSTGRES_ROOT_DIR": pathlib.Path.cwd() / ".dagster-postgres",
+    "DAGSTER_MYSQL_ROOT_DIR": pathlib.Path.cwd() / ".dagster",
+    "DAGSTER_POSTGRES_DB_DIR_DIR": ".postgres",
+    "DAGSTER_POSTGRES_DB_USERNAME": "postgres",
+    "DAGSTER_POSTGRES_DB_PASSWORD": "mysecretpassword",
+    "DAGSTER_POSTGRES_DB_NAME": "postgres",
+    "DAGSTER_POSTGRES_DB_PORT_CONTAINER": 5432,
+    "DAGSTER_POSTGRES_DB_PORT_HOST": 5432,
+}
+
+yml_dagster_postgres = ENVIRONMENT_DAGSTER["DAGSTER_POSTGRES_ROOT_DIR"] / "dagster.yaml"
+compose_dagster_postgres = (
+    ENVIRONMENT_DAGSTER["DAGSTER_POSTGRES_ROOT_DIR"] / "docker-compose.yml"
+)
+
+cmd_dagster_postgres = [
+    shutil.which("docker"),
+    "compose",
+    "--file",
+    compose_dagster_postgres.as_posix(),
+    "--project-name",
+    "openstudiolandscapes-dagster-postgres",
+]
+
+
+def write_dagster_postgres_yml(
+    # yaml_out: pathlib.Path,
+) -> pathlib.Path:
+
+    # Example:
+    # https://github.com/docker-library/docs/blob/master/postgres/README.md#-via-docker-compose-or-docker-stack-deploy
+
+    dagster_postgres_root_dir: pathlib.Path = ENVIRONMENT_DAGSTER[
+        "DAGSTER_POSTGRES_ROOT_DIR"
+    ]
+    dagster_postgres_root_dir.mkdir(parents=True, exist_ok=True)
+
+    service_name = "postgres-dagster"
+    network_name = service_name
+    container_name = service_name
+    host_name = ".".join([service_name, ENVIRONMENT_DAGSTER["ROOT_DOMAIN"]])
+
+    # https://docs.dagster.io/guides/limiting-concurrency-in-data-pipelines
+    dagster_postgres_dict = {
+        "run_queue": {
+            "max_concurrent_runs": 1,
+            "block_op_concurrency_limited_runs": {
+                "enabled": True,
+            },
+        },
+        "telemetry": {
+            "enabled": False,
+        },
+        "auto_materialize": {
+            "enabled": True,
+            "use_sensors": True,
+        },
+        "storage": {
+            "postgres": {
+                "postgres_db": {
+                    "username": ENVIRONMENT_DAGSTER["DAGSTER_POSTGRES_DB_USERNAME"],
+                    "password": ENVIRONMENT_DAGSTER["DAGSTER_POSTGRES_DB_PASSWORD"],
+                    "hostname": host_name,
+                    "db_name": ENVIRONMENT_DAGSTER["DAGSTER_POSTGRES_DB_NAME"],
+                    "port": ENVIRONMENT_DAGSTER["DAGSTER_POSTGRES_DB_PORT_CONTAINER"],
+                },
+            },
+        },
+        # run_monitoring:
+        #  enabled: true
+        #  free_slots_after_run_end_seconds: 300
+        # concurrency:
+        #  default_op_concurrency_limit: 1
+    }
+
+    dagster_postgres_yml: str = yaml.dump(
+        dagster_postgres_dict,
+        indent=2,
+    )
+
+    with open(yml_dagster_postgres.as_posix(), "w") as fw:
+        fw.write(dagster_postgres_yml)
+
+    logging.debug(
+        "Contents Dagster-Postgres `dagster.yaml`: \n%s" % dagster_postgres_yml
+    )
+
+    return yml_dagster_postgres
+
+
+def write_dagster_postgres_compose() -> pathlib.Path:
+
+    dagster_postgres_root_dir: pathlib.Path = ENVIRONMENT_DAGSTER[
+        "DAGSTER_POSTGRES_ROOT_DIR"
+    ]
+    dagster_postgres_root_dir.mkdir(parents=True, exist_ok=True)
+
+    dagster_postgres_db_dir: pathlib.Path = (
+        dagster_postgres_root_dir / ENVIRONMENT_DAGSTER["DAGSTER_POSTGRES_DB_DIR_DIR"]
+    )
+    dagster_postgres_db_dir.mkdir(parents=True, exist_ok=True)
+
+    service_name = "postgres-dagster"
+    network_name = service_name
+    container_name = service_name
+    host_name = ".".join([service_name, ENVIRONMENT_DAGSTER["ROOT_DOMAIN"]])
+
+    dagster_postgres_dict = {
+        "networks": {
+            network_name: {
+                "name": f"network_{network_name}",
+            },
+        },
+        "services": {
+            service_name: {
+                "container_name": container_name,
+                "hostname": host_name,
+                "domainname": ENVIRONMENT_DAGSTER["ROOT_DOMAIN"],
+                "restart": "unless-stopped",
+                "image": "docker.io/postgres",
+                "volumes": [
+                    f"{dagster_postgres_db_dir.as_posix()}:/var/lib/postgresql/data:rw",
+                ],
+                "networks": [network_name],
+                "ports": [
+                    f"{ENVIRONMENT_DAGSTER['DAGSTER_POSTGRES_DB_PORT_HOST']}:{ENVIRONMENT_DAGSTER['DAGSTER_POSTGRES_DB_PORT_CONTAINER']}",
+                ],
+                "environment": {
+                    "POSTGRES_USER": ENVIRONMENT_DAGSTER[
+                        "DAGSTER_POSTGRES_DB_USERNAME"
+                    ],
+                    "POSTGRES_PASSWORD": ENVIRONMENT_DAGSTER[
+                        "DAGSTER_POSTGRES_DB_PASSWORD"
+                    ],
+                    "POSTGRES_DB": ENVIRONMENT_DAGSTER["DAGSTER_POSTGRES_DB_NAME"],
+                    "PGDATA": "/var/lib/postgresql/data/pgdata",
+                },
+                # "healthcheck": {
+                # },
+                # "command": [
+                # ],
+            },
+        },
+    }
+
+    dagster_postgres_yml: str = yaml.dump(
+        dagster_postgres_dict,
+        indent=2,
+    )
+
+    with open(compose_dagster_postgres.as_posix(), "w") as fw:
+        fw.write(dagster_postgres_yml)
+
+    logging.debug(
+        "Contents Dagster-Postgres `docker-compose.yml`: \n%s" % dagster_postgres_yml
+    )
+
+    return compose_dagster_postgres
+
+
+#######################################################################################################################
+# # Dagster Postgres
+# Todo:
+#  - [x] dagster_postgres_up
+#  - [x] dagster_postgres_down
+#  or
+#  - [ ] dagster_postgres_attach
+# # dagster_postgres_up
+@nox.session(python=None, tags=["dagster_postgres_up"])
+def dagster_postgres_up(session):
     """
-    Start Dagster with MySQL (default) as backend.
+    Start Postgres backend for Dagster in attached mode.
 
     Scope:
     - [x] Engine
     - [ ] Modules
     """
     # Ex:
-    # nox --session dagster_mysql
-    # nox --tags dagster_mysql
+    # nox --session dagster_postgres_up
+    # nox --tags dagster_postgres_up
 
-    # cd ~/git/repos/OpenStudioLandscapes
-    # source .venv/bin/activate
-    # export DAGSTER_HOME="$(pwd)/.dagster"
-    # dagster dev --host 0.0.0.0
+    if not yml_dagster_postgres.exists():
+        write_dagster_postgres_yml()
+
+    if not compose_dagster_postgres.exists():
+        write_dagster_postgres_compose()
+
     session.run(
-        shutil.which("dagster"),
-        "dev",
-        "--host",
-        "0.0.0.0",
-        env={"DAGSTER_HOME": f"{pathlib.Path.cwd()}/.dagster"},
+        *cmd_dagster_postgres,
+        "up",
+        "--remove-orphans",
+        env=ENV,
         external=True,
     )
 
 
-# # Dagster Postgres
-# Todo:
-#  - [ ] dagster_postgres_up
-#  - [ ] dagster_postgres_down
-#  or
-#  - [ ] dagster_postgres_attach
+# # dagster_postgres_clear
+@nox.session(python=None, tags=["dagster_postgres_clear"])
+def dagster_postgres_clear(session):
+    """
+    Clear Dagster-Postgres with `sudo`. WARNING: DATA LOSS!
+
+    Scope:
+    - [x] Engine
+    - [ ] Modules
+    """
+    # Ex:
+    # nox --session dagster_postgres_clear
+    # nox --tags dagster_postgres_clear
+
+    dagster_postgres_root_dir: pathlib.Path = ENVIRONMENT_DAGSTER[
+        "DAGSTER_POSTGRES_ROOT_DIR"
+    ]
+
+    logging.debug("Clearing Dagster-Postgres...")
+    logging.debug("Removing Dir %s" % dagster_postgres_root_dir.as_posix())
+
+    if dagster_postgres_root_dir.exists():
+        logging.warning(
+            "Clearing out Dagster-Postgres...\n " "Continue? Type `yes` to confirm."
+        )
+        answer = input()
+        if answer.lower() == "yes":
+            session.run(
+                shutil.which("sudo"),
+                shutil.which("rm"),
+                "-rf",
+                dagster_postgres_root_dir.as_posix(),
+                env=ENV,
+                external=True,
+            )
+        else:
+            logging.info("Clearing Dagster-Postgres was aborted.")
+            return
+
+    logging.debug("%s removed" % dagster_postgres_root_dir.as_posix())
+
+
+# # dagster_postgres_up_detach
+@nox.session(python=None, tags=["dagster_postgres_up_detach"])
+def dagster_postgres_up_detach(session):
+    """
+     Start Postgres backend for Dagster in detached mode.
+
+    Scope:
+    - [x] Engine
+    - [ ] Modules
+    """
+    # Ex:
+    # nox --session dagster_postgres_up_detach
+    # nox --tags dagster_postgres_up_detach
+
+    if not yml_dagster_postgres.exists():
+        write_dagster_postgres_yml()
+
+    if not compose_dagster_postgres.exists():
+        write_dagster_postgres_compose()
+
+    session.run(
+        *cmd_dagster_postgres,
+        "up",
+        "--remove-orphans",
+        "--detach",
+        env=ENV,
+        external=True,
+    )
+
+
+# # dagster_postgres_down
+@nox.session(python=None, tags=["dagster_postgres_down"])
+def dagster_postgres_down(session):
+    """
+    Shut down Postgres backend for Dagster.
+
+    Scope:
+    - [x] Engine
+    - [ ] Modules
+    """
+    # Ex:
+    # nox --session dagster_postgres_up
+    # nox --tags dagster_postgres_up
+
+    session.run(
+        *cmd_dagster_postgres,
+        "down",
+        env=ENV,
+        external=True,
+    )
+
+
 @nox.session(python=None, tags=["dagster_postgres"])
 def dagster_postgres(session):
     """
-    Start Dagster with Postgres as backend.
+    Start Dagster with Postgres as backend after `nox --session dagster_postgres_up_detach`.
 
     Scope:
     - [x] Engine
@@ -1283,68 +1544,59 @@ def dagster_postgres(session):
     # nox --session dagster_postgres
     # nox --tags dagster_postgres
 
-    # docker run \
-    #     --name postgres-dagster \
-    #     --domainname farm.evil \
-    #     --hostname postgres-dagster.farm.evil \
-    #     --env POSTGRES_USER=postgres \
-    #     --env POSTGRES_PASSWORD=mysecretpassword \
-    #     --env POSTGRES_DB=postgres \
-    # 	--env PGDATA=/var/lib/postgresql/data/pgdata \
-    # 	--volume ./.postgres:/var/lib/postgresql/data \
-    # 	--publish 5432:5432 \
-    # 	--rm \
-    #     docker.io/postgres
-    try:
-        with session.chdir(".dagster-postgres"):
-            session.run(
-                shutil.which("docker"),
-                "run",
-                "--detach",
-                "--name",
-                "postgres-dagster",
-                "--domainname",
-                "farm.evil",
-                "--hostname",
-                "postgres-dagster.farm.evil",
-                "--env",
-                "POSTGRES_USER=postgres",
-                "--env",
-                "POSTGRES_PASSWORD=mysecretpassword",
-                "--env",
-                "POSTGRES_DB=postgres",
-                "--env",
-                "PGDATA=/var/lib/postgresql/data/pgdata",
-                "--volume",
-                "./.postgres:/var/lib/postgresql/data",
-                "--publish",
-                "5432:5432",
-                "--rm",
-                "docker.io/postgres",
-                # env={
-                #
-                # },
-                external=True,
-            )
-    except Exception as e:
-        print(f"PostgreSQL is already running, skipping ({e})")
-
-    # cd ~/git/repos/OpenStudioLandscapes
-    # source .venv/bin/activate
-    # export DAGSTER_HOME="$(pwd)/.dagster-postgres"
-    # dagster dev --host 0.0.0.0
-    # with session.chdir(".dagster-postgres"):
     session.run(
         shutil.which("dagster"),
         "dev",
         "--host",
         "0.0.0.0",
-        env={"DAGSTER_HOME": f"{pathlib.Path.cwd()}/.dagster-postgres"},
+        env={
+            "DAGSTER_HOME": ENVIRONMENT_DAGSTER["DAGSTER_POSTGRES_ROOT_DIR"],
+        },
         external=True,
     )
 
 
 #######################################################################################################################
+
+
+# I guess it's better if this is not even implemented because
+# MySQL is wonky and Postgres should be the default backend anyway
+# #######################################################################################################################
+# # # Dagster MySQL
+# @nox.session(python=None, tags=["dagster_mysql"])
+# def dagster_mysql(session):
+#     """
+#     Start Dagster with MySQL (default) as backend.
+#
+#     Scope:
+#     - [x] Engine
+#     - [ ] Modules
+#     """
+#     # Ex:
+#     # nox --session dagster_mysql
+#     # nox --tags dagster_mysql
+#
+#     dagster_mysql_root_dir: pathlib.Path = ENVIRONMENT_DAGSTER["DAGSTER_MYSQL_ROOT_DIR"]
+#     dagster_mysql_root_dir.mkdir(parents=True, exist_ok=True)
+#
+#     # dagster_postgres_db_dir: pathlib.Path = (
+#     #     dagster_mysql_root_dir / ENVIRONMENT_DAGSTER_POSTGRES['DAGSTER_POSTGRES_DB_DIR_DIR']
+#     # )
+#     # dagster_postgres_db_dir.mkdir(parents=True, exist_ok=True)
+#
+#     session.run(
+#         shutil.which("dagster"),
+#         "dev",
+#         "--host",
+#         "0.0.0.0",
+#         env={
+#             "DAGSTER_HOME": dagster_mysql_root_dir.as_posix(),
+#         },
+#         external=True,
+#     )
+#
+#
+# #######################################################################################################################
 
 
 #######################################################################################################################
