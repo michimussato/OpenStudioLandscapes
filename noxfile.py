@@ -142,6 +142,7 @@ def clone_features(session):
             MAIN_BRANCH,
             "--single-branch",
             repo,
+            external=True,
         )
 
 
@@ -374,7 +375,8 @@ def create_venv_features(session):
                     shutil.which("python3.11"),
                     "-m",
                     "venv",
-                    ".venv"
+                    ".venv",
+                    external=True,
                 )
 
                 session.run(
@@ -384,6 +386,7 @@ def create_venv_features(session):
                     "install",
                     "--upgrade",
                     "'pip setuptools'",
+                    external=True,
                 )
 
                 session.run(
@@ -393,6 +396,7 @@ def create_venv_features(session):
                     "install",
                     "--editable",
                     ".[dev]",
+                    external=True,
                 )
 
 
