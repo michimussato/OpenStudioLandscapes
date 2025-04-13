@@ -419,8 +419,6 @@ def create_venv_features(session):
     #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.pi-hole/docker_compose/docker-compose.yml \
     #     --project-name openstudiolandscapes-pi-hole up --remove-orphans
 
-    cwd = pathlib.Path.cwd()
-
     features_dir = pathlib.Path.cwd() / ".features"
 
     for dir_ in features_dir.iterdir():
@@ -480,6 +478,7 @@ def install_features_into_engine(session):
 
     for dir_ in features_dir.iterdir():
         if dir_.is_dir():
+            logging.info("Installing features from %s" % dir_)
             # with session.chdir(features_dir / dir_):
             # session.run(
             #     shutil.which("python3.11"),
