@@ -1511,17 +1511,17 @@ Sessions defined in OpenStudioLandscapes/noxfile.py:
 - create_venv_features -> Create a `venv`s in .features/<Feature> after `nox --session clone_features` and installing the Feature into its own `.venv`.
 - install_features_into_engine -> Installs the Features after `nox --session clone_features` into the engine `.venv`.
 - fix_hardlinks_in_features -> See https://github.com/michimussato/OpenStudioLandscapes?tab=readme-ov-file#hard-links-sync-files-and-directories-across-repositories-de-duplication
-- pi_hole_up -> Start Pi-hole.
-- pi_hole_prepare -> Prepare Pi-hole.
+- pi_hole_up -> Start Pi-hole in attached mode.
+- pi_hole_prepare -> Prepare Pi-hole in attached mode.
 - pi_hole_clear -> Clear Pi-hole with `sudo`. WARNING: DATA LOSS!
 - pi_hole_up_detach -> Start Pi-hole in detached mode.
 - pi_hole_down -> Shut down Pi-hole.
 - harbor_prepare -> Prepare Harbor with `sudo`.
 - harbor_clear -> Clear Harbor with `sudo`.
-- harbor_up -> Start Harbor with `sudo`.
-- harbor_up_detach -> Start Harbor with `sudo` and detach.
+- harbor_up -> Start Harbor with `sudo` in attached mode.
+- harbor_up_detach -> Start Harbor with `sudo` in detached mode.
 - harbor_down -> Stop Harbor with `sudo`.
-- dagster_postgres_up -> Start Postgres backend for Dagster.
+- dagster_postgres_up -> Start Postgres backend for Dagster in attached mode.
 - dagster_postgres_clear -> Clear Dagster-Postgres with `sudo`. WARNING: DATA LOSS!
 - dagster_postgres_up_detach -> Start Postgres backend for Dagster in detached mode.
 - dagster_postgres_down -> Shut down Postgres backend for Dagster.
