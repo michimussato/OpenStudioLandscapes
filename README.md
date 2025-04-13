@@ -1513,7 +1513,7 @@ Sessions defined in OpenStudioLandscapes/noxfile.py:
 - fix_hardlinks_in_features -> See https://github.com/michimussato/OpenStudioLandscapes?tab=readme-ov-file#hard-links-sync-files-and-directories-across-repositories-de-duplication
 - pi_hole_up -> Start Pi-hole.
 - pi_hole_prepare -> Prepare Pi-hole.
-- pi_hole_clear -> Clear Pi-hole. WARNING: DATA LOSS!
+- pi_hole_clear -> Clear Pi-hole with `sudo`. WARNING: DATA LOSS!
 - pi_hole_up_detach -> Start Pi-hole in detached mode.
 - pi_hole_down -> Shut down Pi-hole.
 - harbor_prepare -> Prepare Harbor with `sudo`.
@@ -1521,8 +1521,11 @@ Sessions defined in OpenStudioLandscapes/noxfile.py:
 - harbor_up -> Start Harbor with `sudo`.
 - harbor_up_detach -> Start Harbor with `sudo` and detach.
 - harbor_down -> Stop Harbor with `sudo`.
-- dagster_mysql -> Start Dagster with MySQL (default) as backend.
-- dagster_postgres -> Start Dagster with Postgres as backend.
+- dagster_postgres_up -> Start Postgres backend for Dagster.
+- dagster_postgres_clear -> Clear Dagster-Postgres with `sudo`. WARNING: DATA LOSS!
+- dagster_postgres_up_detach -> Start Postgres backend for Dagster in detached mode.
+- dagster_postgres_down -> Shut down Postgres backend for Dagster.
+- dagster_postgres -> Start Dagster with Postgres as backend after `nox --session dagster_postgres_up_detach`.
 * sbom-3.11 -> Runs Software Bill of Materials (SBOM).
 * sbom-3.12 -> Runs Software Bill of Materials (SBOM).
 * coverage-3.11 -> Runs coverage
