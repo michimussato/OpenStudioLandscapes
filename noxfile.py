@@ -345,6 +345,61 @@ def stash_apply_engine(session):
 #######################################################################################################################
 # venv
 
+# # create_venv_engine
+@nox.session(python=None, tags=["create_venv_engine"])
+def create_venv_engine(session):
+    """
+    Start Harbor with `sudo`.
+
+    Scope:
+    - [x] Engine
+    - [ ] Modules
+    """
+    # Ex:
+    # nox --session create_venv_engine
+    # nox --tags create_venv_engine
+
+    # /usr/bin/docker \
+    #     compose \
+    #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.pi-hole/docker_compose/docker-compose.yml \
+    #     --project-name openstudiolandscapes-pi-hole up --remove-orphans
+
+    # cwd = pathlib.Path.cwd()
+
+    # features_dir = pathlib.Path.cwd() / ".features"
+
+    # for dir_ in features_dir.iterdir():
+    #     if dir_.is_dir():
+    # with session.chdir(features_dir / dir_):
+    session.run(
+        shutil.which("python3.11"),
+        "-m",
+        "venv",
+        ".venv",
+        external=True,
+    )
+
+    session.run(
+        ".venv/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--upgrade",
+        "pip", "setuptools",
+        external=True,
+    )
+
+    session.run(
+        ".venv/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--editable",
+        ".[dev]",
+        external=True,
+    )
+
+
 # # create_venv_features
 @nox.session(python=None, tags=["create_venv_features"])
 def create_venv_features(session):
@@ -398,6 +453,61 @@ def create_venv_features(session):
                     ".[dev]",
                     external=True,
                 )
+
+
+# # install_features_into_engine
+@nox.session(python=None, tags=["install_features_into_engine"])
+def install_features_into_engine(session):
+    """
+    Start Harbor with `sudo`.
+
+    Scope:
+    - [x] Engine
+    - [ ] Modules
+    """
+    # Ex:
+    # nox --session create_venv_features
+    # nox --tags create_venv_features
+
+    # /usr/bin/docker \
+    #     compose \
+    #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.pi-hole/docker_compose/docker-compose.yml \
+    #     --project-name openstudiolandscapes-pi-hole up --remove-orphans
+
+    # cwd = pathlib.Path.cwd()
+
+    features_dir = pathlib.Path.cwd() / ".features"
+
+    for dir_ in features_dir.iterdir():
+        if dir_.is_dir():
+            # with session.chdir(features_dir / dir_):
+            # session.run(
+            #     shutil.which("python3.11"),
+            #     "-m",
+            #     "venv",
+            #     ".venv",
+            #     external=True,
+            # )
+
+            session.run(
+                ".venv/bin/python",
+                "-m",
+                "pip",
+                "install",
+                "--upgrade",
+                "pip", "setuptools",
+                external=True,
+            )
+
+            session.run(
+                ".venv/bin/python",
+                "-m",
+                "pip",
+                "install",
+                "--editable",
+                f".features/{dir_}[dev]",
+                external=True,
+            )
 
 
 #######################################################################################################################
