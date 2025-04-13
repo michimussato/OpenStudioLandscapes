@@ -122,8 +122,6 @@
     * [Batch Jobs (for Features)](#batch-jobs-for-features)
       * [Clone Features](#clone-features)
       * [Setup Feature-`venv` (`[dev]`)](#setup-feature-venv-dev)
-      * [Install Features](#install-features)
-        * [Into OpenStudioLandscapes-`venv`](#into-openstudiolandscapes-venv)
       * [Generate README.md for Features](#generate-readmemd-for-features)
       * [nox Documentation](#nox-documentation)
       * [nox Report](#nox-report)
@@ -1798,50 +1796,12 @@ nox --session clone_features
 
 #### Setup Feature-`venv` (`[dev]`)
 
-```shell
-pushd .features || exit
-
-for dir in */; do
-    pushd "${dir}" || exit
-    
-    if [ ! -d .venv ]; then
-        python3.11 -m venv .venv
-    fi;
-    
-    source .venv/bin/activate
-    echo "venv activated."
-    
-    echo "Installing [dev] in ${dir}..."
-    pip install ".[dev]"
-    echo "Installed."
-    
-    deactivate
-    echo "deactivated."
-
-    popd || exit
-done;
-
-popd || exit
-```
-
-#### Install Features
-
-##### Into OpenStudioLandscapes-`venv`
+Create `.feature/<Feature>/.venv` and 
+`pip install --editable .feature/<Feature>`
+into it:
 
 ```shell
-pip install -e ".features/OpenStudioLandscapes-Ayon"
-pip install -e ".features/OpenStudioLandscapes-Dagster"
-pip install -e ".features/OpenStudioLandscapes-Deadline-10-2"
-pip install -e ".features/OpenStudioLandscapes-Deadline-10-2-Worker"
-pip install -e ".features/OpenStudioLandscapes-filebrowser"
-# pip install -e ".features/OpenStudioLandscapes-Grafana"
-pip install -e ".features/OpenStudioLandscapes-Kitsu"
-# pip install -e ".features/OpenStudioLandscapes-LikeC4"
-pip install -e ".features/OpenStudioLandscapes-NukeRLM-8"
-# pip install -e ".features/OpenStudioLandscapes-OpenCue"
-pip install -e ".features/OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20"
-pip install -e ".features/OpenStudioLandscapes-Syncthing"
-# pip install -e ".features/OpenStudioLandscapes-Watchtower"
+nox --session create_venv_features
 ```
 
 #### Generate README.md for Features

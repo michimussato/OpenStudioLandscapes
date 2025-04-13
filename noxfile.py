@@ -179,7 +179,7 @@ def pull_features(session):
             MAIN_BRANCH,
             "--rebase=true",
             "--tags",
-            external=True
+            external=True,
         )
 
 
@@ -211,7 +211,7 @@ def stash_features(session):
             "-C",
             pathlib.Path.cwd() / ".features" / name,
             "stash",
-            external=True
+            external=True,
         )
 
 
@@ -244,7 +244,7 @@ def stash_apply_features(session):
             pathlib.Path.cwd() / ".features" / name,
             "stash",
             "apply",
-            external=True
+            external=True,
         )
 
 
@@ -267,7 +267,6 @@ def pull_engine(session):
     #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.pi-hole/docker_compose/docker-compose.yml \
     #     --project-name openstudiolandscapes-pi-hole up --remove-orphans
 
-
     logging.info("Pulling %s" % REPO_ENGINE)
 
     session.run(
@@ -278,7 +277,7 @@ def pull_engine(session):
         MAIN_BRANCH,
         "--rebase=true",
         "--tags",
-        external=True
+        external=True,
     )
 
 
@@ -303,11 +302,7 @@ def stash_engine(session):
 
     logging.info("Stashing %s" % REPO_ENGINE)
 
-    session.run(
-        shutil.which("git"),
-        "stash",
-        external=True
-    )
+    session.run(shutil.which("git"), "stash", external=True)
 
 
 # # stash_apply_engine
@@ -331,12 +326,7 @@ def stash_apply_engine(session):
 
     logging.info("Stashing %s" % REPO_ENGINE)
 
-    session.run(
-        shutil.which("git"),
-        "stash",
-        "apply",
-        external=True
-    )
+    session.run(shutil.which("git"), "stash", "apply", external=True)
 
 
 #######################################################################################################################
@@ -385,7 +375,8 @@ def create_venv_engine(session):
         "pip",
         "install",
         "--upgrade",
-        "pip", "setuptools",
+        "pip",
+        "setuptools",
         external=True,
     )
 
@@ -440,7 +431,8 @@ def create_venv_features(session):
                         "pip",
                         "install",
                         "--upgrade",
-                        "pip", "setuptools",
+                        "pip",
+                        "setuptools",
                         external=True,
                     )
 
@@ -478,29 +470,22 @@ def install_features_into_engine(session):
 
     features_dir = pathlib.Path.cwd() / ".features"
 
+    session.run(
+        ".venv/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--upgrade",
+        "pip",
+        "setuptools",
+        external=True,
+    )
+
     for dir_ in features_dir.iterdir():
         # dir_ is always the full path
         if dir_.is_dir():
             if pathlib.Path(dir_ / ".git").exists():
                 logging.info("Installing features from %s" % dir_)
-                # with session.chdir(features_dir / dir_):
-                # session.run(
-                #     shutil.which("python3.11"),
-                #     "-m",
-                #     "venv",
-                #     ".venv",
-                #     external=True,
-                # )
-
-                session.run(
-                    ".venv/bin/python",
-                    "-m",
-                    "pip",
-                    "install",
-                    "--upgrade",
-                    "pip", "setuptools",
-                    external=True,
-                )
 
                 session.run(
                     ".venv/bin/python",
@@ -511,6 +496,94 @@ def install_features_into_engine(session):
                     f"{dir_}[dev]",
                     external=True,
                 )
+
+
+#######################################################################################################################
+
+
+#######################################################################################################################
+# Hard Links
+
+IDENTICAL_FILES = [
+    # ".obsidian/plugins/obsidian-excalidraw-plugin/main.js",
+    # ".obsidian/plugins/obsidian-excalidraw-plugin/manifest.json",
+    # ".obsidian/plugins/obsidian-excalidraw-plugin/styles.css",
+    # ".obsidian/plugins/templater-obsidian/data.json",
+    # ".obsidian/plugins/templater-obsidian/main.js",
+    # ".obsidian/plugins/templater-obsidian/manifest.json",
+    # ".obsidian/plugins/templater-obsidian/styles.css",
+    # ".obsidian/app.json",
+    # ".obsidian/appearance.json",
+    # ".obsidian/canvas.json",
+    # ".obsidian/community-plugins.json",
+    # ".obsidian/core-plugins.json",
+    # ".obsidian/core-plugins-migration.json",
+    # ".obsidian/daily-notes.json",
+    # ".obsidian/graph.json",
+    # ".obsidian/hotkeys.json",
+    # ".obsidian/templates.json",
+    # ".obsidian/types.json",
+    # ".obsidian/workspace.json",
+    # ".obsidian/workspaces.json",
+    # ".gitattributes",
+    # ".gitignore",
+    # ".pre-commit-config.yaml",
+    # ".readthedocs.yml",
+    "noxfile.py",
+]
+
+# # fix_hardlinks_in_features
+@nox.session(python=None, tags=["fix_hardlinks_in_features"])
+def fix_hardlinks_in_features(session):
+    """
+    Start Harbor with `sudo`.
+
+    Scope:
+    - [x] Engine
+    - [ ] Modules
+    """
+    # Ex:
+    # nox --session create_venv_features
+    # nox --tags create_venv_features
+
+    # ln -f ../../../OpenStudioLandscapes/noxfile.py  noxfile.py
+
+    cwd = pathlib.Path.cwd()
+    features_dir = cwd / ".features"
+
+    for dir_ in features_dir.iterdir():
+        # dir_ is always the full path
+        if dir_.is_dir():
+            if pathlib.Path(dir_ / ".git").exists():
+                for file_ in IDENTICAL_FILES:
+
+                    file_ = pathlib.Path(file_)
+
+                    file_path = file_.parent
+                    link_name = file_.name
+
+                    with session.chdir(dir_ / file_path):
+
+                        logging.info(
+                            "Working director is %s" % pathlib.Path.cwd().as_posix()
+                        )
+
+                        logging.info("Fixing hardlink for file %s" % file_)
+
+                        # Target can be absolute
+                        target = pathlib.Path(cwd / file_)
+
+                        logging.info("Target: %s" % target.as_posix())
+                        logging.info("Link name: %s" % link_name)
+
+                        session.run(
+                            shutil.which("ln"),
+                            "--force",
+                            "--backup=numbered",
+                            target.as_posix(),
+                            link_name,
+                            external=True,
+                        )
 
 
 #######################################################################################################################
