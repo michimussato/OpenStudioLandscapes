@@ -422,35 +422,37 @@ def create_venv_features(session):
     features_dir = pathlib.Path.cwd() / ".features"
 
     for dir_ in features_dir.iterdir():
+        # dir_ is always the full path
         if dir_.is_dir():
-            with session.chdir(features_dir / dir_):
-                session.run(
-                    shutil.which("python3.11"),
-                    "-m",
-                    "venv",
-                    ".venv",
-                    external=True,
-                )
+            if pathlib.Path(dir_ / ".git").exists():
+                with session.chdir(dir_):
+                    session.run(
+                        shutil.which("python3.11"),
+                        "-m",
+                        "venv",
+                        ".venv",
+                        external=True,
+                    )
 
-                session.run(
-                    ".venv/bin/python",
-                    "-m",
-                    "pip",
-                    "install",
-                    "--upgrade",
-                    "pip", "setuptools",
-                    external=True,
-                )
+                    session.run(
+                        ".venv/bin/python",
+                        "-m",
+                        "pip",
+                        "install",
+                        "--upgrade",
+                        "pip", "setuptools",
+                        external=True,
+                    )
 
-                session.run(
-                    ".venv/bin/python",
-                    "-m",
-                    "pip",
-                    "install",
-                    "--editable",
-                    ".[dev]",
-                    external=True,
-                )
+                    session.run(
+                        ".venv/bin/python",
+                        "-m",
+                        "pip",
+                        "install",
+                        "--editable",
+                        ".[dev]",
+                        external=True,
+                    )
 
 
 # # install_features_into_engine
@@ -477,36 +479,38 @@ def install_features_into_engine(session):
     features_dir = pathlib.Path.cwd() / ".features"
 
     for dir_ in features_dir.iterdir():
+        # dir_ is always the full path
         if dir_.is_dir():
-            logging.info("Installing features from %s" % dir_)
-            # with session.chdir(features_dir / dir_):
-            # session.run(
-            #     shutil.which("python3.11"),
-            #     "-m",
-            #     "venv",
-            #     ".venv",
-            #     external=True,
-            # )
+            if pathlib.Path(dir_ / ".git").exists():
+                logging.info("Installing features from %s" % dir_)
+                # with session.chdir(features_dir / dir_):
+                # session.run(
+                #     shutil.which("python3.11"),
+                #     "-m",
+                #     "venv",
+                #     ".venv",
+                #     external=True,
+                # )
 
-            session.run(
-                ".venv/bin/python",
-                "-m",
-                "pip",
-                "install",
-                "--upgrade",
-                "pip", "setuptools",
-                external=True,
-            )
+                session.run(
+                    ".venv/bin/python",
+                    "-m",
+                    "pip",
+                    "install",
+                    "--upgrade",
+                    "pip", "setuptools",
+                    external=True,
+                )
 
-            session.run(
-                ".venv/bin/python",
-                "-m",
-                "pip",
-                "install",
-                "--editable",
-                f".features/{dir_}[dev]",
-                external=True,
-            )
+                session.run(
+                    ".venv/bin/python",
+                    "-m",
+                    "pip",
+                    "install",
+                    "--editable",
+                    f"{dir_}[dev]",
+                    external=True,
+                )
 
 
 #######################################################################################################################
