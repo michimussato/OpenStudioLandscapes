@@ -163,11 +163,9 @@ git clone https://github.com/michimussato/OpenStudioLandscapes
 git -C OpenStudioLandscapes/.features/ clone https://github.com/michimussato/OpenStudioLandscapes-Kitsu
 
 cd OpenStudioLandscapes
-python3.11 -m venv .venv && source .venv/bin/activate
-python -m pip install --upgrade pip setuptools
 
-pip install -e ".[dev]"
-pip install -e "./.features/OpenStudioLandscapes-Kitsu[dev]"
+nox --session create_venv_engine  # installs OpenStudioLandscapes[dev] into venv
+nox --session install_features_into_engine
 
 nox --session harbor_prepare
 nox --session harbor_up_detach
@@ -566,6 +564,8 @@ sudo nano /etc/docker/daemon.json
 and add, then save:
 
 ```
+# Todo
+#  - [ ] move to `nox`?
 {
   [...],
   "insecure-registries" : [
@@ -1094,15 +1094,11 @@ cd OpenStudioLandscapes
 git -C ./.features/ https://github.com/michimussato/OpenStudioLandscapes-<Feature>
 ```
 
-Install Feature into `venv`:
+Install Feature(s) into Engine`venv`:
 
 ```shell
 cd OpenStudioLandscapes
-source .venv/bin/activate
-
-pip install -e "./.features/OpenStudioLandscapes-<Feature>"
-
-deactivate
+nox --session install_features_into_engine
 ```
 
 Edit
@@ -1328,7 +1324,37 @@ ln ../../../OpenStudioLandscapes/noxfile.py noxfile.py
 # ln -f ../../../OpenStudioLandscapes/noxfile.py  noxfile.py
 ```
 
-I'm doing that for the following set of files:
+I'm doing that for the following list of files:
+
+```python
+IDENTICAL_FILES = [
+    ".obsidian/plugins/obsidian-excalidraw-plugin/main.js",
+    ".obsidian/plugins/obsidian-excalidraw-plugin/manifest.json",
+    ".obsidian/plugins/obsidian-excalidraw-plugin/styles.css",
+    ".obsidian/plugins/templater-obsidian/data.json",
+    ".obsidian/plugins/templater-obsidian/main.js",
+    ".obsidian/plugins/templater-obsidian/manifest.json",
+    ".obsidian/plugins/templater-obsidian/styles.css",
+    ".obsidian/app.json",
+    ".obsidian/appearance.json",
+    ".obsidian/canvas.json",
+    ".obsidian/community-plugins.json",
+    ".obsidian/core-plugins.json",
+    ".obsidian/core-plugins-migration.json",
+    ".obsidian/daily-notes.json",
+    ".obsidian/graph.json",
+    ".obsidian/hotkeys.json",
+    ".obsidian/templates.json",
+    ".obsidian/types.json",
+    ".obsidian/workspace.json",
+    ".obsidian/workspaces.json",
+    ".gitattributes",
+    ".gitignore",
+    ".pre-commit-config.yaml",
+    ".readthedocs.yml",
+    "noxfile.py",
+]
+```
 
 From `OpenStudioLandscapes` into every Feature, except:
 - `OpenStudioLandscapes-Template`
@@ -1346,70 +1372,7 @@ mindmap
 ```
 
 ```shell
-declare -a identical_files=( \
-".obsidian/plugins/obsidian-excalidraw-plugin/main.js" \
-".obsidian/plugins/obsidian-excalidraw-plugin/manifest.json" \
-".obsidian/plugins/obsidian-excalidraw-plugin/styles.css" \
-".obsidian/plugins/templater-obsidian/data.json" \
-".obsidian/plugins/templater-obsidian/main.js" \
-".obsidian/plugins/templater-obsidian/manifest.json" \
-".obsidian/plugins/templater-obsidian/styles.css" \
-".obsidian/app.json" \
-".obsidian/appearance.json" \
-".obsidian/canvas.json" \
-".obsidian/community-plugins.json" \
-".obsidian/core-plugins.json" \
-".obsidian/core-plugins-migration.json" \
-".obsidian/daily-notes.json" \
-".obsidian/graph.json" \
-".obsidian/hotkeys.json" \
-".obsidian/templates.json" \
-".obsidian/types.json" \
-".obsidian/workspace.json" \
-".obsidian/workspaces.json" \
-".gitattributes" \
-".gitignore" \
-".pre-commit-config.yaml" \
-".readthedocs.yml" \
-"noxfile.py" \
-)
-
-
-LN_PWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
-
-pushd .features || exit
-
-for dir in */; do
-  
-    echo ""
-    echo ""
-    echo "################################"
-    echo "Current Feature: ${dir}"
-    echo "################################"
-    echo ""
-    
-    pushd "${dir}" || exit
-    
-    for f in "${identical_files[@]}"; do
-        echo "---------------------"
-        echo "Current file: ${f}"
-        
-        cd "${dir}/$(dirname ${f})"
-        echo "CWD: $(pwd)"
-        echo "---------------------"
-        TARGET="${LN_PWD}/${f}"
-        echo "${TARGET}"
-        LINK_NAME="${f}"
-        # ln --interactive --backup=numbered ${TARGET} $(basename ${LINK_NAME})
-        ln --force --backup=numbered ${TARGET} $(basename ${LINK_NAME})
-        
-    done;
-
-    popd || exit
-done;
-
-popd || exit
+nox --session fix_hardlinks_in_features
 ```
 
 ### OBS Studio
@@ -1452,6 +1415,8 @@ further reading:
 Clean filesystem from Docker items (quick and dirty)
 
 ```shell
+# Todo
+#  - [ ] move to `nox`
 # sudo systemctl stop openstudiolandscapes-registry.service
 docker stop $(docker ps -q)
 docker container prune -f
@@ -1490,6 +1455,8 @@ pre-commit install
 For all Features:
 
 ```shell
+# Todo
+#  - [ ] move to `nox`
 pushd .features || exit
 
 for dir in */; do
@@ -1532,9 +1499,25 @@ nox --help
 ```shell
 OpenStudioLandscapes git:[main]
 nox --list-sessions
-Sessions defined in /home/michael/git/repos/OpenStudioLandscapes/noxfile.py:
+Sessions defined in OpenStudioLandscapes/noxfile.py:
 
+- clone_features -> `git clone` all listed (REPOS_FEATURE) Features into .features.
+- pull_features -> `git pull` all listed (REPOS_FEATURE) Features.
+- stash_features -> `git stash` all listed (REPOS_FEATURE) Features.
+- stash_apply_features -> `git stash apply` all listed (REPOS_FEATURE) Features.
+- pull_engine -> `git pull` engine.
+- stash_engine -> `git stash` engine.
+- stash_apply_engine -> `git stash apply` engine.
+- create_venv_features -> Create a `venv`s in .features/<Feature> after `nox --session clone_features` and installing the Feature into its own `.venv`.
+- install_features_into_engine -> Installs the Features after `nox --session clone_features` into the engine `.venv`.
+- fix_hardlinks_in_features -> See https://github.com/michimussato/OpenStudioLandscapes?tab=readme-ov-file#hard-links-sync-files-and-directories-across-repositories-de-duplication
+- pi_hole_up -> Start Pi-hole.
+- pi_hole_prepare -> Prepare Pi-hole.
+- pi_hole_clear -> Clear Pi-hole. WARNING: DATA LOSS!
+- pi_hole_up_detach -> Start Pi-hole in detached mode.
+- pi_hole_down -> Shut down Pi-hole.
 - harbor_prepare -> Prepare Harbor with `sudo`.
+- harbor_clear -> Clear Harbor with `sudo`.
 - harbor_up -> Start Harbor with `sudo`.
 - harbor_up_detach -> Start Harbor with `sudo` and detach.
 - harbor_down -> Stop Harbor with `sudo`.
@@ -1553,7 +1536,7 @@ Sessions defined in /home/michael/git/repos/OpenStudioLandscapes/noxfile.py:
 - release-3.12 -> Build and release to a repository
 * docs -> Creates Sphinx documentation.
 
-sessions marked with * are selected, sessions marked with - are skipped
+sessions marked with * are selected, sessions marked with - are skipped.
 ```
 
 ### Generate Report
@@ -1821,6 +1804,8 @@ nox --session readme
 To create a batch job for all Features, run:
 
 ```shell
+# Todo
+#  - [ ] move to `nox`
 pushd .features || exit
 
 for dir in */; do
@@ -1849,6 +1834,8 @@ popd || exit
 #### nox Documentation
 
 ```shell
+# Todo
+#  - [ ] move to `nox`
 pushd .features || exit
 
 for dir in */; do
@@ -1885,6 +1872,8 @@ nox --no-error-on-missing-interpreters --report .nox/nox-report.json
 on each Feature:
 
 ```shell
+# Todo
+#  - [ ] move to `nox`
 pushd .features || exit
 
 for dir in */; do

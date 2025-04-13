@@ -125,7 +125,7 @@ MAIN_BRANCH = "main"
 @nox.session(python=None, tags=["clone_features"])
 def clone_features(session):
     """
-    Clone all listed Features into .features.
+    `git clone` all listed (REPOS_FEATURE) Features into .features.
 
     Scope:
     - [x] Engine
@@ -159,7 +159,7 @@ def clone_features(session):
 @nox.session(python=None, tags=["pull_features"])
 def pull_features(session):
     """
-    Start Harbor with `sudo`.
+    `git pull` all listed (REPOS_FEATURE) Features.
 
     Scope:
     - [x] Engine
@@ -168,11 +168,6 @@ def pull_features(session):
     # Ex:
     # nox --session pull_features
     # nox --tags pull_features
-
-    # /usr/bin/docker \
-    #     compose \
-    #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.pi-hole/docker_compose/docker-compose.yml \
-    #     --project-name openstudiolandscapes-pi-hole up --remove-orphans
 
     for name, repo in REPOS_FEATURE.items():
 
@@ -196,7 +191,7 @@ def pull_features(session):
 @nox.session(python=None, tags=["stash_features"])
 def stash_features(session):
     """
-    Start Harbor with `sudo`.
+    `git stash` all listed (REPOS_FEATURE) Features.
 
     Scope:
     - [x] Engine
@@ -205,11 +200,6 @@ def stash_features(session):
     # Ex:
     # nox --session stash_features
     # nox --tags stash_features
-
-    # /usr/bin/docker \
-    #     compose \
-    #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.pi-hole/docker_compose/docker-compose.yml \
-    #     --project-name openstudiolandscapes-pi-hole up --remove-orphans
 
     for name, repo in REPOS_FEATURE.items():
 
@@ -228,7 +218,7 @@ def stash_features(session):
 @nox.session(python=None, tags=["stash_apply_features"])
 def stash_apply_features(session):
     """
-    Start Harbor with `sudo`.
+    `git stash apply` all listed (REPOS_FEATURE) Features.
 
     Scope:
     - [x] Engine
@@ -237,11 +227,6 @@ def stash_apply_features(session):
     # Ex:
     # nox --session stash_apply_features
     # nox --tags stash_apply_features
-
-    # /usr/bin/docker \
-    #     compose \
-    #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.pi-hole/docker_compose/docker-compose.yml \
-    #     --project-name openstudiolandscapes-pi-hole up --remove-orphans
 
     for name, repo in REPOS_FEATURE.items():
 
@@ -261,7 +246,7 @@ def stash_apply_features(session):
 @nox.session(python=None, tags=["pull_engine"])
 def pull_engine(session):
     """
-    Start Harbor with `sudo`.
+    `git pull` engine.
 
     Scope:
     - [x] Engine
@@ -270,11 +255,6 @@ def pull_engine(session):
     # Ex:
     # nox --session pull_engine
     # nox --tags pull_engine
-
-    # /usr/bin/docker \
-    #     compose \
-    #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.pi-hole/docker_compose/docker-compose.yml \
-    #     --project-name openstudiolandscapes-pi-hole up --remove-orphans
 
     logging.info("Pulling %s" % REPO_ENGINE)
 
@@ -294,7 +274,7 @@ def pull_engine(session):
 @nox.session(python=None, tags=["stash_engine"])
 def stash_engine(session):
     """
-    Start Harbor with `sudo`.
+    `git stash` engine.
 
     Scope:
     - [x] Engine
@@ -303,11 +283,6 @@ def stash_engine(session):
     # Ex:
     # nox --session stash_engine
     # nox --tags stash_engine
-
-    # /usr/bin/docker \
-    #     compose \
-    #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.pi-hole/docker_compose/docker-compose.yml \
-    #     --project-name openstudiolandscapes-pi-hole up --remove-orphans
 
     logging.info("Stashing %s" % REPO_ENGINE)
 
@@ -318,7 +293,7 @@ def stash_engine(session):
 @nox.session(python=None, tags=["stash_apply_engine"])
 def stash_apply_engine(session):
     """
-    Start Harbor with `sudo`.
+    `git stash apply` engine.
 
     Scope:
     - [x] Engine
@@ -327,11 +302,6 @@ def stash_apply_engine(session):
     # Ex:
     # nox --session stash_apply_engine
     # nox --tags stash_apply_engine
-
-    # /usr/bin/docker \
-    #     compose \
-    #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.pi-hole/docker_compose/docker-compose.yml \
-    #     --project-name openstudiolandscapes-pi-hole up --remove-orphans
 
     logging.info("Stashing %s" % REPO_ENGINE)
 
@@ -344,67 +314,67 @@ def stash_apply_engine(session):
 #######################################################################################################################
 # venv
 
-# # create_venv_engine
-@nox.session(python=None, tags=["create_venv_engine"])
-def create_venv_engine(session):
-    """
-    Start Harbor with `sudo`.
+# This will probably not work...
+# we can't run `nox` before the `venv` is even
+# present in the first place.
 
-    Scope:
-    - [x] Engine
-    - [ ] Modules
-    """
-    # Ex:
-    # nox --session create_venv_engine
-    # nox --tags create_venv_engine
-
-    # /usr/bin/docker \
-    #     compose \
-    #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.pi-hole/docker_compose/docker-compose.yml \
-    #     --project-name openstudiolandscapes-pi-hole up --remove-orphans
-
-    # cwd = pathlib.Path.cwd()
-
-    # features_dir = pathlib.Path.cwd() / ".features"
-
-    # for dir_ in features_dir.iterdir():
-    #     if dir_.is_dir():
-    # with session.chdir(features_dir / dir_):
-    session.run(
-        shutil.which("python3.11"),
-        "-m",
-        "venv",
-        ".venv",
-        external=True,
-    )
-
-    session.run(
-        ".venv/bin/python",
-        "-m",
-        "pip",
-        "install",
-        "--upgrade",
-        "pip",
-        "setuptools",
-        external=True,
-    )
-
-    session.run(
-        ".venv/bin/python",
-        "-m",
-        "pip",
-        "install",
-        "--editable",
-        ".[dev]",
-        external=True,
-    )
+# # # create_venv_engine
+# @nox.session(python=None, tags=["create_venv_engine"])
+# def create_venv_engine(session):
+#     """
+#     Create a `venv` after cloning OpenStudioLandscapes engine and install
+#     the package into it.
+#
+#     Scope:
+#     - [x] Engine
+#     - [ ] Modules
+#     """
+#     # Ex:
+#     # nox --session create_venv_engine
+#     # nox --tags create_venv_engine
+#
+#     session.run(
+#         shutil.which("python3.11"),
+#         "-m",
+#         "venv",
+#         ".venv",
+#         external=True,
+#     )
+#
+#     session.run(
+#         ".venv/bin/python",
+#         "-m",
+#         "pip",
+#         "install",
+#         "--upgrade",
+#         "pip",
+#         "setuptools",
+#         external=True,
+#     )
+#
+#     session.run(
+#         ".venv/bin/python",
+#         "-m",
+#         "pip",
+#         "install",
+#         "--editable",
+#         ".[dev]",
+#         external=True,
+#     )
 
 
 # # create_venv_features
 @nox.session(python=None, tags=["create_venv_features"])
 def create_venv_features(session):
     """
-    Start Harbor with `sudo`.
+    Create a `venv`s in .features/<Feature> after `nox --session clone_features` and installing the Feature into its own `.venv`.
+
+    ```
+    cd .features/<Feature>
+    python3.11 -m venv .venv
+    source .venv/bin/activate
+    pip install -e .[dev]
+    ```
 
     Scope:
     - [x] Engine
@@ -413,11 +383,6 @@ def create_venv_features(session):
     # Ex:
     # nox --session create_venv_features
     # nox --tags create_venv_features
-
-    # /usr/bin/docker \
-    #     compose \
-    #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.pi-hole/docker_compose/docker-compose.yml \
-    #     --project-name openstudiolandscapes-pi-hole up --remove-orphans
 
     features_dir = pathlib.Path.cwd() / ".features"
 
@@ -460,7 +425,7 @@ def create_venv_features(session):
 @nox.session(python=None, tags=["install_features_into_engine"])
 def install_features_into_engine(session):
     """
-    Start Harbor with `sudo`.
+    Installs the Features after `nox --session clone_features` into the engine `.venv`.
 
     Scope:
     - [x] Engine
@@ -469,13 +434,6 @@ def install_features_into_engine(session):
     # Ex:
     # nox --session create_venv_features
     # nox --tags create_venv_features
-
-    # /usr/bin/docker \
-    #     compose \
-    #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.pi-hole/docker_compose/docker-compose.yml \
-    #     --project-name openstudiolandscapes-pi-hole up --remove-orphans
-
-    # cwd = pathlib.Path.cwd()
 
     features_dir = pathlib.Path.cwd() / ".features"
 
@@ -545,7 +503,7 @@ IDENTICAL_FILES = [
 @nox.session(python=None, tags=["fix_hardlinks_in_features"])
 def fix_hardlinks_in_features(session):
     """
-    Start Harbor with `sudo`.
+    See https://github.com/michimussato/OpenStudioLandscapes?tab=readme-ov-file#hard-links-sync-files-and-directories-across-repositories-de-duplication
 
     Scope:
     - [x] Engine
@@ -755,7 +713,7 @@ def write_pi_hole_yml(
 @nox.session(python=None, tags=["pi_hole_up"])
 def pi_hole_up(session):
     """
-    Start Harbor with `sudo`.
+    Start Pi-hole.
 
     Scope:
     - [x] Engine
@@ -822,7 +780,7 @@ def pi_hole_prepare(session):
 @nox.session(python=None, tags=["pi_hole_clear"])
 def pi_hole_clear(session):
     """
-    Clear Pi-hole.
+    Clear Pi-hole. WARNING: DATA LOSS!
 
     Scope:
     - [x] Engine
@@ -861,7 +819,7 @@ def pi_hole_clear(session):
 @nox.session(python=None, tags=["pi_hole_up_detach"])
 def pi_hole_up_detach(session):
     """
-    Start Harbor with `sudo`.
+    Start Pi-hole in detached mode.
 
     Scope:
     - [x] Engine
@@ -897,7 +855,7 @@ def pi_hole_up_detach(session):
 @nox.session(python=None, tags=["pi_hole_down"])
 def pi_hole_down(session):
     """
-    Start Harbor with `sudo`.
+    Shut down Pi-hole.
 
     Scope:
     - [x] Engine
