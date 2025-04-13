@@ -2031,10 +2031,11 @@ to learn more.
 
 # Roadmap/Todo
 
-- [ ] Landscape generation based on [VFX Reference Platform](https://vfxplatform.com/) spec
-- [ ] Integrating [Rez](https://github.com/AcademySoftwareFoundation/rez)
+- [ ] Landscape generation based on [VFX Reference Platform](https://vfxplatform.com/) spec?
+- [ ] Integrating [Rez](https://github.com/AcademySoftwareFoundation/rez)?
 - Integrating Render Managers
   - Deadline
+    - [x] 10.2
     - [ ] 10.3
     - [ ] 10.4
   - [x] [OpenCue](https://github.com/AcademySoftwareFoundation/OpenCue)
@@ -2043,7 +2044,7 @@ to learn more.
 - Dynamic Documentation
   - [ ] [LikeC4-Map](https://likec4.dev/)
 - Third Party Container Integration
-  - [ ] [Watchtower](https://watchtower.blender.org/)
+  - [x] [Watchtower](https://watchtower.blender.org/)
 - [ ] Implement Caddy for HTTPS
   - https://caddyserver.com/
   - https://github.com/caddyserver/caddy
@@ -2056,17 +2057,16 @@ to learn more.
 - [ ] Implement tests (`noxfile.py`)
 - [x] Improve Feature discovery
 - [ ] Implement framework-wide terminology and glossary:
-  - "Feature"
-  - "Landscape"
+  - [x] "Feature"
+  - [x] "Landscape"
+  - [ ] "Engine"
 - [ ] Jump-Start / Quick-Start
 - [x] Separate README.md content
   - [x] Batch stuff to OpenStudioLandscapes README.md
   - [x] Non batch stuff (single lines) to Feature README.md
-- [ ] Migrate to `pyproject.toml` exclusively
+- [ ] Migrate to `pyproject.toml` exclusively?
 - [x] Quote `pip install`s (`zsh: no matches found: .[dev]`)
   - `pip install ".[dev]"` works in `zsh`
-- [ ] Add `OpenStudioLandscapes-Pi-hole` to `readme_generator.py` (if successful)
-- [ ] `ln` for `OpenStudioLandscapes-Pi-hole`
 
 ---
 
