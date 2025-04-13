@@ -385,7 +385,7 @@ def create_venv_features(session):
                     "pip",
                     "install",
                     "--upgrade",
-                    "'pip setuptools'",
+                    "pip", "setuptools",
                     external=True,
                 )
 
