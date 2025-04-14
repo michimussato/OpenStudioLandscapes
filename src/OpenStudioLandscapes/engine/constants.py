@@ -102,7 +102,7 @@ ASSET_HEADER_LANDSCAPE_MAP = {
 
 THIRD_PARTY = [
     {
-        # To test faulty Feature deginitions
+        # To test faulty Feature definitions
         "enabled": True,
         "module": "OpenStudioLandscapes.Ayn.definitions",
         "compose_scope": ComposeScope.DEFAULT,

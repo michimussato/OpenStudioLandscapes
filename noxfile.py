@@ -563,7 +563,7 @@ def fix_hardlinks_in_features(session):
 ENVIRONMENT_PI_HOLE = {
     "ROOT_DOMAIN": "farm.evil",
     "PIHOLE_USE_UNBOUND": True,
-    "PIHOLE_WEB_PORT": "81",
+    "PIHOLE_WEB_PORT_HOST": "81",
     "PIHOLE_WEB_PASSWORD": "myp4ssword",
     "PIHOLE_TIMEZONE": "Europe/Zurich",
     "PIHOLE_REV_SERVER": "false",
@@ -644,7 +644,7 @@ def write_pi_hole_yml(
                     "53:53/tcp",
                     "53:53/udp",
                     # Default HTTP Port
-                    f"{ENVIRONMENT_PI_HOLE['PIHOLE_WEB_PORT']}:80/tcp",
+                    f"{ENVIRONMENT_PI_HOLE['PIHOLE_WEB_PORT_HOST']}:80/tcp",
                     # Default HTTPs Port. FTL will generate a self-signed certificate
                     "443:443/tcp",
                     # Uncomment the line below if you are using Pi-hole as your DHCP server
