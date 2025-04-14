@@ -102,6 +102,7 @@ ASSET_HEADER_LANDSCAPE_MAP = {
 
 THIRD_PARTY = [
     {
+        # To test faulty Feature deginitions
         "enabled": True,
         "module": "OpenStudioLandscapes.Ayn.definitions",
         "compose_scope": ComposeScope.DEFAULT,
@@ -173,11 +174,6 @@ THIRD_PARTY = [
         "module": "OpenStudioLandscapes.Watchtower.definitions",
         "compose_scope": ComposeScope.DEFAULT,
     },
-    # {
-    #     "enabled": False,
-    #     "module": "OpenStudioLandscapes.Pi_hole.definitions",
-    #     "compose_scope": ComposeScope.DEFAULT,
-    # },
 ]
 
 

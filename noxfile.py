@@ -1241,6 +1241,8 @@ def harbor_down(session):
 # # ENVIRONMENT
 ENVIRONMENT_DAGSTER = {
     "ROOT_DOMAIN": "farm.evil",
+    # Todo:
+    #  - [ ] move these two into `.landscapes`
     "DAGSTER_POSTGRES_ROOT_DIR": pathlib.Path.cwd() / ".dagster-postgres",
     "DAGSTER_MYSQL_ROOT_DIR": pathlib.Path.cwd() / ".dagster",
     "DAGSTER_POSTGRES_DB_DIR_DIR": ".postgres",
