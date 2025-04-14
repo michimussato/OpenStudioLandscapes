@@ -28,8 +28,6 @@ except SyntaxError as e:
 class ComposeScope(enum.StrEnum):
     DEFAULT = "default"
     WORKER = "worker"
-    PI_HOLE = "pi_hole"
-    # CADDY = "caddy"
     LICENSE_SERVER = "license_server"
 
 
@@ -48,30 +46,19 @@ class ComposeNetworkMode(enum.StrEnum):
 
 class DockerRegistry(enum.StrEnum):
     DOCKER = "docker.io"
-    GIT_HUB = "ghcr.io"
-    GOOGLE = "gcr.io"
     LOCAL_LOCALHOST = "localhost"
     LOCAL_HARBOR = "harbor.farm.evil"
     LOCAL_MINIBOSS = os.environ.get("IP_MASTER", "localhost")
-    LOCAL_192_168_1_162 = "192.168.1.162"
-    LOCAL_192_168_1_163 = "192.168.1.163"
-    LOCAL_192_168_1_164 = "192.168.1.164"
-    LOCAL_192_168_1_165 = "192.168.1.165"
-    # HARBOR = ""  # https://goharbor.io/
 
 
-class RegistryCredentials(enum.Enum):
-    DOCKER_HUB_LOGIN1 = {
-        "registry_type": DockerRegistry.DOCKER,
-        "registry_username": _secrets.get("SECRET_DOCKER_DOCKERHUB_USERNAME"),
-        "registry_password": _secrets.get("SECRET_DOCKER_DOCKERHUB_PASSWORD"),
-    }
-    # Example:
-    GIT_HUB_LOGIN1 = {
-        "registry_type": DockerRegistry.GIT_HUB,
-        "registry_username": _secrets.get(""),
-        "registry_password": _secrets.get(""),
-    }
+# class RegistryCredentials(enum.Enum):
+#     # Example:
+#     # GIT_HUB_LOGIN1 = {
+#     #     "registry_type": DockerRegistry.GIT_HUB,
+#     #     "registry_username": _secrets.get(""),
+#     #     "registry_password": _secrets.get(""),
+#     # }
+#     pass
 
 
 class DockerRepositoryType(enum.StrEnum):
@@ -101,16 +88,6 @@ class DockerConfig(enum.Enum):
         "docker_registry_port": None,
         "docker_registry_username": _secrets.get("SECRET_DOCKER_DOCKERHUB_USERNAME"),
         "docker_registry_password": _secrets.get("SECRET_DOCKER_DOCKERHUB_PASSWORD"),
-        "docker_repository": _REPOSITORY_NAME,
-        "docker_repository_type": DockerRepositoryType.PUBLIC.value,
-    }
-    REGISTRY_LOCAL_192_168_1_163 = {
-        "docker_push": True,
-        "docker_use_local": True,
-        "docker_registry_url": DockerRegistry.LOCAL_192_168_1_163.value,
-        "docker_registry_port": "5000",
-        "docker_registry_username": None,
-        "docker_registry_password": None,
         "docker_repository": _REPOSITORY_NAME,
         "docker_repository_type": DockerRepositoryType.PUBLIC.value,
     }
