@@ -1,4 +1,5 @@
 __all__ = [
+    # "FEATURE_CONFIG_GLOBAL",
     "DOCKER_CONFIG",
     "DOCKER_USE_CACHE_BASE",
     "DOCKER_USE_CACHE_GLOBAL",
@@ -25,7 +26,7 @@ __all__ = [
     "THIRD_PARTY",
 ]
 
-from typing import Generator, MutableMapping
+from typing import Generator, MutableMapping, Any
 
 from dagster import (
     AssetExecutionContext,
@@ -33,6 +34,8 @@ from dagster import (
     MetadataValue,
     Output,
     asset,
+    AssetIn,
+    AssetKey,
 )
 
 from OpenStudioLandscapes.engine.enums import *
@@ -103,86 +106,105 @@ ASSET_HEADER_LANDSCAPE_MAP = {
 THIRD_PARTY = [
     {
         # To test faulty Feature definitions
+        # Make sure things don't break if misconfigured
         "enabled": True,
         "module": "OpenStudioLandscapes.Ayn.definitions",
         "compose_scope": ComposeScope.DEFAULT,
+        "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
     {
         "enabled": True,
         "module": "OpenStudioLandscapes.Ayon.definitions",
         "compose_scope": ComposeScope.DEFAULT,
+        "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
     {
         "enabled": True,
         "module": "OpenStudioLandscapes.Kitsu.definitions",
         "compose_scope": ComposeScope.DEFAULT,
+        "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
     {
         "enabled": True,
         "module": "OpenStudioLandscapes.Dagster.definitions",
         "compose_scope": ComposeScope.DEFAULT,
+        "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
     {
         "enabled": True,
         "module": "OpenStudioLandscapes.Deadline_10_2.definitions",
         "compose_scope": ComposeScope.DEFAULT,
+        "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
     {
         "enabled": True,
         "module": "OpenStudioLandscapes.Deadline_10_2_Worker.definitions",
         "compose_scope": ComposeScope.WORKER,
+        "feature_config": OpenStudioLandscapesConfig.DEFAULT,  # This setting has no effect
     },
     {
         "enabled": True,
         "module": "OpenStudioLandscapes.filebrowser.definitions",
         "compose_scope": ComposeScope.DEFAULT,
+        "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
     {
         "enabled": False,
         "module": "OpenStudioLandscapes.Grafana.definitions",
         "compose_scope": ComposeScope.DEFAULT,
+        "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
     {
         "enabled": True,
         "module": "OpenStudioLandscapes.SESI_gcc_9_3_Houdini_20.definitions",
         "compose_scope": ComposeScope.LICENSE_SERVER,
+        "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
     {
         "enabled": True,
         "module": "OpenStudioLandscapes.NukeRLM_8.definitions",
         "compose_scope": ComposeScope.LICENSE_SERVER,
+        "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
     {
         "enabled": False,
         # error: no health check configured
         "module": "OpenStudioLandscapes.OpenCue.definitions",
         "compose_scope": ComposeScope.DEFAULT,
+        "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
     {
         "enabled": False,
         # error This project's package.json defines "packageManager": "yarn@pnpm@10.6.2". However the current global version of Yarn is 1.22.22.
         "module": "OpenStudioLandscapes.LikeC4.definitions",
         "compose_scope": ComposeScope.DEFAULT,
+        "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
     {
         "enabled": True,
         "module": "OpenStudioLandscapes.Syncthing.definitions",
         "compose_scope": ComposeScope.DEFAULT,
+        "feature_config": OpenStudioLandscapesConfig.PRODUCTION,
     },
     {
         "enabled": False,
         "module": "OpenStudioLandscapes.Watchtower.definitions",
         "compose_scope": ComposeScope.DEFAULT,
+        "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
 ]
 
 
 @asset(
     **ASSET_HEADER_BASE_ENV,
+    ins={
+        "features": AssetIn(AssetKey([*KEY_BASE_ENV, "features"])),
+    },
     description="",
 )
 def constants_base(
     context: AssetExecutionContext,
+    features: list,
 ) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
     """ """
 
@@ -190,7 +212,7 @@ def constants_base(
         "DOCKER_USE_CACHE_BASE": DOCKER_USE_CACHE_BASE,
         "DOCKER_USE_CACHE_GLOBAL": DOCKER_USE_CACHE_GLOBAL,
         "ASSET_HEADER_BASE": ASSET_HEADER_BASE,
-        "THIRD_PARTY": THIRD_PARTY,
+        "THIRD_PARTY": features,
         "DOCKER_CONFIG": DOCKER_CONFIG.value,
         # "DOCKER_CACHE_DIR": DOCKER_CACHE_DIR.as_posix(),
     }
@@ -201,5 +223,116 @@ def constants_base(
         asset_key=context.asset_key,
         metadata={
             "__".join(context.asset_key.path): MetadataValue.json(_constants),
+        },
+    )
+
+
+@asset(
+    **ASSET_HEADER_BASE_ENV,
+    description="",
+)
+def features(
+    context: AssetExecutionContext,
+) -> Generator[Output[list[
+    dict[str, ComposeScope | OpenStudioLandscapesConfig | bool | str] | Any]] | AssetMaterialization | Any, None, None]:
+    """ """
+
+    features_ = [
+        {
+            # To test faulty Feature definitions
+            # Make sure things don't break if misconfigured
+            "enabled": True,
+            "module": "OpenStudioLandscapes.Ayn.definitions",
+            "compose_scope": ComposeScope.DEFAULT,
+            "feature_config": OpenStudioLandscapesConfig.DEFAULT,
+        },
+        {
+            "enabled": True,
+            "module": "OpenStudioLandscapes.Ayon.definitions",
+            "compose_scope": ComposeScope.DEFAULT,
+            "feature_config": OpenStudioLandscapesConfig.DEFAULT,
+        },
+        {
+            "enabled": True,
+            "module": "OpenStudioLandscapes.Kitsu.definitions",
+            "compose_scope": ComposeScope.DEFAULT,
+            "feature_config": OpenStudioLandscapesConfig.DEFAULT,
+        },
+        {
+            "enabled": True,
+            "module": "OpenStudioLandscapes.Dagster.definitions",
+            "compose_scope": ComposeScope.DEFAULT,
+            "feature_config": OpenStudioLandscapesConfig.DEFAULT,
+        },
+        {
+            "enabled": True,
+            "module": "OpenStudioLandscapes.Deadline_10_2.definitions",
+            "compose_scope": ComposeScope.DEFAULT,
+            "feature_config": OpenStudioLandscapesConfig.DEFAULT,
+        },
+        {
+            "enabled": True,
+            "module": "OpenStudioLandscapes.Deadline_10_2_Worker.definitions",
+            "compose_scope": ComposeScope.WORKER,
+            "feature_config": OpenStudioLandscapesConfig.DEFAULT,  # This setting has no effect
+        },
+        {
+            "enabled": True,
+            "module": "OpenStudioLandscapes.filebrowser.definitions",
+            "compose_scope": ComposeScope.DEFAULT,
+            "feature_config": OpenStudioLandscapesConfig.DEFAULT,
+        },
+        {
+            "enabled": False,
+            "module": "OpenStudioLandscapes.Grafana.definitions",
+            "compose_scope": ComposeScope.DEFAULT,
+            "feature_config": OpenStudioLandscapesConfig.DEFAULT,
+        },
+        {
+            "enabled": True,
+            "module": "OpenStudioLandscapes.SESI_gcc_9_3_Houdini_20.definitions",
+            "compose_scope": ComposeScope.LICENSE_SERVER,
+            "feature_config": OpenStudioLandscapesConfig.DEFAULT,
+        },
+        {
+            "enabled": True,
+            "module": "OpenStudioLandscapes.NukeRLM_8.definitions",
+            "compose_scope": ComposeScope.LICENSE_SERVER,
+            "feature_config": OpenStudioLandscapesConfig.DEFAULT,
+        },
+        {
+            "enabled": False,
+            # error: no health check configured
+            "module": "OpenStudioLandscapes.OpenCue.definitions",
+            "compose_scope": ComposeScope.DEFAULT,
+            "feature_config": OpenStudioLandscapesConfig.DEFAULT,
+        },
+        {
+            "enabled": False,
+            # error This project's package.json defines "packageManager": "yarn@pnpm@10.6.2". However the current global version of Yarn is 1.22.22.
+            "module": "OpenStudioLandscapes.LikeC4.definitions",
+            "compose_scope": ComposeScope.DEFAULT,
+            "feature_config": OpenStudioLandscapesConfig.DEFAULT,
+        },
+        {
+            "enabled": True,
+            "module": "OpenStudioLandscapes.Syncthing.definitions",
+            "compose_scope": ComposeScope.DEFAULT,
+            "feature_config": OpenStudioLandscapesConfig.PRODUCTION,
+        },
+        {
+            "enabled": False,
+            "module": "OpenStudioLandscapes.Watchtower.definitions",
+            "compose_scope": ComposeScope.DEFAULT,
+            "feature_config": OpenStudioLandscapesConfig.DEFAULT,
+        },
+    ]
+
+    yield Output(features_)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.json(features_),
         },
     )

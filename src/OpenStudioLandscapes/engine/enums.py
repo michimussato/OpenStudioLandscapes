@@ -1,4 +1,5 @@
 __all__ = [
+    "OpenStudioLandscapesConfig",
     "ComposeScope",
     "ComposeNetworkMode",
     "DockerRepositoryType",
@@ -23,6 +24,12 @@ except SyntaxError as e:
     # OpenStudioLandscapes is cloned to local tmp directory while the local clone
     # is *of course* not git-crypt unlock'ed.
     _secrets: dict = {}
+
+
+class OpenStudioLandscapesConfig(str, enum.Enum):
+    DEFAULT = "default"
+    PRODUCTION = "production"
+    DEVELOPMENT = "development"
 
 
 class ComposeScope(enum.StrEnum):

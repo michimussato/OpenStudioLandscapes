@@ -34,10 +34,10 @@ IMPORTABLE_FEATURES = []
 
 for feature in THIRD_PARTY:
     if feature["module"] not in DISCOVERED_MODULE:
-        LOGGER.info(f"Feature {feature['module']} is not in discovered modules. Skipped.")
+        LOGGER.info("Feature %s is not in discovered modules. Skipped." % feature["module"])
         continue
     if not feature["enabled"]:
-        LOGGER.info(f"Feature {feature['module']} is not enabled. Skipped.")
+        LOGGER.info("Feature %s is not enabled. Skipped." % feature["module"])
         continue
     IMPORTABLE_FEATURES.append(feature)
 
