@@ -2,7 +2,7 @@ _version: 2.12.0
 cache:
   enabled: false
   expire_hours: 24
-data_volume: /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.harbor/data
+data_volume: /Users/michaelmussato/git/repos/OpenStudioLandscapes/.landscapes/.harbor/data
 database:
   conn_max_idle_time: 0
   max_idle_conns: 100

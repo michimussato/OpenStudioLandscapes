@@ -6,6 +6,7 @@ import pathlib
 import requests
 import logging
 import tarfile
+import platform
 
 import yaml
 
@@ -102,19 +103,19 @@ REPO_ENGINE = "OpenStudioLandscapes"
 
 # # REPOSITORIES FEATURES
 REPOS_FEATURE = {
-    "OpenStudioLandscapes-Ayon": "https://github.com/michimussato/OpenStudioLandscapes-Ayon",
-    "OpenStudioLandscapes-Dagster": "https://github.com/michimussato/OpenStudioLandscapes-Dagster",
-    "OpenStudioLandscapes-Deadline-10-2": "https://github.com/michimussato/OpenStudioLandscapes-Deadline-10-2",
-    "OpenStudioLandscapes-Deadline-10-2-Worker": "https://github.com/michimussato/OpenStudioLandscapes-Deadline-10-2-Worker",
-    "OpenStudioLandscapes-filebrowser": "https://github.com/michimussato/OpenStudioLandscapes-filebrowser",
-    # "https://github.com/michimussato/OpenStudioLandscapes-Grafana",
-    "OpenStudioLandscapes-Kitsu": "https://github.com/michimussato/OpenStudioLandscapes-Kitsu",
-    # "https://github.com/michimussato/OpenStudioLandscapes-LikeC4",
-    "OpenStudioLandscapes-NukeRLM-8": "https://github.com/michimussato/OpenStudioLandscapes-NukeRLM-8",
-    # "https://github.com/michimussato/OpenStudioLandscapes-OpenCue",
-    "OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20": "https://github.com/michimussato/OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20",
-    "OpenStudioLandscapes-Syncthing": "https://github.com/michimussato/OpenStudioLandscapes-Syncthing",
-    # "https://github.com/michimussato/OpenStudioLandscapes-Watchtower",
+    "OpenStudioLandscapes-Ayon": "git@github.com:michimussato/OpenStudioLandscapes-Ayon.git",
+    "OpenStudioLandscapes-Dagster": "git@github.com:michimussato/OpenStudioLandscapes-Dagster.git",
+    "OpenStudioLandscapes-Deadline-10-2": "git@github.com:michimussato/OpenStudioLandscapes-Deadline-10-2.git",
+    "OpenStudioLandscapes-Deadline-10-2-Worker": "git@github.com:michimussato/OpenStudioLandscapes-Deadline-10-2-Worker.git",
+    "OpenStudioLandscapes-filebrowser": "git@github.com:michimussato/OpenStudioLandscapes-filebrowser.git",
+    # "git@github.com:michimussato/OpenStudioLandscapes-Grafana.git",
+    "OpenStudioLandscapes-Kitsu": "git@github.com:michimussato/OpenStudioLandscapes-Kitsu.git",
+    # "git@github.com:michimussato/OpenStudioLandscapes-LikeC4.git",
+    "OpenStudioLandscapes-NukeRLM-8": "git@github.com:michimussato/OpenStudioLandscapes-NukeRLM-8.git",
+    # "git@github.com:michimussato/OpenStudioLandscapes-OpenCue.git",
+    "OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20": "git@github.com:michimussato/OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20.git",
+    "OpenStudioLandscapes-Syncthing": "git@github.com:michimussato/OpenStudioLandscapes-Syncthing.git",
+    # "git@github.com:michimussato/OpenStudioLandscapes-Watchtower.git",
 }
 
 # # MAIN BRANCH
@@ -487,11 +488,11 @@ IDENTICAL_FILES = [
     ".obsidian/core-plugins-migration.json",
     ".obsidian/daily-notes.json",
     ".obsidian/graph.json",
-    ".obsidian/hotkeys.json",
+    # ".obsidian/hotkeys.json",
     ".obsidian/templates.json",
     ".obsidian/types.json",
-    ".obsidian/workspace.json",
-    ".obsidian/workspaces.json",
+    # ".obsidian/workspace.json",
+    # ".obsidian/workspaces.json",
     ".gitattributes",
     ".gitignore",
     ".pre-commit-config.yaml",
@@ -543,14 +544,26 @@ def fix_hardlinks_in_features(session):
                         logging.info("Target: %s" % target.as_posix())
                         logging.info("Link name: %s" % link_name)
 
-                        session.run(
-                            shutil.which("ln"),
-                            "--force",
-                            "--backup=numbered",
-                            target.as_posix(),
-                            link_name,
-                            external=True,
-                        )
+                        if platform.system() == "Linux":
+
+                            session.run(
+                                shutil.which("ln"),
+                                "--force",
+                                "--backup=numbered",
+                                target.as_posix(),
+                                link_name,
+                                external=True,
+                            )
+
+                        elif platform.system() == "Darwin":
+
+                            session.run(
+                                shutil.which("ln"),
+                                "-f",
+                                target.as_posix(),
+                                link_name,
+                                external=True,
+                            )
 
 
 #######################################################################################################################

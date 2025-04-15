@@ -57,6 +57,10 @@ MANIFEST
 # Landscapes
 .landscapes/*/
 
+# Features
+.features/*
+!.features/.gitkeep
+
 # Dagster
 .dagster/*/
 .dagster-postgres/*/
