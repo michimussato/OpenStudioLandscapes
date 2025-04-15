@@ -83,8 +83,7 @@ tmp*/
 
 .landscapes/.pi-hole/*/
 
-#
-
+# Payloads
 .payload/data/
 .payload/bin/
 
@@ -93,8 +92,6 @@ tmp*/
 .obsidian/workspace.json
 .obsidian/workspaces.json
 
-# Registry
-.registry/*/
-.registry/registry.env
+# Media
 /media/Blender/.out/*
 !/media/Blender/.out/.gitkeep
