@@ -54,12 +54,17 @@ MANIFEST
 .conda*/
 .python-version
 
+# Landscapes
+.landscapes/*/
+
 # Dagster
 .dagster/*/
 .dagster-postgres/*/
 tmp*/
 
-.landscapes/*/
+!.landscapes/.dagster/
+.landscapes/.dagster/*
+!.landscapes/.dagster/.gitkeep
 
 # Harbor
 !.landscapes/.harbor/
