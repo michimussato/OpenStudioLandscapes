@@ -18,6 +18,7 @@
         * [Run Pi-hole](#run-pi-hole)
         * [Shut down Pi-hole](#shut-down-pi-hole)
       * [Configure Pi-hole](#configure-pi-hole)
+        * [Rate Limits](#rate-limits)
     * [Harbor](#harbor)
       * [Installation](#installation-1)
         * [Prepare Harbor](#prepare-harbor)
@@ -465,6 +466,10 @@ pip install -e ".[dev]"
 
 _Todo_
 
+Notes:
+
+- https://discourse.pi-hole.net/t/setting-up-a-reverse-proxy-with-pi-hole/77100/8
+
 #### Installation
 
 _Todo_
@@ -484,6 +489,16 @@ _Todo_
 #### Configure Pi-hole
 
 _Todo_
+
+##### Rate Limits
+
+Set both `dns.rateLimit.count` and `dns.rateLimit.interval`
+to `0` (disable). With limits enabled I ran into issues of Postgres
+queries from Dagster getting blocked by Pi-hole which is undesirable.
+
+```
+WARNING:root:Retrying failed database connection: (psycopg2.OperationalError) could not translate host name "postgres-dagster.farm.evil" to address: Name or service not known
+```
 
 ### Harbor
 
