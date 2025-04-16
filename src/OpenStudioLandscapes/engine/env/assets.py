@@ -123,15 +123,16 @@ def dot_landscapes(
         "landscape_id": AssetIn(AssetKey([*KEY_BASE_ENV, "landscape_id"])),
         "dot_landscapes": AssetIn(AssetKey([*KEY_BASE_ENV, "dot_landscapes"])),
         "nfs": AssetIn(AssetKey([*KEY_BASE_ENV, "nfs"])),
+        "constants_base": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "constants_base"])),
     },
-    deps=[
-        AssetKey(
-            [
-                *ASSET_HEADER_BASE_ENV["key_prefix"],
-                "constants_base",
-            ]
-        )
-    ],
+    # deps=[
+    #     AssetKey(
+    #         [
+    #             *ASSET_HEADER_BASE_ENV["key_prefix"],
+    #             "constants_base",
+    #         ]
+    #     )
+    # ],
 )
 def env(
     context: AssetExecutionContext,
@@ -140,6 +141,7 @@ def env(
     landscape_id: dict,  # pylint: disable=redefined-outer-name
     dot_landscapes: pathlib.Path,  # pylint: disable=redefined-outer-name
     nfs: dict,  # pylint: disable=redefined-outer-name
+    constants_base: dict,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
 
     # @formatter:off
@@ -173,6 +175,7 @@ def env(
     ENVIRONMENT_BASE.update(secrets)
     ENVIRONMENT_BASE.update(landscape_id)
     ENVIRONMENT_BASE.update(nfs)
+    ENVIRONMENT_BASE.update({"constants_base": constants_base})
     # @formatter:on
 
     yield Output(ENVIRONMENT_BASE)
