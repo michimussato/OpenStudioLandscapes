@@ -21,6 +21,8 @@ from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.discovery.discovery import *
 from OpenStudioLandscapes.engine.enums import *
 
+# Todo:
+#  - [ ] Find a procedural way to deal with this
 # from OpenStudioLandscapes.Deadline_10_2_Worker.constants import KEY as KEY_WORKER
 
 
