@@ -15,7 +15,7 @@ from OpenStudioLandscapes.engine.constants import DOCKER_USE_CACHE_GLOBAL
 DOCKER_USE_CACHE = DOCKER_USE_CACHE_GLOBAL or False
 
 
-GROUP = f"Compose_{ComposeScope.DEFAULT}"
+GROUP = f"Compose_{str(ComposeScope.DEFAULT)}"
 KEY = [GROUP]
 
 ASSET_HEADER = {

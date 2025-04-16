@@ -15,6 +15,7 @@ from dagster import (
     asset,
 )
 
+from OpenStudioLandscapes.engine.enums import DockerConfig
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.utils import *
 from OpenStudioLandscapes.engine.utils.docker.whales import *
@@ -101,6 +102,7 @@ def apt_packages(
     **ASSET_HEADER_BASE,
     ins={
         "env": AssetIn(AssetKey([*KEY_BASE_ENV, "env"])),
+        "docker_config": AssetIn(AssetKey([*KEY_BASE_ENV, "DOCKER_CONFIG"])),
         "apt_packages": AssetIn(AssetKey([*KEY_BASE, "apt_packages"])),
         "pip_packages": AssetIn(AssetKey([*KEY_BASE, "pip_packages"])),
     },
@@ -108,12 +110,11 @@ def apt_packages(
 def build_docker_image(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
+    docker_config: DockerConfig,  # pylint: disable=redefined-outer-name
     apt_packages: dict[str, list[str]],  # pylint: disable=redefined-outer-name
     pip_packages: list,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict[str, str | list[str]]] | AssetMaterialization, None, None]:
     """ """
-
-    docker_config = DOCKER_CONFIG
 
     docker_file = pathlib.Path(
         env["DOT_LANDSCAPES"],
@@ -253,6 +254,9 @@ def build_docker_image(
     },
     ins={
         "env": AssetIn(AssetKey([*KEY_BASE_ENV, "env"])),
+        "constants_base": AssetIn(AssetKey([*KEY_BASE_ENV, "constants_base"])),
+        "docker_config": AssetIn(AssetKey([*KEY_BASE_ENV, "DOCKER_CONFIG"])),
+        "features": AssetIn(AssetKey([*KEY_BASE_ENV, "features"])),
         "build_docker_image": AssetIn(
             AssetKey([*KEY_BASE, "build_docker_image"]),
         ),
@@ -261,13 +265,18 @@ def build_docker_image(
 def group_out(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
+    constants_base: dict,  # pylint: disable=redefined-outer-name
+    docker_config: DockerConfig,  # pylint: disable=redefined-outer-name
+    features: dict,  # pylint: disable=redefined-outer-name
     build_docker_image: dict,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict[str, str | dict]] | AssetMaterialization, None, None]:
 
     out_dict: dict = {}
 
     out_dict["env"] = env
-    out_dict["docker_config"] = DOCKER_CONFIG
+    out_dict["constants_base"] = constants_base
+    out_dict["docker_config"] = docker_config
+    out_dict["features"] = features
     out_dict["docker_image"] = build_docker_image
 
     yield Output(out_dict)
@@ -276,7 +285,9 @@ def group_out(
         asset_key=context.asset_key,
         metadata={
             "env": MetadataValue.json(env),
-            "docker_config": MetadataValue.json(DOCKER_CONFIG.value),
+            "constants_base": MetadataValue.json(constants_base),
+            "docker_config": MetadataValue.json(docker_config.value),
+            "features": MetadataValue.json(features),
             "docker_image": MetadataValue.json(build_docker_image),
         },
     )

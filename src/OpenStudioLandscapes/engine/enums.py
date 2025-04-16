@@ -26,7 +26,7 @@ except SyntaxError as e:
     _secrets: dict = {}
 
 
-class OpenStudioLandscapesConfig(str, enum.Enum):
+class OpenStudioLandscapesConfig(enum.StrEnum):
     DEFAULT = "default"
     PRODUCTION = "production"
     DEVELOPMENT = "development"
@@ -86,7 +86,7 @@ class DockerConfig(enum.Enum):
         "docker_registry_username": None,
         "docker_registry_password": None,
         "docker_repository": _REPOSITORY_NAME,
-        "docker_repository_type": DockerRepositoryType.PUBLIC.value,
+        "docker_repository_type": DockerRepositoryType.PUBLIC,
     }
     DOCKER_HUB = {
         "docker_push": True,
@@ -96,37 +96,37 @@ class DockerConfig(enum.Enum):
         "docker_registry_username": _secrets.get("SECRET_DOCKER_DOCKERHUB_USERNAME"),
         "docker_registry_password": _secrets.get("SECRET_DOCKER_DOCKERHUB_PASSWORD"),
         "docker_repository": _REPOSITORY_NAME,
-        "docker_repository_type": DockerRepositoryType.PUBLIC.value,
+        "docker_repository_type": DockerRepositoryType.PUBLIC,
     }
     LOCAL_LOCALHOST = {
         "docker_push": True,
         "docker_use_local": True,
-        "docker_registry_url": DockerRegistry.LOCAL_LOCALHOST.value,
+        "docker_registry_url": DockerRegistry.LOCAL_LOCALHOST,
         "docker_registry_port": "443",
         "docker_registry_username": None,
         "docker_registry_password": None,
         "docker_repository": _REPOSITORY_NAME,
-        "docker_repository_type": DockerRepositoryType.PUBLIC.value,
+        "docker_repository_type": DockerRepositoryType.PUBLIC,
     }
     LOCAL_HARBOR = {
         # https://github.com/goharbor/harbor
         # https://medium.com/@Shamimw/setting-up-harbor-docker-registry-installation-and-pushing-docker-images-a8b3db6fca6a
         "docker_push": True,
         "docker_use_local": False,
-        "docker_registry_url": DockerRegistry.LOCAL_HARBOR.value,
+        "docker_registry_url": DockerRegistry.LOCAL_HARBOR,
         "docker_registry_port": "80",
         "docker_registry_username": "admin",
         "docker_registry_password": "Harbor12345",
         "docker_repository": _REPOSITORY_NAME,
-        "docker_repository_type": DockerRepositoryType.PUBLIC.value,
+        "docker_repository_type": DockerRepositoryType.PUBLIC,
     }
     LOCAL_MINIBOSS = {
         "docker_push": True,
         "docker_use_local": True,
-        "docker_registry_url": DockerRegistry.LOCAL_MINIBOSS.value,
+        "docker_registry_url": DockerRegistry.LOCAL_MINIBOSS,
         "docker_registry_port": "5000",
         "docker_registry_username": None,
         "docker_registry_password": None,
         "docker_repository": _REPOSITORY_NAME,
-        "docker_repository_type": DockerRepositoryType.PUBLIC.value,
+        "docker_repository_type": DockerRepositoryType.PUBLIC,
     }

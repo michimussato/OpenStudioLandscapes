@@ -12,7 +12,7 @@ import importlib
 
 from dagster import get_dagster_logger
 
-from OpenStudioLandscapes.engine.constants import THIRD_PARTY
+from OpenStudioLandscapes.engine.constants import FEATURES
 
 LOGGER = get_dagster_logger(__name__)
 
@@ -31,15 +31,16 @@ DISCOVERED_MODULE = [
 
 IMPORTABLE_FEATURES = []
 
+feature_keys = FEATURES.keys()
 
-for feature in THIRD_PARTY:
-    if feature["module"] not in DISCOVERED_MODULE:
-        LOGGER.info("Feature %s is not in discovered modules. Skipped." % feature["module"])
+for key in feature_keys:
+    if FEATURES[key]["module"] not in DISCOVERED_MODULE:
+        LOGGER.info("Feature %s is not in discovered modules. Skipped." % FEATURES[key]["module"])
         continue
-    if not feature["enabled"]:
-        LOGGER.info("Feature %s is not enabled. Skipped." % feature["module"])
+    if not FEATURES[key]["enabled"]:
+        LOGGER.info("Feature %s is not enabled. Skipped." % FEATURES[key]["module"])
         continue
-    IMPORTABLE_FEATURES.append(feature)
+    IMPORTABLE_FEATURES.append(FEATURES[key])
 
 
 IMPORTS = []  # used in definitions.py (list of <module> objects)

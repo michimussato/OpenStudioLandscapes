@@ -21,7 +21,7 @@ from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.discovery.discovery import *
 from OpenStudioLandscapes.engine.enums import *
 
-from OpenStudioLandscapes.Deadline_10_2_Worker.constants import KEY as KEY_WORKER
+# from OpenStudioLandscapes.Deadline_10_2_Worker.constants import KEY as KEY_WORKER
 
 
 # Dynamic inputs based on the imported

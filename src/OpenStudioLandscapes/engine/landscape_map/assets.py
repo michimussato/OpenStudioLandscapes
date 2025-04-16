@@ -23,11 +23,14 @@ from OpenStudioLandscapes.engine.constants import *
 # third party code locations
 ins = {}
 compose_scopes = set()
-for i in THIRD_PARTY:
-    enabled = i["enabled"]
+
+feature_keys = FEATURES.keys()
+
+for key in feature_keys:
+    enabled = FEATURES[key]["enabled"]
     if not enabled:
         continue
-    compose_scope = i["compose_scope"]
+    compose_scope = FEATURES[key]["compose_scope"]
     if compose_scope in compose_scopes:
         continue
     compose_scopes.update(compose_scope)
