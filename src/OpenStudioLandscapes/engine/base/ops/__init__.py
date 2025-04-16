@@ -81,6 +81,53 @@ def op_compose(
 
 
 @op(
+    name="env",
+    ins={
+        "group_in": In(dict),
+        "constants": In(dict),
+        "FEATURE_CONFIG": In(OpenStudioLandscapesConfig),
+        "COMPOSE_SCOPE": In(ComposeScope),
+    },
+    out={
+        "env": Out(dict),
+    },
+)
+def op_env(
+    context: OpExecutionContext,
+    group_in: dict,  # pylint: disable=redefined-outer-name
+    constants: dict,  # pylint: disable=redefined-outer-name
+    FEATURE_CONFIG: OpenStudioLandscapesConfig,  # pylint: disable=redefined-outer-name
+    COMPOSE_SCOPE: ComposeScope,  # pylint: disable=redefined-outer-name
+) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
+    """ """
+
+    env_in = copy.deepcopy(group_in["env"])
+
+    env_in.update(
+        expand_dict_vars(
+            dict_to_expand=constants[FEATURE_CONFIG],
+            kv=env_in,
+        )
+    )
+
+    env_in.update(
+        {
+            "COMPOSE_SCOPE": COMPOSE_SCOPE,
+        },
+    )
+
+    yield Output(env_in)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.json(env_in),
+            "ENVIRONMENT": MetadataValue.json(constants[FEATURE_CONFIG]),
+        },
+    )
+
+
+@op(
     name="docker_compose_graph",
     ins={
         "group_out": In(pathlib.Path),
