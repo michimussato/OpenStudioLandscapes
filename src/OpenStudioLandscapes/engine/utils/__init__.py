@@ -12,6 +12,9 @@ __all__ = [
     "get_image_name",
     "parse_docker_image_path",
     "iterate_fds",
+    "get_compose_scope",
+    "get_feature_config",
+    "expand_dict_vars",
 ]
 
 
@@ -26,6 +29,7 @@ from dagster import MetadataValue, AssetExecutionContext
 
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.enums import *
+from OpenStudioLandscapes.engine.exceptions import ComposeScopeException
 
 
 def compile_cmds(
@@ -321,3 +325,86 @@ def iterate_fds(
                 methods.pop(handle)
 
     return ret
+
+
+def get_compose_scope(
+        context: AssetExecutionContext,
+        features: dict,
+        name: str,
+) -> ComposeScope:
+
+    feature_keys = features.keys()
+
+    _module = name
+    _parent = ".".join(_module.split(".")[:-1])
+    _definitions = ".".join([_parent, "definitions"])
+
+    COMPOSE_SCOPE = None
+    for key in feature_keys:
+        if features[key]["module"] == _definitions:
+            COMPOSE_SCOPE: ComposeScope = features[key]["compose_scope"]
+            break
+
+    if COMPOSE_SCOPE is None:
+        raise ComposeScopeException(
+            "No compose_scope found for module '%s'. Is the module enabled "
+            "in `OpenStudioLandscapes.engine.constants.FEATURES` and/or did "
+            "you re-execute the Dagster tree?" % _module
+        )
+    return COMPOSE_SCOPE
+
+
+def get_feature_config(
+        context: AssetExecutionContext,
+        features: dict,
+        name: str,
+) -> [OpenStudioLandscapesConfig, None]:
+
+    feature_keys = features.keys()
+
+    _module = name
+    _parent = ".".join(_module.split(".")[:-1])
+    _definitions = ".".join([_parent, "definitions"])
+
+    FEATURE_CONFIG = None
+    for key in feature_keys:
+        if features[key]["module"] == _definitions:
+            FEATURE_CONFIG = features[key].get(
+                "feature_config", OpenStudioLandscapesConfig.DEFAULT
+            )
+            context.log.info(
+                "feature_config for Feature %s is set to: \n%s."
+                % (features[key]["module"], FEATURE_CONFIG)
+            )
+            break
+    return FEATURE_CONFIG
+
+
+def expand_dict_vars(
+        dict_to_expand: dict,
+        kv: dict,
+) -> dict:
+    """
+    This helper expands key-value pairs into the
+    string.format()-formatted value of a dictionary.
+
+    i.e. a string like:
+    `{DOT_LANDSCAPES}/{LANDSCAPE}/Kitsu__Kitsu/data/kitsu`
+
+    will be expanded as follows:
+    `/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-16-14-14-36-903f4b8a760547a2b1e6cafed4551f6e/Kitsu__Kitsu/data/kitsu`
+
+    using the key-value pairs
+    ```
+    {
+        "DOT_LANDSCAPES": "/home/michael/git/repos/OpenStudioLandscapes/.landscapes",
+        "LANDSCAPE": "2025-04-16-14-14-36-903f4b8a760547a2b1e6cafed4551f6e",
+    }
+    ```
+    """
+
+    for k, v in dict_to_expand.items():
+        if isinstance(v, str):
+            dict_to_expand[k] = v.format(**kv)
+
+    return dict_to_expand
