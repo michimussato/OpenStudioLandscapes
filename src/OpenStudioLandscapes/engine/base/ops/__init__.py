@@ -2,6 +2,8 @@ __all__ = [
     "op_compose",
     "op_group_in",
     "op_group_out",
+    "op_env",
+    "op_constants",
     "op_docker_compose_graph",
 ]
 
@@ -13,7 +15,7 @@ import shlex
 import shutil
 from collections import ChainMap
 from functools import reduce
-from typing import Generator, MutableMapping
+from typing import Generator, MutableMapping, Any
 
 import yaml
 from docker_compose_graph.utils import *
@@ -33,6 +35,7 @@ from dagster import (
 from docker_compose_graph.docker_compose_graph import DockerComposeGraph
 
 from OpenStudioLandscapes.engine.enums import *
+from OpenStudioLandscapes.engine.utils import *
 
 
 @op(
@@ -86,9 +89,6 @@ def op_compose(
     name="op_group_in",
     ins={
         "group_out": In(dict),
-        # "constants": In(dict),
-        # "FEATURE_CONFIG": In(OpenStudioLandscapesConfig),
-        # "COMPOSE_SCOPE": In(ComposeScope),
     },
     out={
         "group_in": Out(dict),
@@ -97,9 +97,6 @@ def op_compose(
 def op_group_in(
     context: OpExecutionContext,
     group_out: dict,  # pylint: disable=redefined-outer-name
-    # constants: dict,  # pylint: disable=redefined-outer-name
-    # FEATURE_CONFIG: OpenStudioLandscapesConfig,  # pylint: disable=redefined-outer-name
-    # COMPOSE_SCOPE: ComposeScope,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
     """
     This is the entry point for a Feature.
@@ -127,6 +124,160 @@ def op_group_in(
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata=metadata,
+    )
+
+
+@op(
+    name="op_env",
+    ins={
+        "group_in": In(dict),
+        "constants": In(dict),
+        "FEATURE_CONFIG": In(OpenStudioLandscapesConfig),
+        "COMPOSE_SCOPE": In(ComposeScope),
+    },
+    out={
+        "env_out": Out(dict),
+    },
+)
+def op_env(
+    context: OpExecutionContext,
+    group_in: dict,  # pylint: disable=redefined-outer-name
+    constants: dict,  # pylint: disable=redefined-outer-name
+    FEATURE_CONFIG: OpenStudioLandscapesConfig,  # pylint: disable=redefined-outer-name
+    COMPOSE_SCOPE: ComposeScope,  # pylint: disable=redefined-outer-name
+) -> Generator[Output[dict] | AssetMaterialization, None, None]:
+    """
+    Provides a Feature with the `env` dict.
+    """
+
+    env_in = copy.deepcopy(group_in["env"])
+
+    env_in.update(
+        expand_dict_vars(
+            dict_to_expand=constants[FEATURE_CONFIG],
+            kv=env_in,
+        )
+    )
+
+    env_in.update(
+        {
+            "COMPOSE_SCOPE": COMPOSE_SCOPE,
+        },
+    )
+
+    yield Output(
+        output_name="env_out",
+        value=env_in,
+    )
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.json(env_in),
+            "ENVIRONMENT": MetadataValue.json(constants[FEATURE_CONFIG]),
+        },
+    )
+
+
+@op(
+    name="op_constants",
+    ins={
+        "group_in": In(dict),
+    },
+    out={
+        "COMPOSE_SCOPE": Out(ComposeScope),
+        "FEATURE_CONFIG": Out(OpenStudioLandscapesConfig),
+        "FEATURE_CONFIGS": Out(dict),
+        "DOCKER_USE_CACHE": Out(bool),
+    },
+)
+def op_constants(
+    context: OpExecutionContext,
+    group_in: dict,  # pylint: disable=redefined-outer-name
+) -> Generator[
+    Output[ComposeScope]
+    | AssetMaterialization
+    | Output[Any]
+    | Output[dict[OpenStudioLandscapesConfig, dict[str, bool | str | Any]]]
+    | Output[bool | Any]
+    | Any,
+    None,
+    None,
+]:
+    """
+    Provides a Feature with some constant data.
+    """
+
+    features = group_in["features"]
+
+    # COMPOSE_SCOPE
+    COMPOSE_SCOPE = get_compose_scope(
+        context=context,
+        features=features,
+        name=__name__,
+    )
+
+    # FEATURE_CONFIG
+    FEATURE_CONFIG = get_feature_config(
+        context=context,
+        features=features,
+        name=__name__,
+    )
+
+    yield Output(
+        output_name="COMPOSE_SCOPE",
+        value=COMPOSE_SCOPE,
+    )
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key_for_output("COMPOSE_SCOPE"),
+        metadata={
+            "__".join(
+                context.asset_key_for_output("COMPOSE_SCOPE").path
+            ): MetadataValue.json(COMPOSE_SCOPE),
+        },
+    )
+
+    yield Output(
+        output_name="FEATURE_CONFIG",
+        value=FEATURE_CONFIG,
+    )
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key_for_output("FEATURE_CONFIG"),
+        metadata={
+            "__".join(
+                context.asset_key_for_output("FEATURE_CONFIG").path
+            ): MetadataValue.json(FEATURE_CONFIG),
+        },
+    )
+
+    yield Output(
+        output_name="FEATURE_CONFIGS",
+        value=FEATURE_CONFIGS,
+    )
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key_for_output("FEATURE_CONFIGS"),
+        metadata={
+            "__".join(
+                context.asset_key_for_output("FEATURE_CONFIGS").path
+            ): MetadataValue.json(FEATURE_CONFIGS),
+        },
+    )
+
+    yield Output(
+        output_name="DOCKER_USE_CACHE",
+        value=DOCKER_USE_CACHE,
+    )
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key_for_output("DOCKER_USE_CACHE"),
+        metadata={
+            "__".join(
+                context.asset_key_for_output("DOCKER_USE_CACHE").path
+            ): MetadataValue.bool(DOCKER_USE_CACHE),
+        },
     )
 
 
