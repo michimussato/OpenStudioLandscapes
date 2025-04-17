@@ -631,6 +631,20 @@ sudo systemctl restart docker
 Todo
 - [ ] `dagster dev` is not for production (https://docs.dagster.io/guides/deploy/deployment-options)
 
+#### List Assets
+
+```shell
+DAGSTER_HOME="/home/michael/git/repos/OpenStudioLandscapes/.dagster-postgres" dagster asset list -m OpenStudioLandscapes.engine.definitions
+```
+
+#### Generate new Landscape (execute all)
+
+Todo
+
+```shell
+
+```
+
 ### Ubuntu
 
 #### 20.04
@@ -1523,8 +1537,16 @@ nox > Session readme_all failed.
 
 ### OpenStudioLandscapes Quick Start
 
+#### Up
+
 ```shell
 nox --sessions harbor_up_detach pi_hole_up_detach dagster_postgres_up_detach dagster_postgres
+```
+
+#### Down
+
+```shell
+nox --sessions dagster_postgres_down pi_hole_down harbor_down
 ```
 
 ### Current Sessions
