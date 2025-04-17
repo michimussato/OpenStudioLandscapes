@@ -119,6 +119,7 @@
       * [Lint (pylint)](#lint-pylint)
       * [Testing (pytest)](#testing-pytest)
       * [Readme](#readme)
+      * [Readme All](#readme-all)
       * [Release](#release)
       * [Docs](#docs)
     * [Batch Jobs (for Features)](#batch-jobs-for-features)
@@ -1525,6 +1526,7 @@ Sessions defined in OpenStudioLandscapes/noxfile.py:
 
 - clone_features -> `git clone` all listed (REPOS_FEATURE) Features into .features.
 - pull_features -> `git pull` all listed (REPOS_FEATURE) Features.
+- readme_all -> Create README.md for all listed (REPOS_FEATURE) Features.
 - stash_features -> `git stash` all listed (REPOS_FEATURE) Features.
 - stash_apply_features -> `git stash apply` all listed (REPOS_FEATURE) Features.
 - pull_engine -> `git pull` engine.
@@ -1556,7 +1558,7 @@ Sessions defined in OpenStudioLandscapes/noxfile.py:
 * lint-3.12 -> Runs linters and fixers
 * testing-3.11 -> Runs pytests.
 * testing-3.12 -> Runs pytests.
-* readme -> Generate dynamically created README file for
+* readme -> Generate dynamically created README.md file for OpenStudioLandscapes modules.
 - release-3.11 -> Build and release to a repository
 - release-3.12 -> Build and release to a repository
 * docs -> Creates Sphinx documentation.
@@ -1732,7 +1734,7 @@ Scope:
 #### Coverage
 
 ```shell
-nox --session coverate
+nox --session coverage
 ```
     
 Scope:
@@ -1771,6 +1773,16 @@ nox --session readme
 Scope:
 - [ ] Engine
 - [x] Features
+
+#### Readme All
+
+```shell
+nox --session readme_all
+```
+    
+Scope:
+- [x] Engine
+- [ ] Features
 
 #### Release
 
