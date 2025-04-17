@@ -1518,7 +1518,8 @@ nox --help
 ERROR: Failed to build installable wheels for some pyproject.toml based projects (...)
 nox > Session readme_all failed.
 ```
--> Just re-run
+-> Probably jus delete `.nox/readme_all` and re-run
+-> Disable re-use venv?
 
 ### OpenStudioLandscapes Quick Start
 
@@ -2113,6 +2114,11 @@ to learn more.
 - [ ] Migrate to `pyproject.toml` exclusively?
 - [x] Quote `pip install`s (`zsh: no matches found: .[dev]`)
   - `pip install ".[dev]"` works in `zsh`
+- [ ] Make procedural `/home/michael/git/repos/OpenStudioLandscapes/.features` -> `{DOT_FEATURES}`:
+  - From Kitsu README:
+    ```
+    KITSU_POSTGRES_CONF	str	/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Kitsu/.payload/config/etc/postgresql/14/main/postgresql.conf
+    ```
 
 ---
 
