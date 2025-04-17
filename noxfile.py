@@ -188,6 +188,32 @@ def pull_features(session):
         )
 
 
+# # readme_all
+@nox.session(python=None, tags=["readme_all"])
+def readme_all(session):
+    """
+    Create README.md for all listed (REPOS_FEATURE) Features.
+
+    Scope:
+    - [x] Engine
+    - [ ] Modules
+    """
+    # Ex:
+    # nox --session readme_all
+    # nox --tags readme_all
+
+    features_dir = pathlib.Path.cwd() / ".features"
+
+    for dir_ in features_dir.iterdir():
+        # dir_ is always the full path
+        if dir_.is_dir():
+            if pathlib.Path(dir_ / ".git").exists():
+                with session.chdir(dir_):
+
+                    session.install("-e", ".[readme]", silent=True)
+                    session.run("generate-readme", "--versions", *VERSIONS)
+
+
 # # stash_features
 @nox.session(python=None, tags=["stash_features"])
 def stash_features(session):
@@ -1773,8 +1799,7 @@ def testing(session):
 @nox.session(python=VERSIONS_README, tags=["readme"])
 def readme(session):
     """
-    Generate dynamically created README file for
-    OpenStudioLandscapes modules.
+    Generate dynamically created README.md file for OpenStudioLandscapes modules.
 
     Scope:
     - [ ] Engine
