@@ -92,6 +92,7 @@
     * [Install](#install-1)
     * [Run](#run)
   * [nox](#nox)
+    * [OpenStudioLandscapes Quick Start](#openstudiolandscapes-quick-start)
     * [Current Sessions](#current-sessions)
     * [Generate Report](#generate-report)
     * [Python Versions](#python-versions)
@@ -1507,6 +1508,12 @@ pre-commit run --all-files
 
 ```shell
 nox --help
+```
+
+### OpenStudioLandscapes Quick Start
+
+```shell
+nox --sessions harbor_up_detach pi_hole_up_detach dagster_postgres_up_detach dagster_postgres
 ```
 
 ### Current Sessions

@@ -183,17 +183,19 @@ def op_env(
     name="op_constants",
     ins={
         "group_in": In(dict),
+        "NAME": In(str),
     },
     out={
         "COMPOSE_SCOPE": Out(ComposeScope),
         "FEATURE_CONFIG": Out(OpenStudioLandscapesConfig),
-        "FEATURE_CONFIGS": Out(dict),
-        "DOCKER_USE_CACHE": Out(bool),
+        # "FEATURE_CONFIGS": Out(dict),
+        # "DOCKER_USE_CACHE": Out(bool),
     },
 )
 def op_constants(
     context: OpExecutionContext,
     group_in: dict,  # pylint: disable=redefined-outer-name
+    NAME: str,  # pylint: disable=redefined-outer-name
 ) -> Generator[
     Output[ComposeScope]
     | AssetMaterialization
@@ -214,14 +216,14 @@ def op_constants(
     COMPOSE_SCOPE = get_compose_scope(
         context=context,
         features=features,
-        name=__name__,
+        name=NAME,
     )
 
     # FEATURE_CONFIG
     FEATURE_CONFIG = get_feature_config(
         context=context,
         features=features,
-        name=__name__,
+        name=NAME,
     )
 
     yield Output(
@@ -252,33 +254,33 @@ def op_constants(
         },
     )
 
-    yield Output(
-        output_name="FEATURE_CONFIGS",
-        value=FEATURE_CONFIGS,
-    )
+    # yield Output(
+    #     output_name="FEATURE_CONFIGS",
+    #     value=FEATURE_CONFIGS,
+    # )
+    #
+    # yield AssetMaterialization(
+    #     asset_key=context.asset_key_for_output("FEATURE_CONFIGS"),
+    #     metadata={
+    #         "__".join(
+    #             context.asset_key_for_output("FEATURE_CONFIGS").path
+    #         ): MetadataValue.json(FEATURE_CONFIGS),
+    #     },
+    # )
 
-    yield AssetMaterialization(
-        asset_key=context.asset_key_for_output("FEATURE_CONFIGS"),
-        metadata={
-            "__".join(
-                context.asset_key_for_output("FEATURE_CONFIGS").path
-            ): MetadataValue.json(FEATURE_CONFIGS),
-        },
-    )
-
-    yield Output(
-        output_name="DOCKER_USE_CACHE",
-        value=DOCKER_USE_CACHE,
-    )
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key_for_output("DOCKER_USE_CACHE"),
-        metadata={
-            "__".join(
-                context.asset_key_for_output("DOCKER_USE_CACHE").path
-            ): MetadataValue.bool(DOCKER_USE_CACHE),
-        },
-    )
+    # yield Output(
+    #     output_name="DOCKER_USE_CACHE",
+    #     value=DOCKER_USE_CACHE,
+    # )
+    #
+    # yield AssetMaterialization(
+    #     asset_key=context.asset_key_for_output("DOCKER_USE_CACHE"),
+    #     metadata={
+    #         "__".join(
+    #             context.asset_key_for_output("DOCKER_USE_CACHE").path
+    #         ): MetadataValue.bool(DOCKER_USE_CACHE),
+    #     },
+    # )
 
 
 @op(
