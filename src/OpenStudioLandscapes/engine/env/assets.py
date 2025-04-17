@@ -117,6 +117,35 @@ def dot_landscapes(
     )
 
 
+@asset(
+    **ASSET_HEADER_BASE_ENV,
+    ins={
+        "git_root": AssetIn(
+            AssetKey([*KEY_BASE_ENV, "git_root"]),
+        ),
+    },
+)
+def dot_features(
+    context: AssetExecutionContext,
+    git_root: pathlib.Path,  # pylint: disable=redefined-outer-name
+) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
+
+    _dot_features = git_root / ".features"
+    _dot_features.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    yield Output(_dot_features)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.path(_dot_features),
+        },
+    )
+
+
 @multi_asset(
     outs={
         "env": AssetOut(
@@ -135,6 +164,7 @@ def dot_landscapes(
         "secrets": AssetIn(AssetKey([*KEY_BASE_ENV, "secrets"])),
         "landscape_id": AssetIn(AssetKey([*KEY_BASE_ENV, "landscape_id"])),
         "dot_landscapes": AssetIn(AssetKey([*KEY_BASE_ENV, "dot_landscapes"])),
+        "dot_features": AssetIn(AssetKey([*KEY_BASE_ENV, "dot_features"])),
         "nfs": AssetIn(AssetKey([*KEY_BASE_ENV, "nfs"])),
         "FEATURES": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "FEATURES"])),
     },
@@ -145,6 +175,7 @@ def env(
     secrets: dict,  # pylint: disable=redefined-outer-name
     landscape_id: dict,  # pylint: disable=redefined-outer-name
     dot_landscapes: pathlib.Path,  # pylint: disable=redefined-outer-name
+    dot_features: pathlib.Path,  # pylint: disable=redefined-outer-name
     nfs: dict,  # pylint: disable=redefined-outer-name
     FEATURES: dict,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
@@ -161,6 +192,7 @@ def env(
             "configs",
         ).as_posix(),
         "DOT_LANDSCAPES": dot_landscapes.as_posix(),
+        "DOT_FEATURES": dot_features.as_posix(),
         "AUTHOR": "michimussato@gmail.com",
         "CREATED_BY": str(getpass.getuser()),
         "CREATED_ON": str(socket.gethostname()),
