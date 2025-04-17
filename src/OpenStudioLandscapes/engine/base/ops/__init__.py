@@ -1,5 +1,6 @@
 __all__ = [
     "op_compose",
+    "op_group_in",
     "op_group_out",
     "op_docker_compose_graph",
 ]
@@ -26,6 +27,7 @@ from dagster import (
     Out,
     Output,
     op,
+    DagsterExecutionStepExecutionError,
 )
 
 from docker_compose_graph.docker_compose_graph import DockerComposeGraph
@@ -81,49 +83,50 @@ def op_compose(
 
 
 @op(
-    name="env",
+    name="op_group_in",
     ins={
-        "group_in": In(dict),
-        "constants": In(dict),
-        "FEATURE_CONFIG": In(OpenStudioLandscapesConfig),
-        "COMPOSE_SCOPE": In(ComposeScope),
+        "group_out": In(dict),
+        # "constants": In(dict),
+        # "FEATURE_CONFIG": In(OpenStudioLandscapesConfig),
+        # "COMPOSE_SCOPE": In(ComposeScope),
     },
     out={
-        "env": Out(dict),
+        "group_in": Out(dict),
     },
 )
-def op_env(
+def op_group_in(
     context: OpExecutionContext,
-    group_in: dict,  # pylint: disable=redefined-outer-name
-    constants: dict,  # pylint: disable=redefined-outer-name
-    FEATURE_CONFIG: OpenStudioLandscapesConfig,  # pylint: disable=redefined-outer-name
-    COMPOSE_SCOPE: ComposeScope,  # pylint: disable=redefined-outer-name
+    group_out: dict,  # pylint: disable=redefined-outer-name
+    # constants: dict,  # pylint: disable=redefined-outer-name
+    # FEATURE_CONFIG: OpenStudioLandscapesConfig,  # pylint: disable=redefined-outer-name
+    # COMPOSE_SCOPE: ComposeScope,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
-    """ """
+    """
+    This is the entry point for a Feature.
+    Just forwards the data we get from the upstream `group_out` asset.
+    """
 
-    env_in = copy.deepcopy(group_in["env"])
+    context.log.debug(group_out)
 
-    env_in.update(
-        expand_dict_vars(
-            dict_to_expand=constants[FEATURE_CONFIG],
-            kv=env_in,
-        )
+    yield Output(
+        output_name="group_in",
+        value=group_out,
     )
 
-    env_in.update(
-        {
-            "COMPOSE_SCOPE": COMPOSE_SCOPE,
-        },
-    )
+    metadata = {}
 
-    yield Output(env_in)
+    for k, v in group_out.items():
+        try:
+            metadata[k] = MetadataValue.json(v)
+        except Exception:
+            # This is for Non-JSON-Serializable Objects.
+            # Even though a DagsterExecutionStepExecutionError is thrown,
+            # it cannot not be captured here for some reason. Hence, Exception
+            metadata[v.name] = MetadataValue.json(v.value)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(env_in),
-            "ENVIRONMENT": MetadataValue.json(constants[FEATURE_CONFIG]),
-        },
+        metadata=metadata,
     )
 
 
