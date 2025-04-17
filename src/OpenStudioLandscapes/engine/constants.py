@@ -34,8 +34,6 @@ from dagster import (
     MetadataValue,
     Output,
     asset,
-    AssetIn,
-    AssetKey,
 )
 
 from OpenStudioLandscapes.engine.enums import *
@@ -133,12 +131,12 @@ FEATURES: dict[str, dict[str, bool | str | ComposeScope | OpenStudioLandscapesCo
         "compose_scope": ComposeScope.DEFAULT,
         "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
-    # "OpenStudioLandscapes-Deadline_10_2_Worker": {
-    #     "enabled": True,
-    #     "module": "OpenStudioLandscapes.Deadline_10_2_Worker.definitions",
-    #     "compose_scope": ComposeScope.WORKER,
-    #     "feature_config": OpenStudioLandscapesConfig.DEFAULT,  # This setting has no effect
-    # },
+    "OpenStudioLandscapes-Deadline_10_2_Worker": {
+        "enabled": True,
+        "module": "OpenStudioLandscapes.Deadline_10_2_Worker.definitions",
+        "compose_scope": ComposeScope.WORKER,
+        "feature_config": OpenStudioLandscapesConfig.DEFAULT,
+    },
     "OpenStudioLandscapes-filebrowser": {
         "enabled": True,
         "module": "OpenStudioLandscapes.filebrowser.definitions",

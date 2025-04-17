@@ -23,7 +23,7 @@ from OpenStudioLandscapes.engine.enums import *
 
 # Todo:
 #  - [ ] Find a procedural way to deal with this
-# from OpenStudioLandscapes.Deadline_10_2_Worker.constants import KEY as KEY_WORKER
+from OpenStudioLandscapes.Deadline_10_2_Worker.constants import KEY as KEY_WORKER
 
 
 # Dynamic inputs based on the imported
