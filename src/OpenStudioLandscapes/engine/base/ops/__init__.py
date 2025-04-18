@@ -44,7 +44,10 @@ def factory_feature_out(
     ins=None,
     **kwargs,
 ) -> OpDefinition:
-    """Args:
+    """
+    https://docs.dagster.io/guides/build/ops#op-factory
+
+    Args:
         name (str): The name of the new op.
         ins (Dict[str, In]): Any Ins for the new op. Default: None.
 
