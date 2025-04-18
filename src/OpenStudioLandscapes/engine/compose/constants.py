@@ -21,7 +21,7 @@ KEY = [GROUP]
 ASSET_HEADER = {
     "group_name": GROUP,
     "key_prefix": KEY,
-    "compute_kind": "python",
+    # "compute_kind": "python",
 }
 
 ENVIRONMENT = {}

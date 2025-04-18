@@ -1,5 +1,6 @@
 __all__ = [
     "factory_feature_out",
+    "factory_feature_in",
     "op_compose",
     "op_group_in",
     "op_group_out",
@@ -68,6 +69,16 @@ def factory_feature_out(
         # out = {}
         metadata = {}
 
+        # I want
+        # - env_base
+        # - constants_base
+        # to stay in the root level
+        # of the dict
+        env_base = kwargs["group_in"].pop("env_base")
+        kwargs["env_base"] = env_base
+        constants_base = kwargs["group_in"].pop("constants_base")
+        kwargs["constants_base"] = constants_base
+
         # for k, v in kwargs.items():
         #     if k == "group_in":
         #         v = {k: v}
@@ -109,6 +120,78 @@ def factory_feature_out(
         )
 
     return _op_feature_out
+
+
+def factory_feature_in(
+    name="op_feature_in_from_factory",
+    ins=None,
+    **kwargs,
+) -> OpDefinition:
+    """
+    https://docs.dagster.io/guides/build/ops#op-factory
+
+    Args:
+        name (str): The name of the new op.
+        ins (Dict[str, In]): Any Ins for the new op. Default: None.
+
+    Returns:
+        function: The new op.
+    """
+
+    @op(
+        name=name,
+        ins=ins,
+        **kwargs,
+    )
+    def _op_feature_in(
+        context: OpExecutionContext,
+        **kwargs,
+    ):
+
+        # out = {}
+        metadata = {}
+
+        # for k, v in kwargs.items():
+        #     if k == "group_in":
+        #         v = {k: v}
+        #     out[k] = v
+
+        out_ = copy.deepcopy(kwargs)
+
+        # JSON cannot serialize certain types
+        # out of the box. This makes sure that
+        # MetadataValue.json receives only
+        # serializable input.
+        def _serialize(d):
+            for k_, v_ in d.items():
+                if isinstance(v_, dict):
+                    _serialize(v_)
+                elif isinstance(v_, pathlib.PosixPath):
+                    d[k_] = v_.as_posix()
+                else:
+                    d[k_] = str(v_)
+
+        _serialize(out_)
+
+        for k, v in out_.items():
+            context.log.warning(k)
+            context.log.warning(v)
+            metadata[k] = MetadataValue.json(v)
+
+        yield Output(
+            output_name="feature_out",
+            value=kwargs,
+        )
+
+        yield AssetMaterialization(
+            asset_key=context.asset_key_for_output("feature_out"),
+            metadata={
+                "__".join(context.asset_key.path): MetadataValue.json(out_),
+                **metadata,
+            },
+        )
+
+    return _op_feature_in
 
 
 @op(
@@ -198,6 +281,48 @@ def op_group_in(
         asset_key=context.asset_key,
         metadata=metadata,
     )
+
+
+# @op(
+#     name="op_group_in",
+#     ins={
+#         "group_out": In(dict),
+#     },
+#     out={
+#         "group_in": Out(dict),
+#     },
+# )
+# def op_feature_in(
+#     context: OpExecutionContext,
+#     group_out: dict,  # pylint: disable=redefined-outer-name
+# ) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
+#     """
+#     This is the entry point for a Feature.
+#     Just forwards the data we get from the upstream `group_out` asset.
+#     """
+#
+#     context.log.debug(group_out)
+#
+#     yield Output(
+#         output_name="group_in",
+#         value=group_out,
+#     )
+#
+#     metadata = {}
+#
+#     for k, v in group_out.items():
+#         try:
+#             metadata[k] = MetadataValue.json(v)
+#         except Exception:
+#             # This is for Non-JSON-Serializable Objects.
+#             # Even though a DagsterExecutionStepExecutionError is thrown,
+#             # it cannot not be captured here for some reason. Hence, Exception
+#             metadata[v.name] = MetadataValue.json(v.value)
+#
+#     yield AssetMaterialization(
+#         asset_key=context.asset_key,
+#         metadata=metadata,
+#     )
 
 
 @op(

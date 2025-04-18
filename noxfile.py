@@ -1597,6 +1597,31 @@ def dagster_postgres(session):
     )
 
 
+@nox.session(python=None, tags=["dagster_mysql"])
+def dagster_mysql(session):
+    """
+    Start Dagster with Postgres as backend after `nox --session dagster_postgres_up_detach`.
+
+    Scope:
+    - [x] Engine
+    - [ ] Modules
+    """
+    # Ex:
+    # nox --session dagster_mysql
+    # nox --tags dagster_mysql
+
+    session.run(
+        shutil.which("dagster"),
+        "dev",
+        "--host",
+        "0.0.0.0",
+        env={
+            "DAGSTER_HOME": ENVIRONMENT_DAGSTER["DAGSTER_MYSQL_ROOT_DIR"],
+        },
+        external=True,
+    )
+
+
 #######################################################################################################################
 
 

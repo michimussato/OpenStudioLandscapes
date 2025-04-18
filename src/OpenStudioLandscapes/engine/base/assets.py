@@ -274,6 +274,7 @@ def group_out(
     out_dict: dict = {}
 
     out_dict["env"] = env
+    out_dict["env_base"] = env
     out_dict["constants_base"] = constants_base
     out_dict["docker_config"] = docker_config
     out_dict["features"] = features
@@ -285,6 +286,7 @@ def group_out(
         asset_key=context.asset_key,
         metadata={
             "env": MetadataValue.json(env),
+            "env_base": MetadataValue.json(env),
             "constants_base": MetadataValue.json(constants_base),
             "docker_config": MetadataValue.json(docker_config.value),
             "features": MetadataValue.json(features),
