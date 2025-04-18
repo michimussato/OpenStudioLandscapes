@@ -113,12 +113,12 @@ FEATURES: dict[str, dict[str, bool | str | ComposeScope | OpenStudioLandscapesCo
         "compose_scope": ComposeScope.DEFAULT,
         "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
-    # "OpenStudioLandscapes-Kitsu": {
-    #     "enabled": True,
-    #     "module": "OpenStudioLandscapes.Kitsu.definitions",
-    #     "compose_scope": ComposeScope.DEFAULT,
-    #     "feature_config": OpenStudioLandscapesConfig.DEFAULT,
-    # },
+    "OpenStudioLandscapes-Kitsu": {
+        "enabled": True,
+        "module": "OpenStudioLandscapes.Kitsu.definitions",
+        "compose_scope": ComposeScope.DEFAULT,
+        "feature_config": OpenStudioLandscapesConfig.DEFAULT,
+    },
     # "OpenStudioLandscapes-Dagster": {
     #     "enabled": True,
     #     "module": "OpenStudioLandscapes.Dagster.definitions",

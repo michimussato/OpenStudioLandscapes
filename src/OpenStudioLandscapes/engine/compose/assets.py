@@ -1,7 +1,7 @@
 import os
 import copy
 import pathlib
-from typing import Generator, MutableMapping
+from typing import Generator, MutableMapping, Any
 
 import yaml
 from dagster import (
@@ -228,6 +228,69 @@ def compose(
 @asset(
     **ASSET_HEADER_COMPOSE,
     ins={
+        "env": AssetIn(
+            AssetKey([*KEY_COMPOSE, "env"]),
+        ),
+        "features_in": AssetIn(
+            AssetKey([*KEY_COMPOSE, "features_in"]),
+        ),
+        # **ins,
+    },
+)
+def compose_feature(
+    context: AssetExecutionContext,
+    env: dict,  # pylint: disable=redefined-outer-name
+    features_in: dict,  # pylint: disable=redefined-outer-name
+    # **kwargs,
+) -> Generator[
+    Output[dict[str, list[dict[str, list]]]] | AssetMaterialization, None, None
+]:
+    """ """
+
+    context.log.info(features_in)
+
+    _group_in = []
+
+    docker_compose = pathlib.PurePosixPath(
+        env["DOT_LANDSCAPES"],
+        env.get("LANDSCAPE", "default"),
+        f"{GROUP_COMPOSE_WORKER}__{'__'.join(KEY_COMPOSE_WORKER)}",
+        "__".join(context.asset_key.path),
+        "docker_compose",
+        "docker-compose.yml",
+    )
+
+    # env_base = features_in.pop("env_base", {})
+    # constants_base = features_in.pop("constants_base", {})
+
+    for k in features_in.keys():
+        v = features_in[k].get("compose", {})
+
+        context.log.info(v)
+
+    context.log.info(features_in)
+
+    docker_dict = {
+        "include": [{"path": [i.as_posix()]} for i in _group_in],
+        # "include": [{"path": [i]} for i in _group_in],
+    }
+
+    docker_yaml = yaml.dump(docker_dict)
+
+    yield Output(docker_dict)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
+            "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
+        },
+    )
+
+
+@asset(
+    **ASSET_HEADER_COMPOSE,
+    ins={
         "group_out_base": AssetIn(AssetKey([*ASSET_HEADER_BASE["key_prefix"], "group_out"])),
         **feature_ins,
     },
@@ -246,19 +309,29 @@ def features_in(
 
     env_base = group_out_base["env_base"]
 
+    # docker_compose_yaml: dict[str, pathlib.Path] = {}
+    docker_compose_yaml: dict[str, str] = {}
+    docker_compose: dict[str, Any] = {}
+
     for k, v in kwargs.items():
-        # remove env_base from kwargs dicts
-        kwargs[k].pop("env_base")
+        # remove
+        # - env_base
+        # - constants_base
+        # - features
+        # from kwargs dicts
+        for d in [
+            "env_base",
+            "constants_base",
+            "features"
+        ]:
+            kwargs[k].pop(d)
+
+        docker_compose_yaml[k] = str(kwargs[k]["compose_yaml"])
+        docker_compose[k] = str(kwargs[k]["compose"])
 
     kwargs["env_base"] = env_base
 
-    # out = {}
     metadata = {}
-
-    # for k, v in kwargs.items():
-    #     if k == "group_in":
-    #         v = {k: v}
-    #     out[k] = v
 
     out_ = copy.deepcopy(kwargs)
 
@@ -288,8 +361,9 @@ def features_in(
         asset_key=context.asset_key,
         metadata={
             "__".join(context.asset_key.path): MetadataValue.json(out_),
+            "docker_compose_yaml": MetadataValue.json(docker_compose_yaml),
+            "docker_compose": MetadataValue.json(docker_compose),
             **metadata,
-            # "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
         },
     )
 

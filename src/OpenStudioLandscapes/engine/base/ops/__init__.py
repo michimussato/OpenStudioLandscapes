@@ -66,23 +66,24 @@ def factory_feature_out(
         **kwargs,
     ):
 
-        # out = {}
         metadata = {}
 
         # I want
         # - env_base
         # - constants_base
+        # - features
         # to stay in the root level
         # of the dict
         env_base = kwargs["group_in"].pop("env_base")
         kwargs["env_base"] = env_base
         constants_base = kwargs["group_in"].pop("constants_base")
         kwargs["constants_base"] = constants_base
+        features = kwargs["group_in"].pop("features")
+        kwargs["features"] = features
 
-        # for k, v in kwargs.items():
-        #     if k == "group_in":
-        #         v = {k: v}
-        #     out[k] = v
+        # Todo
+        #  - [ ] replace "group_out" (i.e. with "compose_yaml" or "feature_out")
+        kwargs["compose_yaml"] = kwargs["env"]["DOCKER_COMPOSE"]
 
         out_ = copy.deepcopy(kwargs)
 
@@ -199,6 +200,7 @@ def factory_feature_in(
     ins={
         "compose_networks": In(dict),
         "compose_maps": In(list),
+        "env": In(dict),
     },
     out={
         "compose": Out(dict),
@@ -209,8 +211,12 @@ def op_compose(
     compose_networks: dict,  # pylint: disable=redefined-outer-name
     # **kwargs,  # pylint: disable=redefined-outer-name
     compose_maps: list[dict],  # pylint: disable=redefined-outer-name
+    env: dict,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
     """ """
+
+    DOCKER_COMPOSE = pathlib.Path(env["DOCKER_COMPOSE"])
+    DOCKER_COMPOSE.parent.mkdir(parents=True, exist_ok=True)
 
     if "networks" in compose_networks:
         network_dict = copy.deepcopy(compose_networks)
@@ -225,6 +231,10 @@ def op_compose(
     docker_dict = reduce(deep_merge, docker_chainmap.maps)
 
     docker_yaml = yaml.dump(docker_dict)
+
+    # Write docker-compose.yaml
+    with open(DOCKER_COMPOSE, mode="w", encoding="utf-8") as fw:
+        fw.write(docker_yaml)
 
     yield Output(
         output_name="compose",
@@ -332,6 +342,7 @@ def op_group_in(
         "constants": In(dict),
         "FEATURE_CONFIG": In(OpenStudioLandscapesConfig),
         "COMPOSE_SCOPE": In(ComposeScope),
+        "DOCKER_COMPOSE": In(pathlib.Path),
     },
     out={
         "env_out": Out(dict),
@@ -343,12 +354,22 @@ def op_env(
     constants: dict,  # pylint: disable=redefined-outer-name
     FEATURE_CONFIG: OpenStudioLandscapesConfig,  # pylint: disable=redefined-outer-name
     COMPOSE_SCOPE: ComposeScope,  # pylint: disable=redefined-outer-name
+    DOCKER_COMPOSE: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
     """
     Provides a Feature with the `env` dict.
     """
 
     env_in = copy.deepcopy(group_in["env"])
+
+    env_in.update(
+        expand_dict_vars(
+            dict_to_expand={
+                "DOCKER_COMPOSE": DOCKER_COMPOSE.as_posix()
+            },
+            kv=env_in,
+        )
+    )
 
     env_in.update(
         expand_dict_vars(
@@ -578,8 +599,6 @@ def op_group_out(
     group_in: dict,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[pathlib.Path] | Output[dict] | Output[str] | Output[list] | AssetMaterialization, None, None]:
 
-    docker_yaml = yaml.dump(compose)
-
     context.log.debug(context.asset_key_for_output("group_out"))
     context.log.debug(context.asset_key_for_output("compose_project_name"))
     context.log.debug(context.selected_output_names)
@@ -615,6 +634,28 @@ def op_group_out(
         "docker_compose",
         "docker-compose.yml",
     )
+
+    # # Convert absolute paths in `include` to
+    # # relative ones
+    # for path_list_include in compose.get("include", {}):
+    #     context.log.info(path_list_include)
+    #
+    #     rel_paths = []
+    #
+    #     for path in path_list_include["path"]:
+    #         context.log.info(path)
+    #
+    #         _rel_path = os.path.relpath(
+    #             path=path,
+    #             start=docker_compose.parent.as_posix(),
+    #         )
+    #         context.log.info(_rel_path)
+    #
+    #         rel_paths.append(_rel_path)
+    #
+    #     path_list_include["path"] = rel_paths
+
+    docker_yaml = yaml.dump(compose)
 
     docker_compose.parent.mkdir(parents=True, exist_ok=True)
 
