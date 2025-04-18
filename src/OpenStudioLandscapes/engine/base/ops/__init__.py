@@ -599,6 +599,8 @@ def op_group_out(
     group_in: dict,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[pathlib.Path] | Output[dict] | Output[str] | Output[list] | AssetMaterialization, None, None]:
 
+    DOCKER_COMPOSE = pathlib.Path(env["DOCKER_COMPOSE"])
+
     context.log.debug(context.asset_key_for_output("group_out"))
     context.log.debug(context.asset_key_for_output("compose_project_name"))
     context.log.debug(context.selected_output_names)
@@ -618,49 +620,8 @@ def op_group_out(
     # {AssetKey(['Compose_default', 'group_out']): 'Compose_default', AssetKey(['Compose_default', 'compose_project_name']): 'Compose_default'}
     context.log.debug(group_names_by_key_dict)
     asset_key_group_out = context.asset_key_for_output("group_out")  # AssetKey(['OpenCue', 'group_out'])
-    group_group_out = group_names_by_key_dict[asset_key_group_out]
 
-    # Todo:
-    #  Maybe there is a better way but it does not matter yet
-    #  as long as there are only AssetKey([PREFIX, KEY]) with
-    #  no sub-prefixes inbetween
-    key_group_out = context.asset_key_for_output("group_out").path[0]
-
-    docker_compose = pathlib.Path(
-        env["DOT_LANDSCAPES"],
-        env.get("LANDSCAPE", "default"),
-        f"{group_group_out}__{key_group_out}",
-        "__".join(context.asset_key_for_output("group_out").path),
-        "docker_compose",
-        "docker-compose.yml",
-    )
-
-    # # Convert absolute paths in `include` to
-    # # relative ones
-    # for path_list_include in compose.get("include", {}):
-    #     context.log.info(path_list_include)
-    #
-    #     rel_paths = []
-    #
-    #     for path in path_list_include["path"]:
-    #         context.log.info(path)
-    #
-    #         _rel_path = os.path.relpath(
-    #             path=path,
-    #             start=docker_compose.parent.as_posix(),
-    #         )
-    #         context.log.info(_rel_path)
-    #
-    #         rel_paths.append(_rel_path)
-    #
-    #     path_list_include["path"] = rel_paths
-
-    docker_yaml = yaml.dump(compose)
-
-    docker_compose.parent.mkdir(parents=True, exist_ok=True)
-
-    with open(docker_compose, mode="w", encoding="utf-8") as fw:
-        fw.write(docker_yaml)
+    docker_compose = DOCKER_COMPOSE
 
     cmd_docker_compose_up = [
         shutil.which("docker"),
@@ -853,7 +814,7 @@ def op_group_out(
             metadata={
                 "__".join(context.asset_key_for_output("group_out").path): MetadataValue.path(docker_compose),
                 "root_dir": MetadataValue.path(docker_compose.parent),
-                "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
+                # "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
                 "scripts": MetadataValue.json(scripts),
             },
         )
