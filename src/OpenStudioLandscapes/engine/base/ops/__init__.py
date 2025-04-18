@@ -126,58 +126,6 @@ def op_group_in(
     )
 
 
-# @op(
-#     name="op_group_in_child",
-#     # ins={
-#     #     # "env_parent": In(dict),
-#     #     "group_out": In(pathlib.Path),
-#     #     # "compose_project_name": In(str),
-#     #     # "cmd_docker_compose_up": In(dict),
-#     # },
-#     out={
-#         "group_in2": Out(dict),
-#     },
-# )
-# def op_group_in_child(
-#     context: OpExecutionContext,
-#     env_parent: dict,  # pylint: disable=redefined-outer-name
-#     group_out: pathlib.Path,  # pylint: disable=redefined-outer-name
-#     # compose_project_name: str,  # pylint: disable=redefined-outer-name
-#     # cmd_docker_compose_up: dict,  # pylint: disable=redefined-outer-name
-#     **kwargs,
-# # ) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
-# ):
-#     """
-#     This is the entry point for a Feature.
-#     Just forwards the data we get from the upstream `group_out` asset.
-#     """
-#
-#     # return None
-#
-#     context.log.debug(env_parent)
-#
-#     yield Output(
-#         output_name="group_in2",
-#         value=env_parent,
-#     )
-#
-#     # metadata = {}
-#     #
-#     # for k, v in group_out.items():
-#     #     try:
-#     #         metadata[k] = MetadataValue.json(v)
-#     #     except Exception:
-#     #         # This is for Non-JSON-Serializable Objects.
-#     #         # Even though a DagsterExecutionStepExecutionError is thrown,
-#     #         # it cannot not be captured here for some reason. Hence, Exception
-#     #         metadata[v.name] = MetadataValue.json(v.value)
-#
-#     yield AssetMaterialization(
-#         asset_key=context.asset_key,
-#         # metadata=metadata,
-#     )
-
-
 @op(
     name="op_env",
     ins={
@@ -304,34 +252,6 @@ def op_constants(
             ): MetadataValue.json(FEATURE_CONFIG),
         },
     )
-
-    # yield Output(
-    #     output_name="FEATURE_CONFIGS",
-    #     value=FEATURE_CONFIGS,
-    # )
-    #
-    # yield AssetMaterialization(
-    #     asset_key=context.asset_key_for_output("FEATURE_CONFIGS"),
-    #     metadata={
-    #         "__".join(
-    #             context.asset_key_for_output("FEATURE_CONFIGS").path
-    #         ): MetadataValue.json(FEATURE_CONFIGS),
-    #     },
-    # )
-
-    # yield Output(
-    #     output_name="DOCKER_USE_CACHE",
-    #     value=DOCKER_USE_CACHE,
-    # )
-    #
-    # yield AssetMaterialization(
-    #     asset_key=context.asset_key_for_output("DOCKER_USE_CACHE"),
-    #     metadata={
-    #         "__".join(
-    #             context.asset_key_for_output("DOCKER_USE_CACHE").path
-    #         ): MetadataValue.bool(DOCKER_USE_CACHE),
-    #     },
-    # )
 
 
 @op(
