@@ -72,6 +72,7 @@ def factory_feature_out(
         # - env_base
         # - constants_base
         # - features
+        # - docker_config
         # to stay in the root level
         # of the dict
         env_base = kwargs["group_in"].pop("env_base")
@@ -80,6 +81,8 @@ def factory_feature_out(
         kwargs["constants_base"] = constants_base
         features = kwargs["group_in"].pop("features")
         kwargs["features"] = features
+        docker_config = kwargs["group_in"].pop("docker_config")
+        kwargs["docker_config"] = docker_config
 
         # Todo
         #  - [ ] replace "group_out" (i.e. with "compose_yaml" or "feature_out")
@@ -584,7 +587,8 @@ def op_docker_compose_graph(
     ins={
         "compose": In(dict),
         "env": In(dict),
-        "group_in": In(dict),
+        # "group_in": In(dict),
+        "docker_config": In(DockerConfig),
     },
     out={
         "group_out": Out(pathlib.Path),
@@ -596,7 +600,8 @@ def op_group_out(
     context: OpExecutionContext,
     compose: dict,  # pylint: disable=redefined-outer-name
     env: dict,  # pylint: disable=redefined-outer-name
-    group_in: dict,  # pylint: disable=redefined-outer-name
+    # group_in: dict,  # pylint: disable=redefined-outer-name
+    docker_config: DockerConfig,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[pathlib.Path] | Output[dict] | Output[str] | Output[list] | AssetMaterialization, None, None]:
 
     DOCKER_COMPOSE = pathlib.Path(env["DOCKER_COMPOSE"])
@@ -605,7 +610,7 @@ def op_group_out(
     context.log.debug(context.asset_key_for_output("compose_project_name"))
     context.log.debug(context.selected_output_names)
 
-    build_base_docker_config: DockerConfig = group_in["docker_config"]
+    build_base_docker_config: DockerConfig = docker_config
     build_base_docker_config_value = build_base_docker_config.value
 
     compose_project_name = f"{env.get('LANDSCAPE', 'default').replace('.', '-')}-{env['COMPOSE_SCOPE']}"
@@ -619,39 +624,36 @@ def op_group_out(
     # Multiple Outputs:
     # {AssetKey(['Compose_default', 'group_out']): 'Compose_default', AssetKey(['Compose_default', 'compose_project_name']): 'Compose_default'}
     context.log.debug(group_names_by_key_dict)
-    asset_key_group_out = context.asset_key_for_output("group_out")  # AssetKey(['OpenCue', 'group_out'])
-
-    docker_compose = DOCKER_COMPOSE
 
     cmd_docker_compose_up = [
         shutil.which("docker"),
         "compose",
         "--file",
-        docker_compose.as_posix(),
+        DOCKER_COMPOSE.as_posix(),
         "--project-name",
         compose_project_name,
         "up",
         "--remove-orphans",
     ]
-    script_cmd_docker_compose_up = docker_compose.parent / "docker_compose_up.sh"
+    script_cmd_docker_compose_up = DOCKER_COMPOSE.parent / "docker_compose_up.sh"
 
     cmd_docker_compose_logs = [
         shutil.which("docker"),
         "compose",
         "--file",
-        docker_compose.as_posix(),
+        DOCKER_COMPOSE.as_posix(),
         "--project-name",
         compose_project_name,
         "logs",
         "--follow",
     ]
-    script_cmd_docker_compose_logs = docker_compose.parent / "docker_compose_logs.sh"
+    script_cmd_docker_compose_logs = DOCKER_COMPOSE.parent / "docker_compose_logs.sh"
 
     cmd_docker_compose_pull_up = [
         shutil.which("docker"),
         "compose",
         "--file",
-        docker_compose.as_posix(),
+        DOCKER_COMPOSE.as_posix(),
         "--project-name",
         compose_project_name,
         "pull",
@@ -659,19 +661,19 @@ def op_group_out(
         "&&",
         *cmd_docker_compose_up,
     ]
-    script_cmd_docker_compose_pull_up = docker_compose.parent / "docker_compose_pull_up.sh"
+    script_cmd_docker_compose_pull_up = DOCKER_COMPOSE.parent / "docker_compose_pull_up.sh"
 
     cmd_docker_compose_down = [
         shutil.which("docker"),
         "compose",
         "--file",
-        docker_compose.as_posix(),
+        DOCKER_COMPOSE.as_posix(),
         "--project-name",
         compose_project_name,
         "down",
         "--remove-orphans",
     ]
-    script_cmd_docker_compose_down = docker_compose.parent / "docker_compose_down.sh"
+    script_cmd_docker_compose_down = DOCKER_COMPOSE.parent / "docker_compose_down.sh"
 
     # Todo
     #  cmd_docker_exec_it = [
@@ -681,7 +683,7 @@ def op_group_out(
     #      "--interactive",
     #      "sh",  # or bash
     #  ]
-    #  script_cmd_docker_exec_it = docker_compose.parent / "docker_exec.sh"
+    #  script_cmd_docker_exec_it = DOCKER_COMPOSE.parent / "docker_exec.sh"
 
     # In case we need to log in to the registry
     if not build_base_docker_config_value["docker_use_local"]:
@@ -742,7 +744,7 @@ def op_group_out(
         encoding="utf-8",
     ) as fw:
         fw.write(docker_script["script"])
-        fw.write(f"{shlex.join(cmd_docker_compose_up)}\n".replace(docker_compose.parent.as_posix(), '"${SCRIPT_DIR}"'))
+        fw.write(f"{shlex.join(cmd_docker_compose_up)}\n".replace(DOCKER_COMPOSE.parent.as_posix(), '"${SCRIPT_DIR}"'))
         fw.write("\n")
         fw.write("exit 0;\n")
     os.chmod(
@@ -757,7 +759,7 @@ def op_group_out(
         encoding="utf-8",
     ) as fw:
         fw.write(docker_script["script"])
-        fw.write(f"{shlex.join(cmd_docker_compose_pull_up)}\n".replace(docker_compose.parent.as_posix(), '"${SCRIPT_DIR}"'))
+        fw.write(f"{shlex.join(cmd_docker_compose_pull_up)}\n".replace(DOCKER_COMPOSE.parent.as_posix(), '"${SCRIPT_DIR}"'))
         fw.write("\n")
         fw.write("exit 0;\n")
     os.chmod(
@@ -772,7 +774,7 @@ def op_group_out(
         encoding="utf-8",
     ) as fw:
         fw.write(docker_script["script"])
-        fw.write(f"{shlex.join(cmd_docker_compose_down)}\n".replace(docker_compose.parent.as_posix(), '"${SCRIPT_DIR}"'))
+        fw.write(f"{shlex.join(cmd_docker_compose_down)}\n".replace(DOCKER_COMPOSE.parent.as_posix(), '"${SCRIPT_DIR}"'))
         fw.write("\n")
         fw.write("exit 0;\n")
     os.chmod(
@@ -787,7 +789,7 @@ def op_group_out(
         encoding="utf-8",
     ) as fw:
         fw.write(docker_script["script"])
-        fw.write(f"{shlex.join(cmd_docker_compose_logs)}\n".replace(docker_compose.parent.as_posix(), '"${SCRIPT_DIR}"'))
+        fw.write(f"{shlex.join(cmd_docker_compose_logs)}\n".replace(DOCKER_COMPOSE.parent.as_posix(), '"${SCRIPT_DIR}"'))
         fw.write("\n")
         fw.write("exit 0;\n")
     os.chmod(
@@ -806,14 +808,14 @@ def op_group_out(
 
         yield Output(
             output_name="group_out",
-            value=docker_compose,
+            value=DOCKER_COMPOSE,
         )
 
         yield AssetMaterialization(
             asset_key=context.asset_key_for_output("group_out"),
             metadata={
-                "__".join(context.asset_key_for_output("group_out").path): MetadataValue.path(docker_compose),
-                "root_dir": MetadataValue.path(docker_compose.parent),
+                "__".join(context.asset_key_for_output("group_out").path): MetadataValue.path(DOCKER_COMPOSE),
+                "root_dir": MetadataValue.path(DOCKER_COMPOSE.parent),
                 # "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
                 "scripts": MetadataValue.json(scripts),
             },

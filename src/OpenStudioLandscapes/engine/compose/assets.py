@@ -1,7 +1,7 @@
 import os
 import copy
 import pathlib
-from typing import Generator, MutableMapping, Any
+from typing import Generator, MutableMapping, Any, Union
 
 import yaml
 from dagster import (
@@ -25,6 +25,7 @@ from OpenStudioLandscapes.engine.base.ops import (
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.discovery.discovery import *
 from OpenStudioLandscapes.engine.enums import *
+from OpenStudioLandscapes.engine.utils import *
 
 
 # @multi_asset(
@@ -85,37 +86,43 @@ from OpenStudioLandscapes.engine.enums import *
 @asset(
     **ASSET_HEADER_COMPOSE,
     ins={
-        "group_in": AssetIn(AssetKey([*KEY_BASE, "group_out"])),
-        "constants_compose": AssetIn(AssetKey([*ASSET_HEADER_COMPOSE['key_prefix'], "constants_compose"])),
-        "features_in": AssetIn(AssetKey([*ASSET_HEADER_COMPOSE['key_prefix'], "features_in"])),
+        "env_base": AssetIn(AssetKey([*ASSET_HEADER_COMPOSE['key_prefix'], "env_base"])),
+        # "constants_compose": AssetIn(AssetKey([*ASSET_HEADER_COMPOSE['key_prefix'], "constants_compose"])),
+        # "features_in": AssetIn(AssetKey([*ASSET_HEADER_COMPOSE['key_prefix'], "features_in"])),
+        "DOCKER_COMPOSE": AssetIn(AssetKey([*ASSET_HEADER_COMPOSE['key_prefix'], "DOCKER_COMPOSE"])),
     },
-    # deps=[
-    #     AssetKey(
-    #         [*ASSET_HEADER_COMPOSE['key_prefix'], "constants_compose"]
-    #     )
-    # ],
 )
 def env(
     context: AssetExecutionContext,
-    group_in: dict,
-    constants_compose: dict,
-    features_in: dict,
+    env_base: dict,
+    # constants_compose: dict,
+    # features_in: dict,
+    DOCKER_COMPOSE: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
 
-    ret = group_in.get("env", {})
+    env_in = copy.deepcopy(env_base)
 
-    ret.update(
+    env_in.update(
+        expand_dict_vars(
+            dict_to_expand={
+                "DOCKER_COMPOSE": DOCKER_COMPOSE.as_posix()
+            },
+            kv=env_in,
+        )
+    )
+
+    env_in.update(
         {
             "COMPOSE_SCOPE": ComposeScope.DEFAULT,
         }
     )
 
-    yield Output(ret)
+    yield Output(env_in)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(ret),
+            "__".join(context.asset_key.path): MetadataValue.json(env_in),
         },
     )
 
@@ -150,6 +157,32 @@ def env_base(
     )
 
 
+@asset(
+    **ASSET_HEADER_COMPOSE,
+    ins={
+        "features_in": AssetIn(AssetKey([*ASSET_HEADER_COMPOSE['key_prefix'], "features_in"])),
+    },
+)
+def docker_config(
+    context: AssetExecutionContext,
+    features_in: dict,
+) -> Generator[Output[DockerConfig] | AssetMaterialization, None, None]:
+
+    context.log.info(features_in)
+
+    _docker_config: DockerConfig = features_in.pop("docker_config")
+    context.log.info(_docker_config)
+
+    yield Output(_docker_config)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            _docker_config.name: MetadataValue.json(_docker_config.value),
+        },
+    )
+
+
 # Dynamic inputs based on the imported
 # third party code locations
 ins = {}
@@ -174,70 +207,13 @@ for i in IMPORTED_FEATURES:
         "env": AssetIn(
             AssetKey([*KEY_COMPOSE, "env"]),
         ),
-        **ins,
-    },
-)
-def compose(
-    context: AssetExecutionContext,
-    env: dict,  # pylint: disable=redefined-outer-name
-    **kwargs,
-) -> Generator[
-    Output[dict[str, list[dict[str, list]]]] | AssetMaterialization, None, None
-]:
-    """ """
-
-    context.log.info(kwargs)
-
-    _group_in = []
-
-    docker_compose = pathlib.PurePosixPath(
-        env["DOT_LANDSCAPES"],
-        env.get("LANDSCAPE", "default"),
-        f"{GROUP_COMPOSE_WORKER}__{'__'.join(KEY_COMPOSE_WORKER)}",
-        "__".join(context.asset_key.path),
-        "docker_compose",
-        "docker-compose.yml",
-    )
-
-    for v in kwargs.values():
-        _rel_path = os.path.relpath(
-            path=v.as_posix(),
-            start=docker_compose.parent.as_posix(),
-        )
-        rel_path = pathlib.Path(_rel_path)
-
-        _group_in.append(rel_path)
-
-    docker_dict = {
-        "include": [{"path": [i.as_posix()]} for i in _group_in],
-    }
-
-    docker_yaml = yaml.dump(docker_dict)
-
-    yield Output(docker_dict)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
-            "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
-        },
-    )
-
-
-@asset(
-    **ASSET_HEADER_COMPOSE,
-    ins={
-        "env": AssetIn(
-            AssetKey([*KEY_COMPOSE, "env"]),
-        ),
         "features_in": AssetIn(
             AssetKey([*KEY_COMPOSE, "features_in"]),
         ),
-        # **ins,
+        # **feature_ins,
     },
 )
-def compose_feature(
+def compose(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
     features_in: dict,  # pylint: disable=redefined-outer-name
@@ -247,43 +223,73 @@ def compose_feature(
 ]:
     """ """
 
-    context.log.info(features_in)
+    features_in.pop("env_base", {})
+    features_in.pop("docker_config", {})
+    features_in.pop("docker_image", {})
 
-    _group_in = []
+    DOCKER_COMPOSE = pathlib.Path(env["DOCKER_COMPOSE"])
+    DOCKER_COMPOSE.parent.mkdir(parents=True, exist_ok=True)
 
-    docker_compose = pathlib.PurePosixPath(
-        env["DOT_LANDSCAPES"],
-        env.get("LANDSCAPE", "default"),
-        f"{GROUP_COMPOSE_WORKER}__{'__'.join(KEY_COMPOSE_WORKER)}",
-        "__".join(context.asset_key.path),
-        "docker_compose",
-        "docker-compose.yml",
-    )
+    compose_files = []
 
-    # env_base = features_in.pop("env_base", {})
-    # constants_base = features_in.pop("constants_base", {})
+    for feature, data in features_in.items():
+        context.log.info(features_in[feature])
+        compose_files.append(features_in[feature]["compose_yaml"])
 
-    for k in features_in.keys():
-        v = features_in[k].get("compose", {})
+    # context.log.info(kwargs)
 
-        context.log.info(v)
+    # _group_in = []
 
-    context.log.info(features_in)
+    # docker_compose = pathlib.PurePosixPath(
+    #     env["DOT_LANDSCAPES"],
+    #     env.get("LANDSCAPE", "default"),
+    #     f"{GROUP_COMPOSE_WORKER}__{'__'.join(KEY_COMPOSE_WORKER)}",
+    #     "__".join(context.asset_key.path),
+    #     "docker_compose",
+    #     "docker-compose.yml",
+    # )
 
-    docker_dict = {
-        "include": [{"path": [i.as_posix()]} for i in _group_in],
-        # "include": [{"path": [i]} for i in _group_in],
+    # Convert absolute paths in `include` to
+    # relative ones
+    # DOCKER_COMPOSE = pathlib.Path(env["DOCKER_COMPOSE"])
+    # DOCKER_COMPOSE.parent.mkdir(parents=True, exist_ok=True)
+
+    rel_paths = []
+    dot_landscapes = pathlib.Path(env["DOT_LANDSCAPES"])
+
+    for path in compose_files:
+        # path = path_.as_posix()
+        start_dir = DOCKER_COMPOSE.parent
+
+        levels = start_dir.as_posix().split(dot_landscapes.as_posix())[-1].split(os.sep)[1:]
+        context.log.info(levels)
+        context.log.info(path.split(os.sep)[1:][6:])
+        _rel_path = "../" * len(levels) + "/".join(path.split(os.sep)[1:][6:])
+        context.log.info(_rel_path)
+
+        rel_paths.append(_rel_path)
+
+    docker_dict_include = {
+        "include": [
+            {
+                "path": rel_paths,
+            },
+        ],
     }
 
-    docker_yaml = yaml.dump(docker_dict)
+    docker_yaml_include = yaml.dump(docker_dict_include)
 
-    yield Output(docker_dict)
+    # Write docker-compose.yaml
+    with open(DOCKER_COMPOSE, mode="w", encoding="utf-8") as fw:
+        fw.write(docker_yaml_include)
+
+    yield Output(docker_dict_include)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
-            "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
+            "__".join(context.asset_key.path): MetadataValue.json(docker_dict_include),
+            "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml_include}\n```"),
         },
     )
 
@@ -308,21 +314,24 @@ def features_in(
     context.log.info(kwargs)
 
     env_base = group_out_base["env_base"]
+    docker_config: DockerConfig = group_out_base["docker_config"]
 
-    # docker_compose_yaml: dict[str, pathlib.Path] = {}
     docker_compose_yaml: dict[str, str] = {}
     docker_compose: dict[str, Any] = {}
+    # docker_config: Union[DockerConfig | None] = None
 
     for k, v in kwargs.items():
         # remove
         # - env_base
         # - constants_base
         # - features
+        # - docker_config
         # from kwargs dicts
         for d in [
             "env_base",
             "constants_base",
-            "features"
+            "features",
+            "docker_config",
         ]:
             kwargs[k].pop(d)
 
@@ -330,6 +339,7 @@ def features_in(
         docker_compose[k] = str(kwargs[k]["compose"])
 
     kwargs["env_base"] = env_base
+    kwargs["docker_config"] = docker_config
 
     metadata = {}
 
@@ -368,32 +378,16 @@ def features_in(
     )
 
 
-# group_in = AssetsDefinition.from_op(
-#     op_group_in,
-#     can_subset=False,
-#     group_name=ASSET_HEADER_COMPOSE["group_name"],
-#     # This can be deceiving: Prefixes everything on top of all
-#     # other Prefixes
-#     # key_prefix=ASSET_HEADER["key_prefix"],
-#     keys_by_input_name=feature_ins,
-#     # keys_by_input_name={
-#     #     "group_out": AssetKey([*KEY_BASE, "group_out"]),
-#     # },
-#     keys_by_output_name={
-#         "group_in": AssetKey([*ASSET_HEADER_COMPOSE["key_prefix"], "group_in"]),
-#     },
-# )
-
-
 group_out = AssetsDefinition.from_op(
     op_group_out,
     can_subset=True,
     group_name=GROUP_COMPOSE,
     key_prefix=KEY_COMPOSE,
     keys_by_input_name={
-        "compose": AssetKey([*KEY_COMPOSE, "compose"]),
-        "env": AssetKey([*KEY_COMPOSE, "env"]),
-        "group_in": AssetKey([*KEY_BASE, "group_out"]),
+        "compose": AssetKey([*ASSET_HEADER_COMPOSE["key_prefix"], "compose"]),
+        "env": AssetKey([*ASSET_HEADER_COMPOSE["key_prefix"], "env"]),
+        # "group_in": AssetKey([*KEY_BASE, "group_out"]),
+        "docker_config": AssetKey([*ASSET_HEADER_COMPOSE["key_prefix"], "docker_config"]),
     },
 )
 
@@ -403,7 +397,7 @@ docker_compose_graph = AssetsDefinition.from_op(
     group_name=GROUP_COMPOSE,
     key_prefix=KEY_COMPOSE,
     keys_by_input_name={
-        "group_out": AssetKey([*KEY_COMPOSE, "group_out"]),
-        "compose_project_name": AssetKey([*KEY_COMPOSE, "compose_project_name"]),
+        "group_out": AssetKey([*ASSET_HEADER_COMPOSE["key_prefix"], "group_out"]),
+        "compose_project_name": AssetKey([*ASSET_HEADER_COMPOSE["key_prefix"], "compose_project_name"]),
     },
 )
