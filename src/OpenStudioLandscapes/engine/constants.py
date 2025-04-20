@@ -135,18 +135,18 @@ FEATURES: dict[str, dict[str, bool | str | ComposeScope | OpenStudioLandscapesCo
     # #     "compose_scope": ComposeScope.DEFAULT,
     # #     "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     # # },
-    # "OpenStudioLandscapes-SESI_gcc_9_3_Houdini_20": {
-    #     "enabled": True,
-    #     "module": "OpenStudioLandscapes.SESI_gcc_9_3_Houdini_20.definitions",
-    #     "compose_scope": ComposeScope.LICENSE_SERVER,
-    #     "feature_config": OpenStudioLandscapesConfig.DEFAULT,
-    # },
-    # "OpenStudioLandscapes-NukeRLM_8": {
-    #     "enabled": True,
-    #     "module": "OpenStudioLandscapes.NukeRLM_8.definitions",
-    #     "compose_scope": ComposeScope.LICENSE_SERVER,
-    #     "feature_config": OpenStudioLandscapesConfig.DEFAULT,
-    # },
+    "OpenStudioLandscapes-SESI_gcc_9_3_Houdini_20": {
+        "enabled": True,
+        "module": "OpenStudioLandscapes.SESI_gcc_9_3_Houdini_20.definitions",
+        "compose_scope": ComposeScope.LICENSE_SERVER,
+        "feature_config": OpenStudioLandscapesConfig.DEFAULT,
+    },
+    "OpenStudioLandscapes-NukeRLM_8": {
+        "enabled": True,
+        "module": "OpenStudioLandscapes.NukeRLM_8.definitions",
+        "compose_scope": ComposeScope.LICENSE_SERVER,
+        "feature_config": OpenStudioLandscapesConfig.DEFAULT,
+    },
     # # "OpenStudioLandscapes-OpenCue": {
     # #     "enabled": False,
     # #     # error: no health check configured

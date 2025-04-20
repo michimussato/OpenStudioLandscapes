@@ -555,6 +555,11 @@ def op_docker_compose_graph(
 def op_group_out(
     context: OpExecutionContext,
     # Todo: remove unused
+    # Todo: remove unused
+    # Todo: remove unused
+    # Todo: remove unused
+    # Todo: remove unused
+    # Todo: remove unused
     compose: dict,  # pylint: disable=redefined-outer-name
     env: dict,  # pylint: disable=redefined-outer-name
     # group_in: dict,  # pylint: disable=redefined-outer-name
@@ -562,6 +567,9 @@ def op_group_out(
 ) -> Generator[Output[pathlib.Path] | Output[MutableMapping] | Output[str] | Output[List] | AssetMaterialization, None, None]:
 
     DOCKER_COMPOSE = pathlib.Path(env["DOCKER_COMPOSE"])
+    # Todo:
+    #  - [ ] Is this necessary here?
+    DOCKER_COMPOSE.parent.mkdir(parents=True, exist_ok=True)
 
     context.log.debug(context.asset_key_for_output("group_out"))
     context.log.debug(context.asset_key_for_output("compose_project_name"))

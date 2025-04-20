@@ -1,8 +1,9 @@
+import copy
 import os
 import pathlib
 import shlex
 import shutil
-from typing import Generator, List, MutableMapping
+from typing import Generator, List, MutableMapping, Any
 
 import yaml
 from dagster import (
@@ -29,6 +30,7 @@ from OpenStudioLandscapes.Deadline_10_2_Worker.constants import ASSET_HEADER as 
 # Dynamic inputs based on the imported
 # third party code locations
 ins = {}
+feature_ins = {}
 for i in IMPORTED_FEATURES:
     # ex: module = "OpenStudioLandscapes.Ayon.definitions"
     module = i["module"]
@@ -37,6 +39,7 @@ for i in IMPORTED_FEATURES:
         split = module.split(".")
         key = split[1]  # key = "Ayon"
         ins[f"{split[0]}_{split[1]}"] = AssetIn(AssetKey([key, "group_out"]))
+        feature_ins[f"{split[0]}_{split[1]}"] = AssetIn(AssetKey([key, "feature_out"]))
 
 
 if bool(ins):
@@ -133,6 +136,88 @@ if bool(ins):
             metadata={
                 "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
                 "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
+            },
+        )
+
+
+    @asset(
+        **ASSET_HEADER_COMPOSE_WORKER,
+        ins={
+            "group_out_base": AssetIn(AssetKey([*ASSET_HEADER_BASE["key_prefix"], "group_out"])),
+            **feature_ins,
+        },
+    )
+    def features_in(
+        context: AssetExecutionContext,
+        group_out_base: dict,  # pylint: disable=redefined-outer-name
+        **kwargs,
+    ) -> Generator[
+        Output[MutableMapping[str, List[MutableMapping[str, List]]]] | AssetMaterialization, None, None
+    ]:
+        """ """
+
+        context.log.info(kwargs)
+
+        env_base = group_out_base["env_base"]
+        docker_config: DockerConfig = group_out_base["docker_config"]
+
+        docker_compose_yaml: MutableMapping[str, str] = {}
+        docker_compose: MutableMapping[str, Any] = {}
+
+        for k, v in kwargs.items():
+            # remove
+            # - env_base
+            # - constants_base
+            # - features
+            # - docker_config
+            # from kwargs dicts
+            for d in [
+                "env_base",
+                "constants_base",
+                "features",
+                "docker_config",
+            ]:
+                kwargs[k].pop(d)
+
+            docker_compose_yaml[k] = str(kwargs[k]["compose_yaml"])
+            docker_compose[k] = str(kwargs[k]["compose"])
+
+        kwargs["env_base"] = env_base
+        kwargs["docker_config"] = docker_config
+
+        metadata = {}
+
+        out_ = copy.deepcopy(kwargs)
+
+        # JSON cannot serialize certain types
+        # out of the box. This makes sure that
+        # MetadataValue.json receives only
+        # serializable input.
+        def _serialize(d):
+            for k_, v_ in d.items():
+                if isinstance(v_, MutableMapping):
+                    _serialize(v_)
+                elif isinstance(v_, pathlib.PosixPath):
+                    d[k_] = v_.as_posix()
+                else:
+                    d[k_] = str(v_)
+
+        _serialize(out_)
+
+        for k, v in out_.items():
+            context.log.warning(k)
+            context.log.warning(v)
+            metadata[k] = MetadataValue.json(v)
+
+        yield Output(kwargs)
+
+        yield AssetMaterialization(
+            asset_key=context.asset_key,
+            metadata={
+                "__".join(context.asset_key.path): MetadataValue.json(out_),
+                "docker_compose_yaml": MetadataValue.json(docker_compose_yaml),
+                "docker_compose": MetadataValue.json(docker_compose),
+                **metadata,
             },
         )
 
