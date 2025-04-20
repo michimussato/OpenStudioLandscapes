@@ -105,12 +105,12 @@ FEATURES: dict[str, dict[str, bool | str | ComposeScope | OpenStudioLandscapesCo
         "compose_scope": ComposeScope.DEFAULT,
         "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
-    # "OpenStudioLandscapes-Dagster": {
-    #     "enabled": True,
-    #     "module": "OpenStudioLandscapes.Dagster.definitions",
-    #     "compose_scope": ComposeScope.DEFAULT,
-    #     "feature_config": OpenStudioLandscapesConfig.DEFAULT,
-    # },
+    "OpenStudioLandscapes-Dagster": {
+        "enabled": True,
+        "module": "OpenStudioLandscapes.Dagster.definitions",
+        "compose_scope": ComposeScope.DEFAULT,
+        "feature_config": OpenStudioLandscapesConfig.DEFAULT,
+    },
     # "OpenStudioLandscapes-Deadline_10_2": {
     #     "enabled": True,
     #     "module": "OpenStudioLandscapes.Deadline_10_2.definitions",
