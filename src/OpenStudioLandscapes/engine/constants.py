@@ -111,12 +111,12 @@ FEATURES: dict[str, dict[str, bool | str | ComposeScope | OpenStudioLandscapesCo
         "compose_scope": ComposeScope.DEFAULT,
         "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
-    # "OpenStudioLandscapes-Deadline_10_2": {
-    #     "enabled": True,
-    #     "module": "OpenStudioLandscapes.Deadline_10_2.definitions",
-    #     "compose_scope": ComposeScope.DEFAULT,
-    #     "feature_config": OpenStudioLandscapesConfig.DEFAULT,
-    # },
+    "OpenStudioLandscapes-Deadline_10_2": {
+        "enabled": True,
+        "module": "OpenStudioLandscapes.Deadline_10_2.definitions",
+        "compose_scope": ComposeScope.DEFAULT,
+        "feature_config": OpenStudioLandscapesConfig.DEFAULT,
+    },
     # "OpenStudioLandscapes-Deadline_10_2_Worker": {
     #     "enabled": True,
     #     "module": "OpenStudioLandscapes.Deadline_10_2_Worker.definitions",
