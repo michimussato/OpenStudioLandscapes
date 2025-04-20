@@ -123,12 +123,12 @@ FEATURES: dict[str, dict[str, bool | str | ComposeScope | OpenStudioLandscapesCo
     #     "compose_scope": ComposeScope.WORKER,
     #     "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     # },
-    # "OpenStudioLandscapes-filebrowser": {
-    #     "enabled": True,
-    #     "module": "OpenStudioLandscapes.filebrowser.definitions",
-    #     "compose_scope": ComposeScope.DEFAULT,
-    #     "feature_config": OpenStudioLandscapesConfig.DEFAULT,
-    # },
+    "OpenStudioLandscapes-filebrowser": {
+        "enabled": True,
+        "module": "OpenStudioLandscapes.filebrowser.definitions",
+        "compose_scope": ComposeScope.DEFAULT,
+        "feature_config": OpenStudioLandscapesConfig.DEFAULT,
+    },
     # # "OpenStudioLandscapes-Grafana": {
     # #     "enabled": False,
     # #     "module": "OpenStudioLandscapes.Grafana.definitions",
