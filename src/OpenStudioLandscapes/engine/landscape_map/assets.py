@@ -2,7 +2,7 @@ import shutil
 import subprocess
 import base64
 import pathlib
-from typing import Generator
+from typing import Generator, MutableMapping
 
 import pydot
 
@@ -42,7 +42,7 @@ if bool(ins):
         **ASSET_HEADER_LANDSCAPE_MAP,
         ins={
             "group_out": AssetIn(
-                AssetKey([*KEY_BASE, "group_out"]),
+                AssetKey([*ASSET_HEADER_BASE["key_prefix"], "group_out"]),
             ),
             **ins
         },
@@ -51,7 +51,7 @@ if bool(ins):
         context: AssetExecutionContext,
         group_out: dict,  # pylint: disable=redefined-outer-name
         **kwargs,
-    ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
+    ) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
 
         context.log.debug(kwargs)
 
@@ -60,7 +60,7 @@ if bool(ins):
         landscape_packed_out = pathlib.Path(
             env["DOT_LANDSCAPES"],
             env.get("LANDSCAPE", "default"),
-            f"{GROUP_LANDSCAPE_MAP}__{'__'.join(KEY_LANDSCAPE_MAP)}",
+            f"{ASSET_HEADER_LANDSCAPE_MAP['group_name']}__{'__'.join(ASSET_HEADER_LANDSCAPE_MAP['key_prefix'])}",
             "__".join(context.asset_key.path),
             "landscape_map_gvpacked.dot",
         )
@@ -138,7 +138,6 @@ if bool(ins):
             metadata={
                 "svg": MetadataValue.md(svg_md),
                 "__".join(context.asset_key.path): MetadataValue.json(str(graph)),
-                # "cmd": MetadataValue.path(cmd_list_to_str(cmd)),
                 "svg_path": MetadataValue.path(svg),
                 "png_path": MetadataValue.path(png),
                 "cmd": MetadataValue.path(" ".join(cmd)),

@@ -58,16 +58,6 @@ class DockerRegistry(enum.StrEnum):
     LOCAL_MINIBOSS = os.environ.get("IP_MASTER", "localhost")
 
 
-# class RegistryCredentials(enum.Enum):
-#     # Example:
-#     # GIT_HUB_LOGIN1 = {
-#     #     "registry_type": DockerRegistry.GIT_HUB,
-#     #     "registry_username": _secrets.get(""),
-#     #     "registry_password": _secrets.get(""),
-#     # }
-#     pass
-
-
 class DockerRepositoryType(enum.StrEnum):
     PUBLIC = "public"
     PRIVATE = "private"

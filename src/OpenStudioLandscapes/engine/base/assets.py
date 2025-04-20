@@ -3,7 +3,7 @@ import shutil
 import textwrap
 import time
 import urllib.parse
-from typing import Generator
+from typing import Generator, MutableMapping, List
 
 from dagster import (
     AssetExecutionContext,
@@ -26,7 +26,7 @@ from OpenStudioLandscapes.engine.utils.docker.whales import *
 )
 def pip_packages(
     context: AssetExecutionContext,
-) -> Generator[Output[list] | AssetMaterialization, None, None]:
+) -> Generator[Output[List] | AssetMaterialization, None, None]:
     """ """
 
     _pip_packages: list = [
@@ -51,7 +51,7 @@ def pip_packages(
 )
 def apt_packages(
     context: AssetExecutionContext,
-) -> Generator[Output[dict] | AssetMaterialization, None, None]:
+) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
     """ """
 
     _apt_packages = {}
@@ -101,10 +101,10 @@ def apt_packages(
 @asset(
     **ASSET_HEADER_BASE,
     ins={
-        "env": AssetIn(AssetKey([*KEY_BASE_ENV, "env"])),
-        "docker_config": AssetIn(AssetKey([*KEY_BASE_ENV, "DOCKER_CONFIG"])),
-        "apt_packages": AssetIn(AssetKey([*KEY_BASE, "apt_packages"])),
-        "pip_packages": AssetIn(AssetKey([*KEY_BASE, "pip_packages"])),
+        "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
+        "docker_config": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "DOCKER_CONFIG"])),
+        "apt_packages": AssetIn(AssetKey([*ASSET_HEADER_BASE["key_prefix"], "apt_packages"])),
+        "pip_packages": AssetIn(AssetKey([*ASSET_HEADER_BASE["key_prefix"], "pip_packages"])),
     },
 )
 def build_docker_image(
@@ -119,7 +119,7 @@ def build_docker_image(
     docker_file = pathlib.Path(
         env["DOT_LANDSCAPES"],
         env.get("LANDSCAPE", "default"),
-        f"{GROUP_BASE}__{'__'.join(KEY_BASE)}",
+        f"{ASSET_HEADER_BASE['group_name']}__{'__'.join(ASSET_HEADER_BASE['key_prefix'])}",
         "__".join(context.asset_key.path),
         "Dockerfiles",
         "Dockerfile",
@@ -253,12 +253,12 @@ def build_docker_image(
         "group_out": "base",
     },
     ins={
-        "env": AssetIn(AssetKey([*KEY_BASE_ENV, "env"])),
-        "constants_base": AssetIn(AssetKey([*KEY_BASE_ENV, "constants_base"])),
-        "docker_config": AssetIn(AssetKey([*KEY_BASE_ENV, "DOCKER_CONFIG"])),
-        "features": AssetIn(AssetKey([*KEY_BASE_ENV, "features"])),
+        "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
+        "constants_base": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "constants_base"])),
+        "docker_config": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "DOCKER_CONFIG"])),
+        "features": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "features"])),
         "build_docker_image": AssetIn(
-            AssetKey([*KEY_BASE, "build_docker_image"]),
+            AssetKey([*ASSET_HEADER_BASE["key_prefix"], "build_docker_image"]),
         ),
     },
 )

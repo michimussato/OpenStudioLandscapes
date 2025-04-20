@@ -1,5 +1,5 @@
 __all__ = [
-    "compile_cmds",
+    # "compile_cmds",
     "cmd_list_to_str",
     "get_pip_install_str",
     "get_apt_install_str",
@@ -20,9 +20,9 @@ __all__ = [
 
 import pathlib
 import shlex
-import shutil
+# import shutil
 import select
-import typing
+from typing import MutableMapping, List, Any, Optional, IO
 
 import git
 from dagster import MetadataValue, AssetExecutionContext
@@ -32,67 +32,67 @@ from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.exceptions import ComposeScopeException
 
 
-def compile_cmds(
-    docker_file,
-    tag,
-    volumes: [list, None] = None,
-    networks: [list, None] = None,
-) -> dict[str, MetadataValue]:
-
-    if volumes is None:
-        volumes = []
-
-    if networks is None:
-        networks = []
-
-    _volumes = " ".join([f"--volume {i}" for i in volumes])
-    _networks = " ".join([f"--network {i}" for i in networks])
-
-    cmd_docker_run = [
-        shutil.which("docker"),
-        "run",
-        "--rm",
-        "--interactive",
-        "--tty",
-        "--entrypoint",
-        "bash",
-        tag,
-    ]
-
-    if bool(_volumes):
-        cmd_docker_run.insert(2, _volumes)
-
-    if bool(_networks):
-        cmd_docker_run.insert(2, _networks)
-
-    cmd_docker_build = [
-        shutil.which("docker"),
-        "build",
-        "--tag",
-        tag,
-        docker_file.parent.as_posix(),
-    ]
-
-    if not DOCKER_USE_CACHE:
-        cmd_docker_build.append("--no-cache")
-
-    metadata_values = {
-        "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)),
-        "cmd_docker_build": MetadataValue.path(cmd_list_to_str(cmd_docker_build)),
-    }
-
-    return metadata_values
+# def compile_cmds(
+#     docker_file,
+#     tag,
+#     volumes: [List, None] = None,
+#     networks: [List, None] = None,
+# ) -> MutableMapping[str, MetadataValue]:
+#
+#     if volumes is None:
+#         volumes = []
+#
+#     if networks is None:
+#         networks = []
+#
+#     _volumes = " ".join([f"--volume {i}" for i in volumes])
+#     _networks = " ".join([f"--network {i}" for i in networks])
+#
+#     cmd_docker_run = [
+#         shutil.which("docker"),
+#         "run",
+#         "--rm",
+#         "--interactive",
+#         "--tty",
+#         "--entrypoint",
+#         "bash",
+#         tag,
+#     ]
+#
+#     if bool(_volumes):
+#         cmd_docker_run.insert(2, _volumes)
+#
+#     if bool(_networks):
+#         cmd_docker_run.insert(2, _networks)
+#
+#     cmd_docker_build = [
+#         shutil.which("docker"),
+#         "build",
+#         "--tag",
+#         tag,
+#         docker_file.parent.as_posix(),
+#     ]
+#
+#     if not DOCKER_USE_CACHE:
+#         cmd_docker_build.append("--no-cache")
+#
+#     metadata_values = {
+#         "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)),
+#         "cmd_docker_build": MetadataValue.path(cmd_list_to_str(cmd_docker_build)),
+#     }
+#
+#     return metadata_values
 
 
 def cmd_list_to_str(
-    cmd_list: list[str],
+    cmd_list: List[str],
 ) -> str:
     cmd_str = " ".join(shlex.quote(s) for s in cmd_list)
     return cmd_str
 
 
 def get_pip_install_str(
-    pip_install_packages: list[str],
+    pip_install_packages: List[str],
 ) -> str:
     pip_install_str: str = str()
     for pip_package in pip_install_packages:
@@ -105,7 +105,7 @@ def get_pip_install_str(
 
 
 def get_apt_install_str(
-    apt_install_packages: list[str],
+    apt_install_packages: List[str],
 ) -> str:
     apt_install_str: str = str()
     for apt_package in apt_install_packages:
@@ -119,7 +119,7 @@ def get_apt_install_str(
 
 def get_copy_str(
     temp_dir: str,
-    copy_packages: dict[str, str],
+    copy_packages: MutableMapping[str, str],
     mode: [int | None] = None,
 ) -> str:
     # Todo:
@@ -139,7 +139,7 @@ def get_copy_str(
 
 
 def get_wget_str(
-    wget_packages: dict[str, str],
+    wget_packages: MutableMapping[str, str],
     chmod_plus_x: bool = True,
 ) -> str:
     wget_str: str = str()
@@ -192,25 +192,18 @@ def get_image_name(
     return "_".join(context.asset_key.path).lower()
 
 
-# def get_compose_network(
-#     network_dict: dict,
-#     network_mode: ComposeNetworkMode = ComposeNetworkMode.DEFAULT,
-# ) -> NotImplementedError:
-#     raise NotImplementedError
-
-
 def parse_docker_image_path(
     *,
-    docker_config: [DockerConfig, dict],
+    docker_config: [DockerConfig, MutableMapping],
     prepend_registry: bool = True,
 ) -> str:
 
     image_path = []
 
     if isinstance(docker_config, DockerConfig):
-        _docker_config: dict = docker_config.value
-    elif isinstance(docker_config, dict):
-        _docker_config: dict = docker_config
+        _docker_config: MutableMapping = docker_config.value
+    elif isinstance(docker_config, MutableMapping):
+        _docker_config: MutableMapping = docker_config
     else:
         raise TypeError
 
@@ -238,15 +231,15 @@ def parse_docker_image_path(
 def iterate_fds(
         *,
         handles: tuple[
-            typing.Optional[typing.IO[bytes]],
-            typing.Optional[typing.IO[bytes]],
+            Optional[IO[bytes]],
+            Optional[IO[bytes]],
         ],
         labels: tuple[str, str],
         functions: tuple[
             callable, callable,
         ],
         live_print=False,
-) -> dict[str, bytes]:
+) -> MutableMapping[str, bytes]:
     """
     Can be used to live-feed stdout and stderr of a
     subprocess.Popen.stdout/stderr stream to an
@@ -297,7 +290,7 @@ def iterate_fds(
 
     """
 
-    ret = dict()
+    ret = {}
 
     for label in labels:
         ret[label] = bytes()
@@ -329,7 +322,7 @@ def iterate_fds(
 
 def get_compose_scope(
         context: AssetExecutionContext,
-        features: dict,
+        features: MutableMapping,
         name: str,
 ) -> ComposeScope:
 
@@ -356,9 +349,9 @@ def get_compose_scope(
 
 def get_feature_config(
         context: AssetExecutionContext,
-        features: dict,
+        features: MutableMapping,
         name: str,
-) -> [OpenStudioLandscapesConfig, None]:
+) -> Any | None:
 
     feature_keys = features.keys()
 
@@ -381,9 +374,9 @@ def get_feature_config(
 
 
 def expand_dict_vars(
-        dict_to_expand: dict,
-        kv: dict,
-) -> dict:
+        dict_to_expand: MutableMapping,
+        kv: MutableMapping,
+) -> MutableMapping:
     """
     This helper expands key-value pairs into the
     string.format()-formatted value of a dictionary.

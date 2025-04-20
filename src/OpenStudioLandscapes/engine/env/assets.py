@@ -3,7 +3,7 @@ import pathlib
 import socket
 import uuid
 from datetime import datetime
-from typing import Generator
+from typing import Generator, MutableMapping
 
 from dagster import (
     AssetExecutionContext,
@@ -45,7 +45,7 @@ def git_root(
 )
 def landscape_id(
     context: AssetExecutionContext,
-) -> Generator[Output[dict[str, str]] | AssetMaterialization, None, None]:
+) -> Generator[Output[MutableMapping[str, str]] | AssetMaterialization, None, None]:
 
     now = datetime.now()
 
@@ -68,7 +68,7 @@ def landscape_id(
 )
 def secrets(
     context: AssetExecutionContext,
-) -> Generator[Output[dict] | AssetMaterialization, None, None]:
+) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
     try:
         from __SECRET__.secrets import secrets as _secrets
     except ModuleNotFoundError as e:
@@ -92,7 +92,7 @@ def secrets(
     **ASSET_HEADER_BASE_ENV,
     ins={
         "git_root": AssetIn(
-            AssetKey([*KEY_BASE_ENV, "git_root"]),
+            AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "git_root"]),
         ),
     },
 )
@@ -121,7 +121,7 @@ def dot_landscapes(
     **ASSET_HEADER_BASE_ENV,
     ins={
         "git_root": AssetIn(
-            AssetKey([*KEY_BASE_ENV, "git_root"]),
+            AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "git_root"]),
         ),
     },
 )
@@ -160,12 +160,12 @@ def dot_features(
         ),
     },
     ins={
-        "git_root": AssetIn(AssetKey([*KEY_BASE_ENV, "git_root"])),
-        "secrets": AssetIn(AssetKey([*KEY_BASE_ENV, "secrets"])),
-        "landscape_id": AssetIn(AssetKey([*KEY_BASE_ENV, "landscape_id"])),
-        "dot_landscapes": AssetIn(AssetKey([*KEY_BASE_ENV, "dot_landscapes"])),
-        "dot_features": AssetIn(AssetKey([*KEY_BASE_ENV, "dot_features"])),
-        "nfs": AssetIn(AssetKey([*KEY_BASE_ENV, "nfs"])),
+        "git_root": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "git_root"])),
+        "secrets": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "secrets"])),
+        "landscape_id": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "landscape_id"])),
+        "dot_landscapes": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "dot_landscapes"])),
+        "dot_features": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "dot_features"])),
+        "nfs": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "nfs"])),
         "FEATURES": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "FEATURES"])),
     },
 )
@@ -244,7 +244,7 @@ def env(
 )
 def nfs(
     context: AssetExecutionContext,
-) -> Generator[Output[dict] | AssetMaterialization, None, None]:
+) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
     # @formatter:off
     _env: dict = {
         "NFS_ENTRY_POINT": pathlib.Path("/data/share/nfs").as_posix(),

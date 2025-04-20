@@ -2,7 +2,7 @@ import os
 import pathlib
 import shlex
 import shutil
-from typing import Generator
+from typing import Generator, List, MutableMapping
 
 import yaml
 from dagster import (
@@ -23,7 +23,7 @@ from OpenStudioLandscapes.engine.enums import *
 
 # Todo:
 #  - [ ] Find a procedural way to deal with this
-from OpenStudioLandscapes.Deadline_10_2_Worker.constants import KEY as KEY_WORKER
+from OpenStudioLandscapes.Deadline_10_2_Worker.constants import ASSET_HEADER as ASSET_HEADER_WORKER
 
 
 # Dynamic inputs based on the imported
@@ -43,7 +43,7 @@ if bool(ins):
     @asset(
         **ASSET_HEADER_COMPOSE_WORKER,
         ins={
-            "group_in": AssetIn(AssetKey([*KEY_BASE, "group_out"])),
+            "group_in": AssetIn(AssetKey([*ASSET_HEADER_BASE["key_prefix"], "group_out"])),
         },
         deps=[
             AssetKey(
@@ -81,7 +81,7 @@ if bool(ins):
         **ASSET_HEADER_COMPOSE_WORKER,
         ins={
             "env": AssetIn(
-                AssetKey([*KEY_COMPOSE_WORKER, "env"]),
+                AssetKey([*ASSET_HEADER_COMPOSE_WORKER["key_prefix"], "env"]),
             ),
             **ins,
         },
@@ -91,7 +91,7 @@ if bool(ins):
         env: dict,  # pylint: disable=redefined-outer-name
         **kwargs,
     ) -> Generator[
-        Output[dict[str, list[dict[str, list]]]] | AssetMaterialization, None, None
+        Output[MutableMapping[str, List[MutableMapping[str, List]]]] | AssetMaterialization, None, None
     ]:
         """ """
 
@@ -102,7 +102,7 @@ if bool(ins):
         docker_compose = pathlib.PurePosixPath(
             env["DOT_LANDSCAPES"],
             env.get("LANDSCAPE", "default"),
-            f"{GROUP_COMPOSE_WORKER}__{'__'.join(KEY_COMPOSE_WORKER)}",
+            f"{ASSET_HEADER_COMPOSE_WORKER['group_name']}__{'__'.join(ASSET_HEADER_COMPOSE_WORKER['key_prefix'])}",
             "__".join(context.asset_key.path),
             "docker_compose",
             "docker-compose.yml",
@@ -143,16 +143,16 @@ if bool(ins):
         **ASSET_HEADER_COMPOSE_WORKER,
         ins={
             "env": AssetIn(
-                AssetKey([*KEY_COMPOSE_WORKER, "env"]),
+                AssetKey([*ASSET_HEADER_COMPOSE_WORKER["key_prefix"], "env"]),
             ),
             "cmd_docker_compose_up_dict": AssetIn(
-                AssetKey([*KEY_COMPOSE_WORKER, "cmd_docker_compose_up"]),
+                AssetKey([*ASSET_HEADER_COMPOSE_WORKER["key_prefix"], "cmd_docker_compose_up"]),
             ),
             "compose_pulse_runner": AssetIn(
-                AssetKey([*KEY_WORKER, "compose_pulse_runner"]),
+                AssetKey([*ASSET_HEADER_WORKER["key_prefix"], "compose_pulse_runner"]),
             ),
             "compose_worker_runner": AssetIn(
-                AssetKey([*KEY_WORKER, "compose_worker_runner"]),
+                AssetKey([*ASSET_HEADER_WORKER["key_prefix"], "compose_worker_runner"]),
             ),
         },
     )
@@ -281,22 +281,22 @@ if bool(ins):
     group_out = AssetsDefinition.from_op(
         op_group_out,
         can_subset=True,
-        group_name=GROUP_COMPOSE_WORKER,
-        key_prefix=KEY_COMPOSE_WORKER,
+        group_name=ASSET_HEADER_COMPOSE_WORKER["group_name"],
+        key_prefix=ASSET_HEADER_COMPOSE_WORKER["key_prefix"],
         keys_by_input_name={
-            "compose": AssetKey([*KEY_COMPOSE_WORKER, "compose"]),
-            "env": AssetKey([*KEY_COMPOSE_WORKER, "env"]),
-            "group_in": AssetKey([*KEY_BASE, "group_out"]),
+            "compose": AssetKey([*ASSET_HEADER_COMPOSE_WORKER["key_prefix"], "compose"]),
+            "env": AssetKey([*ASSET_HEADER_COMPOSE_WORKER["key_prefix"], "env"]),
+            "group_in": AssetKey([*ASSET_HEADER_BASE["key_prefix"], "group_out"]),
         },
     )
 
 
     docker_compose_graph = AssetsDefinition.from_op(
         op_docker_compose_graph,
-        group_name=GROUP_COMPOSE_WORKER,
-        key_prefix=KEY_COMPOSE_WORKER,
+        group_name=ASSET_HEADER_COMPOSE_WORKER["group_name"],
+        key_prefix=ASSET_HEADER_COMPOSE_WORKER["key_prefix"],
         keys_by_input_name={
-            "group_out": AssetKey([*KEY_COMPOSE_WORKER, "group_out"]),
-            "compose_project_name": AssetKey([*KEY_COMPOSE_WORKER, "compose_project_name"]),
+            "group_out": AssetKey([*ASSET_HEADER_COMPOSE_WORKER["key_prefix"], "group_out"]),
+            "compose_project_name": AssetKey([*ASSET_HEADER_COMPOSE_WORKER["key_prefix"], "compose_project_name"]),
         },
     )

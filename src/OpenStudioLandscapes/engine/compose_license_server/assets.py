@@ -1,6 +1,6 @@
 import os
 import pathlib
-from typing import Generator
+from typing import Generator, List, MutableMapping
 
 import yaml
 from dagster import (
@@ -37,7 +37,7 @@ if bool(ins):
     @asset(
         **ASSET_HEADER_COMPOSE_LICENSE_SERVER,
         ins={
-            "group_in": AssetIn(AssetKey([*KEY_BASE, "group_out"])),
+            "group_in": AssetIn(AssetKey([*ASSET_HEADER_BASE["key_prefix"], "group_out"])),
         },
         deps=[
             AssetKey(
@@ -72,7 +72,7 @@ if bool(ins):
         **ASSET_HEADER_COMPOSE_LICENSE_SERVER,
         ins={
             "env": AssetIn(
-                AssetKey([*KEY_COMPOSE_LICENSE_SERVER, "env"]),
+                AssetKey([*ASSET_HEADER_COMPOSE_LICENSE_SERVER["key_prefix"], "env"]),
             ),
             **ins,
         },
@@ -93,7 +93,7 @@ if bool(ins):
         docker_compose = pathlib.PurePosixPath(
             env["DOT_LANDSCAPES"],
             env.get("LANDSCAPE", "default"),
-            f"{GROUP_COMPOSE_LICENSE_SERVER}__{'__'.join(KEY_COMPOSE_LICENSE_SERVER)}",
+            f"{ASSET_HEADER_COMPOSE_LICENSE_SERVER['group_name']}__{'__'.join(ASSET_HEADER_COMPOSE_LICENSE_SERVER['key_prefix'])}",
             "__".join(context.asset_key.path),
             "docker_compose",
             "docker-compose.yml",
@@ -131,22 +131,22 @@ if bool(ins):
     group_out = AssetsDefinition.from_op(
         op_group_out,
         can_subset=True,
-        group_name=GROUP_COMPOSE_LICENSE_SERVER,
-        key_prefix=KEY_COMPOSE_LICENSE_SERVER,
+        group_name=ASSET_HEADER_COMPOSE_LICENSE_SERVER["group_name"],
+        key_prefix=ASSET_HEADER_COMPOSE_LICENSE_SERVER["key_prefix"],
         keys_by_input_name={
-            "compose": AssetKey([*KEY_COMPOSE_LICENSE_SERVER, "compose"]),
-            "env": AssetKey([*KEY_COMPOSE_LICENSE_SERVER, "env"]),
-            "group_in": AssetKey([*KEY_BASE, "group_out"]),
+            "compose": AssetKey([*ASSET_HEADER_COMPOSE_LICENSE_SERVER["key_prefix"], "compose"]),
+            "env": AssetKey([*ASSET_HEADER_COMPOSE_LICENSE_SERVER["key_prefix"], "env"]),
+            "group_in": AssetKey([*ASSET_HEADER_BASE["key_prefix"], "group_out"]),
         },
     )
 
 
     docker_compose_graph = AssetsDefinition.from_op(
         op_docker_compose_graph,
-        group_name=GROUP_COMPOSE_LICENSE_SERVER,
-        key_prefix=KEY_COMPOSE_LICENSE_SERVER,
+        group_name=ASSET_HEADER_COMPOSE_LICENSE_SERVER["group_name"],
+        key_prefix=ASSET_HEADER_COMPOSE_LICENSE_SERVER["key_prefix"],
         keys_by_input_name={
-            "group_out": AssetKey([*KEY_COMPOSE_LICENSE_SERVER, "group_out"]),
-            "compose_project_name": AssetKey([*KEY_COMPOSE_LICENSE_SERVER, "compose_project_name"]),
+            "group_out": AssetKey([*ASSET_HEADER_COMPOSE_LICENSE_SERVER["key_prefix"], "group_out"]),
+            "compose_project_name": AssetKey([*ASSET_HEADER_COMPOSE_LICENSE_SERVER["key_prefix"], "compose_project_name"]),
         },
     )

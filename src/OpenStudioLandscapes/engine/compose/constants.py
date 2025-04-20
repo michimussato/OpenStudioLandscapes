@@ -62,14 +62,12 @@ def DOCKER_COMPOSE(
         "{DOT_LANDSCAPES}",
         "{LANDSCAPE}",
         f"{ASSET_HEADER['group_name']}__{'_'.join(ASSET_HEADER['key_prefix'])}",
-        # "__".join(context.asset_key_for_output("DOCKER_COMPOSE").path),
         "__".join(context.asset_key.path),
         "docker_compose",
         "docker-compose.yml",
     )
 
     yield Output(
-        # output_name="DOCKER_COMPOSE",
         value=docker_compose,
     )
 

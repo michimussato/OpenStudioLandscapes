@@ -17,7 +17,7 @@ import shlex
 import shutil
 from collections import ChainMap
 from functools import reduce
-from typing import Generator, MutableMapping, Any
+from typing import Generator, MutableMapping, Any, List
 
 import yaml
 from docker_compose_graph.utils import *
@@ -168,7 +168,7 @@ def factory_feature_in(
         # serializable input.
         def _serialize(d):
             for k_, v_ in d.items():
-                if isinstance(v_, dict):
+                if isinstance(v_, MutableMapping):
                     _serialize(v_)
                 elif isinstance(v_, pathlib.PosixPath):
                     d[k_] = v_.as_posix()
@@ -296,47 +296,6 @@ def op_group_in(
     )
 
 
-# @op(
-#     name="op_group_in",
-#     ins={
-#         "group_out": In(dict),
-#     },
-#     out={
-#         "group_in": Out(dict),
-#     },
-# )
-# def op_feature_in(
-#     context: OpExecutionContext,
-#     group_out: dict,  # pylint: disable=redefined-outer-name
-# ) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
-#     """
-#     This is the entry point for a Feature.
-#     Just forwards the data we get from the upstream `group_out` asset.
-#     """
-#
-#     context.log.debug(group_out)
-#
-#     yield Output(
-#         output_name="group_in",
-#         value=group_out,
-#     )
-#
-#     metadata = {}
-#
-#     for k, v in group_out.items():
-#         try:
-#             metadata[k] = MetadataValue.json(v)
-#         except Exception:
-#             # This is for Non-JSON-Serializable Objects.
-#             # Even though a DagsterExecutionStepExecutionError is thrown,
-#             # it cannot not be captured here for some reason. Hence, Exception
-#             metadata[v.name] = MetadataValue.json(v.value)
-#
-#     yield AssetMaterialization(
-#         asset_key=context.asset_key,
-#         metadata=metadata,
-#     )
-
 
 @op(
     name="op_env",
@@ -410,8 +369,6 @@ def op_env(
     out={
         "COMPOSE_SCOPE": Out(ComposeScope),
         "FEATURE_CONFIG": Out(OpenStudioLandscapesConfig),
-        # "FEATURE_CONFIGS": Out(dict),
-        # "DOCKER_USE_CACHE": Out(bool),
     },
 )
 def op_constants(
@@ -422,7 +379,7 @@ def op_constants(
     Output[ComposeScope]
     | AssetMaterialization
     | Output[Any]
-    | Output[dict[OpenStudioLandscapesConfig, dict[str, bool | str | Any]]]
+    | Output[MutableMapping[OpenStudioLandscapesConfig, MutableMapping[str, bool | str | Any]]]
     | Output[bool | Any]
     | Any,
     None,
@@ -587,7 +544,6 @@ def op_docker_compose_graph(
     ins={
         "compose": In(dict),
         "env": In(dict),
-        # "group_in": In(dict),
         "docker_config": In(DockerConfig),
     },
     out={
@@ -598,11 +554,12 @@ def op_docker_compose_graph(
 )
 def op_group_out(
     context: OpExecutionContext,
+    # Todo: remove unused
     compose: dict,  # pylint: disable=redefined-outer-name
     env: dict,  # pylint: disable=redefined-outer-name
     # group_in: dict,  # pylint: disable=redefined-outer-name
     docker_config: DockerConfig,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[pathlib.Path] | Output[dict] | Output[str] | Output[list] | AssetMaterialization, None, None]:
+) -> Generator[Output[pathlib.Path] | Output[MutableMapping] | Output[str] | Output[List] | AssetMaterialization, None, None]:
 
     DOCKER_COMPOSE = pathlib.Path(env["DOCKER_COMPOSE"])
 

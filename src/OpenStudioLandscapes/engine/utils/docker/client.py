@@ -5,7 +5,7 @@ __all__ = [
 ]
 
 import pathlib
-from typing import Union
+from typing import Union, MutableMapping
 
 import docker
 
@@ -60,7 +60,8 @@ def build(
     docker_context: pathlib.Path,
     docker_file: pathlib.Path,
     use_cache: bool,
-    image_data: dict,
+    # Todo: remove unused
+    image_data: MutableMapping,
 ) -> str:
     """
     A dead end...
@@ -156,12 +157,11 @@ def docker_push(
 
 
 def recurse_chunk(
-    # *,
     context: AssetExecutionContext,
-    chunk: Union[dict, str],
+    chunk: Union[MutableMapping, str],
 ) -> None:
 
-    if isinstance(chunk, dict):
+    if isinstance(chunk, MutableMapping):
         for key, value in chunk.items():
             recurse_chunk(context, value)
     elif isinstance(chunk, str):
