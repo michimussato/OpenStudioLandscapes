@@ -161,12 +161,12 @@ FEATURES: dict[str, dict[str, bool | str | ComposeScope | OpenStudioLandscapesCo
     # #     "compose_scope": ComposeScope.DEFAULT,
     # #     "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     # # },
-    # "OpenStudioLandscapes-Syncthing": {
-    #     "enabled": True,
-    #     "module": "OpenStudioLandscapes.Syncthing.definitions",
-    #     "compose_scope": ComposeScope.DEFAULT,
-    #     "feature_config": OpenStudioLandscapesConfig.DEFAULT,
-    # },
+    "OpenStudioLandscapes-Syncthing": {
+        "enabled": True,
+        "module": "OpenStudioLandscapes.Syncthing.definitions",
+        "compose_scope": ComposeScope.DEFAULT,
+        "feature_config": OpenStudioLandscapesConfig.DEFAULT,
+    },
     # # "OpenStudioLandscapes-Watchtower": {
     # #     "enabled": False,
     # #     "module": "OpenStudioLandscapes.Watchtower.definitions",
