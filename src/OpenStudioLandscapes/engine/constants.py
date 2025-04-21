@@ -117,12 +117,12 @@ FEATURES: dict[str, dict[str, bool | str | ComposeScope | OpenStudioLandscapesCo
         "compose_scope": ComposeScope.DEFAULT,
         "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
-    # "OpenStudioLandscapes-Deadline_10_2_Worker": {
-    #     "enabled": True,
-    #     "module": "OpenStudioLandscapes.Deadline_10_2_Worker.definitions",
-    #     "compose_scope": ComposeScope.WORKER,
-    #     "feature_config": OpenStudioLandscapesConfig.DEFAULT,
-    # },
+    "OpenStudioLandscapes-Deadline_10_2_Worker": {
+        "enabled": True,
+        "module": "OpenStudioLandscapes.Deadline_10_2_Worker.definitions",
+        "compose_scope": ComposeScope.WORKER,
+        "feature_config": OpenStudioLandscapesConfig.DEFAULT,
+    },
     "OpenStudioLandscapes-filebrowser": {
         "enabled": True,
         "module": "OpenStudioLandscapes.filebrowser.definitions",
@@ -156,7 +156,7 @@ FEATURES: dict[str, dict[str, bool | str | ComposeScope | OpenStudioLandscapesCo
     # # },
     # # "OpenStudioLandscapes-LikeC4": {
     # #     "enabled": False,
-    # #     # error This project's package.json defines "packageManager": "yarn@pnpm@10.6.2". However the current global version of Yarn is 1.22.22.
+    # #     # error This project's package.json defines "packageManager": "yarn@pnpm@10.6.2". However, the current global version of Yarn is 1.22.22.
     # #     "module": "OpenStudioLandscapes.LikeC4.definitions",
     # #     "compose_scope": ComposeScope.DEFAULT,
     # #     "feature_config": OpenStudioLandscapesConfig.DEFAULT,

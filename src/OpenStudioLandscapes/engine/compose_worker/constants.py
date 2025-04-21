@@ -1,3 +1,4 @@
+import pathlib
 from typing import Generator, MutableMapping
 
 from dagster import (
@@ -44,5 +45,35 @@ def constants_compose_worker(
         asset_key=context.asset_key,
         metadata={
             "__".join(context.asset_key.path): MetadataValue.json(_constants),
+        },
+    )
+
+
+@asset(
+    **ASSET_HEADER,
+    description="",
+)
+def DOCKER_COMPOSE(
+    context: AssetExecutionContext,
+) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
+    """ """
+
+    docker_compose = pathlib.Path(
+        "{DOT_LANDSCAPES}",
+        "{LANDSCAPE}",
+        f"{ASSET_HEADER['group_name']}__{'_'.join(ASSET_HEADER['key_prefix'])}",
+        "__".join(context.asset_key.path),
+        "docker_compose",
+        "docker-compose.yml",
+    )
+
+    yield Output(
+        value=docker_compose,
+    )
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.path(docker_compose),
         },
     )

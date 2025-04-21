@@ -17,10 +17,14 @@ from dagster import (
     asset,
 )
 
-from OpenStudioLandscapes.engine.base.ops import op_docker_compose_graph, op_group_out
+from OpenStudioLandscapes.engine.base.ops import (
+    op_docker_compose_graph,
+    op_group_out,
+)
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.discovery.discovery import *
 from OpenStudioLandscapes.engine.enums import *
+from OpenStudioLandscapes.engine.utils import *
 
 # Todo:
 #  - [ ] Find a procedural way to deal with this
@@ -46,36 +50,90 @@ if bool(ins):
     @asset(
         **ASSET_HEADER_COMPOSE_WORKER,
         ins={
-            "group_in": AssetIn(AssetKey([*ASSET_HEADER_BASE["key_prefix"], "group_out"])),
+        "env_base": AssetIn(AssetKey([*ASSET_HEADER_COMPOSE_WORKER['key_prefix'], "env_base"])),
+        "DOCKER_COMPOSE": AssetIn(AssetKey([*ASSET_HEADER_COMPOSE_WORKER['key_prefix'], "DOCKER_COMPOSE"])),
         },
-        deps=[
-            AssetKey(
-                [
-                    *ASSET_HEADER_COMPOSE_WORKER["key_prefix"],
-                    "constants_compose_worker",
-                ]
-            )
-        ],
     )
     def env(
         context: AssetExecutionContext,
-        group_in: dict,
+    env_base: dict,
+    DOCKER_COMPOSE: pathlib.Path,  # pylint: disable=redefined-outer-name
     ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
 
-        ret = group_in.get("env", {})
+        env_in = copy.deepcopy(env_base)
 
-        ret.update(
+        env_in.update(
+            expand_dict_vars(
+                dict_to_expand={
+                    "DOCKER_COMPOSE": DOCKER_COMPOSE.as_posix()
+                },
+                kv=env_in,
+            )
+        )
+
+        env_in.update(
             {
                 "COMPOSE_SCOPE": ComposeScope.WORKER,
             }
         )
 
-        yield Output(ret)
+        yield Output(env_in)
 
         yield AssetMaterialization(
             asset_key=context.asset_key,
             metadata={
-                "__".join(context.asset_key.path): MetadataValue.json(ret),
+                "__".join(context.asset_key.path): MetadataValue.json(env_in),
+            },
+        )
+
+
+    @asset(
+        **ASSET_HEADER_COMPOSE_WORKER,
+        ins={
+            "features_in": AssetIn(AssetKey([*ASSET_HEADER_COMPOSE_WORKER['key_prefix'], "features_in"])),
+        },
+    )
+    def env_base(
+        context: AssetExecutionContext,
+        features_in: dict,
+    ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
+
+        context.log.info(features_in)
+
+        _env_base = features_in.pop("env_base", {})
+
+        yield Output(_env_base)
+
+        yield AssetMaterialization(
+            asset_key=context.asset_key,
+            metadata={
+                "__".join(context.asset_key.path): MetadataValue.json(_env_base),
+            },
+        )
+
+
+    @asset(
+        **ASSET_HEADER_COMPOSE_WORKER,
+        ins={
+            "features_in": AssetIn(AssetKey([*ASSET_HEADER_COMPOSE_WORKER['key_prefix'], "features_in"])),
+        },
+    )
+    def docker_config(
+        context: AssetExecutionContext,
+        features_in: dict,
+    ) -> Generator[Output[DockerConfig] | AssetMaterialization, None, None]:
+
+        context.log.info(features_in)
+
+        _docker_config: DockerConfig = features_in.pop("docker_config")
+        context.log.info(_docker_config)
+
+        yield Output(_docker_config)
+
+        yield AssetMaterialization(
+            asset_key=context.asset_key,
+            metadata={
+                _docker_config.name: MetadataValue.json(_docker_config.value),
             },
         )
 
@@ -382,13 +440,15 @@ if bool(ins):
 
     group_out = AssetsDefinition.from_op(
         op_group_out,
-        can_subset=True,
+        # Todo:
+        #  - [ ] Better to use False here?
+        can_subset=False,
         group_name=ASSET_HEADER_COMPOSE_WORKER["group_name"],
         key_prefix=ASSET_HEADER_COMPOSE_WORKER["key_prefix"],
         keys_by_input_name={
             "compose": AssetKey([*ASSET_HEADER_COMPOSE_WORKER["key_prefix"], "compose"]),
             "env": AssetKey([*ASSET_HEADER_COMPOSE_WORKER["key_prefix"], "env"]),
-            "group_in": AssetKey([*ASSET_HEADER_BASE["key_prefix"], "group_out"]),
+            "docker_config": AssetKey([*ASSET_HEADER_COMPOSE_WORKER["key_prefix"], "docker_config"]),
         },
     )
 

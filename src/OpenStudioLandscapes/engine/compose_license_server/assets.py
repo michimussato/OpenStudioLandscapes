@@ -47,11 +47,6 @@ if bool(ins):
         "env_base": AssetIn(AssetKey([*ASSET_HEADER_COMPOSE_LICENSE_SERVER['key_prefix'], "env_base"])),
         "DOCKER_COMPOSE": AssetIn(AssetKey([*ASSET_HEADER_COMPOSE_LICENSE_SERVER['key_prefix'], "DOCKER_COMPOSE"])),
         },
-        deps=[
-            AssetKey(
-                [*ASSET_HEADER_COMPOSE_LICENSE_SERVER['key_prefix'], "constants_compose_license_server"]
-            )
-        ],
     )
     def env(
         context: AssetExecutionContext,
