@@ -86,56 +86,73 @@ if bool(ins):
             "env": AssetIn(
                 AssetKey([*ASSET_HEADER_COMPOSE_WORKER["key_prefix"], "env"]),
             ),
-            **ins,
+            "features_in": AssetIn(
+                AssetKey([*ASSET_HEADER_COMPOSE_WORKER["key_prefix"], "features_in"]),
+            ),
         },
     )
     def compose(
         context: AssetExecutionContext,
         env: dict,  # pylint: disable=redefined-outer-name
-        **kwargs,
+        features_in: dict,  # pylint: disable=redefined-outer-name
     ) -> Generator[
         Output[MutableMapping[str, List[MutableMapping[str, List]]]] | AssetMaterialization, None, None
     ]:
         """ """
 
-        context.log.info(kwargs)
+        features_in.pop("env_base", {})
+        features_in.pop("docker_config", {})
+        features_in.pop("docker_image", {})
 
-        _group_in = []
+        DOCKER_COMPOSE = pathlib.Path(env["DOCKER_COMPOSE"])
+        DOCKER_COMPOSE.parent.mkdir(parents=True, exist_ok=True)
 
-        docker_compose = pathlib.PurePosixPath(
-            env["DOT_LANDSCAPES"],
-            env.get("LANDSCAPE", "default"),
-            f"{ASSET_HEADER_COMPOSE_WORKER['group_name']}__{'__'.join(ASSET_HEADER_COMPOSE_WORKER['key_prefix'])}",
-            "__".join(context.asset_key.path),
-            "docker_compose",
-            "docker-compose.yml",
-        )
+        compose_files = []
 
-        context.log.info(docker_compose)
-        context.log.info(type(docker_compose))
+        for feature, data in features_in.items():
+            context.log.info(features_in[feature])
+            compose_files.append(features_in[feature]["compose_yaml"])
 
-        for v in kwargs.values():
-            _rel_path = os.path.relpath(
-                path=v.as_posix(),
-                start=docker_compose.parent.as_posix(),
-            )
-            rel_path = pathlib.Path(_rel_path)
+        # Convert absolute paths in `include` to
+        # relative ones
+        # DOCKER_COMPOSE = pathlib.Path(env["DOCKER_COMPOSE"])
+        # DOCKER_COMPOSE.parent.mkdir(parents=True, exist_ok=True)
 
-            _group_in.append(rel_path)
+        rel_paths = []
+        dot_landscapes = pathlib.Path(env["DOT_LANDSCAPES"])
 
-        docker_dict = {
-            "include": [{"path": [i.as_posix()]} for i in _group_in],
+        for path in compose_files:
+            start_dir = DOCKER_COMPOSE.parent
+
+            levels = start_dir.as_posix().split(dot_landscapes.as_posix())[-1].split(os.sep)[1:]
+            context.log.info(levels)
+            context.log.info(path.split(os.sep)[1:][6:])
+            _rel_path = "../" * len(levels) + "/".join(path.split(os.sep)[1:][6:])
+            context.log.info(_rel_path)
+
+            rel_paths.append(_rel_path)
+
+        docker_dict_include = {
+            "include": [
+                {
+                    "path": rel_paths,
+                },
+            ],
         }
 
-        docker_yaml = yaml.dump(docker_dict)
+        docker_yaml_include = yaml.dump(docker_dict_include)
 
-        yield Output(docker_dict)
+        # Write docker-compose.yaml
+        with open(DOCKER_COMPOSE, mode="w", encoding="utf-8") as fw:
+            fw.write(docker_yaml_include)
+
+        yield Output(docker_dict_include)
 
         yield AssetMaterialization(
             asset_key=context.asset_key,
             metadata={
-                "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
-                "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
+                "__".join(context.asset_key.path): MetadataValue.json(docker_dict_include),
+                "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml_include}\n```"),
             },
         )
 
