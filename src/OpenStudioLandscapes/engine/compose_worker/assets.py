@@ -56,8 +56,8 @@ if bool(ins):
     )
     def env(
         context: AssetExecutionContext,
-    env_base: dict,
-    DOCKER_COMPOSE: pathlib.Path,  # pylint: disable=redefined-outer-name
+        env_base: dict,
+        DOCKER_COMPOSE: pathlib.Path,  # pylint: disable=redefined-outer-name
     ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
 
         env_in = copy.deepcopy(env_base)
@@ -218,6 +218,38 @@ if bool(ins):
     @asset(
         **ASSET_HEADER_COMPOSE_WORKER,
         ins={
+            "features_in": AssetIn(AssetKey([*ASSET_HEADER_COMPOSE_WORKER["key_prefix"], "features_in"])),
+        },
+    )
+    def worker_composes(
+        context: AssetExecutionContext,
+        features_in: dict,
+    ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
+
+        features_in.pop("docker_config")
+        features_in.pop("env_base")
+
+        compose_ = {}
+
+        for key, value in features_in.items():
+
+            compose_[key] = value.get("compose", {})
+
+        context.log.info(compose_)
+
+        yield Output(compose_)
+
+        yield AssetMaterialization(
+            asset_key=context.asset_key,
+            metadata={
+                "__".join(context.asset_key.path): MetadataValue.json(compose_),
+            },
+        )
+
+
+    @asset(
+        **ASSET_HEADER_COMPOSE_WORKER,
+        ins={
             "group_out_base": AssetIn(AssetKey([*ASSET_HEADER_BASE["key_prefix"], "group_out"])),
             **feature_ins,
         },
@@ -308,27 +340,22 @@ if bool(ins):
             "cmd_docker_compose_up_dict": AssetIn(
                 AssetKey([*ASSET_HEADER_COMPOSE_WORKER["key_prefix"], "cmd_docker_compose_up"]),
             ),
-            "compose_pulse_runner": AssetIn(
-                AssetKey([*ASSET_HEADER_WORKER["key_prefix"], "compose_pulse_runner"]),
-            ),
-            "compose_worker_runner": AssetIn(
-                AssetKey([*ASSET_HEADER_WORKER["key_prefix"], "compose_worker_runner"]),
+            "worker_composes": AssetIn(
+                AssetKey([*ASSET_HEADER_COMPOSE_WORKER["key_prefix"], "worker_composes"]),
             ),
         },
     )
-    def compose_up_and_hostname(
+    def compose_up_and_set_hostname(
             context: AssetExecutionContext,
             env: dict,  # pylint: disable=redefined-outer-name
             cmd_docker_compose_up_dict: dict[str, list],  # pylint: disable=redefined-outer-name,
-            compose_pulse_runner: dict,  # pylint: disable=redefined-outer-name,
-            compose_worker_runner: dict,  # pylint: disable=redefined-outer-name,
+            worker_composes: dict,  # pylint: disable=redefined-outer-name,
     ):
 
         # Todo:
         #  - [x] for i in range(NUM_SERVICES): [...]
 
-        compose_pulse_runner_services = list(compose_pulse_runner["services"].keys())
-        compose_worker_runner_services = list(compose_worker_runner["services"].keys())
+        compose_services = list(worker_composes["OpenStudioLandscapes_Deadline_10_2_Worker"]["services"].keys())
 
         # Example cmd:
         # /usr/bin/docker compose --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-08-10-45-09-df78673952cc4499a80407d91bd404f4/Deadline_10_2_Worker__Deadline_10_2_Worker/Deadline_10_2_Worker__group_out/docker_compose/docker-compose.yml --project-name 2025-04-08-10-45-09-df78673952cc4499a80407d91bd404f4-worker up --detach --remove-orphans && sudo nsenter --target $(docker inspect -f '{{ .State.Pid }}' deadline-10-2-worker-001) --uts hostname "$(hostname -f)-nice-hack"
@@ -357,22 +384,15 @@ if bool(ins):
         # into
         # - $(hostname)-deadline-10-2-worker-001...nnn
         # - $(hostname)-deadline-10-2-pulse-worker-001...nnn
-        for service_name in zip(
-                compose_worker_runner_services,
-                compose_pulse_runner_services,
-        ):
+        for service_name in compose_services:
 
-            target_worker = "$(docker inspect -f '{{ .State.Pid }}' %s)" % "--".join([service_name[0], env.get("LANDSCAPE", "default")])
-            target_pulse = "$(docker inspect -f '{{ .State.Pid }}' %s)" % "--".join([service_name[1], env.get("LANDSCAPE", "default")])
-            hostname_worker = f"$(hostname)-{service_name[0]}"
-            hostname_pulse = f"$(hostname)-{service_name[1]}"
+            target_worker = "$(docker inspect -f '{{ .State.Pid }}' %s)" % "--".join([service_name, env.get("LANDSCAPE", "default")])
+            hostname_worker = f"$(hostname)-{service_name}"
 
             exclude_from_quote.extend(
                 [
                     target_worker,
-                    target_pulse,
                     hostname_worker,
-                    hostname_pulse
                 ]
             )
 
@@ -385,20 +405,9 @@ if bool(ins):
                 hostname_worker,
             ]
 
-            cmd_docker_compose_set_dynamic_hostname_pulse = [
-                shutil.which("sudo"),
-                shutil.which("nsenter"),
-                "--target", target_pulse,
-                "--uts",
-                "hostname",
-                hostname_pulse,
-            ]
-
             cmd_docker_compose_set_dynamic_hostnames.extend(
                 [
                     *cmd_docker_compose_set_dynamic_hostname_worker,
-                    "&&",
-                    *cmd_docker_compose_set_dynamic_hostname_pulse,
                     "&&",
                 ]
             )
@@ -432,8 +441,7 @@ if bool(ins):
                         for s in cmd_compose_up_and_hostname
                     )
                 ),
-                "compose_worker_runner_services": MetadataValue.json(compose_worker_runner_services),
-                "compose_pulse_runner_services": MetadataValue.json(compose_pulse_runner_services),
+                "compose_runner_services": MetadataValue.json(compose_services),
             },
         )
 

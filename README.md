@@ -4,6 +4,8 @@
 
 <!-- TOC -->
 * [OpenStudioLandscapes](#openstudiolandscapes)
+  * [OpenStudioLandscapes on LinkedIn](#openstudiolandscapes-on-linkedin)
+  * [Disclaimer](#disclaimer)
   * [TL;DR - Jump Start with Feature "OpenStudioLandscapes-Kitsu"](#tldr---jump-start-with-feature-openstudiolandscapes-kitsu)
   * [Brief](#brief)
   * [Terminology](#terminology)
@@ -156,6 +158,28 @@
 ---
 
 # OpenStudioLandscapes
+
+## OpenStudioLandscapes on LinkedIn
+
+https://www.linkedin.com/search/results/all/?keywords=%23openstudiolandscapes
+
+## Disclaimer
+
+I'm not a software architect by any means. 
+
+I applied my very limited knowledge about Python packaging so
+I'm sure you might find one or the other quirk that is not 
+best practice. If you do, don't hesitate to reach out, point it 
+out and suggest a better way to do it.
+
+This project is built using Dagster. Hence, getting familiar with
+some Dagster basics is recommended (if not required). Check
+out Dagster Labs' 
+[Dagster Essentials](https://courses.dagster.io/courses/dagster-essentials).
+
+This also applied to contributions: Dagster familiarity is a requirement when it 
+comes to understanding the structure. However, if you find ways to improve the 
+project also in Dagster-unrelated ways, don't hesitate to make a suggestion.
 
 ## TL;DR - Jump Start with Feature "OpenStudioLandscapes-Kitsu"
 

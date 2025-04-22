@@ -167,6 +167,7 @@ def get_configs_root(
 ) -> pathlib.Path:
     git_root: pathlib.Path = get_git_root(path)
     configs_root: pathlib.Path = git_root / ".payload" / "config"
+    # configs_root: pathlib.Path = pathlib.Path("{DOT_FEATURES}", "{FEATURE}", ".payload", "config")
     return configs_root
 
 
@@ -175,6 +176,7 @@ def get_data_root(
 ) -> pathlib.Path:
     git_root: pathlib.Path = get_git_root(path)
     data_root: pathlib.Path = git_root / ".payload" / "data"
+    # data_root: pathlib.Path = pathlib.Path("{DOT_FEATURES}", "{FEATURE}", ".payload", "data")
     return data_root
 
 
@@ -183,6 +185,7 @@ def get_bin_root(
 ) -> pathlib.Path:
     git_root: pathlib.Path = get_git_root(path)
     bin_root: pathlib.Path = git_root / ".payload" / "bin"
+    # bin_root: pathlib.Path = pathlib.Path("{DOT_FEATURES}", "{FEATURE}", ".payload", "bin")
     return bin_root
 
 
