@@ -161,6 +161,8 @@
 
 ## OpenStudioLandscapes on LinkedIn
 
+https://www.linkedin.com/company/106731439/
+
 https://www.linkedin.com/search/results/all/?keywords=%23openstudiolandscapes
 
 ## Disclaimer
