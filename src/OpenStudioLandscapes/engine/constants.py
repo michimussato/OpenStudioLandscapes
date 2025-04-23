@@ -201,12 +201,12 @@ FEATURES: dict[str, dict[str, bool | str | ComposeScope | OpenStudioLandscapesCo
         "compose_scope": ComposeScope.DEFAULT,
         "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
-    # # "OpenStudioLandscapes-Watchtower": {
-    # #     "enabled": False,
-    # #     "module": "OpenStudioLandscapes.Watchtower.definitions",
-    # #     "compose_scope": ComposeScope.DEFAULT,
-    # #     "feature_config": OpenStudioLandscapesConfig.DEFAULT,
-    # # },
+    "OpenStudioLandscapes-Watchtower": {
+        "enabled": True,
+        "module": "OpenStudioLandscapes.Watchtower.definitions",
+        "compose_scope": ComposeScope.DEFAULT,
+        "feature_config": OpenStudioLandscapesConfig.DEFAULT,
+    },
 }
 
 
