@@ -181,13 +181,13 @@ FEATURES: dict[str, dict[str, bool | str | ComposeScope | OpenStudioLandscapesCo
         "compose_scope": ComposeScope.LICENSE_SERVER,
         "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
-    # # "OpenStudioLandscapes-OpenCue": {
-    # #     "enabled": False,
-    # #     # error: no health check configured
-    # #     "module": "OpenStudioLandscapes.OpenCue.definitions",
-    # #     "compose_scope": ComposeScope.DEFAULT,
-    # #     "feature_config": OpenStudioLandscapesConfig.DEFAULT,
-    # # },
+    "OpenStudioLandscapes-OpenCue": {
+        "enabled": True,
+        # error: no health check configured
+        "module": "OpenStudioLandscapes.OpenCue.definitions",
+        "compose_scope": ComposeScope.DEFAULT,
+        "feature_config": OpenStudioLandscapesConfig.DEFAULT,
+    },
     # # "OpenStudioLandscapes-LikeC4": {
     # #     "enabled": False,
     # #     # error This project's package.json defines "packageManager": "yarn@pnpm@10.6.2". However, the current global version of Yarn is 1.22.22.
