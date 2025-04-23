@@ -1,6 +1,7 @@
 __all__ = [
     "factory_feature_out",
     "factory_feature_in",
+    "factory_docker_config",
     "op_compose",
     "op_group_in",
     "op_group_out",
@@ -182,13 +183,15 @@ def factory_feature_in(
             context.log.warning(v)
             metadata[k] = MetadataValue.json(v)
 
+        output_name = "feature_out"
+
         yield Output(
-            output_name="feature_out",
+            output_name=output_name,
             value=kwargs,
         )
 
         yield AssetMaterialization(
-            asset_key=context.asset_key_for_output("feature_out"),
+            asset_key=context.asset_key_for_output(output_name),
             metadata={
                 "__".join(context.asset_key.path): MetadataValue.json(out_),
                 **metadata,
@@ -198,6 +201,57 @@ def factory_feature_in(
     return _op_feature_in
 
 
+def factory_docker_config(
+    name="op_docker_config_from_factory",
+    ins=None,
+    # out=None,
+    **kwargs,
+) -> OpDefinition:
+    """
+    https://docs.dagster.io/guides/build/ops#op-factory
+
+    Args:
+        name (str): The name of the new op.
+        ins (Dict[str, In]): Any Ins for the new op. Default: None.
+
+    Returns:
+        function: The new op.
+    """
+
+    @op(
+        name=name,
+        ins=ins,
+        **kwargs,
+    )
+    def _op_docker_config(
+        context: OpExecutionContext,
+        **kwargs,
+    ):
+
+        group_in = kwargs.pop("group_in")
+        context.log.debug(group_in)
+        docker_config: DockerConfig = group_in.pop("docker_config")
+        context.log.debug(docker_config)
+
+        output_name = "docker_config"
+
+        yield Output(
+            output_name=output_name,
+            value=docker_config,
+        )
+
+        yield AssetMaterialization(
+            asset_key=context.asset_key_for_output(output_name),
+            metadata={
+                docker_config.name: MetadataValue.json(docker_config.value),
+            },
+        )
+
+    return _op_docker_config
+
+
+# Todo
+#  - [ ] convert to factory
 @op(
     name="compose",
     ins={
@@ -254,6 +308,8 @@ def op_compose(
     )
 
 
+# Todo
+#  - [ ] convert to factory
 @op(
     name="op_group_in",
     ins={
@@ -296,7 +352,8 @@ def op_group_in(
     )
 
 
-
+# Todo
+#  - [ ] convert to factory
 @op(
     name="op_env",
     ins={
@@ -360,6 +417,8 @@ def op_env(
     )
 
 
+# Todo
+#  - [ ] convert to factory
 @op(
     name="op_constants",
     ins={
@@ -434,6 +493,8 @@ def op_constants(
     )
 
 
+# Todo
+#  - [ ] convert to factory
 @op(
     name="docker_compose_graph",
     ins={
@@ -539,6 +600,9 @@ def op_docker_compose_graph(
         )
 
 
+# Todo
+#  - [ ] What is not needed anymore?
+#  - [ ] convert to factory
 @op(
     name="group_out",
     ins={
