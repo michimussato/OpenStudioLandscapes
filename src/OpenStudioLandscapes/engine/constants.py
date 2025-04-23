@@ -163,12 +163,12 @@ FEATURES: dict[str, dict[str, bool | str | ComposeScope | OpenStudioLandscapesCo
         "compose_scope": ComposeScope.DEFAULT,
         "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
-    # # "OpenStudioLandscapes-Grafana": {
-    # #     "enabled": False,
-    # #     "module": "OpenStudioLandscapes.Grafana.definitions",
-    # #     "compose_scope": ComposeScope.DEFAULT,
-    # #     "feature_config": OpenStudioLandscapesConfig.DEFAULT,
-    # # },
+    "OpenStudioLandscapes-Grafana": {
+        "enabled": True,
+        "module": "OpenStudioLandscapes.Grafana.definitions",
+        "compose_scope": ComposeScope.DEFAULT,
+        "feature_config": OpenStudioLandscapesConfig.DEFAULT,
+    },
     "OpenStudioLandscapes-SESI_gcc_9_3_Houdini_20": {
         "enabled": True,
         "module": "OpenStudioLandscapes.SESI_gcc_9_3_Houdini_20.definitions",
