@@ -250,106 +250,142 @@ def factory_docker_config(
     return _op_docker_config
 
 
-# Todo
-#  - [ ] convert to factory
-@op(
-    name="compose",
-    ins={
-        "compose_networks": In(dict),
-        "compose_maps": In(list),
-        "env": In(dict),
-    },
-    out={
-        "compose": Out(dict),
-    },
-)
-def op_compose(
-    context: OpExecutionContext,
-    compose_networks: dict,  # pylint: disable=redefined-outer-name
-    # **kwargs,  # pylint: disable=redefined-outer-name
-    compose_maps: list[dict],  # pylint: disable=redefined-outer-name
-    env: dict,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
-    """ """
-
-    DOCKER_COMPOSE = pathlib.Path(env["DOCKER_COMPOSE"])
-    DOCKER_COMPOSE.parent.mkdir(parents=True, exist_ok=True)
-
-    if "networks" in compose_networks:
-        network_dict = copy.deepcopy(compose_networks)
-    else:
-        network_dict = {}
-
-    docker_chainmap = ChainMap(
-        network_dict,
-        *compose_maps,
-    )
-
-    docker_dict = reduce(deep_merge, docker_chainmap.maps)
-
-    docker_yaml = yaml.dump(docker_dict)
-
-    # Write docker-compose.yaml
-    with open(DOCKER_COMPOSE, mode="w", encoding="utf-8") as fw:
-        fw.write(docker_yaml)
-
-    yield Output(
-        output_name="compose",
-        value=docker_dict,
-    )
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
-            "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
-            # Todo: "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)),
-        },
-    )
-
-
-# Todo
-#  - [ ] convert to factory
-@op(
-    name="op_group_in",
-    ins={
-        "group_out": In(dict),
-    },
-    out={
-        "group_in": Out(dict),
-    },
-)
-def op_group_in(
-    context: OpExecutionContext,
-    group_out: dict,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
+def factory_compose(
+    name="op_compose_from_factory",
+    ins=None,
+    **kwargs,
+) -> OpDefinition:
     """
-    This is the entry point for a Feature.
-    Just forwards the data we get from the upstream `group_out` asset.
+    https://docs.dagster.io/guides/build/ops#op-factory
+
+    Args:
+        name (str): The name of the new op.
+        ins (Dict[str, In]): Any Ins for the new op. Default: None.
+
+    Returns:
+        function: The new op.
     """
 
-    context.log.debug(group_out)
-
-    yield Output(
-        output_name="group_in",
-        value=group_out,
+    @op(
+        name=name,
+        ins=ins,
+        **kwargs,
     )
+    def _op_compose(
+        context: OpExecutionContext,
+        **kwargs,
+    ):
+        """ """
 
-    metadata = {}
+        env = kwargs.pop("env")
+        compose_networks = kwargs.pop("compose_networks")
+        compose_maps = kwargs.pop("compose_maps")
 
-    for k, v in group_out.items():
-        try:
-            metadata[k] = MetadataValue.json(v)
-        except Exception:
-            # This is for Non-JSON-Serializable Objects.
-            # Even though a DagsterExecutionStepExecutionError is thrown,
-            # it cannot not be captured here for some reason. Hence, Exception
-            metadata[v.name] = MetadataValue.json(v.value)
+        DOCKER_COMPOSE = pathlib.Path(env["DOCKER_COMPOSE"])
+        DOCKER_COMPOSE.parent.mkdir(parents=True, exist_ok=True)
 
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata=metadata,
+        if "networks" in compose_networks:
+            network_dict = copy.deepcopy(compose_networks)
+        else:
+            network_dict = {}
+
+        docker_chainmap = ChainMap(
+            network_dict,
+            *compose_maps,
+        )
+
+        docker_dict = reduce(deep_merge, docker_chainmap.maps)
+
+        docker_yaml = yaml.dump(docker_dict)
+
+        # Write docker-compose.yaml
+        with open(DOCKER_COMPOSE, mode="w", encoding="utf-8") as fw:
+            fw.write(docker_yaml)
+
+        yield Output(
+            output_name="compose",
+            value=docker_dict,
+        )
+
+        yield AssetMaterialization(
+            asset_key=context.asset_key,
+            metadata={
+                "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
+                "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
+                # Todo: "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)),
+            },
+        )
+
+    return _op_compose
+
+
+def factory_group_in(
+    name="op_group_in_factory",
+    ins=None,
+    **kwargs,
+) -> OpDefinition:
+    """
+    https://docs.dagster.io/guides/build/ops#op-factory
+
+    Args:
+        name (str): The name of the new op.
+        ins (Dict[str, In]): Any Ins for the new op. Default: None.
+
+    Returns:
+        function: The new op.
+    """
+
+    @op(
+        name=name,
+        ins=ins,
+        **kwargs,
     )
+    def _op_group_in(
+        context: OpExecutionContext,
+        **kwargs,
+    ):
+        """
+        This is the entry point for a Feature.
+        Just forwards the data we get from the upstream `group_out` asset.
+        """
+
+        kw_keys = list(kwargs.keys())
+
+        # We expect "group_out" or "feature_out"
+        # here for now.
+        # Todo:
+        #  - [ ] find a better solution for this
+        if "group_out" in kw_keys:
+            group_out = kwargs.pop("group_out")
+        elif "feature_out" in kw_keys:
+            group_out = kwargs.pop("feature_out")
+        else:
+            raise NotImplementedError
+
+        context.log.debug(group_out)
+
+        yield Output(
+            output_name="group_in",
+            value=group_out,
+        )
+
+        metadata = {}
+
+        for k, v in group_out.items():
+            try:
+                metadata[k] = MetadataValue.json(v)
+            except Exception:
+                # This is for Non-JSON-Serializable Objects.
+                # Even though a DagsterExecutionStepExecutionError is thrown,
+                # it cannot not be captured here for some reason. Hence, Exception
+                metadata[v.name] = MetadataValue.json(v.value)
+
+        yield AssetMaterialization(
+            asset_key=context.asset_key,
+            metadata=metadata,
+        )
+
+    return _op_group_in
 
 
 # Todo

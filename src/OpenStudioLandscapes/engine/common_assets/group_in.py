@@ -1,24 +1,39 @@
 from dagster import (
+    In,
+    Out,
     AssetsDefinition,
     AssetKey,
 )
 
-from OpenStudioLandscapes.engine.base.ops import op_group_in
+from OpenStudioLandscapes.engine.base.ops import factory_group_in
 
 
 def get_group_in(
         ASSET_HEADER: dict,
         ASSET_HEADER_BASE: dict,
+        # Todo:
+        #  - [ ] To accept an input_name here is not very elegant
+        input_name: str = "group_out",
 ) -> AssetsDefinition:
 
+    group_in_op = factory_group_in(
+        name=f"op_group_in_{ASSET_HEADER['group_name']}",
+        ins={
+            input_name: In(dict),
+        },
+        out={
+            "group_in": Out(dict),
+        },
+    )
+
     group_in = AssetsDefinition.from_op(
-        op_group_in,
+        group_in_op,
         can_subset=False,
         group_name=ASSET_HEADER["group_name"],
         # key_prefix=ASSET_HEADER["key_prefix"]: This can be deceiving: Prefixes everything on top of all
         # other Prefixes
         keys_by_input_name={
-            "group_out": AssetKey([*ASSET_HEADER_BASE["key_prefix"], "group_out"]),
+            input_name: AssetKey([*ASSET_HEADER_BASE["key_prefix"], input_name]),
         },
         keys_by_output_name={
             "group_in": AssetKey([*ASSET_HEADER["key_prefix"], "group_in"]),

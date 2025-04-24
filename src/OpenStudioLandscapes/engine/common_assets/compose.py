@@ -1,17 +1,31 @@
 from dagster import (
+    In,
+    Out,
     AssetsDefinition,
     AssetKey,
 )
 
-from OpenStudioLandscapes.engine.base.ops import op_compose
+from OpenStudioLandscapes.engine.base.ops import factory_compose
 
 
 def get_compose(
         ASSET_HEADER: dict,
 ) -> AssetsDefinition:
 
+    compose_op = factory_compose(
+        name=f"op_compose_{ASSET_HEADER['group_name']}",
+        ins={
+            "compose_networks": In(dict),
+            "compose_maps": In(list),
+            "env": In(dict),
+        },
+        out={
+            "compose": Out(dict),
+        },
+    )
+
     compose = AssetsDefinition.from_op(
-        op_compose,
+        compose_op,
         # Todo:
         #  - [ ] Change to AssetKey
         tags_by_output_name={
