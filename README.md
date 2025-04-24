@@ -1960,6 +1960,21 @@ done;
 popd || exit
 ```
 
+#### Clear .nox Directories
+
+```shell
+# Todo
+#  - [ ] move to `nox`
+pushd .features || exit
+
+for dir in */; do
+    echo "${dir}"
+    sudo rm -rf "${dir}".nox/*/ || exit
+done;
+
+popd || exit
+```
+
 #### nox Report
 
 To update the `nox-report.json`, run

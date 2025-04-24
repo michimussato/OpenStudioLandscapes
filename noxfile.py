@@ -459,8 +459,8 @@ def install_features_into_engine(session):
     - [ ] Modules
     """
     # Ex:
-    # nox --session create_venv_features
-    # nox --tags create_venv_features
+    # nox --session install_features_into_engine
+    # nox --tags install_features_into_engine
 
     features_dir = pathlib.Path.cwd() / ".features"
 
@@ -470,6 +470,7 @@ def install_features_into_engine(session):
         "pip",
         "install",
         "--upgrade",
+        "--force-reinstall",
         "pip",
         "setuptools",
         external=True,
@@ -520,6 +521,11 @@ IDENTICAL_FILES = [
     # ".obsidian/workspace.json",
     # ".obsidian/workspaces.json",
     ".gitattributes",
+    ".sbom/.gitkeep",
+    ".payload/bin/.gitkeep",
+    ".payload/config/.gitkeep",
+    ".payload/data/.gitkeep",
+    "_images/.gitkeep",
     ".gitignore",
     ".pre-commit-config.yaml",
     ".readthedocs.yml",
@@ -537,8 +543,8 @@ def fix_hardlinks_in_features(session):
     - [ ] Modules
     """
     # Ex:
-    # nox --session create_venv_features
-    # nox --tags create_venv_features
+    # nox --session fix_hardlinks_in_features
+    # nox --tags fix_hardlinks_in_features
 
     # ln -f ../../../OpenStudioLandscapes/noxfile.py  noxfile.py
 
