@@ -19,7 +19,6 @@ from dagster import (
 
 from OpenStudioLandscapes.engine.base.ops import (
     op_docker_compose_graph,
-    op_group_out,
 )
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.discovery.discovery import *
@@ -29,6 +28,12 @@ from OpenStudioLandscapes.engine.utils import *
 # Todo:
 #  - [ ] Find a procedural way to deal with this
 from OpenStudioLandscapes.Deadline_10_2_Worker.constants import ASSET_HEADER as ASSET_HEADER_WORKER
+
+from OpenStudioLandscapes.engine.common_assets.group_out import get_group_out
+
+
+# Todo:
+#  - [ ] get assets from common_assets
 
 
 # Dynamic inputs based on the imported
@@ -446,18 +451,8 @@ if bool(ins):
         )
 
 
-    group_out = AssetsDefinition.from_op(
-        op_group_out,
-        # Todo:
-        #  - [ ] Better to use False here?
-        can_subset=False,
-        group_name=ASSET_HEADER_COMPOSE_WORKER["group_name"],
-        key_prefix=ASSET_HEADER_COMPOSE_WORKER["key_prefix"],
-        keys_by_input_name={
-            "compose": AssetKey([*ASSET_HEADER_COMPOSE_WORKER["key_prefix"], "compose"]),
-            "env": AssetKey([*ASSET_HEADER_COMPOSE_WORKER["key_prefix"], "env"]),
-            "docker_config": AssetKey([*ASSET_HEADER_COMPOSE_WORKER["key_prefix"], "docker_config"]),
-        },
+    group_out = get_group_out(
+        ASSET_HEADER=ASSET_HEADER_COMPOSE_WORKER,
     )
 
 

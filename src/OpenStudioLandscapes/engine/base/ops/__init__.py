@@ -639,6 +639,319 @@ def op_docker_compose_graph(
 # Todo
 #  - [ ] What is not needed anymore?
 #  - [ ] convert to factory
+# def factory_group_out(
+#     name="op_group_out_factory",
+#     ins=None,
+#     **kwargs,
+# ) -> OpDefinition:
+#
+#     @op(
+#         name=name,
+#         ins=ins,
+#         **kwargs,
+#     )
+#     def _op_group_out(
+#         context: OpExecutionContext,
+#         **kwargs,
+#     ):
+#         """
+#         Provides a Feature with the `env` dict.
+#         """
+#
+#         # compose = kwargs.pop("compose")
+#         env = kwargs.pop("env")
+#         docker_config = kwargs.pop("docker_config")
+#
+#         DOCKER_COMPOSE = pathlib.Path(env["DOCKER_COMPOSE"])
+#         # Todo:
+#         #  - [ ] Is this necessary here?
+#         DOCKER_COMPOSE.parent.mkdir(parents=True, exist_ok=True)
+#
+#         context.log.debug(context.asset_key_for_output("group_out"))
+#         context.log.debug(context.asset_key_for_output("compose_project_name"))
+#         context.log.debug(context.selected_output_names)
+#
+#         build_base_docker_config: DockerConfig = docker_config
+#         build_base_docker_config_value = build_base_docker_config.value
+#
+#         compose_project_name = f"{env.get('LANDSCAPE', 'default').replace('.', '-')}-{env['COMPOSE_SCOPE']}"
+#
+#         group_names_by_key_dict = (
+#             context.assets_def.group_names_by_key
+#         )
+#         # Results in:
+#         # Single Output:
+#         # {AssetKey(['OpenCue', 'group_out']): 'OpenCue'}
+#         # Multiple Outputs:
+#         # {AssetKey(['Compose_default', 'group_out']): 'Compose_default', AssetKey(['Compose_default', 'compose_project_name']): 'Compose_default'}
+#         context.log.debug(group_names_by_key_dict)
+#
+#         cmd_docker_compose_up = [
+#             shutil.which("docker"),
+#             "compose",
+#             "--file",
+#             DOCKER_COMPOSE.as_posix(),
+#             "--project-name",
+#             compose_project_name,
+#             "up",
+#             "--remove-orphans",
+#         ]
+#         script_cmd_docker_compose_up = DOCKER_COMPOSE.parent / "docker_compose_up.sh"
+#
+#         cmd_docker_compose_logs = [
+#             shutil.which("docker"),
+#             "compose",
+#             "--file",
+#             DOCKER_COMPOSE.as_posix(),
+#             "--project-name",
+#             compose_project_name,
+#             "logs",
+#             "--follow",
+#         ]
+#         script_cmd_docker_compose_logs = DOCKER_COMPOSE.parent / "docker_compose_logs.sh"
+#
+#         cmd_docker_compose_pull_up = [
+#             shutil.which("docker"),
+#             "compose",
+#             "--file",
+#             DOCKER_COMPOSE.as_posix(),
+#             "--project-name",
+#             compose_project_name,
+#             "pull",
+#             "--ignore-pull-failures",
+#             "&&",
+#             *cmd_docker_compose_up,
+#         ]
+#         script_cmd_docker_compose_pull_up = DOCKER_COMPOSE.parent / "docker_compose_pull_up.sh"
+#
+#         cmd_docker_compose_down = [
+#             shutil.which("docker"),
+#             "compose",
+#             "--file",
+#             DOCKER_COMPOSE.as_posix(),
+#             "--project-name",
+#             compose_project_name,
+#             "down",
+#             "--remove-orphans",
+#         ]
+#         script_cmd_docker_compose_down = DOCKER_COMPOSE.parent / "docker_compose_down.sh"
+#
+#         # Todo
+#         #  cmd_docker_exec_it = [
+#         #      shutil.which("docker"),
+#         #      "exec",
+#         #      "--tty",
+#         #      "--interactive",
+#         #      "sh",  # or bash
+#         #  ]
+#         #  script_cmd_docker_exec_it = DOCKER_COMPOSE.parent / "docker_exec.sh"
+#
+#         # In case we need to log in to the registry
+#         if not build_base_docker_config_value["docker_use_local"]:
+#
+#             if build_base_docker_config_value["docker_repository_type"] == DockerRepositoryType.PRIVATE:
+#
+#                 server = build_base_docker_config_value["docker_registry_url"]
+#                 username = build_base_docker_config_value.get("docker_registry_username", None)
+#                 password = build_base_docker_config_value.get("docker_registry_password", None)
+#
+#                 if not all([username, password]):
+#                     raise Exception("Both username and password are required")
+#
+#                 cmd_docker_login = [
+#                     shutil.which("docker"),
+#                     "login",
+#                     "--username", username,
+#                     "--password", password,
+#                     server,
+#                 ]
+#
+#                 cmd_docker_logout = [
+#                     shutil.which("docker"),
+#                     "logout",
+#                 ]
+#
+#                 cmd_docker_compose_up = [
+#                     *cmd_docker_login,
+#                     "&&",
+#                     *cmd_docker_compose_up,
+#                     "&&",
+#                     *cmd_docker_logout,
+#                 ]
+#
+#                 cmd_docker_compose_pull_up =  [
+#                     *cmd_docker_login,
+#                     "&&",
+#                     *cmd_docker_compose_pull_up,
+#                     "&&",
+#                     *cmd_docker_logout,
+#                 ]
+#
+#         docker_script = dict()
+#         scripts = []
+#
+#         docker_script["exe"] = shutil.which("bash")
+#         docker_script["script"] = str()
+#
+#         docker_script["script"] += f"#!{docker_script['exe']}\n"
+#         docker_script["script"] += f"# AUTO-GENERATED by Dagster Asset {'__'.join(context.asset_key_for_output('group_out').path)}\n"
+#         docker_script["script"] += "\n"
+#         docker_script["script"] += "SCRIPT_DIR=$( cd -- \"$( dirname -- \"${BASH_SOURCE[0]}\" )\" &> /dev/null && pwd )\n"
+#         docker_script["script"] += "\n"
+#
+#         with open(
+#             file=script_cmd_docker_compose_up,
+#             mode="w",
+#             encoding="utf-8",
+#         ) as fw:
+#             fw.write(docker_script["script"])
+#             fw.write(f"{shlex.join(cmd_docker_compose_up)}\n".replace(DOCKER_COMPOSE.parent.as_posix(), '"${SCRIPT_DIR}"'))
+#             fw.write("\n")
+#             fw.write("exit 0;\n")
+#         os.chmod(
+#             script_cmd_docker_compose_up,
+#             mode=os.stat(script_cmd_docker_compose_up).st_mode | 0o111,
+#         )
+#         scripts.append(script_cmd_docker_compose_up.as_posix())
+#
+#         with open(
+#             file=script_cmd_docker_compose_pull_up,
+#             mode="w",
+#             encoding="utf-8",
+#         ) as fw:
+#             fw.write(docker_script["script"])
+#             fw.write(f"{shlex.join(cmd_docker_compose_pull_up)}\n".replace(DOCKER_COMPOSE.parent.as_posix(), '"${SCRIPT_DIR}"'))
+#             fw.write("\n")
+#             fw.write("exit 0;\n")
+#         os.chmod(
+#             script_cmd_docker_compose_pull_up,
+#             mode=os.stat(script_cmd_docker_compose_pull_up).st_mode | 0o111,
+#         )
+#         scripts.append(script_cmd_docker_compose_pull_up.as_posix())
+#
+#         with open(
+#             file=script_cmd_docker_compose_down,
+#             mode="w",
+#             encoding="utf-8",
+#         ) as fw:
+#             fw.write(docker_script["script"])
+#             fw.write(f"{shlex.join(cmd_docker_compose_down)}\n".replace(DOCKER_COMPOSE.parent.as_posix(), '"${SCRIPT_DIR}"'))
+#             fw.write("\n")
+#             fw.write("exit 0;\n")
+#         os.chmod(
+#             script_cmd_docker_compose_down,
+#             mode=os.stat(script_cmd_docker_compose_down).st_mode | 0o111,
+#         )
+#         scripts.append(script_cmd_docker_compose_down.as_posix())
+#
+#         with open(
+#             file=script_cmd_docker_compose_logs,
+#             mode="w",
+#             encoding="utf-8",
+#         ) as fw:
+#             fw.write(docker_script["script"])
+#             fw.write(f"{shlex.join(cmd_docker_compose_logs)}\n".replace(DOCKER_COMPOSE.parent.as_posix(), '"${SCRIPT_DIR}"'))
+#             fw.write("\n")
+#             fw.write("exit 0;\n")
+#         os.chmod(
+#             script_cmd_docker_compose_logs,
+#             mode=os.stat(script_cmd_docker_compose_logs).st_mode | 0o111,
+#         )
+#         scripts.append(script_cmd_docker_compose_logs.as_posix())
+#
+#         if "group_out" in context.selected_output_names:
+#
+#             # Todo
+#             #  - [ ] rename to a more descriptive name
+#             #############
+#             # GROUP_OUT #
+#             #############
+#
+#             yield Output(
+#                 output_name="group_out",
+#                 value=DOCKER_COMPOSE,
+#             )
+#
+#             yield AssetMaterialization(
+#                 asset_key=context.asset_key_for_output("group_out"),
+#                 metadata={
+#                     "__".join(context.asset_key_for_output("group_out").path): MetadataValue.path(DOCKER_COMPOSE),
+#                     "root_dir": MetadataValue.path(DOCKER_COMPOSE.parent),
+#                     # "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
+#                     "scripts": MetadataValue.json(scripts),
+#                 },
+#             )
+#
+#         if "compose_project_name" in context.selected_output_names:
+#
+#             ########################
+#             # COMPOSE_PROJECT_NAME #
+#             ########################
+#
+#             yield Output(
+#                 output_name="compose_project_name",
+#                 value=compose_project_name,
+#             )
+#
+#             yield AssetMaterialization(
+#                 asset_key=context.asset_key_for_output("compose_project_name"),
+#                 metadata={
+#                     "__".join(context.asset_key_for_output("compose_project_name").path): MetadataValue.path(compose_project_name),
+#                 },
+#             )
+#
+#         if "cmd_docker_compose_up" in context.selected_output_names:
+#
+#             #########################
+#             # CMD_DOCKER_COMPOSE_UP #
+#             #########################
+#
+#             yield Output(
+#                 output_name="cmd_docker_compose_up",
+#                 value={
+#                     "cmd_docker_compose_up": cmd_docker_compose_up,
+#                     "cmd_docker_compose_pull_up": cmd_docker_compose_pull_up,
+#                     "cmd_docker_compose_down": cmd_docker_compose_down,
+#                     "cmd_docker_compose_logs": cmd_docker_compose_logs,
+#                 },
+#             )
+#
+#             yield AssetMaterialization(
+#                 asset_key=context.asset_key_for_output("cmd_docker_compose_up"),
+#                 metadata={
+#                     # "__".join(context.asset_key_for_output("cmd_docker_compose_up").path): MetadataValue.md(
+#                     #     f"```shell\n{' '.join(shlex.quote(s) for s in cmd_docker_compose_up)}\n```"
+#                     # ),
+#                     "cmd_docker_compose_up": MetadataValue.path(
+#                         " ".join(
+#                             shlex.quote(s) if not s in ["&&", ";"] else s
+#                             for s in cmd_docker_compose_up
+#                         )
+#                     ),
+#                     "cmd_docker_compose_pull_up": MetadataValue.path(
+#                         " ".join(
+#                             shlex.quote(s) if not s in ["&&", ";"] else s
+#                             for s in cmd_docker_compose_pull_up
+#                         )
+#                     ),
+#                     "cmd_docker_compose_down": MetadataValue.path(
+#                         " ".join(
+#                             shlex.quote(s) if not s in ["&&", ";"] else s
+#                             for s in cmd_docker_compose_down
+#                         )
+#                     ),
+#                     "cmd_docker_compose_logs": MetadataValue.path(
+#                         " ".join(
+#                             shlex.quote(s) if not s in ["&&", ";"] else s
+#                             for s in cmd_docker_compose_logs
+#                         )
+#                     ),
+#                 },
+#             )
+#
+#     return _op_group_out
+
+
 @op(
     name="group_out",
     ins={
