@@ -10,13 +10,8 @@ __all__ = [
     "ASSET_HEADER_COMPOSE_WORKER",
     "ASSET_HEADER_COMPOSE_LICENSE_SERVER",
     "FEATURES",
-    # "BASE_CONFIGS",
 ]
 
-# import pathlib
-# import getpass
-# import socket
-# from datetime import datetime
 from typing import Generator, MutableMapping, Any
 
 from dagster import (
@@ -28,7 +23,6 @@ from dagster import (
 )
 
 from OpenStudioLandscapes.engine.enums import *
-# from OpenStudioLandscapes.engine.utils import *
 
 
 DOCKER_CONFIG = DockerConfig.LOCAL_HARBOR
@@ -42,7 +36,6 @@ GROUP_COMPOSE_LICENSE_SERVER= constants_compose_license_server.GROUP
 KEY_COMPOSE_LICENSE_SERVER = constants_compose_license_server.KEY
 ASSET_HEADER_COMPOSE_LICENSE_SERVER = constants_compose_license_server.ASSET_HEADER
 ENVIRONMENT_COMPOSE_LICENSE_SERVER = constants_compose_license_server.ENVIRONMENT
-# DOCKER_USE_CACHE_COMPOSE_LICENSE_SERVER = DOCKER_USE_CACHE_GLOBAL or constants_compose_license_server.DOCKER_USE_CACHE
 
 
 from OpenStudioLandscapes.engine.compose import constants as constants_compose
@@ -51,7 +44,6 @@ GROUP_COMPOSE= constants_compose.GROUP
 KEY_COMPOSE = constants_compose.KEY
 ASSET_HEADER_COMPOSE = constants_compose.ASSET_HEADER
 ENVIRONMENT_COMPOSE = constants_compose.ENVIRONMENT
-# DOCKER_USE_CACHE_COMPOSE = DOCKER_USE_CACHE_GLOBAL or constants_compose.DOCKER_USE_CACHE
 
 
 from OpenStudioLandscapes.engine.compose_worker import constants as constants_compose_worker
@@ -60,7 +52,6 @@ GROUP_COMPOSE_WORKER= constants_compose_worker.GROUP
 KEY_COMPOSE_WORKER = constants_compose_worker.KEY
 ASSET_HEADER_COMPOSE_WORKER = constants_compose_worker.ASSET_HEADER
 ENVIRONMENT_COMPOSE_WORKER = constants_compose_worker.ENVIRONMENT
-# DOCKER_USE_CACHE_COMPOSE_WORKER = DOCKER_USE_CACHE_GLOBAL or constants_compose_worker.DOCKER_USE_CACHE
 
 
 GROUP_BASE_ENV = "OpenStudioLandscapes_Env"
