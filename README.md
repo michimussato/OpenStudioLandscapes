@@ -67,8 +67,6 @@
     * [Install](#install)
       * [venv](#venv)
       * [OpenStudioLandscapes](#openstudiolandscapes-1)
-      * [DeadlineDatabase10](#deadlinedatabase10)
-        * [Use Test DB](#use-test-db)
     * [Create Landscape](#create-landscape)
       * [Launch Dagster](#launch-dagster)
       * [Launch Dagster Postgres](#launch-dagster-postgres)
@@ -134,6 +132,7 @@
       * [Setup Feature-`venv` (`[dev]`)](#setup-feature-venv-dev)
       * [Generate README.md for Features](#generate-readmemd-for-features)
       * [nox Documentation](#nox-documentation)
+      * [Clear .nox Directories](#clear-nox-directories)
       * [nox Report](#nox-report)
       * [Issues](#issues-1)
         * [Fix: `pip install -e "../OpenStudioLandscapes/[dev]"`](#fix-pip-install--e-openstudiolandscapesdev)
@@ -1086,29 +1085,6 @@ python -m pip install --upgrade pip setuptools
 
 ```shell
 python -m pip install "git+https://github.com/michimussato/OpenStudioLandscapes.git@main"
-```
-
-#### DeadlineDatabase10
-
-##### Use Test DB
-
-Make sure that the `DeadlineDatabase10` directory has
-appropriate ownership:
-
-```shell
-sudo chown -R 101:65534 /path/to/DeadlineDatabase10
-```
-
-And in `OpenStudioLandscapes.open_studio_landscapes.Deadline.v10_2.assets.env` set
-
-```python
-f"DATABASE_INSTALL_DESTINATION_{KEY}": {
-    "default": [...],                     # <-- Set key-value pairs as desired
-    "test_db_10_2": pathlib.Path(
-        "/path/to/DeadlineDatabase10"
-    ).as_posix(),                         # <--
-    "another_test_db": [...],  # <--
-}["test_db_10_2"]                         # <--- Set to value to be used
 ```
 
 ### Create Landscape

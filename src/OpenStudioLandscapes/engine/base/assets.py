@@ -68,7 +68,6 @@ def apt_packages(
         "xvfb",
         "libegl1",
         "libsm6",
-        "libsm6",
         "libglu1-mesa",
         "libxss1",
     ]
@@ -86,6 +85,7 @@ def apt_packages(
         "libsqlite3-dev",
         "libbz2-dev",
         "iproute2",
+        "liblzma-dev",
     ]
 
     yield Output(_apt_packages)
