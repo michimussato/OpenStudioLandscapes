@@ -2,8 +2,8 @@ __all__ = [
     "factory_feature_out",
     "factory_feature_in",
     "factory_docker_config",
-    "op_compose",
-    "op_group_in",
+    "factory_compose",
+    "factory_group_in",
     "op_group_out",
     "op_env",
     "op_constants",
@@ -351,16 +351,15 @@ def factory_group_in(
 
         kw_keys = list(kwargs.keys())
 
-        # We expect "group_out" or "feature_out"
-        # here for now.
-        # Todo:
-        #  - [ ] find a better solution for this
-        if "group_out" in kw_keys:
-            group_out = kwargs.pop("group_out")
-        elif "feature_out" in kw_keys:
-            group_out = kwargs.pop("feature_out")
+        # We expect an enums.GroupIn value here
+        # Make sure there is only one key
+        if len(kw_keys) == 1:
+            kw_key = kw_keys[0]
         else:
-            raise NotImplementedError
+            raise NotImplementedError()
+        # Access Enum value by key:
+        # https://stackoverflow.com/a/38716384
+        group_out = kwargs.pop(GroupIn(kw_key))
 
         context.log.debug(group_out)
 

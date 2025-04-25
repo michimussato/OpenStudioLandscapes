@@ -1,4 +1,5 @@
 __all__ = [
+    "GroupIn",
     "OpenStudioLandscapesConfig",
     "ComposeScope",
     "ComposeNetworkMode",
@@ -24,6 +25,11 @@ except SyntaxError as e:
     # OpenStudioLandscapes is cloned to local tmp directory while the local clone
     # is *of course* not git-crypt unlock'ed.
     _secrets: dict = {}
+
+
+class GroupIn(enum.StrEnum):
+    BASE_IN = "group_out_base"
+    FEATURE_IN = "feature_out"
 
 
 class OpenStudioLandscapesConfig(enum.StrEnum):

@@ -8,9 +8,10 @@ from dagster import (
 from OpenStudioLandscapes.engine.base.ops import factory_group_in
 
 
+# get_base_in ?
 def get_group_in(
         ASSET_HEADER: dict,
-        ASSET_HEADER_BASE: dict,
+        ASSET_HEADER_PARENT: dict,
         # Todo:
         #  - [ ] To accept an input_name here is not very elegant
         input_name: str = "group_out",
@@ -22,6 +23,7 @@ def get_group_in(
             input_name: In(dict),
         },
         out={
+            # "base_in": Out(dict),
             "group_in": Out(dict),
         },
     )
@@ -33,7 +35,7 @@ def get_group_in(
         # key_prefix=ASSET_HEADER["key_prefix"]: This can be deceiving: Prefixes everything on top of all
         # other Prefixes
         keys_by_input_name={
-            input_name: AssetKey([*ASSET_HEADER_BASE["key_prefix"], input_name]),
+            input_name: AssetKey([*ASSET_HEADER_PARENT["key_prefix"], input_name]),
         },
         keys_by_output_name={
             "group_in": AssetKey([*ASSET_HEADER["key_prefix"], "group_in"]),

@@ -262,7 +262,7 @@ def build_docker_image(
         ),
     },
 )
-def group_out(
+def group_out_base(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
     constants_base: dict,  # pylint: disable=redefined-outer-name

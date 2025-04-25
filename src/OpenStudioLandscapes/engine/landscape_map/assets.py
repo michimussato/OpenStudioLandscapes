@@ -17,6 +17,7 @@ from dagster import (
 )
 
 from OpenStudioLandscapes.engine.constants import *
+from OpenStudioLandscapes.engine.enums import *
 
 
 # Dynamic inputs based on the imported
@@ -42,7 +43,7 @@ if bool(ins):
         **ASSET_HEADER_LANDSCAPE_MAP,
         ins={
             "group_out": AssetIn(
-                AssetKey([*ASSET_HEADER_BASE["key_prefix"], "group_out"]),
+                AssetKey([*ASSET_HEADER_BASE["key_prefix"], str(GroupIn.BASE_IN)]),
             ),
             **ins
         },

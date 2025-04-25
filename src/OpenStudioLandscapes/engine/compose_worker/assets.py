@@ -255,7 +255,7 @@ if bool(ins):
     @asset(
         **ASSET_HEADER_COMPOSE_WORKER,
         ins={
-            "group_out_base": AssetIn(AssetKey([*ASSET_HEADER_BASE["key_prefix"], "group_out"])),
+            "group_out_base": AssetIn(AssetKey([*ASSET_HEADER_BASE["key_prefix"], str(GroupIn.BASE_IN)])),
             **feature_ins,
         },
     )
