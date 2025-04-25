@@ -1295,7 +1295,19 @@ ENVIRONMENT_DAGSTER = {
     "DAGSTER_POSTGRES_DB_PASSWORD": "mysecretpassword",
     "DAGSTER_POSTGRES_DB_NAME": "postgres",
     "DAGSTER_POSTGRES_DB_PORT_CONTAINER": 5432,
-    "DAGSTER_POSTGRES_DB_PORT_HOST": 5432,
+    # Make sure DAGSTER_POSTGRES_DB_PORT_HOST does not clash with other Postgres instances (i.e. OpenCue)
+    #
+    # - kitsu-init-db--2025-04-24-16-22-05-ec4f3f438cfa4f2bb252e83f78356a39                          |    ...done.
+    #   kitsu-init-db--2025-04-24-16-22-05-ec4f3f438cfa4f2bb252e83f78356a39                          | Stopping redis-server: redis-server.
+    #   syncthing--2025-04-24-16-22-05-ec4f3f438cfa4f2bb252e83f78356a39                              | [YVSC6] 2025/04/24 14:56:11 INFO: Failed to acquire [::]:22000/TCP open port on NAT-PMP@172.27.0.1: getting new lease on NAT-PMP@172.27.0.1 (external port 35113 -> internal port 22000): read udp 172.27.0.2:48310->172.27.0.1:5351: recvfrom: connection refused
+    #   syncthing--2025-04-24-16-22-05-ec4f3f438cfa4f2bb252e83f78356a39                              | [YVSC6] 2025/04/24 14:56:11 INFO: Detected 1 NAT service
+    #   kitsu-init-db--2025-04-24-16-22-05-ec4f3f438cfa4f2bb252e83f78356a39 exited with code 0
+    #   Gracefully stopping... (press Ctrl+C again to force)
+    #   Error response from daemon: failed to set up container networking: driver failed programming external connectivity on endpoint opencue-db (b0598f47d9cf106a2cabb934f07e7f4a732aac61c298c9a54bd1bc8081fa0a1a): Bind for 0.0.0.0:5432 failed: port is already allocated
+    # - repository-installer-10-2--2025-04-24-16-22-05-ec4f3f438cfa4f2bb252e83f78356a39 exited with code 0
+    #   Gracefully stopping... (press Ctrl+C again to force)
+    #   Error response from daemon: failed to set up container networking: driver failed programming external connectivity on endpoint opencue-db (c779b0000eddcd26175adb69cc4e405131ce93f8a37825c7386e47dba9eb92ed): Bind for 0.0.0.0:5432 failed: port is already allocated
+    "DAGSTER_POSTGRES_DB_PORT_HOST": 2345,
 }
 
 yml_dagster_postgres = ENVIRONMENT_DAGSTER["DAGSTER_POSTGRES_ROOT_DIR"] / "dagster.yaml"
@@ -1469,11 +1481,11 @@ def dagster_postgres_up(session):
     # nox --session dagster_postgres_up
     # nox --tags dagster_postgres_up
 
-    if not yml_dagster_postgres.exists():
-        write_dagster_postgres_yml()
+    # if not yml_dagster_postgres.exists():
+    write_dagster_postgres_yml()
 
-    if not compose_dagster_postgres.exists():
-        write_dagster_postgres_compose()
+    # if not compose_dagster_postgres.exists():
+    write_dagster_postgres_compose()
 
     session.run(
         *cmd_dagster_postgres,
