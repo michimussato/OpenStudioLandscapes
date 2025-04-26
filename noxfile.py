@@ -470,7 +470,7 @@ def install_features_into_engine(session):
         "pip",
         "install",
         "--upgrade",
-        "--force-reinstall",
+        # "--force-reinstall",
         "pip",
         "setuptools",
         external=True,
