@@ -607,11 +607,11 @@ def op_docker_compose_graph(
         context.log.error(e)
         raise FileNotFoundError("Is Graphviz installed?") from e
 
-    # if "docker_compose_graph" in context.selected_output_names:
-
     ########################
     # DOCKER_COMPOSE_GRAPH #
     ########################
+
+    # if "docker_compose_graph" in context.selected_output_names:
 
     yield Output(
         output_name="docker_compose_graph",
@@ -628,11 +628,11 @@ def op_docker_compose_graph(
         },
     )
 
-    # if "docker_compose_graph_dot" in context.selected_output_names:
-
     ############################
     # DOCKER_COMPOSE_GRAPH_DOT #
     ############################
+
+    # if "docker_compose_graph_dot" in context.selected_output_names:
 
     yield Output(
         output_name="docker_compose_graph_dot",
