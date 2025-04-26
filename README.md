@@ -1138,6 +1138,22 @@ Advanced:
 
 1. [Trust Harbor Registry](#trust-harbor-registry)
 
+```
+cat > /etc/docker/daemon.json << EOF
+{
+  "insecure-registries" : [
+    "http://harbor.farm.evil:80"
+  ],
+  "max-concurrent-uploads": 1
+}
+EOF
+```
+
+```
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+```
+
 Quick alternative whithout local DNS Server (no Pi-Hole):
 
 Add
@@ -1147,6 +1163,13 @@ Add
 127.0.0.1    harbor.farm.evil
 ```
 to `/etc/hosts`
+
+```bash
+# https://stackoverflow.com/a/23549544
+sed -i -e '$a127.0.0.1    dagster.farm.evil' -e '/127.0.0.1    dagster.farm.evil/d' /etc/hosts
+sed -i -e '$a127.0.0.1    postgres-dagster.farm.evil' -e '/127.0.0.1    postgres-dagster.farm.evil/d' /etc/hosts
+sed -i -e '$a127.0.0.1    harbor.farm.evil' -e '/127.0.0.1    harbor.farm.evil/d' /etc/hosts
+```
 
 Log out, log in.
 
