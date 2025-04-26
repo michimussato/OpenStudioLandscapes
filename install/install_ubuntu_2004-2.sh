@@ -47,14 +47,13 @@ sudo groupadd --force docker
 sudo usermod --append --groups docker "$USER"
 
 # Install OpenStudioLandscapes
-python3.11 -m pip install --upgrade pip setuptools --root-user-action ignore
 python3.11 -m venv .venv
 source .venv/bin/activate
-python -m pip install --upgrade pip setuptools
+pip install --upgrade pip setuptools setuptools_scm wheel
 pip install -e .[dev]
 
-# nox -s clone_features
-# nox -s install_features_into_engine
+nox -s clone_features
+nox -s install_features_into_engine
 
 deactivate
 
