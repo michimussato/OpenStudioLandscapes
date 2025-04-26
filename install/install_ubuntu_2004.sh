@@ -11,6 +11,10 @@ apt-get upgrade
 
 apt-get install -y openssh-server
 
+# Set root password
+# sudo su root
+# passwd
+
 sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 
 systemctl enable --now ssh
