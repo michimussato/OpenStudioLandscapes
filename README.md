@@ -1127,12 +1127,9 @@ Log out, log in.
 ```
 nano src/OpenStudioLandscapes/engine/constants.py:
 (de-)select Features
-nano src/OpenStudioLandscapes/engine/constants.py:
-DOCKER_CONFIG = DockerConfig.LOCAL_NO_PUSH
-
 ```
 
-Simple (not for production):
+Simple (not recommended, not for production):
 
 ```shell
 nox --session dagster_mysql  # for production use dagster_postgres

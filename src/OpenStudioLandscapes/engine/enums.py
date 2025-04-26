@@ -74,16 +74,18 @@ class DockerConfig(enum.Enum):
     # Do not:
     # - repeat special characters multiple times (like "__")
     # - use capitals in repository names
-    LOCAL_NO_PUSH = {
-        "docker_push": False,
-        "docker_use_local": True,
-        "docker_registry_url": None,
-        "docker_registry_port": None,
-        "docker_registry_username": None,
-        "docker_registry_password": None,
-        "docker_repository": _REPOSITORY_NAME,
-        "docker_repository_type": DockerRepositoryType.PUBLIC,
-    }
+    # Todo:
+    #  - [ ] LOCAL_NO_PUSH is NOT SUPPORTED YET. Should it be?
+    # LOCAL_NO_PUSH = {
+    #     "docker_push": False,
+    #     "docker_use_local": True,
+    #     "docker_registry_url": None,
+    #     "docker_registry_port": None,
+    #     "docker_registry_username": None,
+    #     "docker_registry_password": None,
+    #     "docker_repository": _REPOSITORY_NAME,
+    #     "docker_repository_type": DockerRepositoryType.PUBLIC,
+    # }
     LOCAL_HARBOR = {
         # https://github.com/goharbor/harbor
         # https://medium.com/@Shamimw/setting-up-harbor-docker-registry-installation-and-pushing-docker-images-a8b3db6fca6a
