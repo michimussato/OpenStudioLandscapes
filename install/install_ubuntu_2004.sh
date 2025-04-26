@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# https://www.baeldung.com/linux/curl-fetched-script-arguments
 
 
 export PYTHON_MAJ="3"
@@ -75,3 +76,5 @@ nox -s install_features_into_engine
 
 nox --sessions pi_hole_prepare
 nox --session harbor_prepare
+
+nox --sessions harbor_up_detach pi_hole_up_detach dagster_postgres_up_detach dagster_postgres
