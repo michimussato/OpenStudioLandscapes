@@ -632,6 +632,7 @@ ENVIRONMENT_PI_HOLE = {
 compose_pi_hole = ENVIRONMENT_PI_HOLE["PI_HOLE_ROOT_DIR"] / "docker-compose.yml"
 
 cmd_pi_hole = [
+    shutil.which("sudo"),
     shutil.which("docker"),
     "compose",
     "--file",
