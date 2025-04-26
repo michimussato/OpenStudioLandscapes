@@ -2,7 +2,7 @@
 # https://www.baeldung.com/linux/curl-fetched-script-arguments
 
 
-apt-get upgrade
+apt-get upgrade -y
 
 
 export PYTHON_MAJ="3"
