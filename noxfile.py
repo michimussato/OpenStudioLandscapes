@@ -1556,11 +1556,11 @@ def dagster_postgres_up_detach(session):
     # nox --session dagster_postgres_up_detach
     # nox --tags dagster_postgres_up_detach
 
-    if not yml_dagster_postgres.exists():
-        write_dagster_postgres_yml()
+    # if not yml_dagster_postgres.exists():
+    write_dagster_postgres_yml()
 
-    if not compose_dagster_postgres.exists():
-        write_dagster_postgres_compose()
+    # if not compose_dagster_postgres.exists():
+    write_dagster_postgres_compose()
 
     session.run(
         *cmd_dagster_postgres,
