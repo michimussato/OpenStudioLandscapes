@@ -1095,7 +1095,7 @@ exit
 sudo apt-get update
 # apt-get upgrade
 
-sudo apt-get install -y openssh-server git curl
+sudo apt-get install -y openssh-server git
 
 # Not really necessary:
 # sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
@@ -1106,7 +1106,7 @@ sudo systemctl enable --now ssh
 ```bash
 # Required while not public
 # 1. https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
-ssh-keygen -f ~/.ssh/id_ed25519 -N '' -t ed25519 -C "michimussato@gmail.com"
+ssh-keygen -f ~/.ssh/id_ed25519 -N '' -t ed25519 -C "<your@email.com>"
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_ed25519
 # 2. https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
@@ -1123,10 +1123,8 @@ cd ~/git/repos/OpenStudioLandscapes
 bash install/install_ubuntu_2004-2.sh
 ```
 
-Log out, log in.
-
 ```
-nano src/OpenStudioLandscapes/engine/constants.py:
+vi src/OpenStudioLandscapes/engine/constants.py:
 (de-)select Features
 ```
 
@@ -1143,12 +1141,17 @@ Advanced:
 Quick alternative whithout local DNS Server (no Pi-Hole):
 
 Add
-- `127.0.0.1    dagster.farm.evil`
-- `127.0.0.1    postgres-dagster.farm.evil`
-- `127.0.0.1    harbor.farm.evil`
+```
+127.0.0.1    dagster.farm.evil
+127.0.0.1    postgres-dagster.farm.evil
+127.0.0.1    harbor.farm.evil
+```
 to `/etc/hosts`
 
+Log out, log in.
+
 ```shell
+source .venv/bin/activate
 nox --session pi_hole_prepare
 nox --session harbor_prepare
 nox --sessions harbor_up_detach dagster_postgres_up_detach dagster_postgres

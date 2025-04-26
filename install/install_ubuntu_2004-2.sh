@@ -9,7 +9,21 @@ export PYTHON_MAJ="3"
 export PYTHON_MIN="11"
 export PYTHON_PAT="11"
 
-sudo apt-get install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev wget pkg-config liblzma-dev libbz2-dev libsqlite3-dev curl
+sudo apt-get install -y \
+    build-essential \
+    zlib1g-dev \
+    libncurses5-dev \
+    libgdbm-dev \
+    libnss3-dev \
+    libssl-dev \
+    libreadline-dev \
+    libffi-dev \
+    wget \
+    pkg-config \
+    liblzma-dev \
+    libbz2-dev \
+    libsqlite3-dev \
+    curl
 
 pushd "$(mktemp -d)" || exit
 
@@ -25,7 +39,15 @@ popd || exit
 
 # Install Docker
 # # https://docs.docker.com/engine/install/ubuntu/
-for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
+for pkg in \
+    docker.io \
+    docker-doc \
+    docker-compose \
+    docker-compose-v2 \
+    podman-docker \
+    containerd \
+    runc\
+    ; do sudo apt-get remove $pkg; done
 sudo apt autoremove -y
 
 sudo apt-get update
@@ -40,7 +62,12 @@ echo \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt-get update
 
-sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+sudo apt-get install -y \
+    docker-ce \
+    docker-ce-cli \
+    containerd.io \
+    docker-buildx-plugin \
+    docker-compose-plugin
 
 # # https://docs.docker.com/engine/install/linux-postinstall/
 sudo groupadd --force docker
