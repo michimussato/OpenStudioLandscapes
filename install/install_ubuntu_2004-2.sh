@@ -9,7 +9,7 @@ export PYTHON_MAJ="3"
 export PYTHON_MIN="11"
 export PYTHON_PAT="11"
 
-apt-get install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev wget pkg-config liblzma-dev libbz2-dev libsqlite3-dev
+apt-get install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev wget pkg-config liblzma-dev libbz2-dev libsqlite3-dev curl
 
 pushd "$(mktemp -d)" || exit
 
