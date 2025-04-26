@@ -12,6 +12,7 @@ def get_docker_compose_graph(
 
     docker_compose_graph = AssetsDefinition.from_op(
         op_docker_compose_graph,
+        can_subset=False,
         group_name=ASSET_HEADER["group_name"],
         key_prefix=ASSET_HEADER["key_prefix"],
         keys_by_input_name={

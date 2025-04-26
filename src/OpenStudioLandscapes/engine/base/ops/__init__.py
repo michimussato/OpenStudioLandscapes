@@ -563,10 +563,14 @@ def op_docker_compose_graph(
 
     # SVG
     svg = docker_compose_dir / f"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.svg"
-    dcg.graph.write(
-        path=svg,
-        format="svg",
-    )
+    try:
+        dcg.graph.write(
+            path=svg,
+            format="svg",
+        )
+    except FileNotFoundError as e:
+        context.log.error(e)
+        raise FileNotFoundError("Is Graphviz installed?") from e
 
     with open(svg, "rb") as fr:
         svg_bytes = fr.read()
@@ -576,10 +580,14 @@ def op_docker_compose_graph(
 
     # PNG
     png = docker_compose_dir / f"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.png"
-    dcg.graph.write(
-        path=png,
-        format="png",
-    )
+    try:
+        dcg.graph.write(
+            path=png,
+            format="png",
+        )
+    except FileNotFoundError as e:
+        context.log.error(e)
+        raise FileNotFoundError("Is Graphviz installed?") from e
 
     # SLOW
     # with open(png, "rb") as fr:
@@ -590,49 +598,53 @@ def op_docker_compose_graph(
 
     # DOT
     dot = docker_compose_dir / f"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.dot"
-    dcg.graph.write(
-        path=dot,
-        format="dot",
+    try:
+        dcg.graph.write(
+            path=dot,
+            format="dot",
+        )
+    except FileNotFoundError as e:
+        context.log.error(e)
+        raise FileNotFoundError("Is Graphviz installed?") from e
+
+    # if "docker_compose_graph" in context.selected_output_names:
+
+    ########################
+    # DOCKER_COMPOSE_GRAPH #
+    ########################
+
+    yield Output(
+        output_name="docker_compose_graph",
+        value=dcg.graph,
     )
 
-    if "docker_compose_graph" in context.selected_output_names:
+    yield AssetMaterialization(
+        asset_key=context.asset_key_for_output("docker_compose_graph"),
+        metadata={
+            "svg": MetadataValue.md(svg_md),
+            "__".join(context.asset_key_for_output("docker_compose_graph").path): MetadataValue.json(str(dcg.graph)),
+            "svg_path": MetadataValue.path(svg),
+            "png_path": MetadataValue.path(png),
+        },
+    )
 
-        ########################
-        # DOCKER_COMPOSE_GRAPH #
-        ########################
+    # if "docker_compose_graph_dot" in context.selected_output_names:
 
-        yield Output(
-            output_name="docker_compose_graph",
-            value=dcg.graph,
-        )
+    ############################
+    # DOCKER_COMPOSE_GRAPH_DOT #
+    ############################
 
-        yield AssetMaterialization(
-            asset_key=context.asset_key_for_output("docker_compose_graph"),
-            metadata={
-                "svg": MetadataValue.md(svg_md),
-                "__".join(context.asset_key_for_output("docker_compose_graph").path): MetadataValue.json(str(dcg.graph)),
-                "svg_path": MetadataValue.path(svg),
-                "png_path": MetadataValue.path(png),
-            },
-        )
+    yield Output(
+        output_name="docker_compose_graph_dot",
+        value=dot,
+    )
 
-    if "docker_compose_graph_dot" in context.selected_output_names:
-
-        ############################
-        # DOCKER_COMPOSE_GRAPH_DOT #
-        ############################
-
-        yield Output(
-            output_name="docker_compose_graph_dot",
-            value=dot,
-        )
-
-        yield AssetMaterialization(
-            asset_key=context.asset_key_for_output("docker_compose_graph_dot"),
-            metadata={
-                "__".join(context.asset_key_for_output("docker_compose_graph_dot").path): MetadataValue.path(dot),
-            },
-        )
+    yield AssetMaterialization(
+        asset_key=context.asset_key_for_output("docker_compose_graph_dot"),
+        metadata={
+            "__".join(context.asset_key_for_output("docker_compose_graph_dot").path): MetadataValue.path(dot),
+        },
+    )
 
 
 # Todo

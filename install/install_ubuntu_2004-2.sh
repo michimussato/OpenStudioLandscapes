@@ -47,6 +47,7 @@ sudo groupadd --force docker
 sudo usermod --append --groups docker "$USER"
 
 # Install OpenStudioLandscapes
+sudo apt-get install -y graphviz
 python3.11 -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip setuptools setuptools_scm wheel

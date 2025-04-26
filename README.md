@@ -616,11 +616,11 @@ and add, then save:
 # Todo
 #  - [ ] move to `nox`?
 {
-  [...],
+  # [...],
   "insecure-registries" : [
     "http://harbor.farm.evil:80",
   ],
-  [...],
+  # [...],
 }
 ```
 
@@ -644,9 +644,9 @@ and set, then save:
 
 ```
 {
-  [...],
+  # [...],
   "max-concurrent-uploads": 1,
-  [...],
+  # [...],
 }
 ```
 
@@ -1090,15 +1090,16 @@ curl -sSL https://raw.githubusercontent.com/michimussato/OpenStudioLandscapes/re
 # Set root password
 sudo su root
 passwd
+exit
 
-apt-get update
+sudo apt-get update
 # apt-get upgrade
 
-apt-get install -y openssh-server git
+sudo apt-get install -y openssh-server git curl
 
-sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 
-systemctl enable --now ssh
+sudo systemctl enable --now ssh
 ```
 
 ```bash
@@ -1118,7 +1119,7 @@ mkdir -p ~/git/repos/OpenStudioLandscapes
 git -C ~/git/repos clone git@github.com:michimussato/OpenStudioLandscapes.git
 cd ~/git/repos/OpenStudioLandscapes
 
-sudo bash install/install_ubuntu_2004-2.sh
+bash install/install_ubuntu_2004-2.sh
 ```
 
 Log out, log in.
@@ -1141,11 +1142,25 @@ Advanced:
 
 1. [Trust Harbor Registry](#trust-harbor-registry)
 
+Quick alternative whithout local DNS Server (no Pi-Hole):
+
+Add
+- `127.0.0.1    dagster.farm.evil`
+- `127.0.0.1    postgres-dagster.farm.evil`
+- `127.0.0.1    harbor.farm.evil`
+to `/etc/hosts`
+
 ```shell
 nox --session pi_hole_prepare
 nox --session harbor_prepare
-nox --sessions harbor_up_detach pi_hole_up_detach dagster_postgres_up_detach dagster_postgres
+nox --sessions harbor_up_detach dagster_postgres_up_detach dagster_postgres
 ```
+
+Open Harbor URL:
+http://localhost:80
+
+Create `[x] Public` project `openstudiolandscapes`.
+(You can delete `library`)
 
 #### venv
 

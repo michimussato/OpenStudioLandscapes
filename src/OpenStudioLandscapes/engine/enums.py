@@ -84,26 +84,6 @@ class DockerConfig(enum.Enum):
         "docker_repository": _REPOSITORY_NAME,
         "docker_repository_type": DockerRepositoryType.PUBLIC,
     }
-    # DOCKER_HUB = {
-    #     "docker_push": True,
-    #     "docker_use_local": False,
-    #     "docker_registry_url": "docker.io",
-    #     "docker_registry_port": None,
-    #     "docker_registry_username": _secrets.get("SECRET_DOCKER_DOCKERHUB_USERNAME"),
-    #     "docker_registry_password": _secrets.get("SECRET_DOCKER_DOCKERHUB_PASSWORD"),
-    #     "docker_repository": _REPOSITORY_NAME,
-    #     "docker_repository_type": DockerRepositoryType.PUBLIC,
-    # }
-    # LOCAL_LOCALHOST = {
-    #     "docker_push": True,
-    #     "docker_use_local": True,
-    #     "docker_registry_url": DockerRegistry.LOCAL_LOCALHOST,
-    #     "docker_registry_port": "443",
-    #     "docker_registry_username": None,
-    #     "docker_registry_password": None,
-    #     "docker_repository": _REPOSITORY_NAME,
-    #     "docker_repository_type": DockerRepositoryType.PUBLIC,
-    # }
     LOCAL_HARBOR = {
         # https://github.com/goharbor/harbor
         # https://medium.com/@Shamimw/setting-up-harbor-docker-registry-installation-and-pushing-docker-images-a8b3db6fca6a
@@ -116,13 +96,3 @@ class DockerConfig(enum.Enum):
         "docker_repository": _REPOSITORY_NAME,
         "docker_repository_type": DockerRepositoryType.PUBLIC,
     }
-    # LOCAL_MINIBOSS = {
-    #     "docker_push": True,
-    #     "docker_use_local": True,
-    #     "docker_registry_url": DockerRegistry.LOCAL_MINIBOSS,
-    #     "docker_registry_port": "5000",
-    #     "docker_registry_username": None,
-    #     "docker_registry_password": None,
-    #     "docker_repository": _REPOSITORY_NAME,
-    #     "docker_repository_type": DockerRepositoryType.PUBLIC,
-    # }
