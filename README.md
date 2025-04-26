@@ -1075,7 +1075,7 @@ pip install -e ".[dev]"
 
 ### Install
 
-Todo: `SECRETS`
+Todo (?): `SECRETS`
 
 #### Ubuntu
 
@@ -1097,7 +1097,8 @@ sudo apt-get update
 
 sudo apt-get install -y openssh-server git curl
 
-sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+# Not really necessary:
+# sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 
 sudo systemctl enable --now ssh
 ```
@@ -1105,7 +1106,7 @@ sudo systemctl enable --now ssh
 ```bash
 # Required while not public
 # 1. https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
-ssh-keygen -t ed25519 -C "michimussato@gmail.com"
+ssh-keygen -f ~/.ssh/id_ed25519 -N '' -t ed25519 -C "michimussato@gmail.com"
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_ed25519
 # 2. https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
