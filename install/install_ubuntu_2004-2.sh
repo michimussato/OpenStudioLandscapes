@@ -9,7 +9,7 @@ export PYTHON_MAJ="3"
 export PYTHON_MIN="11"
 export PYTHON_PAT="11"
 
-apt-get install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev wget
+apt-get install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev wget pkg-config liblzma-dev libbz2-dev libsqlite3-dev
 
 pushd "$(mktemp -d)" || exit
 
@@ -41,7 +41,7 @@ apt-get update
 
 apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-
+python3.11 -m pip install --upgrade pip setuptools --root-user-action ignore
 python3.11 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip setuptools
