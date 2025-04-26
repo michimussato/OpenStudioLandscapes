@@ -65,6 +65,8 @@
       * [Repository-Installer 10.2](#repository-installer-102)
     * [Clone](#clone)
     * [Install](#install)
+      * [Ubuntu](#ubuntu-1)
+        * [22.04](#2204)
       * [venv](#venv)
       * [OpenStudioLandscapes](#openstudiolandscapes-1)
     * [Create Landscape](#create-landscape)
@@ -1072,6 +1074,78 @@ pip install -e ".[dev]"
 ```
 
 ### Install
+
+Todo: `SECRETS`
+
+#### Ubuntu
+
+##### 22.04
+
+```
+curl -sSL https://raw.githubusercontent.com/michimussato/OpenStudioLandscapes/refs/heads/main/install/install_ubuntu_2004.sh?token=GHSAT0AAAAAAC62UOMCEX7JFXAS4WBT67E62AMTKUQ | sudo bash -s -- value1 value2
+# curl -sf -L http://0.0.0.0:8080/cgi-bin/script.sh | sudo bash -s -- value1 value2
+```
+
+```bash
+# Set root password
+sudo su root
+passwd
+
+apt-get update
+# apt-get upgrade
+
+apt-get install -y openssh-server git
+
+sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+
+systemctl enable --now ssh
+```
+
+```bash
+# Required while not public
+# 1. https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
+ssh-keygen -t ed25519 -C "michimussato@gmail.com"
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+# 2. https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
+# 3. https://github.com/settings/keys
+cat ~/.ssh/id_ed25519.pub
+ssh-keyscan github.com >> ~/.ssh/known_hosts
+```
+
+```bash
+mkdir -p ~/git/repos/OpenStudioLandscapes
+git -C ~/git/repos clone git@github.com:michimussato/OpenStudioLandscapes.git
+cd ~/git/repos/OpenStudioLandscapes
+
+sudo bash install/install_ubuntu_2004-2.sh
+```
+
+Log out, log in.
+
+```
+nano src/OpenStudioLandscapes/engine/constants.py:
+(de-)select Features
+nano src/OpenStudioLandscapes/engine/constants.py:
+DOCKER_CONFIG = DockerConfig.LOCAL_NO_PUSH
+
+```
+
+Simple (not for production):
+
+```shell
+nox --session dagster_mysql  # for production use dagster_postgres
+```
+
+Advanced:
+
+1. [Trust Harbor Registry](#trust-harbor-registry)
+
+```shell
+nox --session pi_hole_prepare
+nox --session harbor_prepare
+nox --sessions harbor_up_detach pi_hole_up_detach dagster_postgres_up_detach dagster_postgres
+```
 
 #### venv
 

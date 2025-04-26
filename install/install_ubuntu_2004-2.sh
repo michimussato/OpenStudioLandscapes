@@ -4,7 +4,7 @@
 
 apt-get upgrade -y
 
-
+# Install Python 3.11
 export PYTHON_MAJ="3"
 export PYTHON_MIN="11"
 export PYTHON_PAT="11"
@@ -24,7 +24,7 @@ make altinstall
 popd || exit
 
 # Install Docker
-# https://docs.docker.com/engine/install/ubuntu/
+# # https://docs.docker.com/engine/install/ubuntu/
 for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
 apt autoremove -y
 
@@ -41,6 +41,11 @@ apt-get update
 
 apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
+# # https://docs.docker.com/engine/install/linux-postinstall/
+groupadd --force docker
+usermod --append --groups docker "$USER"
+
+# Install OpenStudioLandscapes
 python3.11 -m pip install --upgrade pip setuptools --root-user-action ignore
 python3.11 -m venv .venv
 source .venv/bin/activate
@@ -50,5 +55,6 @@ pip install -e .[dev]
 nox -s clone_features
 nox -s install_features_into_engine
 
-nox --sessions pi_hole_prepare
-nox --session harbor_prepare
+deactivate
+
+exit 0

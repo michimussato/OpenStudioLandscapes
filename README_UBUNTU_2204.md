@@ -16,7 +16,6 @@ Install Python 3.11.11
 ```
 sudo apt-get install -y build-essential zlib1g-dev pkg-config libbz2-dev libsqlite3-dev liblzma-dev libssl-dev
 sudo apt-get install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev wget
-sudo apt-get install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev wget
 
 export PYTHON_MAJ="3"
 export PYTHON_MIN="11"
