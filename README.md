@@ -1096,11 +1096,20 @@ sudo apt-get update
 # apt-get upgrade
 
 sudo apt-get install -y openssh-server git
+sudo apt -y autoremove
 
 # Not really necessary:
 # sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 
 sudo systemctl enable --now ssh
+```
+
+
+
+```bash
+# https://askubuntu.com/a/1322296
+sudo sed -i -e '$aAPT::Periodic::Update-Package-Lists "0";' -e '/APT::Periodic::Update-Package-Lists "1";/d' /etc/apt/apt.conf.d/20auto-upgrades
+sudo sed -i -e '$aAPT::Periodic::Unattended-Upgrade "0";' -e '/APT::Periodic::Unattended-Upgrade "1";/d' /etc/apt/apt.conf.d/20auto-upgrades
 ```
 
 ```bash
@@ -1139,7 +1148,9 @@ Advanced:
 1. [Trust Harbor Registry](#trust-harbor-registry)
 
 ```
-cat > /etc/docker/daemon.json << EOF
+sudo mkdir -p /etc/docker
+sudo touch /etc/docker/daemon.json
+sudo cat > /etc/docker/daemon.json << EOF
 {
   "insecure-registries" : [
     "http://harbor.farm.evil:80"
@@ -1166,9 +1177,9 @@ to `/etc/hosts`
 
 ```bash
 # https://stackoverflow.com/a/23549544
-sed -i -e '$a127.0.0.1    dagster.farm.evil' -e '/127.0.0.1    dagster.farm.evil/d' /etc/hosts
-sed -i -e '$a127.0.0.1    postgres-dagster.farm.evil' -e '/127.0.0.1    postgres-dagster.farm.evil/d' /etc/hosts
-sed -i -e '$a127.0.0.1    harbor.farm.evil' -e '/127.0.0.1    harbor.farm.evil/d' /etc/hosts
+sudo sed -i -e '$a127.0.0.1    dagster.farm.evil' -e '/127.0.0.1    dagster.farm.evil/d' /etc/hosts
+sudo sed -i -e '$a127.0.0.1    postgres-dagster.farm.evil' -e '/127.0.0.1    postgres-dagster.farm.evil/d' /etc/hosts
+sudo sed -i -e '$a127.0.0.1    harbor.farm.evil' -e '/127.0.0.1    harbor.farm.evil/d' /etc/hosts
 ```
 
 Log out, log in.
