@@ -156,7 +156,8 @@ def _docker_push(
 
     try:
         docker_client.push(
-            x=tags_full
+            x=tags_full,
+            dagster_context=context,
         )
     except DockerException as e:
         context.log.exception(e)
