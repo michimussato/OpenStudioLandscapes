@@ -1095,7 +1095,7 @@ exit
 sudo apt-get update
 # apt-get upgrade
 
-sudo apt-get install -y openssh-server git
+sudo apt-get install -y openssh-server git htop
 sudo apt -y autoremove
 
 # Not really necessary:
@@ -1103,8 +1103,6 @@ sudo apt -y autoremove
 
 sudo systemctl enable --now ssh
 ```
-
-
 
 ```bash
 # https://askubuntu.com/a/1322296
@@ -1158,6 +1156,35 @@ sudo cat > /etc/docker/daemon.json << EOF
   "max-concurrent-uploads": 1
 }
 EOF
+
+sudo -s << EOF
+rm -f -- /tmp/installbuilder_installer*.log
+
+${NFS_INSTALLERS_ROOT}/${PACKAGE}/DeadlineRepository-${DEADLINE_VERSION}-linux-x64-installer.run \
+    --mode unattended \
+    --prefix /opt/Thinkbox/DeadlineRepository10 \
+    --setpermissions true \
+    --dbtype MongoDB \
+    --installmongodb true \
+    --dbInstallationType downloadDB \
+    --dbLicenseAcceptance accept \
+    --mongodir /opt/Thinkbox/DeadlineDatabase10 \
+    --dbListeningPort $DEADLINE_REPOSITORY_MONGODB_LISTEN_PORT \
+    --dbname $DEADLINE_REPOSITORY_MONGODB_NAME \
+    --secretsAdminName $DEADLINE_SECRETS_ADMIN_NAME \
+    --secretsAdminPassword $DEADLINE_SECRETS_ADMIN_PW \
+    --requireSSL true \
+    --certgen_outdir ${DEADLINE_REPOSITORY_CERTIFICATE_DIR} \
+    --certgen_password $DEADLINE_REPOSITORY_CERTIFICATE_PASSWORD \
+    --createX509dbuser true \
+    --installSecretsManagement true \
+    --importrepositorysettings false && 
+
+chmod a+r -R ${DEADLINE_REPOSITORY_CERTIFICATE_DIR} &
+
+while [[ ! -f /tmp/installbuilder_installer.log ]]; do sleep 1; done; tail -f /tmp/installbuilder_installer.log | grep -E --color=always '|^Script exit code: 1|^Executing ' &
+
+EOF
 ```
 
 ```
@@ -1165,7 +1192,7 @@ sudo systemctl daemon-reload
 sudo systemctl restart docker
 ```
 
-Quick alternative whithout local DNS Server (no Pi-Hole):
+Quick alternative without local DNS Server (no Pi-Hole):
 
 Add
 ```

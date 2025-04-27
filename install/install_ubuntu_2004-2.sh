@@ -2,7 +2,12 @@
 # https://www.baeldung.com/linux/curl-fetched-script-arguments
 
 
-sudo apt-get upgrade -y || echo "Update in progress in the background. Let the process finish and run this script afterwards." && exit 1
+# https://itsfoss.com/could-not-get-lock-error/
+# stat /var/lib/dpkg/lock
+# stat /var/lib/dpkg/lock-frontend
+# ps aux | grep -i apt
+
+sudo apt-get upgrade -y  # || echo "Update in progress in the background. Let the process finish and run this script afterwards." && exit 1
 
 # Install Python 3.11
 export PYTHON_MAJ="3"
