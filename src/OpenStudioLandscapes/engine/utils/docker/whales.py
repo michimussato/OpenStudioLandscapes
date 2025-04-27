@@ -4,7 +4,7 @@ __all__ = [
 
 import pathlib
 
-from python_on_whales import DockerClient, Image, Builder, DockerException
+from python_on_whales import DockerClient, Image, DockerException
 
 from dagster import (
     AssetExecutionContext,
@@ -38,7 +38,6 @@ def docker_build(
     docker_config: DockerConfig,
     docker_file: pathlib.Path,
     context_path: pathlib.Path,
-    builder: Builder = None,
     docker_use_cache: bool = True,
     image_data: dict = None,
 ) -> list[str] | None:
@@ -113,6 +112,7 @@ def docker_build(
                 cache=docker_use_cache,
                 tags=tags,
                 pull=True,
+                dagster_context=context,
             )
         except DockerException as docker_e:
 

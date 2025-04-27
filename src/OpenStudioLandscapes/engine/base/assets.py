@@ -225,6 +225,34 @@ def build_docker_image(
 
     context.log.info(image_data)
 
+    # args = ['/usr/bin/docker', 'build', '--quiet', '--pull', '--file',
+    #         '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-25-12-31-19-f681069a82bb4e85b7498b9912c9feba/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles/Dockerfile',
+    #         '--tag',
+    #         'openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-04-25-12-31-19-f681069a82bb4e85b7498b9912c9febac',
+    #         '--tag',
+    #         'harbor.farm.evil:80/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-04-25-12-31-19-f681069a82bb4e85b7498b9912c9febac',
+    #         '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-25-12-31-19-f681069a82bb4e85b7498b9912c9feba/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles']
+
+    # proc_build = subprocess.Popen(
+    #     args,
+    #     stdout=subprocess.PIPE,
+    #     stderr=subprocess.PIPE,
+    # )
+    #
+    # handles = (proc_build.stdout, proc_build.stderr)
+    # labels = ("stdout", "stderr")
+    # functions = (context.log.info, context.log.warning)
+    # logs = iterate_fds(
+    #     handles=handles,
+    #     labels=labels,
+    #     functions=functions,
+    #     live_print=True,
+    # )
+    #
+    # for _label, _function in zip(labels, functions):
+    #     if bool(logs[_label]):
+    #         _function(logs[_label].decode("utf-8"))
+
     tags_list: list = docker_build(
         context=context,
         docker_config=docker_config,
