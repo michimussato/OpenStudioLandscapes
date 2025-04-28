@@ -129,6 +129,8 @@ def docker_build(
                 cache=docker_use_cache,
                 tags=tags,
                 pull=True,
+                quiet=False,
+                progress="plain",
                 # dagster_context=context,
             )
         except DockerException as docker_e:
@@ -146,6 +148,8 @@ def docker_build(
                 context=context,
                 docker_client=docker_client,
                 tags_full=tags_full,
+                progress="plain",
+                quiet=False,
             )
             context.log.debug(f"Push successful.")
 
@@ -167,6 +171,8 @@ def _docker_push(
     context: AssetExecutionContext,
     docker_client: DockerClient,
     tags_full: list[str],
+    progress: str = "plain",
+    quiet: bool = False,
 ) -> None:
 
     context.log.info(f"Pushing {', '.join(tags_full)}...")
@@ -174,6 +180,8 @@ def _docker_push(
     try:
         docker_client.push(
             x=tags_full,
+            progress=progress,
+            quiet=quiet,
             dagster_context=context,
         )
     except DockerException as e:
