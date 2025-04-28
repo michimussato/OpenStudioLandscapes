@@ -42,6 +42,23 @@ def docker_build(
     image_data: dict = None,
 ) -> list[str] | None:
 
+    # python_on_whales.exceptions.DockerException: The command executed was `/usr/bin/docker build --quiet --pull --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-28-21-54-31-8b90c04c47664f59b3f78426c05f5135/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles/Dockerfile --tag openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-04-28-21-54-31-8b90c04c47664f59b3f78426c05f5135 --tag harbor.farm.evil:80/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-04-28-21-54-31-8b90c04c47664f59b3f78426c05f5135 /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-28-21-54-31-8b90c04c47664f59b3f78426c05f5135/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles`.
+    # It returned with code 1
+    # The content of stdout is ''
+    # The content of stderr is 'Dockerfile:29
+    # --------------------
+    #   27 |
+    #   28 |
+    #   29 | >>> RUN apt-get install -y --no-install-recommends 'build-essential'
+    #   30 |     RUN apt-get install -y --no-install-recommends 'pkg-config'
+    #   31 |     RUN apt-get install -y --no-install-recommends 'zlib1g-dev'
+    # --------------------
+    # ERROR: failed to solve: process "/bin/sh -c apt-get install -y --no-install-recommends 'build-essential'" did not complete successfully: exit code: 100
+
+    # add --no-cache
+    # add --progress plain
+    # remove --quiet
+
     _docker_config = docker_config.value
 
     # https://docs.docker.com/build/cache/backends/local/
@@ -112,7 +129,7 @@ def docker_build(
                 cache=docker_use_cache,
                 tags=tags,
                 pull=True,
-                dagster_context=context,
+                # dagster_context=context,
             )
         except DockerException as docker_e:
 
