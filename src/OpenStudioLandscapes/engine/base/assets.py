@@ -225,13 +225,18 @@ def build_docker_image(
 
     context.log.info(image_data)
 
-    # args = ['/usr/bin/docker', 'build', '--quiet', '--pull', '--file',
-    #         '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-25-12-31-19-f681069a82bb4e85b7498b9912c9feba/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles/Dockerfile',
-    #         '--tag',
-    #         'openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-04-25-12-31-19-f681069a82bb4e85b7498b9912c9febac',
-    #         '--tag',
-    #         'harbor.farm.evil:80/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-04-25-12-31-19-f681069a82bb4e85b7498b9912c9febac',
-    #         '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-25-12-31-19-f681069a82bb4e85b7498b9912c9feba/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles']
+    # args = [
+    #     '/usr/bin/docker',
+    #     'build',
+    #     '--progress', 'plain',
+    #     '--pull',
+    #     '--file',
+    #     '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-28-21-54-31-8b90c04c47664f59b3f78426c05f5135/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles/Dockerfile',
+    #     '--no-cache',
+    #     '--tag', 'openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-04-28-21-54-31-8b90c04c47664f59b3f78426c05f5135',
+    #     '--tag', 'harbor.farm.evil:80/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-04-28-21-54-31-8b90c04c47664f59b3f78426c05f5135',
+    #     '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-28-21-54-31-8b90c04c47664f59b3f78426c05f5135/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles',
+    # ]
 
     # proc_build = subprocess.Popen(
     #     args,
