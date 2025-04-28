@@ -133,7 +133,7 @@ def docker_build(
                 pull=True,
                 quiet=False,
                 progress="plain",
-                # dagster_context=context,
+                dagster_context=context,
             )
         except DockerException as docker_e:
 
