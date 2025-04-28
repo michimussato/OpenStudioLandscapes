@@ -93,6 +93,7 @@ def docker_build(
                     server=server,
                     username=username,
                     password=password,
+                    dagster_context=context,
                 )
                 context.log.debug("Authentication successful.")
             except DockerException as e:
