@@ -26,7 +26,7 @@ from OpenStudioLandscapes.engine.enums import *
 
 
 DOCKER_CONFIG = DockerConfig.LOCAL_HARBOR
-DOCKER_USE_CACHE_GLOBAL = True
+DOCKER_USE_CACHE_GLOBAL = False
 DOCKER_USE_CACHE_BASE = DOCKER_USE_CACHE_GLOBAL or False
 
 

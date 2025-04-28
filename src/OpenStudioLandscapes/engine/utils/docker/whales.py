@@ -59,6 +59,8 @@ def docker_build(
     # add --progress plain
     # remove --quiet
 
+    context.log.info(f"{docker_use_cache = }")
+
     _docker_config = docker_config.value
 
     # https://docs.docker.com/build/cache/backends/local/
