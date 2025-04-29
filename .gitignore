@@ -78,14 +78,13 @@ tmp*/
 
 .landscapes/.harbor/bin/*
 !.landscapes/.harbor/bin/.gitkeep
-!.landscapes/.harbor/bin/harbor.yml
-!.landscapes/.harbor/bin/docker-compose.yml
+
+.landscapes/.harbor/download/*
+!.landscapes/.harbor/download/.gitkeep
 
 # Pi-hole
-!.landscapes/.pi-hole/
+.landscapes/.pi-hole/*
 !.landscapes/.pi-hole/.gitkeep
-
-.landscapes/.pi-hole/*/
 
 # Payloads
 .payload/data/

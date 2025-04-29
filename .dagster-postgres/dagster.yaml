@@ -11,7 +11,7 @@ storage:
       db_name: postgres
       hostname: postgres-dagster.farm.evil
       password: mysecretpassword
-      port: 5432
+      port: 2345
       username: postgres
 telemetry:
   enabled: false

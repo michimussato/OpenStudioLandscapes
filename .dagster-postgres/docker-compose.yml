@@ -15,7 +15,7 @@ services:
     networks:
     - postgres-dagster
     ports:
-    - 5432:5432
+    - 2345:5432
     restart: unless-stopped
     volumes:
     - /home/michael/git/repos/OpenStudioLandscapes/.dagster-postgres/.postgres:/var/lib/postgresql/data:rw
