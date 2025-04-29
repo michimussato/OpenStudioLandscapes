@@ -95,6 +95,9 @@ sudo apt-get install -y \
 sudo groupadd --force docker
 sudo usermod --append --groups docker "$USER"
 
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+
 # Install OpenStudioLandscapes
 sudo apt-get install -y graphviz
 python3.11 -m venv .venv
@@ -106,6 +109,18 @@ nox -s clone_features
 nox -s install_features_into_engine
 
 deactivate
+
+read -e -p "Do you want me to add entries to /etc/hosts? " choice
+[[ "$choice" == [Yy]* ]] \
+    && sudo sed -i -e '$a127.0.0.1    dagster.farm.evil' -e '/127.0.0.1    dagster.farm.evil/d' /etc/hosts \
+    && sudo sed -i -e '$a127.0.0.1    postgres-dagster.farm.evil' -e '/127.0.0.1    postgres-dagster.farm.evil/d' /etc/hosts \
+    && sudo sed -i -e '$a127.0.0.1    harbor.farm.evil' -e '/127.0.0.1    harbor.farm.evil/d' /etc/hosts \
+|| echo "Ok, I didn't."
+
+echo ""
+echo "Your /etc/hosts file looks like:"
+sudo cat /etc/hosts
+echo ""
 
 echo "Reboot system please."
 

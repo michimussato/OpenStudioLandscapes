@@ -1076,8 +1076,6 @@ pip install -e ".[dev]"
 
 ### Install
 
-Todo (?): `SECRETS`
-
 #### Ubuntu
 
 ##### 22.04 Desktop (minimal, with GUI, with third party Drivers)
@@ -1098,7 +1096,8 @@ sudo apt-get upgrade -y
 # apt-get upgrade
 
 sudo apt-get install -y openssh-server git htop vim
-sudo apt -y autoremove
+sudo apt-get -y autoremove
+sudo apt-get clean
 
 # Not really necessary:
 # sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
@@ -1129,11 +1128,11 @@ mkdir -p ~/git/repos/OpenStudioLandscapes
 git -C ~/git/repos clone git@github.com:michimussato/OpenStudioLandscapes.git
 cd ~/git/repos/OpenStudioLandscapes
 
-bash install/install_ubuntu_2004-2.sh
+bash install/install_ubuntu_2204.sh
 ```
 
 Enable/Disable Features:
-```
+```bash
 vim src/OpenStudioLandscapes/engine/constants.py
 ```
 
@@ -1145,25 +1144,15 @@ nox --session dagster_mysql  # for production use dagster_postgres
 
 Advanced:
 
-```
-sudo systemctl daemon-reload
-sudo systemctl restart docker
-```
-
 Quick alternative without local DNS Server (no Pi-Hole):
 
-Add
-- `dagster.farm.evil`
-- `postgres-dagster.farm.evil`
-- `harbor.farm.evil`
-to `/etc/hosts`
+The installation script can add the following entries
+to `/etc/hosts` if you don't have/want a local DNS
+server (i.e. Pi-Hole) running:
 
-```bash
-# https://stackoverflow.com/a/23549544
-sudo sed -i -e '$a127.0.0.1    dagster.farm.evil' -e '/127.0.0.1    dagster.farm.evil/d' /etc/hosts
-sudo sed -i -e '$a127.0.0.1    postgres-dagster.farm.evil' -e '/127.0.0.1    postgres-dagster.farm.evil/d' /etc/hosts
-sudo sed -i -e '$a127.0.0.1    harbor.farm.evil' -e '/127.0.0.1    harbor.farm.evil/d' /etc/hosts
-```
+- `127.0.0.1    dagster.farm.evil`
+- `127.0.0.1    postgres-dagster.farm.evil`
+- `127.0.0.1    harbor.farm.evil`
 
 Log out, log in.
 
@@ -1176,10 +1165,20 @@ nox > Session dagster_postgres_up_detach failed.
 ```
 
 ```shell
+cd ~/git/repos/OpenStudioLandscapes
 source .venv/bin/activate
-nox --session pi_hole_prepare
 nox --session harbor_prepare
+```
+
+Without Pi-Hole
+```shell
 nox --sessions harbor_up_detach dagster_postgres_up_detach dagster_postgres
+```
+
+Command with Pi-Hole:
+```shell
+nox --session pi_hole_prepare
+nox --sessions harbor_up_detach pi_hole_up_detach dagster_postgres_up_detach dagster_postgres
 ```
 
 Open Harbor URL:
@@ -2288,6 +2287,7 @@ to learn more.
   - `.dagster-postgres/dagster.yaml`
   - `.dagster-postgres/docker-compose.yml`
   - etc.
+- [ ] Remove `SECRETS` and implement `.env` or something similar
 
 ---
 
