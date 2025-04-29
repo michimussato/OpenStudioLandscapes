@@ -66,7 +66,7 @@
     * [Clone](#clone)
     * [Install](#install)
       * [Ubuntu](#ubuntu-1)
-        * [22.04](#2204)
+        * [22.04 Desktop (minimal, with GUI, with third party Drivers)](#2204-desktop-minimal-with-gui-with-third-party-drivers)
       * [venv](#venv)
       * [OpenStudioLandscapes](#openstudiolandscapes-1)
     * [Create Landscape](#create-landscape)
@@ -487,6 +487,7 @@ Former employers, among others:
 - `venv`
 - [Pi-hole](https://pi-hole.net/)
 - [Harbor](https://github.com/goharbor/harbor)
+- `python-on-whales` (`PYTHON_ON_WHALES_DEBUG=1`)
 
 ### Create `venv` with `nox`
 
@@ -1079,7 +1080,7 @@ Todo (?): `SECRETS`
 
 #### Ubuntu
 
-##### 22.04
+##### 22.04 Desktop (minimal, with GUI, with third party Drivers)
 
 ```
 curl -sSL https://raw.githubusercontent.com/michimussato/OpenStudioLandscapes/refs/heads/main/install/install_ubuntu_2004.sh?token=GHSAT0AAAAAAC62UOMCEX7JFXAS4WBT67E62AMTKUQ | sudo bash -s -- value1 value2
@@ -1088,14 +1089,15 @@ curl -sSL https://raw.githubusercontent.com/michimussato/OpenStudioLandscapes/re
 
 ```bash
 # Set root password
-sudo su root
-passwd
-exit
+# sudo su root
+# passwd
+# exit
 
 sudo apt-get update
+sudo apt-get upgrade -y
 # apt-get upgrade
 
-sudo apt-get install -y openssh-server git htop
+sudo apt-get install -y openssh-server git htop vim
 sudo apt -y autoremove
 
 # Not really necessary:
@@ -1130,62 +1132,18 @@ cd ~/git/repos/OpenStudioLandscapes
 bash install/install_ubuntu_2004-2.sh
 ```
 
+Enable/Disable Features:
 ```
-vi src/OpenStudioLandscapes/engine/constants.py:
-(de-)select Features
+vim src/OpenStudioLandscapes/engine/constants.py
 ```
 
-Simple (not recommended, not for production):
+Simple (not recommended and not for production):
 
 ```shell
 nox --session dagster_mysql  # for production use dagster_postgres
 ```
 
 Advanced:
-
-1. [Trust Harbor Registry](#trust-harbor-registry)
-
-```
-sudo mkdir -p /etc/docker
-sudo touch /etc/docker/daemon.json
-sudo cat > /etc/docker/daemon.json << EOF
-{
-  "insecure-registries" : [
-    "http://harbor.farm.evil:80"
-  ],
-  "max-concurrent-uploads": 1
-}
-EOF
-
-sudo -s << EOF
-rm -f -- /tmp/installbuilder_installer*.log
-
-${NFS_INSTALLERS_ROOT}/${PACKAGE}/DeadlineRepository-${DEADLINE_VERSION}-linux-x64-installer.run \
-    --mode unattended \
-    --prefix /opt/Thinkbox/DeadlineRepository10 \
-    --setpermissions true \
-    --dbtype MongoDB \
-    --installmongodb true \
-    --dbInstallationType downloadDB \
-    --dbLicenseAcceptance accept \
-    --mongodir /opt/Thinkbox/DeadlineDatabase10 \
-    --dbListeningPort $DEADLINE_REPOSITORY_MONGODB_LISTEN_PORT \
-    --dbname $DEADLINE_REPOSITORY_MONGODB_NAME \
-    --secretsAdminName $DEADLINE_SECRETS_ADMIN_NAME \
-    --secretsAdminPassword $DEADLINE_SECRETS_ADMIN_PW \
-    --requireSSL true \
-    --certgen_outdir ${DEADLINE_REPOSITORY_CERTIFICATE_DIR} \
-    --certgen_password $DEADLINE_REPOSITORY_CERTIFICATE_PASSWORD \
-    --createX509dbuser true \
-    --installSecretsManagement true \
-    --importrepositorysettings false && 
-
-chmod a+r -R ${DEADLINE_REPOSITORY_CERTIFICATE_DIR} &
-
-while [[ ! -f /tmp/installbuilder_installer.log ]]; do sleep 1; done; tail -f /tmp/installbuilder_installer.log | grep -E --color=always '|^Script exit code: 1|^Executing ' &
-
-EOF
-```
 
 ```
 sudo systemctl daemon-reload
@@ -1195,11 +1153,9 @@ sudo systemctl restart docker
 Quick alternative without local DNS Server (no Pi-Hole):
 
 Add
-```
-127.0.0.1    dagster.farm.evil
-127.0.0.1    postgres-dagster.farm.evil
-127.0.0.1    harbor.farm.evil
-```
+- `dagster.farm.evil`
+- `postgres-dagster.farm.evil`
+- `harbor.farm.evil`
 to `/etc/hosts`
 
 ```bash
@@ -1211,6 +1167,14 @@ sudo sed -i -e '$a127.0.0.1    harbor.farm.evil' -e '/127.0.0.1    harbor.farm.e
 
 Log out, log in.
 
+If you don't, this is the error you'll see:
+```
+nox > /usr/bin/docker compose --file /home/user/git/repos/OpenStudioLandscapes/.dagster-postgres/docker-compose.yml --project-name openstudiolandscapes-dagster-postgres up --remove-orphans --detach
+unable to get image 'docker.io/postgres': permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get "http://%2Fvar%2Frun%2Fdocker.sock/v1.49/images/docker.io/postgres/json": dial unix /var/run/docker.sock: connect: permission denied
+nox > Command /usr/bin/docker compose --file /home/user/git/repos/OpenStudioLandscapes/.dagster-postgres/docker-compose.yml --project-name openstudiolandscapes-dagster-postgres up --remove-orphans --detach failed with exit code 1
+nox > Session dagster_postgres_up_detach failed.
+```
+
 ```shell
 source .venv/bin/activate
 nox --session pi_hole_prepare
@@ -1221,8 +1185,11 @@ nox --sessions harbor_up_detach dagster_postgres_up_detach dagster_postgres
 Open Harbor URL:
 http://localhost:80
 
+Log with `admin`/`Harbor12345`
+
 Create `[x] Public` project `openstudiolandscapes`.
-(You can delete `library`)
+![Create Harbor Project](_images/harbor_create_project.png)
+(You can delete Project `library`)
 
 #### venv
 
@@ -2295,6 +2262,7 @@ to learn more.
 - [ ] A weekly video with instructions
 - [x] Integrate Harbor
 - [ ] Clean up this `README.md`
+  - Separate Readme from Documentation (Sphinx)
 - [ ] Implement tests (`noxfile.py`)
 - [x] Improve Feature discovery
 - [ ] Implement framework-wide terminology and glossary:
@@ -2313,6 +2281,13 @@ to learn more.
     ```
     KITSU_POSTGRES_CONF	str	/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Kitsu/.payload/config/etc/postgresql/14/main/postgresql.conf
     ```
+- [ ] Replace `python-on-whales` with something more lightweight/reliable
+- [ ] Restrict Ubuntu 20.04 dependency to Deadline (the reason for this restriction
+- [ ] Strategy to version control dynamically created files like
+  - `.landscapes/.pi-hole/etc-pihole/pihole.toml`
+  - `.dagster-postgres/dagster.yaml`
+  - `.dagster-postgres/docker-compose.yml`
+  - etc.
 
 ---
 

@@ -8,7 +8,8 @@
 # ps aux | grep -i apt
 
 if ! sudo apt-get upgrade -y; then
-    echo "Update in progress in the background. Let the process finish and run this script afterwards."
+    echo "Update in progress in the background."
+    echo "Let the process finish and run this script afterwards."
     exit 1
 fi;
 
@@ -64,6 +65,19 @@ sudo install -m 0755 -d /etc/apt/keyrings
 sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
 sudo chmod a+r /etc/apt/keyrings/docker.asc
 
+# Add trust for insecure harbor.farm.evil
+sudo -s << EOF
+mkdir -p /etc/docker
+touch /etc/docker/daemon.json
+cat > /etc/docker/daemon.json
+{
+  "insecure-registries" : [
+    "http://harbor.farm.evil:80"
+  ],
+  "max-concurrent-uploads": 1
+}
+EOF
+
 echo \
   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
   $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
@@ -92,5 +106,7 @@ nox -s clone_features
 nox -s install_features_into_engine
 
 deactivate
+
+echo "Reboot system please."
 
 exit 0

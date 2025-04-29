@@ -62,11 +62,13 @@ MANIFEST
 !.features/.gitkeep
 
 # Dagster
-.dagster/*/
-.dagster-postgres/*/
+.dagster/*
+!.dagster/.gitkeep
+!.dagster/dagster.yaml
+.dagster-postgres/*
+!.dagster-postgres/.gitkeep
 tmp*/
 
-!.landscapes/.dagster/
 .landscapes/.dagster/*
 !.landscapes/.dagster/.gitkeep
 
