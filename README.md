@@ -2288,6 +2288,8 @@ to learn more.
   - `.dagster-postgres/docker-compose.yml`
   - etc.
 - [ ] Remove `SECRETS` and implement `.env` or something similar
+- [ ] Remove `michimussato@gmail.com` as default Kitsu account
+- [ ] Add VPN Server?
 
 ---
 
