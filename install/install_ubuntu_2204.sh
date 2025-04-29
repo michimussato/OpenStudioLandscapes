@@ -66,6 +66,20 @@ sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyring
 sudo chmod a+r /etc/apt/keyrings/docker.asc
 
 # Add trust for insecure harbor.farm.evil
+#read -e -p "Do you want me to configure /etc/docker/daemon.json?" choice
+#[[ "$choice" == [Yy]* ]] \
+#    && sudo -s << EOF
+#mkdir -p /etc/docker
+#touch /etc/docker/daemon.json
+#cat > /etc/docker/daemon.json
+#{
+#  "insecure-registries" : [
+#    "http://harbor.farm.evil:80"
+#  ],
+#  "max-concurrent-uploads": 1
+#}
+#EOF
+#|| echo "Ok, I didn't."
 sudo -s << EOF
 mkdir -p /etc/docker
 touch /etc/docker/daemon.json
@@ -110,7 +124,7 @@ nox -s install_features_into_engine
 
 deactivate
 
-read -e -p "Do you want me to add entries to /etc/hosts? " choice
+read -r -e -p "Do you want me to add entries to /etc/hosts?" choice
 [[ "$choice" == [Yy]* ]] \
     && sudo sed -i -e '$a127.0.0.1    dagster.farm.evil' -e '/127.0.0.1    dagster.farm.evil/d' /etc/hosts \
     && sudo sed -i -e '$a127.0.0.1    postgres-dagster.farm.evil' -e '/127.0.0.1    postgres-dagster.farm.evil/d' /etc/hosts \
@@ -120,6 +134,11 @@ read -e -p "Do you want me to add entries to /etc/hosts? " choice
 echo ""
 echo "Your /etc/hosts file looks like:"
 sudo cat /etc/hosts
+echo ""
+
+echo ""
+echo "Your /etc/docker/daemon.json file looks like:"
+sudo cat /etc/docker/daemon.json
 echo ""
 
 echo "Reboot system please."
