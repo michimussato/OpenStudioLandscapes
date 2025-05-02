@@ -1,6 +1,11 @@
+import base64
+import json
 import pathlib
 import shutil
+import subprocess
 import textwrap
+
+import docker
 import time
 import urllib.parse
 from typing import Generator, MutableMapping, List
@@ -15,10 +20,11 @@ from dagster import (
     asset,
 )
 
-from OpenStudioLandscapes.engine.enums import DockerConfig
+from OpenStudioLandscapes.engine.enums import DockerConfig, DockerRepositoryType
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.utils import *
 from OpenStudioLandscapes.engine.utils.docker.whales import *
+# from OpenStudioLandscapes.engine.utils.docker import *
 
 
 @asset(
@@ -103,6 +109,7 @@ def apt_packages(
     ins={
         "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
         "docker_config": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "DOCKER_CONFIG"])),
+        "docker_config_json": AssetIn(AssetKey([*ASSET_HEADER_BASE["key_prefix"], "docker_config_json"])),
         "apt_packages": AssetIn(AssetKey([*ASSET_HEADER_BASE["key_prefix"], "apt_packages"])),
         "pip_packages": AssetIn(AssetKey([*ASSET_HEADER_BASE["key_prefix"], "pip_packages"])),
     },
@@ -111,6 +118,7 @@ def build_docker_image(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
     docker_config: DockerConfig,  # pylint: disable=redefined-outer-name
+    docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name
     apt_packages: dict[str, list[str]],  # pylint: disable=redefined-outer-name
     pip_packages: list,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict[str, str | list[str]]] | AssetMaterialization, None, None]:
@@ -223,7 +231,13 @@ def build_docker_image(
         "image_parent": {},
     }
 
-    context.log.info(image_data)
+    context.log.info(f"{image_data = }")
+
+    # Full command as per python-on-whales
+    # Build command (public) (OK: [x]):  /usr/bin/docker --config /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json build --quiet --pull --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles/Dockerfile --no-cache --tag openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9 --tag harbor.farm.evil:80/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9 /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles
+    # Push command (public):             /usr/bin/docker --config /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json image push harbor.farm.evil:80/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9
+    # Build command (private) (OK: [x]): /usr/bin/docker --config /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json build --quiet --pull --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles/Dockerfile --no-cache --tag openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666 --tag harbor.farm.evil:80/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666 /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles
+    # Push command (private):            /usr/bin/docker --config /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json image push harbor.farm.evil:80/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666
 
     # args = [
     #     '/usr/bin/docker',
@@ -258,14 +272,89 @@ def build_docker_image(
     #     if bool(logs[_label]):
     #         _function(logs[_label].decode("utf-8"))
 
-    tags_list: list = docker_build(
-        context=context,
-        docker_config=docker_config,
-        docker_file=docker_file,
-        context_path=docker_file.parent,
-        docker_use_cache=DOCKER_USE_CACHE_BASE,
-        image_data=image_data,
-    )
+    # tags_list: list = docker_build(
+    #     context=context,
+    #     docker_config=docker_config,
+    #     docker_config_json=docker_config_json,
+    #     docker_file=docker_file,
+    #     context_path=docker_file.parent,
+    #     docker_use_cache=DOCKER_USE_CACHE_BASE,
+    #     image_data=image_data,
+    # )
+
+    cmds = []
+
+    tags_local = [f"{image_prefix_local}{image_name}:{tag}" for tag in tags]
+    tags_full = [f"{image_prefix_full}{image_name}:{tag}" for tag in tags]
+
+    cmd_build = [
+        shutil.which("docker"),
+        "--config", docker_config_json.as_posix(),
+        "build",
+        "--progress", "plain",
+        "--pull",
+        "--file", docker_file.as_posix(),
+        "--no-cache",
+        # https://stackoverflow.com/a/11869360
+        *[i(tag) for tag in tags_local for i in (lambda x: "--tag", lambda x: tag)],
+        *[i(tag) for tag in tags_full for i in (lambda x: "--tag", lambda x: tag)],
+        docker_file.parent.as_posix(),
+    ]
+
+    context.log.info(f"{cmd_build = }")
+    context.log.info(f"{' '.join(cmd_build) = }")
+
+    cmds.append(cmd_build)
+
+    for tag in tags_full:
+
+        cmd_push = [
+            shutil.which("docker"),
+            "--config", docker_config_json.as_posix(),
+            "push",
+            tag,
+        ]
+
+        cmds.append(cmd_push)
+
+        context.log.info(f"{cmd_push = }")
+        context.log.info(f"{' '.join(cmd_push) = }")
+
+    context.log.info(f"{cmds = }")
+
+    metadata = {}
+
+    for cmd in cmds:
+
+        context.log.info(f"Processing command: {' '.join(cmd)}...")
+
+        proc = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+
+        handles = (proc.stdout, proc.stderr)
+        labels = ("stdout", "stderr")
+        functions = (context.log.debug, context.log.debug)
+        logs = iterate_fds(
+            handles=handles,
+            labels=labels,
+            functions=functions,
+            live_print=True,
+        )
+
+        for _label, _function in zip(labels, functions):
+            if bool(logs[_label]):
+                _function(logs[_label].decode("utf-8"))
+
+        logs_ = {
+            "stdout": logs["stdout"].decode("utf-8"),
+            "stderr": logs["stderr"].decode("utf-8"),
+        }
+
+        # metadata[" ".join(cmd)] = MetadataValue.md(f"```shell\nstdout:\n{logs['stdout'].decode('utf-8')}\n```")
+        metadata[" ".join(cmd)] = MetadataValue.json(logs_)
 
     yield Output(image_data)
 
@@ -273,9 +362,11 @@ def build_docker_image(
         asset_key=context.asset_key,
         metadata={
             "__".join(context.asset_key.path): MetadataValue.json(image_data),
-            "tags_list": MetadataValue.json(tags_list),
+            # "tags_list": MetadataValue.json(tags_list),
             "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
             "env": MetadataValue.json(env),
+            # "build_logs"
+            **metadata,
         },
     )
 
@@ -289,6 +380,7 @@ def build_docker_image(
         "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
         "constants_base": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "constants_base"])),
         "docker_config": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "DOCKER_CONFIG"])),
+        "docker_config_json": AssetIn(AssetKey([*ASSET_HEADER_BASE["key_prefix"], "docker_config_json"])),
         "features": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "features"])),
         "build_docker_image": AssetIn(
             AssetKey([*ASSET_HEADER_BASE["key_prefix"], "build_docker_image"]),
@@ -299,7 +391,10 @@ def group_out_base(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
     constants_base: dict,  # pylint: disable=redefined-outer-name
+    # Todo:
+    #  - [ ] Probably not needed with the docker config.json specified
     docker_config: DockerConfig,  # pylint: disable=redefined-outer-name
+    docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name
     features: dict,  # pylint: disable=redefined-outer-name
     build_docker_image: dict,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict[str, str | dict]] | AssetMaterialization, None, None]:
@@ -310,6 +405,7 @@ def group_out_base(
     out_dict["env_base"] = env
     out_dict["constants_base"] = constants_base
     out_dict["docker_config"] = docker_config
+    out_dict["docker_config_json"] = docker_config_json
     out_dict["features"] = features
     out_dict["docker_image"] = build_docker_image
 
@@ -322,7 +418,89 @@ def group_out_base(
             "env_base": MetadataValue.json(env),
             "constants_base": MetadataValue.json(constants_base),
             "docker_config": MetadataValue.json(docker_config.value),
+            "docker_config_json": MetadataValue.path(docker_config_json.value),
             "features": MetadataValue.json(features),
             "docker_image": MetadataValue.json(build_docker_image),
+        },
+    )
+
+
+
+@asset(
+    **ASSET_HEADER_BASE,
+    ins={
+        "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
+        "docker_config": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "DOCKER_CONFIG"])),
+        # "constants_base": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "constants_base"])),
+        # "docker_config": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "DOCKER_CONFIG"])),
+        # "features": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "features"])),
+        # "build_docker_image": AssetIn(
+        #     AssetKey([*ASSET_HEADER_BASE["key_prefix"], "build_docker_image"]),
+        # ),
+    },
+)
+def docker_config_json(
+    context: AssetExecutionContext,
+    env: dict,  # pylint: disable=redefined-outer-name
+    docker_config: DockerConfig,  # pylint: disable=redefined-outer-name
+) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
+
+    context.log.info(f"{dir(docker_config.value) = }")
+
+    login_required: bool = docker_config.value["docker_repository_type"] == DockerRepositoryType.PRIVATE
+    context.log.debug(f"{login_required = }")
+
+    dockercfg_path = pathlib.Path(
+        env["DOT_LANDSCAPES"],
+        env.get("LANDSCAPE", "default"),
+        f"{ASSET_HEADER_BASE['group_name']}__{'__'.join(ASSET_HEADER_BASE['key_prefix'])}",
+        "__".join(context.asset_key.path),
+        "config.json",
+    )
+
+    dockercfg_path.parent.mkdir(parents=True, exist_ok=True)
+
+    docker_auth = {}
+    docker_auth["auths"] = auths = {}
+
+    # process from docker/api/config.py:create_config
+    # (https://docker-py.readthedocs.io/en/stable/api.html#docker.api.config.ConfigApiMixin.create_config)
+    username: str = docker_config.value["docker_registry_username"]
+    password: str = docker_config.value["docker_registry_password"]
+    url_: str = docker_config.value["docker_registry_url"]
+    port_: str = docker_config.value["docker_registry_port"]
+    # url: str = f"http://{url_}:{port_}"
+
+    credentials_str = f"{username}:{password}"
+    credentials_bytes = credentials_str.encode("utf-8")
+    credentials_encoded = base64.b64encode(credentials_bytes).decode("ascii")
+
+    auths[f"{url_}:{port_}"] = {
+        "auth": credentials_encoded
+    }
+
+    # docker client does not pick up the dockercfg_path
+    # if the file is not present
+    with dockercfg_path.open(mode="w") as fo:
+        json.dump(
+            docker_auth,
+            fo,
+            indent="\t",
+            sort_keys=True,
+            separators=(",", ": "),
+        )
+
+    # The command to log in to the docker registry
+    # using this config.json:
+    # docker --config /dir/where/config_json/lives/ login http://harbor.farm.evil:80
+
+    yield Output(dockercfg_path.parent)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.path(dockercfg_path.parent),
+            "config_json": MetadataValue.path(dockercfg_path),
+            "docker_auth": MetadataValue.json(docker_auth),
         },
     )

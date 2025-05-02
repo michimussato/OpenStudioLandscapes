@@ -256,8 +256,10 @@ def iterate_fds(
     proc = subprocess.Popen(
         cmd,
         stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
+        stderr=subprocess.PIPE
     )
+
+    stream_logs = True
 
     handles = (proc.stdout, proc.stderr)
     labels = ("stdout", "stderr")
@@ -266,12 +268,13 @@ def iterate_fds(
         handles=handles,
         labels=labels,
         functions=functions,
-        live_print=False,
+        live_print=stream_logs
     )
 
-    # for _label, _function in zip(labels, functions):
-    #     if bool(logs[_label]):
-    #         _function(logs[_label].decode("utf-8"))
+    if stream_logs:
+        for _label, _function in zip(labels, functions):
+            if bool(logs[_label]):
+                _function(logs[_label].decode("utf-8"))
     ```
 
     Reference:

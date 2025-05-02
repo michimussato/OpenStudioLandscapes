@@ -36,6 +36,7 @@ def docker_build(
     *,
     context: AssetExecutionContext,
     docker_config: DockerConfig,
+    docker_config_json: pathlib.Path,
     docker_file: pathlib.Path,
     context_path: pathlib.Path,
     docker_use_cache: bool = True,
@@ -61,13 +62,14 @@ def docker_build(
 
     context.log.info(f"{docker_use_cache = }")
 
-    _docker_config = docker_config.value
+    # _docker_config = docker_config.value
 
     # https://docs.docker.com/build/cache/backends/local/
 
     docker_client = DockerClient(
         client_call=["docker"],
         client_type="docker",
+        config=docker_config_json,
     )
 
     # in case we are logged in
@@ -77,27 +79,7 @@ def docker_build(
 
     try:
 
-        server = f"{_docker_config['docker_registry_url']}:{_docker_config['docker_registry_port']}"
-
-        if not _docker_config["docker_use_local"]:
-
-            username = _docker_config.get("docker_registry_username", None)
-            password = _docker_config.get("docker_registry_password", None)
-
-            if not all([username, password]):
-                raise Exception("Both username and password are required")
-
-            context.log.debug("Attempting registry authentication...")
-            try:
-                docker_client.login(
-                    server=server,
-                    username=username,
-                    password=password,
-                    # dagster_context=context,
-                )
-                context.log.debug("Authentication successful.")
-            except DockerException as e:
-                context.log.exception(e)
+        # context.log.debug("Attempting registry authentication...")
 
         context.log.debug("docker_client.info() = %s", docker_client.info())
 
@@ -143,7 +125,7 @@ def docker_build(
 
         context.log.info(f"Docker image successfully built: {image_name} ({image})")
 
-        push = _docker_config["docker_push"]
+        push = docker_config.value["docker_push"]
         context.log.debug(f"Pushing image is {push}...")
         if push:
             context.log.debug(f"Pushing image {image_name}...")
@@ -161,11 +143,11 @@ def docker_build(
         context.log.exception(e)
         raise e
 
-    finally:
-
-        context.log.debug("Logging out from registry...")
-        docker_client.logout()
-        context.log.debug("Log out successful.")
+    # finally:
+    #
+    #     context.log.debug("Logging out from registry...")
+    #     docker_client.logout()
+    #     context.log.debug("Log out successful.")
 
     return tags
 

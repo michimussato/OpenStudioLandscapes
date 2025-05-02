@@ -58,7 +58,6 @@ class ComposeNetworkMode(enum.StrEnum):
 
 
 class DockerRegistry(enum.StrEnum):
-    # DOCKER = "docker.io"
     LOCAL_LOCALHOST = "localhost"
     LOCAL_HARBOR = "harbor.farm.evil"
     # LOCAL_MINIBOSS = os.environ.get("IP_MASTER", "localhost")
@@ -76,6 +75,7 @@ class DockerConfig(enum.Enum):
     # - use capitals in repository names
     # Todo:
     #  - [ ] LOCAL_NO_PUSH is NOT SUPPORTED YET. Should it be?
+    #  - [ ] Whether to use http or https
     # LOCAL_NO_PUSH = {
     #     "docker_push": False,
     #     "docker_use_local": True,
@@ -96,5 +96,5 @@ class DockerConfig(enum.Enum):
         "docker_registry_username": "admin",
         "docker_registry_password": "Harbor12345",
         "docker_repository": _REPOSITORY_NAME,
-        "docker_repository_type": DockerRepositoryType.PUBLIC,
+        "docker_repository_type": DockerRepositoryType.PRIVATE,
     }

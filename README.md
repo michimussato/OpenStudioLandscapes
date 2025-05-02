@@ -2290,6 +2290,7 @@ to learn more.
 - [ ] Remove `SECRETS` and implement `.env` or something similar
 - [ ] Remove `michimussato@gmail.com` as default Kitsu account
 - [ ] Add VPN Server?
+- [ ] Use Harbor API to create Project `openstudiolandscapes` by default
 
 ---
 
