@@ -12,6 +12,7 @@ __all__ = [
 
 import base64
 import copy
+import enum
 import os
 import pathlib
 import shlex
@@ -371,13 +372,12 @@ def factory_group_in(
         metadata = {}
 
         for k, v in group_out.items():
-            try:
-                metadata[k] = MetadataValue.json(v)
-            except Exception:
-                # This is for Non-JSON-Serializable Objects.
-                # Even though a DagsterExecutionStepExecutionError is thrown,
-                # it cannot not be captured here for some reason. Hence, Exception
+            if isinstance(v, pathlib.PosixPath):
+                metadata[k] = MetadataValue.path(v)
+            elif isinstance(v, enum.Enum):
                 metadata[v.name] = MetadataValue.json(v.value)
+            else:
+                metadata[k] = MetadataValue.json(v)
 
         yield AssetMaterialization(
             asset_key=context.asset_key,
