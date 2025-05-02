@@ -1,3 +1,113 @@
+__all__ = [
+    "docker_build_cmd",
+    "docker_push_cmd",
+    "docker_process_cmds",
+]
+
+import shutil
+import pathlib
+import subprocess
+
+from dagster import AssetExecutionContext, MetadataValue
+
+from OpenStudioLandscapes.engine.utils import iterate_fds
+
+
+def docker_build_cmd(
+        context: AssetExecutionContext,
+        docker_config_json: pathlib.Path,
+        docker_file: pathlib.Path,
+        tags_local: list[str],
+        tags_full: list[str],
+) -> list:
+
+    cmd_build = [
+        shutil.which("docker"),
+        "--config", docker_config_json.as_posix(),
+        "build",
+        "--progress", "plain",
+        "--pull",
+        "--file", docker_file.as_posix(),
+        "--no-cache",
+        # https://stackoverflow.com/a/11869360
+        *[i(tag) for tag in tags_local for i in (lambda x: "--tag", lambda x: tag)],
+        *[i(tag) for tag in tags_full for i in (lambda x: "--tag", lambda x: tag)],
+        docker_file.parent.as_posix(),
+    ]
+
+    context.log.info(f"{cmd_build = }")
+    context.log.info(f"{' '.join(cmd_build) = }")
+
+    return cmd_build
+
+
+def docker_push_cmd(
+        context: AssetExecutionContext,
+        docker_config_json: pathlib.Path,
+        tags_full: list[str],
+) -> list[list[str]]:
+
+    push_cmds = []
+
+    for tag in tags_full:
+
+        cmd_push = [
+            shutil.which("docker"),
+            "--config", docker_config_json.as_posix(),
+            "push",
+            tag,
+        ]
+
+        push_cmds.append(cmd_push)
+
+        context.log.info(f"{cmd_push = }")
+        context.log.info(f"{' '.join(cmd_push) = }")
+
+    return push_cmds
+
+
+def docker_process_cmds(
+        context: AssetExecutionContext,
+        cmds: list[str],
+) -> dict[str, MetadataValue]:
+
+    metadata = {}
+
+    for cmd in cmds:
+
+        context.log.info(f"Processing command: {' '.join(cmd)}...")
+
+        proc = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+
+        handles = (proc.stdout, proc.stderr)
+        labels = ("stdout", "stderr")
+        functions = (context.log.debug, context.log.debug)
+        logs = iterate_fds(
+            handles=handles,
+            labels=labels,
+            functions=functions,
+            live_print=True,
+        )
+
+        for _label, _function in zip(labels, functions):
+            if bool(logs[_label]):
+                _function(logs[_label].decode("utf-8"))
+
+        logs_ = {
+            "stdout": logs["stdout"].decode("utf-8"),
+            "stderr": logs["stderr"].decode("utf-8"),
+        }
+
+        # metadata[" ".join(cmd)] = MetadataValue.md(f"```shell\nstdout:\n{logs['stdout'].decode('utf-8')}\n```")
+        metadata[" ".join(cmd)] = MetadataValue.json(logs_)
+
+    return metadata
+
+
 # __all__ = [
 #     # "docker_buildx_build",
 #     "get_tags",

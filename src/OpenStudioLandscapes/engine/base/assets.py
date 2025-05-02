@@ -2,10 +2,8 @@ import base64
 import json
 import pathlib
 import shutil
-import subprocess
 import textwrap
 
-import docker
 import time
 import urllib.parse
 from typing import Generator, MutableMapping, List
@@ -23,8 +21,7 @@ from dagster import (
 from OpenStudioLandscapes.engine.enums import DockerConfig, DockerRepositoryType
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.utils import *
-from OpenStudioLandscapes.engine.utils.docker.whales import *
-# from OpenStudioLandscapes.engine.utils.docker import *
+from OpenStudioLandscapes.engine.utils.docker import *
 
 
 @asset(
@@ -239,122 +236,35 @@ def build_docker_image(
     # Build command (private) (OK: [x]): /usr/bin/docker --config /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json build --quiet --pull --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles/Dockerfile --no-cache --tag openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666 --tag harbor.farm.evil:80/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666 /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles
     # Push command (private):            /usr/bin/docker --config /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json image push harbor.farm.evil:80/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666
 
-    # args = [
-    #     '/usr/bin/docker',
-    #     'build',
-    #     '--progress', 'plain',
-    #     '--pull',
-    #     '--file',
-    #     '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-28-21-54-31-8b90c04c47664f59b3f78426c05f5135/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles/Dockerfile',
-    #     '--no-cache',
-    #     '--tag', 'openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-04-28-21-54-31-8b90c04c47664f59b3f78426c05f5135',
-    #     '--tag', 'harbor.farm.evil:80/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-04-28-21-54-31-8b90c04c47664f59b3f78426c05f5135',
-    #     '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-28-21-54-31-8b90c04c47664f59b3f78426c05f5135/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles',
-    # ]
-
-    # proc_build = subprocess.Popen(
-    #     args,
-    #     stdout=subprocess.PIPE,
-    #     stderr=subprocess.PIPE,
-    # )
-    #
-    # handles = (proc_build.stdout, proc_build.stderr)
-    # labels = ("stdout", "stderr")
-    # functions = (context.log.info, context.log.warning)
-    # logs = iterate_fds(
-    #     handles=handles,
-    #     labels=labels,
-    #     functions=functions,
-    #     live_print=True,
-    # )
-    #
-    # for _label, _function in zip(labels, functions):
-    #     if bool(logs[_label]):
-    #         _function(logs[_label].decode("utf-8"))
-
-    # tags_list: list = docker_build(
-    #     context=context,
-    #     docker_config=docker_config,
-    #     docker_config_json=docker_config_json,
-    #     docker_file=docker_file,
-    #     context_path=docker_file.parent,
-    #     docker_use_cache=DOCKER_USE_CACHE_BASE,
-    #     image_data=image_data,
-    # )
-
     cmds = []
 
     tags_local = [f"{image_prefix_local}{image_name}:{tag}" for tag in tags]
     tags_full = [f"{image_prefix_full}{image_name}:{tag}" for tag in tags]
 
-    cmd_build = [
-        shutil.which("docker"),
-        "--config", docker_config_json.as_posix(),
-        "build",
-        "--progress", "plain",
-        "--pull",
-        "--file", docker_file.as_posix(),
-        "--no-cache",
-        # https://stackoverflow.com/a/11869360
-        *[i(tag) for tag in tags_local for i in (lambda x: "--tag", lambda x: tag)],
-        *[i(tag) for tag in tags_full for i in (lambda x: "--tag", lambda x: tag)],
-        docker_file.parent.as_posix(),
-    ]
-
-    context.log.info(f"{cmd_build = }")
-    context.log.info(f"{' '.join(cmd_build) = }")
+    cmd_build = docker_build_cmd(
+        context=context,
+        docker_config_json=docker_config_json,
+        docker_file=docker_file,
+        tags_local=tags_local,
+        tags_full=tags_full,
+    )
 
     cmds.append(cmd_build)
 
-    for tag in tags_full:
+    cmds_push = docker_push_cmd(
+        context=context,
+        docker_config_json=docker_config_json,
+        tags_full=tags_full,
+    )
 
-        cmd_push = [
-            shutil.which("docker"),
-            "--config", docker_config_json.as_posix(),
-            "push",
-            tag,
-        ]
-
-        cmds.append(cmd_push)
-
-        context.log.info(f"{cmd_push = }")
-        context.log.info(f"{' '.join(cmd_push) = }")
+    cmds.extend(cmds_push)
 
     context.log.info(f"{cmds = }")
 
-    metadata = {}
-
-    for cmd in cmds:
-
-        context.log.info(f"Processing command: {' '.join(cmd)}...")
-
-        proc = subprocess.Popen(
-            cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-        )
-
-        handles = (proc.stdout, proc.stderr)
-        labels = ("stdout", "stderr")
-        functions = (context.log.debug, context.log.debug)
-        logs = iterate_fds(
-            handles=handles,
-            labels=labels,
-            functions=functions,
-            live_print=True,
-        )
-
-        for _label, _function in zip(labels, functions):
-            if bool(logs[_label]):
-                _function(logs[_label].decode("utf-8"))
-
-        logs_ = {
-            "stdout": logs["stdout"].decode("utf-8"),
-            "stderr": logs["stderr"].decode("utf-8"),
-        }
-
-        # metadata[" ".join(cmd)] = MetadataValue.md(f"```shell\nstdout:\n{logs['stdout'].decode('utf-8')}\n```")
-        metadata[" ".join(cmd)] = MetadataValue.json(logs_)
+    metadata = docker_process_cmds(
+        context=context,
+        cmds=cmds,
+    )
 
     yield Output(image_data)
 
