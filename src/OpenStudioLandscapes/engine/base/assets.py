@@ -267,7 +267,6 @@ def build_docker_image(
         context=context,
         cmds=cmds,
     ):
-
         logs.append(logs_)
 
     yield Output(image_data)
