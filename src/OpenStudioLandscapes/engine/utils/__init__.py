@@ -20,68 +20,14 @@ __all__ = [
 
 import pathlib
 import shlex
-# import shutil
 import select
 from typing import MutableMapping, List, Any, Optional, IO
 
 import git
-from dagster import MetadataValue, AssetExecutionContext
+from dagster import AssetExecutionContext
 
-from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.exceptions import ComposeScopeException
-
-
-# def compile_cmds(
-#     docker_file,
-#     tag,
-#     volumes: [List, None] = None,
-#     networks: [List, None] = None,
-# ) -> MutableMapping[str, MetadataValue]:
-#
-#     if volumes is None:
-#         volumes = []
-#
-#     if networks is None:
-#         networks = []
-#
-#     _volumes = " ".join([f"--volume {i}" for i in volumes])
-#     _networks = " ".join([f"--network {i}" for i in networks])
-#
-#     cmd_docker_run = [
-#         shutil.which("docker"),
-#         "run",
-#         "--rm",
-#         "--interactive",
-#         "--tty",
-#         "--entrypoint",
-#         "bash",
-#         tag,
-#     ]
-#
-#     if bool(_volumes):
-#         cmd_docker_run.insert(2, _volumes)
-#
-#     if bool(_networks):
-#         cmd_docker_run.insert(2, _networks)
-#
-#     cmd_docker_build = [
-#         shutil.which("docker"),
-#         "build",
-#         "--tag",
-#         tag,
-#         docker_file.parent.as_posix(),
-#     ]
-#
-#     if not DOCKER_USE_CACHE:
-#         cmd_docker_build.append("--no-cache")
-#
-#     metadata_values = {
-#         "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)),
-#         "cmd_docker_build": MetadataValue.path(cmd_list_to_str(cmd_docker_build)),
-#     }
-#
-#     return metadata_values
 
 
 def cmd_list_to_str(
@@ -242,7 +188,7 @@ def iterate_fds(
             callable, callable,
         ],
         live_print=False,
-) -> MutableMapping[str, bytes]:
+) -> MutableMapping[str, list[str]]:
     """
     Can be used to live-feed stdout and stderr of a
     subprocess.Popen.stdout/stderr stream to an
@@ -271,10 +217,9 @@ def iterate_fds(
         live_print=stream_logs
     )
 
-    if stream_logs:
-        for _label, _function in zip(labels, functions):
-            if bool(logs[_label]):
-                _function(logs[_label].decode("utf-8"))
+    for _label, _function in zip(labels, functions):
+        if bool(logs[_label]):
+            _function(logs[_label])
     ```
 
     Reference:
@@ -292,14 +237,14 @@ def iterate_fds(
             ]): bound method (Logger.info, Logger.warning)
         live_print (bool): Do you want to live_print? (False is equivalent to "summarize")
 
-    Returns: dict[callable, bytes]
+    Returns: MutableMapping[str, list[str]]
 
     """
 
     ret = {}
 
     for label in labels:
-        ret[label] = bytes()
+        ret[label] = []
 
     methods = dict(zip(handles, zip(labels, functions)))
 
@@ -311,9 +256,10 @@ def iterate_fds(
             line = handle.readline()
 
             if line:
+                line_ = line.decode("utf-8").rstrip()
                 if live_print:
-                    function(line.decode("utf-8"))
-                ret[label] += line
+                    function(line_)
+                ret[label].append(line_)
 
                 # This is from the reference, but can't
                 # tell the difference so far other than

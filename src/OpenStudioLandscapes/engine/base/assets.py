@@ -261,10 +261,14 @@ def build_docker_image(
 
     context.log.info(f"{cmds = }")
 
-    metadata = docker_process_cmds(
+    logs = []
+
+    for logs_ in docker_process_cmds(
         context=context,
         cmds=cmds,
-    )
+    ):
+
+        logs.append(logs_)
 
     yield Output(image_data)
 
@@ -272,11 +276,9 @@ def build_docker_image(
         asset_key=context.asset_key,
         metadata={
             "__".join(context.asset_key.path): MetadataValue.json(image_data),
-            # "tags_list": MetadataValue.json(tags_list),
             "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
             "env": MetadataValue.json(env),
-            # "build_logs"
-            **metadata,
+            "logs": MetadataValue.json(logs),
         },
     )
 
@@ -328,7 +330,7 @@ def group_out_base(
             "env_base": MetadataValue.json(env),
             "constants_base": MetadataValue.json(constants_base),
             "docker_config": MetadataValue.json(docker_config.value),
-            "docker_config_json": MetadataValue.path(docker_config_json.value),
+            "docker_config_json": MetadataValue.path(docker_config_json),
             "features": MetadataValue.json(features),
             "docker_image": MetadataValue.json(build_docker_image),
         },

@@ -7,8 +7,9 @@ __all__ = [
 import shutil
 import pathlib
 import subprocess
+from typing import Generator, MutableMapping, List
 
-from dagster import AssetExecutionContext, MetadataValue
+from dagster import AssetExecutionContext
 
 from OpenStudioLandscapes.engine.utils import iterate_fds
 
@@ -20,6 +21,16 @@ def docker_build_cmd(
         tags_local: list[str],
         tags_full: list[str],
 ) -> list:
+
+    # with buildx, the target command could look like:
+    # /usr/bin/docker buildx build \
+    #     --progress plain \
+    #     --debug \
+    #     --load \
+    #     --tag tag1 \
+    #     --tag tagN \
+    #     --file /full/path/to/context/Dockerfile \
+    #     /full/path/to/context
 
     cmd_build = [
         shutil.which("docker"),
@@ -69,9 +80,7 @@ def docker_push_cmd(
 def docker_process_cmds(
         context: AssetExecutionContext,
         cmds: list[str],
-) -> dict[str, MetadataValue]:
-
-    metadata = {}
+) -> Generator[MutableMapping[str, List[str]], None, None]:
 
     for cmd in cmds:
 
@@ -95,17 +104,15 @@ def docker_process_cmds(
 
         for _label, _function in zip(labels, functions):
             if bool(logs[_label]):
-                _function(logs[_label].decode("utf-8"))
+                _function(logs[_label])
 
         logs_ = {
-            "stdout": logs["stdout"].decode("utf-8"),
-            "stderr": logs["stderr"].decode("utf-8"),
+            "cmd": cmd,
+            "stdout": logs["stdout"],
+            "stderr": logs["stderr"],
         }
 
-        # metadata[" ".join(cmd)] = MetadataValue.md(f"```shell\nstdout:\n{logs['stdout'].decode('utf-8')}\n```")
-        metadata[" ".join(cmd)] = MetadataValue.json(logs_)
-
-    return metadata
+        yield logs_
 
 
 # __all__ = [
