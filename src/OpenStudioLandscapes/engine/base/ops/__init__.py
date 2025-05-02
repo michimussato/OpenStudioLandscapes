@@ -455,6 +455,44 @@ def op_env(
 # Todo
 #  - [ ] convert to factory
 @op(
+    name="op_docker_config_json",
+    ins={
+        "group_in": In(dict),
+        # "constants": In(dict),
+        # "FEATURE_CONFIG": In(OpenStudioLandscapesConfig),
+        # "COMPOSE_SCOPE": In(ComposeScope),
+        # "DOCKER_COMPOSE": In(pathlib.Path),
+    },
+    out={
+        "docker_config_json": Out(pathlib.Path),
+    },
+)
+def op_docker_config_json(
+    context: OpExecutionContext,
+    group_in: dict,  # pylint: disable=redefined-outer-name
+) -> Generator[Output[dict] | AssetMaterialization, None, None]:
+    """
+    Provides a Feature with the `docker_config_json` pathlib.Path.
+    """
+
+    docker_config_json = group_in.pop("docker_config_json")
+
+    yield Output(
+        output_name="docker_config_json",
+        value=docker_config_json,
+    )
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.path(docker_config_json),
+        },
+    )
+
+
+# Todo
+#  - [ ] convert to factory
+@op(
     name="op_constants",
     ins={
         "group_in": In(dict),
