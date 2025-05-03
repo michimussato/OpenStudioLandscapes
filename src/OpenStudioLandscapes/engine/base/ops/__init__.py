@@ -42,6 +42,28 @@ from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.utils import *
 
 
+def _fill_in_metadata(
+        context: OpExecutionContext,
+        out: MutableMapping[str, Any],
+) -> MutableMapping[str, Any]:
+
+    metadata = {}
+
+    for k, v in out.items():
+        context.log.debug(f"{k = }")
+        context.log.debug(f"{v = }")
+        if isinstance(v, pathlib.PosixPath):
+            metadata[k] = MetadataValue.path(v)
+        elif isinstance(v, enum.Enum):
+            metadata[v.name] = MetadataValue.json(v.value)
+        # elif isinstance(v, list):
+        #     metadata[v.name] = MetadataValue.json(v.value)
+        else:
+            metadata[k] = MetadataValue.json(v)
+
+    return metadata
+
+
 def factory_feature_out(
     name="op_feature_out_from_factory",
     ins=None,
@@ -75,6 +97,7 @@ def factory_feature_out(
         # - constants_base
         # - features
         # - docker_config
+        # - docker_config_json
         # to stay in the root level
         # of the dict
         env_base = kwargs["group_in"].pop("env_base")
@@ -85,6 +108,8 @@ def factory_feature_out(
         kwargs["features"] = features
         docker_config = kwargs["group_in"].pop("docker_config")
         kwargs["docker_config"] = docker_config
+        docker_config_json = kwargs["group_in"].pop("docker_config_json")
+        kwargs["docker_config_json"] = docker_config_json
 
         # Todo
         #  - [ ] replace "group_out" (i.e. with "compose_yaml" or "feature_out")
@@ -107,10 +132,17 @@ def factory_feature_out(
 
         _serialize(out_)
 
-        for k, v in out_.items():
-            context.log.warning(k)
-            context.log.warning(v)
-            metadata[k] = MetadataValue.json(v)
+        metadata = _fill_in_metadata(context, out_)
+
+        # for k, v in out_.items():
+        #     context.log.debug(f"{k = }")
+        #     context.log.debug(f"{v = }")
+        #     if isinstance(v, pathlib.PosixPath):
+        #         metadata[k] = MetadataValue.path(v)
+        #     elif isinstance(v, enum.Enum):
+        #         metadata[v.name] = MetadataValue.json(v.value)
+        #     else:
+        #         metadata[k] = MetadataValue.json(v)
 
         yield Output(
             output_name="feature_out",
@@ -369,15 +401,7 @@ def factory_group_in(
             value=group_out,
         )
 
-        metadata = {}
-
-        for k, v in group_out.items():
-            if isinstance(v, pathlib.PosixPath):
-                metadata[k] = MetadataValue.path(v)
-            elif isinstance(v, enum.Enum):
-                metadata[v.name] = MetadataValue.json(v.value)
-            else:
-                metadata[k] = MetadataValue.json(v)
+        metadata = _fill_in_metadata(context, group_out)
 
         yield AssetMaterialization(
             asset_key=context.asset_key,
