@@ -1,5 +1,4 @@
 __all__ = [
-    # "compile_cmds",
     "cmd_list_to_str",
     "get_pip_install_str",
     "get_apt_install_str",

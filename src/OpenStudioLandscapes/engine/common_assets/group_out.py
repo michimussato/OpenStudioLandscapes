@@ -31,7 +31,7 @@ def get_group_out(
     group_out = AssetsDefinition.from_op(
         op_group_out,
         # op_group_out,
-        can_subset=True,
+        can_subset=False,
         group_name=ASSET_HEADER["group_name"],
         keys_by_output_name={
             "group_out": AssetKey([*ASSET_HEADER["key_prefix"], "group_out"]),
@@ -46,6 +46,7 @@ def get_group_out(
             "compose": AssetKey([*ASSET_HEADER["key_prefix"], "compose"]),
             "env": AssetKey([*ASSET_HEADER["key_prefix"], "env"]),
             "docker_config": AssetKey([*ASSET_HEADER["key_prefix"], "docker_config"]),
+            "docker_config_json": AssetKey([*ASSET_HEADER["key_prefix"], "docker_config_json"]),
         },
     )
 

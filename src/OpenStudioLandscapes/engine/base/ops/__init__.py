@@ -122,6 +122,8 @@ def factory_feature_out(
         # MetadataValue.json receives only
         # serializable input.
         def _serialize(d):
+            # Todo
+            #  - [ ] use _fill_in_metadata
             for k_, v_ in d.items():
                 if isinstance(v_, dict):
                     _serialize(v_)
@@ -201,6 +203,8 @@ def factory_feature_in(
         # MetadataValue.json receives only
         # serializable input.
         def _serialize(d):
+            # Todo
+            #  - [ ] use _fill_in_metadata
             for k_, v_ in d.items():
                 if isinstance(v_, MutableMapping):
                     _serialize(v_)
@@ -1031,6 +1035,7 @@ def op_docker_compose_graph(
         "compose": In(dict),
         "env": In(dict),
         "docker_config": In(DockerConfig),
+        "docker_config_json": In(pathlib.Path),
     },
     out={
         "group_out": Out(pathlib.Path),
@@ -1040,16 +1045,13 @@ def op_docker_compose_graph(
 )
 def op_group_out(
     context: OpExecutionContext,
-    # Todo: remove unused
-    # Todo: remove unused
-    # Todo: remove unused
-    # Todo: remove unused
-    # Todo: remove unused
-    # Todo: remove unused
+    # Todo:
+    #  - [ ] remove unused compose
     compose: dict,  # pylint: disable=redefined-outer-name
     env: dict,  # pylint: disable=redefined-outer-name
     # group_in: dict,  # pylint: disable=redefined-outer-name
     docker_config: DockerConfig,  # pylint: disable=redefined-outer-name
+    docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[pathlib.Path] | Output[MutableMapping] | Output[str] | Output[List] | AssetMaterialization, None, None]:
 
     DOCKER_COMPOSE = pathlib.Path(env["DOCKER_COMPOSE"])
@@ -1078,11 +1080,10 @@ def op_group_out(
 
     cmd_docker_compose_up = [
         shutil.which("docker"),
+        "--config", docker_config_json.as_posix(),
         "compose",
-        "--file",
-        DOCKER_COMPOSE.as_posix(),
-        "--project-name",
-        compose_project_name,
+        "--file",  DOCKER_COMPOSE.as_posix(),
+        "--project-name", compose_project_name,
         "up",
         "--remove-orphans",
     ]
@@ -1090,11 +1091,10 @@ def op_group_out(
 
     cmd_docker_compose_logs = [
         shutil.which("docker"),
+        "--config", docker_config_json.as_posix(),
         "compose",
-        "--file",
-        DOCKER_COMPOSE.as_posix(),
-        "--project-name",
-        compose_project_name,
+        "--file", DOCKER_COMPOSE.as_posix(),
+        "--project-name", compose_project_name,
         "logs",
         "--follow",
     ]
@@ -1102,11 +1102,10 @@ def op_group_out(
 
     cmd_docker_compose_pull_up = [
         shutil.which("docker"),
+        "--config", docker_config_json.as_posix(),
         "compose",
-        "--file",
-        DOCKER_COMPOSE.as_posix(),
-        "--project-name",
-        compose_project_name,
+        "--file", DOCKER_COMPOSE.as_posix(),
+        "--project-name", compose_project_name,
         "pull",
         "--ignore-pull-failures",
         "&&",
@@ -1116,11 +1115,10 @@ def op_group_out(
 
     cmd_docker_compose_down = [
         shutil.which("docker"),
+        "--config", docker_config_json.as_posix(),
         "compose",
-        "--file",
-        DOCKER_COMPOSE.as_posix(),
-        "--project-name",
-        compose_project_name,
+        "--file", DOCKER_COMPOSE.as_posix(),
+        "--project-name", compose_project_name,
         "down",
         "--remove-orphans",
     ]
@@ -1135,47 +1133,6 @@ def op_group_out(
     #      "sh",  # or bash
     #  ]
     #  script_cmd_docker_exec_it = DOCKER_COMPOSE.parent / "docker_exec.sh"
-
-    # In case we need to log in to the registry
-    if not build_base_docker_config_value["docker_use_local"]:
-
-        if build_base_docker_config_value["docker_repository_type"] == DockerRepositoryType.PRIVATE:
-
-            server = build_base_docker_config_value["docker_registry_url"]
-            username = build_base_docker_config_value.get("docker_registry_username", None)
-            password = build_base_docker_config_value.get("docker_registry_password", None)
-
-            if not all([username, password]):
-                raise Exception("Both username and password are required")
-
-            cmd_docker_login = [
-                shutil.which("docker"),
-                "login",
-                "--username", username,
-                "--password", password,
-                server,
-            ]
-
-            cmd_docker_logout = [
-                shutil.which("docker"),
-                "logout",
-            ]
-
-            cmd_docker_compose_up = [
-                *cmd_docker_login,
-                "&&",
-                *cmd_docker_compose_up,
-                "&&",
-                *cmd_docker_logout,
-            ]
-
-            cmd_docker_compose_pull_up =  [
-                *cmd_docker_login,
-                "&&",
-                *cmd_docker_compose_pull_up,
-                "&&",
-                *cmd_docker_logout,
-            ]
 
     docker_script = dict()
     scripts = []

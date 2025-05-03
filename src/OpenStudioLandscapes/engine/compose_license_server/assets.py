@@ -55,8 +55,8 @@ if bool(ins):
     )
     def env(
         context: AssetExecutionContext,
-    env_base: dict,
-    DOCKER_COMPOSE: pathlib.Path,  # pylint: disable=redefined-outer-name
+        env_base: dict,
+        DOCKER_COMPOSE: pathlib.Path,  # pylint: disable=redefined-outer-name
     ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
 
         env_in = copy.deepcopy(env_base)
@@ -107,6 +107,31 @@ if bool(ins):
             asset_key=context.asset_key,
             metadata={
                 "__".join(context.asset_key.path): MetadataValue.json(_env_base),
+            },
+        )
+
+
+    @asset(
+        **ASSET_HEADER_COMPOSE_LICENSE_SERVER,
+        ins={
+            "features_in": AssetIn(AssetKey([*ASSET_HEADER_COMPOSE_LICENSE_SERVER['key_prefix'], "features_in"])),
+        },
+    )
+    def docker_config_json(
+        context: AssetExecutionContext,
+        features_in: dict,
+    ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
+
+        context.log.info(features_in)
+
+        docker_config_json = features_in.pop("docker_config_json")
+
+        yield Output(docker_config_json)
+
+        yield AssetMaterialization(
+            asset_key=context.asset_key,
+            metadata={
+                "__".join(context.asset_key.path): MetadataValue.path(docker_config_json),
             },
         )
 
@@ -220,6 +245,7 @@ if bool(ins):
         features_in.pop("env_base", {})
         features_in.pop("docker_config", {})
         features_in.pop("docker_image", {})
+        features_in.pop("docker_config_json", {})
 
         DOCKER_COMPOSE = pathlib.Path(env["DOCKER_COMPOSE"])
         DOCKER_COMPOSE.parent.mkdir(parents=True, exist_ok=True)
@@ -294,6 +320,7 @@ if bool(ins):
 
         env_base = group_out_base["env_base"]
         docker_config: DockerConfig = group_out_base["docker_config"]
+        docker_config_json: pathlib.Path = group_out_base["docker_config_json"]
 
         docker_compose_yaml: MutableMapping[str, str] = {}
         docker_compose: MutableMapping[str, Any] = {}
@@ -304,12 +331,14 @@ if bool(ins):
             # - constants_base
             # - features
             # - docker_config
+            # - docker_config_json
             # from kwargs dicts
             for d in [
                 "env_base",
                 "constants_base",
                 "features",
                 "docker_config",
+                "docker_config_json",
             ]:
                 kwargs[k].pop(d)
 
@@ -318,6 +347,7 @@ if bool(ins):
 
         kwargs["env_base"] = env_base
         kwargs["docker_config"] = docker_config
+        kwargs["docker_config_json"] = docker_config_json
 
         metadata = {}
 
@@ -328,6 +358,8 @@ if bool(ins):
         # MetadataValue.json receives only
         # serializable input.
         def _serialize(d):
+            # Todo
+            #  - [ ] use _fill_in_metadata
             for k_, v_ in d.items():
                 if isinstance(v_, MutableMapping):
                     _serialize(v_)
