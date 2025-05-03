@@ -444,6 +444,8 @@ def metadatavalues_from_dict(
         context.log.debug(f"{v = }")
         metadata[k] = MetadataValue.json(v)
 
+    context.log.debug(f"{metadata = }")
+
     return metadata
 
 

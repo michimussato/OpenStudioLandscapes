@@ -332,18 +332,27 @@ def factory_group_in(
         # https://stackoverflow.com/a/38716384
         group_out = kwargs.pop(GroupIn(kw_key))
 
-        context.log.debug(group_out)
+        context.log.debug(f"{group_out = }")
 
         yield Output(
             output_name="group_in",
             value=group_out,
         )
 
+        group_out_serialized = copy.deepcopy(group_out)
+
+        serialize_dict(
+            context=context,
+            d=group_out_serialized,
+        )
+
+        context.log.debug(f"{group_out_serialized = }")
+
         yield AssetMaterialization(
             asset_key=context.asset_key,
-            **metadatavalues_from_dict(
+            metadata=metadatavalues_from_dict(
                 context=context,
-                d_serialized=group_out,
+                d_serialized=group_out_serialized,
             ),
         )
 
