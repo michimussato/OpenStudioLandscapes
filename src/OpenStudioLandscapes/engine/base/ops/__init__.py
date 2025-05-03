@@ -12,7 +12,6 @@ __all__ = [
 
 import base64
 import copy
-import enum
 import os
 import pathlib
 import shlex
@@ -42,28 +41,6 @@ from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.utils import *
 
 
-def _fill_in_metadata(
-        context: OpExecutionContext,
-        out: MutableMapping[str, Any],
-) -> MutableMapping[str, Any]:
-
-    metadata = {}
-
-    for k, v in out.items():
-        context.log.debug(f"{k = }")
-        context.log.debug(f"{v = }")
-        if isinstance(v, pathlib.PosixPath):
-            metadata[k] = MetadataValue.path(v)
-        elif isinstance(v, enum.Enum):
-            metadata[v.name] = MetadataValue.json(v.value)
-        # elif isinstance(v, list):
-        #     metadata[v.name] = MetadataValue.json(v.value)
-        else:
-            metadata[k] = MetadataValue.json(v)
-
-    return metadata
-
-
 def factory_feature_out(
     name="op_feature_out_from_factory",
     ins=None,
@@ -90,8 +67,6 @@ def factory_feature_out(
         **kwargs,
     ):
 
-        metadata = {}
-
         # I want
         # - env_base
         # - constants_base
@@ -115,47 +90,28 @@ def factory_feature_out(
         #  - [ ] replace "group_out" (i.e. with "compose_yaml" or "feature_out")
         kwargs["compose_yaml"] = kwargs["env"]["DOCKER_COMPOSE"]
 
-        out_ = copy.deepcopy(kwargs)
-
-        # JSON cannot serialize certain types
-        # out of the box. This makes sure that
-        # MetadataValue.json receives only
-        # serializable input.
-        def _serialize(d):
-            # Todo
-            #  - [ ] use _fill_in_metadata
-            for k_, v_ in d.items():
-                if isinstance(v_, dict):
-                    _serialize(v_)
-                elif isinstance(v_, pathlib.PosixPath):
-                    d[k_] = v_.as_posix()
-                else:
-                    d[k_] = str(v_)
-
-        _serialize(out_)
-
-        metadata = _fill_in_metadata(context, out_)
-
-        # for k, v in out_.items():
-        #     context.log.debug(f"{k = }")
-        #     context.log.debug(f"{v = }")
-        #     if isinstance(v, pathlib.PosixPath):
-        #         metadata[k] = MetadataValue.path(v)
-        #     elif isinstance(v, enum.Enum):
-        #         metadata[v.name] = MetadataValue.json(v.value)
-        #     else:
-        #         metadata[k] = MetadataValue.json(v)
+        output_name = "feature_out"
 
         yield Output(
-            output_name="feature_out",
+            output_name=output_name,
             value=kwargs,
         )
 
+        kwargs_serialized = copy.deepcopy(kwargs)
+
+        serialize_dict(
+            context=context,
+            d=kwargs_serialized,
+        )
+
         yield AssetMaterialization(
-            asset_key=context.asset_key_for_output("feature_out"),
+            asset_key=context.asset_key_for_output(output_name),
             metadata={
-                "__".join(context.asset_key.path): MetadataValue.json(out_),
-                **metadata,
+                "__".join(context.asset_key.path): MetadataValue.json(kwargs_serialized),
+                **metadatavalues_from_dict(
+                    context=context,
+                    d_serialized=kwargs_serialized,
+                ),
             },
         )
 
@@ -188,38 +144,6 @@ def factory_feature_in(
         **kwargs,
     ):
 
-        # out = {}
-        metadata = {}
-
-        # for k, v in kwargs.items():
-        #     if k == "group_in":
-        #         v = {k: v}
-        #     out[k] = v
-
-        out_ = copy.deepcopy(kwargs)
-
-        # JSON cannot serialize certain types
-        # out of the box. This makes sure that
-        # MetadataValue.json receives only
-        # serializable input.
-        def _serialize(d):
-            # Todo
-            #  - [ ] use _fill_in_metadata
-            for k_, v_ in d.items():
-                if isinstance(v_, MutableMapping):
-                    _serialize(v_)
-                elif isinstance(v_, pathlib.PosixPath):
-                    d[k_] = v_.as_posix()
-                else:
-                    d[k_] = str(v_)
-
-        _serialize(out_)
-
-        for k, v in out_.items():
-            context.log.warning(k)
-            context.log.warning(v)
-            metadata[k] = MetadataValue.json(v)
-
         output_name = "feature_out"
 
         yield Output(
@@ -227,11 +151,21 @@ def factory_feature_in(
             value=kwargs,
         )
 
+        kwargs_serialized = copy.deepcopy(kwargs)
+
+        serialize_dict(
+            context=context,
+            d=kwargs_serialized,
+        )
+
         yield AssetMaterialization(
             asset_key=context.asset_key_for_output(output_name),
             metadata={
-                "__".join(context.asset_key.path): MetadataValue.json(out_),
-                **metadata,
+                "__".join(context.asset_key.path): MetadataValue.json(kwargs_serialized),
+                **metadatavalues_from_dict(
+                    context=context,
+                    d_serialized=kwargs_serialized,
+                ),
             },
         )
 
@@ -405,11 +339,12 @@ def factory_group_in(
             value=group_out,
         )
 
-        metadata = _fill_in_metadata(context, group_out)
-
         yield AssetMaterialization(
             asset_key=context.asset_key,
-            metadata=metadata,
+            **metadatavalues_from_dict(
+                context=context,
+                d_serialized=group_out,
+            ),
         )
 
     return _op_group_in

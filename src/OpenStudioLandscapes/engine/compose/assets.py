@@ -24,6 +24,7 @@ from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.utils import *
 
 from OpenStudioLandscapes.engine.common_assets.group_out import get_group_out
+from OpenStudioLandscapes.engine.utils import serialize_dict
 
 
 # Todo:
@@ -289,41 +290,25 @@ def features_in(
     kwargs["docker_config"] = docker_config
     kwargs["docker_config_json"] = docker_config_json
 
-    metadata = {}
-
-    out_ = copy.deepcopy(kwargs)
-
-    # JSON cannot serialize certain types
-    # out of the box. This makes sure that
-    # MetadataValue.json receives only
-    # serializable input.
-    def _serialize(d):
-        # Todo
-        #  - [ ] use _fill_in_metadata
-        for k_, v_ in d.items():
-            if isinstance(v_, MutableMapping):
-                _serialize(v_)
-            elif isinstance(v_, pathlib.PosixPath):
-                d[k_] = v_.as_posix()
-            else:
-                d[k_] = str(v_)
-
-    _serialize(out_)
-
-    for k, v in out_.items():
-        context.log.warning(k)
-        context.log.warning(v)
-        metadata[k] = MetadataValue.json(v)
-
     yield Output(kwargs)
+
+    kwargs_serialized = copy.deepcopy(kwargs)
+
+    serialize_dict(
+        context=context,
+        d=kwargs_serialized,
+    )
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(out_),
+            "__".join(context.asset_key.path): MetadataValue.json(kwargs_serialized),
             "docker_compose_yaml": MetadataValue.json(docker_compose_yaml),
             "docker_compose": MetadataValue.json(docker_compose),
-            **metadata,
+            **metadatavalues_from_dict(
+                context=context,
+                d_serialized=kwargs_serialized,
+            ),
         },
     )
 

@@ -14,16 +14,17 @@ __all__ = [
     "get_compose_scope",
     "get_feature_config",
     "expand_dict_vars",
+    "serialize_dict",
+    "metadatavalues_from_dict",
 ]
-
 
 import pathlib
 import shlex
 import select
-from typing import MutableMapping, List, Any, Optional, IO
+from typing import MutableMapping, List, Any, Optional, IO, Union
 
 import git
-from dagster import AssetExecutionContext
+from dagster import AssetExecutionContext, MetadataValue, OpExecutionContext
 
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.exceptions import ComposeScopeException
@@ -352,3 +353,113 @@ def expand_dict_vars(
             dict_to_expand[k] = v.format(**kv)
 
     return dict_to_expand
+
+
+# JSON cannot serialize certain types
+# out of the box. This makes sure that
+# MetadataValue.json receives only
+# serializable input.
+# Serializes in place.
+def serialize_dict(
+        context: Union[AssetExecutionContext, OpExecutionContext],
+        d: MutableMapping,
+) -> None:
+
+    # d_ = copy.deepcopy(d)
+    # d_ = {}
+
+    for k_, v_ in d.items():
+        if isinstance(v_, MutableMapping):
+            serialize_dict(
+                context=context,
+                d=v_,
+            )
+        elif isinstance(v_, pathlib.PosixPath):
+            d[k_] = v_.as_posix()
+        # Todo:
+        # elif isinstance(v_, enum.Enum):
+        #     # RuntimeError: dictionary changed size during iteration
+        #     d[v_.name] = v_.value
+        # Todo:
+        # elif isinstance(v_, List):
+        #     pass
+        else:
+            d[k_] = str(v_)
+
+    return None
+
+
+# Just an idea, but was not successful so far:
+# def serialize_dict(
+#         context: AssetExecutionContext,
+#         unserializable_dict: MutableMapping = None,
+#         _serialized_dict: MutableMapping = None,
+#         # _use_dict = None,
+# ) -> MutableMapping:
+#
+#     # d_ = copy.deepcopy(d)
+#     if _serialized_dict is None:
+#         _serialized_dict = {}
+#         dict_to_serialize = copy.deepcopy(unserializable_dict)
+#     else:
+#         dict_to_serialize = _serialized_dict
+#     # else:
+#     #     d_ = _use_dict
+#
+#     for k_, v_ in dict_to_serialize.items():
+#         if isinstance(v_, MutableMapping):
+#             serialize_dict(
+#                 context=context,
+#                 unserializable_dict=None,
+#                 _serialized_dict=_serialized_dict,
+#             )
+#         elif isinstance(v_, pathlib.PosixPath):
+#             _serialized_dict[k_] = v_.as_posix()
+#         # Todo:
+#         elif isinstance(v_, enum.Enum):
+#             _serialized_dict[v_.name] = v_.value
+#         # Todo:
+#         # elif isinstance(v_, List):
+#         #     pass
+#         else:
+#             _serialized_dict[k_] = v_
+#
+#     return _serialized_dict
+
+
+def metadatavalues_from_dict(
+        context: Union[AssetExecutionContext, OpExecutionContext],
+        d_serialized: MutableMapping,
+) -> MutableMapping[str, MetadataValue]:
+
+    # d_serialized = serialize_dict(
+    #     context=context,
+    #     d=d,
+    # )
+
+    metadata = {}
+
+    for k, v in d_serialized.items():
+        context.log.debug(f"{k = }")
+        context.log.debug(f"{v = }")
+        metadata[k] = MetadataValue.json(v)
+
+    return metadata
+
+
+    # for k_, v_ in d_.items():
+    #     if isinstance(v_, MutableMapping):
+    #         serialize_dict(
+    #             context=context,
+    #             d=v_,
+    #         )
+    #     elif isinstance(v_, pathlib.PosixPath):
+    #         d_[k_] = v_.as_posix()
+    #     elif isinstance(v_, enum.Enum):
+    #         d_[v_.name] = v_.value
+    #     # elif isinstance(v_, List):
+    #     #     pass
+    #     else:
+    #         d_[k_] = str(v_)
+
+    # return d_
