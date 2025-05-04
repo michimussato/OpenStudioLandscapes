@@ -322,6 +322,8 @@ def factory_group_in(
 
         kw_keys = list(kwargs.keys())
 
+        context.log.debug(f"{kw_keys = }")
+
         # We expect an enums.GroupIn value here
         # Make sure there is only one key
         if len(kw_keys) == 1:

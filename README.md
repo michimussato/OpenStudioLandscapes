@@ -487,7 +487,6 @@ Former employers, among others:
 - `venv`
 - [Pi-hole](https://pi-hole.net/)
 - [Harbor](https://github.com/goharbor/harbor)
-- `python-on-whales` (`PYTHON_ON_WHALES_DEBUG=1`)
 
 ### Create `venv` with `nox`
 
@@ -2280,7 +2279,7 @@ to learn more.
     ```
     KITSU_POSTGRES_CONF	str	/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Kitsu/.payload/config/etc/postgresql/14/main/postgresql.conf
     ```
-- [ ] Replace `python-on-whales` with something more lightweight/reliable
+- [x] Replace `python-on-whales` with something more lightweight/reliable
 - [ ] Restrict Ubuntu 20.04 dependency to Deadline (the reason for this restriction
 - [ ] Strategy to version control dynamically created files like
   - `.landscapes/.pi-hole/etc-pihole/pihole.toml`

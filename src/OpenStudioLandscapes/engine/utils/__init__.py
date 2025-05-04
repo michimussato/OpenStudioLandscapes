@@ -365,9 +365,6 @@ def serialize_dict(
         d: MutableMapping,
 ) -> None:
 
-    # d_ = copy.deepcopy(d)
-    # d_ = {}
-
     for k_, v_ in d.items():
         if isinstance(v_, MutableMapping):
             serialize_dict(
@@ -432,36 +429,11 @@ def metadatavalues_from_dict(
         d_serialized: MutableMapping,
 ) -> MutableMapping[str, MetadataValue]:
 
-    # d_serialized = serialize_dict(
-    #     context=context,
-    #     d=d,
-    # )
-
     metadata = {}
 
     for k, v in d_serialized.items():
-        context.log.debug(f"{k = }")
-        context.log.debug(f"{v = }")
         metadata[k] = MetadataValue.json(v)
 
     context.log.debug(f"{metadata = }")
 
     return metadata
-
-
-    # for k_, v_ in d_.items():
-    #     if isinstance(v_, MutableMapping):
-    #         serialize_dict(
-    #             context=context,
-    #             d=v_,
-    #         )
-    #     elif isinstance(v_, pathlib.PosixPath):
-    #         d_[k_] = v_.as_posix()
-    #     elif isinstance(v_, enum.Enum):
-    #         d_[v_.name] = v_.value
-    #     # elif isinstance(v_, List):
-    #     #     pass
-    #     else:
-    #         d_[k_] = str(v_)
-
-    # return d_
