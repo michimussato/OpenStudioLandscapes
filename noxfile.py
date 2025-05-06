@@ -942,6 +942,10 @@ ENVIRONMENT_HARBOR = {
     "HARBOR_HOSTNAME": "harbor.farm.evil",
     "HARBOR_ADMIN": "admin",
     "HARBOR_PASSWORD": "Harbor12345",
+    # Todo:
+    #  - [ ] Try with:
+    # "HARBOR_ADMIN": "harbor@openstudiolandscapes.org",
+    # "HARBOR_PASSWORD": "0penstudiolandscapes",
     "HARBOR_PORT": 80,
     "HARBOR_RELEASE": [
         "v2.12.2",

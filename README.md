@@ -1079,55 +1079,19 @@ pip install -e ".[dev]"
 
 ##### 22.04 Desktop (minimal, with GUI, with third party Drivers)
 
-```
-curl -sSL https://raw.githubusercontent.com/michimussato/OpenStudioLandscapes/refs/heads/main/install/install_ubuntu_2004.sh?token=GHSAT0AAAAAAC62UOMCEX7JFXAS4WBT67E62AMTKUQ | sudo bash -s -- value1 value2
-# curl -sf -L http://0.0.0.0:8080/cgi-bin/script.sh | sudo bash -s -- value1 value2
-```
+![Install_UbuntuDesktop2204.png](_images/Install_UbuntuDesktop2204.png)
 
 ```bash
-# Set root password
-# sudo su root
-# passwd
-# exit
-
-sudo apt-get update
-sudo apt-get upgrade -y
-# apt-get upgrade
-
-sudo apt-get install -y openssh-server git htop vim
-sudo apt-get -y autoremove
-sudo apt-get clean
-
-# Not really necessary:
-# sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
-
-sudo systemctl enable --now ssh
+sudo apt-get install -y curl
+bash <(curl -s https://raw.githubusercontent.com/michimussato/OpenStudioLandscapes-Temp/refs/heads/main/install_ubuntu_2204.sh)
 ```
 
-```bash
-# https://askubuntu.com/a/1322296
-sudo sed -i -e '$aAPT::Periodic::Update-Package-Lists "0";' -e '/APT::Periodic::Update-Package-Lists "1";/d' /etc/apt/apt.conf.d/20auto-upgrades
-sudo sed -i -e '$aAPT::Periodic::Unattended-Upgrade "0";' -e '/APT::Periodic::Unattended-Upgrade "1";/d' /etc/apt/apt.conf.d/20auto-upgrades
+If you skip reboot and forget to do so later on:
 ```
-
-```bash
-# Required while not public
-# 1. https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
-ssh-keygen -f ~/.ssh/id_ed25519 -N '' -t ed25519 -C "<your@email.com>"
-eval "$(ssh-agent -s)"
-ssh-add ~/.ssh/id_ed25519
-# 2. https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
-# 3. https://github.com/settings/keys
-cat ~/.ssh/id_ed25519.pub
-ssh-keyscan github.com >> ~/.ssh/known_hosts
-```
-
-```bash
-mkdir -p ~/git/repos/OpenStudioLandscapes
-git -C ~/git/repos clone git@github.com:michimussato/OpenStudioLandscapes.git
-cd ~/git/repos/OpenStudioLandscapes
-
-bash install/install_ubuntu_2204.sh
+nox > /usr/bin/docker compose --file /home/user/git/repos/OpenStudioLandscapes/.dagster-postgres/docker-compose.yml --project-name openstudiolandscapes-dagster-postgres up --remove-orphans --detach
+unable to get image 'docker.io/postgres': permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get "http://%2Fvar%2Frun%2Fdocker.sock/v1.49/images/docker.io/postgres/json": dial unix /var/run/docker.sock: connect: permission denied
+nox > Command /usr/bin/docker compose --file /home/user/git/repos/OpenStudioLandscapes/.dagster-postgres/docker-compose.yml --project-name openstudiolandscapes-dagster-postgres up --remove-orphans --detach failed with exit code 1
+nox > Session dagster_postgres_up_detach failed.
 ```
 
 Enable/Disable Features:
@@ -1152,22 +1116,7 @@ server (i.e. Pi-Hole) running:
 - `127.0.0.1    dagster.farm.evil`
 - `127.0.0.1    postgres-dagster.farm.evil`
 - `127.0.0.1    harbor.farm.evil`
-
-Log out, log in.
-
-If you don't, this is the error you'll see:
-```
-nox > /usr/bin/docker compose --file /home/user/git/repos/OpenStudioLandscapes/.dagster-postgres/docker-compose.yml --project-name openstudiolandscapes-dagster-postgres up --remove-orphans --detach
-unable to get image 'docker.io/postgres': permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get "http://%2Fvar%2Frun%2Fdocker.sock/v1.49/images/docker.io/postgres/json": dial unix /var/run/docker.sock: connect: permission denied
-nox > Command /usr/bin/docker compose --file /home/user/git/repos/OpenStudioLandscapes/.dagster-postgres/docker-compose.yml --project-name openstudiolandscapes-dagster-postgres up --remove-orphans --detach failed with exit code 1
-nox > Session dagster_postgres_up_detach failed.
-```
-
-```shell
-cd ~/git/repos/OpenStudioLandscapes
-source .venv/bin/activate
-nox --session harbor_prepare
-```
+- `127.0.0.1    pi-hole.farm.evil`
 
 Without Pi-Hole
 ```shell
@@ -1183,11 +1132,64 @@ nox --sessions harbor_up_detach pi_hole_up_detach dagster_postgres_up_detach dag
 Open Harbor URL:
 http://localhost:80
 
-Log with `admin`/`Harbor12345`
+Log with `harbor@openstudiolandscapes.org`/`openstudiolandscapes`
 
 Create `[x] Public` project `openstudiolandscapes`.
 ![Create Harbor Project](_images/harbor_create_project.png)
 (You can delete Project `library`)
+
+Do this programmatically:
+(Swagger UI: http://harbor.farm.evil/devcenter-api-2.0)
+
+Query:
+```
+curl -X 'GET' \
+  'http://harbor.farm.evil/api/v2.0/projects?page=1&page_size=10&name=openstudiolandscapes&with_detail=false' \
+  -H 'accept: application/json' \
+  -H 'authorization: Basic YWRtaW46SGFyYm9yMTIzNDU='
+  
+http://harbor.farm.evil/api/v2.0/projects?name=openstudiolandscapes&with_detail=false
+
+or
+
+# curl -X 'GET' \
+#   'http://harbor.farm.evil/api/v2.0/projects/openstudiolandscapes' \
+#   -H 'accept: application/json' \
+#   -H 'X-Is-Resource-Name: false' \
+#   -H 'authorization: Basic YWRtaW46SGFyYm9yMTIzNDU='
+  
+curl -X 'GET' \
+  'http://harbor.farm.evil/api/v2.0/projects/openstudiolandscapes' \
+  -H 'accept: application/json'
+  
+http://harbor.farm.evil/api/v2.0/projects/openstudiolandscapes
+```
+
+Create Project
+```
+curl -X 'POST' \
+  'http://harbor.farm.evil/api/v2.0/projects' \
+  -H 'accept: application/json' \
+  -H 'X-Resource-Name-In-Location: false' \
+  -H 'authorization: Basic YWRtaW46SGFyYm9yMTIzNDU=' \
+  -H 'Content-Type: application/json' \
+  -H 'X-Harbor-CSRF-Token: fBZWDC+hFFRGC1VE/hUId3Dn5OJXHJXelHEwfGyUHwSwmoxa22QrmqsBtUXeHCZI6toiE/qLAfBMVhfwk6Yz7Q==' \
+  -d '{
+  "project_name": "openstudiolandscapes",
+  "public": true
+}'
+
+curl -X 'POST' \
+  'http://harbor.farm.evil/api/v2.0/projects' \
+  -H 'accept: application/json' \
+  -H 'X-Resource-Name-In-Location: false' \
+  -H 'authorization: Basic YWRtaW46SGFyYm9yMTIzNDU=' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "project_name": "openstudiolandscapes5432",
+  "public": true
+}'
+```
 
 #### venv
 

@@ -221,6 +221,55 @@ def factory_docker_config(
     return _op_docker_config
 
 
+# def factory_docker_config_json(
+#     name="op_docker_config_json_from_factory",
+#     ins=None,
+#     # out=None,
+#     **kwargs,
+# ) -> OpDefinition:
+#     """
+#     https://docs.dagster.io/guides/build/ops#op-factory
+#
+#     Args:
+#         name (str): The name of the new op.
+#         ins (Dict[str, In]): Any Ins for the new op. Default: None.
+#
+#     Returns:
+#         function: The new op.
+#     """
+#
+#     @op(
+#         name=name,
+#         ins=ins,
+#         **kwargs,
+#     )
+#     def _op_docker_config_json(
+#         context: OpExecutionContext,
+#         **kwargs,
+#     ):
+#
+#         group_in = kwargs.pop("group_in")
+#         context.log.debug(group_in)
+#         docker_config: DockerConfig = group_in.pop("docker_config")
+#         context.log.debug(docker_config)
+#
+#         output_name = "docker_config_json"
+#
+#         yield Output(
+#             output_name=output_name,
+#             value=docker_config,
+#         )
+#
+#         yield AssetMaterialization(
+#             asset_key=context.asset_key_for_output(output_name),
+#             metadata={
+#                 docker_config.name: MetadataValue.json(docker_config.value),
+#             },
+#         )
+#
+#     return _op_docker_config_json
+
+
 def factory_compose(
     name="op_compose_from_factory",
     ins=None,

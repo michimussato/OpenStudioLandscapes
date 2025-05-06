@@ -1,6 +1,50 @@
 #!/usr/bin/env bash
 # https://www.baeldung.com/linux/curl-fetched-script-arguments
 
+# Run this with:
+# sudo apt-get install -y curl
+# bash <(curl https://raw.githubusercontent.com/michimussato/OpenStudioLandscapes-Temp/refs/heads/main/install_ubuntu_2204.sh)
+
+# This works, but is not very nicely structured
+# Maybe split into multiple scripts?
+# Write in Python?
+
+# Prep
+sudo apt-get update
+sudo apt-get upgrade -y
+# apt-get upgrade
+
+sudo apt-get install -y openssh-server git htop vim
+sudo apt-get -y autoremove
+sudo apt-get clean
+
+sudo systemctl enable --now ssh
+
+# Required while not public
+# 1. https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
+read -r -e -p "Type your email: " email
+ssh-keygen -f ~/.ssh/id_ed25519 -N '' -t ed25519 -C "${email}"
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+# 2. https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
+# 3. https://github.com/settings/keys
+echo ""
+cat ~/.ssh/id_ed25519.pub
+echo ""
+echo "Copy/Paste above Public Key to GitHub: https://github.com/settings/ssh/new"
+
+while [[ "$choice_ssh" != [Yy]* ]]; do
+    read -r -e -p "Type [Yy]es when ready... " choice_ssh
+done
+
+ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+mkdir -p ~/git/repos/OpenStudioLandscapes
+git -C ~/git/repos clone git@github.com:michimussato/OpenStudioLandscapes.git
+cd ~/git/repos/OpenStudioLandscapes || exit
+
+
+# Install OpenStudioLandscapes
 
 # https://itsfoss.com/could-not-get-lock-error/
 # stat /var/lib/dpkg/lock
@@ -107,7 +151,10 @@ sudo apt-get install -y \
 
 # # https://docs.docker.com/engine/install/linux-postinstall/
 sudo groupadd --force docker
-sudo usermod --append --groups docker "$USER"
+sudo usermod --append --groups docker "${USER}"
+
+# This is to prevent the need to logout/login
+# exec su -l "${USER}"
 
 sudo systemctl daemon-reload
 sudo systemctl restart docker
@@ -124,11 +171,12 @@ nox -s install_features_into_engine
 
 deactivate
 
-read -r -e -p "Do you want me to add entries to /etc/hosts?" choice
-[[ "$choice" == [Yy]* ]] \
+read -r -e -p "Do you want me to add entries to /etc/hosts? " choice_hosts
+[[ "$choice_hosts" == [Yy]* ]] \
     && sudo sed -i -e '$a127.0.0.1    dagster.farm.evil' -e '/127.0.0.1    dagster.farm.evil/d' /etc/hosts \
     && sudo sed -i -e '$a127.0.0.1    postgres-dagster.farm.evil' -e '/127.0.0.1    postgres-dagster.farm.evil/d' /etc/hosts \
     && sudo sed -i -e '$a127.0.0.1    harbor.farm.evil' -e '/127.0.0.1    harbor.farm.evil/d' /etc/hosts \
+    && sudo sed -i -e '$a127.0.0.1    pi-hole.farm.evil' -e '/127.0.0.1    harbor.farm.evil/d' /etc/hosts \
 || echo "Ok, I didn't."
 
 echo ""
@@ -141,6 +189,28 @@ echo "Your /etc/docker/daemon.json file looks like:"
 sudo cat /etc/docker/daemon.json
 echo ""
 
+read -r -e -p "Initialize Harbor? " choice_harbor
+# Todo
+#  - [ ] password required when sudo as USER?
+[[ "$choice_harbor" == [Yy]* ]] \
+    && read -r -s -p "Password for sudo user ${USER}: " password \
+    && echo "${password}" | sudo -S -u ${USER} -- bash -c "cd ~/git/repos/OpenStudioLandscapes && source .venv/bin/activate && nox --session harbor_prepare && deactivate" \
+|| echo "Ok, you'll do it yourself."
+
+read -r -e -p "Initialize Pi-Hole? " choice_pihole
+[[ "$choice_pihole" == [Yy]* ]] \
+    && cd ~/git/repos/OpenStudioLandscapes \
+    && source .venv/bin/activate \
+    && nox --session pi_hole_prepare \
+    && deactivate \
+|| echo "Ok, you'll do it yourself."
+
 echo "Reboot system please."
+echo "Remember to create project 'openstudiolandscapes' in Harbor afterwards."
+
+read -r -e -p "Reboot now? " choice_reboot
+[[ "$choice_reboot" == [Yy]* ]] \
+    && sudo systemctl reboot \
+|| echo "Ok, let's reboot later."
 
 exit 0
