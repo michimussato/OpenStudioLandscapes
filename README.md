@@ -1167,6 +1167,7 @@ http://harbor.farm.evil/api/v2.0/projects/openstudiolandscapes
 
 Create Project
 ```
+# WORKS:
 curl -X 'POST' \
   'http://harbor.farm.evil/api/v2.0/projects' \
   -H 'accept: application/json' \
