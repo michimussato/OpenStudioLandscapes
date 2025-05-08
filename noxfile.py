@@ -974,6 +974,9 @@ compose_harbor = (
 )
 
 cmd_harbor = [
+    shutil.which("echo"),
+    getpass("sudo password: "),
+    "|",
     shutil.which("sudo"),
     shutil.which("docker"),
     "compose",
@@ -1207,12 +1210,12 @@ def harbor_prepare(session):
         raise FileNotFoundError("`prepare` file not found. " "Not able to continue.")
 
     # password = pwinput(mask="*")
-    password = getpass("sudo password: ")
+    # password = getpass("sudo password: ")
 
     logging.debug("Preparing Harbor...")
     session.run(
         shutil.which("echo"),
-        password,
+        getpass("sudo password: "),
         "|",
         shutil.which("sudo"),
         "--stdin",
@@ -1248,11 +1251,11 @@ def harbor_clear(session):
         if answer.lower() == "yes":
 
             # password = pwinput(mask="*")
-            password = getpass("sudo password: ")
+            # password = getpass("sudo password: ")
 
             session.run(
                 shutil.which("echo"),
-                password,
+                getpass("sudo password: "),
                 "|",
                 shutil.which("sudo"),
                 "--stdin",
