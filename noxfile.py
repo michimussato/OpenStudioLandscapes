@@ -1205,6 +1205,7 @@ def harbor_prepare(session):
     logging.debug("Preparing Harbor...")
     session.run(
         shutil.which("sudo"),
+        "--stdin",
         shutil.which("bash"),
         prepare.as_posix(),
         env=ENV,
@@ -1237,6 +1238,7 @@ def harbor_clear(session):
         if answer.lower() == "yes":
             session.run(
                 shutil.which("sudo"),
+                "--stdin",
                 shutil.which("rm"),
                 "-rf",
                 harbor_root_dir.as_posix(),
