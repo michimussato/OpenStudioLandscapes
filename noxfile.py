@@ -1,6 +1,8 @@
 import json
 import shutil
 import os
+from getpass import getpass
+
 import nox
 import pathlib
 import requests
@@ -9,6 +11,7 @@ import tarfile
 import platform
 
 import yaml
+from pwinput import pwinput
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -1202,8 +1205,14 @@ def harbor_prepare(session):
     if not prepare.exists():
         raise FileNotFoundError("`prepare` file not found. " "Not able to continue.")
 
+    # password = pwinput(mask="*")
+    password = getpass("sudo password: ")
+
     logging.debug("Preparing Harbor...")
     session.run(
+        shutil.which("echo"),
+        password,
+        "|",
         shutil.which("sudo"),
         "--stdin",
         shutil.which("bash"),
@@ -1236,7 +1245,14 @@ def harbor_clear(session):
         logging.warning("Clearing out Harbor...\n" "Continue? Type `yes` to confirm.")
         answer = input()
         if answer.lower() == "yes":
+
+            # password = pwinput(mask="*")
+            password = getpass("sudo password: ")
+
             session.run(
+                shutil.which("echo"),
+                password,
+                "|",
                 shutil.which("sudo"),
                 "--stdin",
                 shutil.which("rm"),
