@@ -978,6 +978,7 @@ cmd_harbor = [
     getpass("sudo password: "),
     "|",
     shutil.which("sudo"),
+    "--stdin",
     shutil.which("docker"),
     "compose",
     "--progress",
@@ -1608,6 +1609,7 @@ def dagster_postgres_clear(session):
         answer = input()
         if answer.lower() == "yes":
             session.run(
+                # Todo
                 shutil.which("sudo"),
                 shutil.which("rm"),
                 "-rf",
