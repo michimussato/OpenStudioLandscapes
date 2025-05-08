@@ -161,6 +161,8 @@ def clone_features(session):
         # Todo
         #  - [ ] git clone fatal if directory exists
 
+        # if cd repo; then git pull; else git clone https://server/repo repo; fi
+
         session.run(
             shutil.which("git"),
             "-C",
@@ -868,6 +870,8 @@ def pi_hole_clear(session):
         if answer.lower() == "yes":
             session.run(
                 # Todo
+                #  - [ ] use other sudo method
+                #  - [ ] maybe use git checkout -f to reset?
                 shutil.which("sudo"),
                 shutil.which("rm"),
                 "-rf",
@@ -1274,6 +1278,9 @@ def harbor_clear(session):
 
     logging.debug("Clearing Harbor...")
     logging.debug("Removing Dir %s" % harbor_root_dir.as_posix())
+
+    # Todo
+    #  - [ ] maybe use git checkout -f to reset?
 
     cmd = [
         shutil.which("rm"),
