@@ -635,6 +635,8 @@ cmd_pi_hole = [
     # shutil.which("sudo"),
     shutil.which("docker"),
     "compose",
+    "--progress",
+    "plain",
     "--file",
     compose_pi_hole.as_posix(),
     "--project-name",
@@ -971,11 +973,64 @@ cmd_harbor = [
     shutil.which("sudo"),
     shutil.which("docker"),
     "compose",
+    "--progress",
+    "plain",
     "--file",
     compose_harbor.as_posix(),
     "--project-name",
     "openstudiolandscapes-harbor",
 ]
+
+
+# Query for existence of `openstudiolandscapes`:
+# WORKS:
+# curl -X 'GET' \
+#   'http://harbor.farm.evil/api/v2.0/projects/openstudiolandscapes' \
+#   -H 'accept: application/json'
+
+# Query for existence of `library`:
+# WORKS:
+# curl -X 'GET' \
+#   'http://harbor.farm.evil/api/v2.0/projects/library' \
+#   -H 'accept: application/json'
+
+# Create `openstudiolandscapes`:
+# WORKS:
+# curl -X 'POST' \
+#   'http://harbor.farm.evil/api/v2.0/projects' \
+#   -H 'accept: application/json' \
+#   -H 'X-Resource-Name-In-Location: false' \
+#   -H 'authorization: Basic YWRtaW46SGFyYm9yMTIzNDU=' \
+#   -H 'Content-Type: application/json' \
+#   -d '{
+#   "project_name": "openstudiolandscapes5432",
+#   "public": true
+# }'
+# WORKS:
+# curl -X 'POST' \
+#   'http://harbor.farm.evil/api/v2.0/projects' \
+#   -H 'accept: application/json' \
+#   -H 'X-Resource-Name-In-Location: false' \
+#   -H 'authorization: Basic YWRtaW46SGFyYm9yMTIzNDU=' \
+#   -H 'Content-Type: application/json' \
+#   -H 'X-Harbor-CSRF-Token: fBZWDC+hFFRGC1VE/hUId3Dn5OJXHJXelHEwfGyUHwSwmoxa22QrmqsBtUXeHCZI6toiE/qLAfBMVhfwk6Yz7Q==' \
+#   -d '{
+#   "project_name": "openstudiolandscapes",
+#   "public": true
+# }'
+
+# Authorization:
+# import base64
+# base64.b64encode("admin:Harbor12345".encode("utf-8")).decode("ascii")
+# # -> 'YWRtaW46SGFyYm9yMTIzNDU='
+
+# Delete `library`:
+# curl -X 'DELETE' \
+#   'http://192.168.1.160/api/v2.0/projects/library' \
+#   -H 'accept: application/json' \
+#   -H 'X-Is-Resource-Name: false' \
+#   -H 'authorization: Basic YWRtaW46SGFyYm9yMTIzNDU=' \
+#   -H 'X-Harbor-CSRF-Token: Io8FR6UF0ESNAWHX+fGy2FVqCB/jqY4xTECrRZ4KZ5OmEnpQMGdYxGg0gPR6UaB1EZcoaLtSTrz6rgZZ+7xcwA=='
 
 
 def setup_harbor(
@@ -1323,6 +1378,8 @@ compose_dagster_postgres = (
 cmd_dagster_postgres = [
     shutil.which("docker"),
     "compose",
+    "--progress",
+    "plain",
     "--file",
     compose_dagster_postgres.as_posix(),
     "--project-name",

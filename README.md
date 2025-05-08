@@ -1141,57 +1141,6 @@ Create `[x] Public` project `openstudiolandscapes`.
 Do this programmatically:
 (Swagger UI: http://harbor.farm.evil/devcenter-api-2.0)
 
-Query:
-```
-curl -X 'GET' \
-  'http://harbor.farm.evil/api/v2.0/projects?page=1&page_size=10&name=openstudiolandscapes&with_detail=false' \
-  -H 'accept: application/json' \
-  -H 'authorization: Basic YWRtaW46SGFyYm9yMTIzNDU='
-  
-http://harbor.farm.evil/api/v2.0/projects?name=openstudiolandscapes&with_detail=false
-
-or
-
-# curl -X 'GET' \
-#   'http://harbor.farm.evil/api/v2.0/projects/openstudiolandscapes' \
-#   -H 'accept: application/json' \
-#   -H 'X-Is-Resource-Name: false' \
-#   -H 'authorization: Basic YWRtaW46SGFyYm9yMTIzNDU='
-  
-curl -X 'GET' \
-  'http://harbor.farm.evil/api/v2.0/projects/openstudiolandscapes' \
-  -H 'accept: application/json'
-  
-http://harbor.farm.evil/api/v2.0/projects/openstudiolandscapes
-```
-
-Create Project
-```
-# WORKS:
-curl -X 'POST' \
-  'http://harbor.farm.evil/api/v2.0/projects' \
-  -H 'accept: application/json' \
-  -H 'X-Resource-Name-In-Location: false' \
-  -H 'authorization: Basic YWRtaW46SGFyYm9yMTIzNDU=' \
-  -H 'Content-Type: application/json' \
-  -H 'X-Harbor-CSRF-Token: fBZWDC+hFFRGC1VE/hUId3Dn5OJXHJXelHEwfGyUHwSwmoxa22QrmqsBtUXeHCZI6toiE/qLAfBMVhfwk6Yz7Q==' \
-  -d '{
-  "project_name": "openstudiolandscapes",
-  "public": true
-}'
-
-curl -X 'POST' \
-  'http://harbor.farm.evil/api/v2.0/projects' \
-  -H 'accept: application/json' \
-  -H 'X-Resource-Name-In-Location: false' \
-  -H 'authorization: Basic YWRtaW46SGFyYm9yMTIzNDU=' \
-  -H 'Content-Type: application/json' \
-  -d '{
-  "project_name": "openstudiolandscapes5432",
-  "public": true
-}'
-```
-
 #### venv
 
 ```shell
