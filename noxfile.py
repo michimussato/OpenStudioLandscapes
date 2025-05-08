@@ -163,50 +163,73 @@ def clone_features(session):
 
         # if cd repo; then git pull; else git clone https://server/repo repo; fi
 
-        session.run(
-            shutil.which("git"),
-            "-C",
-            pathlib.Path.cwd() / ".features",
-            "clone",
-            "--tags",
-            "--branch",
-            MAIN_BRANCH,
-            "--single-branch",
-            repo,
-            external=True,
-        )
+        repo_dest = pathlib.Path.cwd() / ".features" / repo
+
+        if repo_dest.exists():
+
+            logging.info("Pulling %s" % name)
+
+            session.run(
+                shutil.which("git"),
+                "-C",
+                pathlib.Path.cwd() / ".features" / name,
+                "pull",
+                "--verbose",
+                "origin",
+                MAIN_BRANCH,
+                "--rebase=true",
+                "--tags",
+                external=True,
+            )
+
+        else:
+
+            logging.info("Cloning %s" % name)
+
+            session.run(
+                shutil.which("git"),
+                "-C",
+                pathlib.Path.cwd() / ".features",
+                "clone",
+                "--tags",
+                "--branch",
+                MAIN_BRANCH,
+                "--single-branch",
+                repo,
+                external=True,
+            )
 
 
-# # pull_features
-@nox.session(python=None, tags=["pull_features"])
-def pull_features(session):
-    """
-    `git pull` all listed (REPOS_FEATURE) Features.
-
-    Scope:
-    - [x] Engine
-    - [ ] Modules
-    """
-    # Ex:
-    # nox --session pull_features
-    # nox --tags pull_features
-
-    for name, repo in REPOS_FEATURE.items():
-
-        logging.info("Pulling %s" % name)
-
-        session.run(
-            shutil.which("git"),
-            "-C",
-            pathlib.Path.cwd() / ".features" / name,
-            "pull",
-            "--verbose",
-            "origin",
-            MAIN_BRANCH,
-            "--rebase=true",
-            "--tags",
-            external=True,
-        )
+# # # pull_features
+# @nox.session(python=None, tags=["pull_features"])
+# def pull_features(session):
+#     """
+#     `git pull` all listed (REPOS_FEATURE) Features.
+#
+#     Scope:
+#     - [x] Engine
+#     - [ ] Modules
+#     """
+#     # Ex:
+#     # nox --session pull_features
+#     # nox --tags pull_features
+#
+#     for name, repo in REPOS_FEATURE.items():
+#
+#         logging.info("Pulling %s" % name)
+#
+#         session.run(
+#             shutil.which("git"),
+#             "-C",
+#             pathlib.Path.cwd() / ".features" / name,
+#             "pull",
+#             "--verbose",
+#             "origin",
+#             MAIN_BRANCH,
+#             "--rebase=true",
+#             "--tags",
+#             external=True,
+#         )
 
 
 # # readme_all
