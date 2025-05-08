@@ -158,6 +158,9 @@ def clone_features(session):
 
         logging.info("Cloning %s" % name)
 
+        # Todo
+        #  - [ ] git clone fatal if directory exists
+
         session.run(
             shutil.which("git"),
             "-C",
