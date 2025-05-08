@@ -1,20 +1,32 @@
 import json
 import shutil
 import os
-from getpass import getpass
-
 import nox
+import subprocess
 import pathlib
 import requests
 import logging
 import tarfile
 import platform
+from getpass import getpass, getuser
+from typing import Tuple
 
 import yaml
 
-# from pwinput import pwinput
-
 logging.basicConfig(level=logging.DEBUG)
+
+
+def _get_terminal_size() -> Tuple[int, int]:
+    # https://stackoverflow.com/a/14422538
+    # https://stackoverflow.com/a/18243550
+    cols, rows = shutil.get_terminal_size((80, 20))
+    return cols, rows
+
+
+def sudo_pass() -> bytes:
+    print(" ENTER PASSWORD ".center(_get_terminal_size()[0], "="))
+    _sudo_pass = getpass(prompt=f"Sudo Password for User {getuser()}: ")
+    return _sudo_pass.encode()
 
 
 def download(
@@ -636,6 +648,7 @@ ENVIRONMENT_PI_HOLE = {
 compose_pi_hole = ENVIRONMENT_PI_HOLE["PI_HOLE_ROOT_DIR"] / "docker-compose.yml"
 
 cmd_pi_hole = [
+    # sudo = False
     # shutil.which("sudo"),
     shutil.which("docker"),
     "compose",
@@ -851,6 +864,7 @@ def pi_hole_clear(session):
         answer = input()
         if answer.lower() == "yes":
             session.run(
+                # Todo
                 shutil.which("sudo"),
                 shutil.which("rm"),
                 "-rf",
@@ -974,11 +988,8 @@ compose_harbor = (
 )
 
 cmd_harbor = [
-    shutil.which("echo"),
-    getpass("sudo password: "),
-    "|",
-    shutil.which("sudo"),
-    "--stdin",
+    # sudo = True
+    # shutil.which("sudo"),
     shutil.which("docker"),
     "compose",
     "--progress",
@@ -1160,6 +1171,8 @@ def harbor_prepare(session):
     #     /usr/bin/bash
     #     /data/share/nfs/git/repos/OpenStudioLandscapes/OpenStudioLandscapes/.landscapes/.harbor/bin/prepare
 
+    sudo = True
+
     harbor_root_dir: pathlib.Path = ENVIRONMENT_HARBOR["HARBOR_ROOT_DIR"]
     harbor_root_dir.mkdir(parents=True, exist_ok=True)
 
@@ -1210,21 +1223,32 @@ def harbor_prepare(session):
     if not prepare.exists():
         raise FileNotFoundError("`prepare` file not found. " "Not able to continue.")
 
-    # password = pwinput(mask="*")
-    # password = getpass("sudo password: ")
-
     logging.debug("Preparing Harbor...")
-    session.run(
-        shutil.which("echo"),
-        getpass("sudo password: "),
-        "|",
-        shutil.which("sudo"),
-        "--stdin",
+
+    cmd = [
         shutil.which("bash"),
         prepare.as_posix(),
-        env=ENV,
-        external=True,
+    ]
+
+    if sudo:
+        cmd.insert(0, shutil.which("sudo"))
+        cmd.insert(1, "--stdin")
+
+    proc = subprocess.run(
+        cmd,
+        input=None if not sudo else sudo_pass(),
+        check=True,
+        # cwd=script_prep.parent.as_posix(),
+        # env=os.environ,
     )
+
+    # session.run(
+    #     shutil.which("sudo"),
+    #     shutil.which("bash"),
+    #     prepare.as_posix(),
+    #     env=ENV,
+    #     external=True,
+    # )
 
 
 # # harbor_clear
@@ -1241,31 +1265,44 @@ def harbor_clear(session):
     # nox --session harbor_clear
     # nox --tags harbor_clear
 
+    sudo = True
+
     harbor_root_dir: pathlib.Path = ENVIRONMENT_HARBOR["HARBOR_ROOT_DIR"]
 
     logging.debug("Clearing Harbor...")
     logging.debug("Removing Dir %s" % harbor_root_dir.as_posix())
+
+    cmd = [
+        shutil.which("rm"),
+        "-rf",
+        harbor_root_dir.as_posix(),
+    ]
+
+    if sudo:
+        cmd.insert(0, shutil.which("sudo"))
+        cmd.insert(1, "--stdin")
 
     if harbor_root_dir.exists():
         logging.warning("Clearing out Harbor...\n" "Continue? Type `yes` to confirm.")
         answer = input()
         if answer.lower() == "yes":
 
-            # password = pwinput(mask="*")
-            # password = getpass("sudo password: ")
-
-            session.run(
-                shutil.which("echo"),
-                getpass("sudo password: "),
-                "|",
-                shutil.which("sudo"),
-                "--stdin",
-                shutil.which("rm"),
-                "-rf",
-                harbor_root_dir.as_posix(),
-                env=ENV,
-                external=True,
+            proc = subprocess.run(
+                cmd,
+                input=None if not sudo else sudo_pass(),
+                check=True,
+                # cwd=script_prep.parent.as_posix(),
+                # env=os.environ,
             )
+
+            # session.run(
+            #     shutil.which("sudo"),
+            #     shutil.which("rm"),
+            #     "-rf",
+            #     harbor_root_dir.as_posix(),
+            #     env=ENV,
+            #     external=True,
+            # )
         else:
             logging.info("Clearing Harbor was aborted.")
             return
@@ -1293,13 +1330,33 @@ def harbor_up(session):
     #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.harbor/bin/docker-compose.yml \
     #     --project-name openstudiolandscapes-harbor up --remove-orphans
 
-    session.run(
+    sudo = True
+
+    cmd = [
         *cmd_harbor,
         "up",
         "--remove-orphans",
-        env=ENV,
-        external=True,
+    ]
+
+    if sudo:
+        cmd.insert(0, shutil.which("sudo"))
+        cmd.insert(1, "--stdin")
+
+    proc = subprocess.run(
+        cmd,
+        input=None if not sudo else sudo_pass(),
+        check=True,
+        # cwd=script_prep.parent.as_posix(),
+        # env=os.environ,
     )
+
+    # session.run(
+    #     *cmd_harbor,
+    #     "up",
+    #     "--remove-orphans",
+    #     env=ENV,
+    #     external=True,
+    # )
 
 
 # # Harbor detach
@@ -1322,14 +1379,35 @@ def harbor_up_detach(session):
     #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.harbor/bin/docker-compose.yml \
     #     --project-name openstudiolandscapes-harbor up --remove-orphans --detach
 
-    session.run(
+    sudo = True
+
+    cmd = [
         *cmd_harbor,
         "up",
         "--remove-orphans",
         "--detach",
-        env=ENV,
-        external=True,
+    ]
+
+    if sudo:
+        cmd.insert(0, shutil.which("sudo"))
+        cmd.insert(1, "--stdin")
+
+    proc = subprocess.run(
+        cmd,
+        input=None if not sudo else sudo_pass(),
+        check=True,
+        # cwd=script_prep.parent.as_posix(),
+        # env=os.environ,
     )
+
+    # session.run(
+    #     *cmd_harbor,
+    #     "up",
+    #     "--remove-orphans",
+    #     "--detach",
+    #     env=ENV,
+    #     external=True,
+    # )
 
 
 # # Harbor Down
@@ -1352,12 +1430,31 @@ def harbor_down(session):
     #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.harbor/bin/docker-compose.yml \
     #     --project-name openstudiolandscapes-harbor down
 
-    session.run(
+    sudo = True
+
+    cmd = [
         *cmd_harbor,
         "down",
-        env=ENV,
-        external=True,
+    ]
+
+    if sudo:
+        cmd.insert(0, shutil.which("sudo"))
+        cmd.insert(1, "--stdin")
+
+    proc = subprocess.run(
+        cmd,
+        input=None if not sudo else sudo_pass(),
+        check=True,
+        # cwd=script_prep.parent.as_posix(),
+        # env=os.environ,
     )
+
+    # session.run(
+    #     *cmd_harbor,
+    #     "down",
+    #     env=ENV,
+    #     external=True,
+    # )
 
 
 #######################################################################################################################
