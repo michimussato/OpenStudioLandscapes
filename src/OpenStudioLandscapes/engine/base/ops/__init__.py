@@ -39,6 +39,7 @@ from docker_compose_graph.docker_compose_graph import DockerComposeGraph
 
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.utils import *
+from OpenStudioLandscapes.engine.constants import *
 
 
 def factory_feature_out(
@@ -1077,6 +1078,8 @@ def op_group_out(
         shutil.which("docker"),
         "--config", docker_config_json.as_posix(),
         "compose",
+        "--progress",
+        DOCKER_PROGRESS,
         "--file",  DOCKER_COMPOSE.as_posix(),
         "--project-name", compose_project_name,
         "up",
@@ -1088,6 +1091,8 @@ def op_group_out(
         shutil.which("docker"),
         "--config", docker_config_json.as_posix(),
         "compose",
+        "--progress",
+        DOCKER_PROGRESS,
         "--file", DOCKER_COMPOSE.as_posix(),
         "--project-name", compose_project_name,
         "logs",
@@ -1099,6 +1104,8 @@ def op_group_out(
         shutil.which("docker"),
         "--config", docker_config_json.as_posix(),
         "compose",
+        "--progress",
+        DOCKER_PROGRESS,
         "--file", DOCKER_COMPOSE.as_posix(),
         "--project-name", compose_project_name,
         "pull",
@@ -1112,6 +1119,8 @@ def op_group_out(
         shutil.which("docker"),
         "--config", docker_config_json.as_posix(),
         "compose",
+        "--progress",
+        DOCKER_PROGRESS,
         "--file", DOCKER_COMPOSE.as_posix(),
         "--project-name", compose_project_name,
         "down",

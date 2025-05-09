@@ -16,6 +16,15 @@ import yaml
 logging.basicConfig(level=logging.DEBUG)
 
 
+DOCKER_PROGRESS = [
+    "auto",
+    "quiet",
+    "plain",
+    "tty",
+    "rawjson",
+][2]
+
+
 def _get_terminal_size() -> Tuple[int, int]:
     # https://stackoverflow.com/a/14422538
     # https://stackoverflow.com/a/18243550
@@ -142,7 +151,7 @@ MAIN_BRANCH = "main"
 @nox.session(python=None, tags=["clone_features"])
 def clone_features(session):
     """
-    `git clone` all listed (REPOS_FEATURE) Features into .features.
+    `git clone` all listed (REPOS_FEATURE) Features into .features. Performs `git pull` if repos already exist.
 
     Scope:
     - [x] Engine
@@ -677,11 +686,10 @@ compose_pi_hole = ENVIRONMENT_PI_HOLE["PI_HOLE_ROOT_DIR"] / "docker-compose.yml"
 
 cmd_pi_hole = [
     # sudo = False
-    # shutil.which("sudo"),
     shutil.which("docker"),
     "compose",
     "--progress",
-    "plain",
+    DOCKER_PROGRESS,
     "--file",
     compose_pi_hole.as_posix(),
     "--project-name",
@@ -1023,7 +1031,7 @@ cmd_harbor = [
     shutil.which("docker"),
     "compose",
     "--progress",
-    "plain",
+    DOCKER_PROGRESS,
     "--file",
     compose_harbor.as_posix(),
     "--project-name",
@@ -1532,7 +1540,7 @@ cmd_dagster_postgres = [
     shutil.which("docker"),
     "compose",
     "--progress",
-    "plain",
+    DOCKER_PROGRESS,
     "--file",
     compose_dagster_postgres.as_posix(),
     "--project-name",

@@ -10,6 +10,7 @@ __all__ = [
     "ASSET_HEADER_COMPOSE_WORKER",
     "ASSET_HEADER_COMPOSE_LICENSE_SERVER",
     "FEATURES",
+    "DOCKER_PROGRESS",
 ]
 
 from typing import Generator, MutableMapping, Any
@@ -23,6 +24,15 @@ from dagster import (
 )
 
 from OpenStudioLandscapes.engine.enums import *
+
+
+DOCKER_PROGRESS = [
+    "auto",
+    "quiet",
+    "plain",
+    "tty",
+    "rawjson",
+][2]
 
 
 DOCKER_CONFIG = DockerConfig.LOCAL_HARBOR
