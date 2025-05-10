@@ -2,13 +2,11 @@ import json
 import shutil
 import os
 import nox
-import subprocess
 import pathlib
 import requests
 import logging
 import tarfile
 import platform
-from getpass import getpass, getuser
 from typing import Tuple
 
 import yaml
@@ -30,15 +28,6 @@ def _get_terminal_size() -> Tuple[int, int]:
     # https://stackoverflow.com/a/18243550
     cols, rows = shutil.get_terminal_size((80, 20))
     return cols, rows
-
-
-# def sudo_pass() -> bytes:
-#     # Todo:
-#     #  - [ ] Mechanism to verify that sudo password is correct
-#     #  - [ ] implement asterisks
-#     print(" ENTER PASSWORD ".center(_get_terminal_size()[0], "="))
-#     _sudo_pass = getpass(prompt=f"Sudo Password for User {getuser()}: ")
-#     return _sudo_pass.encode()
 
 
 def download(
@@ -841,6 +830,8 @@ def pi_hole_up(session):
     #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.pi-hole/docker_compose/docker-compose.yml \
     #     --project-name openstudiolandscapes-pi-hole up --remove-orphans
 
+    sudo = False
+
     if not compose_pi_hole.exists():
         raise FileNotFoundError(
             f"Compose file not found: {compose_pi_hole}. "
@@ -848,10 +839,18 @@ def pi_hole_up(session):
             f"Dagster to create it."
         )
 
-    session.run(
+    cmd = [
         *cmd_pi_hole,
         "up",
         "--remove-orphans",
+    ]
+
+    if sudo:
+        cmd.insert(0, shutil.which("sudo"))
+        # cmd.insert(1, "--stdin")
+
+    session.run(
+        *cmd,
         env=ENV,
         external=True,
     )
@@ -903,9 +902,22 @@ def pi_hole_clear(session):
     # nox --session pi_hole_clear
     # nox --tags pi_hole_clear
 
+    sudo = False
+
     pi_hole_root_dir: pathlib.Path = ENVIRONMENT_PI_HOLE["PI_HOLE_ROOT_DIR"]
 
     logging.debug("Clearing Pi-hole...")
+
+    cmd = [
+        shutil.which("sudo"),
+        shutil.which("rm"),
+        "-rf",
+        pi_hole_root_dir.as_posix(),
+    ]
+
+    if sudo:
+        cmd.insert(0, shutil.which("sudo"))
+        # cmd.insert(1, "--stdin")
 
     if pi_hole_root_dir.exists():
         logging.warning("Clearing out Pi-hole...\n" "Continue? Type `yes` to confirm.")
@@ -913,12 +925,8 @@ def pi_hole_clear(session):
         if answer.lower() == "yes":
             session.run(
                 # Todo
-                #  - [ ] use other sudo method
                 #  - [ ] maybe use git checkout -f to reset?
-                shutil.which("sudo"),
-                shutil.which("rm"),
-                "-rf",
-                pi_hole_root_dir.as_posix(),
+                *cmd,
                 env=ENV,
                 external=True,
             )
@@ -950,6 +958,8 @@ def pi_hole_up_detach(session):
     #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.pi-hole/docker_compose/docker-compose.yml \
     #     --project-name openstudiolandscapes-pi-hole up --remove-orphans --detach
 
+    sudo = False
+
     if not compose_pi_hole.exists():
         raise FileNotFoundError(
             f"Compose file not found: {compose_pi_hole}. "
@@ -957,11 +967,19 @@ def pi_hole_up_detach(session):
             f"Dagster to create it."
         )
 
-    session.run(
+    cmd = [
         *cmd_pi_hole,
         "up",
         "--remove-orphans",
         "--detach",
+    ]
+
+    if sudo:
+        cmd.insert(0, shutil.which("sudo"))
+        # cmd.insert(1, "--stdin")
+
+    session.run(
+        *cmd,
         env=ENV,
         external=True,
     )
@@ -986,6 +1004,8 @@ def pi_hole_down(session):
     #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.pi-hole/docker_compose/docker-compose.yml \
     #     --project-name openstudiolandscapes-pi-holw down
 
+    sudo = False
+
     if not compose_pi_hole.exists():
         raise FileNotFoundError(
             f"Compose file not found: {compose_pi_hole}. "
@@ -993,9 +1013,17 @@ def pi_hole_down(session):
             f"Dagster to create it."
         )
 
-    session.run(
+    cmd = [
         *cmd_pi_hole,
         "down",
+    ]
+
+    if sudo:
+        cmd.insert(0, shutil.which("sudo"))
+        # cmd.insert(1, "--stdin")
+
+    session.run(
+        *cmd,
         env=ENV,
         external=True,
     )
@@ -1284,14 +1312,6 @@ def harbor_prepare(session):
         cmd.insert(0, shutil.which("sudo"))
         # cmd.insert(1, "--stdin")
 
-    # proc = subprocess.run(
-    #     cmd,
-    #     input=None if not sudo else sudo_pass(),
-    #     check=True,
-    #     # cwd=script_prep.parent.as_posix(),
-    #     # env=os.environ,
-    # )
-
     session.run(
         *cmd,
         env=ENV,
@@ -1337,14 +1357,6 @@ def harbor_clear(session):
         logging.warning("Clearing out Harbor...\n" "Continue? Type `yes` to confirm.")
         answer = input()
         if answer.lower() == "yes":
-
-            # proc = subprocess.run(
-            #     cmd,
-            #     input=None if not sudo else sudo_pass(),
-            #     check=True,
-            #     # cwd=script_prep.parent.as_posix(),
-            #     # env=os.environ,
-            # )
 
             session.run(
                 shutil.which("sudo"),
@@ -1393,14 +1405,6 @@ def harbor_up(session):
         cmd.insert(0, shutil.which("sudo"))
         # cmd.insert(1, "--stdin")
 
-    # proc = subprocess.run(
-    #     cmd,
-    #     input=None if not sudo else sudo_pass(),
-    #     check=True,
-    #     # cwd=script_prep.parent.as_posix(),
-    #     # env=os.environ,
-    # )
-
     session.run(
         *cmd,
         env=ENV,
@@ -1441,19 +1445,8 @@ def harbor_up_detach(session):
         cmd.insert(0, shutil.which("sudo"))
         # cmd.insert(1, "--stdin")
 
-    # proc = subprocess.run(
-    #     cmd,
-    #     input=None if not sudo else sudo_pass(),
-    #     check=True,
-    #     # cwd=script_prep.parent.as_posix(),
-    #     # env=os.environ,
-    # )
-
     session.run(
-        *cmd_harbor,
-        "up",
-        "--remove-orphans",
-        "--detach",
+        *cmd,
         env=ENV,
         external=True,
     )
@@ -1489,14 +1482,6 @@ def harbor_down(session):
     if sudo:
         cmd.insert(0, shutil.which("sudo"))
         # cmd.insert(1, "--stdin")
-
-    # proc = subprocess.run(
-    #     cmd,
-    #     input=None if not sudo else sudo_pass(),
-    #     check=True,
-    #     # cwd=script_prep.parent.as_posix(),
-    #     # env=os.environ,
-    # )
 
     session.run(
         *cmd,
@@ -1714,13 +1699,23 @@ def dagster_postgres_up(session):
     # nox --session dagster_postgres_up
     # nox --tags dagster_postgres_up
 
+    sudo = False
+
     write_dagster_postgres_yml()
     write_dagster_postgres_compose()
 
-    session.run(
+    cmd = [
         *cmd_dagster_postgres,
         "up",
         "--remove-orphans",
+    ]
+
+    if sudo:
+        cmd.insert(0, shutil.which("sudo"))
+        # cmd.insert(1, "--stdin")
+
+    session.run(
+        *cmd,
         env=ENV,
         external=True,
     )
@@ -1740,12 +1735,25 @@ def dagster_postgres_clear(session):
     # nox --session dagster_postgres_clear
     # nox --tags dagster_postgres_clear
 
+    sudo = False
+
     dagster_postgres_root_dir: pathlib.Path = ENVIRONMENT_DAGSTER[
         "DAGSTER_POSTGRES_ROOT_DIR"
     ]
 
     logging.debug("Clearing Dagster-Postgres...")
     logging.debug("Removing Dir %s" % dagster_postgres_root_dir.as_posix())
+
+    cmd = [
+        shutil.which("sudo"),
+        shutil.which("rm"),
+        "-rf",
+        dagster_postgres_root_dir.as_posix(),
+    ]
+
+    if sudo:
+        cmd.insert(0, shutil.which("sudo"))
+        # cmd.insert(1, "--stdin")
 
     if dagster_postgres_root_dir.exists():
         logging.warning(
@@ -1754,11 +1762,7 @@ def dagster_postgres_clear(session):
         answer = input()
         if answer.lower() == "yes":
             session.run(
-                # Todo
-                shutil.which("sudo"),
-                shutil.which("rm"),
-                "-rf",
-                dagster_postgres_root_dir.as_posix(),
+                *cmd,
                 env=ENV,
                 external=True,
             )
@@ -1783,14 +1787,24 @@ def dagster_postgres_up_detach(session):
     # nox --session dagster_postgres_up_detach
     # nox --tags dagster_postgres_up_detach
 
+    sudo = False
+
     write_dagster_postgres_yml()
     write_dagster_postgres_compose()
 
-    session.run(
+    cmd = [
         *cmd_dagster_postgres,
         "up",
         "--remove-orphans",
         "--detach",
+    ]
+
+    if sudo:
+        cmd.insert(0, shutil.which("sudo"))
+        # cmd.insert(1, "--stdin")
+
+    session.run(
+        *cmd,
         env=ENV,
         external=True,
     )
@@ -1810,9 +1824,19 @@ def dagster_postgres_down(session):
     # nox --session dagster_postgres_up
     # nox --tags dagster_postgres_up
 
-    session.run(
+    sudo = False
+
+    cmd = [
         *cmd_dagster_postgres,
         "down",
+    ]
+
+    if sudo:
+        cmd.insert(0, shutil.which("sudo"))
+        # cmd.insert(1, "--stdin")
+
+    session.run(
+        *cmd,
         env=ENV,
         external=True,
     )
@@ -1831,11 +1855,21 @@ def dagster_postgres(session):
     # nox --session dagster_postgres
     # nox --tags dagster_postgres
 
-    session.run(
+    sudo = False
+
+    cmd = [
         shutil.which("dagster"),
         "dev",
         "--host",
         "0.0.0.0",
+    ]
+
+    if sudo:
+        cmd.insert(0, shutil.which("sudo"))
+        # cmd.insert(1, "--stdin")
+
+    session.run(
+        *cmd,
         env={
             "DAGSTER_HOME": ENVIRONMENT_DAGSTER["DAGSTER_POSTGRES_ROOT_DIR"],
         },
@@ -1856,11 +1890,21 @@ def dagster_mysql(session):
     # nox --session dagster_mysql
     # nox --tags dagster_mysql
 
-    session.run(
+    sudo = False
+
+    cmd = [
         shutil.which("dagster"),
         "dev",
         "--host",
         "0.0.0.0",
+    ]
+
+    if sudo:
+        cmd.insert(0, shutil.which("sudo"))
+        # cmd.insert(1, "--stdin")
+
+    session.run(
+        *cmd,
         env={
             "DAGSTER_HOME": ENVIRONMENT_DAGSTER["DAGSTER_MYSQL_ROOT_DIR"],
         },
@@ -1928,6 +1972,8 @@ def sbom(session):
 
     # https://pypi.org/project/pipdeptree/
 
+    sudo = False
+
     session.install("-e", ".[sbom]")
 
     target_dir = pathlib.Path(__file__).parent / ".sbom"
@@ -1978,6 +2024,8 @@ def coverage(session):
     # nox --session coverage
     # nox --tags coverage
 
+    sudo = False
+
     session.install("-e", ".[coverage]")
 
     session.run(
@@ -2007,6 +2055,8 @@ def lint(session):
     # Ex:
     # nox --session lint
     # nox --tags lint
+
+    sudo = False
 
     session.install("-e", ".[lint]")
 
@@ -2053,6 +2103,8 @@ def testing(session):
     # nox --session testing
     # nox --tags testing
 
+    sudo = False
+
     session.install("-e", ".[testing]", silent=True)
 
     session.run(
@@ -2080,6 +2132,8 @@ def readme(session):
     # nox --session readme
     # nox --tags readme
 
+    sudo = False
+
     session.install("-e", ".[readme]", silent=True)
 
     session.run("generate-readme", "--versions", *VERSIONS)
@@ -2103,6 +2157,8 @@ def release(session):
     # Ex:
     # nox --session release
     # nox --tags release
+
+    sudo = False
 
     session.install("-e", ".[release]")
 
@@ -2148,6 +2204,8 @@ def docs(session):
     # Ex:
     # nox --session docs
     # nox --tags docs
+
+    sudo = False
 
     session.install("-e", ".[docs]", silent=True)
 
