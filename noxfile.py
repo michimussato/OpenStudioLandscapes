@@ -32,10 +32,13 @@ def _get_terminal_size() -> Tuple[int, int]:
     return cols, rows
 
 
-def sudo_pass() -> bytes:
-    print(" ENTER PASSWORD ".center(_get_terminal_size()[0], "="))
-    _sudo_pass = getpass(prompt=f"Sudo Password for User {getuser()}: ")
-    return _sudo_pass.encode()
+# def sudo_pass() -> bytes:
+#     # Todo:
+#     #  - [ ] Mechanism to verify that sudo password is correct
+#     #  - [ ] implement asterisks
+#     print(" ENTER PASSWORD ".center(_get_terminal_size()[0], "="))
+#     _sudo_pass = getpass(prompt=f"Sudo Password for User {getuser()}: ")
+#     return _sudo_pass.encode()
 
 
 def download(
@@ -1270,23 +1273,21 @@ def harbor_prepare(session):
 
     if sudo:
         cmd.insert(0, shutil.which("sudo"))
-        cmd.insert(1, "--stdin")
+        # cmd.insert(1, "--stdin")
 
-    proc = subprocess.run(
-        cmd,
-        input=None if not sudo else sudo_pass(),
-        check=True,
-        # cwd=script_prep.parent.as_posix(),
-        # env=os.environ,
-    )
-
-    # session.run(
-    #     shutil.which("sudo"),
-    #     shutil.which("bash"),
-    #     prepare.as_posix(),
-    #     env=ENV,
-    #     external=True,
+    # proc = subprocess.run(
+    #     cmd,
+    #     input=None if not sudo else sudo_pass(),
+    #     check=True,
+    #     # cwd=script_prep.parent.as_posix(),
+    #     # env=os.environ,
     # )
+
+    session.run(
+        cmd,
+        env=ENV,
+        external=True,
+    )
 
 
 # # harbor_clear
@@ -1321,29 +1322,29 @@ def harbor_clear(session):
 
     if sudo:
         cmd.insert(0, shutil.which("sudo"))
-        cmd.insert(1, "--stdin")
+        # cmd.insert(1, "--stdin")
 
     if harbor_root_dir.exists():
         logging.warning("Clearing out Harbor...\n" "Continue? Type `yes` to confirm.")
         answer = input()
         if answer.lower() == "yes":
 
-            proc = subprocess.run(
-                cmd,
-                input=None if not sudo else sudo_pass(),
-                check=True,
-                # cwd=script_prep.parent.as_posix(),
-                # env=os.environ,
-            )
-
-            # session.run(
-            #     shutil.which("sudo"),
-            #     shutil.which("rm"),
-            #     "-rf",
-            #     harbor_root_dir.as_posix(),
-            #     env=ENV,
-            #     external=True,
+            # proc = subprocess.run(
+            #     cmd,
+            #     input=None if not sudo else sudo_pass(),
+            #     check=True,
+            #     # cwd=script_prep.parent.as_posix(),
+            #     # env=os.environ,
             # )
+
+            session.run(
+                shutil.which("sudo"),
+                shutil.which("rm"),
+                "-rf",
+                harbor_root_dir.as_posix(),
+                env=ENV,
+                external=True,
+            )
         else:
             logging.info("Clearing Harbor was aborted.")
             return
@@ -1381,23 +1382,21 @@ def harbor_up(session):
 
     if sudo:
         cmd.insert(0, shutil.which("sudo"))
-        cmd.insert(1, "--stdin")
+        # cmd.insert(1, "--stdin")
 
-    proc = subprocess.run(
-        cmd,
-        input=None if not sudo else sudo_pass(),
-        check=True,
-        # cwd=script_prep.parent.as_posix(),
-        # env=os.environ,
-    )
-
-    # session.run(
-    #     *cmd_harbor,
-    #     "up",
-    #     "--remove-orphans",
-    #     env=ENV,
-    #     external=True,
+    # proc = subprocess.run(
+    #     cmd,
+    #     input=None if not sudo else sudo_pass(),
+    #     check=True,
+    #     # cwd=script_prep.parent.as_posix(),
+    #     # env=os.environ,
     # )
+
+    session.run(
+        cmd,
+        env=ENV,
+        external=True,
+    )
 
 
 # # Harbor detach
@@ -1431,24 +1430,24 @@ def harbor_up_detach(session):
 
     if sudo:
         cmd.insert(0, shutil.which("sudo"))
-        cmd.insert(1, "--stdin")
+        # cmd.insert(1, "--stdin")
 
-    proc = subprocess.run(
-        cmd,
-        input=None if not sudo else sudo_pass(),
-        check=True,
-        # cwd=script_prep.parent.as_posix(),
-        # env=os.environ,
-    )
-
-    # session.run(
-    #     *cmd_harbor,
-    #     "up",
-    #     "--remove-orphans",
-    #     "--detach",
-    #     env=ENV,
-    #     external=True,
+    # proc = subprocess.run(
+    #     cmd,
+    #     input=None if not sudo else sudo_pass(),
+    #     check=True,
+    #     # cwd=script_prep.parent.as_posix(),
+    #     # env=os.environ,
     # )
+
+    session.run(
+        *cmd_harbor,
+        "up",
+        "--remove-orphans",
+        "--detach",
+        env=ENV,
+        external=True,
+    )
 
 
 # # Harbor Down
@@ -1480,22 +1479,21 @@ def harbor_down(session):
 
     if sudo:
         cmd.insert(0, shutil.which("sudo"))
-        cmd.insert(1, "--stdin")
+        # cmd.insert(1, "--stdin")
 
-    proc = subprocess.run(
-        cmd,
-        input=None if not sudo else sudo_pass(),
-        check=True,
-        # cwd=script_prep.parent.as_posix(),
-        # env=os.environ,
-    )
-
-    # session.run(
-    #     *cmd_harbor,
-    #     "down",
-    #     env=ENV,
-    #     external=True,
+    # proc = subprocess.run(
+    #     cmd,
+    #     input=None if not sudo else sudo_pass(),
+    #     check=True,
+    #     # cwd=script_prep.parent.as_posix(),
+    #     # env=os.environ,
     # )
+
+    session.run(
+        cmd,
+        env=ENV,
+        external=True,
+    )
 
 
 #######################################################################################################################
