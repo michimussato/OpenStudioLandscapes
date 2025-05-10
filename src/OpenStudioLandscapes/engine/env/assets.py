@@ -65,31 +65,6 @@ def landscape_id(
 
 @asset(
     **ASSET_HEADER_BASE_ENV,
-)
-def secrets(
-    context: AssetExecutionContext,
-) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
-    try:
-        from __SECRET__.secrets import secrets as _secrets
-    except ModuleNotFoundError as e:
-        context.log.exception(f"Failed to import secrets from __SECRET__.secrets: {e}")
-        _secrets: dict = {}
-    except SyntaxError as e:
-        context.log.exception(f"Failed to import secrets from __SECRET__.secrets: {e}")
-        _secrets: dict = {}
-
-    yield Output(_secrets)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(_secrets),
-        },
-    )
-
-
-@asset(
-    **ASSET_HEADER_BASE_ENV,
     ins={
         "git_root": AssetIn(
             AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "git_root"]),
@@ -161,7 +136,6 @@ def dot_features(
     },
     ins={
         "git_root": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "git_root"])),
-        "secrets": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "secrets"])),
         "landscape_id": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "landscape_id"])),
         "dot_landscapes": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "dot_landscapes"])),
         "dot_features": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "dot_features"])),
@@ -172,7 +146,6 @@ def dot_features(
 def env(
     context: AssetExecutionContext,
     git_root: pathlib.Path,  # pylint: disable=redefined-outer-name
-    secrets: dict,  # pylint: disable=redefined-outer-name
     landscape_id: dict,  # pylint: disable=redefined-outer-name
     dot_landscapes: pathlib.Path,  # pylint: disable=redefined-outer-name
     dot_features: pathlib.Path,  # pylint: disable=redefined-outer-name
@@ -209,7 +182,6 @@ def env(
         "PYTHON_PAT": "11",
     }
 
-    ENVIRONMENT_BASE.update(secrets)
     ENVIRONMENT_BASE.update(landscape_id)
     ENVIRONMENT_BASE.update(nfs)
     # @formatter:on

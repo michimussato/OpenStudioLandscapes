@@ -7,24 +7,7 @@ __all__ = [
     "DockerConfig",
 ]
 
-
 import enum
-import os
-
-# Todo
-#  - maybe use env var for secret
-try:
-    from __SECRET__.secrets import secrets as _secrets
-except ModuleNotFoundError as e:
-    # context.log.exception("Failed to import secrets from __SECRET__.secrets")
-    print(f"ModuleNotFoundError captured: {e}")
-    _secrets: dict = {}
-except SyntaxError as e:
-    print(f"SyntaxError captured: {e}")
-    # SyntaxError can happen when nox testing from within a different module.
-    # OpenStudioLandscapes is cloned to local tmp directory while the local clone
-    # is *of course* not git-crypt unlock'ed.
-    _secrets: dict = {}
 
 
 class GroupIn(enum.StrEnum):
@@ -89,6 +72,8 @@ class DockerConfig(enum.Enum):
     LOCAL_HARBOR = {
         # https://github.com/goharbor/harbor
         # https://medium.com/@Shamimw/setting-up-harbor-docker-registry-installation-and-pushing-docker-images-a8b3db6fca6a
+        # Todo
+        #  - [ ] HTTP is deprecated
         "docker_push": True,
         "docker_use_local": False,
         "docker_registry_url": DockerRegistry.LOCAL_HARBOR,
