@@ -48,12 +48,21 @@
 
 ## Disclaimer
 
-I'm not a software architect by any means. 
+I'm not 
+- a Software Architect
+- a Systems Engineer
+- a Bash Guru
+- a Python Developer
+by any means.
 
-I applied my very limited knowledge about Python packaging so
-I'm sure you might find one or the other quirk that is not 
-best practice. If you do, don't hesitate to reach out, point it 
-out and suggest a better way to do it.
+However, I often found myself as a TD in a juggling - sometimes fun and 
+sometimes very frustrating - game within those realms. This is exactly
+where this story starts.
+
+I applied my very limited knowledge about Python Packaging, Docker Containers,
+Git, Linux Shell etc. etc. so I'm sure you might find one or the other 
+quirk that is not best practice. If you do, don't hesitate to reach out, 
+point it out and suggest a better way to do it.
 
 This project is built using Dagster. Hence, getting familiar with
 some Dagster basics is recommended (if not required). Check
