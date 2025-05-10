@@ -6,6 +6,7 @@
 * [OpenStudioLandscapes](#openstudiolandscapes)
   * [OpenStudioLandscapes on LinkedIn](#openstudiolandscapes-on-linkedin)
   * [Disclaimer](#disclaimer)
+  * [About the Author](#about-the-author)
   * [Brief](#brief)
   * [Quickstart](#quickstart)
     * [Ubuntu Desktop](#ubuntu-desktop)
@@ -17,7 +18,6 @@
         * [Stop OpenStudioLandscapes](#stop-openstudiolandscapes)
   * [Terminology](#terminology)
   * [Structure](#structure)
-  * [About the Author](#about-the-author)
   * [Requirements](#requirements-1)
   * [Limitations](#limitations)
     * [Render Farms](#render-farms)
@@ -70,6 +70,19 @@ out Dagster Labs'
 This also applies to contributions: Dagster familiarity is a requirement when it 
 comes to understanding the structure. However, if you find ways to improve the 
 project also in Dagster-unrelated ways, don't hesitate to make a suggestion.
+
+## About the Author
+
+Michael Mussato
+- [LinkedIn](https://www.linkedin.com/in/michael-mussato-815902190/)
+- [IMDb](https://www.imdb.com/name/nm5961264/)
+
+Former employers, among others:
+- [Netflix Animation Studios](https://www.netflixanimation.com/)
+- [Animal Logic](https://animallogic.com/)
+- [Trixter](https://www.trixter.de/)
+- Axis Animation
+- [Elefant Studios](http://www.elefantstudios.ch/)
 
 ## Brief
 
@@ -332,19 +345,6 @@ root((OpenStudioLandscapes))
       Filebrowser
       Landscape Map
 ```
-
-## About the Author
-
-Michael Mussato
-- [LinkedIn](https://www.linkedin.com/in/michael-mussato-815902190/)
-- [IMDb](https://www.imdb.com/name/nm5961264/)
-
-Former employers, among others:
-- [Netflix Animation Studios](https://www.netflixanimation.com/)
-- [Animal Logic](https://animallogic.com/)
-- [Trixter](https://www.trixter.de/)
-- Axis Animation
-- [Elefant Studios](http://www.elefantstudios.ch/)
 
 ## Requirements
 
