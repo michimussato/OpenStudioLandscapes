@@ -1253,7 +1253,7 @@ def harbor_prepare(session):
     #     /usr/bin/bash
     #     /data/share/nfs/git/repos/OpenStudioLandscapes/OpenStudioLandscapes/.landscapes/.harbor/bin/prepare
 
-    sudo = True
+    sudo = False
 
     harbor_root_dir: pathlib.Path = ENVIRONMENT_HARBOR["HARBOR_ROOT_DIR"]
     harbor_root_dir.mkdir(parents=True, exist_ok=True)
@@ -1317,6 +1317,8 @@ def harbor_prepare(session):
         cmd.insert(1, "--reset-timestamp")
         # cmd.insert(2, "--stdin")
 
+    logging.info(f"{cmd = }")
+
     session.run(
         *cmd,
         env=ENV,
@@ -1364,11 +1366,10 @@ def harbor_clear(session):
         answer = input()
         if answer.lower() == "yes":
 
+            logging.info(f"{cmd = }")
+
             session.run(
-                shutil.which("sudo"),
-                shutil.which("rm"),
-                "-rf",
-                harbor_root_dir.as_posix(),
+                *cmd,
                 env=ENV,
                 external=True,
             )
@@ -1412,6 +1413,8 @@ def harbor_up(session):
         cmd.insert(1, "--reset-timestamp")
         # cmd.insert(2, "--stdin")
 
+    logging.info(f"{cmd = }")
+
     session.run(
         *cmd,
         env=ENV,
@@ -1453,6 +1456,8 @@ def harbor_up_detach(session):
         cmd.insert(1, "--reset-timestamp")
         # cmd.insert(2, "--stdin")
 
+    logging.info(f"{cmd = }")
+
     session.run(
         *cmd,
         env=ENV,
@@ -1491,6 +1496,8 @@ def harbor_down(session):
         cmd.insert(0, shutil.which("sudo"))
         cmd.insert(1, "--reset-timestamp")
         # cmd.insert(2, "--stdin")
+
+    logging.info(f"{cmd = }")
 
     session.run(
         *cmd,
@@ -1724,6 +1731,8 @@ def dagster_postgres_up(session):
         cmd.insert(1, "--reset-timestamp")
         # cmd.insert(2, "--stdin")
 
+    logging.info(f"{cmd = }")
+
     session.run(
         *cmd,
         env=ENV,
@@ -1772,6 +1781,9 @@ def dagster_postgres_clear(session):
         )
         answer = input()
         if answer.lower() == "yes":
+
+            logging.info(f"{cmd = }")
+
             session.run(
                 *cmd,
                 env=ENV,
@@ -1815,6 +1827,8 @@ def dagster_postgres_up_detach(session):
         cmd.insert(1, "--reset-timestamp")
         # cmd.insert(2, "--stdin")
 
+    logging.info(f"{cmd = }")
+
     session.run(
         *cmd,
         env=ENV,
@@ -1847,6 +1861,8 @@ def dagster_postgres_down(session):
         cmd.insert(0, shutil.which("sudo"))
         cmd.insert(1, "--reset-timestamp")
         # cmd.insert(2, "--stdin")
+
+    logging.info(f"{cmd = }")
 
     session.run(
         *cmd,
@@ -1881,6 +1897,8 @@ def dagster_postgres(session):
         cmd.insert(0, shutil.which("sudo"))
         cmd.insert(1, "--reset-timestamp")
         # cmd.insert(2, "--stdin")
+
+    logging.info(f"{cmd = }")
 
     session.run(
         *cmd,
