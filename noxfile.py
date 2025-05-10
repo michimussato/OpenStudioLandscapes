@@ -369,7 +369,11 @@ def stash_engine(session):
 
     logging.info("Stashing %s" % REPO_ENGINE)
 
-    session.run(shutil.which("git"), "stash", external=True)
+    session.run(
+        shutil.which("git"),
+        "stash",
+        external=True,
+    )
 
 
 # # stash_apply_engine
@@ -388,7 +392,12 @@ def stash_apply_engine(session):
 
     logging.info("Stashing %s" % REPO_ENGINE)
 
-    session.run(shutil.which("git"), "stash", "apply", external=True)
+    session.run(
+        shutil.which("git"),
+        "stash",
+        "apply",
+        external=True,
+    )
 
 
 #######################################################################################################################
@@ -1284,7 +1293,7 @@ def harbor_prepare(session):
     # )
 
     session.run(
-        cmd,
+        *cmd,
         env=ENV,
         external=True,
     )
@@ -1393,7 +1402,7 @@ def harbor_up(session):
     # )
 
     session.run(
-        cmd,
+        *cmd,
         env=ENV,
         external=True,
     )
@@ -1490,7 +1499,7 @@ def harbor_down(session):
     # )
 
     session.run(
-        cmd,
+        *cmd,
         env=ENV,
         external=True,
     )
