@@ -127,26 +127,28 @@ in a high "tech dept" dead end.
 What problem does OpenStudioLandscapes solve?
 
 What's separating the men from the boys is the production back bone.
-Large studio spent years and years of man (and woman) hours and
-millions of dineros to build robust automation in their 
+Large studios spent years and years of man (and woman) hours and
+millions of dollars to build robust automation to support their 
 production while smaller ones are (in those regards - no matter
 how recent and advanced the tools they use are) decades behind.
-So, in one sense, OpenStudioLandscapes gives you the ability to
-jump a few years ahead by giving you a pre-made production environment.
+So, in one sense, OpenStudioLandscapes is a time machine by giving you 
+the ability to jump a few years ahead of yourself by giving you a 
+pre-made production environment at zero cost.
 
 The second problem it is trying to solve is one that you (as a small
-company) do not have **yet**. Ideally, before you start to automate things,
-you want to have a robust underlying system. What usually happens is that
-studio build their systems (again, while they are still small with no 
+company) do not have **yet**. Ideally, before you start thinking about
+automating processes, you want to have a robust underlying system. 
+However, what usually happens is that
+studios build their systems (again, while they are still small with no 
 budget and/or understanding for professional automation) the other way around:
 they write their small scripts and build everything else on top of that. This
-leads inevitably to tech dept in the future when growth has happened - 
+almost inevitably leads to tech dept in the future after growth has happened - 
 a house of cards built upside down. So, you wanna replace or remove your
 old little script that you wrote 5 years ago which is being used in so many
 places you can't even remember? There you have it. Better don't touch it. Better
 continue building your system around it. Right? Wrong! OpenStudioLandscapes
-is here to make sure your future you is not going to regret decisions you are
-making right now!
+is here to change that by making sure your future you is not going to 
+regret decisions of its past you!
 
 ## Quickstart
 
