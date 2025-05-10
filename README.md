@@ -7,6 +7,7 @@
   * [OpenStudioLandscapes on LinkedIn](#openstudiolandscapes-on-linkedin)
   * [Disclaimer](#disclaimer)
   * [About the Author](#about-the-author)
+  * [Community](#community)
   * [Brief](#brief)
   * [Quickstart](#quickstart)
     * [Ubuntu Desktop](#ubuntu-desktop)
@@ -33,7 +34,6 @@
     * [Run Deadline Farm](#run-deadline-farm)
     * [Client](#client)
       * [Deadline Monitor](#deadline-monitor)
-  * [Community](#community)
   * [nox](#nox)
     * [Current Sessions](#current-sessions)
     * [Python Versions](#python-versions)
@@ -83,6 +83,11 @@ Former employers, among others:
 - [Trixter](https://www.trixter.de/)
 - Axis Animation
 - [Elefant Studios](http://www.elefantstudios.ch/)
+
+## Community
+
+- [Discord](https://discord.com/channels/1357343453364748419/1357343454065328202)
+- [Slack](https://openstudiolandscapes.slack.com)
 
 ## Brief
 
@@ -487,11 +492,6 @@ Copy/Paste command and execute:
 
 ![monitor_2.png](_images/monitor_2.png)
 
-## Community
-
-- [Discord](https://discord.com/channels/1357343453364748419/1357343454065328202)
-- [Slack](https://openstudiolandscapes.slack.com)
-
 ## nox
 
 ```shell
@@ -565,6 +565,8 @@ sessions marked with * are selected, sessions marked with - are skipped.
 - [cyclonedx-bom](https://github.com/michimussato/OpenStudioLandscapes/tree/main/.sbom/cyclonedx-py.sbom-3.12.json)
 - [pipdeptree (Dot)](https://github.com/michimussato/OpenStudioLandscapes/tree/main/.sbom/pipdeptree.sbom-3.12.dot)
 - [pipdeptree (Mermaid)](https://github.com/michimussato/OpenStudioLandscapes/tree/main/.sbom/pipdeptree.sbom-3.12.mermaid)
+
+---
 
 # Roadmap/Todo
 
