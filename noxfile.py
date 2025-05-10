@@ -847,7 +847,8 @@ def pi_hole_up(session):
 
     if sudo:
         cmd.insert(0, shutil.which("sudo"))
-        # cmd.insert(1, "--stdin")
+        cmd.insert(1, "--reset-timestamp")
+        # cmd.insert(2, "--stdin")
 
     session.run(
         *cmd,
@@ -917,7 +918,8 @@ def pi_hole_clear(session):
 
     if sudo:
         cmd.insert(0, shutil.which("sudo"))
-        # cmd.insert(1, "--stdin")
+        cmd.insert(1, "--reset-timestamp")
+        # cmd.insert(2, "--stdin")
 
     if pi_hole_root_dir.exists():
         logging.warning("Clearing out Pi-hole...\n" "Continue? Type `yes` to confirm.")
@@ -976,7 +978,8 @@ def pi_hole_up_detach(session):
 
     if sudo:
         cmd.insert(0, shutil.which("sudo"))
-        # cmd.insert(1, "--stdin")
+        cmd.insert(1, "--reset-timestamp")
+        # cmd.insert(2, "--stdin")
 
     session.run(
         *cmd,
@@ -1020,7 +1023,8 @@ def pi_hole_down(session):
 
     if sudo:
         cmd.insert(0, shutil.which("sudo"))
-        # cmd.insert(1, "--stdin")
+        cmd.insert(1, "--reset-timestamp")
+        # cmd.insert(2, "--stdin")
 
     session.run(
         *cmd,
@@ -1310,7 +1314,8 @@ def harbor_prepare(session):
 
     if sudo:
         cmd.insert(0, shutil.which("sudo"))
-        # cmd.insert(1, "--stdin")
+        cmd.insert(1, "--reset-timestamp")
+        # cmd.insert(2, "--stdin")
 
     session.run(
         *cmd,
@@ -1351,7 +1356,8 @@ def harbor_clear(session):
 
     if sudo:
         cmd.insert(0, shutil.which("sudo"))
-        # cmd.insert(1, "--stdin")
+        cmd.insert(1, "--reset-timestamp")
+        # cmd.insert(2, "--stdin")
 
     if harbor_root_dir.exists():
         logging.warning("Clearing out Harbor...\n" "Continue? Type `yes` to confirm.")
@@ -1403,7 +1409,8 @@ def harbor_up(session):
 
     if sudo:
         cmd.insert(0, shutil.which("sudo"))
-        # cmd.insert(1, "--stdin")
+        cmd.insert(1, "--reset-timestamp")
+        # cmd.insert(2, "--stdin")
 
     session.run(
         *cmd,
@@ -1443,7 +1450,8 @@ def harbor_up_detach(session):
 
     if sudo:
         cmd.insert(0, shutil.which("sudo"))
-        # cmd.insert(1, "--stdin")
+        cmd.insert(1, "--reset-timestamp")
+        # cmd.insert(2, "--stdin")
 
     session.run(
         *cmd,
@@ -1481,7 +1489,8 @@ def harbor_down(session):
 
     if sudo:
         cmd.insert(0, shutil.which("sudo"))
-        # cmd.insert(1, "--stdin")
+        cmd.insert(1, "--reset-timestamp")
+        # cmd.insert(2, "--stdin")
 
     session.run(
         *cmd,
@@ -1712,7 +1721,8 @@ def dagster_postgres_up(session):
 
     if sudo:
         cmd.insert(0, shutil.which("sudo"))
-        # cmd.insert(1, "--stdin")
+        cmd.insert(1, "--reset-timestamp")
+        # cmd.insert(2, "--stdin")
 
     session.run(
         *cmd,
@@ -1753,7 +1763,8 @@ def dagster_postgres_clear(session):
 
     if sudo:
         cmd.insert(0, shutil.which("sudo"))
-        # cmd.insert(1, "--stdin")
+        cmd.insert(1, "--reset-timestamp")
+        # cmd.insert(2, "--stdin")
 
     if dagster_postgres_root_dir.exists():
         logging.warning(
@@ -1801,7 +1812,8 @@ def dagster_postgres_up_detach(session):
 
     if sudo:
         cmd.insert(0, shutil.which("sudo"))
-        # cmd.insert(1, "--stdin")
+        cmd.insert(1, "--reset-timestamp")
+        # cmd.insert(2, "--stdin")
 
     session.run(
         *cmd,
@@ -1833,7 +1845,8 @@ def dagster_postgres_down(session):
 
     if sudo:
         cmd.insert(0, shutil.which("sudo"))
-        # cmd.insert(1, "--stdin")
+        cmd.insert(1, "--reset-timestamp")
+        # cmd.insert(2, "--stdin")
 
     session.run(
         *cmd,
@@ -1866,7 +1879,8 @@ def dagster_postgres(session):
 
     if sudo:
         cmd.insert(0, shutil.which("sudo"))
-        # cmd.insert(1, "--stdin")
+        cmd.insert(1, "--reset-timestamp")
+        # cmd.insert(2, "--stdin")
 
     session.run(
         *cmd,
