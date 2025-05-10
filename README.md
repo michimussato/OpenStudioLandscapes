@@ -216,7 +216,7 @@ openstudiolandscapes-down
 
 ## Terminology
 
-| **Term**            |                                                                                                                                                                                                                                      |
+| **Term**            | **Explanation**                                                                                                                                                                                                                      |
 |---------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Landscape**       | A Landscape is an arbitrary composition of services                                                                                                                                                                                  |
 | **Feature**         | A Feature is a discoverable extension (module) for OpenStudioLandscapes. A Landscape is made of one or more Features                                                                                                                 |
