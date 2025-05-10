@@ -104,13 +104,18 @@ No more path dependencies due to bad decisions
 made in the past. Stay flexible and adaptable
 with this modular and declarative system by reconfiguring
 any production environment with ease:
-- Easily add, edit, replace or remove services
-- Clone (or modify and clone) entire production Landscapes for testing, debugging or development
-- Code as source of truth:
-  - Always stay on top of things with maps and node trees of code and Landscapes
-  - Limit manual documentation to a bare minimum
-- `OpenStudioLandscapes` is (primarily) powered by [Dagster](https://github.com/dagster-io/) and [Docker](https://github.com/docker)
-- Fully Python based
+- ✅ Easily add, edit, replace or remove services
+- ✅ Clone (or modify and clone) entire production Landscapes for testing, debugging or development
+- ✅ Code as source of truth:
+  - ✅ Always stay on top of things with Landscape Maps and node tree representations of Python code
+  - ✅ Limit manual documentation to a bare minimum
+- ✅ `OpenStudioLandscapes` is (primarily) powered by [Dagster](https://github.com/dagster-io/) and [Docker](https://github.com/docker)
+- ✅ Fully Python based
+- ✅ Build your studio automation on top of your studio services
+  - ✅ not the other way around
+  - ✅ share your studio automation (scripts, packages) among Landscapes
+- ✅ Do you like project based studio services?
+  - ✅ No problem with OpenStudioLandscapes
 
 This platform is aimed towards small to medium-sized
 studios where only limited resources for Pipeline
@@ -231,10 +236,11 @@ openstudiolandscapes-down
 
 | **Term**            | **Explanation**                                                                                                                                                                                                                      |
 |---------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Landscape**       | A Landscape is an arbitrary composition of services                                                                                                                                                                                  |
-| **Feature**         | A Feature is a discoverable extension (module) for OpenStudioLandscapes. A Landscape is made of one or more Features                                                                                                                 |
-| **Registry**        | Registry is a repository where `docker` can push to and pull from                                                                                                                                                                    |
+| **Landscape**       | A Landscape is an arbitrary composition of services.                                                                                                                                                                                 |
+| **Feature**         | A Feature is a discoverable extension (module) for OpenStudioLandscapes. A Landscape is made of one or more Features.                                                                                                                |
+| **Registry**        | Registry is a repository where `docker` can push to and pull from. OpenStudioLandscapes relies on a local Harbor installation as its registry.                                                                                       |
 | **Compose Context** | A Landscape can be broken up into multiple Compose Contexts. For example, a render client will run on a different machine than the render manager - they are part of the same Langscape but belong to separate docker compose files. |
+| **Landscape Map**   | [docker-compose-graph](#docker-compose-graph) is a `pip` installable package to turn `docker-compose.yaml` files into Graphviz diagrams, which, in turn, is a Landscape Map.                                                         |
 
 
 ## Structure
