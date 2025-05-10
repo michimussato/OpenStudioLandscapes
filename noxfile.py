@@ -155,6 +155,8 @@ def clone_features(session):
 
     # git -C .features clone https://github.com/michimussato/OpenStudioLandscapes-<Feature>
 
+    sudo = False
+
     for name, repo in REPOS_FEATURE.items():
 
         logging.info("Cloning %s" % name)
@@ -170,7 +172,7 @@ def clone_features(session):
 
             logging.info("Pulling %s" % name)
 
-            session.run(
+            cmd = [
                 shutil.which("git"),
                 "-C",
                 pathlib.Path.cwd() / ".features" / name,
@@ -180,14 +182,13 @@ def clone_features(session):
                 MAIN_BRANCH,
                 "--rebase=true",
                 "--tags",
-                external=True,
-            )
+            ]
 
         else:
 
             logging.info("Cloning %s" % name)
 
-            session.run(
+            cmd = [
                 shutil.which("git"),
                 "-C",
                 pathlib.Path.cwd() / ".features",
@@ -197,8 +198,19 @@ def clone_features(session):
                 MAIN_BRANCH,
                 "--single-branch",
                 repo,
-                external=True,
-            )
+            ]
+
+        if sudo:
+            cmd.insert(0, shutil.which("sudo"))
+            cmd.insert(1, "--reset-timestamp")
+            # cmd.insert(2, "--stdin")
+
+        logging.info(f"{cmd = }")
+
+        session.run(
+            *cmd,
+            external=True,
+        )
 
 
 # # # pull_features
@@ -273,15 +285,28 @@ def stash_features(session):
     # nox --session stash_features
     # nox --tags stash_features
 
+    sudo = False
+
     for name, repo in REPOS_FEATURE.items():
 
         logging.info("Stashing %s" % name)
 
-        session.run(
+        cmd = [
             shutil.which("git"),
             "-C",
             pathlib.Path.cwd() / ".features" / name,
             "stash",
+        ]
+
+        if sudo:
+            cmd.insert(0, shutil.which("sudo"))
+            cmd.insert(1, "--reset-timestamp")
+            # cmd.insert(2, "--stdin")
+
+        logging.info(f"{cmd = }")
+
+        session.run(
+            *cmd,
             external=True,
         )
 
@@ -300,16 +325,29 @@ def stash_apply_features(session):
     # nox --session stash_apply_features
     # nox --tags stash_apply_features
 
+    sudo = False
+
     for name, repo in REPOS_FEATURE.items():
 
         logging.info("Stashing %s" % name)
 
-        session.run(
+        cmd = [
             shutil.which("git"),
             "-C",
             pathlib.Path.cwd() / ".features" / name,
             "stash",
             "apply",
+        ]
+
+        if sudo:
+            cmd.insert(0, shutil.which("sudo"))
+            cmd.insert(1, "--reset-timestamp")
+            # cmd.insert(2, "--stdin")
+
+        logging.info(f"{cmd = }")
+
+        session.run(
+            *cmd,
             external=True,
         )
 
@@ -328,9 +366,11 @@ def pull_engine(session):
     # nox --session pull_engine
     # nox --tags pull_engine
 
+    sudo = False
+
     logging.info("Pulling %s" % REPO_ENGINE)
 
-    session.run(
+    cmd = [
         shutil.which("git"),
         "pull",
         "--verbose",
@@ -338,6 +378,17 @@ def pull_engine(session):
         MAIN_BRANCH,
         "--rebase=true",
         "--tags",
+    ]
+
+    if sudo:
+        cmd.insert(0, shutil.which("sudo"))
+        cmd.insert(1, "--reset-timestamp")
+        # cmd.insert(2, "--stdin")
+
+    logging.info(f"{cmd = }")
+
+    session.run(
+        *cmd,
         external=True,
     )
 
@@ -356,11 +407,24 @@ def stash_engine(session):
     # nox --session stash_engine
     # nox --tags stash_engine
 
+    sudo = False
+
     logging.info("Stashing %s" % REPO_ENGINE)
 
-    session.run(
+    cmd = [
         shutil.which("git"),
         "stash",
+    ]
+
+    if sudo:
+        cmd.insert(0, shutil.which("sudo"))
+        cmd.insert(1, "--reset-timestamp")
+        # cmd.insert(2, "--stdin")
+
+    logging.info(f"{cmd = }")
+
+    session.run(
+        *cmd,
         external=True,
     )
 
@@ -379,12 +443,25 @@ def stash_apply_engine(session):
     # nox --session stash_apply_engine
     # nox --tags stash_apply_engine
 
+    sudo = False
+
     logging.info("Stashing %s" % REPO_ENGINE)
 
-    session.run(
+    cmd = [
         shutil.which("git"),
         "stash",
         "apply",
+    ]
+
+    if sudo:
+        cmd.insert(0, shutil.which("sudo"))
+        cmd.insert(1, "--reset-timestamp")
+        # cmd.insert(2, "--stdin")
+
+    logging.info(f"{cmd = }")
+
+    session.run(
+        *cmd,
         external=True,
     )
 
@@ -465,6 +542,8 @@ def create_venv_features(session):
     # nox --session create_venv_features
     # nox --tags create_venv_features
 
+    sudo = False
+
     features_dir = pathlib.Path.cwd() / ".features"
 
     for dir_ in features_dir.iterdir():
@@ -472,15 +551,27 @@ def create_venv_features(session):
         if dir_.is_dir():
             if pathlib.Path(dir_ / ".git").exists():
                 with session.chdir(dir_):
-                    session.run(
+
+                    cmd1 = [
                         shutil.which("python3.11"),
                         "-m",
                         "venv",
                         ".venv",
+                    ]
+
+                    if sudo:
+                        cmd1.insert(0, shutil.which("sudo"))
+                        cmd1.insert(1, "--reset-timestamp")
+                        # cmd.insert(2, "--stdin")
+
+                    logging.info(f"{cmd1 = }")
+
+                    session.run(
+                        *cmd1,
                         external=True,
                     )
 
-                    session.run(
+                    cmd2 = [
                         ".venv/bin/python",
                         "-m",
                         "pip",
@@ -488,16 +579,38 @@ def create_venv_features(session):
                         "--upgrade",
                         "pip",
                         "setuptools",
+                    ]
+
+                    if sudo:
+                        cmd2.insert(0, shutil.which("sudo"))
+                        cmd2.insert(1, "--reset-timestamp")
+                        # cmd.insert(2, "--stdin")
+
+                    logging.info(f"{cmd2 = }")
+
+                    session.run(
+                        *cmd2,
                         external=True,
                     )
 
-                    session.run(
+                    cmd3 = [
                         ".venv/bin/python",
                         "-m",
                         "pip",
                         "install",
                         "--editable",
                         ".[dev]",
+                    ]
+
+                    if sudo:
+                        cmd3.insert(0, shutil.which("sudo"))
+                        cmd3.insert(1, "--reset-timestamp")
+                        # cmd.insert(2, "--stdin")
+
+                    logging.info(f"{cmd3 = }")
+
+                    session.run(
+                        *cmd3,
                         external=True,
                     )
 
@@ -515,6 +628,8 @@ def install_features_into_engine(session):
     # Ex:
     # nox --session install_features_into_engine
     # nox --tags install_features_into_engine
+
+    sudo = False
 
     features_dir = pathlib.Path.cwd() / ".features"
 
@@ -536,13 +651,24 @@ def install_features_into_engine(session):
             if pathlib.Path(dir_ / ".git").exists():
                 logging.info("Installing features from %s" % dir_)
 
-                session.run(
+                cmd = [
                     ".venv/bin/python",
                     "-m",
                     "pip",
                     "install",
                     "--editable",
                     f"{dir_}[dev]",
+                ]
+
+                if sudo:
+                    cmd.insert(0, shutil.which("sudo"))
+                    cmd.insert(1, "--reset-timestamp")
+                    # cmd.insert(2, "--stdin")
+
+                logging.info(f"{cmd = }")
+
+                session.run(
+                    *cmd,
                     external=True,
                 )
 
@@ -602,6 +728,8 @@ def fix_hardlinks_in_features(session):
 
     # ln -f ../../../OpenStudioLandscapes/noxfile.py  noxfile.py
 
+    sudo = False
+
     cwd = pathlib.Path.cwd()
     features_dir = cwd / ".features"
 
@@ -632,24 +760,34 @@ def fix_hardlinks_in_features(session):
 
                         if platform.system() == "Linux":
 
-                            session.run(
+                            cmd = [
                                 shutil.which("ln"),
                                 "--force",
                                 "--backup=numbered",
                                 target.as_posix(),
                                 link_name,
-                                external=True,
-                            )
+                            ]
 
                         elif platform.system() == "Darwin":
 
-                            session.run(
+                            cmd = [
                                 shutil.which("ln"),
                                 "-f",
                                 target.as_posix(),
                                 link_name,
-                                external=True,
-                            )
+                            ]
+
+                        if sudo:
+                            cmd.insert(0, shutil.which("sudo"))
+                            cmd.insert(1, "--reset-timestamp")
+                            # cmd.insert(2, "--stdin")
+
+                        logging.info(f"{cmd = }")
+
+                        session.run(
+                            *cmd,
+                            external=True,
+                        )
 
 
 #######################################################################################################################
@@ -850,6 +988,8 @@ def pi_hole_up(session):
         cmd.insert(1, "--reset-timestamp")
         # cmd.insert(2, "--stdin")
 
+    logging.info(f"{cmd = }")
+
     session.run(
         *cmd,
         env=ENV,
@@ -925,6 +1065,9 @@ def pi_hole_clear(session):
         logging.warning("Clearing out Pi-hole...\n" "Continue? Type `yes` to confirm.")
         answer = input()
         if answer.lower() == "yes":
+
+            logging.info(f"{cmd = }")
+
             session.run(
                 # Todo
                 #  - [ ] maybe use git checkout -f to reset?
@@ -981,6 +1124,8 @@ def pi_hole_up_detach(session):
         cmd.insert(1, "--reset-timestamp")
         # cmd.insert(2, "--stdin")
 
+    logging.info(f"{cmd = }")
+
     session.run(
         *cmd,
         env=ENV,
@@ -1025,6 +1170,8 @@ def pi_hole_down(session):
         cmd.insert(0, shutil.which("sudo"))
         cmd.insert(1, "--reset-timestamp")
         # cmd.insert(2, "--stdin")
+
+    logging.info(f"{cmd = }")
 
     session.run(
         *cmd,
@@ -1248,6 +1395,9 @@ def harbor_prepare(session):
     # Ex:
     # nox --session harbor_prepare
     # nox --tags harbor_prepare
+
+    # Todo
+    #  - [ ] Maybe use env var HARBOR_BUNDLE_DIR for prepare
 
     # /usr/bin/sudo \
     #     /usr/bin/bash
