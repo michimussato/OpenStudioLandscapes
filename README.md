@@ -4,7 +4,6 @@
 
 <!-- TOC -->
 * [OpenStudioLandscapes](#openstudiolandscapes)
-  * [OpenStudioLandscapes on LinkedIn](#openstudiolandscapes-on-linkedin)
   * [Disclaimer](#disclaimer)
   * [About the Author](#about-the-author)
   * [Community](#community)
@@ -47,12 +46,6 @@
 
 # OpenStudioLandscapes
 
-## OpenStudioLandscapes on LinkedIn
-
-https://www.linkedin.com/company/106731439/
-
-https://www.linkedin.com/search/results/all/?keywords=%23openstudiolandscapes
-
 ## Disclaimer
 
 I'm not a software architect by any means. 
@@ -86,6 +79,8 @@ Former employers, among others:
 
 ## Community
 
+- [LinkedIn](https://www.linkedin.com/company/106731439/)
+  - [#OpenStudioLandscapes](https://www.linkedin.com/search/results/all/?keywords=%23openstudiolandscapes)
 - [Discord](https://discord.com/channels/1357343453364748419/1357343454065328202)
 - [Slack](https://openstudiolandscapes.slack.com)
 
