@@ -836,7 +836,7 @@ def script_add_alias(
                 "\n",
                 "\n",
                 # Escape dots
-                # f"sed -i -e '$asource $HOME/\.openstudiolandscapesrc' -e '/source $HOME\/\.openstudiolandscapesrc/d' {bashrc.as_posix()}\n",
+                # Working syntax:
                 # sed -i -e '$asource /home/user/git/repos/OpenStudioLandscapes/\.openstudiolandscapesrc' -e '/source \/home\/user\/git\/repos\/OpenStudioLandscapes\/\.openstudiolandscapesrc/d' /home/user/.bashrc
                 f"sed -i -e '$asource {str_repo_dir_}/\.openstudiolandscapesrc' -e '/source {str_repo_dir_escaped}\/\.openstudiolandscapesrc/d' {bashrc.as_posix()}\n",
             ]
