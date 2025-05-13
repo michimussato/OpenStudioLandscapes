@@ -55,11 +55,11 @@ I'm not
 - a Python Master
 by any means.
 
-However, I often did find myself as a TD in a juggling - sometimes fun and 
-sometimes very frustrating - game within those realms. This is exactly
-where this story started.
+However, I often did find myself (as a TD) in a juggling - sometimes fun and 
+sometimes less fun - game within those realms. This is exactly
+where and why this story started.
 
-I applied my very limited knowledge about Python Packaging, Docker Containers,
+I tried to apply my very limited knowledge about Python Packaging, Docker Containers,
 Git, Linux Shell etc. etc. so I'm sure you might find one or the other 
 quirk that is not best practice. If you do, don't hesitate to reach out, 
 point it out and suggest a better way to do it.
@@ -67,7 +67,7 @@ point it out and suggest a better way to do it.
 OpenStudioLandscapes, as such, is not a GUI application. If you don't have
 (or are not willing to gain) some basic Linux shell and/or Python skills you might 
 struggle a bit - especially in the beginning. 
-However, the goal of this project that everyone should be able to 
+However, the goal of this project is that everyone *should* be able to 
 overcome technical difficulties and to get a Landscape up and running 
 in a small amount of time - with guidance, video tutorials and (once 
 established) the community.
@@ -211,6 +211,13 @@ python3 <(curl --header 'Cache-Control: no-cache, no-store' --silent https://raw
 # Todo:
 #  - [ ] python3 <(curl --header 'Cache-Control: no-cache, no-store' --silent https://raw.githubusercontent.com/michimussato/OpenStudioLandscapes/refs/heads/main/ubuntu/22.04/install_ubuntu_2204.py)
 ```
+
+> [!IMPORTANT]
+> The first thing the installer checks is whether `$USER` is a member of the group `docker`.
+> If the user isn't, the installer makes sure the user is. It is **mandatory** to perform
+> a reboot after that. Otherwise, the installer will produce errors when installing 
+> the latest Docker binaries. Just reboot here if you are being asked to and 
+> then re-run above command.
 
 Go through the setup process all the way to the end and reboot your machine.
 Log in with the user who performed the installation.
@@ -516,8 +523,7 @@ OpenStudioLandscapes git:[main]
 nox --list-sessions
 Sessions defined in OpenStudioLandscapes/noxfile.py:
 
-- clone_features -> `git clone` all listed (REPOS_FEATURE) Features into .features.
-- pull_features -> `git pull` all listed (REPOS_FEATURE) Features.
+- clone_features -> `git clone` all listed (REPOS_FEATURE) Features into .features. Performs `git pull` if repos already exist.
 - readme_all -> Create README.md for all listed (REPOS_FEATURE) Features.
 - stash_features -> `git stash` all listed (REPOS_FEATURE) Features.
 - stash_apply_features -> `git stash apply` all listed (REPOS_FEATURE) Features.
@@ -542,6 +548,7 @@ Sessions defined in OpenStudioLandscapes/noxfile.py:
 - dagster_postgres_up_detach -> Start Postgres backend for Dagster in detached mode.
 - dagster_postgres_down -> Shut down Postgres backend for Dagster.
 - dagster_postgres -> Start Dagster with Postgres as backend after `nox --session dagster_postgres_up_detach`.
+- dagster_mysql -> Start Dagster with MySQL as backend (not recommended).
 * sbom-3.11 -> Runs Software Bill of Materials (SBOM).
 * sbom-3.12 -> Runs Software Bill of Materials (SBOM).
 * coverage-3.11 -> Runs coverage

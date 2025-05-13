@@ -2062,7 +2062,7 @@ def dagster_postgres(session):
 @nox.session(python=None, tags=["dagster_mysql"])
 def dagster_mysql(session):
     """
-    Start Dagster with Postgres as backend after `nox --session dagster_postgres_up_detach`.
+    Start Dagster with MySQL as backend (not recommended).
 
     Scope:
     - [x] Engine
