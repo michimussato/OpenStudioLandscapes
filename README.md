@@ -194,6 +194,10 @@ Ubuntu Desktop 22.04. More Linux distros will come based on requests.
 
 ### Ubuntu Desktop
 
+> [!NOTE] 
+> The installation process can be time-consuming. Tests show that 
+> the setup routine will download between 2-3 GB of data.
+
 #### 22.04
 
 ![Install_UbuntuDesktop2204.png](_images/Install_UbuntuDesktop2204.png)
