@@ -910,8 +910,6 @@ def script_initial_checks(
                 "#!/bin/env bash\n",
                 "\n",
                 "\n",
-                "clear\n",
-                "\n",
                 "if ! groups $USER | grep -qw \"docker\"; then\n",
                 f"    sudo groupadd --force docker\n",
                 f"    sudo usermod --append --groups docker \"{docker_user}\"\n",
