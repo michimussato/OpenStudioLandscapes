@@ -1,0 +1,3 @@
+alias openstudiolandscapes-up="source .venv/bin/activate && nox --sessions harbor_up_detach dagster_postgres_up_detach dagster_postgres; deactivate"
+alias openstudiolandscapes-down="source .venv/bin/activate && nox --sessions dagster_postgres_down harbor_down; deactivate"
+alias openstudiolandscapes="openstudiolandscapes-up; sleep 5 && openstudiolandscapes-down;"
