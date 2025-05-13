@@ -243,21 +243,15 @@ specified in:
 ##### Run OpenStudioLandscapes
 
 ```bash
-openstudiolandscapes-up
+openstudiolandscapes
 ```
 
-Open the Dagster UI: [http://<ip_openstudiolandscapes_host>:3000]()
+Open the Dagster UI: [http://<ip_openstudiolandscapes_host>:3000/asset-groups]()
 
 Next steps:
 - [Understanding the Daster Linage](#dagster-lineage)
 - [Landscape Map: `docker-compose-graph`](#docker-compose-graph)
 - [Create Landscape](#create-landscape)
-
-##### Stop OpenStudioLandscapes
-
-```bash
-openstudiolandscapes-down
-```
 
 ## Terminology
 
