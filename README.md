@@ -197,6 +197,8 @@ Ubuntu Desktop 22.04. More Linux distros will come based on requests.
 > [!NOTE] 
 > The installation process can be time-consuming. Tests show that 
 > the setup routine will download between 2-3 GB of data.
+> And this applies only to the basic installation. Using
+> OpenStudioLandscapes implies even more data transfers.
 
 #### 22.04
 
