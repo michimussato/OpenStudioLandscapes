@@ -116,7 +116,7 @@ def script_disable_unattended_upgrades() -> pathlib.Path:
                 "\n",
                 "\n",
                 "while pgrep unattended-upgr; do\n",
-                "    echo \"Wait for Unattended Upgrade to finish. Can't disable Unit while process is active.\n",
+                "    echo \"Wait for Unattended Upgrade to finish. Can't disable Unit while process is active.\"\n",
                 "    sleep 5\n",
                 "done\n",
                 "\n",
