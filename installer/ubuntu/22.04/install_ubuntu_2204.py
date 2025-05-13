@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # https://www.baeldung.com/linux/curl-fetched-script-arguments
 import base64
+import inspect
 import json
 import shlex
 import shutil
@@ -29,7 +30,7 @@ ADMIN_HARBOR: str = "admin"
 PASSWORD_HARBOR: str = "Harbor12345"
 
 
-SHELL_SCRIPTS_PREFIX = "ubuntu_2204__"
+SHELL_SCRIPTS_PREFIX = "ubuntu_2204"
 
 
 class bcolors:
@@ -58,6 +59,8 @@ def script_run(
     script: pathlib.Path,
 ) -> int:
 
+    print(" BLOCK START ".center(_get_terminal_size()[0], "="))
+
     cmd = [
         shutil.which("bash"),
         script.as_posix(),
@@ -85,12 +88,15 @@ def script_run(
     # hence, subprocess.run got me close but is not the best solution
     # when it comes to user input like passwords or other
     # arbitrary data.
+    print(" SCRIPT EXECUTION START ".center(_get_terminal_size()[0], "-"))
     result = pty.spawn(cmd)
+    print(" SCRIPT EXECUTION END ".center(_get_terminal_size()[0], "-"))
     print(" RETURN CODE ".center(_get_terminal_size()[0], "-"))
     if result == 0:
         print(bcolors.OKGREEN + f"Return Code = {result}" + bcolors.ENDC)
     else:
         print(bcolors.FAIL + f"Return Code = {result}" + bcolors.ENDC)
+    print(" BLOCK END ".center(_get_terminal_size()[0], "="))
 
     return result
 
@@ -100,7 +106,7 @@ def script_disable_unattended_upgrades() -> pathlib.Path:
     with tempfile.NamedTemporaryFile(
             delete=False,
             encoding="utf-8",
-            prefix=SHELL_SCRIPTS_PREFIX,
+            prefix=f"{SHELL_SCRIPTS_PREFIX}__{inspect.currentframe().f_code.co_name}__",
             suffix=".sh",
             mode="x",
     ) as script:
@@ -108,6 +114,11 @@ def script_disable_unattended_upgrades() -> pathlib.Path:
             [
                 "#!/bin/env bash\n",
                 "\n",
+                "\n",
+                "while pgrep unattended-upgr; do\n",
+                "    echo \"Wait for Unattended Upgrade to finish. Can't disable Unit while process is active.\n",
+                "    sleep 5\n",
+                "done\n",
                 "\n",
                 "sudo systemctl disable --now unattended-upgrades\n",
             ]
@@ -128,7 +139,7 @@ def script_prep() -> pathlib.Path:
     with tempfile.NamedTemporaryFile(
             delete=False,
             encoding="utf-8",
-            prefix=SHELL_SCRIPTS_PREFIX,
+            prefix=f"{SHELL_SCRIPTS_PREFIX}__{inspect.currentframe().f_code.co_name}__",
             suffix=".sh",
             mode="x",
     ) as script:
@@ -191,7 +202,7 @@ def script_clone_openstudiolandscapes(
     with tempfile.NamedTemporaryFile(
             delete=False,
             encoding="utf-8",
-            prefix=SHELL_SCRIPTS_PREFIX,
+            prefix=f"{SHELL_SCRIPTS_PREFIX}__{inspect.currentframe().f_code.co_name}__",
             suffix=".sh",
             mode="x",
     ) as script:
@@ -261,7 +272,7 @@ def script_install_python(
     with tempfile.NamedTemporaryFile(
             delete=False,
             encoding="utf-8",
-            prefix=SHELL_SCRIPTS_PREFIX,
+            prefix=f"{SHELL_SCRIPTS_PREFIX}__{inspect.currentframe().f_code.co_name}__",
             suffix=".sh",
             mode="x",
     ) as script:
@@ -303,11 +314,14 @@ def script_install_python(
         script.writelines(
             [
                 # line 10: [: too many arguments
-                "while [ ! sudo apt-get upgrade -y ]; do\n",
+                "while ! sudo apt-get upgrade -y; do\n",
                 "    echo \"Update in progress in the background...\"\n",
                 "    sleep 5\n",
                 "done;\n",
                 "\n",
+                # Todo:
+                #  - [ ] while [ ! sudo apt-get upgrade -y ]; do
+                #        /tmp/ubuntu_2204__211gwqzp.sh: line 10: [: too many arguments
                 f"sudo apt-get install --no-install-recommends -y {' '.join(python_pkgs)}\n",
                 "\n",
                 "pushd \"$(mktemp -d)\" || exit\n",
@@ -346,7 +360,7 @@ def script_install_docker(
     with tempfile.NamedTemporaryFile(
             delete=False,
             encoding="utf-8",
-            prefix=SHELL_SCRIPTS_PREFIX,
+            prefix=f"{SHELL_SCRIPTS_PREFIX}__{inspect.currentframe().f_code.co_name}__",
             suffix=".sh",
             mode="x",
     ) as script:
@@ -436,11 +450,13 @@ def script_install_docker(
                 "\n",
                 "sudo systemctl daemon-reload\n",
                 # Todo
-                #  - [ ] This step causes the Harbor issues:
+                #  - [x] This step causes the Harbor issues:
                 "sudo systemctl restart docker\n",
                 "\n",
+                # Todo
+                #  - [ ] And this is the *best* solution I could come up with so far:
                 f"sudo rm -rf {pathlib.Path(openstudiolandscapes_repo_dir, '.landscapes', '.harbor', 'bin').as_posix()}/*\n",
-                f"sudo rm -rf {pathlib.Path(openstudiolandscapes_repo_dir, '.landscapes', '.harbor', 'data').as_posix()}/*\n*",
+                f"sudo rm -rf {pathlib.Path(openstudiolandscapes_repo_dir, '.landscapes', '.harbor', 'data').as_posix()}/*\n",
             ]
         )
 
@@ -471,7 +487,7 @@ def script_install_openstudiolandscapes(
     with tempfile.NamedTemporaryFile(
             delete=False,
             encoding="utf-8",
-            prefix=SHELL_SCRIPTS_PREFIX,
+            prefix=f"{SHELL_SCRIPTS_PREFIX}__{inspect.currentframe().f_code.co_name}__",
             suffix=".sh",
             mode="x",
     ) as script:
@@ -512,7 +528,7 @@ def script_etc_hosts() -> pathlib.Path:
     with tempfile.NamedTemporaryFile(
             delete=False,
             encoding="utf-8",
-            prefix=SHELL_SCRIPTS_PREFIX,
+            prefix=f"{SHELL_SCRIPTS_PREFIX}__{inspect.currentframe().f_code.co_name}__",
             suffix=".sh",
             mode="x",
     ) as script:
@@ -556,10 +572,19 @@ def script_harbor_prepare(
 
     print(" INIT HARBOR ".center(_get_terminal_size()[0], "#"))
 
+    # Todo:
+    #  - [ ] docker: permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Head "http://%2Fvar%2Frun%2Fdocker.sock/_ping": dial unix /var/run/docker.sock: connect: permission denied
+    #  - [ ] Bad return code
+    #        Run 'docker run --help' for more information
+    #        nox > Command /usr/bin/bash /home/user/git/repos/OpenStudioLandscapes/.landscapes/.harbor/bin/prepare failed with exit code 126
+    #        nox > Session harbor_prepare failed.
+    #        ------------------------------------------------------------ RETURN CODE -------------------------------------------------------------
+    #        Return Code = 0
+
     with tempfile.NamedTemporaryFile(
             delete=False,
             encoding="utf-8",
-            prefix=SHELL_SCRIPTS_PREFIX,
+            prefix=f"{SHELL_SCRIPTS_PREFIX}__{inspect.currentframe().f_code.co_name}__",
             suffix=".sh",
             mode="x",
     ) as script:
@@ -594,7 +619,7 @@ def script_harbor_up(
     with tempfile.NamedTemporaryFile(
             delete=False,
             encoding="utf-8",
-            prefix=SHELL_SCRIPTS_PREFIX,
+            prefix=f"{SHELL_SCRIPTS_PREFIX}__{inspect.currentframe().f_code.co_name}__",
             suffix=".sh",
             mode="x",
     ) as script:
@@ -632,7 +657,7 @@ def script_harbor_init(
     with tempfile.NamedTemporaryFile(
             delete=False,
             encoding="utf-8",
-            prefix=SHELL_SCRIPTS_PREFIX,
+            prefix=f"{SHELL_SCRIPTS_PREFIX}__{inspect.currentframe().f_code.co_name}__",
             suffix=".sh",
             mode="x",
     ) as script:
@@ -723,7 +748,7 @@ def script_harbor_down(
     with tempfile.NamedTemporaryFile(
             delete=False,
             encoding="utf-8",
-            prefix=SHELL_SCRIPTS_PREFIX,
+            prefix=f"{SHELL_SCRIPTS_PREFIX}__{inspect.currentframe().f_code.co_name}__",
             suffix=".sh",
             mode="x",
     ) as script:
@@ -760,7 +785,7 @@ def script_init_pihole(
     with tempfile.NamedTemporaryFile(
             delete=False,
             encoding="utf-8",
-            prefix=SHELL_SCRIPTS_PREFIX,
+            prefix=f"{SHELL_SCRIPTS_PREFIX}__{inspect.currentframe().f_code.co_name}__",
             suffix=".sh",
             mode="x",
     ) as script:
@@ -789,7 +814,7 @@ def script_init_pihole(
 def script_add_alias(
     openstudiolandscapes_repo_dir: pathlib.Path,
     bashrc: pathlib.Path = pathlib.Path("~/.bashrc").expanduser(),
-    openstudiolandscapesrc: pathlib.Path = pathlib.Path("~/.openstudiolandscapesrc").expanduser(),
+    # openstudiolandscapesrc: pathlib.Path = pathlib.Path("~/.openstudiolandscapesrc").expanduser(),
 ) -> pathlib.Path:
 
     print(" ADD ALIASES ".center(_get_terminal_size()[0], "#"))
@@ -797,7 +822,7 @@ def script_add_alias(
     with tempfile.NamedTemporaryFile(
             delete=False,
             encoding="utf-8",
-            prefix=SHELL_SCRIPTS_PREFIX,
+            prefix=f"{SHELL_SCRIPTS_PREFIX}__{inspect.currentframe().f_code.co_name}__",
             suffix=".sh",
             mode="x",
     ) as script:
@@ -807,21 +832,22 @@ def script_add_alias(
                 "\n",
                 "\n",
                 # Escape dots
-                f"sed -i -e '$asource $HOME/\.openstudiolandscapesrc' -e '/source $HOME\/\.openstudiolandscapesrc/d' {bashrc.as_posix()}\n",
+                # f"sed -i -e '$asource $HOME/\.openstudiolandscapesrc' -e '/source $HOME\/\.openstudiolandscapesrc/d' {bashrc.as_posix()}\n",
+                f"sed -i -e '$asource {openstudiolandscapes_repo_dir.as_posix()}/\.openstudiolandscapesrc' -e '/source {openstudiolandscapes_repo_dir.as_posix()}\/\.openstudiolandscapesrc/d' {bashrc.as_posix()}\n",
             ]
         )
 
-        script.writelines(
-            [
-                f"cat > {openstudiolandscapesrc.as_posix()}<< EOF\n",
-                "# ~/.openstudiolandscapesrc\n",
-                f"alias openstudiolandscapes-up=\"pushd {openstudiolandscapes_repo_dir.as_posix()} && source .venv/bin/activate && nox --sessions harbor_up_detach dagster_postgres_up_detach dagster_postgres && deactivate && popd\"\n",
-                f"alias openstudiolandscapes-down=\"pushd {openstudiolandscapes_repo_dir.as_posix()} && source .venv/bin/activate && nox --sessions dagster_postgres_down harbor_down && deactivate && popd\"\n",
-                f"alias openstudiolandscapes=\"openstudiolandscapes-up; sleep 5 && openstudiolandscapes-down;\"\n",
-                "\n",
-                "EOF\n",
-            ]
-        )
+        # script.writelines(
+        #     [
+        #         f"cat > {openstudiolandscapesrc.as_posix()}<< EOF\n",
+        #         "# ~/.openstudiolandscapesrc\n",
+        #         f"alias openstudiolandscapes-up=\"pushd {openstudiolandscapes_repo_dir.as_posix()} && source .venv/bin/activate && nox --sessions harbor_up_detach dagster_postgres_up_detach dagster_postgres && deactivate && popd\"\n",
+        #         f"alias openstudiolandscapes-down=\"pushd {openstudiolandscapes_repo_dir.as_posix()} && source .venv/bin/activate && nox --sessions dagster_postgres_down harbor_down && deactivate && popd\"\n",
+        #         f"alias openstudiolandscapes=\"openstudiolandscapes-up; sleep 5 && openstudiolandscapes-down;\"\n",
+        #         "\n",
+        #         "EOF\n",
+        #     ]
+        # )
 
         script.writelines(
             [
@@ -840,7 +866,7 @@ def script_reboot() -> pathlib.Path:
     with tempfile.NamedTemporaryFile(
             delete=False,
             encoding="utf-8",
-            prefix=SHELL_SCRIPTS_PREFIX,
+            prefix=f"{SHELL_SCRIPTS_PREFIX}__{inspect.currentframe().f_code.co_name}__",
             suffix=".sh",
             mode="x",
     ) as script:
@@ -866,14 +892,16 @@ def script_reboot() -> pathlib.Path:
         return pathlib.Path(script.name)
 
 
-def script_initial_checks() -> pathlib.Path:
+def script_initial_checks(
+     docker_user: str,
+) -> pathlib.Path:
 
     print(" INITIAL CHECKS ".center(_get_terminal_size()[0], "#"))
 
     with tempfile.NamedTemporaryFile(
             delete=False,
             encoding="utf-8",
-            prefix=SHELL_SCRIPTS_PREFIX,
+            prefix=f"{SHELL_SCRIPTS_PREFIX}__{inspect.currentframe().f_code.co_name}__",
             suffix=".sh",
             mode="x",
     ) as script:
@@ -882,17 +910,31 @@ def script_initial_checks() -> pathlib.Path:
                 "#!/bin/env bash\n",
                 "\n",
                 "\n",
-                "if docker ps | grep \"goharbor/\"; then\n",
-                "    echo \"Docker Container Harbor is running!\"\n",
-                "    echo \"It is not advisable to perform this installation while Harbor is running.\"\n",
-                "    echo\n",
-                "    echo \"Stop the containers and re-run the installer.\"\n",
-                "    echo \"Run `docker stop $(docker ps -q)` to stop all running containers.\"\n",
-                "    echo\n",
-                "    exit 1\n",
-                "else\n",
-                "    echo \"Looking good! Let's go...\"\n",
+                "clear\n",
+                "\n",
+                "if ! groups $USER | grep -qw \"docker\"; then\n",
+                f"    sudo groupadd --force docker\n",
+                f"    sudo usermod --append --groups docker \"{docker_user}\"\n",
+                #f"    {shutil.which('bash')} {add_user_to_group_docker(docker_user=docker_user).as_posix()}\n",
+                f"    echo \"Reboot now and re-run this scrip.\"\n",
+                f"    # Reboot Script:\n",
+                f"    {shutil.which('bash')} {script_reboot().as_posix()}\n",
+                f"    exit 1\n",
                 "fi\n",
+                "\n",
+                "if command -v \"docker/\"; then\n",
+                "    if docker ps | grep \"goharbor/\"; then\n",
+                "        echo \"Docker Container Harbor is running!\"\n",
+                "        echo \"It is not advisable to perform this installation while Harbor is running.\"\n",
+                "        echo\n",
+                "        echo \"Stop the containers and re-run the installer.\"\n",
+                "        echo \"Run `docker stop $(docker ps -q)` to stop all running containers.\"\n",
+                "        echo\n",
+                "        exit 1\n",
+                "    fi\n",
+                "fi\n",
+                "\n",
+                "echo \"Looking good! Let's go...\"\n",
                 "\n",
             ]
         )
@@ -928,7 +970,9 @@ if __name__ == "__main__":
 
     script_run(
         sudo=False,
-        script=script_initial_checks(),
+        script=script_initial_checks(
+            docker_user=getuser()
+        ),
     )
 
     print(" INSTALL DIRECTORY ".center(_get_terminal_size()[0], "#"))
@@ -946,7 +990,7 @@ if __name__ == "__main__":
             print(f"ERROR: Directory {openstudiolandscapes_base.as_posix()} is not absolute (~ is allowed).")
             continue
         if not openstudiolandscapes_base.exists():
-            print(f"ERROR: Directory {openstudiolandscapes_base.as_posix()} does not exist. Create it first.")
+            print(f"ERROR: Directory {openstudiolandscapes_base.as_posix()} does not exist. Create it first or choose a different one.")
             continue
         if openstudiolandscapes_base.is_file():
             print(f"ERROR: Install Directory {openstudiolandscapes_base.as_posix()} is a file. Cannot continue.")
