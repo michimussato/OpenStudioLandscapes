@@ -573,13 +573,19 @@ def script_harbor_prepare(
     print(" INIT HARBOR ".center(_get_terminal_size()[0], "#"))
 
     # Todo:
-    #  - [ ] docker: permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Head "http://%2Fvar%2Frun%2Fdocker.sock/_ping": dial unix /var/run/docker.sock: connect: permission denied
+    #  - [x] docker: permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Head "http://%2Fvar%2Frun%2Fdocker.sock/_ping": dial unix /var/run/docker.sock: connect: permission denied
+    #        -> should not happen anymore with
+    #               sudo groupadd --force docker
+    #               sudo usermod --append --groups docker $USER
+    #           in script_initial_checks()
     #  - [ ] Bad return code
     #        Run 'docker run --help' for more information
     #        nox > Command /usr/bin/bash /home/user/git/repos/OpenStudioLandscapes/.landscapes/.harbor/bin/prepare failed with exit code 126
     #        nox > Session harbor_prepare failed.
     #        ------------------------------------------------------------ RETURN CODE -------------------------------------------------------------
     #        Return Code = 0
+    #        session.run() would return True/False based on success but
+    #        I'm not sure yet if that would mean nox-abuse.
 
     with tempfile.NamedTemporaryFile(
             delete=False,
