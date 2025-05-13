@@ -826,6 +826,10 @@ def script_add_alias(
             suffix=".sh",
             mode="x",
     ) as script:
+
+        str_repo_dir_ = openstudiolandscapes_repo_dir.as_posix()
+        str_repo_dir_escaped = str_repo_dir_.replace("/", "\/")
+
         script.writelines(
             [
                 "#!/bin/env bash\n",
@@ -833,7 +837,8 @@ def script_add_alias(
                 "\n",
                 # Escape dots
                 # f"sed -i -e '$asource $HOME/\.openstudiolandscapesrc' -e '/source $HOME\/\.openstudiolandscapesrc/d' {bashrc.as_posix()}\n",
-                f"sed -i -e '$asource {openstudiolandscapes_repo_dir.as_posix()}/\.openstudiolandscapesrc' -e '/source {openstudiolandscapes_repo_dir.as_posix()}\/\.openstudiolandscapesrc/d' {bashrc.as_posix()}\n",
+                # sed -i -e '$asource /home/user/git/repos/OpenStudioLandscapes/\.openstudiolandscapesrc' -e '/source \/home\/user\/git\/repos\/OpenStudioLandscapes\/\.openstudiolandscapesrc/d' /home/user/.bashrc
+                f"sed -i -e '$asource {str_repo_dir_}/\.openstudiolandscapesrc' -e '/source {str_repo_dir_escaped}\/\.openstudiolandscapesrc/d' {bashrc.as_posix()}\n",
             ]
         )
 
@@ -885,7 +890,7 @@ def script_reboot() -> pathlib.Path:
         script.writelines(
             [
                 "\n",
-                "exit 0\n",
+                "exit 1\n",
             ]
         )
 
