@@ -115,13 +115,14 @@ def script_disable_unattended_upgrades() -> pathlib.Path:
                 "#!/bin/env bash\n",
                 "\n",
                 "\n",
-                "# while pgrep unattended-upgr; do\n",
-                "#     echo \"Wait for Unattended Upgrade to finish. Can't disable Unit while process is active.\"\n",
-                "#     sleep 5\n",
-                "# done\n",
-                "\n",
                 "sudo systemctl disable --now unattended-upgrades\n",
-                "sudo apt-get purge -y unattended-upgrades\n",
+                "\n",
+                "while pgrep unattended-upgr; do\n",
+                "    echo \"Wait for Unattended Upgrade to finish. Can't disable Unit while process is active.\"\n",
+                "    sleep 5\n",
+                "done\n",
+                "\n",
+                "# sudo apt-get purge -y unattended-upgrades\n",
             ]
         )
 
