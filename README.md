@@ -216,7 +216,13 @@ Ubuntu Desktop 22.04. More Linux distros will come based on requests.
 
 #### 22.04
 
+##### Desktop
+
 ![Install_UbuntuDesktop2204.png](_images/Install_UbuntuDesktop2204.png)
+
+##### Server
+
+![Install_UbuntuServer2204.png](_images/Install_UbuntuServer2204.png)
 
 ##### Requirements
 
