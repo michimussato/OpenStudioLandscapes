@@ -15,7 +15,6 @@
         * [Installation](#installation)
         * [Configure Features](#configure-features)
         * [Run OpenStudioLandscapes](#run-openstudiolandscapes)
-        * [Stop OpenStudioLandscapes](#stop-openstudiolandscapes)
   * [Terminology](#terminology)
   * [Structure](#structure)
   * [Requirements](#requirements-1)
@@ -102,13 +101,18 @@ Former employers, among others:
 
 ## Brief
 
-Setup and launch a render farm - your 3D Animation
+Setup and launch custom production environments
+with Render Farm, Production Tracking, Automation
+and more - your 3D Animation
 and VFX Pipeline backbone - with ease, independence
-and scalability.
+and scalability!
+The way YOU want it!
+YOU only!
+Exactly!
 
-A toolkit - or a declarative build system
-if you will - to easily create reproducible
-Render Farm environment setups:
+An open source toolkit - a declarative build system - to
+easily create reproducible production environments based
+on your studio (even down to per production) needs: 
 create Landscapes for production,
 testing, debugging, development,
 migration, DB restore etc.
@@ -191,6 +195,16 @@ It is recommended you start with a vanilla OS.
 
 For now, the `OpenStudioLandscapes` installer _officially_ only supports
 Ubuntu Desktop 22.04. More Linux distros will come based on requests.
+
+| Distro  | Base   | Version | Tested | Supported |
+|---------|--------|---------|--------|-----------|
+| Ubuntu  | Debian | 22.04   | ☑      | ☑         |
+| Manjaro | Arch   |         | ☒      | ☐         |
+|         |        |         |        |           |
+
+[//]: # (☑)
+[//]: # (☐)
+[//]: # (☒)
 
 ### Ubuntu Desktop
 
