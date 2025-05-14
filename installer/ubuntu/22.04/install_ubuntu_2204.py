@@ -925,6 +925,7 @@ def script_initial_checks(
                 f"    sudo groupadd --force docker\n",
                 f"    sudo usermod --append --groups docker \"{docker_user}\"\n",
                 #f"    {shutil.which('bash')} {add_user_to_group_docker(docker_user=docker_user).as_posix()}\n",
+                f"    echo \"User $USER has been added to group `docker`.\"\n",
                 f"    echo \"Reboot now and re-run this scrip.\"\n",
                 f"    # Reboot Script:\n",
                 f"    {shutil.which('bash')} {script_reboot().as_posix()}\n",
@@ -993,20 +994,20 @@ if __name__ == "__main__":
         default_openstudiolandscapes_base = "~/git/repos"
         default_openstudiolandscapes_subdir = "OpenStudioLandscapes"
 
-        openstudiolandscapes_base = pathlib.Path(input(f"Install base dir ({default_openstudiolandscapes_base}): ".strip()) or default_openstudiolandscapes_base).expanduser()
+        openstudiolandscapes_base = pathlib.Path(input(f"Install base dir ({default_openstudiolandscapes_base}): ".strip()) or default_openstudiolandscapes_base)
 
-        if not openstudiolandscapes_base.is_absolute():
+        if not openstudiolandscapes_base.expanduser().is_absolute():
             print(f"ERROR: Directory {openstudiolandscapes_base.as_posix()} is not absolute (~ is allowed).")
             continue
-        if not openstudiolandscapes_base.exists():
-            print(f"ERROR: Directory {openstudiolandscapes_base.as_posix()} does not exist. Create it first or choose a different one.")
+        if not openstudiolandscapes_base.expanduser().exists():
+            print(f"ERROR: Directory {openstudiolandscapes_base.as_posix()} does not exist. Create it first (`mkdir -p {openstudiolandscapes_base}`) or choose a different one.")
             continue
-        if openstudiolandscapes_base.is_file():
+        if openstudiolandscapes_base.expanduser().is_file():
             print(f"ERROR: Install Directory {openstudiolandscapes_base.as_posix()} is a file. Cannot continue.")
             continue
 
         try:
-            probe = pathlib.Path(openstudiolandscapes_base / ".openstudiolandscapes_probe")
+            probe = pathlib.Path(openstudiolandscapes_base / ".openstudiolandscapes_probe").expanduser()
             probe.mkdir(parents=True, exist_ok=True)
             probe.rmdir()
             del probe
