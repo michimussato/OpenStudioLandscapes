@@ -650,14 +650,14 @@ sessions marked with * are selected, sessions marked with - are skipped.
 - [ ] A weekly video with instructions
 - [x] Integrate Harbor
 - [ ] Clean up this `README.md`
-  - Separate Readme from Documentation (Sphinx)
+  - [ ] Separate Readme from Documentation (Sphinx)
 - [ ] Implement tests (`noxfile.py`)
 - [x] Improve Feature discovery
 - [ ] Implement framework-wide terminology and glossary:
   - [x] "Feature"
   - [x] "Landscape"
   - [ ] "Engine"
-- [ ] Jump-Start / Quick-Start
+- [x] Jump-Start / Quick-Start
 - [x] Separate README.md content
   - [x] Batch stuff to OpenStudioLandscapes README.md
   - [x] Non batch stuff (single lines) to Feature README.md
@@ -676,7 +676,9 @@ sessions marked with * are selected, sessions marked with - are skipped.
   - `.dagster-postgres/dagster.yaml`
   - `.dagster-postgres/docker-compose.yml`
   - etc.
-- [ ] Remove `SECRETS` and implement `.env` or something similar
+- Secrets
+  - [x] Remove `SECRETS` 
+  - [ ] Implement `.env` or something similar
 - [x] Remove `michimussato@gmail.com` as default Kitsu account
 - [ ] Add VPN Server?
 - [x] Use Harbor API to create Project `openstudiolandscapes` by default
