@@ -11,6 +11,8 @@
   * [Quickstart](#quickstart)
     * [Ubuntu Desktop](#ubuntu-desktop)
       * [22.04](#2204)
+        * [Desktop](#desktop)
+        * [Server](#server)
         * [Requirements](#requirements)
         * [Installation](#installation)
         * [Configure Features](#configure-features)
@@ -219,6 +221,23 @@ Ubuntu Desktop 22.04. More Linux distros will come based on requests.
 ##### Desktop
 
 ![Install_UbuntuDesktop2204.png](_images/Install_UbuntuDesktop2204.png)
+
+If you see the following, select all except `none of the above`:
+
+```
+Restarting services...
+Daemons using outdated libraries
+--------------------------------
+
+  1. dbus.service                 5. ssh.service
+  2. multipathd.service           6. systemd-logind.service
+  3. networkd-dispatcher.service  7. user@1000.service
+  4. polkit.service               8. none of the above
+
+(Enter the items or ranges you want to select, separated by spaces.)
+
+Which services should be restarted? 1-7
+```
 
 ##### Server
 
@@ -661,3 +680,7 @@ sessions marked with * are selected, sessions marked with - are skipped.
 - [x] Remove `michimussato@gmail.com` as default Kitsu account
 - [ ] Add VPN Server?
 - [x] Use Harbor API to create Project `openstudiolandscapes` by default
+- [ ] Investigate OpenStudioLandscapes Docker image
+- Linux Distro Installer
+  - [x] Ubuntu Desktop 22.04
+  - [ ] Ubuntu Server 22.04
