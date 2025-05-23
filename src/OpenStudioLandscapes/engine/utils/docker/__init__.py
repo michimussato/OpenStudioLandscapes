@@ -14,6 +14,10 @@ from dagster import AssetExecutionContext
 from OpenStudioLandscapes.engine.utils import iterate_fds
 
 
+class OpenStudioLandscapesDockerException(Exception):
+    pass
+
+
 def docker_build_cmd(
         context: AssetExecutionContext,
         docker_config_json: pathlib.Path,
@@ -84,7 +88,7 @@ def docker_process_cmds(
 
     for cmd in cmds:
 
-        context.log.info(f"Processing command: {' '.join(cmd)}...")
+        context.log.info(f"Processing command: {' '.join(cmd)}")
 
         proc = subprocess.Popen(
             cmd,
@@ -111,5 +115,13 @@ def docker_process_cmds(
             "stdout": logs["stdout"],
             "stderr": logs["stderr"],
         }
+
+        returncode = proc.poll()
+        context.log.debug(f"{returncode = }")
+
+        if bool(returncode):
+            raise OpenStudioLandscapesDockerException(
+                "\n".join(logs_["stderr"]),
+            )
 
         yield logs_
