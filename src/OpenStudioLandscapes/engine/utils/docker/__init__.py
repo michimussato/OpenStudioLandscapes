@@ -88,7 +88,7 @@ def docker_process_cmds(
 
     for cmd in cmds:
 
-        context.log.info(f"Processing command: {' '.join(cmd)}")
+        context.log.info(f"Processing command: \"{' '.join(cmd)}\"")
 
         proc = subprocess.Popen(
             cmd,

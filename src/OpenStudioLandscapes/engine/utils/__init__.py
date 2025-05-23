@@ -39,12 +39,13 @@ def cmd_list_to_str(
 
 def get_pip_install_str(
     pip_install_packages: List[str],
+    python_str: str = "python{PYTHON_MAJ}.{PYTHON_MIN}",
 ) -> str:
     pip_install_str: str = str()
     for pip_package in pip_install_packages:
         pip_install_str += (
-            "RUN python{PYTHON_MAJ}.{PYTHON_MIN} -m pip install --root-user-action=ignore '%s'\n"
-            % pip_package
+            "RUN %s -m pip install --root-user-action=ignore '%s'\n"
+            % (python_str, pip_package)
         )
 
     return pip_install_str
