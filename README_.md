@@ -2242,6 +2242,7 @@ to learn more.
 - [ ] Remove `michimussato@gmail.com` as default Kitsu account
 - [ ] Add VPN Server?
 - [ ] Use Harbor API to create Project `openstudiolandscapes` by default
+- [ ] Miniboss: dockerize NFS server
 
 ---
 
