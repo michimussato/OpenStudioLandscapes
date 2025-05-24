@@ -100,6 +100,8 @@ def get_wget_str(
     return wget_str
 
 
+# Todo:
+#  - [ ] deprecate?
 def get_git_root(
     path: pathlib.Path = pathlib.Path(__file__),
 ) -> pathlib.Path:
@@ -109,6 +111,8 @@ def get_git_root(
     return pathlib.Path(git_root)
 
 
+# Todo:
+#  - [ ] deprecate
 def get_configs_root(
     path: pathlib.Path = pathlib.Path(__file__),
 ) -> pathlib.Path:
@@ -118,6 +122,8 @@ def get_configs_root(
     return configs_root
 
 
+# Todo:
+#  - [ ] deprecate
 def get_data_root(
     path: pathlib.Path = pathlib.Path(__file__),
 ) -> pathlib.Path:
@@ -127,6 +133,8 @@ def get_data_root(
     return data_root
 
 
+# Todo:
+#  - [ ] deprecate
 def get_bin_root(
     path: pathlib.Path = pathlib.Path(__file__),
 ) -> pathlib.Path:
