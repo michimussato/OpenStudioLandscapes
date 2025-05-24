@@ -146,20 +146,20 @@ FEATURES: dict[str, dict[str, bool | str | ComposeScope | OpenStudioLandscapesCo
         "compose_scope": ComposeScope.DEFAULT,
         "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
-    "OpenStudioLandscapes-Deadline_10_2": {
+    "OpenStudioLandscapes-Deadline-10-2": {
         "enabled": False,
         "module": "OpenStudioLandscapes.Deadline_10_2.definitions",
         "compose_scope": ComposeScope.DEFAULT,
         "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
-    "OpenStudioLandscapes-Deadline_10_2_Worker": {
+    "OpenStudioLandscapes-Deadline-10-2-Worker": {
         "enabled": False,
         "module": "OpenStudioLandscapes.Deadline_10_2_Worker.definitions",
         "compose_scope": ComposeScope.WORKER,
         "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
     "OpenStudioLandscapes-filebrowser": {
-        "enabled": True,
+        "enabled": False,
         "module": "OpenStudioLandscapes.filebrowser.definitions",
         "compose_scope": ComposeScope.DEFAULT,
         "feature_config": OpenStudioLandscapesConfig.DEFAULT,
@@ -170,14 +170,14 @@ FEATURES: dict[str, dict[str, bool | str | ComposeScope | OpenStudioLandscapesCo
         "compose_scope": ComposeScope.DEFAULT,
         "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
-    "OpenStudioLandscapes-SESI_gcc_9_3_Houdini_20": {
-        "enabled": True,
+    "OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20": {
+        "enabled": False,
         "module": "OpenStudioLandscapes.SESI_gcc_9_3_Houdini_20.definitions",
         "compose_scope": ComposeScope.LICENSE_SERVER,
         "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
-    "OpenStudioLandscapes-NukeRLM_8": {
-        "enabled": True,
+    "OpenStudioLandscapes-NukeRLM-8": {
+        "enabled": False,
         "module": "OpenStudioLandscapes.NukeRLM_8.definitions",
         "compose_scope": ComposeScope.LICENSE_SERVER,
         "feature_config": OpenStudioLandscapesConfig.DEFAULT,
