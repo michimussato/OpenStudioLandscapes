@@ -1050,9 +1050,10 @@ def pi_hole_clear(session):
     logging.debug("Clearing Pi-hole...")
 
     cmd = [
-        shutil.which("sudo"),
-        shutil.which("rm"),
-        "-rf",
+        shutil.which("git"),
+        "clean",
+        "-x",
+        "--force",
         pi_hole_root_dir.as_posix(),
     ]
 
@@ -1495,14 +1496,13 @@ def harbor_clear(session):
     harbor_root_dir: pathlib.Path = ENVIRONMENT_HARBOR["HARBOR_ROOT_DIR"]
 
     logging.debug("Clearing Harbor...")
-    logging.debug("Removing Dir %s" % harbor_root_dir.as_posix())
-
-    # Todo
-    #  - [ ] maybe use git checkout -f to reset?
+    logging.debug("Resetting Dir %s" % harbor_root_dir.as_posix())
 
     cmd = [
-        shutil.which("rm"),
-        "-rf",
+        shutil.which("git"),
+        "clean",
+        "-x",
+        "--force",
         harbor_root_dir.as_posix(),
     ]
 
