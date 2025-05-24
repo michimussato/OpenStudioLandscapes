@@ -2226,7 +2226,7 @@ to learn more.
 - [ ] Migrate to `pyproject.toml` exclusively?
 - [x] Quote `pip install`s (`zsh: no matches found: .[dev]`)
   - `pip install ".[dev]"` works in `zsh`
-- [ ] Make procedural `/home/michael/git/repos/OpenStudioLandscapes/.features` -> `{DOT_FEATURES}`:
+- [x] Make procedural `/home/michael/git/repos/OpenStudioLandscapes/.features` -> `{DOT_FEATURES}`:
   - From Kitsu README:
     ```
     KITSU_POSTGRES_CONF	str	/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Kitsu/.payload/config/etc/postgresql/14/main/postgresql.conf
@@ -2243,6 +2243,7 @@ to learn more.
 - [ ] Add VPN Server?
 - [ ] Use Harbor API to create Project `openstudiolandscapes` by default
 - [ ] Miniboss: dockerize NFS server
+- [ ] [HTTPS for Harbor](https://goharbor.io/docs/2.0.0/install-config/configure-https/)
 
 ---
 
