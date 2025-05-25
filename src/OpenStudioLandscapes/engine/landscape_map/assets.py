@@ -35,7 +35,7 @@ for key in feature_keys:
     if compose_scope in compose_scopes:
         continue
     compose_scopes.update(compose_scope)
-    ins[f"compose_scope_{compose_scope}"] = AssetIn(AssetKey([f"Compose_{compose_scope}", "docker_compose_graph_dot"]))
+    ins[f"compose_scope_{compose_scope}"] = AssetIn(AssetKey([f"{PREFIX_COMPOSE_SCOPE}_{compose_scope}", "docker_compose_graph_dot"]))
 
 
 if bool(ins):

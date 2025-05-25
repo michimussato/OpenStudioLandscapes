@@ -6,14 +6,21 @@ from OpenStudioLandscapes.engine.discovery.discovery import IMPORTS
 
 LOGGER = get_dagster_logger(__name__)
 
+# Base Definitions
 imports_engine = [
     "OpenStudioLandscapes.engine.base.definitions",
     "OpenStudioLandscapes.engine.env.definitions",
-    "OpenStudioLandscapes.engine.compose_license_server.definitions",
     "OpenStudioLandscapes.engine.landscape_map.definitions",
-    "OpenStudioLandscapes.engine.compose.definitions",
-    "OpenStudioLandscapes.engine.compose_worker.definitions",
 ]
+
+# ComposeScope Definitions
+imports_engine.extend(
+    [
+        "OpenStudioLandscapes.engine.compose_scopes.default.definitions",
+        "OpenStudioLandscapes.engine.compose_scopes.license_server.definitions",
+        "OpenStudioLandscapes.engine.compose_scopes.worker.definitions",
+    ]
+)
 
 
 modules = []

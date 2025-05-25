@@ -1,4 +1,5 @@
 __all__ = [
+    "PREFIX_COMPOSE_SCOPE",
     "DOCKER_CONFIG",
     "DOCKER_USE_CACHE_BASE",
     "DOCKER_USE_CACHE_GLOBAL",
@@ -38,17 +39,10 @@ DOCKER_PROGRESS = [
 DOCKER_CONFIG = DockerConfig.LOCAL_HARBOR
 DOCKER_USE_CACHE_GLOBAL = False
 DOCKER_USE_CACHE_BASE = DOCKER_USE_CACHE_GLOBAL or False
+PREFIX_COMPOSE_SCOPE = "ComposeScope"
 
 
-from OpenStudioLandscapes.engine.compose_license_server import constants as constants_compose_license_server
-
-GROUP_COMPOSE_LICENSE_SERVER= constants_compose_license_server.GROUP
-KEY_COMPOSE_LICENSE_SERVER = constants_compose_license_server.KEY
-ASSET_HEADER_COMPOSE_LICENSE_SERVER = constants_compose_license_server.ASSET_HEADER
-ENVIRONMENT_COMPOSE_LICENSE_SERVER = constants_compose_license_server.ENVIRONMENT
-
-
-from OpenStudioLandscapes.engine.compose import constants as constants_compose
+from OpenStudioLandscapes.engine.compose_scopes.default import constants as constants_compose
 
 GROUP_COMPOSE= constants_compose.GROUP
 KEY_COMPOSE = constants_compose.KEY
@@ -56,7 +50,15 @@ ASSET_HEADER_COMPOSE = constants_compose.ASSET_HEADER
 ENVIRONMENT_COMPOSE = constants_compose.ENVIRONMENT
 
 
-from OpenStudioLandscapes.engine.compose_worker import constants as constants_compose_worker
+from OpenStudioLandscapes.engine.compose_scopes.license_server import constants as constants_compose_license_server
+
+GROUP_COMPOSE_LICENSE_SERVER= constants_compose_license_server.GROUP
+KEY_COMPOSE_LICENSE_SERVER = constants_compose_license_server.KEY
+ASSET_HEADER_COMPOSE_LICENSE_SERVER = constants_compose_license_server.ASSET_HEADER
+ENVIRONMENT_COMPOSE_LICENSE_SERVER = constants_compose_license_server.ENVIRONMENT
+
+
+from OpenStudioLandscapes.engine.compose_scopes.worker import constants as constants_compose_worker
 
 GROUP_COMPOSE_WORKER= constants_compose_worker.GROUP
 KEY_COMPOSE_WORKER = constants_compose_worker.KEY
@@ -147,13 +149,13 @@ FEATURES: dict[str, dict[str, bool | str | ComposeScope | OpenStudioLandscapesCo
         "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
     "OpenStudioLandscapes-Deadline-10-2": {
-        "enabled": False,
+        "enabled": True,
         "module": "OpenStudioLandscapes.Deadline_10_2.definitions",
         "compose_scope": ComposeScope.DEFAULT,
         "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
     "OpenStudioLandscapes-Deadline-10-2-Worker": {
-        "enabled": False,
+        "enabled": True,
         "module": "OpenStudioLandscapes.Deadline_10_2_Worker.definitions",
         "compose_scope": ComposeScope.WORKER,
         "feature_config": OpenStudioLandscapesConfig.DEFAULT,
@@ -177,7 +179,7 @@ FEATURES: dict[str, dict[str, bool | str | ComposeScope | OpenStudioLandscapesCo
         "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
     "OpenStudioLandscapes-NukeRLM-8": {
-        "enabled": False,
+        "enabled": True,
         "module": "OpenStudioLandscapes.NukeRLM_8.definitions",
         "compose_scope": ComposeScope.LICENSE_SERVER,
         "feature_config": OpenStudioLandscapesConfig.DEFAULT,

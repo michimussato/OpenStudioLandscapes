@@ -10,19 +10,19 @@ from dagster import (
 )
 
 from OpenStudioLandscapes.engine.enums import *
-from OpenStudioLandscapes.engine.constants import DOCKER_USE_CACHE_GLOBAL
+from OpenStudioLandscapes.engine.constants import DOCKER_USE_CACHE_GLOBAL, PREFIX_COMPOSE_SCOPE
 
 
 DOCKER_USE_CACHE = DOCKER_USE_CACHE_GLOBAL or False
 
 
-GROUP = f"Compose_{str(ComposeScope.LICENSE_SERVER)}"
+GROUP = f"{PREFIX_COMPOSE_SCOPE}_{str(ComposeScope.DEFAULT)}"
 KEY = [GROUP]
 
 ASSET_HEADER = {
     "group_name": GROUP,
     "key_prefix": KEY,
-    "compute_kind": "python",
+    # "compute_kind": "python",
 }
 
 ENVIRONMENT = {}
@@ -32,7 +32,7 @@ ENVIRONMENT = {}
     **ASSET_HEADER,
     description="",
 )
-def constants_compose_license_server(
+def constants_compose(
     context: AssetExecutionContext,
 ) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
     """ """

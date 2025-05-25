@@ -1614,7 +1614,8 @@ nox > Session readme_all failed.
 #### Up
 
 ```shell
-nox --sessions harbor_up_detach pi_hole_up_detach dagster_postgres_up_detach dagster_postgres
+# nox --sessions harbor_up_detach pi_hole_up_detach dagster_postgres_up_detach dagster_postgres
+nox --sessions harbor_up_detach dagster_postgres_up_detach dagster_postgres
 ```
 
 #### Down

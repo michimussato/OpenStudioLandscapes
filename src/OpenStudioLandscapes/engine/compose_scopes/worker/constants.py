@@ -10,13 +10,13 @@ from dagster import (
 )
 
 from OpenStudioLandscapes.engine.enums import *
-from OpenStudioLandscapes.engine.constants import DOCKER_USE_CACHE_GLOBAL
+from OpenStudioLandscapes.engine.constants import DOCKER_USE_CACHE_GLOBAL, PREFIX_COMPOSE_SCOPE
 
 
 DOCKER_USE_CACHE = DOCKER_USE_CACHE_GLOBAL or False
 
 
-GROUP = f"Compose_{str(ComposeScope.WORKER)}"
+GROUP = f"{PREFIX_COMPOSE_SCOPE}_{str(ComposeScope.WORKER)}"
 KEY = [GROUP]
 
 ASSET_HEADER = {
