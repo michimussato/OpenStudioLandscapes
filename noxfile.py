@@ -743,6 +743,7 @@ IDENTICAL_FILES = [
     ".pre-commit-config.yaml",
     ".readthedocs.yml",
     "noxfile.py",
+    "LICENSE",
 ]
 
 # # fix_hardlinks_in_features
