@@ -2,4 +2,4 @@
 Contributors
 ============
 
-* Michael Mussato <michaelmus@animallogic.com.au>
+* Michael Mussato <michimussato@gmail.com>

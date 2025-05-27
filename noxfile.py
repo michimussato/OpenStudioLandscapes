@@ -744,6 +744,11 @@ IDENTICAL_FILES = [
     ".readthedocs.yml",
     "noxfile.py",
     "LICENSE",
+    "AUTHORS.rst",
+    "CONTRIBUTING.rst",
+    "docs/license.rst",
+    "docs/authors.rst",
+    "docs/contributing.rst",
 ]
 
 # # fix_hardlinks_in_features
