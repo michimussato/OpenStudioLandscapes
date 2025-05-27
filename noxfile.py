@@ -746,9 +746,11 @@ IDENTICAL_FILES = [
     "LICENSE",
     "AUTHORS.rst",
     "CONTRIBUTING.rst",
+    "docs/readme_md.rst",
     "docs/license.rst",
     "docs/authors.rst",
     "docs/contributing.rst",
+    "docs/conf.py",
 ]
 
 # # fix_hardlinks_in_features
