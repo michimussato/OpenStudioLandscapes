@@ -2112,7 +2112,7 @@ to be working for `.rst` with the
 #### Install `myst-parser`
 
 ```shell
-pip install myst-parser
+pip install --upgrade myst-parser
 ```
 
 1. Add `"myst_parser"` to `docs/conf.py:extensions`
