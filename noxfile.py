@@ -309,6 +309,7 @@ def readme_features(session):
                     session.install("-e", ".[nox]", silent=True)
                     session.run(
                         shutil.which("nox"),
+                        "-v",
                         "--session",
                         "readme",
                         external=True,
@@ -2521,6 +2522,7 @@ def docs_features(session):
                     session.install("-e", ".[nox]", silent=True)
                     session.run(
                         shutil.which("nox"),
+                        "-v",
                         "--session",
                         "docs",
                         external=True,
