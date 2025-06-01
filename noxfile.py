@@ -310,6 +310,7 @@ def readme_features(session):
                     session.run(
                         shutil.which("nox"),
                         "-v",
+                        "--add-timestamp",
                         "--session",
                         "readme",
                         external=True,
@@ -2523,6 +2524,7 @@ def docs_features(session):
                     session.run(
                         shutil.which("nox"),
                         "-v",
+                        "--add-timestamp",
                         "--session",
                         "docs",
                         external=True,
