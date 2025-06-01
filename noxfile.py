@@ -69,9 +69,9 @@ def download(
 
 
 # reuse_existing_virtualenvs:
-# local: @nox.session(reuse_venv=True)
 # global: nox.options.reuse_existing_virtualenvs = True
 nox.options.reuse_existing_virtualenvs = False
+# per session: @nox.session(reuse_venv=True)
 
 # default sessions when none is specified
 # nox --session [SESSION] [SESSION] [...]
@@ -160,14 +160,14 @@ REPOS_FEATURE = {
     "OpenStudioLandscapes-Deadline-10-2": "git@github.com:michimussato/OpenStudioLandscapes-Deadline-10-2.git",
     "OpenStudioLandscapes-Deadline-10-2-Worker": "git@github.com:michimussato/OpenStudioLandscapes-Deadline-10-2-Worker.git",
     "OpenStudioLandscapes-filebrowser": "git@github.com:michimussato/OpenStudioLandscapes-filebrowser.git",
-    # "git@github.com:michimussato/OpenStudioLandscapes-Grafana.git",
+    "OpenStudioLandscapes-Grafana": "git@github.com:michimussato/OpenStudioLandscapes-Grafana.git",
     "OpenStudioLandscapes-Kitsu": "git@github.com:michimussato/OpenStudioLandscapes-Kitsu.git",
-    # "git@github.com:michimussato/OpenStudioLandscapes-LikeC4.git",
+    "OpenStudioLandscapes-LikeC4": "git@github.com:michimussato/OpenStudioLandscapes-LikeC4.git",
     "OpenStudioLandscapes-NukeRLM-8": "git@github.com:michimussato/OpenStudioLandscapes-NukeRLM-8.git",
-    # "git@github.com:michimussato/OpenStudioLandscapes-OpenCue.git",
+    "OpenStudioLandscapes-OpenCue": "git@github.com:michimussato/OpenStudioLandscapes-OpenCue.git",
     "OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20": "git@github.com:michimussato/OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20.git",
     "OpenStudioLandscapes-Syncthing": "git@github.com:michimussato/OpenStudioLandscapes-Syncthing.git",
-    # "git@github.com:michimussato/OpenStudioLandscapes-Watchtower.git",
+    "OpenStudioLandscapes-Watchtower": "git@github.com:michimussato/OpenStudioLandscapes-Watchtower.git",
 }
 
 # # MAIN BRANCH
@@ -2426,7 +2426,7 @@ def release(session):
 
 #######################################################################################################################
 # Docs
-@nox.session(reuse_venv=True, tags=["docs"])
+@nox.session(tags=["docs"])
 def docs(session):
     """
     Creates Sphinx documentation.
@@ -2438,6 +2438,20 @@ def docs(session):
     # Ex:
     # nox --session docs
     # nox --tags docs
+
+    # Copy images in img to build/docs/_images
+    # Relative image paths in md files outside the
+    # sphinx project are not compatible out of the box
+
+    # defining source and destination
+    # paths
+    src = pathlib.Path(__file__).parent / "_images"
+    trg = pathlib.Path(__file__).parent / "build" / "docs" / "_images"
+
+    # if - mistakenly (which has happened) - _images is a file,
+    # remove it before proceeding.
+    if trg.is_file():
+        os.remove(trg.as_posix())
 
     sudo = False
 
@@ -2467,15 +2481,6 @@ def docs(session):
     # LATEX/PDF
     # session.run("sphinx-build", "--builder", "latex", "docs/", "build/pdf")
     # session.run("make", "-C", "latexmk", "docs/", "build/pdf")
-
-    # Copy images in img to build/docs/_images
-    # Relative image paths in md files outside the
-    # sphinx project are not compatible out of the box
-
-    # defining source and destination
-    # paths
-    src = pathlib.Path(__file__).parent / "_images"
-    trg = pathlib.Path(__file__).parent / "build" / "docs" / "_images"
 
     files = os.listdir(src)
 
