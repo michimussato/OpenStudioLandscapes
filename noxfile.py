@@ -88,6 +88,41 @@ nox.options.sessions = [
     # "release",
 ]
 
+BATCH_EXCLUDED = [
+    # Todo
+    #  - [ ] Problem might go away when public:
+    #        nox > cd /home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Deadline-10-2-Worker
+    #        nox > python -m pip install -e '.[readme]'
+    #        nox > generate-readme --versions 3.11 3.12
+    #        Traceback (most recent call last):
+    #          File "/home/michael/git/repos/OpenStudioLandscapes/.nox/readme_all/bin/generate-readme", line 8, in <module>
+    #            sys.exit(run())
+    #                     ^^^^^
+    #          File "/home/michael/git/repos/OpenStudioLandscapes/.nox/readme_all/lib/python3.11/site-packages/OpenStudioLandscapesUtil/ReadmeGenerator/readme_generator.py", line 943, in run
+    #            main(sys.argv[1:])
+    #          File "/home/michael/git/repos/OpenStudioLandscapes/.nox/readme_all/lib/python3.11/site-packages/OpenStudioLandscapesUtil/ReadmeGenerator/readme_generator.py", line 934, in main
+    #            generate_readme(args.versions)
+    #          File "/home/michael/git/repos/OpenStudioLandscapes/.nox/readme_all/lib/python3.11/site-packages/OpenStudioLandscapesUtil/ReadmeGenerator/readme_generator.py", line 74, in generate_readme
+    #            constants = importlib.import_module(f'{namespace}.{package}.constants')
+    #                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    #          File "/usr/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    #            return _bootstrap._gcd_import(name[level:], package, level)
+    #                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    #          File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+    #          File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+    #          File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+    #          File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+    #          File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+    #          File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+    #          File "/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Deadline-10-2-Worker/src/OpenStudioLandscapes/Deadline_10_2_Worker/constants.py", line 26, in <module>
+    #            from OpenStudioLandscapes.Deadline_10_2.constants import ASSET_HEADER as ASSET_HEADER_PARENT
+    #          File "/home/michael/git/repos/OpenStudioLandscapes/.nox/readme_all/lib/python3.11/site-packages/OpenStudioLandscapes/Deadline_10_2/constants.py", line 23, in <module>
+    #            from OpenStudioLandscapes.engine.constants import DOCKER_USE_CACHE_GLOBAL, THIRD_PARTY
+    #        ImportError: cannot import name 'THIRD_PARTY' from 'OpenStudioLandscapes.engine.constants' (/home/michael/git/repos/OpenStudioLandscapes/.nox/readme_all/lib/python3.11/site-packages/OpenStudioLandscapes/engine/constants.py)
+    "OpenStudioLandscapes-Deadline-10-2-Worker",
+    "OpenStudioLandscapes-Watchtower",
+]
+
 # Python versions to test against
 # dagster==1.9.11 needs >=3.9 but 3.13 does not seem to be working
 VERSIONS = [
@@ -147,7 +182,7 @@ def clone_features(session):
 
     Scope:
     - [x] Engine
-    - [ ] Modules
+    - [ ] Features
     """
     # Ex:
     # nox --session clone_features
@@ -221,7 +256,7 @@ def clone_features(session):
 #
 #     Scope:
 #     - [x] Engine
-#     - [ ] Modules
+#     - [ ] Features
 #     """
 #     # Ex:
 #     # nox --session pull_features
@@ -245,15 +280,15 @@ def clone_features(session):
 #         )
 
 
-# # readme_all
-@nox.session(python=None, tags=["readme_all"])
-def readme_all(session):
+# # readme_features
+@nox.session(python=None, tags=["readme_features"])
+def readme_features(session):
     """
     Create README.md for all listed (REPOS_FEATURE) Features.
 
     Scope:
-    - [x] Engine
-    - [ ] Modules
+    - [ ] Engine
+    - [x] Features
     """
     # Ex:
     # nox --session readme_all
@@ -263,49 +298,19 @@ def readme_all(session):
 
     for dir_ in features_dir.iterdir():
         # dir_ is always the full path
-        if "OpenStudioLandscapes-Deadline-10-2-Worker" in dir_.name:
+        if any(dir_.name in i for i in BATCH_EXCLUDED):
             logging.info(f"Skipped: {dir_ = }")
-            # Todo
-            #  - [ ] Problem might go away when public:
-            #        nox > cd /home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Deadline-10-2-Worker
-            #        nox > python -m pip install -e '.[readme]'
-            #        nox > generate-readme --versions 3.11 3.12
-            #        Traceback (most recent call last):
-            #          File "/home/michael/git/repos/OpenStudioLandscapes/.nox/readme_all/bin/generate-readme", line 8, in <module>
-            #            sys.exit(run())
-            #                     ^^^^^
-            #          File "/home/michael/git/repos/OpenStudioLandscapes/.nox/readme_all/lib/python3.11/site-packages/OpenStudioLandscapesUtil/ReadmeGenerator/readme_generator.py", line 943, in run
-            #            main(sys.argv[1:])
-            #          File "/home/michael/git/repos/OpenStudioLandscapes/.nox/readme_all/lib/python3.11/site-packages/OpenStudioLandscapesUtil/ReadmeGenerator/readme_generator.py", line 934, in main
-            #            generate_readme(args.versions)
-            #          File "/home/michael/git/repos/OpenStudioLandscapes/.nox/readme_all/lib/python3.11/site-packages/OpenStudioLandscapesUtil/ReadmeGenerator/readme_generator.py", line 74, in generate_readme
-            #            constants = importlib.import_module(f'{namespace}.{package}.constants')
-            #                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-            #          File "/usr/lib/python3.11/importlib/__init__.py", line 126, in import_module
-            #            return _bootstrap._gcd_import(name[level:], package, level)
-            #                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-            #          File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
-            #          File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
-            #          File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
-            #          File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
-            #          File "<frozen importlib._bootstrap_external>", line 940, in exec_module
-            #          File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
-            #          File "/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Deadline-10-2-Worker/src/OpenStudioLandscapes/Deadline_10_2_Worker/constants.py", line 26, in <module>
-            #            from OpenStudioLandscapes.Deadline_10_2.constants import ASSET_HEADER as ASSET_HEADER_PARENT
-            #          File "/home/michael/git/repos/OpenStudioLandscapes/.nox/readme_all/lib/python3.11/site-packages/OpenStudioLandscapes/Deadline_10_2/constants.py", line 23, in <module>
-            #            from OpenStudioLandscapes.engine.constants import DOCKER_USE_CACHE_GLOBAL, THIRD_PARTY
-            #        ImportError: cannot import name 'THIRD_PARTY' from 'OpenStudioLandscapes.engine.constants' (/home/michael/git/repos/OpenStudioLandscapes/.nox/readme_all/lib/python3.11/site-packages/OpenStudioLandscapes/engine/constants.py)
             continue
         if dir_.is_dir():
             if pathlib.Path(dir_ / ".git").exists():
                 with session.chdir(dir_):
 
-                    session.install("-e", ".[readme]", silent=True)
+                    session.install("-e", ".[nox]", silent=True)
                     session.run(
-                        "generate-readme",
-                        "-vv",
-                        "--versions",
-                        *VERSIONS,
+                        shutil.which("nox"),
+                        "--session",
+                        "readme",
+                        external=True,
                     )
 
 
@@ -317,7 +322,7 @@ def stash_features(session):
 
     Scope:
     - [x] Engine
-    - [ ] Modules
+    - [ ] Features
     """
     # Ex:
     # nox --session stash_features
@@ -357,7 +362,7 @@ def stash_apply_features(session):
 
     Scope:
     - [x] Engine
-    - [ ] Modules
+    - [ ] Features
     """
     # Ex:
     # nox --session stash_apply_features
@@ -398,7 +403,7 @@ def pull_engine(session):
 
     Scope:
     - [x] Engine
-    - [ ] Modules
+    - [ ] Features
     """
     # Ex:
     # nox --session pull_engine
@@ -439,7 +444,7 @@ def stash_engine(session):
 
     Scope:
     - [x] Engine
-    - [ ] Modules
+    - [ ] Features
     """
     # Ex:
     # nox --session stash_engine
@@ -475,7 +480,7 @@ def stash_apply_engine(session):
 
     Scope:
     - [x] Engine
-    - [ ] Modules
+    - [ ] Features
     """
     # Ex:
     # nox --session stash_apply_engine
@@ -523,7 +528,7 @@ def stash_apply_engine(session):
 #
 #     Scope:
 #     - [x] Engine
-#     - [ ] Modules
+#     - [ ] Features
 #     """
 #     # Ex:
 #     # nox --session create_venv_engine
@@ -574,7 +579,7 @@ def create_venv_features(session):
 
     Scope:
     - [x] Engine
-    - [ ] Modules
+    - [ ] Features
     """
     # Ex:
     # nox --session create_venv_features
@@ -661,7 +666,7 @@ def install_features_into_engine(session):
 
     Scope:
     - [x] Engine
-    - [ ] Modules
+    - [ ] Features
     """
     # Ex:
     # nox --session install_features_into_engine
@@ -766,7 +771,7 @@ def fix_hardlinks_in_features(session):
 
     Scope:
     - [x] Engine
-    - [ ] Modules
+    - [ ] Features
     """
     # Ex:
     # nox --session fix_hardlinks_in_features
@@ -1003,7 +1008,7 @@ def pi_hole_up(session):
 
     Scope:
     - [x] Engine
-    - [ ] Modules
+    - [ ] Features
     """
     # Ex:
     # nox --session pi_hole_up
@@ -1051,7 +1056,7 @@ def pi_hole_prepare(session):
 
     Scope:
     - [x] Engine
-    - [ ] Modules
+    - [ ] Features
     """
     # Ex:
     # nox --session pi_hole_prepare
@@ -1083,7 +1088,7 @@ def pi_hole_clear(session):
 
     Scope:
     - [x] Engine
-    - [ ] Modules
+    - [ ] Features
     """
     # Ex:
     # nox --session pi_hole_clear
@@ -1139,7 +1144,7 @@ def pi_hole_up_detach(session):
 
     Scope:
     - [x] Engine
-    - [ ] Modules
+    - [ ] Features
     """
     # Ex:
     # nox --session pi_hole_up_detach
@@ -1188,7 +1193,7 @@ def pi_hole_down(session):
 
     Scope:
     - [x] Engine
-    - [ ] Modules
+    - [ ] Features
     """
     # Ex:
     # nox --session pi_hole_down
@@ -1437,7 +1442,7 @@ def harbor_prepare(session):
 
     Scope:
     - [x] Engine
-    - [ ] Modules
+    - [ ] Features
     """
     # Ex:
     # nox --session harbor_prepare
@@ -1531,7 +1536,7 @@ def harbor_clear(session):
 
     Scope:
     - [x] Engine
-    - [ ] Modules
+    - [ ] Features
     """
     # Ex:
     # nox --session harbor_clear
@@ -1584,7 +1589,7 @@ def harbor_up(session):
 
     Scope:
     - [x] Engine
-    - [ ] Modules
+    - [ ] Features
     """
     # Ex:
     # nox --session harbor_up
@@ -1626,7 +1631,7 @@ def harbor_up_detach(session):
 
     Scope:
     - [x] Engine
-    - [ ] Modules
+    - [ ] Features
     """
     # Ex:
     # nox --session harbor_up_detach
@@ -1669,7 +1674,7 @@ def harbor_down(session):
 
     Scope:
     - [x] Engine
-    - [ ] Modules
+    - [ ] Features
     """
     # Ex:
     # nox --session harbor_down
@@ -1905,7 +1910,7 @@ def dagster_postgres_up(session):
 
     Scope:
     - [x] Engine
-    - [ ] Modules
+    - [ ] Features
     """
     # Ex:
     # nox --session dagster_postgres_up
@@ -1944,7 +1949,7 @@ def dagster_postgres_clear(session):
 
     Scope:
     - [x] Engine
-    - [ ] Modules
+    - [ ] Features
     """
     # Ex:
     # nox --session dagster_postgres_clear
@@ -2000,7 +2005,7 @@ def dagster_postgres_up_detach(session):
 
     Scope:
     - [x] Engine
-    - [ ] Modules
+    - [ ] Features
     """
     # Ex:
     # nox --session dagster_postgres_up_detach
@@ -2040,7 +2045,7 @@ def dagster_postgres_down(session):
 
     Scope:
     - [x] Engine
-    - [ ] Modules
+    - [ ] Features
     """
     # Ex:
     # nox --session dagster_postgres_up
@@ -2074,7 +2079,7 @@ def dagster_postgres(session):
 
     Scope:
     - [x] Engine
-    - [ ] Modules
+    - [ ] Features
     """
     # Ex:
     # nox --session dagster_postgres
@@ -2112,7 +2117,7 @@ def dagster_mysql(session):
 
     Scope:
     - [x] Engine
-    - [ ] Modules
+    - [ ] Features
     """
     # Ex:
     # nox --session dagster_mysql
@@ -2154,7 +2159,7 @@ def dagster_mysql(session):
 #
 #     Scope:
 #     - [x] Engine
-#     - [ ] Modules
+#     - [ ] Features
 #     """
 #     # Ex:
 #     # nox --session dagster_mysql
@@ -2192,7 +2197,7 @@ def sbom(session):
 
     Scope:
     - [x] Engine
-    - [x] Modules
+    - [x] Features
     """
     # Ex:
     # nox --session sbom
@@ -2246,7 +2251,7 @@ def coverage(session):
 
     Scope:
     - [x] Engine
-    - [x] Modules
+    - [x] Features
     """
     # Ex:
     # nox --session coverage
@@ -2278,7 +2283,7 @@ def lint(session):
 
     Scope:
     - [x] Engine
-    - [x] Modules
+    - [x] Features
     """
     # Ex:
     # nox --session lint
@@ -2325,7 +2330,7 @@ def testing(session):
 
     Scope:
     - [x] Engine
-    - [x] Modules
+    - [x] Features
     """
     # Ex:
     # nox --session testing
@@ -2354,7 +2359,7 @@ def readme(session):
 
     Scope:
     - [ ] Engine
-    - [x] Modules
+    - [x] Features
     """
     # Ex:
     # nox --session readme
@@ -2380,7 +2385,7 @@ def release(session):
 
     Scope:
     - [x] Engine
-    - [x] Modules
+    - [x] Features
     """
     # Ex:
     # nox --session release
@@ -2427,7 +2432,7 @@ def docs(session):
 
     Scope:
     - [x] Engine
-    - [x] Modules
+    - [x] Features
     """
     # Ex:
     # nox --session docs
@@ -2479,6 +2484,40 @@ def docs(session):
         # copying the files to the
         # destination directory
         shutil.copy2(src / fname, trg)
+
+
+# # docs_features
+@nox.session(python=None, tags=["docs_features"])
+def docs_features(session):
+    """
+    Create README.md for all listed (REPOS_FEATURE) Features.
+
+    Scope:
+    - [ ] Engine
+    - [x] Features
+    """
+    # Ex:
+    # nox --session docs_features
+    # nox --tags docs_features
+
+    features_dir = pathlib.Path.cwd() / ".features"
+
+    for dir_ in features_dir.iterdir():
+        # dir_ is always the full path
+        if any(dir_.name in i for i in BATCH_EXCLUDED):
+            logging.info(f"Skipped: {dir_ = }")
+            continue
+        if dir_.is_dir():
+            if pathlib.Path(dir_ / ".git").exists():
+                with session.chdir(dir_):
+
+                    session.install("-e", ".[nox]", silent=True)
+                    session.run(
+                        shutil.which("nox"),
+                        "--session",
+                        "docs",
+                        external=True,
+                    )
 
 
 #######################################################################################################################
