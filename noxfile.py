@@ -71,7 +71,7 @@ def download(
 # reuse_existing_virtualenvs:
 # local: @nox.session(reuse_venv=True)
 # global: nox.options.reuse_existing_virtualenvs = True
-nox.options.reuse_existing_virtualenvs = True
+nox.options.reuse_existing_virtualenvs = False
 
 # default sessions when none is specified
 # nox --session [SESSION] [SESSION] [...]
@@ -750,7 +750,7 @@ IDENTICAL_FILES = [
     "docs/license.rst",
     "docs/authors.rst",
     "docs/contributing.rst",
-    "docs/conf.py",
+    # "docs/conf.py",
 ]
 
 # # fix_hardlinks_in_features
