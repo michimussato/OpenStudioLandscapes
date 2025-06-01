@@ -301,7 +301,12 @@ def readme_all(session):
                 with session.chdir(dir_):
 
                     session.install("-e", ".[readme]", silent=True)
-                    session.run("generate-readme", "--versions", *VERSIONS)
+                    session.run(
+                        "generate-readme",
+                        "-vv",
+                        "--versions",
+                        *VERSIONS,
+                    )
 
 
 # # stash_features
