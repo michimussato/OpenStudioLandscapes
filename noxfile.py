@@ -119,8 +119,8 @@ BATCH_EXCLUDED = [
     #          File "/home/michael/git/repos/OpenStudioLandscapes/.nox/readme_all/lib/python3.11/site-packages/OpenStudioLandscapes/Deadline_10_2/constants.py", line 23, in <module>
     #            from OpenStudioLandscapes.engine.constants import DOCKER_USE_CACHE_GLOBAL, THIRD_PARTY
     #        ImportError: cannot import name 'THIRD_PARTY' from 'OpenStudioLandscapes.engine.constants' (/home/michael/git/repos/OpenStudioLandscapes/.nox/readme_all/lib/python3.11/site-packages/OpenStudioLandscapes/engine/constants.py)
-    "OpenStudioLandscapes-Deadline-10-2-Worker",
-    "OpenStudioLandscapes-Watchtower",
+    # "OpenStudioLandscapes-Deadline-10-2-Worker",
+    # "OpenStudioLandscapes-Watchtower",
 ]
 
 # Python versions to test against
