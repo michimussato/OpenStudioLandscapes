@@ -149,13 +149,13 @@ FEATURES: dict[str, dict[str, bool | str | ComposeScope | OpenStudioLandscapesCo
         "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
     "OpenStudioLandscapes-Deadline-10-2": {
-        "enabled": True,
+        "enabled": False,
         "module": "OpenStudioLandscapes.Deadline_10_2.definitions",
         "compose_scope": ComposeScope.DEFAULT,
         "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
     "OpenStudioLandscapes-Deadline-10-2-Worker": {
-        "enabled": True,
+        "enabled": False,
         "module": "OpenStudioLandscapes.Deadline_10_2_Worker.definitions",
         "compose_scope": ComposeScope.WORKER,
         "feature_config": OpenStudioLandscapesConfig.DEFAULT,
@@ -179,7 +179,7 @@ FEATURES: dict[str, dict[str, bool | str | ComposeScope | OpenStudioLandscapesCo
         "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
     "OpenStudioLandscapes-NukeRLM-8": {
-        "enabled": True,
+        "enabled": False,
         "module": "OpenStudioLandscapes.NukeRLM_8.definitions",
         "compose_scope": ComposeScope.LICENSE_SERVER,
         "feature_config": OpenStudioLandscapesConfig.DEFAULT,
