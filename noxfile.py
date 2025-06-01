@@ -2506,7 +2506,7 @@ def docs_features(session):
     for dir_ in features_dir.iterdir():
         # dir_ is always the full path
         logging.info("Building Docs for %s" % dir_.name)
-        if any(dir_.name in i for i in BATCH_EXCLUDED):
+        if any(dir_.name == i for i in BATCH_EXCLUDED):
             logging.info(f"Skipped: {dir_ = }")
             continue
         if dir_.is_dir():
