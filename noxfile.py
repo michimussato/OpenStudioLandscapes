@@ -2448,14 +2448,21 @@ def docs(session):
     # defining source and destination
     # paths
     src = pathlib.Path(__file__).parent / "_images"
-    trg = pathlib.Path(__file__).parent / "build" / "docs" / "_images"
+
+    sudo = False
+
+    readthedocs_outdir = os.environ.get("READTHEDOCS_OUTPUT", None)
+    if readthedocs_outdir is None:
+        outdir = pathlib.Path(__file__).parent / "build" / "docs"
+    else:
+        outdir = pathlib.Path(readthedocs_outdir) / "html"
+
+    trg = outdir / "_images"
 
     # if - mistakenly (which has happened) - _images is a file,
     # remove it before proceeding.
     if trg.is_file():
         os.remove(trg.as_posix())
-
-    sudo = False
 
     session.install("-e", ".[docs]", silent=True)
 
@@ -2479,7 +2486,13 @@ def docs(session):
 
     # sphinx-build [OPTIONS] SOURCEDIR OUTPUTDIR [FILENAMES...]
     # HTML
-    session.run("sphinx-build", "--builder", "html", "docs/", "build/docs")
+    session.run(
+        shutil.which("sphinx-build"),
+        "--builder",
+        "html",
+        str(pathlib.Path(__file__).parent / "docs"),
+        str(outdir),
+    )
     # LATEX/PDF
     # session.run("sphinx-build", "--builder", "latex", "docs/", "build/pdf")
     # session.run("make", "-C", "latexmk", "docs/", "build/pdf")
