@@ -31,20 +31,9 @@ Contents
    :maxdepth: 2
 
    README.md <readme_md>
-   Contributions & Help <contributing>
-   License <license>
    Authors <authors>
-   Changelog <changelog>
    Module Reference <api/modules>
-
-
-This is an embedded Graph (Graphviz-Test):
-
-.. graphviz::
-
-   digraph foo {
-      "bar" -> "baz";
-   }
+   License <license>
 
 
 SBOM Graph:

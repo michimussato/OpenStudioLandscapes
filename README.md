@@ -687,3 +687,6 @@ sessions marked with * are selected, sessions marked with - are skipped.
 - Linux Distro Installer
   - [x] Ubuntu Desktop 22.04
   - [ ] Ubuntu Server 22.04
+- Sphinx
+  - [ ] Contributing
+  - [ ] Changelog
