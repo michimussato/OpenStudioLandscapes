@@ -23,7 +23,6 @@ def get_group_in(
             input_name: In(dict),
         },
         out={
-            # "base_in": Out(dict),
             "group_in": Out(dict),
         },
     )
