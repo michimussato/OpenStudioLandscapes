@@ -725,7 +725,7 @@ def install_features_into_engine(session):
 #######################################################################################################################
 # Hard Links
 
-IDENTICAL_FILES = [
+LINKED_FILES = [
     ".obsidian/plugins/obsidian-excalidraw-plugin/main.js",
     ".obsidian/plugins/obsidian-excalidraw-plugin/manifest.json",
     ".obsidian/plugins/obsidian-excalidraw-plugin/styles.css",
@@ -791,7 +791,7 @@ def fix_hardlinks_in_features(session):
         # dir_ is always the full path
         if dir_.is_dir():
             if pathlib.Path(dir_ / ".git").exists():
-                for file_ in IDENTICAL_FILES:
+                for file_ in LINKED_FILES:
 
                     file_ = pathlib.Path(file_)
 
