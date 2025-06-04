@@ -1,7 +1,5 @@
 > [!NOTE]
-> This Wiki can be easily viewed, navigated and edited
-> in [Obsidian](https://obsidian.md/) after cloning the
-> repository to your local drive.
+> This Wiki can be easily viewed, navigated and edited in [Obsidian](https://obsidian.md/) after cloning the repository to your local drive.
  
 ---
 
