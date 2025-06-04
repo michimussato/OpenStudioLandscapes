@@ -1,6 +1,7 @@
 > [!NOTE]
-> This Wiki is best viewed (at least from what I can tell so far)
-> when opened in [Obsidian](https://obsidian.md/).
+> This Wiki can be easily viewed, navigated and edited
+> in [Obsidian](https://obsidian.md/) after cloning the
+> repository to your local drive.
  
 ---
 
