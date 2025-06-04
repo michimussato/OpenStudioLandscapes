@@ -6,6 +6,9 @@
 
 * [Disclaimer](disclaimer.md)
 * [About the Author](about_the_author.md)
+
+---
+
 * [Community](community.md)
 * [Quickstart](quickstart.md)
 * [Terminology](terminology.md)
