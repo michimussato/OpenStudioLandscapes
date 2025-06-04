@@ -754,15 +754,8 @@ LINKED_FILES = [
     "_images/.gitkeep",
     ".gitignore",
     ".pre-commit-config.yaml",
-    ".readthedocs.yml",
     "noxfile.py",
     "LICENSE",
-    "AUTHORS.rst",
-    "CONTRIBUTING.rst",
-    "docs/readme_md.rst",
-    "docs/license.rst",
-    "docs/authors.rst",
-    "docs/contributing.rst",
 ]
 
 # # fix_hardlinks_in_features
@@ -2420,129 +2413,6 @@ def release(session):
     #     pypi_pass,
     #     external=True,
     # )
-
-
-#######################################################################################################################
-
-
-#######################################################################################################################
-# Docs
-@nox.session(tags=["docs"])
-def docs(session):
-    """
-    Creates Sphinx documentation.
-
-    Scope:
-    - [x] Engine
-    - [x] Features
-    """
-    # Ex:
-    # nox --session docs
-    # nox --tags docs
-
-    # Copy images in img to build/docs/_images
-    # Relative image paths in md files outside the
-    # sphinx project are not compatible out of the box
-
-    # defining source and destination
-    # paths
-    src = pathlib.Path(__file__).parent / "_images"
-
-    sudo = False
-
-    readthedocs_outdir = os.environ.get("READTHEDOCS_OUTPUT", None)
-    if readthedocs_outdir is None:
-        outdir = pathlib.Path(__file__).parent / "build" / "docs"
-    else:
-        outdir = pathlib.Path(readthedocs_outdir) / "html"
-
-    trg = outdir / "_images"
-
-    # if - mistakenly (which has happened) - _images is a file,
-    # remove it before proceeding.
-    if trg.is_file():
-        os.remove(trg.as_posix())
-
-    session.install("-e", ".[docs]", silent=True)
-
-    deptree_out = (
-        pathlib.Path(__file__).parent
-        / "docs"
-        / "dot"
-        / f"graphviz_pipdeptree.{session.name}.dot"
-    )
-    deptree_out.parent.mkdir(parents=True, exist_ok=True)
-
-    # Update Dot
-    # Reference: /home/michael/git/repos/My-Skeleton-Package/
-    session.run(
-        "bash",
-        "-c",
-        f"pipdeptree --graph-output dot > {deptree_out}",
-        env=ENV,
-        external=True,
-    )
-
-    # sphinx-build [OPTIONS] SOURCEDIR OUTPUTDIR [FILENAMES...]
-    # HTML
-    session.run(
-        shutil.which("sphinx-build"),
-        # usage: sphinx-build [OPTIONS] SOURCEDIR OUTPUTDIR [FILENAMES...]
-        "--builder",
-        "html",
-        str(pathlib.Path(__file__).parent / "docs"),
-        str(outdir),
-        external=True,
-    )
-    # LATEX/PDF
-    # session.run("sphinx-build", "--builder", "latex", "docs/", "build/pdf")
-    # session.run("make", "-C", "latexmk", "docs/", "build/pdf")
-
-    files = os.listdir(src)
-
-    # iterating over all the files in
-    # the source directory
-    for fname in files:
-        # copying the files to the
-        # destination directory
-        shutil.copy2(src / fname, trg)
-
-
-# # docs_features
-@nox.session(python=None, tags=["docs_features"])
-def docs_features(session):
-    """
-    Create README.md for all listed (REPOS_FEATURE) Features.
-
-    Scope:
-    - [ ] Engine
-    - [x] Features
-    """
-    # Ex:
-    # nox --session docs_features
-    # nox --tags docs_features
-
-    features_dir = pathlib.Path.cwd() / ".features"
-
-    for dir_ in features_dir.iterdir():
-        # dir_ is always the full path
-        logging.info("Building Docs for %s" % dir_.name)
-        if any(dir_.name == i for i in BATCH_EXCLUDED):
-            logging.info(f"Skipped: {dir_ = }")
-            continue
-        if dir_.is_dir():
-            if pathlib.Path(dir_ / ".git").exists():
-                with session.chdir(dir_):
-
-                    session.install("-e", ".[nox]", silent=True)
-                    session.run(
-                        shutil.which("nox"),
-                        "-v",
-                        "--add-timestamp",
-                        "--session",
-                        "docs",
-                        external=True,
-                    )
 
 
 #######################################################################################################################
