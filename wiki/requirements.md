@@ -1,0 +1,9 @@
+- `python3.11`
+- `graphviz`
+- `docker`
+- `git`
+- `git-crypt`
+- `nox`
+- `venv`
+- [Pi-hole](https://pi-hole.net/)
+- [Harbor](https://github.com/goharbor/harbor)

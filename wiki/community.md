@@ -1,0 +1,4 @@
+- [LinkedIn](https://www.linkedin.com/company/106731439/)  
+  - [Hashtag `OpenStudioLandscapes`](https://www.linkedin.com/search/results/all/?keywords=%23openstudiolandscapes)  
+- [Discord](https://discord.com/channels/1357343453364748419/1357343454065328202)  
+- [Slack](https://openstudiolandscapes.slack.com)

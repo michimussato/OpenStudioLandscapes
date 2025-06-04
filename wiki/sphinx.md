@@ -1,0 +1,61 @@
+## Documentation (Sphinx)
+
+### Builders
+
+The different types of builders are listed here:
+https://www.sphinx-doc.org/en/master/usage/builders/index.html#builders
+
+### Markdown Support
+
+Sphinx does not support `markdown` natively. 
+To use contents from `README.md` files directly in ReST
+(they come in `markdown`), the `myst-parser` extension
+needs to be installed:
+https://www.sphinx-doc.org/en/master/usage/markdown.html
+
+It looks like we can't reference this Markdown
+if it lives in a parent directory - this seems
+to be working for `.rst` with the
+`.. include:: ../MyFile.rst` directive.
+
+#### Install `myst-parser`
+
+```shell
+pip install --upgrade myst-parser
+```
+
+1. Add `"myst_parser"` to `docs/conf.py:extensions`
+2. Edit `docs/conf.py:souce_suffix = {".rst": "restructuredtext", ".md": "markdown"}`
+  - https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-source_suffix
+
+Optional: (configure `myst-parser`)[https://myst-parser.readthedocs.io/en/latest/syntax/optional.html]
+
+### Mermaid Support
+
+https://github.com/mgaitan/sphinxcontrib-mermaid
+
+### Graphviz Support
+
+https://www.sphinx-doc.org/en/master/usage/extensions/graphviz.html#module-sphinx.ext.graphviz
+
+#### Install
+
+Add `"sphinx.ext.graphviz"` to `docs/conf.py:extensions`
+
+#### Embed Graphviz Graph
+
+```
+.. graphviz::
+
+   digraph foo {
+      "bar" -> "baz";
+   }
+```
+
+#### Reference Graphviz Graph
+
+Reference:
+
+```
+.. graphviz:: external.dot
+```
