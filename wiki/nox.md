@@ -5,12 +5,11 @@ nox --help
 ### Current Sessions
 
 ```shell
-OpenStudioLandscapes git:[main]
 nox --list-sessions
 Sessions defined in OpenStudioLandscapes/noxfile.py:
 
 - clone_features -> `git clone` all listed (REPOS_FEATURE) Features into .features. Performs `git pull` if repos already exist.
-- readme_all -> Create README.md for all listed (REPOS_FEATURE) Features.
+- readme_features -> Create README.md for all listed (REPOS_FEATURE) Features.
 - stash_features -> `git stash` all listed (REPOS_FEATURE) Features.
 - stash_apply_features -> `git stash apply` all listed (REPOS_FEATURE) Features.
 - pull_engine -> `git pull` engine.
@@ -47,6 +46,7 @@ Sessions defined in OpenStudioLandscapes/noxfile.py:
 - release-3.11 -> Build and release to a repository
 - release-3.12 -> Build and release to a repository
 * docs -> Creates Sphinx documentation.
+- docs_features -> Create README.md for all listed (REPOS_FEATURE) Features.
 
 sessions marked with * are selected, sessions marked with - are skipped.
 ```
