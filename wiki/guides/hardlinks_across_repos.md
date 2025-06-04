@@ -29,7 +29,7 @@ ln ../../../OpenStudioLandscapes/noxfile.py noxfile.py
 I'm doing that for the following list of files:
 
 ```python
-IDENTICAL_FILES = [
+LINKED_FILES = [
     ".obsidian/plugins/obsidian-excalidraw-plugin/main.js",
     ".obsidian/plugins/obsidian-excalidraw-plugin/manifest.json",
     ".obsidian/plugins/obsidian-excalidraw-plugin/styles.css",
@@ -45,16 +45,28 @@ IDENTICAL_FILES = [
     ".obsidian/core-plugins-migration.json",
     ".obsidian/daily-notes.json",
     ".obsidian/graph.json",
-    ".obsidian/hotkeys.json",
+    # ".obsidian/hotkeys.json",
     ".obsidian/templates.json",
     ".obsidian/types.json",
-    ".obsidian/workspace.json",
-    ".obsidian/workspaces.json",
+    # ".obsidian/workspace.json",
+    # ".obsidian/workspaces.json",
     ".gitattributes",
+    ".sbom/.gitkeep",
+    ".payload/bin/.gitkeep",
+    ".payload/config/.gitkeep",
+    ".payload/data/.gitkeep",
+    "_images/.gitkeep",
     ".gitignore",
     ".pre-commit-config.yaml",
     ".readthedocs.yml",
     "noxfile.py",
+    "LICENSE",
+    "AUTHORS.rst",
+    "CONTRIBUTING.rst",
+    "docs/readme_md.rst",
+    "docs/license.rst",
+    "docs/authors.rst",
+    "docs/contributing.rst",
 ]
 ```
 
