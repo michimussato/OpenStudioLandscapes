@@ -1,23 +1,20 @@
-* [Disclaimer][disclaimer]
-* [About the Author][about_the_author]
-* [Community][community]
-* [Quickstart][quickstart]
-* [Terminology][terminology]
-* [Structure of a Landscape][structure]
-* [Limitations][limitations]
-* [Overview][overview]
-* [nox][nox]
-* [Jump Start with Kitsu][jump_start_kitsu]
-* [Roadmap/Todo][roadmap_todo]
+> [!NOTE]
+> This Wiki is best viewed (at least from what I can tell so far)
+> when opened in [Obsidian](https://obsidian.md/).
+ 
+---
 
-[disclaimer]: disclaimer.md
-[about_the_author]: about_the_author.md
-[community]: community.md
-[quickstart]: quickstart.md
-[terminology]: terminology.md
-[structure]: structure.md
-[limitations]: limitations.md
-[overview]: overview.md
-[nox]: nox.md
-[jump_start_kitsu]: jump_start_kitsu.md
-[roadmap_todo]: roadmap_todo.md
+* [Disclaimer](disclaimer.md)
+* [About the Author](about_the_author.md)
+* [Community](community.md)
+* [Quickstart](quickstart.md)
+* [Terminology](terminology.md)
+* [Structure of a Landscape](structure.md)
+* [Limitations](limitations.md)
+* [Overview](overview.md)
+* [nox](nox.md)
+* [Jump Start with Kitsu](jump_start_kitsu.md)
+* [Roadmap/Todo](roadmap_todo.md)
+* [Dagster](dagster.md)
+* [Requirements](requirements.md)
+* [Sphinx](sphinx.md)
