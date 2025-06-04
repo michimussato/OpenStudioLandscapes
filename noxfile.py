@@ -73,6 +73,9 @@ def download(
 nox.options.reuse_existing_virtualenvs = False
 # per session: @nox.session(reuse_venv=True)
 
+SESSION_INSTALL_SILENT = False
+SESSION_RUN_SILENT = False
+
 # default sessions when none is specified
 # nox --session [SESSION] [SESSION] [...]
 # or
@@ -83,7 +86,6 @@ nox.options.sessions = [
     "coverage",
     "lint",
     "testing",
-    "docs",
     # "docs_live",
     # "release",
 ]
@@ -245,6 +247,7 @@ def clone_features(session):
         session.run(
             *cmd,
             external=True,
+            silent=SESSION_RUN_SILENT,
         )
 
 
@@ -306,7 +309,12 @@ def readme_features(session):
             if pathlib.Path(dir_ / ".git").exists():
                 with session.chdir(dir_):
 
-                    session.install("-e", ".[nox]", silent=True)
+                    session.install(
+                        "--no-cache-dir",
+                        "-e",
+                        ".[nox]",
+                        silent=SESSION_INSTALL_SILENT,
+                    )
                     session.run(
                         shutil.which("nox"),
                         "-v",
@@ -314,6 +322,7 @@ def readme_features(session):
                         "--session",
                         "readme",
                         external=True,
+                        silent=SESSION_RUN_SILENT,
                     )
 
 
@@ -354,6 +363,7 @@ def stash_features(session):
         session.run(
             *cmd,
             external=True,
+            silent=SESSION_RUN_SILENT,
         )
 
 
@@ -395,6 +405,7 @@ def stash_apply_features(session):
         session.run(
             *cmd,
             external=True,
+            silent=SESSION_RUN_SILENT,
         )
 
 
@@ -436,6 +447,7 @@ def pull_engine(session):
     session.run(
         *cmd,
         external=True,
+        silent=SESSION_RUN_SILENT,
     )
 
 
@@ -472,6 +484,7 @@ def stash_engine(session):
     session.run(
         *cmd,
         external=True,
+        silent=SESSION_RUN_SILENT,
     )
 
 
@@ -509,6 +522,7 @@ def stash_apply_engine(session):
     session.run(
         *cmd,
         external=True,
+        silent=SESSION_RUN_SILENT,
     )
 
 
@@ -615,6 +629,7 @@ def create_venv_features(session):
                     session.run(
                         *cmd1,
                         external=True,
+                        silent=SESSION_RUN_SILENT,
                     )
 
                     cmd2 = [
@@ -637,6 +652,7 @@ def create_venv_features(session):
                     session.run(
                         *cmd2,
                         external=True,
+                        silent=SESSION_RUN_SILENT,
                     )
 
                     cmd3 = [
@@ -658,6 +674,7 @@ def create_venv_features(session):
                     session.run(
                         *cmd3,
                         external=True,
+                        silent=SESSION_RUN_SILENT,
                     )
 
 
@@ -689,6 +706,7 @@ def install_features_into_engine(session):
         "pip",
         "setuptools",
         external=True,
+        silent=SESSION_RUN_SILENT,
     )
 
     for dir_ in features_dir.iterdir():
@@ -716,6 +734,7 @@ def install_features_into_engine(session):
                 session.run(
                     *cmd,
                     external=True,
+                    silent=SESSION_RUN_SILENT,
                 )
 
 
@@ -833,6 +852,7 @@ def fix_hardlinks_in_features(session):
                         session.run(
                             *cmd,
                             external=True,
+                            silent=SESSION_RUN_SILENT,
                         )
 
 
@@ -1040,6 +1060,7 @@ def pi_hole_up(session):
         *cmd,
         env=ENV,
         external=True,
+        silent=SESSION_RUN_SILENT,
     )
 
 
@@ -1121,6 +1142,7 @@ def pi_hole_clear(session):
                 *cmd,
                 env=ENV,
                 external=True,
+                silent=SESSION_RUN_SILENT,
             )
         else:
             logging.info("Clearing Pi-hole was aborted.")
@@ -1177,6 +1199,7 @@ def pi_hole_up_detach(session):
         *cmd,
         env=ENV,
         external=True,
+        silent=SESSION_RUN_SILENT,
     )
 
 
@@ -1224,6 +1247,7 @@ def pi_hole_down(session):
         *cmd,
         env=ENV,
         external=True,
+        silent=SESSION_RUN_SILENT,
     )
 
 
@@ -1520,6 +1544,7 @@ def harbor_prepare(session):
         *cmd,
         env=ENV,
         external=True,
+        silent=SESSION_RUN_SILENT,
     )
 
 
@@ -1568,6 +1593,7 @@ def harbor_clear(session):
                 *cmd,
                 env=ENV,
                 external=True,
+                silent=SESSION_RUN_SILENT,
             )
         else:
             logging.info("Clearing Harbor was aborted.")
@@ -1615,6 +1641,7 @@ def harbor_up(session):
         *cmd,
         env=ENV,
         external=True,
+        silent=SESSION_RUN_SILENT,
     )
 
 
@@ -1658,6 +1685,7 @@ def harbor_up_detach(session):
         *cmd,
         env=ENV,
         external=True,
+        silent=SESSION_RUN_SILENT,
     )
 
 
@@ -1699,6 +1727,7 @@ def harbor_down(session):
         *cmd,
         env=ENV,
         external=True,
+        silent=SESSION_RUN_SILENT,
     )
 
 
@@ -1933,6 +1962,7 @@ def dagster_postgres_up(session):
         *cmd,
         env=ENV,
         external=True,
+        silent=SESSION_RUN_SILENT,
     )
 
 
@@ -1984,6 +2014,7 @@ def dagster_postgres_clear(session):
                 *cmd,
                 env=ENV,
                 external=True,
+                silent=SESSION_RUN_SILENT,
             )
         else:
             logging.info("Clearing Dagster-Postgres was aborted.")
@@ -2029,6 +2060,7 @@ def dagster_postgres_up_detach(session):
         *cmd,
         env=ENV,
         external=True,
+        silent=SESSION_RUN_SILENT,
     )
 
 
@@ -2064,6 +2096,7 @@ def dagster_postgres_down(session):
         *cmd,
         env=ENV,
         external=True,
+        silent=SESSION_RUN_SILENT,
     )
 
 
@@ -2102,6 +2135,7 @@ def dagster_postgres(session):
             "DAGSTER_HOME": ENVIRONMENT_DAGSTER["DAGSTER_POSTGRES_ROOT_DIR"],
         },
         external=True,
+        silent=SESSION_RUN_SILENT,
     )
 
 
@@ -2137,6 +2171,7 @@ def dagster_mysql(session):
             "DAGSTER_HOME": ENVIRONMENT_DAGSTER["DAGSTER_MYSQL_ROOT_DIR"],
         },
         external=True,
+        silent=SESSION_RUN_SILENT,
     )
 
 
@@ -2202,7 +2237,12 @@ def sbom(session):
 
     sudo = False
 
-    session.install("-e", ".[sbom]")
+    session.install(
+        "--no-cache-dir",
+        "-e",
+        ".[sbom]",
+        silent=SESSION_INSTALL_SILENT,
+    )
 
     target_dir = pathlib.Path(__file__).parent / ".sbom"
     target_dir.mkdir(parents=True, exist_ok=True)
@@ -2215,6 +2255,8 @@ def sbom(session):
         "--outfile",
         target_dir / f"cyclonedx-py.{session.name}.json",
         env=ENV,
+        # external=True,
+        silent=SESSION_RUN_SILENT,
     )
 
     session.run(
@@ -2223,6 +2265,7 @@ def sbom(session):
         f"pipdeptree --mermaid > {target_dir}/pipdeptree.{session.name}.mermaid",
         env=ENV,
         external=True,
+        silent=SESSION_RUN_SILENT,
     )
 
     session.run(
@@ -2231,6 +2274,7 @@ def sbom(session):
         f"pipdeptree --graph-output dot > {target_dir}/pipdeptree.{session.name}.dot",
         env=ENV,
         external=True,
+        silent=SESSION_RUN_SILENT,
     )
 
 
@@ -2254,14 +2298,40 @@ def coverage(session):
 
     sudo = False
 
-    session.install("-e", ".[coverage]")
+    session.install(
+        "--no-cache-dir",
+        "-e",
+        ".[coverage]",
+        silent=SESSION_INSTALL_SILENT,
+    )
 
     session.run(
-        "coverage", "run", "--source", "src", "-m", "pytest", "-sv", env=ENV
+        "coverage",
+        "run",
+        "--source",
+        "src",
+        "-m",
+        "pytest",
+        "-sv",
+        env=ENV,
+        # external=True,
+        silent=SESSION_RUN_SILENT,
     )  # ./.coverage
-    session.run("coverage", "report")  # report to console
+    session.run(
+        "coverage",
+        "report",
+        # external=True,
+        silent=SESSION_RUN_SILENT,
+    )  # report to console
     # session.run("coverage", "json", "-o", ".coverage", "coverage.json")  # report to json
-    session.run("coverage", "json", "-o", "coverage.json")  # report to json
+    session.run(
+        "coverage",
+        "json",
+        "-o",
+        "coverage.json",
+        # external=True,
+        silent=SESSION_RUN_SILENT,
+    )  # report to json
     # session.run("coverage", "xml")  # ./coverage.xml
     # session.run("coverage", "html")  # ./htmlcov/
 
@@ -2286,7 +2356,12 @@ def lint(session):
 
     sudo = False
 
-    session.install("-e", ".[lint]")
+    session.install(
+        "--no-cache-dir",
+        "-e",
+        ".[lint]",
+        silent=SESSION_INSTALL_SILENT,
+    )
 
     # exclude = [
     #     # Add one line per exclusion:
@@ -2295,17 +2370,44 @@ def lint(session):
     # ]
 
     # session.run("black", "src", *exclude, *session.posargs)
-    session.run("black", "src", *session.posargs)
-    session.run("isort", "--profile", "black", "src", *session.posargs)
+    session.run(
+        "black",
+        "src",
+        *session.posargs,
+        # external=True,
+        silent=SESSION_RUN_SILENT,
+    )
+    session.run(
+        "isort",
+        "--profile",
+        "black",
+        "src",
+        *session.posargs,
+        # external=True,
+        silent=SESSION_RUN_SILENT,
+    )
 
     if pathlib.PosixPath(".pre-commit-config.yaml").absolute().exists():
-        session.run("pre-commit", "run", "--all-files", *session.posargs)
+        session.run(
+            "pre-commit",
+            "run",
+            "--all-files",
+            *session.posargs,
+            # external=True,
+            silent=SESSION_RUN_SILENT,
+        )
 
     # # nox > Command pylint src failed with exit code 30
     # # nox > Session lint-3.12 failed.
     # session.run("pylint", "src")
     # # https://github.com/actions/starter-workflows/issues/2303#issuecomment-1973743119
-    session.run("pylint", "--exit-zero", "src")
+    session.run(
+        "pylint",
+        "--exit-zero",
+        "src",
+        # external=True,
+        silent=SESSION_RUN_SILENT,
+    )
     # session.run("pylint", "--disable=C0114,C0115,C0116", "--exit-zero", "src")
     # https://stackoverflow.com/questions/7877522/how-do-i-disable-missing-docstring-warnings-at-a-file-level-in-pylint
     # C0114 (missing-module-docstring)
@@ -2333,12 +2435,19 @@ def testing(session):
 
     sudo = False
 
-    session.install("-e", ".[testing]", silent=True)
+    session.install(
+        "--no-cache-dir",
+        "-e",
+        ".[testing]",
+        silent=SESSION_INSTALL_SILENT,
+    )
 
     session.run(
         "pytest",
         *session.posargs,
         env=ENV,
+        # external=True,
+        silent=SESSION_RUN_SILENT,
     )
 
 
@@ -2362,9 +2471,20 @@ def readme(session):
 
     sudo = False
 
-    session.install("-e", ".[readme]", silent=True)
+    session.install(
+        "--no-cache-dir",
+        "-e",
+        ".[readme]",
+        silent=SESSION_INSTALL_SILENT,
+    )
 
-    session.run("generate-readme", "--versions", *VERSIONS)
+    session.run(
+        "generate-readme",
+        "--versions",
+        *VERSIONS,
+        # external=True,
+        silent=SESSION_RUN_SILENT,
+    )
 
 
 #######################################################################################################################
@@ -2388,7 +2508,12 @@ def release(session):
 
     sudo = False
 
-    session.install("-e", ".[release]")
+    session.install(
+        "--no-cache-dir",
+        "-e",
+        ".[release]",
+        silent=SESSION_INSTALL_SILENT,
+    )
 
     session.skip("Not implemented")
 
@@ -2416,13 +2541,3 @@ def release(session):
 
 
 #######################################################################################################################
-
-
-# @nox.session(name="docs-live", tags=["docs-live"])
-# def docs_live(session):
-#     # nox --session docs_live
-#     # nox --tags docs-live
-#     session.install("-e", ".[doc]", silent=True)
-#     session.run(
-#         "sphinx-autobuild", "--builder", "html", "docs/", "build/docs", *session.posargs
-#     )
