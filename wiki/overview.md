@@ -52,9 +52,9 @@ comparison:
 
 ### Dagster Lineage
 
-![Global_Asset_Lineage.svg](../_images/Global_Asset_Lineage.svg)
+![Global_Asset_Lineage.svg](../media/images/Global_Asset_Lineage.svg)
 
-![dagster_cascade.png](../_images/dagster_cascade.png)
+![dagster_cascade.png](../media/images/dagster_cascade.png)
 
 ### Docker Compose Graph
 
@@ -67,19 +67,19 @@ For individual elements of a Landscape (Features)
 
 `.landscapes/2025-02-01_00-11-08__578595276b424d1ea62550cb0b6f166f/Deadline_10_2/docker_compose/Deadline_10_2__compose_repository_10_2/docker-compose.yml`
 
-![Docker_Compose_Graph__docker_compose_graph_repository_10_2.svg](../_images/Docker_Compose_Graph__docker_compose_graph_repository_10_2.svg)
+![Docker_Compose_Graph__docker_compose_graph_repository_10_2.svg](../media/images/Docker_Compose_Graph__docker_compose_graph_repository_10_2.svg)
 
 as well as for the entire Landscape
 
 `.landscapes/2025-02-01_00-11-08__578595276b424d1ea62550cb0b6f166f/Deadline_10_2/docker_compose/Deadline_10_2__compose_10_2/docker-compose.yml`
 
-![Docker_Compose_Graph__docker_compose_graph_10_2.svg](../_images/Docker_Compose_Graph__docker_compose_graph_10_2.svg)
+![Docker_Compose_Graph__docker_compose_graph_10_2.svg](../media/images/Docker_Compose_Graph__docker_compose_graph_10_2.svg)
 
 ### Create Landscape
 
 #### Materialize Landscape
 
-![materialize_all.png](../_images/materialize_all.png)
+![materialize_all.png](../media/images/materialize_all.png)
 
 ### Run Deadline Farm
 
@@ -92,14 +92,14 @@ Together with:
 
 Copy/Paste command and execute:
 
-![farm_compose_up.png](../_images/farm_compose_up.png)
+![farm_compose_up.png](../media/images/farm_compose_up.png)
 
-![runner.png](../_images/runner.png)
+![runner.png](../media/images/runner.png)
 
 ### Client
 
 #### Deadline Monitor
 
-![monitor.png](../_images/monitor.png)
+![monitor.png](../media/images/monitor.png)
 
-![monitor_2.png](../_images/monitor_2.png)
+![monitor_2.png](../media/images/monitor_2.png)

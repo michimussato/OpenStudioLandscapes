@@ -1,4 +1,4 @@
-![logo128.png](_images/logo128.png)
+![logo128.png](../../media/images/logo128.png)
 
 ---
 
@@ -212,24 +212,24 @@ http://localhost:80
 Create `[x] Public` project `openstudiolandscapes`.
 (You can delete `library`)
 
-![harbor_create_project.png](_images/harbor_create_project.png)
-![harbor_new_project.png](_images/harbor_new_project.png)
+![harbor_create_project.png](../../media/images/harbor_create_project.png)
+![harbor_new_project.png](../../media/images/harbor_new_project.png)
 
 ```shell
 nox --session dagster_postgres
 ```
 
-![dagster_webserver.png](_images/dagster_webserver.png)
+![dagster_webserver.png](../../media/images/dagster_webserver.png)
 
 Open Dagster URL:
 http://localhost:3000/asset-groups
 
-![dagster_tldr.svg](_images/dagster_tldr.svg)
+![dagster_tldr.svg](../../media/images/dagster_tldr.svg)
 
 In Dagster, click `Materialize All`, and we will be presented with the following
 Landscape Map eventually:
 
-![Landscape_Map__tldr.svg](_images/Landscape_Map__tldr.svg)
+![Landscape_Map__tldr.svg](../../media/images/Landscape_Map__tldr.svg)
 
 alongside the following command:
 
@@ -239,7 +239,7 @@ alongside the following command:
 
 Visit http://localhost:4545; lo and behold:
 
-![kitsu_landing.png](_images/kitsu_landing_tldr.png)
+![kitsu_landing.png](../../media/images/kitsu_landing_tldr.png)
 
 ## Brief
 
@@ -254,7 +254,7 @@ create Landscapes for production,
 testing, debugging, development,
 migration, DB restore etc.
 
-![Overview](_images/Overview.png)
+![Overview](../../media/images/Overview.png)
 
 No more black boxes.
 No more path dependencies due to bad decisions
@@ -1027,9 +1027,9 @@ None
 
 ### Dagster Lineage
 
-![Global_Asset_Lineage.svg](_images/Global_Asset_Lineage.svg)
+![Global_Asset_Lineage.svg](../../media/images/Global_Asset_Lineage.svg)
 
-![dagster_cascade.png](_images/dagster_cascade.png)
+![dagster_cascade.png](../../media/images/dagster_cascade.png)
 
 ### Docker Compose Graph
 
@@ -1042,7 +1042,7 @@ Landscape for quick reference and context.
 
 `.landscapes/2025-02-01_00-11-08__578595276b424d1ea62550cb0b6f166f/Deadline_10_2/docker_compose/Deadline_10_2__compose_10_2/docker-compose.yml`
 
-![Docker_Compose_Graph__docker_compose_graph_10_2.svg](_images/Docker_Compose_Graph__docker_compose_graph_10_2.svg)
+![Docker_Compose_Graph__docker_compose_graph_10_2.svg](../../media/images/Docker_Compose_Graph__docker_compose_graph_10_2.svg)
 
 Manual (via CLI):
 
@@ -1054,7 +1054,7 @@ docker-compose-graph --yaml .landscapes/2025-02-01_00-11-08__578595276b424d1ea62
 
 `.landscapes/2025-02-01_00-11-08__578595276b424d1ea62550cb0b6f166f/Deadline_10_2/docker_compose/Deadline_10_2__compose_repository_10_2/docker-compose.yml`
 
-![Docker_Compose_Graph__docker_compose_graph_repository_10_2.svg](_images/Docker_Compose_Graph__docker_compose_graph_repository_10_2.svg)
+![Docker_Compose_Graph__docker_compose_graph_repository_10_2.svg](../../media/images/Docker_Compose_Graph__docker_compose_graph_repository_10_2.svg)
 
 Manual (via CLI):
 
@@ -1079,7 +1079,7 @@ pip install -e ".[dev]"
 
 ##### 22.04 Desktop (minimal, with GUI, with third party Drivers)
 
-![Install_UbuntuDesktop2204.png](_images/Install_UbuntuDesktop2204.png)
+![Install_UbuntuDesktop2204.png](../../media/images/Install_UbuntuDesktop2204.png)
 
 ```bash
 sudo apt-get install -y curl
@@ -1135,7 +1135,7 @@ http://localhost:80
 Log with `harbor@openstudiolandscapes.org`/`openstudiolandscapes`
 
 Create `[x] Public` project `openstudiolandscapes`.
-![Create Harbor Project](_images/harbor_create_project.png)
+![Create Harbor Project](../../media/images/harbor_create_project.png)
 (You can delete Project `library`)
 
 Do this programmatically:
@@ -1214,7 +1214,7 @@ according to your needs.
 
 #### Materialize Landscape
 
-![materialize_all.png](_images/materialize_all.png)
+![materialize_all.png](../../media/images/materialize_all.png)
 
 ##### Resulting Files and Directories (aka "Landscape")
 
@@ -1363,13 +1363,13 @@ $ tree .landscapes/2025-02-28_13-24-43__4ade7f1cc21d4e39bb90b1363f807e79
 
 Copy/Paste command, execute and wait for it to finish:
 
-![installer_compose_up.png](_images/installer_compose_up.png)
+![installer_compose_up.png](../../media/images/installer_compose_up.png)
 
-![installer.png](_images/installer.png)
+![installer.png](../../media/images/installer.png)
 
 And `docker compose down` eventually:
 
-![installer_compose_down.png](_images/installer_compose_down.png)
+![installer_compose_down.png](../../media/images/installer_compose_down.png)
 
 ### Run Deadline Farm
 
@@ -1382,17 +1382,17 @@ Together with:
 
 Copy/Paste command and execute:
 
-![farm_compose_up.png](_images/farm_compose_up.png)
+![farm_compose_up.png](../../media/images/farm_compose_up.png)
 
-![runner.png](_images/runner.png)
+![runner.png](../../media/images/runner.png)
 
 ### Client
 
 #### Deadline Monitor
 
-![monitor.png](_images/monitor.png)
+![monitor.png](../../media/images/monitor.png)
 
-![monitor_2.png](_images/monitor_2.png)
+![monitor_2.png](../../media/images/monitor_2.png)
 
 ## Guides
 

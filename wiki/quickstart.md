@@ -23,7 +23,7 @@ Ubuntu Desktop 22.04. More Linux distros will come based on requests.
   
 ##### Desktop  
   
-![Install_UbuntuDesktop2204.png](../_images/Install_UbuntuDesktop2204.png)  
+![Install_UbuntuDesktop2204.png](../media/images/Install_UbuntuDesktop2204.png)  
   
 If you see the following, select all except `none of the above`:  
   
@@ -40,7 +40,7 @@ Which services should be restarted? 1-7
   
 ##### Server  
   
-![Install_UbuntuServer2204.png](../_images/Install_UbuntuServer2204.png)  
+![Install_UbuntuServer2204.png](../media/images/Install_UbuntuServer2204.png)  
   
 ##### Requirements
 

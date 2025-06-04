@@ -57,7 +57,7 @@ according to your needs.
 
 #### Materialize Landscape
 
-![materialize_all.png](../../_images/materialize_all.png)
+![materialize_all.png](../../media/images/materialize_all.png)
 
 ##### Resulting Files and Directories (aka "Landscape")
 

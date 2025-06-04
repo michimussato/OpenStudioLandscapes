@@ -17,23 +17,23 @@ http://localhost:80
 Create `[x] Public` project `openstudiolandscapes`.  
 (You can delete `library`)  
   
-![harbor_create_project.png](_images/harbor_create_project.png)  
-![harbor_new_project.png](_images/harbor_new_project.png)  
+![harbor_create_project.png](../media/images/harbor_create_project.png)  
+![harbor_new_project.png](../media/images/harbor_new_project.png)  
   
 ```shell  
 nox --session dagster_postgres```  
   
-![dagster_webserver.png](../_images/dagster_webserver.png)  
+![dagster_webserver.png](../media/images/dagster_webserver.png)  
   
 Open Dagster URL:  
 http://localhost:3000/asset-groups  
   
-![dagster_tldr.svg](../_images/dagster_tldr.svg)  
+![dagster_tldr.svg](../media/images/dagster_tldr.svg)  
   
 In Dagster, click `Materialize All`, and we will be presented with the following  
 Landscape Map eventually:  
   
-![Landscape_Map__tldr.svg](../_images/Landscape_Map__tldr.svg)  
+![Landscape_Map__tldr.svg](../media/images/Landscape_Map__tldr.svg)  
   
 alongside the following command:  
   
@@ -42,4 +42,4 @@ alongside the following command:
   
 Visit http://localhost:4545; lo and behold:  
   
-![kitsu_landing.png](../_images/kitsu_landing_tldr.png)
+![kitsu_landing.png](../media/images/kitsu_landing_tldr.png)

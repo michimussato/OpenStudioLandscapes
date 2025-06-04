@@ -1,4 +1,4 @@
-![logo128.png](_images/logo128.png)
+![logo128.png](media/images/logo128.png)
 
 ---
 
@@ -20,7 +20,7 @@ create Landscapes for production,
 testing, debugging, development,
 migration, DB restore etc.
 
-![Overview](_images/Overview.png)
+![Overview](media/images/Overview.png)
 
 No more black boxes.
 No more path dependencies due to bad decisions
