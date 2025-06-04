@@ -763,7 +763,6 @@ LINKED_FILES = [
     "docs/license.rst",
     "docs/authors.rst",
     "docs/contributing.rst",
-    # "docs/conf.py",
 ]
 
 # # fix_hardlinks_in_features
@@ -2488,10 +2487,12 @@ def docs(session):
     # HTML
     session.run(
         shutil.which("sphinx-build"),
+        # usage: sphinx-build [OPTIONS] SOURCEDIR OUTPUTDIR [FILENAMES...]
         "--builder",
         "html",
         str(pathlib.Path(__file__).parent / "docs"),
         str(outdir),
+        external=True,
     )
     # LATEX/PDF
     # session.run("sphinx-build", "--builder", "latex", "docs/", "build/pdf")
