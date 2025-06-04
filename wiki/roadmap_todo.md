@@ -59,6 +59,9 @@
 - Linux Distro Installer
   - [x] Ubuntu Desktop 22.04
   - [ ] Ubuntu Server 22.04
-- Sphinx
+- Sphinx/ReadTheDocs
+  - [x] abandoned (for now)
   - [ ] Contributing
   - [ ] Changelog
+- OpenStudioLandscapes-Grafana
+  - [ ] clean/move/delete `./configs`
