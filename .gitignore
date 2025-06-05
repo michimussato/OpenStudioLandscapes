@@ -100,3 +100,13 @@ tmp*/
 # Media
 /media/Blender/.out/*
 !/media/Blender/.out/.gitkeep
+
+# Docker
+!docker/.volumes/
+
+docker/.volumes/dagster/*
+!docker/.volumes/dagster/.gitkeep
+!docker/.volumes/dagster/dagster.yaml
+
+docker/.volumes/postgres-dagster/*
+!docker/.volumes/postgres-dagster/.gitkeep

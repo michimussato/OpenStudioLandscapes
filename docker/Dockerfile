@@ -1,13 +1,18 @@
 # docker build --tag docker.io/michimussato/openstudiolandscapes:0.3 --tag docker.io/michimussato/openstudiolandscapes:latest --no-cache . --build-arg PYTHON_MAJ=3 --build-arg PYTHON_MIN=11 --build-arg PYTHON_PAT=11
-# docker build --tag docker.io/michimussato/openstudiolandscapes:0.3 --tag docker.io/michimussato/openstudiolandscapes:latest --no-cache-filter=openstudiolandscapes-never-cache . --build-arg PYTHON_MAJ=3 --build-arg PYTHON_MIN=11 --build-arg PYTHON_PAT=11
-# docker run --rm -it --entrypoint bash michimussato/openstudiolandscapes:latest
+# docker build --tag docker.io/michimussato/openstudiolandscapes:0.3 --tag docker.io/michimussato/openstudiolandscapes:latest --no-cache-filter=openstudiolandscapes-never-cache . --build-arg PYTHON_MAJ=3 --build-arg PYTHON_MIN=11 --build-arg PYTHON_PAT=11 --build-arg DOCKER_GID=$(getent group docker | cut -d: -f3)
+# docker build --tag docker.io/michimussato/openstudiolandscapes:latest --no-cache-filter=openstudiolandscapes-never-cache . --build-arg PYTHON_MAJ=3 --build-arg PYTHON_MIN=11 --build-arg PYTHON_PAT=11 --build-arg DOCKER_GID=$(getent group docker | cut -d: -f3)
+# docker run -v /var/run/docker.sock:/var/run/docker.sock:rw --rm -it --entrypoint bash michimussato/openstudiolandscapes:latest
 #
+
+# docker login
+# docker image push --all-tags michimussato/openstudiolandscapes
 FROM ubuntu:22.04 AS openstudiolandscapes
 LABEL authors="michael"
 
 ARG PYTHON_MAJ
 ARG PYTHON_MIN
 ARG PYTHON_PAT
+ARG DOCKER_GID
 
 ENV PYTHON_EXE=python$PYTHON_MAJ.$PYTHON_MIN
 ENV PIP_EXE=pip$PYTHON_MAJ.$PYTHON_MIN
@@ -77,7 +82,9 @@ RUN rm -rf /build/python
 
 RUN apt-get clean
 
-RUN groupadd --force docker
+# Todo:
+#  - [ ] gid depends on the docker gid on the host. maybe via ARG?
+RUN groupadd --force --gid $DOCKER_GID docker
 RUN useradd --create-home --shell /bin/bash openstudiolandscapes
 RUN usermod --append --groups docker openstudiolandscapes
 
@@ -134,6 +141,9 @@ RUN $PIP_EXE --verbose install -e ./OpenStudioLandscapes-Dagster[dev]
 
 # WORKDIR $REPOS_DIR/OpenStudioLandscapes/.dagster-postgres
 # COPY dagster.yaml .
+
+ENV DAGSTER_HOME=$REPOS_DIR/OpenStudioLandscapes/.dagster-postgres
+WORKDIR $DAGSTER_HOME
 
 WORKDIR $REPOS_DIR/OpenStudioLandscapes
 

@@ -20,13 +20,14 @@ chmod a+r /etc/apt/keyrings/docker.asc
 
 mkdir -p /etc/docker
 touch /etc/docker/daemon.json
-cat > /etc/docker/daemon.json
+cat > /etc/docker/daemon.json << EOF
 {
   "insecure-registries": [
     "http://harbor.farm.evil:80"
   ],
   "max-concurrent-uploads": 1
 }
+EOF
 
 
 echo \
@@ -39,8 +40,8 @@ apt-get install --no-install-recommends -y docker-ce docker-ce-cli containerd.io
 
 # https://docs.docker.com/engine/install/linux-postinstall/
 
-groupadd --force docker
-usermod --append --groups docker "openstudiolandscapes"
+# groupadd --force docker
+# usermod --append --groups docker "openstudiolandscapes"
 
 # systemctl daemon-reload
 # systemctl restart docker
