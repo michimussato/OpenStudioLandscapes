@@ -1,10 +1,19 @@
-# docker compose --file docker-compose.yml --project-name openstudiolandscapes up --remove-orphans
-# docker compose --file docker-compose.yml --project-name openstudiolandscapes down
-
-# sudo docker compose --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.harbor/bin/docker-compose.yml --project-name openstudiolandscapes-harbor up --detach
+# 1)
+# Launch Harbor
+# sudo docker compose --file ../.landscapes/.harbor/bin/docker-compose.yml --project-name openstudiolandscapes-harbor up --remove-orphans
+# sudo docker compose --file ../.landscapes/.harbor/bin/docker-compose.yml --project-name openstudiolandscapes-harbor down
+#
+# I tried "include" but Harbor needs "sudo" whereas openstudiolandscapes does not.
+# This lead to problems, hence, launch them separately.
 #include:
 #  - path:
 #      - ../.landscapes/.harbor/bin/docker-compose.yml
+
+# 2)
+# Launch openstudiolandscapes
+# docker compose --file docker-compose.yml --project-name openstudiolandscapes up --remove-orphans
+# docker compose --file docker-compose.yml --project-name openstudiolandscapes down
+
 
 networks:
   openstudiolandscapes:
@@ -23,8 +32,6 @@ services:
     image: docker.io/postgres
     networks:
     - openstudiolandscapes
-#    ports:
-#    - 2345:5432
     restart: unless-stopped
     volumes:
     - ./.volumes/postgres-dagster/postgres:/var/lib/postgresql/data:rw
@@ -54,8 +61,6 @@ services:
     - 3000:3000
     restart: unless-stopped
     volumes:
-#    - ./.dagster:/home/openstudiolandscapes/git/repos/OpenStudioLandscapes/.dagster-postgres:rw
-#    - ./.volumes/dagster/dagster.yaml:/home/openstudiolandscapes/git/repos/OpenStudioLandscapes/.dagster-postgres/dagster.yaml:ro
     - ./.volumes/dagster:/home/openstudiolandscapes/git/repos/OpenStudioLandscapes/.dagster-postgres:rw
     # https://jpetazzo.github.io/2015/09/03/do-not-use-docker-in-docker-for-ci/
     # Access to host socket
@@ -63,263 +68,3 @@ services:
     # Access to host cache
     # necessary? socket only?
     - /var/lib/docker:/var/lib/docker:rw
-
-#  log:
-#    image: goharbor/harbor-log:v2.12.2
-#    container_name: harbor-log
-#    restart: always
-#    cap_drop:
-#      - ALL
-#    cap_add:
-#      - CHOWN
-#      - DAC_OVERRIDE
-#      - SETGID
-#      - SETUID
-#    volumes:
-##      - /var/log/harbor/:/var/log/docker/:z
-#      - type: bind
-#        source: ./harbor/bin/common/config/log/logrotate.conf
-#        target: /etc/logrotate.d/logrotate.conf
-#      - type: bind
-#        source: ./harbor/bin/common/config/log/rsyslog_docker.conf
-#        target: /etc/rsyslog.d/rsyslog_docker.conf
-#    ports:
-#      - 127.0.0.1:1514:10514
-#    networks:
-#      - harbor
-#      - openstudiolandscapes
-#  registry:
-#    image: goharbor/registry-photon:v2.12.2
-#    container_name: registry
-#    restart: always
-#    cap_drop:
-#      - ALL
-#    cap_add:
-#      - CHOWN
-#      - SETGID
-#      - SETUID
-#    volumes:
-#      - ./harbor/data/registry:/storage:z
-#      - ./harbor/bin/common/config/registry/:/etc/registry/:z
-#      - type: bind
-#        source: ./harbor/data/secret/registry/root.crt
-#        target: /etc/registry/root.crt
-#      - type: bind
-#        source: ./harbor/bin/common/config/shared/trust-certificates
-#        target: /harbor_cust_cert
-#    networks:
-#      - harbor
-#      - openstudiolandscapes
-#    depends_on:
-#      - log
-#    logging:
-#      driver: "syslog"
-#      options:
-#        syslog-address: "tcp://localhost:1514"
-#        tag: "registry"
-#  registryctl:
-#    image: goharbor/harbor-registryctl:v2.12.2
-#    container_name: registryctl
-#    env_file:
-#      - ./harbor/bin/common/config/registryctl/env
-#    restart: always
-#    cap_drop:
-#      - ALL
-#    cap_add:
-#      - CHOWN
-#      - SETGID
-#      - SETUID
-#    volumes:
-#      - ./harbor/data/registry:/storage:z
-#      - ./harbor/bin/common/config/registry/:/etc/registry/:z
-#      - type: bind
-#        source: ./harbor/bin/common/config/registryctl/config.yml
-#        target: /etc/registryctl/config.yml
-#      - type: bind
-#        source: ./harbor/bin/common/config/shared/trust-certificates
-#        target: /harbor_cust_cert
-#    networks:
-#      - harbor
-#      - openstudiolandscapes
-#    depends_on:
-#      - log
-#    logging:
-#      driver: "syslog"
-#      options:
-#        syslog-address: "tcp://localhost:1514"
-#        tag: "registryctl"
-#  postgresql:
-#    image: goharbor/harbor-db:v2.12.2
-#    container_name: harbor-db
-#    restart: always
-#    cap_drop:
-#      - ALL
-#    cap_add:
-#      - CHOWN
-#      - DAC_OVERRIDE
-#      - SETGID
-#      - SETUID
-#    volumes:
-#      - ./harbor/data/database:/var/lib/postgresql/data:z
-#    networks:
-#      - harbor
-#      - openstudiolandscapes
-#    env_file:
-#      - ./harbor/bin/common/config/db/env
-#    depends_on:
-#      - log
-#    logging:
-#      driver: "syslog"
-#      options:
-#        syslog-address: "tcp://localhost:1514"
-#        tag: "postgresql"
-#    shm_size: '1gb'
-#  core:
-#    image: goharbor/harbor-core:v2.12.2
-#    container_name: harbor-core
-#    env_file:
-#      - ./harbor/bin/common/config/core/env
-#    restart: always
-#    cap_drop:
-#      - ALL
-#    cap_add:
-#      - SETGID
-#      - SETUID
-#    volumes:
-#      - ./harbor/data/ca_download/:/etc/core/ca/:z
-#      - ./harbor/data/:/data/:z
-#      - ./harbor/bin/common/config/core/certificates/:/etc/core/certificates/:z
-#      - type: bind
-#        source: ./harbor/bin/common/config/core/app.conf
-#        target: /etc/core/app.conf
-#      - type: bind
-#        source: ./harbor/data/secret/core/private_key.pem
-#        target: /etc/core/private_key.pem
-#      - type: bind
-#        source: ./harbor/data/secret/keys/secretkey
-#        target: /etc/core/key
-#      - type: bind
-#        source: ./harbor/bin/common/config/shared/trust-certificates
-#        target: /harbor_cust_cert
-#    networks:
-#      - harbor
-#      - openstudiolandscapes
-#    depends_on:
-#      - log
-#      - registry
-#      - redis
-#      - postgresql
-#    logging:
-#      driver: "syslog"
-#      options:
-#        syslog-address: "tcp://localhost:1514"
-#        tag: "core"
-#  portal:
-#    image: goharbor/harbor-portal:v2.12.2
-#    container_name: harbor-portal
-#    restart: always
-#    cap_drop:
-#      - ALL
-#    cap_add:
-#      - CHOWN
-#      - SETGID
-#      - SETUID
-#      - NET_BIND_SERVICE
-#    volumes:
-#      - type: bind
-#        source: ./harbor/bin/common/config/portal/nginx.conf
-#        target: /etc/nginx/nginx.conf
-#    networks:
-#      - harbor
-#      - openstudiolandscapes
-#    depends_on:
-#      - log
-#    logging:
-#      driver: "syslog"
-#      options:
-#        syslog-address: "tcp://localhost:1514"
-#        tag: "portal"
-#
-#  jobservice:
-#    image: goharbor/harbor-jobservice:v2.12.2
-#    container_name: harbor-jobservice
-#    env_file:
-#      - ./harbor/bin/common/config/jobservice/env
-#    restart: always
-#    cap_drop:
-#      - ALL
-#    cap_add:
-#      - CHOWN
-#      - SETGID
-#      - SETUID
-#    volumes:
-#      - ./harbor/data/job_logs:/var/log/jobs:z
-#      - type: bind
-#        source: ./harbor/bin/common/config/jobservice/config.yml
-#        target: /etc/jobservice/config.yml
-#      - type: bind
-#        source: ./harbor/bin/common/config/shared/trust-certificates
-#        target: /harbor_cust_cert
-#    networks:
-#      - harbor
-#      - openstudiolandscapes
-#    depends_on:
-#      - core
-#    logging:
-#      driver: "syslog"
-#      options:
-#        syslog-address: "tcp://localhost:1514"
-#        tag: "jobservice"
-#  redis:
-#    image: goharbor/redis-photon:v2.12.2
-#    container_name: redis
-#    restart: always
-#    cap_drop:
-#      - ALL
-#    cap_add:
-#      - CHOWN
-#      - SETGID
-#      - SETUID
-#    volumes:
-#      - ./harbor/data/redis:/var/lib/redis
-#    networks:
-#      - harbor
-#      - openstudiolandscapes
-#    depends_on:
-#      - log
-#    logging:
-#      driver: "syslog"
-#      options:
-#        syslog-address: "tcp://localhost:1514"
-#        tag: "redis"
-#  proxy:
-#    image: goharbor/nginx-photon:v2.12.2
-#    container_name: nginx
-#    restart: always
-#    cap_drop:
-#      - ALL
-#    cap_add:
-#      - CHOWN
-#      - SETGID
-#      - SETUID
-#      - NET_BIND_SERVICE
-#    volumes:
-#      - ./harbor/bin/common/config/nginx:/etc/nginx:z
-#      - type: bind
-#        source: ./harbor/bin/common/config/shared/trust-certificates
-#        target: /harbor_cust_cert
-#    networks:
-#      - harbor
-#      - openstudiolandscapes
-#    ports:
-#      - 80:8080
-#    depends_on:
-#      - registry
-#      - core
-#      - portal
-#      - log
-#    logging:
-#      driver: "syslog"
-#      options:
-#        syslog-address: "tcp://localhost:1514"
-#        tag: "proxy"

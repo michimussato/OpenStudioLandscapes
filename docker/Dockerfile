@@ -1,11 +1,14 @@
-# docker build --tag docker.io/michimussato/openstudiolandscapes:0.3 --tag docker.io/michimussato/openstudiolandscapes:latest --no-cache . --build-arg PYTHON_MAJ=3 --build-arg PYTHON_MIN=11 --build-arg PYTHON_PAT=11
+# Build:
 # docker build --tag docker.io/michimussato/openstudiolandscapes:0.3 --tag docker.io/michimussato/openstudiolandscapes:latest --no-cache-filter=openstudiolandscapes-never-cache . --build-arg PYTHON_MAJ=3 --build-arg PYTHON_MIN=11 --build-arg PYTHON_PAT=11 --build-arg DOCKER_GID=$(getent group docker | cut -d: -f3)
-# docker build --tag docker.io/michimussato/openstudiolandscapes:latest --no-cache-filter=openstudiolandscapes-never-cache . --build-arg PYTHON_MAJ=3 --build-arg PYTHON_MIN=11 --build-arg PYTHON_PAT=11 --build-arg DOCKER_GID=$(getent group docker | cut -d: -f3)
-# docker run -v /var/run/docker.sock:/var/run/docker.sock:rw --rm -it --entrypoint bash michimussato/openstudiolandscapes:latest
 #
-
+# Push:
 # docker login
 # docker image push --all-tags michimussato/openstudiolandscapes
+#
+# Run:
+# docker run -v /var/run/docker.sock:/var/run/docker.sock:rw --rm -it --entrypoint bash michimussato/openstudiolandscapes:latest
+
+
 FROM ubuntu:22.04 AS openstudiolandscapes
 LABEL authors="michael"
 
@@ -126,10 +129,6 @@ RUN $PIP_EXE --verbose install -e .[dev]
 # 1.066
 # 1.066 Please make sure you have the correct access rights
 # 1.066 and the repository exists.
-# RUN echo "Cloning Features:"
-# RUN nox --session clone_features
-# RUN echo "Installing Features:"
-# RUN nox --session install_features_into_engine
 
 WORKDIR $REPOS_DIR/OpenStudioLandscapes/.features
 
@@ -138,9 +137,6 @@ WORKDIR $REPOS_DIR/OpenStudioLandscapes/.features
 RUN git clone --verbose --tags https://github.com/michimussato/OpenStudioLandscapes-Dagster.git
 RUN $PIP_EXE --verbose install -e ./OpenStudioLandscapes-Dagster[dev]
 # RUN git clone --verbose --tags https://github.com/michimussato/OpenStudioLandscapes-Kitsu.git
-
-# WORKDIR $REPOS_DIR/OpenStudioLandscapes/.dagster-postgres
-# COPY dagster.yaml .
 
 ENV DAGSTER_HOME=$REPOS_DIR/OpenStudioLandscapes/.dagster-postgres
 WORKDIR $DAGSTER_HOME
