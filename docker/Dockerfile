@@ -85,7 +85,7 @@ RUN apt-get clean
 # Todo:
 #  - [ ] gid depends on the docker gid on the host. maybe via ARG?
 RUN groupadd --force --gid $DOCKER_GID docker
-RUN useradd --create-home --shell /bin/bash openstudiolandscapes
+RUN useradd --create-home --home-dir /opt/openstudiolandscapes --shell /bin/bash openstudiolandscapes
 RUN usermod --append --groups docker openstudiolandscapes
 
 RUN echo "Installing Docker:"
@@ -95,7 +95,7 @@ RUN ./ubuntu_2204__script_install_docker.sh
 
 USER openstudiolandscapes
 
-ENV REPOS_DIR=/home/openstudiolandscapes/git/repos
+ENV REPOS_DIR=/opt/openstudiolandscapes/git/repos
 WORKDIR $REPOS_DIR
 
 # Always clone even if Docker Build Cache is enabled
@@ -116,8 +116,8 @@ RUN echo "Installing OpenStudioLandscapes:"
 RUN $PIP_EXE --verbose install -e .[dev]
 
 # Nox: use HTTPS instead of SSH?
-# 0.582 root > cmd = ['/usr/bin/git', '-C', PosixPath('/home/openstudiolandscapes/git/repos/OpenStudioLandscapes/.features'), 'clone', '--tags', '--branch', 'main', '--single-branch', 'git@github.com:michimussato/OpenStudioLandscapes-Ayon.git']
-# 0.582 nox > /usr/bin/git -C /home/openstudiolandscapes/git/repos/OpenStudioLandscapes/.features clone --tags --branch main --single-branch git@github.com:michimussato/OpenStudioLandscapes-Ayon.git
+# 0.582 root > cmd = ['/usr/bin/git', '-C', PosixPath('/opt/openstudiolandscapes/git/repos/OpenStudioLandscapes/.features'), 'clone', '--tags', '--branch', 'main', '--single-branch', 'git@github.com:michimussato/OpenStudioLandscapes-Ayon.git']
+# 0.582 nox > /usr/bin/git -C /opt/openstudiolandscapes/git/repos/OpenStudioLandscapes/.features clone --tags --branch main --single-branch git@github.com:michimussato/OpenStudioLandscapes-Ayon.git
 # 0.583 Cloning into 'OpenStudioLandscapes-Ayon'...
 # 1.065 Host key verification failed.
 # 1.066 fatal: Could not read from remote repository.
