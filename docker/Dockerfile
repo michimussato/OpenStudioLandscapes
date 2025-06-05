@@ -1,5 +1,5 @@
 # Build:
-# docker build --tag docker.io/michimussato/openstudiolandscapes:<VERSION> --tag docker.io/michimussato/openstudiolandscapes:latest --no-cache-filter=openstudiolandscapes-never-cache . --build-arg PYTHON_MAJ=3 --build-arg PYTHON_MIN=11 --build-arg PYTHON_PAT=11 --build-arg DOCKER_GID=$(getent group docker | cut -d: -f3)
+# docker build --tag docker.io/michimussato/openstudiolandscapes:<VERSION> --tag docker.io/michimussato/openstudiolandscapes:latest --progress plain --no-cache-filter=openstudiolandscapes-never-cache . --build-arg PYTHON_MAJ=3 --build-arg PYTHON_MIN=11 --build-arg PYTHON_PAT=11 --build-arg DOCKER_GID=$(getent group docker | cut -d: -f3)
 #
 # Push:
 # docker login

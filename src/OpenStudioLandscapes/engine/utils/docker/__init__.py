@@ -121,6 +121,8 @@ def docker_process_cmds(
         context.log.debug(f"{returncode = }")
 
         if bool(returncode):
+            context.log.error(f"command failed {returncode = }: {cmd = }")
+            context.log.error("Is Harbor running?")
             raise OpenStudioLandscapesDockerException(
                 "\n".join(logs_["stderr"]),
             )
