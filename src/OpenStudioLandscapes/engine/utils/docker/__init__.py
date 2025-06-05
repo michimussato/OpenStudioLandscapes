@@ -38,6 +38,7 @@ def docker_build_cmd(
 
     cmd_build = [
         shutil.which("docker"),
+        "--debug",
         "--config", docker_config_json.as_posix(),
         "build",
         "--progress", "plain",

@@ -1,0 +1,46 @@
+# docker compose --file docker-compose.yml --project-name openstudiolandscapes up --remove-orphans
+# docker compose --file docker-compose.yml --project-name openstudiolandscapes down
+
+networks:
+  openstudiolandscapes:
+    name: network_openstudiolandscapes
+
+services:
+  postgres-dagster:
+    container_name: openstudiolandscapes-postgres
+    domainname: farm.evil
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_USER: postgres
+    hostname: openstudiolandscapes-postgres.farm.evil
+    image: docker.io/postgres
+    networks:
+    - openstudiolandscapes
+#    ports:
+#    - 2345:5432
+    restart: unless-stopped
+    volumes:
+    - ./.postgres:/var/lib/postgresql/data:rw
+  dagster:
+    container_name: openstudiolandscapes-dagster-postgres
+    domainname: farm.evil
+    hostname: openstudiolandscapes-dagster-postgres.farm.evil
+    image: michimussato/openstudiolandscapes:latest
+    command:
+      - "nox"
+      - "--session"
+      - "dagster_postgres"
+    depends_on:
+      - postgres-dagster
+    networks:
+    - openstudiolandscapes
+    ports:
+    - 3000:3000
+    restart: unless-stopped
+    volumes:
+    - ./dagster.yaml:/home/openstudiolandscapes/git/repos/OpenStudioLandscapes/.dagster-postgres/dagster.yaml:ro
+    # https://jpetazzo.github.io/2015/09/03/do-not-use-docker-in-docker-for-ci/
+    - /var/run/docker.sock:/var/run/docker.sock:rw
+    - /var/lib/docker:/var/lib/docker:rw

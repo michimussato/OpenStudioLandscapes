@@ -1,0 +1,17 @@
+auto_materialize:
+  enabled: true
+  use_sensors: true
+run_queue:
+  block_op_concurrency_limited_runs:
+    enabled: true
+  max_concurrent_runs: 1
+storage:
+  postgres:
+    postgres_db:
+      db_name: postgres
+      hostname: openstudiolandscapes-postgres.farm.evil
+      password: mysecretpassword
+      port: 5432
+      username: postgres
+telemetry:
+  enabled: false
