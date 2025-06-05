@@ -1,5 +1,5 @@
 # Build:
-# docker build --tag docker.io/michimussato/openstudiolandscapes:0.3 --tag docker.io/michimussato/openstudiolandscapes:latest --no-cache-filter=openstudiolandscapes-never-cache . --build-arg PYTHON_MAJ=3 --build-arg PYTHON_MIN=11 --build-arg PYTHON_PAT=11 --build-arg DOCKER_GID=$(getent group docker | cut -d: -f3)
+# docker build --tag docker.io/michimussato/openstudiolandscapes:<VERSION> --tag docker.io/michimussato/openstudiolandscapes:latest --no-cache-filter=openstudiolandscapes-never-cache . --build-arg PYTHON_MAJ=3 --build-arg PYTHON_MIN=11 --build-arg PYTHON_PAT=11 --build-arg DOCKER_GID=$(getent group docker | cut -d: -f3)
 #
 # Push:
 # docker login
@@ -59,7 +59,6 @@ RUN apt-get install -y --no-install-recommends  \
     htop  \
     vim  \
     graphviz
-# RUN apt-get clean
 
 # Clone Repo
 # Pull if Repo already cloned
@@ -78,8 +77,6 @@ RUN cd Python-$PYTHON_VERSION && make -j $(nproc)
 RUN cd Python-$PYTHON_VERSION && make altinstall  # altinstall instead of install because the later command will overwrite the default system python3 binary.
 
 RUN $PYTHON_EXE -m pip install --upgrade pip setuptools setuptools_scm wheel
-
-# RUN thinkbox-ssl-gen --help
 
 RUN rm -rf /build/python
 
@@ -106,9 +103,7 @@ WORKDIR $REPOS_DIR
 FROM openstudiolandscapes AS openstudiolandscapes-never-cache
 RUN echo "Cloning OpenStudioLandscapes:"
 # Clone Repo
-# Pull if Repo already cloned
 RUN git clone --verbose --tags https://github.com/michimussato/OpenStudioLandscapes.git
-# RUN git -C OpenStudioLandscapes pull
 WORKDIR $REPOS_DIR/OpenStudioLandscapes
 
 RUN echo "Creating virtualenv:"
