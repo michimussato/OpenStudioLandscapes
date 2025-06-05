@@ -42,5 +42,8 @@ services:
     volumes:
     - ./dagster.yaml:/home/openstudiolandscapes/git/repos/OpenStudioLandscapes/.dagster-postgres/dagster.yaml:ro
     # https://jpetazzo.github.io/2015/09/03/do-not-use-docker-in-docker-for-ci/
+    # Access to host socket
     - /var/run/docker.sock:/var/run/docker.sock:rw
+    # Access to host cache
+    # necessary? socket only?
     - /var/lib/docker:/var/lib/docker:rw

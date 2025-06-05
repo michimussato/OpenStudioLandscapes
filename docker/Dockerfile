@@ -88,7 +88,7 @@ RUN ./ubuntu_2204__script_install_docker.sh
 
 USER openstudiolandscapes
 
-ENV REPOS_DIR=~/git/repos
+ENV REPOS_DIR=/home/openstudiolandscapes/git/repos
 WORKDIR $REPOS_DIR
 
 # Always clone even if Docker Build Cache is enabled
