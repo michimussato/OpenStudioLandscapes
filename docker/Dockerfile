@@ -10,7 +10,7 @@
 
 
 FROM ubuntu:22.04 AS openstudiolandscapes
-LABEL authors="michael"
+LABEL authors="michimussato@gmail.com"
 
 ARG PYTHON_MAJ
 ARG PYTHON_MIN
@@ -133,8 +133,8 @@ RUN git clone --verbose --tags https://github.com/michimussato/OpenStudioLandsca
 RUN $PIP_EXE --verbose install -e ./OpenStudioLandscapes-Dagster[dev]
 # RUN git clone --verbose --tags https://github.com/michimussato/OpenStudioLandscapes-Kitsu.git
 
-ENV DAGSTER_HOME=$REPOS_DIR/OpenStudioLandscapes/.dagster-postgres
-WORKDIR $DAGSTER_HOME
+#ENV DAGSTER_HOME=$REPOS_DIR/OpenStudioLandscapes/.dagster-postgres
+#WORKDIR $DAGSTER_HOME
 
 WORKDIR $REPOS_DIR/OpenStudioLandscapes
 

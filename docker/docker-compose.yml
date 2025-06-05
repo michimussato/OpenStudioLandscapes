@@ -19,6 +19,7 @@ networks:
   openstudiolandscapes:
     name: network_openstudiolandscapes
 
+
 services:
   postgres-dagster:
     container_name: openstudiolandscapes-postgres
@@ -44,28 +45,22 @@ services:
       - "nox"
       - "--session"
       - "dagster_postgres"
+    environment:
+      DAGSTER_HOME: /opt/openstudiolandscapes/git/repos/OpenStudioLandscapes/.dagster-postgres
     depends_on:
       - postgres-dagster
-#      - log
-#      - registry
-#      - registryctl
-#      - postgresql
-#      - core
-#      - portal
-#      - jobservice
-#      - redis
-#      - proxy
     networks:
       - openstudiolandscapes
     ports:
       - 3000:3000
     restart: unless-stopped
     volumes:
+      # sudo mkdir -p /opt/openstudiolandscapes/.landscapes && sudo chmod -R a+rw /opt/openstudiolandscapes
       - /opt/openstudiolandscapes/.landscapes:/opt/openstudiolandscapes/.landscapes:rw
-      - ./.volumes/dagster:/home/openstudiolandscapes/git/repos/OpenStudioLandscapes/.dagster-postgres:rw
-      # sudo ln -sfn $HOME /home/openstudiolandscapes
-      # ln -s ../docker/.volumes/.landscapes/2025-06-05-16-24-36-f29bbb042e7b428fba2a87a30c56ffa1 2025-06-05-16-24-36-f29bbb042e7b428fba2a87a30c56ffa1
-      - ./.volumes/dagster:/home/openstudiolandscapes/git/repos/OpenStudioLandscapes/.dagster-postgres:rw
+      # DAGSTER_HOME:
+      - ./.volumes/dagster:/opt/openstudiolandscapes/git/repos/OpenStudioLandscapes/.dagster-postgres:rw
+      # dagster.yaml:
+      - ./.volumes/dagster/dagster.yaml:/opt/openstudiolandscapes/git/repos/OpenStudioLandscapes/.dagster-postgres/dagster.yaml:ro
       # https://jpetazzo.github.io/2015/09/03/do-not-use-docker-in-docker-for-ci/
       # Access to host socket
       - /var/run/docker.sock:/var/run/docker.sock:rw
