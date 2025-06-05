@@ -31,10 +31,10 @@ services:
     hostname: openstudiolandscapes-postgres.farm.evil
     image: docker.io/postgres
     networks:
-    - openstudiolandscapes
+      - openstudiolandscapes
     restart: unless-stopped
     volumes:
-    - ./.volumes/postgres-dagster/postgres:/var/lib/postgresql/data:rw
+      - ./.volumes/postgres-dagster/postgres:/var/lib/postgresql/data:rw
   dagster:
     container_name: openstudiolandscapes-dagster-postgres
     domainname: farm.evil
@@ -56,15 +56,18 @@ services:
 #      - redis
 #      - proxy
     networks:
-    - openstudiolandscapes
+      - openstudiolandscapes
     ports:
-    - 3000:3000
+      - 3000:3000
     restart: unless-stopped
     volumes:
-    - ./.volumes/dagster:/home/openstudiolandscapes/git/repos/OpenStudioLandscapes/.dagster-postgres:rw
-    # https://jpetazzo.github.io/2015/09/03/do-not-use-docker-in-docker-for-ci/
-    # Access to host socket
-    - /var/run/docker.sock:/var/run/docker.sock:rw
-    # Access to host cache
-    # necessary? socket only?
-    - /var/lib/docker:/var/lib/docker:rw
+      - ./.volumes/.landscapes:/home/openstudiolandscapes/git/repos/OpenStudioLandscapes/.landscapes:rw
+      - ./.volumes/dagster:/home/openstudiolandscapes/git/repos/OpenStudioLandscapes/.dagster-postgres:rw
+      # sudo ln -sfn $HOME /home/openstudiolandscapes
+      - ./.volumes/dagster:/home/openstudiolandscapes/git/repos/OpenStudioLandscapes/.dagster-postgres:rw
+      # https://jpetazzo.github.io/2015/09/03/do-not-use-docker-in-docker-for-ci/
+      # Access to host socket
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+      # Access to host cache
+      # necessary? socket only?
+      - /var/lib/docker:/var/lib/docker:rw
