@@ -1,7 +1,7 @@
 # 1)
 # Launch Harbor
-# sudo docker compose --progress --file ../.landscapes/.harbor/bin/docker-compose.yml --project-name openstudiolandscapes-harbor up --remove-orphans
-# sudo docker compose --progress --file ../.landscapes/.harbor/bin/docker-compose.yml --project-name openstudiolandscapes-harbor down
+# sudo docker compose --progress plain --file ../.landscapes/.harbor/bin/docker-compose.yml --project-name openstudiolandscapes-harbor up --remove-orphans
+# sudo docker compose --progress plain --file ../.landscapes/.harbor/bin/docker-compose.yml --project-name openstudiolandscapes-harbor down
 #
 # I tried "include" but Harbor needs "sudo" whereas openstudiolandscapes does not.
 # This lead to problems, hence, launch them separately.

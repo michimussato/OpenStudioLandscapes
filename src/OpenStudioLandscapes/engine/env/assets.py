@@ -65,18 +65,19 @@ def landscape_id(
 
 @asset(
     **ASSET_HEADER_BASE_ENV,
-    # ins={
-    #     "git_root": AssetIn(
-    #         AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "git_root"]),
-    #     ),
-    # },
+    ins={
+        "git_root": AssetIn(
+            AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "git_root"]),
+        ),
+    },
 )
 def dot_landscapes(
     context: AssetExecutionContext,
-    # git_root: pathlib.Path,  # pylint: disable=redefined-outer-name
+    git_root: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
 
-    _dot_landscapes = pathlib.Path("/opt/openstudiolandscapes/.landscapes")
+    # _dot_landscapes = pathlib.Path("/opt/openstudiolandscapes/.landscapes")
+    _dot_landscapes = git_root / ".landscapes"
 
     try:
         _dot_landscapes.mkdir(
