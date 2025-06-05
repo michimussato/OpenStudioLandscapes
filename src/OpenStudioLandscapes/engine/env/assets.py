@@ -65,19 +65,19 @@ def landscape_id(
 
 @asset(
     **ASSET_HEADER_BASE_ENV,
-    ins={
-        "git_root": AssetIn(
-            AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "git_root"]),
-        ),
-    },
+    # ins={
+    #     "git_root": AssetIn(
+    #         AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "git_root"]),
+    #     ),
+    # },
 )
 def dot_landscapes(
     context: AssetExecutionContext,
-    git_root: pathlib.Path,  # pylint: disable=redefined-outer-name
+    # git_root: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
 
-    # _dot_landscapes = pathlib.Path("/opt/openstudiolandscapes/.landscapes")
-    _dot_landscapes = git_root / ".landscapes"
+    _dot_landscapes = pathlib.Path("/opt/openstudiolandscapes/.landscapes")
+    # _dot_landscapes = git_root / ".landscapes"
 
     try:
         _dot_landscapes.mkdir(
@@ -88,8 +88,8 @@ def dot_landscapes(
         context.log.exception("Could not create Landscapes directory: %s", e)
         raise PermissionError(
             f"Could not create {_dot_landscapes.as_posix()}. "
-            f"Try `sudo mkdir -p {_dot_landscapes.as_posix()} "
-            f"&& sudo chmod -R a+rw {_dot_landscapes.parent.as_posix()}`."
+            f"Try 'sudo install -d -m 0755 -o 7002 -g docker {_dot_landscapes.parent.as_posix()}` "
+            f"and re-run the command."
         ) from e
 
 

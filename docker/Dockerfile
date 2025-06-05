@@ -85,7 +85,8 @@ RUN apt-get clean
 # Todo:
 #  - [ ] gid depends on the docker gid on the host. maybe via ARG?
 RUN groupadd --force --gid $DOCKER_GID docker
-RUN useradd --create-home --home-dir /opt/openstudiolandscapes --shell /bin/bash openstudiolandscapes
+# RUN groupadd --force --gid 7001 docker
+RUN useradd --uid 7002 --create-home --home-dir /opt/openstudiolandscapes --shell /bin/bash openstudiolandscapes
 RUN usermod --append --groups docker openstudiolandscapes
 
 RUN echo "Installing Docker:"
