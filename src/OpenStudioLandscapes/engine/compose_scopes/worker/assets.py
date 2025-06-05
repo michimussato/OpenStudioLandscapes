@@ -25,9 +25,9 @@ from OpenStudioLandscapes.engine.discovery.discovery import *
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.utils import *
 
-# Todo:
-#  - [ ] Find a procedural way to deal with this
-from OpenStudioLandscapes.Deadline_10_2_Worker.constants import ASSET_HEADER as ASSET_HEADER_WORKER
+# # Todo:
+# #  - [ ] Find a procedural way to deal with this
+# from OpenStudioLandscapes.Deadline_10_2_Worker.constants import ASSET_HEADER as ASSET_HEADER_WORKER
 
 from OpenStudioLandscapes.engine.common_assets.group_out import get_group_out
 

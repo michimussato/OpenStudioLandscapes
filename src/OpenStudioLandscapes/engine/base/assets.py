@@ -187,7 +187,7 @@ def build_docker_image(
         RUN cd Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT} && make -j $(nproc)
         RUN cd Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT} && make altinstall  # altinstall instead of install because the later command will overwrite the default system python3 binary.
 
-        RUN python{PYTHON_MAJ}.{PYTHON_MIN} -m pip install pip --upgrade
+        RUN python{PYTHON_MAJ}.{PYTHON_MIN} -m pip install --upgrade pip setuptools setuptools_scm wheel
 
         {pip_install_str}
         # RUN thinkbox-ssl-gen --help
