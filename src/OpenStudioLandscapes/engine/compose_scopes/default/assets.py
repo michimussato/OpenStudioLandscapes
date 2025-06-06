@@ -206,7 +206,8 @@ def compose(
     dot_landscapes = pathlib.Path(env["DOT_LANDSCAPES"])
 
     # Todo
-    #  - [ ] results in "../../../../docker_compose/docker-compose.yml" if /opt/openstudiolandscapes/.landscapes
+    #  - [ ] results in "../../../../docker_compose/docker-compose.yml" if /opt/openstudiolandscapes/.landscapes instead
+    #        of "../../../../2025-06-06-00-40-48-0ef417aaff9d4da7a435412ae6f27929/Dagster__Dagster/Dagster__DOCKER_COMPOSE/docker_compose/docker-compose.yml"
     #  - [ ] too hacky
     for path in compose_files:
         start_dir = DOCKER_COMPOSE.parent
