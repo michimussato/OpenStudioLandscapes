@@ -79,19 +79,22 @@ def dot_landscapes(
     _dot_landscapes = pathlib.Path("/opt/openstudiolandscapes/.landscapes")
     # _dot_landscapes = git_root / ".landscapes"
 
-    try:
-        _dot_landscapes.mkdir(
-            parents=True,
-            exist_ok=True,
-        )
-    except PermissionError as e:
-        context.log.exception("Could not create Landscapes directory: %s", e)
-        raise PermissionError(
-            f"Could not create {_dot_landscapes.as_posix()}. "
-            f"Try 'sudo install -d -m 0755 -o 7002 -g docker {_dot_landscapes.parent.as_posix()}` "
-            f"and re-run the command."
-        ) from e
+    if not _dot_landscapes.is_dir():
+        raise NotADirectoryError
 
+    # try:
+    #     _dot_landscapes.mkdir(
+    #         parents=True,
+    #         exist_ok=True,
+    #     )
+    # except PermissionError as e:
+    #     context.log.exception("Could not create Landscapes directory: %s", e)
+    #     raise PermissionError(
+    #         f"Could not create {_dot_landscapes.as_posix()}. "
+    #         f"Try `sudo mkdir -p {_dot_landscapes.as_posix()} "
+    #         f"&& sudo chown -R 7002:docker {_dot_landscapes.parent.as_posix()}`."
+    #         # f"&& sudo chmod -R a+rw {_dot_landscapes.parent.as_posix()}`."
+    #     ) from e
 
     yield Output(_dot_landscapes)
 
