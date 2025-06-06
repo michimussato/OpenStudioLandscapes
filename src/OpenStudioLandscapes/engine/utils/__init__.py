@@ -461,7 +461,7 @@ def get_relative_path_via_common_root(
 
     Args:
         context: Union[AssetExecutionContext, OpExecutionContext]
-        path_src: pathlib.Path
+        path_src: pathlib.Path The starting point
         path_dst: pathlib.Path
         path_common_root: pathlib.Path
 
@@ -478,6 +478,9 @@ def get_relative_path_via_common_root(
     # ROOT:
     # path_common_root = pathlib.Path("/opt/openstudiolandscapes/.landscapes/")
 
+    context.log.debug(f"{path_src = }")
+    context.log.debug(f"{path_dst = }")
+
     if not path_common_root.is_absolute():
         raise Exception(f"{path_common_root = } must be absolute.")
 
@@ -489,7 +492,6 @@ def get_relative_path_via_common_root(
     if not common_root_parts.count(common_root_name) == 1:
         raise Exception(f"{common_root_name = } occurs multiple times.")
     index_common_root_name = common_root_parts.index(common_root_name)  # 3
-    context.log.debug(f"{index_common_root_name = }")
     # We don't want .landscapes to be part of the path: increment index by 1
     index_common_root_name += 1  # 4
     context.log.debug(f"{index_common_root_name = }")

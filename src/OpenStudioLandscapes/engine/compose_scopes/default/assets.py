@@ -212,8 +212,8 @@ def compose(
     for path in compose_files:
         rel_path = get_relative_path_via_common_root(
             context=context,
-            path_src=pathlib.Path(path),
-            path_dst=DOCKER_COMPOSE,
+            path_src=DOCKER_COMPOSE,
+            path_dst=pathlib.Path(path),
             path_common_root=dot_landscapes,
         )
         # start_dir = DOCKER_COMPOSE.parent
