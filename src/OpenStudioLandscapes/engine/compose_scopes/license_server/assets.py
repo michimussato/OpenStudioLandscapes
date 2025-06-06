@@ -162,64 +162,66 @@ if bool(ins):
         )
 
 
-    @asset(
-        **ASSET_HEADER_COMPOSE_LICENSE_SERVER,
-        ins={
-            "env": AssetIn(
-                AssetKey([*ASSET_HEADER_COMPOSE_LICENSE_SERVER["key_prefix"], "env"]),
-            ),
-            **ins,
-        },
-    )
-    def compose(
-        context: AssetExecutionContext,
-        env: dict,  # pylint: disable=redefined-outer-name
-        **kwargs,
-    ) -> Generator[
-        Output[dict[str, list[dict[str, list]]]] | AssetMaterialization, None, None
-    ]:
-        """ """
-
-        context.log.info(kwargs)
-
-        _group_in = []
-
-        docker_compose = pathlib.PurePosixPath(
-            env["DOT_LANDSCAPES"],
-            env.get("LANDSCAPE", "default"),
-            f"{ASSET_HEADER_COMPOSE_LICENSE_SERVER['group_name']}__{'__'.join(ASSET_HEADER_COMPOSE_LICENSE_SERVER['key_prefix'])}",
-            "__".join(context.asset_key.path),
-            "docker_compose",
-            "docker-compose.yml",
-        )
-
-        context.log.info(docker_compose)
-        context.log.info(type(docker_compose))
-
-        for v in kwargs.values():
-            _rel_path = os.path.relpath(
-                path=v.as_posix(),
-                start=docker_compose.parent.as_posix(),
-            )
-            rel_path = pathlib.Path(_rel_path)
-
-            _group_in.append(rel_path)
-
-        docker_dict = {
-            "include": [{"path": [i.as_posix()]} for i in _group_in],
-        }
-
-        docker_yaml = yaml.dump(docker_dict)
-
-        yield Output(docker_dict)
-
-        yield AssetMaterialization(
-            asset_key=context.asset_key,
-            metadata={
-                "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
-                "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
-            },
-        )
+    # Todo:
+    #  - [ ] Why was this here? Duplicate compose()
+    # @asset(
+    #     **ASSET_HEADER_COMPOSE_LICENSE_SERVER,
+    #     ins={
+    #         "env": AssetIn(
+    #             AssetKey([*ASSET_HEADER_COMPOSE_LICENSE_SERVER["key_prefix"], "env"]),
+    #         ),
+    #         **ins,
+    #     },
+    # )
+    # def compose(
+    #     context: AssetExecutionContext,
+    #     env: dict,  # pylint: disable=redefined-outer-name
+    #     **kwargs,
+    # ) -> Generator[
+    #     Output[dict[str, list[dict[str, list]]]] | AssetMaterialization, None, None
+    # ]:
+    #     """ """
+    #
+    #     context.log.info(kwargs)
+    #
+    #     _group_in = []
+    #
+    #     docker_compose = pathlib.PurePosixPath(
+    #         env["DOT_LANDSCAPES"],
+    #         env.get("LANDSCAPE", "default"),
+    #         f"{ASSET_HEADER_COMPOSE_LICENSE_SERVER['group_name']}__{'__'.join(ASSET_HEADER_COMPOSE_LICENSE_SERVER['key_prefix'])}",
+    #         "__".join(context.asset_key.path),
+    #         "docker_compose",
+    #         "docker-compose.yml",
+    #     )
+    #
+    #     context.log.info(docker_compose)
+    #     context.log.info(type(docker_compose))
+    #
+    #     for v in kwargs.values():
+    #         _rel_path = os.path.relpath(
+    #             path=v.as_posix(),
+    #             start=docker_compose.parent.as_posix(),
+    #         )
+    #         rel_path = pathlib.Path(_rel_path)
+    #
+    #         _group_in.append(rel_path)
+    #
+    #     docker_dict = {
+    #         "include": [{"path": [i.as_posix()]} for i in _group_in],
+    #     }
+    #
+    #     docker_yaml = yaml.dump(docker_dict)
+    #
+    #     yield Output(docker_dict)
+    #
+    #     yield AssetMaterialization(
+    #         asset_key=context.asset_key,
+    #         metadata={
+    #             "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
+    #             "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
+    #         },
+    #     )
 
 
     @asset(
@@ -253,27 +255,23 @@ if bool(ins):
         compose_files = []
 
         for feature, data in features_in.items():
-            context.log.info(features_in[feature])
+            context.log.info(f"{features_in[feature] = }")
             compose_files.append(features_in[feature]["compose_yaml"])
-
-        # Convert absolute paths in `include` to
-        # relative ones
-        # DOCKER_COMPOSE = pathlib.Path(env["DOCKER_COMPOSE"])
-        # DOCKER_COMPOSE.parent.mkdir(parents=True, exist_ok=True)
 
         rel_paths = []
         dot_landscapes = pathlib.Path(env["DOT_LANDSCAPES"])
 
+        # Convert absolute paths in `include` to
+        # relative ones
         for path in compose_files:
-            start_dir = DOCKER_COMPOSE.parent
+            rel_path = get_relative_path_via_common_root(
+                context=context,
+                path_src=DOCKER_COMPOSE,
+                path_dst=pathlib.Path(path),
+                path_common_root=dot_landscapes,
+            )
 
-            levels = start_dir.as_posix().split(dot_landscapes.as_posix())[-1].split(os.sep)[1:]
-            context.log.info(levels)
-            context.log.info(path.split(os.sep)[1:][6:])
-            _rel_path = "../" * len(levels) + "/".join(path.split(os.sep)[1:][6:])
-            context.log.info(_rel_path)
-
-            rel_paths.append(_rel_path)
+            rel_paths.append(rel_path.as_posix())
 
         docker_dict_include = {
             "include": [

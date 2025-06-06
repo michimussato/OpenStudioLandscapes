@@ -199,27 +199,23 @@ if bool(ins):
         compose_files = []
 
         for feature, data in features_in.items():
-            context.log.info(features_in[feature])
+            context.log.info(f"{features_in[feature] = }")
             compose_files.append(features_in[feature]["compose_yaml"])
-
-        # Convert absolute paths in `include` to
-        # relative ones
-        # DOCKER_COMPOSE = pathlib.Path(env["DOCKER_COMPOSE"])
-        # DOCKER_COMPOSE.parent.mkdir(parents=True, exist_ok=True)
 
         rel_paths = []
         dot_landscapes = pathlib.Path(env["DOT_LANDSCAPES"])
 
+        # Convert absolute paths in `include` to
+        # relative ones
         for path in compose_files:
-            start_dir = DOCKER_COMPOSE.parent
+            rel_path = get_relative_path_via_common_root(
+                context=context,
+                path_src=DOCKER_COMPOSE,
+                path_dst=pathlib.Path(path),
+                path_common_root=dot_landscapes,
+            )
 
-            levels = start_dir.as_posix().split(dot_landscapes.as_posix())[-1].split(os.sep)[1:]
-            context.log.info(levels)
-            context.log.info(path.split(os.sep)[1:][6:])
-            _rel_path = "../" * len(levels) + "/".join(path.split(os.sep)[1:][6:])
-            context.log.info(_rel_path)
-
-            rel_paths.append(_rel_path)
+            rel_paths.append(rel_path.as_posix())
 
         docker_dict_include = {
             "include": [

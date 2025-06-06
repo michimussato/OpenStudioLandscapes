@@ -162,7 +162,6 @@ for i in IMPORTED_FEATURES:
         feature_ins[f"{split[0]}_{split[1]}"] = AssetIn(AssetKey([key, "feature_out"]))
 
 
-
 @asset(
     **ASSET_HEADER_COMPOSE,
     ins={
@@ -197,18 +196,11 @@ def compose(
         context.log.info(f"{features_in[feature] = }")
         compose_files.append(features_in[feature]["compose_yaml"])
 
-    # Convert absolute paths in `include` to
-    # relative ones
-    # DOCKER_COMPOSE = pathlib.Path(env["DOCKER_COMPOSE"])
-    # DOCKER_COMPOSE.parent.mkdir(parents=True, exist_ok=True)
-
     rel_paths = []
     dot_landscapes = pathlib.Path(env["DOT_LANDSCAPES"])
 
-    # Todo
-    #  - [ ] results in "../../../../docker_compose/docker-compose.yml" if /opt/openstudiolandscapes/.landscapes instead
-    #        of "../../../../2025-06-06-00-40-48-0ef417aaff9d4da7a435412ae6f27929/Dagster__Dagster/Dagster__DOCKER_COMPOSE/docker_compose/docker-compose.yml"
-    #  - [ ] too hacky
+    # Convert absolute paths in `include` to
+    # relative ones
     for path in compose_files:
         rel_path = get_relative_path_via_common_root(
             context=context,
@@ -216,13 +208,6 @@ def compose(
             path_dst=pathlib.Path(path),
             path_common_root=dot_landscapes,
         )
-        # start_dir = DOCKER_COMPOSE.parent
-        #
-        # levels = start_dir.as_posix().split(dot_landscapes.as_posix())[-1].split(os.sep)[1:]
-        # # context.log.info(f"{levels = }")
-        # # context.log.info(f"{path.split(os.sep)[1:][6:] = }")
-        # _rel_path = "../" * len(levels) + "/".join(path.split(os.sep)[1:][6:])
-        # # context.log.info(f"{_rel_path = }")
 
         rel_paths.append(rel_path.as_posix())
 
