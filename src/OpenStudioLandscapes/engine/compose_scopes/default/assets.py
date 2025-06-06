@@ -210,15 +210,21 @@ def compose(
     #        of "../../../../2025-06-06-00-40-48-0ef417aaff9d4da7a435412ae6f27929/Dagster__Dagster/Dagster__DOCKER_COMPOSE/docker_compose/docker-compose.yml"
     #  - [ ] too hacky
     for path in compose_files:
-        start_dir = DOCKER_COMPOSE.parent
+        rel_path = get_relative_path_via_common_root(
+            context=context,
+            path_src=pathlib.Path(path),
+            path_dst=DOCKER_COMPOSE,
+            path_common_root=dot_landscapes,
+        )
+        # start_dir = DOCKER_COMPOSE.parent
+        #
+        # levels = start_dir.as_posix().split(dot_landscapes.as_posix())[-1].split(os.sep)[1:]
+        # # context.log.info(f"{levels = }")
+        # # context.log.info(f"{path.split(os.sep)[1:][6:] = }")
+        # _rel_path = "../" * len(levels) + "/".join(path.split(os.sep)[1:][6:])
+        # # context.log.info(f"{_rel_path = }")
 
-        levels = start_dir.as_posix().split(dot_landscapes.as_posix())[-1].split(os.sep)[1:]
-        context.log.info(f"{levels = }")
-        context.log.info(f"{path.split(os.sep)[1:][6:] = }")
-        _rel_path = "../" * len(levels) + "/".join(path.split(os.sep)[1:][6:])
-        context.log.info(f"{_rel_path = }")
-
-        rel_paths.append(_rel_path)
+        rel_paths.append(rel_path.as_posix())
 
     docker_dict_include = {
         "include": [

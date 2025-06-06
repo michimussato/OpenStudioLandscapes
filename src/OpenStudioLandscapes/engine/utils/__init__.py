@@ -16,6 +16,7 @@ __all__ = [
     "expand_dict_vars",
     "serialize_dict",
     "metadatavalues_from_dict",
+    "get_relative_path_via_common_root",
 ]
 
 import pathlib
@@ -446,3 +447,63 @@ def metadatavalues_from_dict(
     context.log.debug(f"{metadata = }")
 
     return metadata
+
+
+def get_relative_path_via_common_root(
+        context: Union[AssetExecutionContext, OpExecutionContext],
+        path_src: pathlib.Path,
+        path_dst: pathlib.Path,
+        path_common_root: pathlib.Path,
+) -> pathlib.Path:
+    """
+    Returns a relative path from `path_src` to `path_dst` where `path_common_root`
+    will be the common root.
+
+    Args:
+        context: Union[AssetExecutionContext, OpExecutionContext]
+        path_src: pathlib.Path
+        path_dst: pathlib.Path
+        path_common_root: pathlib.Path
+
+    Returns:
+        pathlib.Path
+
+    """
+    # SRC:
+    # path_src = pathlib.Path("/opt/openstudiolandscapes/.landscapes/2025-06-06-00-40-48-0ef417aaff9d4da7a435412ae6f27929/ComposeScope_default__ComposeScope_default/ComposeScope_default__DOCKER_COMPOSE/docker_compose/docker-compose.yml")
+    #
+    # DST:
+    # path_dst = pathlib.Path("/opt/openstudiolandscapes/.landscapes/2025-06-06-00-40-48-0ef417aaff9d4da7a435412ae6f27929/Dagster__Dagster/Dagster__DOCKER_COMPOSE/docker_compose/docker-compose.yml")
+    #
+    # ROOT:
+    # path_common_root = pathlib.Path("/opt/openstudiolandscapes/.landscapes/")
+
+    if not path_common_root.is_absolute():
+        raise Exception(f"{path_common_root = } must be absolute.")
+
+    common_root_name = path_common_root.name  # .landscapes
+    common_root_parts = path_common_root.parts  # ('/', 'opt', 'openstudiolandscapes', '.landscapes')
+
+    # Todo
+    #  - [ ] What if common_root_name occurs multiple times?
+    if not common_root_parts.count(common_root_name) == 1:
+        raise Exception(f"{common_root_name = } occurs multiple times.")
+    index_common_root_name = common_root_parts.index(common_root_name)  # 3
+    context.log.debug(f"{index_common_root_name = }")
+    # We don't want .landscapes to be part of the path: increment index by 1
+    index_common_root_name += 1  # 4
+    context.log.debug(f"{index_common_root_name = }")
+
+    rel_path_src_from_common_root = path_src.parent.parts[index_common_root_name:]  # ('2025-06-06-00-40-48-0ef417aaff9d4da7a435412ae6f27929', 'ComposeScope_default__ComposeScope_default', 'ComposeScope_default__DOCKER_COMPOSE', 'docker_compose')
+    context.log.debug(f"{rel_path_src_from_common_root = }")
+    rel_path_dst_from_common_root = path_dst.parts[index_common_root_name:]  # ('2025-06-06-00-40-48-0ef417aaff9d4da7a435412ae6f27929', 'Dagster__Dagster', 'Dagster__DOCKER_COMPOSE', 'docker_compose', 'docker-compose.yml')
+    context.log.debug(f"{rel_path_dst_from_common_root = }")
+
+    path_src_up = "../" * len(rel_path_src_from_common_root)  # '../../../../'
+    context.log.debug(f"{path_src_up = }")
+
+    rel_path_from_src_to_dst_via_common_root = pathlib.Path(path_src_up, *rel_path_dst_from_common_root)  # PosixPath('../../../../2025-06-06-00-40-48-0ef417aaff9d4da7a435412ae6f27929/Dagster__Dagster/Dagster__DOCKER_COMPOSE/docker_compose/docker-compose.yml')
+    context.log.debug(f"{rel_path_from_src_to_dst_via_common_root = }")
+
+    return rel_path_from_src_to_dst_via_common_root
+
