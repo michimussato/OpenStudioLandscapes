@@ -63,9 +63,9 @@ services:
       # sudo mkdir -p /opt/openstudiolandscapes/.landscapes && sudo chmod -R a+rw /opt/openstudiolandscapes
       - /opt/openstudiolandscapes/.landscapes:/opt/openstudiolandscapes/.landscapes:rw
       # DAGSTER_HOME:
-      - ./.volumes/dagster:/opt/openstudiolandscapes/git/repos/OpenStudioLandscapes/.dagster-postgres:rw
+      - ./.volumes/dagster/dagster-home:/opt/openstudiolandscapes/git/repos/OpenStudioLandscapes/.dagster-postgres:rw
       # dagster.yaml:
-      - ./.volumes/dagster/dagster.yaml:/opt/openstudiolandscapes/git/repos/OpenStudioLandscapes/.dagster-postgres/dagster.yaml:ro
+      - ./.volumes/dagster/dagster-home/dagster.yaml:/opt/openstudiolandscapes/git/repos/OpenStudioLandscapes/.dagster-postgres/dagster.yaml:ro
       # https://jpetazzo.github.io/2015/09/03/do-not-use-docker-in-docker-for-ci/
       # Access to host socket
       - /var/run/docker.sock:/var/run/docker.sock:rw

@@ -106,9 +106,8 @@ tmp*/
 # Docker
 !docker/.volumes/
 
-docker/.volumes/dagster/*
-!docker/.volumes/dagster/.gitkeep
-!docker/.volumes/dagster/dagster.yaml
+docker/.volumes/dagster/dagster-home/*
+!docker/.volumes/dagster/dagster-home/dagster.yaml
 
 docker/.volumes/postgres-dagster/*
 !docker/.volumes/postgres-dagster/.gitkeep
