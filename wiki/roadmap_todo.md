@@ -65,3 +65,17 @@
   - [ ] Changelog
 - OpenStudioLandscapes-Grafana
   - [ ] clean/move/delete `./configs`
+- Changelog
+  - [ ] https://www.freecodecamp.org/news/a-beginners-guide-to-git-what-is-a-changelog-and-how-to-generate-it/
+- Fix:
+  - [ ] ```shell
+       #44 5.284 
+       #44 5.284           ********************************************************************************
+       #44 5.284           Pattern 'LICENSE.txt' did not match any files.
+       #44 5.284 
+       #44 5.284           By 2026-Mar-20, you need to update your project and remove deprecated calls
+       #44 5.284           or your builds will no longer be supported.
+       #44 5.284           ********************************************************************************
+       #44 5.285 
+       #44 5.285   !!
+       ```

@@ -130,10 +130,12 @@ RUN $PIP_EXE --verbose install -e .[dev]
 WORKDIR $REPOS_DIR/OpenStudioLandscapes/.features
 
 # Add Features here...
-# RUN git clone --verbose --tags https://github.com/michimussato/OpenStudioLandscapes-Ayon.git
+RUN git clone --verbose --tags https://github.com/michimussato/OpenStudioLandscapes-Ayon.git
+RUN $PIP_EXE --verbose install -e ./OpenStudioLandscapes-Ayon[dev]
 RUN git clone --verbose --tags https://github.com/michimussato/OpenStudioLandscapes-Dagster.git
 RUN $PIP_EXE --verbose install -e ./OpenStudioLandscapes-Dagster[dev]
-# RUN git clone --verbose --tags https://github.com/michimussato/OpenStudioLandscapes-Kitsu.git
+RUN git clone --verbose --tags https://github.com/michimussato/OpenStudioLandscapes-Kitsu.git
+RUN $PIP_EXE --verbose install -e ./OpenStudioLandscapes-Kitsu[dev]
 
 #ENV DAGSTER_HOME=$REPOS_DIR/OpenStudioLandscapes/.dagster-postgres
 #WORKDIR $DAGSTER_HOME
