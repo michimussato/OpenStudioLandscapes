@@ -194,7 +194,7 @@ def compose(
     compose_files = []
 
     for feature, data in features_in.items():
-        context.log.info(features_in[feature])
+        context.log.info(f"{features_in[feature] = }")
         compose_files.append(features_in[feature]["compose_yaml"])
 
     # Convert absolute paths in `include` to
@@ -205,14 +205,17 @@ def compose(
     rel_paths = []
     dot_landscapes = pathlib.Path(env["DOT_LANDSCAPES"])
 
+    # Todo
+    #  - [ ] results in "../../../../docker_compose/docker-compose.yml" if /opt/openstudiolandscapes/.landscapes
+    #  - [ ] too hacky
     for path in compose_files:
         start_dir = DOCKER_COMPOSE.parent
 
         levels = start_dir.as_posix().split(dot_landscapes.as_posix())[-1].split(os.sep)[1:]
-        context.log.info(levels)
-        context.log.info(path.split(os.sep)[1:][6:])
+        context.log.info(f"{levels = }")
+        context.log.info(f"{path.split(os.sep)[1:][6:] = }")
         _rel_path = "../" * len(levels) + "/".join(path.split(os.sep)[1:][6:])
-        context.log.info(_rel_path)
+        context.log.info(f"{_rel_path = }")
 
         rel_paths.append(_rel_path)
 
