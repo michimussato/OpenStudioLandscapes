@@ -20,13 +20,25 @@ graph TB
     installation_methods --> manual
     installation_methods --> docker
     installation_methods --> installer_script
+    
+    clone_repo_manual[Clone OpenStudioLandscapes Repository]
+    click clone_repo_manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#openstudiolandscapes"
+    clone_repo_docker[Clone OpenStudioLandscapes Repository]
+    click clone_repo_docker href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#openstudiolandscapes"
+    clone_repo_script[Clone OpenStudioLandscapes Repository]
+    click clone_repo_script href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#openstudiolandscapes"
+    
+    install_python_manual[Install Python 3.11]
+    click install_python_manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#install-python311"
+    install_python_docker[Install Python 3.11]
+    click install_python_docker href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#install-python311"
 
     install_docker_manual[Install Docker]
     click install_docker_manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#install-docker"
     install_docker_docker[Install Docker]
     click install_docker_docker href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#install-docker"
-    install_docker_script[Install Docker]
-    click install_docker_script href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#install-docker"
+    %% install_docker_script[Install Docker]
+    %% click install_docker_script href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#install-docker"
     
     install_harbor_manual[Install Harbor]
     click install_harbor_manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#harbor"
@@ -49,11 +61,11 @@ graph TB
     run_installer(Run OpenStudioLandscapes)
     %% click run_docker href ""
     
-    manual --> install_docker_manual --> install_harbor_manual 
+    manual --> clone_repo_manual --> install_python_manual --> install_docker_manual --> install_harbor_manual 
     install_harbor_manual --> run_harbor_manual --> run_manual
     
-    docker --> install_docker_docker --> install_harbor_docker
+    docker --> clone_repo_docker --> install_python_docker --> install_docker_docker --> install_harbor_docker
     install_harbor_docker --> run_harbor_docker --> run_docker
     
-    installer_script --> install_docker_script --> run_harbor_script --> run_installer
+    installer_script --> clone_repo_script --> run_harbor_script --> run_installer
 ```
