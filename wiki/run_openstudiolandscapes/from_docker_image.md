@@ -42,7 +42,7 @@ Harbor must be running:
 > actually require an activated `virtualenv` or `nox` (yet),
 > so these pure bash commands work as long as the 
 > `docker-compose.yml` is available on your local drive.
-> So, cloning the Git repository is still advisable.
+> Hence, cloning the Git repository is still advisable.
 
 > [!WARNING]
 > **Todo**
