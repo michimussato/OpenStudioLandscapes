@@ -103,11 +103,13 @@ graph TB
     installation_methods -- fast and simple --> block_installer
 ```
 
+![](https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2F4.bp.blogspot.com%2F-avoot2jSrKY%2FUT1Hq2V5MbI%2FAAAAAAAAAFQ%2F3J1jV7xdHFA%2Fs1600%2FMatrixBluePillRedPill.jpg&f=1&nofb=1&ipt=9dd1da54903a6909383a00b0b3bfd80bfe0db4ac58eb7bb05c5d515dbebd9b49)
+
 * Installation Methods
   * [Manual](installation/basic_installation.md#table-of-contents)
-    * The generalistic option
+    * The advanced option for most Linux distros
   * [Installer Script](installation/basic_installation_from_script.md#table-of-contents)
-    * The best option for a vanilla Ubuntu OS
+    * The best option for a vanilla Ubuntu
   * [Docker](installation/basic_installation_from_script.md#table-of-contents)
     * A simple, yet generalistic option with limited configurability
 * [Install Features](installation/install_features.md#table-of-contents)
