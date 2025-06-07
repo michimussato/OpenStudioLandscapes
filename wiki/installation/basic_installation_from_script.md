@@ -65,6 +65,10 @@ of previous installations if there were any.
 Source: [`install_ubuntu_2204.py`](https://github.com/michimussato/OpenStudioLandscapes/blob/main/installer/ubuntu/22.04/install_ubuntu_2204.py)
 
 ```shell
+sudo apt-get install -y --no-install-recommends curl python3 sudo
+```
+
+```shell
 python3 <(curl --header 'Cache-Control: no-cache, no-store' --silent https://raw.githubusercontent.com/michimussato/OpenStudioLandscapes/refs/heads/main/installer/ubuntu/22.04/install_ubuntu_2204.py)
 ```
 
