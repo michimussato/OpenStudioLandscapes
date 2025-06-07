@@ -271,7 +271,11 @@ pip install -e ".[dev]"
 LANDSCAPES_DIR=/opt/openstudiolandscapes
 
 sudo mkdir -p ${LANDSCAPES_DIR}/.landscapes && sudo chmod -R a+rw ${LANDSCAPES_DIR}
-ln -sfn ${LANDSCAPES_DIR}/.landscapes docker/.landscapes
+# Optional:
+# If you want to create a shortcut to ${LANDSCAPES_DIR}
+# for easy access from within the repository, run:
+#
+# ln -sfn ${LANDSCAPES_DIR}/.landscapes docker/.landscapes
 ```
  
 ## Harbor
