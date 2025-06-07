@@ -21,7 +21,11 @@ graph TB
     installation_paths --> docker
     installation_paths --> installer_script
     
+    run_harbor_manual[Run Harbor]
+    click run_harbor_docker href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/run/run_harbor.md#up"
     run_harbor_docker[Run Harbor]
+    click run_harbor_docker href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/run/run_harbor.md#up"
+    run_harbor_script[Run Harbor]
     click run_harbor_docker href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/run/run_harbor.md#up"
     
     run_manual(Run OpenStudioLandscapes)
@@ -30,7 +34,7 @@ graph TB
     click run_docker href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/run_openstudiolandscapes/from_docker_image.md"
     run_installer(Run OpenStudioLandscapes)
     %% click run_docker href ""
-    manual --> run_manual
+    manual --> run_harbor_manual --> run_manual
     docker --> run_harbor_docker --> run_docker
-    installer_script --> run_installer
+    installer_script --> run_harbor_script --> run_installer
 ```
