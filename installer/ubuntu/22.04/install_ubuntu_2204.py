@@ -197,24 +197,29 @@ def script_clone_openstudiolandscapes(
     print(" CLONE OPENSTUDIOLANDSCAPES ".center(_get_terminal_size()[0], "#"))
 
     if USE_SSH:
-
         if ssh_key_file.exists():
             print("Existing SSH Key file found. You will be prompted whether to overwrite existing keys or not.")
 
         print(" ENTER EMAIL ".center(_get_terminal_size()[0], "="))
         email = input("Enter your email: ")
 
-        with tempfile.NamedTemporaryFile(
-                delete=False,
-                encoding="utf-8",
-                prefix=f"{SHELL_SCRIPTS_PREFIX}__{inspect.currentframe().f_code.co_name}__",
-                suffix=".sh",
-                mode="x",
-        ) as script:
+    with tempfile.NamedTemporaryFile(
+            delete=False,
+            encoding="utf-8",
+            prefix=f"{SHELL_SCRIPTS_PREFIX}__{inspect.currentframe().f_code.co_name}__",
+            suffix=".sh",
+            mode="x",
+    ) as script:
+        script.writelines(
+            [
+                "#!/bin/env bash\n",
+                "\n",
+            ]
+        )
+
+        if USE_SSH:
             script.writelines(
                 [
-                    "#!/bin/env bash\n",
-                    "\n",
                     "\n",
                     # f"{shutil.which('ssh-keygen')}\n",
                     f"ssh-keygen -f {ssh_key_file.as_posix()} -N '' -t ed25519 -C \"{email}\"\n",
@@ -252,7 +257,7 @@ def script_clone_openstudiolandscapes(
             f"if [ ! -d {openstudiolandscapes_repo_dir.as_posix()} ]; then\n",
             f"    mkdir -p {openstudiolandscapes_repo_dir.as_posix()}\n",
             "fi\n",
-            f"git -C {openstudiolandscapes_repo_dir.parent.as_posix()} clone --tags git@github.com:michimussato/OpenStudioLandscapes.git\n",
+            f"git -C {openstudiolandscapes_repo_dir.parent.as_posix()} clone --tags {'git@github.com:' if USE_SSH else 'https://github.com/'}michimussato/OpenStudioLandscapes.git\n",
         ]
     )
 
