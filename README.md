@@ -91,4 +91,4 @@ continue building your system around it. Right? Wrong! OpenStudioLandscapes
 is here to change that by making sure your future you is not going to 
 regret decisions of its past you!
 
-Now, it's time to head over to the [Wiki](wiki/_toc.md)!
+Now, it's time to head over to the [Wiki](wiki/README.md)!
