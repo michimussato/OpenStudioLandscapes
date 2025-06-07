@@ -1,4 +1,7 @@
+# Table Of Contents
+
 <!-- TOC -->
+* [Table Of Contents](#table-of-contents)
 * [Basic Installation](#basic-installation)
   * [Requirements](#requirements)
     * [Install Python3.11](#install-python311)

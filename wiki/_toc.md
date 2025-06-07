@@ -3,12 +3,12 @@
  
 ---
 
-* [Disclaimer](disclaimer.md#disclaimer)
-* [About the Author](about_the_author.md#about-the-author)
+* [Disclaimer](disclaimer.md#table-of-contents)
+* [About the Author](about_the_author.md#table-of-contents)
 
 ---
 
-* [Basic Installation](installation/basic_installation.md#basic-installation)
+* [Basic Installation](installation/basic_installation.md#table-of-contents)
 
 ---
 

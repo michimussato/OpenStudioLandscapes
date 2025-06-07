@@ -1,4 +1,7 @@
+# Table Of Contents
+
 <!-- TOC -->
+* [Table Of Contents](#table-of-contents)
 * [Launch OpenStudioLandscapes via Docker Image](#launch-openstudiolandscapes-via-docker-image)
   * [Requirements](#requirements)
   * [Launch OpenStudioLandscapes](#launch-openstudiolandscapes)

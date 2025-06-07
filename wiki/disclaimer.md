@@ -1,4 +1,7 @@
+# Table Of Contents
+
 <!-- TOC -->
+* [Table Of Contents](#table-of-contents)
 * [Disclaimer](#disclaimer)
 <!-- TOC -->
 
