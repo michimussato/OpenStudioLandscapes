@@ -8,7 +8,10 @@
 
 ---
 
-* [Basic Installation](installation/basic_installation.md#table-of-contents)
+* [Installation Methods](installation/installation_methods.md#table-of-contents)
+  * [Manual](installation/basic_installation.md#table-of-contents)
+  * [Installer Script](installation/basic_installation_from_script.md#table-of-contents)
+  * [Docker](installation/basic_installation_from_script.md#table-of-contents)
 
 ---
 
