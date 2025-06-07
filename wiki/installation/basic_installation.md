@@ -111,9 +111,17 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin 
 sudo groupadd docker
 ```
 
+It is advisable in order for the Docker image to work properly 
+on different machines to set the `GID` for group `docker` to 
+a specific `GID`:
+
+```shell
+sudo groupadd --gid 959 docker
+```
+
 ```shell
 sudo usermod -aG docker $USER
-newgrp docker
+newgrp docker  # or reboot
 ```
 
 ###### Activate `systemd` Unit
@@ -207,6 +215,11 @@ curl -v -X 'DELETE' \
 ```
 
 ### Reset
+
+Clear (prune) the Harbor installation with all its configurations.
+
+> [!WARNING]
+> This is a destructive, non-recoverable action (data loss).
 
 ```shell
 nox --session harbor_clear
