@@ -20,80 +20,87 @@ graph TB
     script((Installer))
     click script href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation_from_script.md"
     
+    classDef clone_repo fill:#004f00;
     clone_repo_manual[Clone OpenStudioLandscapes Repository]
     click clone_repo_manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#clone-repository"
     clone_repo_docker[Clone OpenStudioLandscapes Repository]
     click clone_repo_docker href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#clone-repository"
+    class clone_repo_manual,clone_repo_docker clone_repo;
     
+    classDef landscapes_root fill:#4c4c00;
     landscapes_root_manual[Create Landscapes Root Directory]
     click landscapes_root_manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#create-landscapes-root-directory"
     landscapes_root_docker[Create Landscapes Root Directory]
     click landscapes_root_docker href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#create-landscapes-root-directory"
     landscapes_root_script[Create Landscapes Root Directory]
     click landscapes_root_script href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#create-landscapes-root-directory"
+    class landscapes_root_manual,landscapes_root_docker,landscapes_root_script landscapes_root
     
+    classDef install_python fill:#004c4c;
     install_python_manual[Install Python 3.11]
     click install_python_manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#install-python311"
     install_python_docker[Install Python 3.11]
     click install_python_docker href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#install-python311"
+    class install_python_manual,install_python_docker install_python
 
+    classDef install_docker fill:#007cbc;
     install_docker_manual[Install Docker]
     click install_docker_manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#install-docker"
     install_docker_docker[Install Docker]
     click install_docker_docker href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#install-docker"
+    class install_docker_manual,install_docker_docker install_docker
     
+    classDef install_harbor fill:#a07cbc;
     install_harbor_manual[Install Harbor]
     click install_harbor_manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#harbor"
     install_harbor_docker[Install Harbor]
     click install_harbor_docker href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#harbor"
+    class install_harbor_manual,install_harbor_docker install_harbor
     
+    classDef run_harbor fill:#5049a7;
     run_harbor_manual[Run Harbor]
     click run_harbor_manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/run/run_harbor.md#up"
     run_harbor_docker[Run Harbor]
     click run_harbor_docker href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/run/run_harbor.md#up"
+    class run_harbor_manual,run_harbor_docker run_harbor
     
+    classDef clone_features fill:#123456;
     clone_features_manual[Clone Features]
     click clone_features_manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/install_features.md#clone-features"
+    class clone_features_manual clone_features
+    
+    classDef install_features fill:#654321;
     install_features_manual[Install Features]
     click install_features_manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/install_features.md#install-features-1"
+    class install_features_manual install_features
     
+    classDef run fill:#142536;
     run_manual(Run OpenStudioLandscapes)
     click run_manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/run_openstudiolandscapes/from_manual.md#up"
     run_docker(Run OpenStudioLandscapes)
     click run_docker href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/run_openstudiolandscapes/from_docker_image.md"
     run_script(Run OpenStudioLandscapes)
     click run_script href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/run_openstudiolandscapes/from_script.md#up-and-down"
-    
-    installation_methods --> manual --> clone_repo_manual --> landscapes_root_manual --> install_python_manual --> install_docker_manual --> install_harbor_manual --> run_harbor_manual --> clone_features_manual --> install_features_manual --> run_manual
-    installation_methods --> docker --> clone_repo_docker --> landscapes_root_docker --> install_python_docker --> install_docker_docker --> install_harbor_docker --> run_harbor_docker --> run_docker
-    installation_methods --> script --> landscapes_root_script --> run_script
-    
-    classDef clone_repo fill:#004f00;
-    class clone_repo_manual,clone_repo_docker clone_repo;
-    
-    classDef landscapes_root fill:#4c4c00;
-    class landscapes_root_manual,landscapes_root_docker,landscapes_root_script landscapes_root
-    
-    classDef install_python fill:#004c4c;
-    class install_python_manual,install_python_docker install_python
-    
-    classDef install_docker fill:#007cbc;
-    class install_docker_manual,install_docker_docker install_docker
-    
-    classDef install_harbor fill:#a07cbc;
-    class install_harbor_manual,install_harbor_docker install_harbor
-    
-    classDef run_harbor fill:#5049a7;
-    class run_harbor_manual,run_harbor_docker run_harbor
-    
-    classDef clone_features fill:#123456;
-    class clone_features_manual clone_features
-    
-    classDef install_features fill:#654321;
-    class install_features_manual install_features
-    
-    classDef run fill:#142536;
     class run_manual,run_docker,run_script run
+    
+    subgraph block_manual[Manual]
+        direction TB
+        manual --> clone_repo_manual --> landscapes_root_manual --> install_python_manual --> install_docker_manual --> install_harbor_manual --> run_harbor_manual --> clone_features_manual --> install_features_manual --> run_manual
+    end
+    
+    subgraph block_docker[Docker]
+        direction TB
+        docker --> clone_repo_docker --> landscapes_root_docker --> install_python_docker --> install_docker_docker --> install_harbor_docker --> run_harbor_docker --> run_docker
+    end
+    
+    subgraph block_installer[Installer]
+        direction TB
+        script --> landscapes_root_script --> run_script
+    end
+    
+    installation_methods --> block_manual
+    installation_methods --> block_docker
+    installation_methods --> block_installer
 ```
 
 * Installation Methods
