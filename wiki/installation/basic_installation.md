@@ -5,8 +5,9 @@
 * [Basic Installation](#basic-installation)
   * [Requirements](#requirements)
     * [Install Python3.11](#install-python311)
-    * [Install Docker](#install-docker)
       * [Ubuntu 22.04 (LTS)](#ubuntu-2204-lts)
+    * [Install Docker](#install-docker)
+      * [Ubuntu 22.04 (LTS)](#ubuntu-2204-lts-1)
         * [Installation](#installation)
         * [Post-Installation](#post-installation)
           * [Add `$USER` to group `docker`](#add-user-to-group-docker)
@@ -26,38 +27,93 @@
 
 ## Requirements
 
+- [`python3.11`](#install-python311)
+- [`docker`](#install-docker)
+- [Harbor](https://goharbor.io/)
+
 > [!NOTE]
 > Additional requirements may vary based on the flavor of 
 > OpenStudioLandscapes.
 
-- `python3.11`
-- `docker`
-- [Harbor](https://goharbor.io/)
+> [!TIP]
+> The installation of the requirements varies based on your Linux distro.
+> 
+> As an example that might work for most of us, I'm including the setup
+> routine for Ubuntu (Server or Desktop Editions based on your preference):
+> 
+> - Ubuntu Jammy 22.04 (LTS) (Recommended)
+> - Ubuntu Noble 24.04 (LTS)
+> - Ubuntu Jammy 22.04 (LTS)
+> 
+> This guide assumes that Ubuntu Jammy 22.04 (LTS) has been installed using the following options:
+> - Server ![Install_UbuntuServer2204.png](../../media/images/Install_UbuntuServer2204.png)
+> - Desktop ![Install_UbuntuDesktop2204.png](../../media/images/Install_UbuntuDesktop2204.png)
 
 ### Install Python3.11
 
-> [!WARNING]
-> **Todo**
+#### Ubuntu 22.04 (LTS)
+
+This will build Python 3.11.11 from source and install.
+
+```shell
+#!/bin/env bash
+
+
+PYTHON_MAJ=3
+PYTHON_MIN=11
+PYTHON_PAT=11
+
+
+if which python${PYTHON_MAJ}.${PYTHON_MIN}; then
+    echo "python${PYTHON_MAJ}.${PYTHON_MIN} is already installed"
+    exit 0
+fi
+
+
+while ! sudo apt-get upgrade -y; do
+    echo "Update in progress in the background..."
+    sleep 5
+done;
+
+sudo apt-get install \
+    --no-install-recommends \
+    -y \
+    build-essential \
+    zlib1g-dev \
+    libncurses5-dev \
+    libgdbm-dev \
+    libnss3-dev \
+    libssl-dev \
+    libreadline-dev \
+    libffi-dev \
+    pkg-config \
+    liblzma-dev \
+    libbz2-dev \
+    libsqlite3-dev \
+    curl
+
+pushd "$(mktemp -d)" || exit
+
+curl -v "https://www.python.org/ftp/python/${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}/Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}.tgz" \
+    -o Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}.tgz
+tar -xvf Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}.tgz
+cd Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT} || exit
+
+./configure --enable-optimizations
+make -j "$(nproc)"
+sudo make altinstall
+
+popd || exit
+
+exit 0
+```
 
 ### Install Docker
 
 > [!TIP]
 > Reference: [https://docs.docker.com/engine/install/]()
 
-The installation of Docker varies based on your Linux distro.
-
-As an example that might work for most of us, I'm including the setup
-routine for Ubuntu (Server or Desktop Editions based on your preference):
-
-- Ubuntu Jammy 22.04 (LTS) (Recommended)
-- Ubuntu Noble 24.04 (LTS)
-- Ubuntu Jammy 22.04 (LTS)
-
 #### Ubuntu 22.04 (LTS)
-
-This guide assumes that Ubuntu has been installed using the following options:
-- Server ![Install_UbuntuServer2204.png](../../media/images/Install_UbuntuServer2204.png)
-- Desktop ![Install_UbuntuDesktop2204.png](../../media/images/Install_UbuntuDesktop2204.png)
 
 > [!TIP]
 > Reference: [https://docs.docker.com/engine/install/ubuntu/]()

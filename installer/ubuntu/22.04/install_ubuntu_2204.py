@@ -306,7 +306,6 @@ def script_install_python(
             "libssl-dev",
             "libreadline-dev",
             "libffi-dev",
-            "wget",
             "pkg-config",
             "liblzma-dev",
             "libbz2-dev",
