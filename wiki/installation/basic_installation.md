@@ -15,7 +15,6 @@
   * [OpenStudioLandscapes](#openstudiolandscapes)
     * [Clone Repository](#clone-repository)
     * [Create Landscapes Root Directory](#create-landscapes-root-directory)
-    * [Common Steps](#common-steps)
   * [Harbor](#harbor)
     * [Setup](#setup)
       * [Create Project](#create-project)
@@ -275,15 +274,6 @@ sudo mkdir -p ${LANDSCAPES_DIR}/.landscapes && sudo chmod -R a+rw ${LANDSCAPES_D
 ln -sfn ${LANDSCAPES_DIR}/.landscapes docker/.landscapes
 ```
  
-### Common Steps
-
-```shell
-LANDSCAPES_DIR=/opt/openstudiolandscapes
-
-
-
-```
-
 ## Harbor
 
 > [!IMPORTANT]
