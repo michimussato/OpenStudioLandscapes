@@ -5,6 +5,8 @@
 * [Run OpenStudioLandscapes from Script Installer](#run-openstudiolandscapes-from-script-installer)
   * [Requirements](#requirements)
   * [up](#up)
+  * [down](#down)
+  * [up and down](#up-and-down)
 <!-- TOC -->
 
 ---
