@@ -32,6 +32,9 @@ DOCKER_GID: str = "959"
 # Todo
 #  - [ ] Remove this switch after release
 USE_SSH: bool = False
+# Todo
+#  - [ ] Create DOT_LANDSCAPES automatically
+DOT_LANDSCAPES: pathlib.Path = pathlib.Path("/opt/openstudiolandscapes/.landscapes")
 
 
 SHELL_SCRIPTS_PREFIX = "ubuntu_2204"
@@ -705,6 +708,8 @@ def script_harbor_init(
                 "done\n",
                 f"echo -ne \"\n\"\n",
                 "\n",
+                # Todo
+                #  - [ ] This is not working! Investigate!
                 "curl -v -X 'POST' \\\n",
                 f"  '{url_harbor}/api/v2.0/projects' \\\n",
                 "  -H 'accept: application/json' \\\n",

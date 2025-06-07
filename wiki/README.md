@@ -109,7 +109,7 @@ graph TB
   * [Manual](installation/basic_installation.md#table-of-contents)
     * The advanced option for most Linux distros
   * [Installer Script](installation/basic_installation_from_script.md#table-of-contents)
-    * The best option for a vanilla Ubuntu
+    * The best, easiest and safest (for now) option for a vanilla Ubuntu
   * [Docker](installation/basic_installation_from_script.md#table-of-contents)
     * A simple, yet generalistic option with limited configurability
 * [Install Features](installation/install_features.md#table-of-contents)
