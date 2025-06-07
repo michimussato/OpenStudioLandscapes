@@ -48,7 +48,7 @@ of previous installations if there were any.
 > [!IMPORTANT]
 > As a first step, the script will create the group `docker` 
 > and add the user `$USER` to it. After that, it will ask for a reboot.
-> **JUST DO IT** as subsequent steps depend on it! 
+> **JUST DO IT** - subsequent steps depend on it! 
 > Re-run the script again afterwards.
 
 > [!WARNING]
