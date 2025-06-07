@@ -28,6 +28,7 @@ import pty
 URL_HARBOR: str = "http://harbor.farm.evil:80"
 ADMIN_HARBOR: str = "admin"
 PASSWORD_HARBOR: str = "Harbor12345"
+USE_SSH: bool = False
 
 
 SHELL_SCRIPTS_PREFIX = "ubuntu_2204"
@@ -198,37 +199,39 @@ def script_clone_openstudiolandscapes(
     if ssh_key_file.exists():
         print("Existing SSH Key file found. You will be prompted whether to overwrite existing keys or not.")
 
-    print(" ENTER EMAIL ".center(_get_terminal_size()[0], "="))
-    email = input("Enter your email: ")
+    if USE_SSH:
 
-    with tempfile.NamedTemporaryFile(
-            delete=False,
-            encoding="utf-8",
-            prefix=f"{SHELL_SCRIPTS_PREFIX}__{inspect.currentframe().f_code.co_name}__",
-            suffix=".sh",
-            mode="x",
-    ) as script:
-        script.writelines(
-            [
-                "#!/bin/env bash\n",
-                "\n",
-                "\n",
-                # f"{shutil.which('ssh-keygen')}\n",
-                f"ssh-keygen -f {ssh_key_file.as_posix()} -N '' -t ed25519 -C \"{email}\"\n",
-                "eval \"$(ssh-agent -s)\"\n",
-                f"ssh-add {ssh_key_file.as_posix()}\n",
-                "\n",
-                "echo \"Copy/Paste the following Public Key to GitHub:\"\n",
-                "echo \"https://github.com/settings/ssh/new\"\n",
-                f"cat {ssh_key_file.as_posix()}.pub\n",
-                "\n",
-                "while [[ \"$choice_ssh\" != [Yy]* ]]; do\n",
-                "    read -r -e -p \"Type [Yy]es when ready... \" choice_ssh\n",
-                "done\n",
-                "\n",
-                f"ssh-keyscan github.com >> {known_hosts_file.as_posix()}\n",
-            ]
-        )
+        print(" ENTER EMAIL ".center(_get_terminal_size()[0], "="))
+        email = input("Enter your email: ")
+
+        with tempfile.NamedTemporaryFile(
+                delete=False,
+                encoding="utf-8",
+                prefix=f"{SHELL_SCRIPTS_PREFIX}__{inspect.currentframe().f_code.co_name}__",
+                suffix=".sh",
+                mode="x",
+        ) as script:
+            script.writelines(
+                [
+                    "#!/bin/env bash\n",
+                    "\n",
+                    "\n",
+                    # f"{shutil.which('ssh-keygen')}\n",
+                    f"ssh-keygen -f {ssh_key_file.as_posix()} -N '' -t ed25519 -C \"{email}\"\n",
+                    "eval \"$(ssh-agent -s)\"\n",
+                    f"ssh-add {ssh_key_file.as_posix()}\n",
+                    "\n",
+                    "echo \"Copy/Paste the following Public Key to GitHub:\"\n",
+                    "echo \"https://github.com/settings/ssh/new\"\n",
+                    f"cat {ssh_key_file.as_posix()}.pub\n",
+                    "\n",
+                    "while [[ \"$choice_ssh\" != [Yy]* ]]; do\n",
+                    "    read -r -e -p \"Type [Yy]es when ready... \" choice_ssh\n",
+                    "done\n",
+                    "\n",
+                    f"ssh-keyscan github.com >> {known_hosts_file.as_posix()}\n",
+                ]
+            )
 
         # If openstudiolandscapes_repo_dir already exists, we move it out
         # of the way. At least until there is a more finegrained solution
