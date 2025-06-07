@@ -196,10 +196,10 @@ def script_clone_openstudiolandscapes(
 
     print(" CLONE OPENSTUDIOLANDSCAPES ".center(_get_terminal_size()[0], "#"))
 
-    if ssh_key_file.exists():
-        print("Existing SSH Key file found. You will be prompted whether to overwrite existing keys or not.")
-
     if USE_SSH:
+
+        if ssh_key_file.exists():
+            print("Existing SSH Key file found. You will be prompted whether to overwrite existing keys or not.")
 
         print(" ENTER EMAIL ".center(_get_terminal_size()[0], "="))
         email = input("Enter your email: ")
@@ -233,37 +233,37 @@ def script_clone_openstudiolandscapes(
                 ]
             )
 
-        # If openstudiolandscapes_repo_dir already exists, we move it out
-        # of the way. At least until there is a more finegrained solution
-        # in place to deal with existing installations.
-        script.writelines(
-            [
-                "\n",
-                f"if [ -d {openstudiolandscapes_repo_dir.as_posix()} ]; then\n",
-                "    echo \"Backing up previous Installation...\"\n",
-                f"    mv {openstudiolandscapes_repo_dir.as_posix()} {openstudiolandscapes_repo_dir.as_posix()}_$(date +\"%Y-%m-%d_%H-%m-%S\")\n",
-                "fi\n",
-            ]
-        )
+    # If openstudiolandscapes_repo_dir already exists, we move it out
+    # of the way. At least until there is a more finegrained solution
+    # in place to deal with existing installations.
+    script.writelines(
+        [
+            "\n",
+            f"if [ -d {openstudiolandscapes_repo_dir.as_posix()} ]; then\n",
+            "    echo \"Backing up previous Installation...\"\n",
+            f"    mv {openstudiolandscapes_repo_dir.as_posix()} {openstudiolandscapes_repo_dir.as_posix()}_$(date +\"%Y-%m-%d_%H-%m-%S\")\n",
+            "fi\n",
+        ]
+    )
 
-        script.writelines(
-            [
-                "\n",
-                f"if [ ! -d {openstudiolandscapes_repo_dir.as_posix()} ]; then\n",
-                f"    mkdir -p {openstudiolandscapes_repo_dir.as_posix()}\n",
-                "fi\n",
-                f"git -C {openstudiolandscapes_repo_dir.parent.as_posix()} clone --tags git@github.com:michimussato/OpenStudioLandscapes.git\n",
-            ]
-        )
+    script.writelines(
+        [
+            "\n",
+            f"if [ ! -d {openstudiolandscapes_repo_dir.as_posix()} ]; then\n",
+            f"    mkdir -p {openstudiolandscapes_repo_dir.as_posix()}\n",
+            "fi\n",
+            f"git -C {openstudiolandscapes_repo_dir.parent.as_posix()} clone --tags git@github.com:michimussato/OpenStudioLandscapes.git\n",
+        ]
+    )
 
-        script.writelines(
-            [
-                "\n",
-                "exit 0\n",
-            ]
-        )
+    script.writelines(
+        [
+            "\n",
+            "exit 0\n",
+        ]
+    )
 
-        return pathlib.Path(script.name)
+    return pathlib.Path(script.name)
 
 
 def script_install_python(

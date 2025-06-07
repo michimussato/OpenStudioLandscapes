@@ -103,7 +103,7 @@ graph TB
     installation_methods -- fast and simple --> block_installer
 ```
 
-![](https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2F4.bp.blogspot.com%2F-avoot2jSrKY%2FUT1Hq2V5MbI%2FAAAAAAAAAFQ%2F3J1jV7xdHFA%2Fs1600%2FMatrixBluePillRedPill.jpg&f=1&nofb=1&ipt=9dd1da54903a6909383a00b0b3bfd80bfe0db4ac58eb7bb05c5d515dbebd9b49)
+![Matrix (1999) - Propery of Warner Bros. Pictures](https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2F4.bp.blogspot.com%2F-avoot2jSrKY%2FUT1Hq2V5MbI%2FAAAAAAAAAFQ%2F3J1jV7xdHFA%2Fs1600%2FMatrixBluePillRedPill.jpg)
 
 * Installation Methods
   * [Manual](installation/basic_installation.md#table-of-contents)
