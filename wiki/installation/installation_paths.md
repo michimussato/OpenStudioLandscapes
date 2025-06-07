@@ -16,7 +16,7 @@ graph TB
     docker[Docker]
     click docker href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation_from_script.md"
     installer_script[Installer Script]
-    click docker href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation_from_script.md"
+    click installer_script href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation_from_script.md"
     installation_paths --> manual
     installation_paths --> docker
     installation_paths --> installer_script
