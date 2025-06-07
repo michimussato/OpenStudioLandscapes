@@ -14,12 +14,19 @@ graph TB
     manual((Manual))
     click manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#basic-installation"
     docker((Docker))
-    %% click docker href ""
+    click docker href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#install-docker"
     installer_script((Installer))
     click installer_script href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation_from_script.md"
     installation_methods --> manual
     installation_methods --> docker
     installation_methods --> installer_script
+
+    install_docker_manual[Install Docker]
+    click install_docker_manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#install-docker"
+    install_docker_docker[Install Docker]
+    click install_docker_docker href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#install-docker"
+    install_docker_script[Install Docker]
+    click install_docker_script href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#install-docker"
     
     install_harbor_manual[Install Harbor]
     click install_harbor_manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#harbor"
@@ -42,11 +49,11 @@ graph TB
     run_installer(Run OpenStudioLandscapes)
     %% click run_docker href ""
     
-    manual --> install_harbor_manual 
+    manual --> install_docker_manual --> install_harbor_manual 
     install_harbor_manual --> run_harbor_manual --> run_manual
     
-    docker --> install_harbor_docker
+    docker --> install_docker_docker --> install_harbor_docker
     install_harbor_docker --> run_harbor_docker --> run_docker
     
-    installer_script --> run_harbor_script --> run_installer
+    installer_script --> install_docker_script --> run_harbor_script --> run_installer
 ```
