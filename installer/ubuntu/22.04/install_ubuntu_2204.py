@@ -452,8 +452,9 @@ def script_install_docker(
                 "\n",
                 "# https://docs.docker.com/engine/install/linux-postinstall/\n",
                 "\n",
-                "sudo groupadd --force docker\n",
-                f"sudo usermod --append --groups docker \"{docker_user}\"\n",
+                f"# These steps have already been executed in script_initial_checks()\n",
+                f"# sudo groupadd --force --gid {DOCKER_GID} docker\n",
+                f"# sudo usermod --append --groups docker \"{docker_user}\"\n",
             ]
         )
 
