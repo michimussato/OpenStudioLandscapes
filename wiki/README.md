@@ -19,16 +19,11 @@ graph TB
     click docker href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#install-docker"
     script((Installer))
     click script href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation_from_script.md"
-    installation_methods --> manual
-    installation_methods --> docker
-    installation_methods --> script
     
     clone_repo_manual[Clone OpenStudioLandscapes Repository]
     click clone_repo_manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#clone-repository"
     clone_repo_docker[Clone OpenStudioLandscapes Repository]
     click clone_repo_docker href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#clone-repository"
-    %% clone_repo_script[Clone OpenStudioLandscapes Repository]
-    %% click clone_repo_script href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#openstudiolandscapes"
     
     landscapes_root_manual[Create Landscapes Root Directory]
     click landscapes_root_manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#create-landscapes-root-directory"
@@ -46,22 +41,16 @@ graph TB
     click install_docker_manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#install-docker"
     install_docker_docker[Install Docker]
     click install_docker_docker href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#install-docker"
-    %% install_docker_script[Install Docker]
-    %% click install_docker_script href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#install-docker"
     
     install_harbor_manual[Install Harbor]
     click install_harbor_manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#harbor"
     install_harbor_docker[Install Harbor]
     click install_harbor_docker href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#harbor"
-    %% install_harbor_script[Install Harbor]
-    %% click install_harbor_script href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#harbor"
     
     run_harbor_manual[Run Harbor]
     click run_harbor_manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/run/run_harbor.md#up"
     run_harbor_docker[Run Harbor]
     click run_harbor_docker href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/run/run_harbor.md#up"
-    %% run_harbor_script[Run Harbor]
-    %% click run_harbor_script href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/run/run_harbor.md#up"
     
     clone_features_manual[Clone Features]
     click clone_features_manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/install_features.md#clone-features"
@@ -75,13 +64,36 @@ graph TB
     run_script(Run OpenStudioLandscapes)
     click run_script href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/run_openstudiolandscapes/from_script.md#up-and-down"
     
-    manual --> clone_repo_manual --> landscapes_root_manual --> install_python_manual --> install_docker_manual --> install_harbor_manual 
-    install_harbor_manual --> run_harbor_manual --> clone_features_manual --> install_features_manual --> run_manual
+    installation_methods --> manual --> clone_repo_manual --> landscapes_root_manual --> install_python_manual --> install_docker_manual --> install_harbor_manual --> run_harbor_manual --> clone_features_manual --> install_features_manual --> run_manual
+    installation_methods --> docker --> clone_repo_docker --> landscapes_root_docker --> install_python_docker --> install_docker_docker --> install_harbor_docker --> run_harbor_docker --> run_docker
+    installation_methods --> script --> landscapes_root_script --> run_script
     
-    docker --> clone_repo_docker --> landscapes_root_docker --> install_python_docker --> install_docker_docker --> install_harbor_docker
-    install_harbor_docker --> run_harbor_docker --> run_docker
+    classDef clone_repo fill:#004f00;
+    class clone_repo_manual,clone_repo_docker clone_repo;
     
-    script --> landscapes_root_script --> run_script
+    classDef landscapes_root fill:#4c4c00;
+    class landscapes_root_manual,landscapes_root_docker,landscapes_root_script landscapes_root
+    
+    classDef install_python fill:#004c4c;
+    class install_python_manual,install_python_docker install_python
+    
+    classDef install_docker fill:#007cbc;
+    class install_docker_manual,install_docker_docker install_docker
+    
+    classDef install_harbor fill:#a07cbc;
+    class install_harbor_manual,install_harbor_docker install_harbor
+    
+    classDef run_harbor fill:#5049a7;
+    class run_harbor_manual,run_harbor_docker run_harbor
+    
+    classDef clone_features fill:#123456;
+    class clone_features_manual clone_features
+    
+    classDef install_features fill:#654321;
+    class install_features_manual install_features
+    
+    classDef run fill:#142536;
+    class run_manual,run_docker,run_script run
 ```
 
 * Installation Methods
