@@ -20,11 +20,15 @@
 ## up
 
 ```shell
-nox --sessions harbor_up_detach dagster_postgres_up_detach dagster_postgres
+nox --sessions dagster_postgres_up_detach dagster_postgres
+# With Harbor:
+# nox --sessions harbor_up_detach dagster_postgres_up_detach dagster_postgres
 ```
 
 ## down
 
 ```shell
-nox --sessions dagster_postgres_down harbor_down
+nox --sessions dagster_postgres_down
+# With Harbor
+# nox --sessions dagster_postgres_down harbor_down
 ```
