@@ -27,13 +27,13 @@
 
 ### up
 
-```
+```shell
 nox --session harbor_up
 ```
 
 #### detached
 
-```
+```shell
 nox --session harbor_up_detach
 ```
 
