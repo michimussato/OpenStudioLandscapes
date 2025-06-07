@@ -27,7 +27,7 @@ these Linux distros/versions:
 > but any compatible hypervisor should do.
 > Here's a good [overview](https://en.wikipedia.org/wiki/Comparison_of_platform_virtualization_software).
 
-> [!WARNING]
+> [!CAUTION]
 > The installer script **WILL** modify your system.
 
 ## Requirements
