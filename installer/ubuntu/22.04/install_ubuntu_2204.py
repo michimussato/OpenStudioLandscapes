@@ -467,9 +467,10 @@ def script_install_docker(
                 "sudo systemctl restart docker\n",
                 "\n",
                 # Todo
-                #  - [ ] And this is the *best* solution I could come up with so far:
-                f"sudo rm -rf {pathlib.Path(openstudiolandscapes_repo_dir, '.landscapes', '.harbor', 'bin').as_posix()}/*\n",
-                f"sudo rm -rf {pathlib.Path(openstudiolandscapes_repo_dir, '.landscapes', '.harbor', 'data').as_posix()}/*\n",
+                #  - [x] And this is the *best* solution I could come up with so far:
+                f"# sudo rm -rf {pathlib.Path(openstudiolandscapes_repo_dir, '.landscapes', '.harbor', 'bin').as_posix()}/*\n",
+                f"# sudo rm -rf {pathlib.Path(openstudiolandscapes_repo_dir, '.landscapes', '.harbor', 'data').as_posix()}/*\n",
+                f"sudo git clean -x --force {pathlib.Path(openstudiolandscapes_repo_dir, '.landscapes', '.harbor').as_posix()}\n",
             ]
         )
 
