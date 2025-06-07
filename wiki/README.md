@@ -98,15 +98,18 @@ graph TB
         script --> landscapes_root_script --> run_script
     end
     
-    installation_methods --> block_manual
-    installation_methods --> block_docker
-    installation_methods --> block_installer
+    installation_methods -- advanced --> block_manual
+    installation_methods -- limited --> block_docker
+    installation_methods -- quick and simple --> block_installer
 ```
 
 * Installation Methods
   * [Manual](installation/basic_installation.md#table-of-contents)
+    * The generalistic option
   * [Installer Script](installation/basic_installation_from_script.md#table-of-contents)
+    * The best option for a vanilla Ubuntu OS
   * [Docker](installation/basic_installation_from_script.md#table-of-contents)
+    * A simple, yet generalistic option with limited configurability
 * [Install Features](installation/install_features.md#table-of-contents)
 
 ---
