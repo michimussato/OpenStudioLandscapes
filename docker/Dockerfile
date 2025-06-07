@@ -1,14 +1,3 @@
-# Build:
-# docker build --tag docker.io/michimussato/openstudiolandscapes:<VERSION> --tag docker.io/michimussato/openstudiolandscapes:latest --progress plain --no-cache-filter=openstudiolandscapes-never-cache . --build-arg PYTHON_MAJ=3 --build-arg PYTHON_MIN=11 --build-arg PYTHON_PAT=11 --build-arg DOCKER_GID=$(getent group docker | cut -d: -f3)
-#
-# Push:
-# docker login
-# docker image push --all-tags michimussato/openstudiolandscapes
-#
-# Run:
-# docker run -v /var/run/docker.sock:/var/run/docker.sock:rw --rm -it --entrypoint bash michimussato/openstudiolandscapes:latest
-
-
 FROM ubuntu:22.04 AS openstudiolandscapes
 LABEL authors="michimussato@gmail.com"
 
