@@ -1,10 +1,14 @@
-> [!NOTE]
-> This Wiki can be easily viewed, navigated and edited in [Obsidian](https://obsidian.md/) after cloning the repository to your local drive.
+> [!TIP]
+> This Wiki can be easily interacted with in [Obsidian](https://obsidian.md/) after cloning the repository to your local drive.
  
 ---
 
-* [Disclaimer](disclaimer.md)
-* [About the Author](about_the_author.md)
+* [Disclaimer](disclaimer.md#disclaimer)
+* [About the Author](about_the_author.md#about-the-author)
+
+---
+
+* [Basic Installation](installation/basic_installation.md#basic-installation)
 
 ---
 

@@ -1,3 +1,11 @@
+<!-- TOC -->
+* [About the Author](#about-the-author)
+<!-- TOC -->
+
+---
+
+# About the Author
+
 Michael Mussato
 - [LinkedIn](https://www.linkedin.com/in/michael-mussato-815902190/)
 - [IMDb](https://www.imdb.com/name/nm5961264/)

@@ -1,3 +1,11 @@
+<!-- TOC -->
+* [Disclaimer](#disclaimer)
+<!-- TOC -->
+
+---
+
+# Disclaimer
+
 I'm not 
 - a Software Architect
 - a Systems Engineer
