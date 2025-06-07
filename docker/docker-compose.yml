@@ -1,29 +1,6 @@
-# 1)
-# Launch Harbor
-# sudo docker compose --progress plain --file ../.landscapes/.harbor/bin/docker-compose.yml --project-name openstudiolandscapes-harbor up --remove-orphans
-# sudo docker compose --progress plain --file ../.landscapes/.harbor/bin/docker-compose.yml --project-name openstudiolandscapes-harbor down
-#
-# I tried "include" but Harbor needs "sudo" whereas openstudiolandscapes does not.
-# This lead to problems, hence, launch them separately.
-#include:
-#  - path:
-#      - ../.landscapes/.harbor/bin/docker-compose.yml
-
-# 2)
-# Launch openstudiolandscapes
-# docker compose --progress plain --file docker-compose.yml --project-name openstudiolandscapes up --remove-orphans
-# docker compose --progress plain --file docker-compose.yml --project-name openstudiolandscapes down
-
-# 3)
-# Interactive Session
-# docker exec -it openstudiolandscapes-dagster-postgres bash
-# docker exec -it openstudiolandscapes-postgres bash
-
-
 networks:
   openstudiolandscapes:
     name: network_openstudiolandscapes
-
 
 services:
   postgres-dagster:
