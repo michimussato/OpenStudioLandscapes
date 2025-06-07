@@ -28,6 +28,7 @@ import pty
 URL_HARBOR: str = "http://harbor.farm.evil:80"
 ADMIN_HARBOR: str = "admin"
 PASSWORD_HARBOR: str = "Harbor12345"
+DOCKER_GID: str = "959"
 # Todo
 #  - [ ] Remove this switch after release
 USE_SSH: bool = False
@@ -933,7 +934,7 @@ def script_initial_checks(
                 "\n",
                 "\n",
                 "if ! groups $USER | grep -qw \"docker\"; then\n",
-                f"    sudo groupadd --force docker\n",
+                f"    sudo groupadd --force --gid {DOCKER_GID} docker\n",
                 f"    sudo usermod --append --groups docker \"{docker_user}\"\n",
                 #f"    {shutil.which('bash')} {add_user_to_group_docker(docker_user=docker_user).as_posix()}\n",
                 f"    echo \"User $USER has been added to group \\`docker\\`.\"\n",
