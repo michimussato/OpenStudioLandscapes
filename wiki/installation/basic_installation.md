@@ -13,6 +13,9 @@
           * [Add `$USER` to group `docker`](#add-user-to-group-docker)
           * [Activate `systemd` Unit](#activate-systemd-unit)
   * [OpenStudioLandscapes](#openstudiolandscapes)
+    * [Clone Repository](#clone-repository)
+    * [Create Landscapes Root Directory](#create-landscapes-root-directory)
+    * [Common Steps](#common-steps)
   * [Harbor](#harbor)
     * [Setup](#setup)
       * [Create Project](#create-project)
@@ -250,7 +253,9 @@ sudo systemctl enable --now containerd.service
 
 ## OpenStudioLandscapes
 
-This step is required for all flavors of OpenStudioLandscapes.
+These steps are required for all flavors of OpenStudioLandscapes.
+
+### Clone Repository
 
 ```shell
 git clone https://github.com/michimussato/OpenStudioLandscapes.git
@@ -259,6 +264,24 @@ python3.11 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip setuptools
 pip install -e ".[dev]"
+```
+
+### Create Landscapes Root Directory
+
+```shell
+LANDSCAPES_DIR=/opt/openstudiolandscapes
+
+sudo mkdir -p ${LANDSCAPES_DIR}/.landscapes && sudo chmod -R a+rw ${LANDSCAPES_DIR}
+ln -sfn ${LANDSCAPES_DIR}/.landscapes docker/.landscapes
+```
+ 
+### Common Steps
+
+```shell
+LANDSCAPES_DIR=/opt/openstudiolandscapes
+
+
+
 ```
 
 ## Harbor

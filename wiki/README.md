@@ -24,11 +24,18 @@ graph TB
     installation_methods --> script
     
     clone_repo_manual[Clone OpenStudioLandscapes Repository]
-    click clone_repo_manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#openstudiolandscapes"
+    click clone_repo_manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#clone-repository"
     clone_repo_docker[Clone OpenStudioLandscapes Repository]
-    click clone_repo_docker href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#openstudiolandscapes"
+    click clone_repo_docker href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#clone-repository"
     %% clone_repo_script[Clone OpenStudioLandscapes Repository]
     %% click clone_repo_script href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#openstudiolandscapes"
+    
+    landscapes_root_manual[Create Landscapes Root Directory]
+    click landscapes_root_manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#create-landscapes-root-directory"
+    landscapes_root_docker[Create Landscapes Root Directory]
+    click landscapes_root_docker href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#create-landscapes-root-directory"
+    landscapes_root_script[Create Landscapes Root Directory]
+    click landscapes_root_script href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#create-landscapes-root-directory"
     
     install_python_manual[Install Python 3.11]
     click install_python_manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/basic_installation.md#install-python311"
@@ -68,13 +75,13 @@ graph TB
     run_script(Run OpenStudioLandscapes)
     click run_script href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/run_openstudiolandscapes/from_script.md#up-and-down"
     
-    manual --> clone_repo_manual --> install_python_manual --> install_docker_manual --> install_harbor_manual 
+    manual --> clone_repo_manual --> landscapes_root_manual --> install_python_manual --> install_docker_manual --> install_harbor_manual 
     install_harbor_manual --> run_harbor_manual --> clone_features_manual --> install_features_manual --> run_manual
     
-    docker --> clone_repo_docker --> install_python_docker --> install_docker_docker --> install_harbor_docker
+    docker --> clone_repo_docker --> landscapes_root_docker --> install_python_docker --> install_docker_docker --> install_harbor_docker
     install_harbor_docker --> run_harbor_docker --> run_docker
     
-    script --> run_script
+    script --> landscapes_root_script --> run_script
 ```
 
 * Installation Methods
