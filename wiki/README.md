@@ -100,7 +100,7 @@ graph TB
     
     installation_methods -- advanced --> block_manual
     installation_methods -- limited --> block_docker
-    installation_methods -- quick and simple --> block_installer
+    installation_methods -- fast and simple --> block_installer
 ```
 
 * Installation Methods
