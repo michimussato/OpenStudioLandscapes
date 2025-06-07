@@ -56,6 +56,11 @@ graph TB
     %% run_harbor_script[Run Harbor]
     %% click run_harbor_script href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/run/run_harbor.md#up"
     
+    clone_features_manual[Clone Features]
+    click clone_features_manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/install_features.md#clone-features"
+    install_features_manual[Install Features]
+    click install_features_manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/installation/install_features.md#install-features-1"
+    
     run_manual(Run OpenStudioLandscapes)
     click run_manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/run_openstudiolandscapes/from_manual.md#up"
     run_docker(Run OpenStudioLandscapes)
@@ -64,7 +69,7 @@ graph TB
     click run_script href "https://github.com/michimussato/OpenStudioLandscapes/blob/main/wiki/run_openstudiolandscapes/from_script.md#up-and-down"
     
     manual --> clone_repo_manual --> install_python_manual --> install_docker_manual --> install_harbor_manual 
-    install_harbor_manual --> run_harbor_manual --> run_manual
+    install_harbor_manual --> run_harbor_manual --> clone_features_manual --> install_features_manual --> run_manual
     
     docker --> clone_repo_docker --> install_python_docker --> install_docker_docker --> install_harbor_docker
     install_harbor_docker --> run_harbor_docker --> run_docker
@@ -76,6 +81,7 @@ graph TB
   * [Manual](installation/basic_installation.md#table-of-contents)
   * [Installer Script](installation/basic_installation_from_script.md#table-of-contents)
   * [Docker](installation/basic_installation_from_script.md#table-of-contents)
+* [Install Features](installation/install_features.md#table-of-contents)
 
 ---
 
