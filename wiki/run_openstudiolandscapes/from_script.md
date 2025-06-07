@@ -2,7 +2,7 @@
 
 <!-- TOC -->
 * [Table Of Contents](#table-of-contents)
-* [Run OpenStudioLandscapes from Script Installer](#run-openstudiolandscapes-from-script-installer)
+* [Run OpenStudioLandscapes from Installer Script](#run-openstudiolandscapes-from-installer-script)
   * [Requirements](#requirements)
   * [up](#up)
   * [down](#down)
@@ -11,7 +11,7 @@
 
 ---
 
-# Run OpenStudioLandscapes from Script Installer
+# Run OpenStudioLandscapes from Installer Script
 
 ## Requirements
 
