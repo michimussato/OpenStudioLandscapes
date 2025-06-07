@@ -18,5 +18,17 @@
 ## up
 
 ```shell
+openstudiolandscapes-up
+```
+
+## down
+
+```shell
+openstudiolandscapes-down
+```
+
+## up and down
+
+```shell
 openstudiolandscapes
 ```
