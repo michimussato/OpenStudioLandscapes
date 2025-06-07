@@ -336,17 +336,17 @@ def script_install_python(
                 #        /tmp/ubuntu_2204__211gwqzp.sh: line 10: [: too many arguments
                 f"sudo apt-get install --no-install-recommends -y {' '.join(python_pkgs)}\n",
                 "\n",
-                "pushd \"$(mktemp -d)\" || exit\n",
+                "pushd \"$(mktemp -d)\" || exit 1\n",
                 "\n",
                 f"curl \"https://www.python.org/ftp/python/{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}/Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}.tgz\" -o Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}.tgz\n",
                 f"tar -xvf Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}.tgz\n",
-                f"cd Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT} || exit\n",
+                f"cd Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT} || exit 1\n",
                 "\n",
                 "./configure --enable-optimizations\n",
                 "make -j \"$(nproc)\"\n",
                 "sudo make altinstall\n",
                 "\n",
-                "popd || exit\n",
+                "popd || exit 1\n",
             ]
         )
 
