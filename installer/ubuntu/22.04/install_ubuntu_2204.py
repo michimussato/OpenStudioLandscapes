@@ -28,6 +28,8 @@ import pty
 URL_HARBOR: str = "http://harbor.farm.evil:80"
 ADMIN_HARBOR: str = "admin"
 PASSWORD_HARBOR: str = "Harbor12345"
+# Todo
+#  - [ ] Remove this switch after release
 USE_SSH: bool = False
 
 
