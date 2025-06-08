@@ -175,7 +175,7 @@ def script_prep() -> pathlib.Path:
             "htop",
             "vim",
             "graphviz",
-            "jq",
+            # "jq",
         ]
         script.writelines(
             [
@@ -985,6 +985,61 @@ def script_harbor_init(
                 "exit 0\n",
             ]
         )
+
+        """
+1 : #!/bin/env bash
+2 : 
+3 : 
+4 : 
+5 : # Create project openstudiolandscapes
+6 : 
+7 : echo "Giving Harbor some time before performing this POST request..."
+8 : for i in $(seq 10); do
+9 :     echo -ne "."
+10:     sleep 1
+11: done
+12: echo -ne "
+13: "
+14: 
+15: until [ \
+16:     "$(curl -s -w '%{http_code}' -o /dev/null -v -X 'POST' \
+17:       'http://harbor.farm.evil:80/api/v2.0/projects' \
+18:       -H 'accept: application/json' \
+19:       -H 'X-Resource-Name-In-Location: false' \
+20:       -H 'authorization: Basic YWRtaW46SGFyYm9yMTIzNDU=' \
+21:       -H 'Content-Type: application/json' \
+22:       -d '{
+23:       "project_name": "openstudiolandscapes",
+24:       "public": true
+25:     }')" \
+26:     -eq 200 ]
+27: do
+28:     sleep 1
+29:     echo "Trying again..."
+30: done
+31: 
+32: 
+33: 
+34: # Delete project library
+35: 
+36: echo "Giving Harbor some time before performing this DELETE request..."
+37: for i in $(seq 10); do
+38:     echo -ne "."
+39:     sleep 1
+40: done
+41: echo -ne "
+42: "
+43: 
+44: curl -v -X 'DELETE' \
+45:   'http://harbor.farm.evil:80/api/v2.0/projects/library' \
+46:   -H 'accept: application/json' \
+47:   -H 'X-Is-Resource-Name: false' \
+48:   -H 'authorization: Basic YWRtaW46SGFyYm9yMTIzNDU='
+49: 
+50: 
+51: exit 0
+
+        """
 
         return pathlib.Path(script.name)
 
