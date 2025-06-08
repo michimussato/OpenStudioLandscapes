@@ -175,6 +175,7 @@ def script_prep() -> pathlib.Path:
             "htop",
             "vim",
             "graphviz",
+            "jq",
         ]
         script.writelines(
             [
@@ -718,6 +719,79 @@ def script_harbor_init(
             ]
         )
 
+        sleep_ = 10
+        # Create `openstudiolandscapes` if it does not exist
+
+        # success_code = "HTTP/1.1 200 OK"
+        #
+        # error_codes = [
+        #     "HTTP/1.1 404 Not Found",
+        #     "HTTP/1.1 500 Internal Server Error",
+        #     "HTTP/1.1 502 Bad Gateway",
+        # ]
+
+        # script.writelines(
+        #     [
+        #         "\n",
+        #         "# Check if Harbor is healthy...\n",
+        #         "\n",
+        #         "echo \"Giving Harbor some time before performing this HEAD request...\"\n",
+        #         f"for i in $(seq {str(sleep_)}); do\n",
+        #         # f"    echo -ne $(({str(sleep_)}-$i+1))\n",
+        #         f"    echo -ne \".\"\n",
+        #         "    sleep 1\n",
+        #         "done\n",
+        #         f"echo -ne \"\n\"\n",
+        #         "\n",
+        #         # Todo
+        #         #  - [ ] This is not working! Investigate!
+        #         "curl -X 'GET'   'http://localhost/api/v2.0/health'   -H 'accept: application/json'   -H 'authorization: Basic YWRtaW46SGFyYm9yMTIzNDU=' | jq | while read i; do if [[ \"$i\" == *\"error\"* ]]; then echo $i; fi; done;"
+        #         "if curl -X 'GET' \\\n",
+        #         f"  '{url_harbor}/api/v2.0/health' \\\n",
+        #         "  -H 'accept: application/json' \\\n",
+        #         f"  -H 'authorization: Basic {base64.b64encode(str(':'.join([username_harbor, password_harbor])).encode('utf-8')).decode('ascii')}' \\\n",
+        #         "}'\n",
+        #         "\n",
+        #         # Todo:
+        #         #  - [ ] confirmation/error
+        #         #    like && success || error
+        #         # "sleep 10\n",
+        #     ]
+        # )
+
+        # script.writelines(
+        #     [
+        #         "\n",
+        #         "# Check if openstudiolandscapes exists...\n",
+        #         "\n",
+        #         "echo \"Giving Harbor some time before performing this HEAD request...\"\n",
+        #         f"for i in $(seq {str(sleep_)}); do\n",
+        #         # f"    echo -ne $(({str(sleep_)}-$i+1))\n",
+        #         f"    echo -ne \".\"\n",
+        #         "    sleep 1\n",
+        #         "done\n",
+        #         f"echo -ne \"\n\"\n",
+        #         "\n",
+        #         # Todo
+        #         #  - [ ] This is not working! Investigate!
+        #         "curl --head \\\n",
+        #         f"  '{url_harbor}/api/v2.0/projects?project_name=openstudiolandscapes' \\\n",
+        #         "  -H 'accept: application/json' \\\n",
+        #         "  -H 'X-Resource-Name-In-Location: false' \\\n",
+        #         f"  -H 'authorization: Basic {base64.b64encode(str(':'.join([username_harbor, password_harbor])).encode('utf-8')).decode('ascii')}' \\\n",
+        #         "  -H 'Content-Type: application/json' \\\n",
+        #         "  -d '{\n",
+        #         "  \"project_name\": \"openstudiolandscapes\",\n",
+        #         "  \"public\": true\n",
+        #         "}'\n",
+        #         "\n",
+        #         # Todo:
+        #         #  - [ ] confirmation/error
+        #         #    like && success || error
+        #         # "sleep 10\n",
+        #     ]
+        # )
+
         # Todo:
         #  - [ ] Find a better way to deal with this:
         #        #!/bin/env bash
@@ -825,6 +899,16 @@ def script_harbor_init(
         #        </html>
         #        * Connection #0 to host harbor.farm.evil left intact
 
+        # Harbor Health:
+        # curl -X 'GET'   'http://localhost/api/v2.0/health'   -H 'accept: application/json'   -H 'authorization: Basic YWRtaW46SGFyYm9yMTIzNDU='
+        # Parse as JSON
+        # curl -X 'GET'   'http://localhost/api/v2.0/health'   -H 'accept: application/json'   -H 'authorization: Basic YWRtaW46SGFyYm9yMTIzNDU=' | jq
+        # curl -s -f -X 'GET'   'http://localhost/api/v2.0/health'   -H 'accept: application/json'   -H 'authorization: Basic YWRtaW46SGFyYm9yMTIzNDU=' | jq
+        # "error" in JSON?
+        # curl -X 'GET'   'http://localhost/api/v2.0/health'   -H 'accept: application/json'   -H 'authorization: Basic YWRtaW46SGFyYm9yMTIzNDU=' | jq | while read i; do if [[ "$i" == *"error"* ]]; then echo $i; fi; done;
+        # Does openstudiolandscapes exist?
+        # curl --head   'http://localhost/api/v2.0/projects?project_name=penstudiolandscapes'   -H 'accept: application/json'   -H 'authorization: Basic YWRtaW46SGFyYm9yMTIzNDU='
+
         sleep_ = 10
         # Create `openstudiolandscapes` if it does not exist
         script.writelines(
@@ -842,16 +926,24 @@ def script_harbor_init(
                 "\n",
                 # Todo
                 #  - [ ] This is not working! Investigate!
-                "curl -v -X 'POST' \\\n",
-                f"  '{url_harbor}/api/v2.0/projects' \\\n",
-                "  -H 'accept: application/json' \\\n",
-                "  -H 'X-Resource-Name-In-Location: false' \\\n",
-                f"  -H 'authorization: Basic {base64.b64encode(str(':'.join([username_harbor, password_harbor])).encode('utf-8')).decode('ascii')}' \\\n",
-                "  -H 'Content-Type: application/json' \\\n",
-                "  -d '{\n",
-                "  \"project_name\": \"openstudiolandscapes\",\n",
-                "  \"public\": true\n",
-                "}'\n",
+                "until [ \\\n",
+                "    \"$(curl -s -w '%{http_code}' -o /dev/null -v -X 'POST' \\\n",
+                f"      '{url_harbor}/api/v2.0/projects' \\\n",
+                "      -H 'accept: application/json' \\\n",
+                "      -H 'X-Resource-Name-In-Location: false' \\\n",
+                f"      -H 'authorization: Basic {base64.b64encode(str(':'.join([username_harbor, password_harbor])).encode('utf-8')).decode('ascii')}' \\\n",
+                "      -H 'Content-Type: application/json' \\\n",
+                "      -d '{\n",
+                "      \"project_name\": \"openstudiolandscapes\",\n",
+                "      \"public\": true\n",
+                "    }')\" \\\n",
+                "    -eq 200 ]\n",
+                # "\n",
+                "do\n",
+                "    sleep 1\n",
+                "    echo \"Trying again...\"\n",
+                "done\n",
+                "\n",
                 "\n",
                 # Todo:
                 #  - [ ] confirmation/error
@@ -1075,14 +1167,14 @@ def script_initial_checks(
         script.writelines(
             [
                 "#!/bin/env bash\n",
-                TRAP,
+                # TRAP,
                 "\n",
                 "\n",
                 "if ! groups $USER | grep -qw \"docker\"; then\n",
-                f"    sudo groupadd --force --gid {DOCKER_GID} docker\n",
-                # f"    sudo groupadd --force --gid {DOCKER_GID} docker || exit 1;\n",
-                f"    sudo usermod --append --groups docker \"{docker_user}\"\n",
-                # f"    sudo usermod --append --groups docker \"{docker_user}\" || exit 1;\n",
+                # f"    sudo groupadd --force --gid {DOCKER_GID} docker\n",
+                f"    sudo groupadd --force --gid {DOCKER_GID} docker || exit 1;\n",
+                # f"    sudo usermod --append --groups docker \"{docker_user}\"\n",
+                f"    sudo usermod --append --groups docker \"{docker_user}\" || exit 1;\n",
                 #f"    {shutil.which('bash')} {add_user_to_group_docker(docker_user=docker_user).as_posix()}\n",
                 f"    echo \"User $USER has been added to group \\`docker\\`.\"\n",
                 f"    echo \"Reboot now and re-run this scrip.\"\n",
