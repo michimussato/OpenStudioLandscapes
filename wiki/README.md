@@ -10,6 +10,8 @@
 
 # Installation Methods
 
+![Matrix (1999) - Propery of Warner Bros. Pictures](https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2F4.bp.blogspot.com%2F-avoot2jSrKY%2FUT1Hq2V5MbI%2FAAAAAAAAAFQ%2F3J1jV7xdHFA%2Fs1600%2FMatrixBluePillRedPill.jpg)
+
 ```mermaid
 graph TB
     installation_methods(Installation Methods)
@@ -102,8 +104,6 @@ graph TB
     installation_methods -- limited --> block_docker
     installation_methods -- fast and simple --> block_installer
 ```
-
-![Matrix (1999) - Propery of Warner Bros. Pictures](https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2F4.bp.blogspot.com%2F-avoot2jSrKY%2FUT1Hq2V5MbI%2FAAAAAAAAAFQ%2F3J1jV7xdHFA%2Fs1600%2FMatrixBluePillRedPill.jpg)
 
 * Installation Methods
   * [Manual](installation/basic_installation.md#table-of-contents)
