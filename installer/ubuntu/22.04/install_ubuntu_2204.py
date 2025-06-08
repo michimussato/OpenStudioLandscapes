@@ -1117,12 +1117,15 @@ if __name__ == "__main__":
     print("".center(_get_terminal_size()[0], "#"))
     print(" OPENSTUDIOLANDSCAPES INSTALLER ".center(_get_terminal_size()[0], "#"))
 
-    script_run(
+    result = script_run(
         sudo=False,
         script=script_initial_checks(
             docker_user=getuser()
         ),
     )
+
+    if result:
+        sys.exit(1)
 
     print(" INSTALL DIRECTORY ".center(_get_terminal_size()[0], "#"))
     print("(Press Enter to continue with the defaults)")
