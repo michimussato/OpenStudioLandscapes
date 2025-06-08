@@ -719,9 +719,6 @@ def script_harbor_init(
             ]
         )
 
-        sleep_ = 10
-        # Create `openstudiolandscapes` if it does not exist
-
         # success_code = "HTTP/1.1 200 OK"
         #
         # error_codes = [
@@ -908,6 +905,9 @@ def script_harbor_init(
         # curl -X 'GET'   'http://localhost/api/v2.0/health'   -H 'accept: application/json'   -H 'authorization: Basic YWRtaW46SGFyYm9yMTIzNDU=' | jq | while read i; do if [[ "$i" == *"error"* ]]; then echo $i; fi; done;
         # Does openstudiolandscapes exist?
         # curl --head   'http://localhost/api/v2.0/projects?project_name=penstudiolandscapes'   -H 'accept: application/json'   -H 'authorization: Basic YWRtaW46SGFyYm9yMTIzNDU='
+
+        # `until`
+        # https://unix.stackexchange.com/a/644364
 
         sleep_ = 10
         # Create `openstudiolandscapes` if it does not exist
