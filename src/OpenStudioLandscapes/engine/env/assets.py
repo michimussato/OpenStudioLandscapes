@@ -1,6 +1,7 @@
 import getpass
 import pathlib
 import socket
+import tempfile
 import uuid
 from datetime import datetime
 from typing import Generator, MutableMapping
@@ -80,7 +81,28 @@ def dot_landscapes(
     # _dot_landscapes = git_root / ".landscapes"
 
     if not _dot_landscapes.is_dir():
-        raise NotADirectoryError
+        raise NotADirectoryError(f"DOT_LANDSCAPES is not a directory: {_dot_landscapes.as_posix()}")
+
+    if not _dot_landscapes.is_dir():
+        raise FileNotFoundError(f"DOT_LANDSCAPES directory does not exist: "
+                                f"{_dot_landscapes.as_posix()}. "
+                                f"Try `sudo mkdir -p {_dot_landscapes.as_posix()} "
+                                f"&& sudo chmod -R a+rw {_dot_landscapes.as_posix()}`.")
+
+    # Test
+    try:
+        with tempfile.TemporaryFile(
+            dir=_dot_landscapes,
+            prefix="DOT_LANDSCAPES_WRITE_TEST",
+            delete=True,
+        ) as temp_file:
+            temp_file.write("I was here.")
+    except PermissionError as e:
+        raise PermissionError(
+            f"DOT_LANDSCAPES_WRITE_TEST permission error: "
+            f"{_dot_landscapes.as_posix()} is not writable. "
+            f"Try `sudo chmod -R a+rw {_dot_landscapes.as_posix()}`."
+        ) from e
 
     # try:
     #     _dot_landscapes.mkdir(
