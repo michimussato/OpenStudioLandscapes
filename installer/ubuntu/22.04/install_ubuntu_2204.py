@@ -135,7 +135,7 @@ def script_disable_unattended_upgrades() -> pathlib.Path:
         script.writelines(
             [
                 "#!/bin/env bash\n",
-                TRAP,
+                # TRAP,
                 "\n",
                 "\n",
                 "sudo systemctl disable --now unattended-upgrades\n",
@@ -179,7 +179,7 @@ def script_prep() -> pathlib.Path:
         script.writelines(
             [
                 "#!/bin/env bash\n",
-                TRAP,
+                # TRAP,
                 "\n",
                 "\n",
                 "sudo apt-get update\n",
@@ -236,7 +236,7 @@ def script_clone_openstudiolandscapes(
         script.writelines(
             [
                 "#!/bin/env bash\n",
-                TRAP,
+                # TRAP,
                 "\n",
             ]
         )
@@ -313,7 +313,7 @@ def script_install_python(
         script.writelines(
             [
                 "#!/bin/env bash\n",
-                TRAP,
+                # TRAP,
                 "\n",
                 "\n",
             ],
@@ -405,7 +405,7 @@ def script_install_docker(
         script.writelines(
             [
                 "#!/bin/env bash\n",
-                TRAP,
+                # TRAP,
                 "\n",
                 "\n",
                 "# Documentation:\n",
@@ -532,7 +532,7 @@ def script_install_openstudiolandscapes(
         script.writelines(
             [
                 "#!/bin/env bash\n",
-                TRAP,
+                # TRAP,
                 "\n",
                 "\n",
                 f"cd {openstudiolandscapes_repo_dir.as_posix()}\n",
@@ -574,7 +574,7 @@ def script_etc_hosts() -> pathlib.Path:
         script.writelines(
             [
                 "#!/bin/env bash\n",
-                TRAP,
+                # TRAP,
                 "\n",
                 "\n",
                 "for fqdn in \\\n",
@@ -637,7 +637,7 @@ def script_harbor_prepare(
         script.writelines(
             [
                 "#!/bin/env bash\n",
-                TRAP,
+                # TRAP,
                 "\n",
                 "\n",
                 f"cd {openstudiolandscapes_repo_dir.as_posix()}\n",
@@ -673,7 +673,7 @@ def script_harbor_up(
         script.writelines(
             [
                 "#!/bin/env bash\n",
-                TRAP,
+                # TRAP,
                 "\n",
                 "\n",
                 f"cd {openstudiolandscapes_repo_dir.as_posix()}\n",
@@ -712,7 +712,7 @@ def script_harbor_init(
         script.writelines(
             [
                 "#!/bin/env bash\n",
-                TRAP,
+                # TRAP,
                 "\n",
                 "\n",
             ]
@@ -913,7 +913,7 @@ def script_harbor_down(
         script.writelines(
             [
                 "#!/bin/env bash\n",
-                TRAP,
+                # TRAP,
                 "\n",
                 "\n",
                 f"cd {openstudiolandscapes_repo_dir.as_posix()}\n",
@@ -951,7 +951,7 @@ def script_init_pihole(
         script.writelines(
             [
                 "#!/bin/env bash\n",
-                TRAP,
+                # TRAP,
                 "\n",
                 "\n",
                 f"cd {openstudiolandscapes_repo_dir.as_posix()}\n",
@@ -993,7 +993,7 @@ def script_add_alias(
         script.writelines(
             [
                 "#!/bin/env bash\n",
-                TRAP,
+                # TRAP,
                 "\n",
                 "\n",
                 # Escape dots
@@ -1039,7 +1039,7 @@ def script_reboot() -> pathlib.Path:
         script.writelines(
             [
                 "#!/bin/env bash\n",
-                TRAP,
+                # TRAP,
                 "\n",
                 "\n",
                 "read -r -e -p \"Reboot now? \" choice_reboot\n",
