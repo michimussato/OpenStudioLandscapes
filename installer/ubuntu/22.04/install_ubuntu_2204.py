@@ -1088,7 +1088,7 @@ def script_initial_checks(
                 f"    echo \"Reboot now and re-run this scrip.\"\n",
                 f"    # Reboot Script:\n",
                 f"    {shutil.which('bash')} {script_reboot().as_posix()}\n",
-                f"    exit 1\n",
+                f"    exit 0\n",
                 "fi\n",
                 "\n",
                 "if command -v \"docker/\"; then\n",
