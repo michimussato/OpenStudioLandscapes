@@ -913,21 +913,22 @@ def script_harbor_init(
         # Create `openstudiolandscapes` if it does not exist
         script.writelines(
             [
+                # Returns "HTTP/1.1 201 Created" if successful
                 "\n",
                 "# Create project openstudiolandscapes\n",
                 "\n",
-                "echo \"Giving Harbor some time before performing this POST request...\"\n",
-                f"for i in $(seq {str(sleep_)}); do\n",
-                # f"    echo -ne $(({str(sleep_)}-$i+1))\n",
-                f"    echo -ne \".\"\n",
-                "    sleep 1\n",
-                "done\n",
-                f"echo -ne \"\n\"\n",
+                # "echo \"Giving Harbor some time before performing this POST request...\"\n",
+                # f"for i in $(seq {str(sleep_)}); do\n",
+                # # f"    echo -ne $(({str(sleep_)}-$i+1))\n",
+                # f"    echo -ne \".\"\n",
+                # "    sleep 1\n",
+                # "done\n",
+                # f"echo -ne \"\n\"\n",
                 "\n",
                 # Todo
-                #  - [ ] This is not working! Investigate!
+                #  - [x] This is not working! Investigate!
                 "until [ \\\n",
-                "    \"$(curl -s -w '%{http_code}' -o /dev/null -v -X 'POST' \\\n",
+                "    \"$(curl -s -w '%{http_code}' -v -X 'POST' \\\n",
                 f"      '{url_harbor}/api/v2.0/projects' \\\n",
                 "      -H 'accept: application/json' \\\n",
                 "      -H 'X-Resource-Name-In-Location: false' \\\n",
@@ -937,10 +938,10 @@ def script_harbor_init(
                 "      \"project_name\": \"openstudiolandscapes\",\n",
                 "      \"public\": true\n",
                 "    }')\" \\\n",
-                "    -eq 200 ]\n",
+                "    -eq 201 ]\n",
                 # "\n",
                 "do\n",
-                "    sleep 1\n",
+                "    sleep 2\n",
                 "    echo \"Trying again...\"\n",
                 "done\n",
                 "\n",
@@ -955,6 +956,9 @@ def script_harbor_init(
         # Delete `library` if it does exist
         script.writelines(
             [
+                # Returns "HTTP/1.1 200 OK" if successful
+                # Todo:
+                #  - [ ] implement `until`
                 "\n",
                 "# Delete project library\n",
                 "\n",
@@ -1002,7 +1006,7 @@ def script_harbor_init(
 13: "
 14: 
 15: until [ \
-16:     "$(curl -s -w '%{http_code}' -o /dev/null -v -X 'POST' \
+16:  "$(curl -s -w '%{http_code}' -v -X 'POST' \
 17:       'http://harbor.farm.evil:80/api/v2.0/projects' \
 18:       -H 'accept: application/json' \
 19:       -H 'X-Resource-Name-In-Location: false' \
@@ -1012,7 +1016,7 @@ def script_harbor_init(
 23:       "project_name": "openstudiolandscapes",
 24:       "public": true
 25:     }')" \
-26:     -eq 200 ]
+26:     -eq 201 ]
 27: do
 28:     sleep 1
 29:     echo "Trying again..."
