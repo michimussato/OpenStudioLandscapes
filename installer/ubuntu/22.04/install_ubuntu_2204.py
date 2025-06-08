@@ -49,7 +49,7 @@ USE_SSH: bool = False
 DOT_LANDSCAPES: pathlib.Path = pathlib.Path("/opt/openstudiolandscapes/.landscapes")
 # Trap:
 # https://unix.stackexchange.com/a/230568
-TRAP = "\ntrap 'exit 130' INT\n",
+TRAP = "\ntrap 'exit 130' INT\n"
 
 
 SHELL_SCRIPTS_PREFIX = "ubuntu_2204"
