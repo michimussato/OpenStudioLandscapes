@@ -81,10 +81,24 @@ def dot_landscapes(
     # _dot_landscapes = git_root / ".landscapes"
 
     if not _dot_landscapes.expanduser().exists():
-        raise FileNotFoundError(f"DOT_LANDSCAPES directory does not exist: "
-                                f"{_dot_landscapes.as_posix()}. "
-                                f"Try `sudo mkdir -p {_dot_landscapes.as_posix()} "
-                                f"&& sudo chmod -R a+rw {_dot_landscapes.as_posix()}`.")
+        try:
+            _dot_landscapes.mkdir(
+                mode=0o775,
+                parents=True,
+                exist_ok=True,
+            )
+        except PermissionError as e:
+            context.log.exception("No permission to create .landscapes directory.")
+            raise PermissionError(
+                "No permission to create .landscapes directory. "
+                f"Try `sudo mkdir -p {_dot_landscapes.as_posix()} "
+                f"&& sudo chmod -R a+rw {_dot_landscapes.as_posix()}`."
+            ) from e
+
+        # raise FileNotFoundError(f"DOT_LANDSCAPES directory does not exist: "
+        #                         f"{_dot_landscapes.as_posix()}. "
+        #                         f"Try `sudo mkdir -p {_dot_landscapes.as_posix()} "
+        #                         f"&& sudo chmod -R a+rw {_dot_landscapes.as_posix()}`.")
 
     if not _dot_landscapes.is_dir():
         raise NotADirectoryError(f"DOT_LANDSCAPES is not a directory: {_dot_landscapes.as_posix()}")
