@@ -103,14 +103,15 @@ def dot_landscapes(
     if not _dot_landscapes.is_dir():
         raise NotADirectoryError(f"DOT_LANDSCAPES is not a directory: {_dot_landscapes.as_posix()}")
 
-    # Test
+    # Write Test
     try:
-        with tempfile.TemporaryFile(
+        with tempfile.NamedTemporaryFile(
             dir=_dot_landscapes,
             prefix="DOT_LANDSCAPES_WRITE_TEST",
-            delete=True,
+            delete=False,
         ) as temp_file:
             temp_file.write("I was here.")
+
     except PermissionError as e:
         raise PermissionError(
             f"DOT_LANDSCAPES_WRITE_TEST permission error: "
