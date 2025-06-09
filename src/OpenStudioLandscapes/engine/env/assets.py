@@ -107,8 +107,8 @@ def dot_landscapes(
     try:
         with tempfile.NamedTemporaryFile(
             dir=_dot_landscapes,
-            prefix="DOT_LANDSCAPES_WRITE_TEST__",
-            delete=False,
+            prefix=".DOT_LANDSCAPES_WRITE_TEST__",
+            delete=True,
             mode="w",
             encoding="utf-8",
         ) as temp_file:
