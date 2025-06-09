@@ -913,21 +913,14 @@ def script_harbor_init(
         # Create `openstudiolandscapes` if it does not exist
         script.writelines(
             [
-                # Returns "HTTP/1.1 201 Created" if successful
                 "\n",
                 "# Create project openstudiolandscapes\n",
+                "# curl returns \"HTTP/1.1 201 Created\" if created successfully\n",
+                # Todo:
+                "# curl returns \"HTTP/1.1 XXX Created\" if already exists\n",
                 "\n",
-                # "echo \"Giving Harbor some time before performing this POST request...\"\n",
-                # f"for i in $(seq {str(sleep_)}); do\n",
-                # # f"    echo -ne $(({str(sleep_)}-$i+1))\n",
-                # f"    echo -ne \".\"\n",
-                # "    sleep 1\n",
-                # "done\n",
-                # f"echo -ne \"\n\"\n",
-                "\n",
-                # Todo
-                #  - [x] This is not working! Investigate!
                 "until [ \\\n",
+                "    # Create New:\n",
                 "    \"$(curl -s -w '%{http_code}' -v -X 'POST' \\\n",
                 f"      '{url_harbor}/api/v2.0/projects' \\\n",
                 "      -H 'accept: application/json' \\\n",
@@ -939,47 +932,56 @@ def script_harbor_init(
                 "      \"public\": true\n",
                 "    }')\" \\\n",
                 "    -eq 201 ]\n",
+                # "    -eq 201 \n",
+                # "    ||\n",
+                # "    # If exits:\n",
+                # "    \"$(curl -s -w '%{http_code}' -v -X 'POST' \\\n",
+                # f"      '{url_harbor}/api/v2.0/projects' \\\n",
+                # "      -H 'accept: application/json' \\\n",
+                # "      -H 'X-Resource-Name-In-Location: false' \\\n",
+                # f"      -H 'authorization: Basic {base64.b64encode(str(':'.join([username_harbor, password_harbor])).encode('utf-8')).decode('ascii')}' \\\n",
+                # "      -H 'Content-Type: application/json' \\\n",
+                # "      -d '{\n",
+                # "      \"project_name\": \"openstudiolandscapes\",\n",
+                # "      \"public\": true\n",
+                # "    }')\" \\\n",
+                # "    -eq 201 ]\n",
                 # "\n",
                 "do\n",
-                "    sleep 2\n",
+                f"    sleep {sleep_}\n",
                 "    echo \"Trying again...\"\n",
                 "done\n",
                 "\n",
+                "echo \"Project openstudionlandscapes successfully created.\"\n",
                 "\n",
-                # Todo:
-                #  - [ ] confirmation/error
-                #    like && success || error
-                # "sleep 10\n",
+                "\n",
             ]
         )
 
         # Delete `library` if it does exist
         script.writelines(
             [
-                # Returns "HTTP/1.1 200 OK" if successful
                 # Todo:
                 #  - [ ] implement `until`
                 "\n",
                 "# Delete project library\n",
+                " # curl returns \"HTTP/1.1 200 OK\" if successful\n",
                 "\n",
-                "echo \"Giving Harbor some time before performing this DELETE request...\"\n",
-                f"for i in $(seq {str(sleep_)}); do\n",
-                # f"    echo -ne $(({str(sleep_)}-$i+1))\n",
-                f"    echo -ne \".\"\n",
-                "    sleep 1\n",
+                "until [ \\\n",
+                "    \"$(curl -v -X 'DELETE' \\\n",
+                f"      '{url_harbor}/api/v2.0/projects/library' \\\n",
+                "      -H 'accept: application/json' \\\n",
+                "      -H 'X-Is-Resource-Name: false' \\\n",
+                f"      -H 'authorization: Basic {base64.b64encode(str(':'.join([username_harbor, password_harbor])).encode('utf-8')).decode('ascii')}'\" \\\n",
+                "    -eq 200 ]\n",
+                "do\n",
+                f"    sleep {sleep_}\n",
+                "    echo \"Trying again...\"\n",
                 "done\n",
-                f"echo -ne \"\n\"\n",
                 "\n",
-                "curl -v -X 'DELETE' \\\n",
-                f"  '{url_harbor}/api/v2.0/projects/library' \\\n",
-                "  -H 'accept: application/json' \\\n",
-                "  -H 'X-Is-Resource-Name: false' \\\n",
-                f"  -H 'authorization: Basic {base64.b64encode(str(':'.join([username_harbor, password_harbor])).encode('utf-8')).decode('ascii')}'\n",
+                "echo \"Project library successfully deleted.\"\n",
                 "\n",
-                # Todo:
-                #  - [ ] confirmation/error
-                #        like && success || error
-                # "sleep 10\n",
+                "\n",
             ]
         )
 
