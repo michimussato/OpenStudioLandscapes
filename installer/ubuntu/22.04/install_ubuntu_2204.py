@@ -1145,6 +1145,7 @@ if __name__ == "__main__":
                     parents=True,
                     exist_ok=True,
                 )
+                print(f"Directory created: {openstudiolandscapes_base.expanduser().as_posix()}")
             except PermissionError as e:
                 print(
                     f"ERROR: Permission error, could not create: "
