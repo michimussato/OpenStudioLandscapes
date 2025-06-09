@@ -719,183 +719,6 @@ def script_harbor_init(
             ]
         )
 
-        # success_code = "HTTP/1.1 200 OK"
-        #
-        # error_codes = [
-        #     "HTTP/1.1 404 Not Found",
-        #     "HTTP/1.1 500 Internal Server Error",
-        #     "HTTP/1.1 502 Bad Gateway",
-        # ]
-
-        # script.writelines(
-        #     [
-        #         "\n",
-        #         "# Check if Harbor is healthy...\n",
-        #         "\n",
-        #         "echo \"Giving Harbor some time before performing this HEAD request...\"\n",
-        #         f"for i in $(seq {str(sleep_)}); do\n",
-        #         # f"    echo -ne $(({str(sleep_)}-$i+1))\n",
-        #         f"    echo -ne \".\"\n",
-        #         "    sleep 1\n",
-        #         "done\n",
-        #         f"echo -ne \"\n\"\n",
-        #         "\n",
-        #         # Todo
-        #         #  - [ ] This is not working! Investigate!
-        #         "curl -X 'GET'   'http://localhost/api/v2.0/health'   -H 'accept: application/json'   -H 'authorization: Basic YWRtaW46SGFyYm9yMTIzNDU=' | jq | while read i; do if [[ \"$i\" == *\"error\"* ]]; then echo $i; fi; done;"
-        #         "if curl -X 'GET' \\\n",
-        #         f"  '{url_harbor}/api/v2.0/health' \\\n",
-        #         "  -H 'accept: application/json' \\\n",
-        #         f"  -H 'authorization: Basic {base64.b64encode(str(':'.join([username_harbor, password_harbor])).encode('utf-8')).decode('ascii')}' \\\n",
-        #         "}'\n",
-        #         "\n",
-        #         # Todo:
-        #         #  - [ ] confirmation/error
-        #         #    like && success || error
-        #         # "sleep 10\n",
-        #     ]
-        # )
-
-        # script.writelines(
-        #     [
-        #         "\n",
-        #         "# Check if openstudiolandscapes exists...\n",
-        #         "\n",
-        #         "echo \"Giving Harbor some time before performing this HEAD request...\"\n",
-        #         f"for i in $(seq {str(sleep_)}); do\n",
-        #         # f"    echo -ne $(({str(sleep_)}-$i+1))\n",
-        #         f"    echo -ne \".\"\n",
-        #         "    sleep 1\n",
-        #         "done\n",
-        #         f"echo -ne \"\n\"\n",
-        #         "\n",
-        #         # Todo
-        #         #  - [ ] This is not working! Investigate!
-        #         "curl --head \\\n",
-        #         f"  '{url_harbor}/api/v2.0/projects?project_name=openstudiolandscapes' \\\n",
-        #         "  -H 'accept: application/json' \\\n",
-        #         "  -H 'X-Resource-Name-In-Location: false' \\\n",
-        #         f"  -H 'authorization: Basic {base64.b64encode(str(':'.join([username_harbor, password_harbor])).encode('utf-8')).decode('ascii')}' \\\n",
-        #         "  -H 'Content-Type: application/json' \\\n",
-        #         "  -d '{\n",
-        #         "  \"project_name\": \"openstudiolandscapes\",\n",
-        #         "  \"public\": true\n",
-        #         "}'\n",
-        #         "\n",
-        #         # Todo:
-        #         #  - [ ] confirmation/error
-        #         #    like && success || error
-        #         # "sleep 10\n",
-        #     ]
-        # )
-
-        # Todo:
-        #  - [ ] Find a better way to deal with this:
-        #        #!/bin/env bash
-        #
-        #
-        #
-        #        # Create project openstudiolandscapes
-        #
-        #        echo "Giving Harbor some time before performing this POST request..."
-        #        for i in $(seq 10); do
-        #            echo -ne "."
-        #            sleep 1
-        #        done
-        #        echo -ne "
-        #        "
-        #
-        #        curl -v -X 'POST' \
-        #          'http://harbor.farm.evil:80/api/v2.0/projects' \
-        #          -H 'accept: application/json' \
-        #          -H 'X-Resource-Name-In-Location: false' \
-        #          -H 'authorization: Basic YWRtaW46SGFyYm9yMTIzNDU=' \
-        #          -H 'Content-Type: application/json' \
-        #          -d '{
-        #          "project_name": "openstudiolandscapes",
-        #          "public": true
-        #        }'
-        #
-        #
-        #        # Delete project library
-        #
-        #        echo "Giving Harbor some time before performing this DELETE request..."
-        #        for i in $(seq 10); do
-        #            echo -ne "."
-        #            sleep 1
-        #        done
-        #        echo -ne "
-        #        "
-        #
-        #        curl -v -X 'DELETE' \
-        #          'http://harbor.farm.evil:80/api/v2.0/projects/library' \
-        #          -H 'accept: application/json' \
-        #          -H 'X-Is-Resource-Name: false' \
-        #          -H 'authorization: Basic YWRtaW46SGFyYm9yMTIzNDU='
-        #
-        #
-        #        exit 0
-        #
-        #        Result:L
-        #        -----------
-        #        Giving Harbor some time before performing this POST request...
-        #        ..........
-        #        Note: Unnecessary use of -X or --request, POST is already inferred.
-        #        *   Trying 127.0.0.1:80...
-        #        * Connected to harbor.farm.evil (127.0.0.1) port 80 (#0)
-        #        > POST /api/v2.0/projects HTTP/1.1
-        #        > Host: harbor.farm.evil
-        #        > User-Agent: curl/7.81.0
-        #        > accept: application/json
-        #        > X-Resource-Name-In-Location: false
-        #        > authorization: Basic YWRtaW46SGFyYm9yMTIzNDU=
-        #        > Content-Type: application/json
-        #        > Content-Length: 62
-        #        >
-        #        * Mark bundle as not supporting multiuse
-        #        < HTTP/1.1 502 Bad Gateway
-        #        < Server: nginx
-        #        < Date: Sun, 08 Jun 2025 08:46:02 GMT
-        #        < Content-Type: text/html
-        #        < Content-Length: 150
-        #        < Connection: keep-alive
-        #        <
-        #        <html>
-        #        <head><title>502 Bad Gateway</title></head>
-        #        <body>
-        #        <center><h1>502 Bad Gateway</h1></center>
-        #        <hr><center>nginx</center>
-        #        </body>
-        #        </html>
-        #        * Connection #0 to host harbor.farm.evil left intact
-        #        Giving Harbor some time before performing this DELETE request...
-        #        ..........
-        #        *   Trying 127.0.0.1:80...
-        #        * Connected to harbor.farm.evil (127.0.0.1) port 80 (#0)
-        #        > DELETE /api/v2.0/projects/library HTTP/1.1
-        #        > Host: harbor.farm.evil
-        #        > User-Agent: curl/7.81.0
-        #        > accept: application/json
-        #        > X-Is-Resource-Name: false
-        #        > authorization: Basic YWRtaW46SGFyYm9yMTIzNDU=
-        #        >
-        #        * Mark bundle as not supporting multiuse
-        #        < HTTP/1.1 502 Bad Gateway
-        #        < Server: nginx
-        #        < Date: Sun, 08 Jun 2025 08:46:12 GMT
-        #        < Content-Type: text/html
-        #        < Content-Length: 150
-        #        < Connection: keep-alive
-        #        <
-        #        <html>
-        #        <head><title>502 Bad Gateway</title></head>
-        #        <body>
-        #        <center><h1>502 Bad Gateway</h1></center>
-        #        <hr><center>nginx</center>
-        #        </body>
-        #        </html>
-        #        * Connection #0 to host harbor.farm.evil left intact
-
         # Harbor Health:
         # curl -X 'GET'   'http://localhost/api/v2.0/health'   -H 'accept: application/json'   -H 'authorization: Basic YWRtaW46SGFyYm9yMTIzNDU='
         # Parse as JSON
@@ -917,7 +740,8 @@ def script_harbor_init(
                 "# Create project openstudiolandscapes\n",
                 "# curl returns \"HTTP/1.1 201 Created\" if created successfully\n",
                 # Todo:
-                "# curl returns \"HTTP/1.1 XXX Created\" if already exists\n",
+                #  - [ ] if not exists: until... else skip.
+                "# curl returns \"HTTP/1.1 409 Conflict\" if already exists\n",
                 "\n",
                 "until [ \\\n",
                 "    # Create New:\n",
@@ -931,22 +755,22 @@ def script_harbor_init(
                 "      \"project_name\": \"openstudiolandscapes\",\n",
                 "      \"public\": true\n",
                 "    }')\" \\\n",
-                "    -eq 201 ]\n",
-                # "    -eq 201 \n",
-                # "    ||\n",
-                # "    # If exits:\n",
-                # "    \"$(curl -s -w '%{http_code}' -v -X 'POST' \\\n",
-                # f"      '{url_harbor}/api/v2.0/projects' \\\n",
-                # "      -H 'accept: application/json' \\\n",
-                # "      -H 'X-Resource-Name-In-Location: false' \\\n",
-                # f"      -H 'authorization: Basic {base64.b64encode(str(':'.join([username_harbor, password_harbor])).encode('utf-8')).decode('ascii')}' \\\n",
-                # "      -H 'Content-Type: application/json' \\\n",
-                # "      -d '{\n",
-                # "      \"project_name\": \"openstudiolandscapes\",\n",
-                # "      \"public\": true\n",
-                # "    }')\" \\\n",
                 # "    -eq 201 ]\n",
-                # "\n",
+                "    -eq 201 \n",
+                "    ||\n",
+                "    # If exits:\n",
+                "    \"$(curl -s -w '%{http_code}' -v -X 'POST' \\\n",
+                f"      '{url_harbor}/api/v2.0/projects' \\\n",
+                "      -H 'accept: application/json' \\\n",
+                "      -H 'X-Resource-Name-In-Location: false' \\\n",
+                f"      -H 'authorization: Basic {base64.b64encode(str(':'.join([username_harbor, password_harbor])).encode('utf-8')).decode('ascii')}' \\\n",
+                "      -H 'Content-Type: application/json' \\\n",
+                "      -d '{\n",
+                "      \"project_name\": \"openstudiolandscapes\",\n",
+                "      \"public\": true\n",
+                "    }')\" \\\n",
+                "    -eq 409 ]\n",
+                "\n",
                 "do\n",
                 f"    sleep {sleep_}\n",
                 "    echo \"Trying again...\"\n",
