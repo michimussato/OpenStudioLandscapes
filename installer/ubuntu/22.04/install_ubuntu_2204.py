@@ -757,7 +757,7 @@ def script_harbor_init(
                 "    }')\" \\\n",
                 # "    -eq 201 ]\n",
                 "    -eq 201 \n",
-                "    ||\n",
+                "    || \\\n",
                 "    # If exits:\n",
                 "    \"$(curl -s -w '%{http_code}' -v -X 'POST' \\\n",
                 f"      '{url_harbor}/api/v2.0/projects' \\\n",
