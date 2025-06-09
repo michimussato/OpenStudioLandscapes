@@ -738,6 +738,7 @@ def script_harbor_init(
             [
                 "\n",
                 "# Create project openstudiolandscapes\n",
+                "# curl returns \"HTTP/1.1 200 OK\" if project exists\n",
                 "# curl returns \"HTTP/1.1 201 Created\" if created successfully\n",
                 "\n",
                 "\n",
@@ -746,9 +747,9 @@ def script_harbor_init(
                 "      -H 'accept: application/json' \\\n",
                 f"      -H 'authorization: Basic {base64.b64encode(str(':'.join([username_harbor, password_harbor])).encode('utf-8')).decode('ascii')}' \\\n",
                 "    == \"200\" ]]; then \n",
-                "    echo \"Project exists. Nothing to do.\"\n",
+                "    echo \"Project openstudionlandscapes exists. Nothing to do.\"\n",
                 "else\n",
-                "    echo \"Project does not exist.\"\n",
+                "    echo \"Project openstudionlandscapes does not exist. Creating...\"\n",
                 "    \n",
                 "    until [ \\\n",
                 # "    # Create New:\n",
@@ -809,7 +810,7 @@ def script_harbor_init(
                 #  - [ ] implement `until`
                 "\n",
                 "# Delete project library\n",
-                " # curl returns \"HTTP/1.1 200 OK\" if successful\n",
+                "# curl returns \"HTTP/1.1 200 OK\" if successful\n",
                 "\n",
                 "until [ \\\n",
                 "    \"$(curl -v -X 'DELETE' \\\n",
