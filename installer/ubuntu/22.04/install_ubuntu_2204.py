@@ -811,10 +811,11 @@ def script_harbor_init(
                 #  - [ ] implement `until`
                 "\n",
                 "# Delete project library\n",
-                "# curl returns \"HTTP/1.1 200 OK\" if successful\n",
+                "# curl returns \"HTTP/1.1 200 OK\" if library deleted successfully\n",
+                "# curl returns \"HTTP/1.1 404 Not Found\" if successful\n",
                 "\n",
                 "until [ \\\n",
-                "    \"$(curl -s -o '/dev/null' -v -X 'DELETE' \\\n",
+                "    \"$(curl -w '%{http_code}' -s -o '/dev/null' -v -X 'DELETE' \\\n",
                 f"      '{url_harbor}/api/v2.0/projects/library' \\\n",
                 "      -H 'accept: application/json' \\\n",
                 "      -H 'X-Is-Resource-Name: false' \\\n",
