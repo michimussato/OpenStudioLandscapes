@@ -107,10 +107,14 @@ def dot_landscapes(
     try:
         with tempfile.NamedTemporaryFile(
             dir=_dot_landscapes,
-            prefix="DOT_LANDSCAPES_WRITE_TEST",
+            prefix="DOT_LANDSCAPES_WRITE_TEST__",
             delete=False,
         ) as temp_file:
-            temp_file.write("I was here.")
+            temp_file.writelines(
+                [
+                    "I was here.",
+                ]
+            )
 
     except PermissionError as e:
         raise PermissionError(
