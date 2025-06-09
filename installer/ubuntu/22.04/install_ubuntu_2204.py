@@ -732,7 +732,7 @@ def script_harbor_init(
         # `until`
         # https://unix.stackexchange.com/a/644364
 
-        sleep_ = 10
+        sleep_ = 3
         # Create `openstudiolandscapes` if it does not exist
         script.writelines(
             [
