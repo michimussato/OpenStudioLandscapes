@@ -756,7 +756,7 @@ def script_harbor_init(
                 "      \"public\": true\n",
                 "    }')\" \\\n",
                 # "    -eq 201 ]\n",
-                "    -eq 201 \n",
+                "    -eq 201 \\\n",
                 "    || \\\n",
                 "    # If exits:\n",
                 "    \"$(curl -s -w '%{http_code}' -v -X 'POST' \\\n",
