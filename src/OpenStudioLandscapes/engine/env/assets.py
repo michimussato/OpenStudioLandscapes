@@ -109,6 +109,7 @@ def dot_landscapes(
             dir=_dot_landscapes,
             prefix="DOT_LANDSCAPES_WRITE_TEST__",
             delete=False,
+            mode="w",
             encoding="utf-8",
         ) as temp_file:
             temp_file.writelines(
