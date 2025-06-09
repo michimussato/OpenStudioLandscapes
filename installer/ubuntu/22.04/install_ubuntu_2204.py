@@ -739,44 +739,65 @@ def script_harbor_init(
                 "\n",
                 "# Create project openstudiolandscapes\n",
                 "# curl returns \"HTTP/1.1 201 Created\" if created successfully\n",
+                "\n",
+                "\n",
+                "if [[ \\\n",
+                "    $(curl -s -o '/dev/null' -w '%{http_code}' -v \\\n",
+                f"    '{url_harbor}/api/v2.0/projects?project_name=openstudiolandscapes' \\\n",
+                "      -H 'accept: application/json' \\\n",
+                f"      -H 'authorization: Basic {base64.b64encode(str(':'.join([username_harbor, password_harbor])).encode('utf-8')).decode('ascii')}' \\\n",
+                "    == \"200\" ]]; then \n",
+                "    echo \"Project exists.\"\n",
+
+                "    until [ \\\n",
+                # "    # Create New:\n",
+                "        \"$(curl -s -w '%{http_code}' -v -X 'POST' \\\n",
+                f"          '{url_harbor}/api/v2.0/projects' \\\n",
+                "          -H 'accept: application/json' \\\n",
+                "          -H 'X-Resource-Name-In-Location: false' \\\n",
+                f"          -H 'authorization: Basic {base64.b64encode(str(':'.join([username_harbor, password_harbor])).encode('utf-8')).decode('ascii')}' \\\n",
+                "          -H 'Content-Type: application/json' \\\n",
+                "          -d '{\n",
+                "          \"project_name\": \"openstudiolandscapes\",\n",
+                "          \"public\": true\n",
+                "        }')\" \\\n",
+                "        -eq 201 ]\n",
+                "    \n",
+                "    do\n",
+                f"        sleep {sleep_}\n",
+                "        echo \"Trying again...\"\n",
+                "    done\n",
+                "    \n",
+                "    echo \"Project openstudionlandscapes successfully created.\"\n",
+                "else\n",
+                "    echo \"Project does not exist.\"\n",
+                "\n",
+                "\n",
+                "\n",
                 # Todo:
                 #  - [ ] if not exists: until... else skip.
-                "# curl returns \"HTTP/1.1 409 Conflict\" if already exists\n",
+                # "# curl returns \"HTTP/1.1 409 Conflict\" if already exists\n",
                 "\n",
-                "until [ \\\n",
-                # "    # Create New:\n",
-                "    \"$(curl -s -w '%{http_code}' -v -X 'POST' \\\n",
-                f"      '{url_harbor}/api/v2.0/projects' \\\n",
-                "      -H 'accept: application/json' \\\n",
-                "      -H 'X-Resource-Name-In-Location: false' \\\n",
-                f"      -H 'authorization: Basic {base64.b64encode(str(':'.join([username_harbor, password_harbor])).encode('utf-8')).decode('ascii')}' \\\n",
-                "      -H 'Content-Type: application/json' \\\n",
-                "      -d '{\n",
-                "      \"project_name\": \"openstudiolandscapes\",\n",
-                "      \"public\": true\n",
-                "    }')\" \\\n",
+                # "until [ \\\n",
+                # # "    # Create New:\n",
+                # "    \"$(curl -s -w '%{http_code}' -v -X 'POST' \\\n",
+                # f"      '{url_harbor}/api/v2.0/projects' \\\n",
+                # "      -H 'accept: application/json' \\\n",
+                # "      -H 'X-Resource-Name-In-Location: false' \\\n",
+                # f"      -H 'authorization: Basic {base64.b64encode(str(':'.join([username_harbor, password_harbor])).encode('utf-8')).decode('ascii')}' \\\n",
+                # "      -H 'Content-Type: application/json' \\\n",
+                # "      -d '{\n",
+                # "      \"project_name\": \"openstudiolandscapes\",\n",
+                # "      \"public\": true\n",
+                # "    }')\" \\\n",
                 # "    -eq 201 ]\n",
-                "    -eq 201 \\\n",
-                "    || \\\n",
-                # "    # If exits:\n",
-                "    \"$(curl -s -w '%{http_code}' -v -X 'POST' \\\n",
-                f"      '{url_harbor}/api/v2.0/projects' \\\n",
-                "      -H 'accept: application/json' \\\n",
-                "      -H 'X-Resource-Name-In-Location: false' \\\n",
-                f"      -H 'authorization: Basic {base64.b64encode(str(':'.join([username_harbor, password_harbor])).encode('utf-8')).decode('ascii')}' \\\n",
-                "      -H 'Content-Type: application/json' \\\n",
-                "      -d '{\n",
-                "      \"project_name\": \"openstudiolandscapes\",\n",
-                "      \"public\": true\n",
-                "    }')\" \\\n",
-                "    -eq 409 ]\n",
-                "\n",
-                "do\n",
-                f"    sleep {sleep_}\n",
-                "    echo \"Trying again...\"\n",
-                "done\n",
-                "\n",
-                "echo \"Project openstudionlandscapes successfully created.\"\n",
+                # "\n",
+                # "do\n",
+                # f"    sleep {sleep_}\n",
+                # "    echo \"Trying again...\"\n",
+                # "done\n",
+                # "\n",
+                # "echo \"Project openstudionlandscapes successfully created.\"\n",
                 "\n",
                 "\n",
             ]
@@ -815,6 +836,38 @@ def script_harbor_init(
                 "exit 0\n",
             ]
         )
+
+        """
+until [ \
+    "$(curl -s -w '%{http_code}' -v -X 'POST' \
+      'http://harbor.farm.evil:80/api/v2.0/projects' \
+      -H 'accept: application/json' \
+      -H 'X-Resource-Name-In-Location: false' \
+      -H 'authorization: Basic YWRtaW46SGFyYm9yMTIzNDU=' \
+      -H 'Content-Type: application/json' \
+      -d '{
+      "project_name": "openstudiolandscapes",
+      "public": true
+    }')" \
+    -eq 201 \
+    || \
+    "$(curl -s -w '%{http_code}' -v -X 'POST' \
+      'http://harbor.farm.evil:80/api/v2.0/projects' \
+      -H 'accept: application/json' \
+      -H 'X-Resource-Name-In-Location: false' \
+      -H 'authorization: Basic YWRtaW46SGFyYm9yMTIzNDU=' \
+      -H 'Content-Type: application/json' \
+      -d '{
+      "project_name": "openstudiolandscapes",
+      "public": true
+    }')" \
+    -eq 409 ]
+
+do
+    sleep 10
+    echo "Trying again..."
+done
+        """
 
         """
 1 : #!/bin/env bash
