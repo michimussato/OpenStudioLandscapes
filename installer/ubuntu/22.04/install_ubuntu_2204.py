@@ -745,7 +745,7 @@ def script_harbor_init(
                 "if [[ $(curl -s -o '/dev/null' -w '%{http_code}' -v \\\n",
                 f"    '{url_harbor}/api/v2.0/projects?project_name=openstudiolandscapes' \\\n",
                 "      -H 'accept: application/json' \\\n",
-                f"      -H 'authorization: Basic {base64.b64encode(str(':'.join([username_harbor, password_harbor])).encode('utf-8')).decode('ascii')}' \\\n",
+                f"      -H 'authorization: Basic {base64.b64encode(str(':'.join([username_harbor, password_harbor])).encode('utf-8')).decode('ascii')}') \\\n",
                 "    == \"200\" ]]; then \n",
                 "    echo \"Project openstudionlandscapes exists. Nothing to do.\"\n",
                 "else\n",
