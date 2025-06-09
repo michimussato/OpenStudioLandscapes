@@ -1139,8 +1139,20 @@ if __name__ == "__main__":
             print(f"ERROR: Directory {openstudiolandscapes_base.as_posix()} is not absolute (~ is allowed).")
             continue
         if not openstudiolandscapes_base.expanduser().exists():
-            print(f"ERROR: Directory {openstudiolandscapes_base.as_posix()} does not exist. Create it first (`mkdir -p {openstudiolandscapes_base}`) or choose a different one.")
-            continue
+            try:
+                openstudiolandscapes_base.expanduser().mkdir(
+                    mode=0o775,
+                    parents=True,
+                    exist_ok=True,
+                )
+            except PermissionError as e:
+                print(
+                    f"ERROR: Permission error, could not create: "
+                    f"{openstudiolandscapes_base.expanduser().as_posix()}. "
+                    f"Error: {e}",
+                )
+                # print(f"ERROR: Directory {openstudiolandscapes_base.as_posix()} does not exist. Create it first (`mkdir -p {openstudiolandscapes_base}`) or choose a different one.")
+                continue
         if openstudiolandscapes_base.expanduser().is_file():
             print(f"ERROR: Install Directory {openstudiolandscapes_base.as_posix()} is a file. Cannot continue.")
             continue
