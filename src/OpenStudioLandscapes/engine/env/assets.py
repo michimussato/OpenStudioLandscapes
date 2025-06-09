@@ -80,14 +80,14 @@ def dot_landscapes(
     _dot_landscapes = pathlib.Path("/opt/openstudiolandscapes/.landscapes")
     # _dot_landscapes = git_root / ".landscapes"
 
-    if not _dot_landscapes.is_dir():
-        raise NotADirectoryError(f"DOT_LANDSCAPES is not a directory: {_dot_landscapes.as_posix()}")
-
-    if not _dot_landscapes.is_dir():
+    if not _dot_landscapes.exists():
         raise FileNotFoundError(f"DOT_LANDSCAPES directory does not exist: "
                                 f"{_dot_landscapes.as_posix()}. "
                                 f"Try `sudo mkdir -p {_dot_landscapes.as_posix()} "
                                 f"&& sudo chmod -R a+rw {_dot_landscapes.as_posix()}`.")
+
+    if not _dot_landscapes.is_dir():
+        raise NotADirectoryError(f"DOT_LANDSCAPES is not a directory: {_dot_landscapes.as_posix()}")
 
     # Test
     try:
