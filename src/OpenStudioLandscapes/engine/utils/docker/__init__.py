@@ -121,10 +121,14 @@ def docker_process_cmds(
         context.log.debug(f"{returncode = }")
 
         if bool(returncode):
-            context.log.error("\n".join(logs_["stderr"]))
-            raise OpenStudioLandscapesDockerException(
-                f"Command failed {returncode = }: {cmd = }\n"
-                "Is Harbor running? Try `nox --session harbor_up` or `nox --session harbor_up_detach`."
-            )
+            err_ = "\n".join(logs_["stderr"])
+            context.log.error(err_)
+            str_ = ""
+            str_ += f"Command failed {returncode = }: {cmd = }\n"
+            str_ += "Is Harbor running? Try `nox --session harbor_up` or `nox --session harbor_up_detach`.\n"
+            str_ += "\n"
+            str_ += "Full trace:\n"
+            str_ += err_
+            raise OpenStudioLandscapesDockerException(str_)
 
         yield logs_
