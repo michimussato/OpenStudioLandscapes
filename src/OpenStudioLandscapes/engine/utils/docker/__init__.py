@@ -121,11 +121,11 @@ def docker_process_cmds(
         context.log.debug(f"{returncode = }")
 
         if bool(returncode):
-            context.log.error(f"command failed {returncode = }: {cmd = }")
-            context.log.error(
-                "Is Harbor running? (`sudo docker compose --file .landscapes/.harbor/bin/docker-compose.yml --project-name openstudiolandscapes-harbor up --remove-orphans`)"
-            )
             raise OpenStudioLandscapesDockerException(
+                f"Command failed {returncode = }: {cmd = }\n"
+                "Is Harbor running? Try `nox --session harbor_up` or `nox --session harbor_up_detach`. \n"
+                "\n"
+                "Full trace:\n"
                 "\n".join(logs_["stderr"]),
             )
 
