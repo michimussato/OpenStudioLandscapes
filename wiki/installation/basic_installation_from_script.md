@@ -18,8 +18,9 @@ installing OpenStudioLandscapes via installer script.
 As of now, the installer is tested and supported for
 these Linux distros/versions:
 - Ubuntu
-  - ✅ 22.04 Server ![Install_UbuntuServer2204.png](../../media/images/Install_UbuntuServer2204.png)
-  - ✅ 22.04 Desktop ![Install_UbuntuDesktop2204.png](../../media/images/Install_UbuntuDesktop2204.png)
+  - [22.04 LTS (Jammy Jellyfish)](https://www.releases.ubuntu.com/22.04/)
+    - ✅ Server
+    - ✅ Desktop
 
 > [!TIP]
 > Install Ubuntu as a VM to play around with OpenStudioLandscapes.
@@ -61,6 +62,11 @@ of previous installations if there were any.
 ### Ubuntu
 
 #### 22.04
+
+| Image   | Installer Options                                                                  |
+|---------|------------------------------------------------------------------------------------|
+| Desktop | ![Install_UbuntuDesktop2204.png](../../media/images/Install_UbuntuDesktop2204.png) |
+| Server  | ![Install_UbuntuServer2204.png](../../media/images/Install_UbuntuServer2204.png)   |
 
 Source: [`install_ubuntu_2204.py`](https://github.com/michimussato/OpenStudioLandscapes/blob/main/installer/ubuntu/22.04/install_ubuntu_2204.py)
 
