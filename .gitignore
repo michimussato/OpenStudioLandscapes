@@ -64,6 +64,7 @@ docker/.volumes/.landscapes/*/
 !.features/.gitkeep
 
 # Dagster
+.env
 .dagster/*
 !.dagster/.gitkeep
 !.dagster/dagster.yaml
@@ -75,20 +76,20 @@ tmp*/
 !.landscapes/.dagster/.gitkeep
 
 # Harbor
-!.landscapes/.harbor/
+!.harbor/
 
-.landscapes/.harbor/data/*
-!.landscapes/.harbor/data/.gitkeep
+.harbor/data/*
+!.harbor/data/.gitkeep
 
-.landscapes/.harbor/bin/*
-!.landscapes/.harbor/bin/.gitkeep
+.harbor/bin/*
+!.harbor/bin/.gitkeep
 
-.landscapes/.harbor/download/*
-!.landscapes/.harbor/download/.gitkeep
+.harbor/download/*
+!.harbor/download/.gitkeep
 
 # Pi-hole
-.landscapes/.pi-hole/*
-!.landscapes/.pi-hole/.gitkeep
+.pi-hole/*
+!.pi-hole/.gitkeep
 
 # Payloads
 .payload/data/

@@ -901,7 +901,7 @@ ENVIRONMENT_PI_HOLE = {
         "default-auto",
         "lcars",
     ][0],
-    "PI_HOLE_ROOT_DIR": pathlib.Path.cwd() / ".landscapes" / ".pi-hole",
+    "PI_HOLE_ROOT_DIR": pathlib.Path.cwd() / ".pi-hole",
     "PI_HOLE_ETC_PI_HOLE": "etc-pihole",
     "PI_HOLE_ETC_DNSMASQ": "etc-dnsmasq",
 }
@@ -1106,7 +1106,7 @@ def pi_hole_prepare(session):
             "`docker-compose.yml` already present in. Use that or start fresh by "
             "issuing `nox --session pi_hole_clear` first."
         )
-        return
+        return 0
 
     docker_compose: pathlib.Path = write_pi_hole_yml()
 
@@ -1294,7 +1294,7 @@ ENVIRONMENT_HARBOR = {
         "online": "https://github.com/goharbor/harbor/releases/download/{HARBOR_RELEASE}/harbor-online-installer-{HARBOR_RELEASE}.tgz",
         "offline": "https://github.com/goharbor/harbor/releases/download/{HARBOR_RELEASE}/harbor-offline-installer-{HARBOR_RELEASE}.tgz",
     }["online"],
-    "HARBOR_ROOT_DIR": pathlib.Path.cwd() / ".landscapes" / ".harbor",
+    "HARBOR_ROOT_DIR": pathlib.Path.cwd() / ".harbor",
     "HARBOR_BIN_DIR": "bin",
     "HARBOR_DOWNLOAD_DIR": "download",
     "HARBOR_DATA_DIR": "data",
@@ -1491,7 +1491,7 @@ def harbor_prepare(session):
 
     # /usr/bin/sudo \
     #     /usr/bin/bash
-    #     /data/share/nfs/git/repos/OpenStudioLandscapes/OpenStudioLandscapes/.landscapes/.harbor/bin/prepare
+    #     /data/share/nfs/git/repos/OpenStudioLandscapes/OpenStudioLandscapes/.harbor/bin/prepare
 
     sudo = False
 
@@ -1638,7 +1638,7 @@ def harbor_up(session):
     # /usr/bin/sudo \
     #     /usr/bin/docker \
     #     compose \
-    #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.harbor/bin/docker-compose.yml \
+    #     --file /home/michael/git/repos/OpenStudioLandscapes/.harbor/bin/docker-compose.yml \
     #     --project-name openstudiolandscapes-harbor up --remove-orphans
 
     sudo = True
@@ -1681,7 +1681,7 @@ def harbor_up_detach(session):
     # /usr/bin/sudo \
     #     /usr/bin/docker \
     #     compose \
-    #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.harbor/bin/docker-compose.yml \
+    #     --file /home/michael/git/repos/OpenStudioLandscapes/.harbor/bin/docker-compose.yml \
     #     --project-name openstudiolandscapes-harbor up --remove-orphans --detach
 
     sudo = True
@@ -1725,7 +1725,7 @@ def harbor_down(session):
     # /usr/bin/sudo \
     #     /usr/bin/docker \
     #     compose \
-    #     --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/.harbor/bin/docker-compose.yml \
+    #     --file /home/michael/git/repos/OpenStudioLandscapes/.harbor/bin/docker-compose.yml \
     #     --project-name openstudiolandscapes-harbor down
 
     sudo = True

@@ -1,4 +1,5 @@
 import getpass
+import os
 import pathlib
 import socket
 import tempfile
@@ -77,8 +78,17 @@ def dot_landscapes(
     # git_root: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
 
-    _dot_landscapes = pathlib.Path("/opt/openstudiolandscapes/.landscapes")
-    # _dot_landscapes = git_root / ".landscapes"
+    # EMPTY_VAR=
+    # os.getenv("EMPTY_VAR", "some_value") returns value of EMPTY_VAR
+    # whereas we want:
+    # os.getenv("EMPTY_VAR") or "some_value"
+
+    _dot_landscapes = pathlib.Path(
+        os.getenv(
+            "OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT",
+        ) or git_root,
+        ".landscapes",
+    )
 
     if not _dot_landscapes.expanduser().exists():
         try:
@@ -90,15 +100,16 @@ def dot_landscapes(
         except PermissionError as e:
             context.log.exception("No permission to create .landscapes directory.")
             raise PermissionError(
-                "No permission to create .landscapes directory. "
-                f"Try `sudo mkdir -p {_dot_landscapes.as_posix()} "
-                f"&& sudo chmod -R a+rw {_dot_landscapes.as_posix()}`."
+                "No permission to create .landscapes root directory. \n"
+                f"Try `"
+                f"sudo install "
+                f"--directory "
+                f"--mode=0755 "
+                f"--owner=$USER "
+                f"--group=$(id --group --name $USER) "
+                f"{_dot_landscapes.parent.as_posix()}"
+                f"`."
             ) from e
-
-        # raise FileNotFoundError(f"DOT_LANDSCAPES directory does not exist: "
-        #                         f"{_dot_landscapes.as_posix()}. "
-        #                         f"Try `sudo mkdir -p {_dot_landscapes.as_posix()} "
-        #                         f"&& sudo chmod -R a+rw {_dot_landscapes.as_posix()}`.")
 
     if not _dot_landscapes.is_dir():
         raise NotADirectoryError(f"DOT_LANDSCAPES is not a directory: {_dot_landscapes.as_posix()}")
@@ -124,20 +135,6 @@ def dot_landscapes(
             f"{_dot_landscapes.as_posix()} is not writable. "
             f"Try `sudo chmod -R a+rw {_dot_landscapes.as_posix()}`."
         ) from e
-
-    # try:
-    #     _dot_landscapes.mkdir(
-    #         parents=True,
-    #         exist_ok=True,
-    #     )
-    # except PermissionError as e:
-    #     context.log.exception("Could not create Landscapes directory: %s", e)
-    #     raise PermissionError(
-    #         f"Could not create {_dot_landscapes.as_posix()}. "
-    #         f"Try `sudo mkdir -p {_dot_landscapes.as_posix()} "
-    #         f"&& sudo chown -R 7002:docker {_dot_landscapes.parent.as_posix()}`."
-    #         # f"&& sudo chmod -R a+rw {_dot_landscapes.parent.as_posix()}`."
-    #     ) from e
 
     yield Output(_dot_landscapes)
 
