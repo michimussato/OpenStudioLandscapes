@@ -72,9 +72,6 @@ docker/.volumes/.landscapes/*/
 !.dagster-postgres/.gitkeep
 tmp*/
 
-.landscapes/.dagster/*
-!.landscapes/.dagster/.gitkeep
-
 # Harbor
 !.harbor/
 
