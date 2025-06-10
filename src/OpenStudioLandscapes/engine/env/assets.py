@@ -85,7 +85,7 @@ def dot_landscapes(
 
     _dot_landscapes = pathlib.Path(
         os.getenv(
-            "OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT",
+            "OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT"
         ) or git_root,
         ".landscapes",
     )
