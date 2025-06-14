@@ -17,8 +17,11 @@ __all__ = [
     "serialize_dict",
     "metadatavalues_from_dict",
     "get_relative_path_via_common_root",
+    "get_bool_env",
+    "get_str_env",
 ]
 
+import os
 import pathlib
 import shlex
 import select
@@ -509,3 +512,48 @@ def get_relative_path_via_common_root(
 
     return rel_path_from_src_to_dst_via_common_root
 
+
+def get_bool_env(
+        env: str,
+        default: bool = False,
+):
+
+    # EMPTY_VAR=
+    # os.getenv("EMPTY_VAR", "some_value") returns value of EMPTY_VAR
+    # whereas we want:
+    # os.getenv("EMPTY_VAR") or "some_value"
+
+    _env = os.getenv(env)
+
+    if _env.lower() == "true":
+        _env = True
+    elif _env.lower() == "false":
+        _env = False
+    elif _env is None:
+        _env = False
+    else:
+        _env = default
+
+    return _env
+
+
+def get_str_env(
+        env: str,
+        default: str,
+):
+
+    # EMPTY_VAR=
+    # os.getenv("EMPTY_VAR", "some_value") returns value of EMPTY_VAR
+    # whereas we want:
+    # os.getenv("EMPTY_VAR") or "some_value"
+
+    _env = os.getenv(env)
+
+    if bool(_env):
+        _env = env
+    else:
+        # bool("") evaluates to False, hence, set default
+        # instead of returning empty string.
+        _env = default
+
+    return _env

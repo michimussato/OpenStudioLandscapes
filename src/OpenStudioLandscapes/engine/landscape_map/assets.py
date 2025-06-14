@@ -19,6 +19,8 @@ from dagster import (
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.enums import *
 
+from OpenStudioLandscapes.engine.features import FEATURES
+
 
 # Dynamic inputs based on the imported
 # third party code locations

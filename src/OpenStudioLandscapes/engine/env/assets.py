@@ -78,15 +78,11 @@ def dot_landscapes(
     git_root: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
 
-    # EMPTY_VAR=
-    # os.getenv("EMPTY_VAR", "some_value") returns value of EMPTY_VAR
-    # whereas we want:
-    # os.getenv("EMPTY_VAR") or "some_value"
-
     _dot_landscapes = pathlib.Path(
-        os.getenv(
-            "OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT"
-        ) or git_root,
+        get_str_env(
+            env="OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT",
+            default=git_root.as_posix(),
+        ),
         ".landscapes",
     )
 
