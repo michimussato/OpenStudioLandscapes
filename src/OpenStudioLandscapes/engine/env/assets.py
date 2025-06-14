@@ -1,5 +1,5 @@
 import getpass
-import os
+import pytz
 import pathlib
 import socket
 import tempfile
@@ -206,6 +206,14 @@ def env(
     # @formatter:off
     # Todo
     #  - [ ] Move to constants.py
+    tz = get_str_env(
+        env="CONTAINER_TIMEZONE",
+        default="Europe/Zurich",
+    )
+
+    if tz not in pytz.all_timezones:
+        raise Exception("Unknown container timezone: {tz}".format(tz=tz))
+
     ENVIRONMENT_BASE: dict = {
         "GIT_ROOT": git_root.as_posix(),
         # Todo
@@ -220,7 +228,7 @@ def env(
         "CREATED_BY": str(getpass.getuser()),
         "CREATED_ON": str(socket.gethostname()),
         "CREATED_AT": str(datetime.strftime(datetime.now(), "%Y-%m-%d_%H-%M-%S")),
-        "TIMEZONE": "Europe/Zurich",
+        "TIMEZONE": str(tz),
         # "IMAGE_PREFIX": "michimussato",
         # Todo:
         #  - [ ] Where is this being used?

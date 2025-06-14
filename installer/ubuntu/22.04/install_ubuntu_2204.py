@@ -11,19 +11,6 @@ import pathlib
 from getpass import getuser
 from typing import Tuple
 import pty
-# import logging
-# import ptyprocess.ptyprocess
-
-
-# import logging
-# logging.basicConfig(
-#     level=logging.DEBUG,
-#     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-#     handlers=[
-#         logging.FileHandler("geeksforgeeks.log"),
-#         logging.StreamHandler(),
-#     ]
-# )
 
 
 # Requirements:
@@ -145,7 +132,6 @@ def script_disable_unattended_upgrades() -> pathlib.Path:
                 "    sleep 5\n",
                 "done\n",
                 "\n",
-                "# sudo apt-get purge -y unattended-upgrades\n",
             ]
         )
 
@@ -490,10 +476,6 @@ def script_install_docker(
                 #  - [x] This step causes the Harbor issues:
                 "sudo systemctl restart docker\n",
                 "\n",
-                # Todo
-                #  - [x] And this is the *best* solution I could come up with so far:
-                f"# sudo rm -rf {pathlib.Path(openstudiolandscapes_repo_dir, '.landscapes', '.harbor', 'bin').as_posix()}/*\n",
-                f"# sudo rm -rf {pathlib.Path(openstudiolandscapes_repo_dir, '.landscapes', '.harbor', 'data').as_posix()}/*\n",
                 f"sudo git config --global --add safe.directory {pathlib.Path(openstudiolandscapes_repo_dir).as_posix()}\n",
                 f"sudo git -C {pathlib.Path(openstudiolandscapes_repo_dir).as_posix()} clean -d -x --force {pathlib.Path(openstudiolandscapes_repo_dir, '.landscapes', '.harbor').as_posix()}\n",
             ]
