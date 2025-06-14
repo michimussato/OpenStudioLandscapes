@@ -525,11 +525,11 @@ def get_bool_env(
 
     _env = os.getenv(env)
 
-    if _env.lower() == "true":
+    if _env is None:
+        _env = False
+    elif _env.lower() == "true":
         _env = True
     elif _env.lower() == "false":
-        _env = False
-    elif _env is None:
         _env = False
     else:
         _env = default
