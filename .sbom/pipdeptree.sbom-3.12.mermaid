@@ -1,0 +1,220 @@
+flowchart TD
+    classDef missing stroke-dasharray: 5
+    alembic["alembic\n1.14.1"]
+    annotated-types["annotated-types\n0.7.0"]
+    antlr4-python3-runtime["antlr4-python3-runtime\n4.13.2"]
+    arrow["arrow\n1.3.0"]
+    attrs["attrs\n25.1.0"]
+    bidict["bidict\n0.23.1"]
+    boolean-py["boolean.py\n4.0"]
+    certifi["certifi\n2025.1.31"]
+    chardet["chardet\n5.2.0"]
+    charset-normalizer["charset-normalizer\n3.4.1"]
+    click_0["click\n8.1.8"]
+    coloredlogs["coloredlogs\n14.0"]
+    configupdater["ConfigUpdater\n3.2"]
+    cyclonedx-bom["cyclonedx-bom\n5.1.2"]
+    cyclonedx-python-lib["cyclonedx-python-lib\n8.8.0"]
+    dagster-job-processor["dagster-job-processor\n0.0.post1.dev38+gbaf3220"]
+    dagster-pipes["dagster-pipes\n1.9.11"]
+    dagster-shared["dagster-shared\n0.0.post1.dev10+g614f3c1"]
+    dagster["dagster\n1.9.11"]
+    defusedxml["defusedxml\n0.7.1"]
+    deprecated["Deprecated\n1.2.18"]
+    docker-compose-graph["docker-compose-graph\n0.0.post1.dev161+g3a428a9"]
+    docstring-parser["docstring_parser\n0.16"]
+    filelock["filelock\n3.17.0"]
+    fqdn["fqdn\n1.5.1"]
+    fsspec["fsspec\n2025.2.0"]
+    gazu["gazu\n0.10.29"]
+    gitdb["gitdb\n4.0.12"]
+    gitpython["GitPython\n3.1.44"]
+    graphviz["graphviz\n0.20.3"]
+    greenlet["greenlet\n3.1.1"]
+    grpcio-health-checking["grpcio-health-checking\n1.70.0"]
+    grpcio["grpcio\n1.70.0"]
+    h11["h11\n0.14.0"]
+    humanfriendly["humanfriendly\n10.0"]
+    idna["idna\n3.10"]
+    isoduration["isoduration\n20.11.0"]
+    jinja2["Jinja2\n3.1.5"]
+    jsonpointer["jsonpointer\n3.0.0"]
+    jsonschema-specifications["jsonschema-specifications\n2024.10.1"]
+    jsonschema["jsonschema\n4.23.0"]
+    license-expression["license-expression\n30.4.1"]
+    lxml["lxml\n5.3.1"]
+    mako["Mako\n1.3.9"]
+    markdown-it-py["markdown-it-py\n3.0.0"]
+    markupsafe["MarkupSafe\n3.0.2"]
+    mdurl["mdurl\n0.1.2"]
+    openstudiolandscapes["OpenStudioLandscapes\n0.0.post1.dev398+gc4b6a84.d20250228"]
+    packageurl-python["packageurl-python\n0.16.0"]
+    packaging["packaging\n24.2"]
+    pip-requirements-parser["pip-requirements-parser\n32.0.1"]
+    pip["pip\n25.0.1"]
+    pipdeptree["pipdeptree\n2.25.0"]
+    platformdirs["platformdirs\n4.3.6"]
+    protobuf["protobuf\n5.29.3"]
+    py-serializable["py-serializable\n1.1.2"]
+    pydantic-core["pydantic_core\n2.27.2"]
+    pydantic["pydantic\n2.10.6"]
+    pydot["pydot\n3.0.4"]
+    pygments["Pygments\n2.19.1"]
+    pyparsing["pyparsing\n3.2.1"]
+    pyscaffold["PyScaffold\n4.6"]
+    python-dateutil["python-dateutil\n2.9.0.post0"]
+    python-dotenv["python-dotenv\n1.0.1"]
+    python-engineio["python-engineio\n4.11.2"]
+    python-on-whales["python-on-whales\n0.75.1"]
+    python-socketio["python-socketio\n5.12.1"]
+    pytz["pytz\n2025.1"]
+    pyyaml["PyYAML\n6.0.2"]
+    referencing["referencing\n0.36.2"]
+    requests["requests\n2.32.3"]
+    rfc3339-validator["rfc3339-validator\n0.1.4"]
+    rfc3987["rfc3987\n1.3.8"]
+    rich["rich\n13.9.4"]
+    rpds-py["rpds-py\n0.22.3"]
+    setuptools-scm["setuptools-scm\n8.1.0"]
+    setuptools["setuptools\n75.8.0"]
+    simple-websocket["simple-websocket\n1.1.0"]
+    six["six\n1.17.0"]
+    smmap["smmap\n5.0.2"]
+    sortedcontainers["sortedcontainers\n2.4.0"]
+    sqlalchemy["SQLAlchemy\n2.0.38"]
+    structlog["structlog\n25.1.0"]
+    tabulate["tabulate\n0.9.0"]
+    tomli["tomli\n2.2.1"]
+    tomlkit["tomlkit\n0.13.2"]
+    toposort["toposort\n1.10"]
+    tqdm["tqdm\n4.67.1"]
+    types-python-dateutil["types-python-dateutil\n2.9.0.20241206"]
+    typing-extensions["typing_extensions\n4.12.2"]
+    universal-pathlib["universal_pathlib\n0.2.6"]
+    uri-template["uri-template\n1.3.0"]
+    urllib3["urllib3\n2.3.0"]
+    watchdog["watchdog\n5.0.3"]
+    webcolors["webcolors\n24.11.1"]
+    websocket-client["websocket-client\n1.8.0"]
+    wrapt["wrapt\n1.17.2"]
+    wsproto["wsproto\n1.2.0"]
+    alembic -- ">=1.3.0" --> sqlalchemy
+    alembic -- ">=4" --> typing-extensions
+    alembic -- "any" --> mako
+    arrow -- ">=2.7.0" --> python-dateutil
+    arrow -- ">=2.8.10" --> types-python-dateutil
+    coloredlogs -- ">=7.1" --> humanfriendly
+    cyclonedx-bom -- ">=0.11,<2" --> packageurl-python
+    cyclonedx-bom -- ">=22,<25" --> packaging
+    cyclonedx-bom -- ">=32.0,<33.0" --> pip-requirements-parser
+    cyclonedx-bom -- ">=5.1,<6.0" --> chardet
+    cyclonedx-bom -- ">=8.0,<9.0" --> cyclonedx-python-lib
+    cyclonedx-python-lib -- ">=0.11,<2" --> packageurl-python
+    cyclonedx-python-lib -- ">=1.1.1,<2.0.0" --> py-serializable
+    cyclonedx-python-lib -- ">=2.4.0,<3.0.0" --> sortedcontainers
+    cyclonedx-python-lib -- ">=30,<31" --> license-expression
+    dagster -- "<3" --> tomli
+    dagster -- "<5" --> tqdm
+    dagster -- "==1.9.11" --> dagster-pipes
+    dagster -- ">=0.2.0" --> universal-pathlib
+    dagster -- ">=0.8.3,<6" --> watchdog
+    dagster -- ">=1.0" --> toposort
+    dagster -- ">=1.0,<3" --> sqlalchemy
+    dagster -- ">=1.2.1,!=1.7.0,!=1.6.3,!=1.11.0" --> alembic
+    dagster -- ">=1.44.0" --> grpcio
+    dagster -- ">=1.44.0" --> grpcio-health-checking
+    dagster -- ">=2,<3.0.0" --> pydantic
+    dagster -- ">=20.9" --> packaging
+    dagster -- ">=4,<6" --> protobuf
+    dagster -- ">=4.10.0,<5" --> typing-extensions
+    dagster -- ">=5.0" --> click_0
+    dagster -- ">=5.1" --> pyyaml
+    dagster -- ">=6.1,<=14.0" --> coloredlogs
+    dagster -- "any" --> antlr4-python3-runtime
+    dagster -- "any" --> docstring-parser
+    dagster -- "any" --> filelock
+    dagster -- "any" --> jinja2
+    dagster -- "any" --> python-dotenv
+    dagster -- "any" --> pytz
+    dagster -- "any" --> requests
+    dagster -- "any" --> rich
+    dagster -- "any" --> setuptools
+    dagster -- "any" --> six
+    dagster -- "any" --> structlog
+    dagster -- "any" --> tabulate
+    dagster-job-processor -- "any" --> dagster
+    dagster-job-processor -- "any" --> gazu
+    dagster-shared -- "any" --> dagster
+    dagster-shared -- "any" --> dagster-pipes
+    deprecated -- ">=1.10,<2" --> wrapt
+    docker-compose-graph -- "any" --> graphviz
+    docker-compose-graph -- "any" --> jinja2
+    docker-compose-graph -- "any" --> pydot
+    docker-compose-graph -- "any" --> python-dotenv
+    docker-compose-graph -- "any" --> pyyaml
+    gazu -- "==1.2.18" --> deprecated
+    gazu -- ">=2.25.1" --> requests
+    gazu -- ">=5.11.0,<6" --> python-socketio
+    gitdb -- ">=3.0.1,<6" --> smmap
+    gitpython -- ">=4.0.1,<5" --> gitdb
+    grpcio-health-checking -- ">=1.70.0" --> grpcio
+    grpcio-health-checking -- ">=5.26.1,<6.0dev" --> protobuf
+    isoduration -- ">=0.15.0" --> arrow
+    jinja2 -- ">=2.0" --> markupsafe
+    jsonschema -- ">=0.28.4" --> referencing
+    jsonschema -- ">=0.7.1" --> rpds-py
+    jsonschema -- ">=2023.03.6" --> jsonschema-specifications
+    jsonschema -- ">=22.2.0" --> attrs
+    jsonschema-specifications -- ">=0.31.0" --> referencing
+    license-expression -- ">=4.0" --> boolean-py
+    mako -- ">=0.9.2" --> markupsafe
+    markdown-it-py -- "~=0.1" --> mdurl
+    openstudiolandscapes -- "==1.9.11" --> dagster
+    openstudiolandscapes -- "any" --> dagster-job-processor
+    openstudiolandscapes -- "any" --> dagster-shared
+    openstudiolandscapes -- "any" --> docker-compose-graph
+    openstudiolandscapes -- "any" --> gitpython
+    openstudiolandscapes -- "any" --> pydot
+    openstudiolandscapes -- "any" --> pyscaffold
+    openstudiolandscapes -- "any" --> python-on-whales
+    openstudiolandscapes -- "any" --> pyyaml
+    pip-requirements-parser -- "any" --> packaging
+    pip-requirements-parser -- "any" --> pyparsing
+    pipdeptree -- ">=24.1" --> packaging
+    pipdeptree -- ">=24.2" --> pip
+    py-serializable -- ">=0.7.1,<0.8.0" --> defusedxml
+    pydantic -- "==2.27.2" --> pydantic-core
+    pydantic -- ">=0.6.0" --> annotated-types
+    pydantic -- ">=4.12.2" --> typing-extensions
+    pydantic-core -- ">=4.6.0,!=4.7.0" --> typing-extensions
+    pydot -- ">=3.0.9" --> pyparsing
+    pyscaffold -- ">=0.7.0,<2" --> tomlkit
+    pyscaffold -- ">=2" --> platformdirs
+    pyscaffold -- ">=20.7" --> packaging
+    pyscaffold -- ">=3.0,<4" --> configupdater
+    pyscaffold -- ">=46.1.0" --> setuptools
+    pyscaffold -- ">=5" --> setuptools-scm
+    python-dateutil -- ">=1.5" --> six
+    python-engineio -- ">=0.10.0" --> simple-websocket
+    python-on-whales -- ">=2,<3,!=2.0.*" --> pydantic
+    python-on-whales -- "any" --> typing-extensions
+    python-socketio -- ">=0.21.0" --> bidict
+    python-socketio -- ">=4.11.0" --> python-engineio
+    referencing -- ">=0.7.0" --> rpds-py
+    referencing -- ">=22.2.0" --> attrs
+    referencing -- ">=4.4.0" --> typing-extensions
+    requests -- ">=1.21.1,<3" --> urllib3
+    requests -- ">=2,<4" --> charset-normalizer
+    requests -- ">=2.5,<4" --> idna
+    requests -- ">=2017.4.17" --> certifi
+    rfc3339-validator -- "any" --> six
+    rich -- ">=2.13.0,<3.0.0" --> pygments
+    rich -- ">=2.2.0" --> markdown-it-py
+    setuptools-scm -- ">=20" --> packaging
+    setuptools-scm -- "any" --> setuptools
+    simple-websocket -- "any" --> wsproto
+    sqlalchemy -- "!=0.4.17" --> greenlet
+    sqlalchemy -- ">=4.6.0" --> typing-extensions
+    universal-pathlib -- ">=2022.1.0,!=2024.3.1" --> fsspec
+    wsproto -- ">=0.9.0,<1" --> h11
+

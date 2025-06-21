@@ -1,0 +1,6 @@
+# files starting with __SECRET__
+__SECRET__* filter=git-crypt diff=git-crypt
+.env filter=git-crypt diff=git-crypt
+
+# folders starting with __SECRET__
+*/__SECRET__*/** filter=git-crypt diff=git-crypt

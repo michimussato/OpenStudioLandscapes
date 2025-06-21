@@ -1,0 +1,129 @@
+[build-system]
+# AVOID CHANGING REQUIRES: IT WILL BE UPDATED BY PYSCAFFOLD!
+requires = ["setuptools>=46.1.0", "setuptools_scm[toml]>=5"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+# For smarter version schemes and other configuration options,
+# check out https://github.com/pypa/setuptools_scm
+version_scheme = "no-guess-dev"
+
+
+# From Dagster
+#
+# [project]
+# name = "my_skeleton_mackage"
+# version = "0.1.0"
+# description = "Add your description here"
+# readme = "README.md"
+# requires-python = ">=3.9,<3.13"
+# dependencies = [
+#     "dagster",
+#     "dagster-cloud",
+# ]
+#
+# [project.optional-dependencies]
+# dev = [
+#     "dagster-webserver",
+#     "pytest",
+# ]
+#
+# [build-system]
+# requires = ["setuptools"]
+# build-backend = "setuptools.build_meta"
+
+ [tool.dagster]
+ module_name = "OpenStudioLandscapes.engine.definitions"
+ project_name = "OpenStudioLandscapes"
+
+# [tool.setuptools.packages.find]
+# exclude=["my_skeleton_mackage_tests"]
+
+
+# From pimo
+# [build-system]
+# requires = ["setuptools>=46.1.0", "setuptools_scm[toml]>=5"]
+# build-backend = "setuptools.build_meta"
+#
+# [project]
+# authors = [
+#     {name = "Michael Mussato", email = "michimussato@gmail.com"},
+# ]
+# maintainers = [
+#     {name = "Michael Mussato", email = "michimussato@gmail.com"},
+# ]
+# description = "TBD"
+# readme = "README.md"
+# name = "pimo"
+# dynamic = ["version"]
+# requires-python = ">= 3.9"
+# # https://pypi.org/project/inky/
+# dependencies = [
+#     "pillow",
+#     "pillow-lut",
+#     "inky[rpi]>=1.5.0,<1.6",
+#     "ascii-magic",
+#     "moon_clock @ git+https://github.com/michimussato/moon-clock.git",
+# ]
+# classifiers = [
+#     "Development Status :: 4 - Beta",
+#     "License :: OSI Approved :: MIT License",
+#     "Programming Language :: Python :: 3",
+# ]
+#
+# # https://stackoverflow.com/questions/75490231/pip-pyproject-toml-can-optional-dependency-groups-require-other-optional-depend#75503961
+# [project.optional-dependencies]
+# tests = [
+#     "nox",
+#     "pytest",
+# ]
+# dev = [
+#     "pre-commit",
+#     "pimo[tests]"
+# ]
+# sbom = [
+#     "graphviz",
+#     "pipdeptree",
+#     "cyclonedx-bom",
+# ]
+# #readthedocs = [
+# #]
+# #sphinx = [
+# #]
+# lint = [
+#     "black",
+#     "isort",
+#     "pylint",
+# ]
+# coverage = [
+#     "coverage",
+#     "pytest"
+# ]
+# release = [
+# ]
+#
+# [project.urls]
+# Repository = "https://github.com/michimussato/pimo.git"
+#
+# [project.scripts]
+# pimo = "pimo.pimo:run"
+#
+# [tool.setuptools]
+# # https://setuptools.pypa.io/en/latest/userguide/pyproject_config.html
+# platforms = ["Linux"]
+# include-package-data = true
+# zip-safe = false  # This just means it's safe to zip up the bdist
+#
+# [tool.setuptools.packages.find]
+# where = ["src"]
+# exclude = ["docs*", "tests*"]
+#
+# [tool.setuptools.package-data]
+# pimo = [
+#     "*.ttf",
+# ]
+#
+# [tool.setuptools_scm]
+# # For smarter version schemes and other configuration options,
+# # check out https://github.com/pypa/setuptools_scm
+# version_scheme = "no-guess-dev"

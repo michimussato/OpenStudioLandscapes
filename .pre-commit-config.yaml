@@ -1,0 +1,15 @@
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.3.0
+    hooks:
+    -   id: check-yaml
+        exclude: ^(README.md|.dagster/|.dagster-postgres/|.landscapes/|.nox/|.payload/|.registry/|.sbom/|docs/|build/|.obsidian/|obsidian/)
+    -   id: end-of-file-fixer
+        exclude: ^(README.md|.dagster/|.dagster-postgres/|.landscapes/|.nox/|.payload/|.registry/|.sbom/|docs/|build/|.obsidian/|obsidian/)
+    -   id: trailing-whitespace
+        exclude: ^(README.md|.dagster/|.dagster-postgres/|.landscapes/|.nox/|.payload/|.registry/|.sbom/|docs/|build/|.obsidian/|obsidian/)
+-   repo: https://github.com/psf/black
+    rev: 22.10.0
+    hooks:
+    -   id: black
+        exclude: ^(README.md|.dagster/|.dagster-postgres/|.landscapes/|.nox/|.payload/|.registry/|.sbom/|docs/|build/|.obsidian/|obsidian/)

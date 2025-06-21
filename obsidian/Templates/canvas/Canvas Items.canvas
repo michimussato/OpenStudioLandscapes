@@ -1,0 +1,17 @@
+{
+	"nodes":[
+		{"id":"ce47b8b6542a3850","type":"text","text":"- [ ] [XXXXXXXXXXXXXXXX](XXXXXXXXXXXXXXXX)","x":24,"y":-520,"width":434,"height":240,"color":"2"},
+		{"id":"4df1c8161e10d331","type":"text","text":"- [ ] []()","x":63,"y":40,"width":307,"height":56,"color":"2"},
+		{"id":"fd39c1cb0abf2b2e","type":"text","text":"- [ ] []()","x":63,"y":-40,"width":307,"height":56,"color":"1"},
+		{"id":"1e400758d34bef8d","type":"text","text":"- [ ] []()","x":63,"y":120,"width":307,"height":56,"color":"3"},
+		{"id":"ee641ed6fb228805","type":"text","text":"- [ ] ","x":-317,"y":-40,"width":307,"height":56,"color":"1"},
+		{"id":"347659b17c55b660","type":"text","text":"- [ ] ","x":-317,"y":40,"width":307,"height":56,"color":"2"},
+		{"id":"d83edd9c49d20bdd","type":"text","text":"- [ ] ","x":-317,"y":120,"width":307,"height":56,"color":"3"},
+		{"id":"97166150b885c7dc","type":"text","text":"- [ ] [XXXXXXXXXXXX](XXXXXXXXXXXX)","x":-38,"y":400,"width":434,"height":87,"color":"2"},
+		{"id":"60d3758df931bcdc","type":"link","url":"https://animallogic.atlassian.net/browse/PERFTD-6245","x":-358,"y":990,"width":697,"height":1014},
+		{"id":"7de53d4b7f305f71","type":"text","text":"- [ ] [14 - Development Basics - Go Over a Code Cycle](https://animallogic.atlassian.net/browse/PERFTD-6245)","x":-358,"y":880,"width":697,"height":50,"color":"1"}
+	],
+	"edges":[
+		{"id":"94a5a4afbfffa267","fromNode":"7de53d4b7f305f71","fromSide":"bottom","toNode":"60d3758df931bcdc","toSide":"top"}
+	]
+}

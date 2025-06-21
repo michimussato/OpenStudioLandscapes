@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+
+alias openstudiolandscapes-up='pushd ${SCRIPT_DIR} && source .venv/bin/activate && nox --sessions harbor_up_detach dagster_postgres_up_detach dagster_postgres; deactivate; popd'
+alias openstudiolandscapes-down='pushd ${SCRIPT_DIR} && source .venv/bin/activate && nox --sessions dagster_postgres_down harbor_down; deactivate; popd'
+alias openstudiolandscapes="openstudiolandscapes-up; sleep 5 && openstudiolandscapes-down;"

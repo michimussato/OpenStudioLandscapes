@@ -1,0 +1,11 @@
+{
+  "newFileLocation": "folder",
+  "newFileFolderPath": "New Notes",
+  "attachmentFolderPath": "_images",
+  "alwaysUpdateLinks": true,
+  "newLinkFormat": "absolute",
+  "defaultViewMode": "preview",
+  "userIgnoreFilters": [
+    "__pycache__/"
+  ]
+}
