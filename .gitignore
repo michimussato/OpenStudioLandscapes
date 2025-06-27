@@ -89,8 +89,10 @@ tmp*/
 !.pi-hole/.gitkeep
 
 # Payloads
-.payload/data/
-.payload/bin/
+.payload/bin/*
+!.payload/bin/.gitkeep
+.payload/data/*
+!.payload/data/.gitkeep
 
 # Obsidian
 .obsidian/hotkeys.json

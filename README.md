@@ -2,6 +2,14 @@
 
 ---
 
+<!-- TOC -->
+* [OpenStudioLandscapes](#openstudiolandscapes)
+* [Community](#community)
+* [Current Feature Statuses](#current-feature-statuses)
+<!-- TOC -->
+
+---
+
 # OpenStudioLandscapes
 
 Setup and launch custom production environments
@@ -101,6 +109,13 @@ Suggest anything. Anything that leads to a better experience - without hiccups a
 too much noise at the same time - from installation to usage. If your field of expertise
 can improve this project, please step forward and jump on board!
 Now, it's time to head over to the [Wiki](wiki/README.md)!
+
+# Community
+
+- [YouTube](https://youtube.com/@openstudiolandscapes)
+- [LinkedIn](https://www.linkedin.com/company/106731439/)
+  - [#OpenStudioLandscapes](https://www.linkedin.com/search/results/all/?keywords=%23openstudiolandscapes)
+- [Discord](https://discord.com/invite/aYnJnaqE)
 
 # Current Feature Statuses
 

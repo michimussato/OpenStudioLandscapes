@@ -789,11 +789,11 @@ LINKED_FILES = [
     ".payload/bin/.gitkeep",
     ".payload/config/.gitkeep",
     ".payload/data/.gitkeep",
-    "_images/.gitkeep",
+    "media/images/.gitkeep",
     ".gitignore",
     ".pre-commit-config.yaml",
     "noxfile.py",
-    "LICENSE",
+    "LICENSE.txt",
 ]
 
 # # fix_hardlinks_in_features
