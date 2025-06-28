@@ -121,19 +121,19 @@ Now, it's time to head over to the [Wiki](wiki/README.md)!
 
 # Current Feature Statuses
 
-| Feature                                      | Public | GitHub                                                                           | Discord                                                                  |
-|----------------------------------------------|--------|----------------------------------------------------------------------------------|--------------------------------------------------------------------------|
-| OpenStudioLandscapes-Ayon                    | ✅      | [https://github.com/michimussato/OpenStudioLandscapes-Ayon]()                    | [https://discord.com/channels/1357343453364748419/1357722468336271411]() |
-| OpenStudioLandscapes-Dagster                 | ✅      | [https://github.com/michimussato/OpenStudioLandscapes-Dagster]()                 | [https://discord.com/channels/1357343453364748419/1358016764608249856]() |
-| OpenStudioLandscapes-Deadline-10-2           | ❌      | [https://github.com/michimussato/OpenStudioLandscapes-Deadline-10-2]()           | TBD                                                                      |
-| OpenStudioLandscapes-Deadline-10-2-Worker    | ❌      | [https://github.com/michimussato/OpenStudioLandscapes-Deadline-10-2-Worker]()    | TBD                                                                      |
-| OpenStudioLandscapes-filebrowser             | ❌      | [https://github.com/michimussato/OpenStudioLandscapes-filebrowser]()             | TBD                                                                      |
-| OpenStudioLandscapes-Grafana                 | ❌      | [https://github.com/michimussato/OpenStudioLandscapes-Grafana]()                 | TBD                                                                      |
-| OpenStudioLandscapes-Kitsu                   | ✅      | [https://github.com/michimussato/OpenStudioLandscapes-Kitsu]()                   | [https://discord.com/channels/1357343453364748419/1357638253632688231]() |
-| OpenStudioLandscapes-LikeC4                  | ❌      | [https://github.com/michimussato/OpenStudioLandscapes-LikeC4]()                  | TBD                                                                      |
-| OpenStudioLandscapes-NukeRLM-8               | ❌      | [https://github.com/michimussato/OpenStudioLandscapes-NukeRLM-8]()               | TBD                                                                      |
-| OpenStudioLandscapes-OpenCue                 | ❌      | [https://github.com/michimussato/OpenStudioLandscapes-OpenCue]()                 | TBD                                                                      |
-| OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20 | ❌      | [https://github.com/michimussato/OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20]() | TBD                                                                      |
-| OpenStudioLandscapes-Syncthing               | ❌      | [https://github.com/michimussato/OpenStudioLandscapes-Syncthing]()               | TBD                                                                      |
-| OpenStudioLandscapes-Watchtower              | ❌      | [https://github.com/michimussato/OpenStudioLandscapes-Watchtower]()              | TBD                                                                      |
-| OpenStudioLandscapes-Template                | ❌      | [https://github.com/michimussato/OpenStudioLandscapes-Template]()                | TBD                                                                      |
+| Feature                                                                                                                      | Public |
+|------------------------------------------------------------------------------------------------------------------------------|--------|
+| [OpenStudioLandscapes-Ayon](https://github.com/michimussato/OpenStudioLandscapes-Ayon)                                       | ✅      |
+| [OpenStudioLandscapes-Dagster](https://github.com/michimussato/OpenStudioLandscapes-Dagster)                                 | ✅      |
+| [OpenStudioLandscapes-Deadline-10-2](https://github.com/michimussato/OpenStudioLandscapes-Deadline-10-2)                     | ❌      |
+| [OpenStudioLandscapes-Deadline-10-2-Worker](https://github.com/michimussato/OpenStudioLandscapes-Deadline-10-2-Worker)       | ❌      |
+| [OpenStudioLandscapes-filebrowser](https://github.com/michimussato/OpenStudioLandscapes-filebrowser)                         | ❌      |
+| [OpenStudioLandscapes-Grafana](https://github.com/michimussato/OpenStudioLandscapes-Grafana)                                 | ❌      |
+| [OpenStudioLandscapes-Kitsu](https://github.com/michimussato/OpenStudioLandscapes-Kitsu)                                     | ✅      |
+| [OpenStudioLandscapes-LikeC4](https://github.com/michimussato/OpenStudioLandscapes-LikeC4)                                   | ❌      |
+| [OpenStudioLandscapes-NukeRLM-8](https://github.com/michimussato/OpenStudioLandscapes-NukeRLM-8)                             | ❌      |
+| [OpenStudioLandscapes-OpenCue](https://github.com/michimussato/OpenStudioLandscapes-OpenCue)                                 | ❌      |
+| [OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20](https://github.com/michimussato/OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20) | ❌      |
+| [OpenStudioLandscapes-Syncthing](https://github.com/michimussato/OpenStudioLandscapes-Syncthing)                             | ❌      |
+| [OpenStudioLandscapes-Watchtower](https://github.com/michimussato/OpenStudioLandscapes-Watchtower)                           | ❌      |
+| [OpenStudioLandscapes-Template](https://github.com/michimussato/OpenStudioLandscapes-Template)                               | ❌      |
