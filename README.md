@@ -112,10 +112,12 @@ Now, it's time to head over to the [Wiki](wiki/README.md)!
 
 # Community
 
-- [YouTube](https://youtube.com/@openstudiolandscapes)
-- [LinkedIn](https://www.linkedin.com/company/106731439/)
+- [![YouTube](media/images/youtube-square-red-logo-15975.png)](https://youtube.com/@openstudiolandscapes)
+- [![LinkedIn](media/images/linkedin-square-blue-logo-15978.png)](https://www.linkedin.com/company/106731439/)
   - [#OpenStudioLandscapes](https://www.linkedin.com/search/results/all/?keywords=%23openstudiolandscapes)
-- [Discord](https://discord.com/invite/aYnJnaqE)
+- [![Discord](media/images/discord-square-blue-logo-16000.png)](https://discord.com/invite/aYnJnaqE)
+
+[//]: # (Icons by https://www.iconpacks.net/free-icon-pack/free-social-media-network-logos-icon-pack-197.html)
 
 # Current Feature Statuses
 
