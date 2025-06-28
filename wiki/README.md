@@ -4,7 +4,6 @@
 * [Table Of Contents](#table-of-contents)
 * [A Word about Documentation](#a-word-about-documentation)
 * [Installation Methods](#installation-methods)
-* [Community](#community)
 * [Structure](#structure)
   * [Single Landscape](#single-landscape)
   * [Multiple Landscapes](#multiple-landscapes)
