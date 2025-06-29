@@ -3,10 +3,11 @@ import json
 import pathlib
 import shutil
 import textwrap
+from pathlib import Path
 
 import time
 import urllib.parse
-from typing import Generator, MutableMapping, List
+from typing import Generator, MutableMapping, List, Any
 
 from dagster import (
     AssetExecutionContext,
@@ -107,8 +108,7 @@ def apt_packages(
         "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
         "docker_config": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "DOCKER_CONFIG"])),
         "docker_config_json": AssetIn(AssetKey([*ASSET_HEADER_BASE["key_prefix"], "docker_config_json"])),
-        "apt_packages": AssetIn(AssetKey([*ASSET_HEADER_BASE["key_prefix"], "apt_packages"])),
-        "pip_packages": AssetIn(AssetKey([*ASSET_HEADER_BASE["key_prefix"], "pip_packages"])),
+        "write_dockerfile": AssetIn(AssetKey([*ASSET_HEADER_BASE["key_prefix"], "write_dockerfile"])),
     },
 )
 def build_docker_image(
@@ -116,9 +116,105 @@ def build_docker_image(
     env: dict,  # pylint: disable=redefined-outer-name
     docker_config: DockerConfig,  # pylint: disable=redefined-outer-name
     docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name
+    write_dockerfile: pathlib.Path,  # pylint: disable=redefined-outer-name
+) -> Generator[Output[dict[str, str | list[str]]] | AssetMaterialization, None, None]:
+    """ """
+
+    docker_file = write_dockerfile
+
+    # shutil.rmtree(docker_file.parent, ignore_errors=True)
+    #
+    # docker_file.parent.mkdir(parents=True, exist_ok=True)
+
+    image_name = get_image_name(context=context)
+    image_prefix_local = parse_docker_image_path(
+        docker_config=docker_config,
+        prepend_registry=False,
+    )
+    image_prefix_full = parse_docker_image_path(
+        docker_config=docker_config,
+        prepend_registry=True,
+    )
+
+    tags = [
+        env.get('LANDSCAPE', str(time.time())),
+    ]
+
+    image_data = {
+        "image_name": image_name,
+        "image_prefix_local": image_prefix_local,
+        "image_prefix_full": image_prefix_full,
+        "image_tags": tags,
+        "image_parent": {},
+    }
+
+    context.log.info(f"{image_data = }")
+
+    # Full command as per python-on-whales
+    # Build command (public) (OK: [x]):  /usr/bin/docker --config /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json build --quiet --pull --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles/Dockerfile --no-cache --tag openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9 --tag harbor.farm.evil:80/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9 /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles
+    # Push command (public):             /usr/bin/docker --config /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json image push harbor.farm.evil:80/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9
+    # Build command (private) (OK: [x]): /usr/bin/docker --config /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json build --quiet --pull --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles/Dockerfile --no-cache --tag openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666 --tag harbor.farm.evil:80/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666 /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles
+    # Push command (private):            /usr/bin/docker --config /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json image push harbor.farm.evil:80/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666
+
+    cmds = []
+
+    tags_local = [f"{image_prefix_local}{image_name}:{tag}" for tag in tags]
+    tags_full = [f"{image_prefix_full}{image_name}:{tag}" for tag in tags]
+
+    cmd_build = docker_build_cmd(
+        context=context,
+        docker_config_json=docker_config_json,
+        docker_file=docker_file,
+        tags_local=tags_local,
+        tags_full=tags_full,
+    )
+
+    cmds.append(cmd_build)
+
+    cmds_push = docker_push_cmd(
+        context=context,
+        docker_config_json=docker_config_json,
+        tags_full=tags_full,
+    )
+
+    cmds.extend(cmds_push)
+
+    context.log.info(f"{cmds = }")
+
+    logs = []
+
+    for logs_ in docker_process_cmds(
+        context=context,
+        cmds=cmds,
+    ):
+        logs.append(logs_)
+
+    yield Output(image_data)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.json(image_data),
+            "env": MetadataValue.json(env),
+            "logs": MetadataValue.json(logs),
+        },
+    )
+
+
+@asset(
+    **ASSET_HEADER_BASE,
+    ins={
+        "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
+        "apt_packages": AssetIn(AssetKey([*ASSET_HEADER_BASE["key_prefix"], "apt_packages"])),
+        "pip_packages": AssetIn(AssetKey([*ASSET_HEADER_BASE["key_prefix"], "pip_packages"])),
+    },
+)
+def write_dockerfile(
+    context: AssetExecutionContext,
+    env: dict,  # pylint: disable=redefined-outer-name
     apt_packages: dict[str, list[str]],  # pylint: disable=redefined-outer-name
     pip_packages: list,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[dict[str, str | list[str]]] | AssetMaterialization, None, None]:
+) -> Generator[Output[Path] | AssetMaterialization | Any, Any, None]:
     """ """
 
     docker_file = pathlib.Path(
@@ -135,18 +231,6 @@ def build_docker_image(
     docker_file.parent.mkdir(parents=True, exist_ok=True)
 
     image_name = get_image_name(context=context)
-    image_prefix_local = parse_docker_image_path(
-        docker_config=docker_config,
-        prepend_registry=False,
-    )
-    image_prefix_full = parse_docker_image_path(
-        docker_config=docker_config,
-        prepend_registry=True,
-    )
-
-    tags = [
-        env.get('LANDSCAPE', str(time.time())),
-    ]
 
     apt_install_str_base: str = get_apt_install_str(
         apt_install_packages=apt_packages["base"],
@@ -220,64 +304,13 @@ def build_docker_image(
     with open(docker_file, mode="r") as fr:
         docker_file_content = fr.read()
 
-    image_data = {
-        "image_name": image_name,
-        "image_prefix_local": image_prefix_local,
-        "image_prefix_full": image_prefix_full,
-        "image_tags": tags,
-        "image_parent": {},
-    }
-
-    context.log.info(f"{image_data = }")
-
-    # Full command as per python-on-whales
-    # Build command (public) (OK: [x]):  /usr/bin/docker --config /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json build --quiet --pull --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles/Dockerfile --no-cache --tag openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9 --tag harbor.farm.evil:80/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9 /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles
-    # Push command (public):             /usr/bin/docker --config /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json image push harbor.farm.evil:80/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9
-    # Build command (private) (OK: [x]): /usr/bin/docker --config /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json build --quiet --pull --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles/Dockerfile --no-cache --tag openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666 --tag harbor.farm.evil:80/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666 /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles
-    # Push command (private):            /usr/bin/docker --config /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json image push harbor.farm.evil:80/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666
-
-    cmds = []
-
-    tags_local = [f"{image_prefix_local}{image_name}:{tag}" for tag in tags]
-    tags_full = [f"{image_prefix_full}{image_name}:{tag}" for tag in tags]
-
-    cmd_build = docker_build_cmd(
-        context=context,
-        docker_config_json=docker_config_json,
-        docker_file=docker_file,
-        tags_local=tags_local,
-        tags_full=tags_full,
-    )
-
-    cmds.append(cmd_build)
-
-    cmds_push = docker_push_cmd(
-        context=context,
-        docker_config_json=docker_config_json,
-        tags_full=tags_full,
-    )
-
-    cmds.extend(cmds_push)
-
-    context.log.info(f"{cmds = }")
-
-    logs = []
-
-    for logs_ in docker_process_cmds(
-        context=context,
-        cmds=cmds,
-    ):
-        logs.append(logs_)
-
-    yield Output(image_data)
+    yield Output(docker_file)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(image_data),
-            "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
+            "__".join(context.asset_key.path): MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
             "env": MetadataValue.json(env),
-            "logs": MetadataValue.json(logs),
         },
     )
 
