@@ -59,6 +59,10 @@ of previous installations if there were any.
 > But, to stay on the safe side, I didn't mess around with that
 > so far.
 
+> [!IMPORTANT]
+> Executing the script as `root` is not allowed.
+> Reference: https://github.com/michimussato/OpenStudioLandscapes/issues/2
+
 ### Ubuntu
 
 #### 22.04
