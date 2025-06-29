@@ -1091,7 +1091,7 @@ def script_initial_checks(
                 "#!/bin/env bash\n",
                 # TRAP,
                 "\n",
-                "if [ $(id -u) -e 0 ]; then\n",
+                "if [ $(id -u) -eq 0 ]; then\n",
                 "    echo \"This OpenStudioLandscapes installer must not be executed as user root!\"\n",
                 "    echo \"Create a user and come back afterwards.\"\n",
                 "    echo\n",
