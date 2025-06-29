@@ -49,10 +49,11 @@ def get_pip_install_str(
     pip_install_str: str = str()
 
     if single_layered:
-        pip_install_str += "RUN %s -m pip install --root-user-action=ignore " % python_str
-        for pip_package in pip_install_packages:
-            pip_install_str += "'%s' " % pip_package
-        pip_install_str += "\n"
+        if bool(pip_install_packages):
+            pip_install_str += "RUN %s -m pip install --root-user-action=ignore " % python_str
+            for pip_package in pip_install_packages:
+                pip_install_str += "'%s' " % pip_package
+            pip_install_str += "\n"
     else:
         for pip_package in pip_install_packages:
             pip_install_str += (
@@ -70,10 +71,11 @@ def get_apt_install_str(
     apt_install_str: str = str()
 
     if single_layered:
-        apt_install_str += "RUN apt-get install -y --no-install-recommends "
-        for apt_package in apt_install_packages:
-            apt_install_str += f"'{apt_package}' "
-        apt_install_str += "\n"
+        if bool(apt_install_packages):
+            apt_install_str += "RUN apt-get install -y --no-install-recommends "
+            for apt_package in apt_install_packages:
+                apt_install_str += f"'{apt_package}' "
+            apt_install_str += "\n"
     else:
         for apt_package in apt_install_packages:
             apt_install_str += (
