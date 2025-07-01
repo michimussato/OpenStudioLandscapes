@@ -44,26 +44,43 @@ def cmd_list_to_str(
 def get_pip_install_str(
     pip_install_packages: List[str],
     python_str: str = "python{PYTHON_MAJ}.{PYTHON_MIN}",
+    single_layered: bool = True,
 ) -> str:
     pip_install_str: str = str()
-    for pip_package in pip_install_packages:
-        pip_install_str += (
-            "RUN %s -m pip install --root-user-action=ignore '%s'\n"
-            % (python_str, pip_package)
-        )
+
+    if single_layered:
+        if bool(pip_install_packages):
+            pip_install_str += "RUN %s -m pip install --root-user-action=ignore " % python_str
+            for pip_package in pip_install_packages:
+                pip_install_str += "'%s' " % pip_package
+            pip_install_str += "\n"
+    else:
+        for pip_package in pip_install_packages:
+            pip_install_str += (
+                "RUN %s -m pip install --root-user-action=ignore '%s'\n"
+                % (python_str, pip_package)
+            )
 
     return pip_install_str
 
 
 def get_apt_install_str(
     apt_install_packages: List[str],
+    single_layered: bool = True,
 ) -> str:
     apt_install_str: str = str()
-    for apt_package in apt_install_packages:
-        apt_install_str += (
-            # "RUN apt-get install -y --no-install-recommends '%s'\n" % apt_package
-            f"RUN apt-get install -y --no-install-recommends '{apt_package}'\n"
-        )
+
+    if single_layered:
+        if bool(apt_install_packages):
+            apt_install_str += "RUN apt-get install -y --no-install-recommends "
+            for apt_package in apt_install_packages:
+                apt_install_str += f"'{apt_package}' "
+            apt_install_str += "\n"
+    else:
+        for apt_package in apt_install_packages:
+            apt_install_str += (
+                f"RUN apt-get install -y --no-install-recommends '{apt_package}'\n"
+            )
 
     return apt_install_str
 
