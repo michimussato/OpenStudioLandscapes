@@ -189,7 +189,6 @@ def dot_features(
         "landscape_id": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "landscape_id"])),
         "dot_landscapes": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "dot_landscapes"])),
         "dot_features": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "dot_features"])),
-        "nfs": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "nfs"])),
         "FEATURES": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "FEATURES"])),
     },
 )
@@ -199,7 +198,6 @@ def env(
     landscape_id: dict,  # pylint: disable=redefined-outer-name
     dot_landscapes: pathlib.Path,  # pylint: disable=redefined-outer-name
     dot_features: pathlib.Path,  # pylint: disable=redefined-outer-name
-    nfs: dict,  # pylint: disable=redefined-outer-name
     FEATURES: dict,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
 
@@ -241,7 +239,6 @@ def env(
     }
 
     ENVIRONMENT_BASE.update(landscape_id)
-    ENVIRONMENT_BASE.update(nfs)
     # @formatter:on
 
     yield Output(
@@ -265,29 +262,5 @@ def env(
         asset_key=context.asset_key_for_output("features"),
         metadata={
             "__".join(context.asset_key_for_output("features").path): MetadataValue.json(FEATURES),
-        },
-    )
-
-
-@asset(
-    **ASSET_HEADER_BASE_ENV,
-)
-def nfs(
-    context: AssetExecutionContext,
-) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
-    # @formatter:off
-    _env: dict = {
-        "NFS_ENTRY_POINT": pathlib.Path("/data/share/nfs").as_posix(),
-        "NFS_ENTRY_POINT_LNS": pathlib.Path("/nfs").as_posix(),
-        "INSTALLERS_ROOT": pathlib.Path("/data/share/nfs/installers").as_posix(),
-    }
-    # @formatter:on
-
-    yield Output(_env)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(_env),
         },
     )

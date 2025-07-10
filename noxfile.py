@@ -1097,10 +1097,6 @@ def pi_hole_prepare(session):
     # nox --session pi_hole_prepare
     # nox --tags pi_hole_prepare
 
-    # Todo:
-    #  /usr/bin/bash
-    #      /data/share/nfs/git/repos/OpenStudioLandscapes/OpenStudioLandscapes/.landscapes/.pi-hole/docker-compose/bin/prepare
-
     if compose_pi_hole.exists():
         logging.info(
             "`docker-compose.yml` already present in. Use that or start fresh by "
@@ -1488,10 +1484,6 @@ def harbor_prepare(session):
 
     # Todo
     #  - [ ] Maybe use env var HARBOR_BUNDLE_DIR for prepare
-
-    # /usr/bin/sudo \
-    #     /usr/bin/bash
-    #     /data/share/nfs/git/repos/OpenStudioLandscapes/OpenStudioLandscapes/.harbor/bin/prepare
 
     sudo = False
 
