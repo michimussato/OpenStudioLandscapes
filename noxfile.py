@@ -193,18 +193,29 @@ REPOS_FEATURE = {
 
 # # MAIN BRANCH
 MAIN_BRANCH = "main"
+CHECKOUT = [
+    "latest",
+    MAIN_BRANCH,
+    "v1.0.0",
+    "v1.0.1",
+    "v1.0.2",
+    "v1.0.3",
+][5]
 
 
 # # clone_features
 @nox.session(python=None, tags=["clone_features"])
 def clone_features(session):
     """
-    `git clone` all listed (REPOS_FEATURE) Features into .features. Performs `git pull` if repos already exist.
+    `git clone` all listed (REPOS_FEATURE) Features into .features.
 
     Scope:
     - [x] Engine
     - [ ] Features
     """
+    # Todo
+    #  - [ ] create pull_features() session?
+
     # Ex:
     # nox --session clone_features
     # nox --tags clone_features
@@ -225,23 +236,11 @@ def clone_features(session):
         repo_dest = pathlib.Path.cwd() / ".features" / repo
 
         if repo_dest.exists():
-
-            logging.info("Pulling %s" % name)
-
-            cmd = [
-                shutil.which("git"),
-                "-C",
-                pathlib.Path.cwd() / ".features" / name,
-                "pull",
-                "--verbose",
-                "origin",
-                MAIN_BRANCH,
-                "--rebase=true",
-                "--tags",
-            ]
+            raise FileExistsError(
+                "The repo %s already exists. Please remove it before cloning." % repo_dest.as_posix()
+            )
 
         else:
-
             logging.info("Cloning %s" % name)
 
             cmd = [
@@ -249,10 +248,8 @@ def clone_features(session):
                 "-C",
                 pathlib.Path.cwd() / ".features",
                 "clone",
-                "--tags",
                 "--branch",
-                MAIN_BRANCH,
-                "--single-branch",
+                CHECKOUT,
                 repo,
             ]
 
