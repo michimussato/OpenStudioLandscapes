@@ -31,7 +31,7 @@ DOCKER_GID: str = "959"
 # Todo
 #  - [ ] Remove this switch after release
 USE_SSH: bool = False
-OPENSTUDIOLANDSCAPES_VERSION_TAG: str = "v1.0.2"
+OPENSTUDIOLANDSCAPES_VERSION_TAG: str = "v1.0.3"
 # Todo
 #  - [ ] Create DOT_LANDSCAPES automatically
 DOT_LANDSCAPES: pathlib.Path = pathlib.Path("/opt/openstudiolandscapes/.landscapes")
