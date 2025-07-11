@@ -270,7 +270,7 @@ def script_clone_openstudiolandscapes(
                 f"    mkdir -p {openstudiolandscapes_repo_dir.as_posix()}\n",
                 "fi\n",
                 f"git -C {openstudiolandscapes_repo_dir.parent.as_posix()} clone --tags {'git@github.com:' if USE_SSH else 'https://github.com/'}michimussato/OpenStudioLandscapes.git\n",
-                f"git -C {openstudiolandscapes_repo_dir.parent.as_posix()} checkout tags/{OPENSTUDIOLANDSCAPES_VERSION_TAG} -B {OPENSTUDIOLANDSCAPES_VERSION_TAG}\n",
+                f"git -C {openstudiolandscapes_repo_dir.as_posix()} checkout tags/{OPENSTUDIOLANDSCAPES_VERSION_TAG} -B {OPENSTUDIOLANDSCAPES_VERSION_TAG}\n",
             ]
         )
 
