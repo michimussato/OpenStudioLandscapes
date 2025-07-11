@@ -21,6 +21,10 @@ The way YOU want it!
 YOU only!
 Exactly!
 
+This is not another Pipeline Tool. It is a tool
+to build a structured foundation for any Pipeline Tool
+you might decide to use at some point in your studio.
+
 An open source toolkit - a declarative build system - to
 easily create reproducible production environments based
 on your studio (even down to per production) needs: 
