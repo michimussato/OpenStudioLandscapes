@@ -84,5 +84,5 @@ sudo apt-get install -y --no-install-recommends curl python3 sudo
 Run installer (reboot if being asked for)
 
 ```shell
-python3 <(curl --header 'Cache-Control: no-cache, no-store' --silent https://raw.githubusercontent.com/michimussato/OpenStudioLandscapes/refs/heads/main/installer/ubuntu/22.04/install_ubuntu_2204.py)
+python3 <(curl --header 'Cache-Control: no-cache, no-store' --silent https://raw.githubusercontent.com/michimussato/OpenStudioLandscapes/refs/tags/v1.0.2/installer/ubuntu/22.04/install_ubuntu_2204.py)
 ```
