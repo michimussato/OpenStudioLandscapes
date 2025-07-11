@@ -243,25 +243,46 @@ def clone_features(session):
         else:
             logging.info("Cloning %s" % name)
 
-            cmd = [
+            # Clone the repository
+            cmd_clone = [
                 shutil.which("git"),
                 "-C",
-                pathlib.Path.cwd() / ".features",
+                repo_dest.parent.as_posix(),
                 "clone",
-                "--branch",
-                CHECKOUT,
+                "--tags",
                 repo,
             ]
 
-        if sudo:
-            cmd.insert(0, shutil.which("sudo"))
-            cmd.insert(1, "--reset-timestamp")
-            # cmd.insert(2, "--stdin")
+            # Checkout a specifig Git tag
+            cmd_checkout = [
+                shutil.which("git"),
+                "-C",
+                repo_dest.as_posix(),
+                "checkout",
+                f"tags/{CHECKOUT}",
+                "-B",
+                CHECKOUT,
+            ]
 
-        logging.info(f"{cmd = }")
+        if sudo:
+            cmd_clone.insert(0, shutil.which("sudo"))
+            cmd_clone.insert(1, "--reset-timestamp")
+
+            cmd_checkout.insert(0, shutil.which("sudo"))
+            cmd_checkout.insert(1, "--reset-timestamp")
+
+        logging.info(f"{cmd_clone = }")
 
         session.run(
-            *cmd,
+            *cmd_checkout,
+            external=True,
+            silent=SESSION_RUN_SILENT,
+        )
+
+        logging.info(f"{cmd_clone = }")
+
+        session.run(
+            *cmd_checkout,
             external=True,
             silent=SESSION_RUN_SILENT,
         )
