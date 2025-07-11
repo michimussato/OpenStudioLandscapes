@@ -31,6 +31,7 @@ DOCKER_GID: str = "959"
 # Todo
 #  - [ ] Remove this switch after release
 USE_SSH: bool = False
+OPENSTUDIOLANDSCAPES_VERSION_TAG: str = "v1.0.2"
 # Todo
 #  - [ ] Create DOT_LANDSCAPES automatically
 DOT_LANDSCAPES: pathlib.Path = pathlib.Path("/opt/openstudiolandscapes/.landscapes")
@@ -269,6 +270,7 @@ def script_clone_openstudiolandscapes(
                 f"    mkdir -p {openstudiolandscapes_repo_dir.as_posix()}\n",
                 "fi\n",
                 f"git -C {openstudiolandscapes_repo_dir.parent.as_posix()} clone --tags {'git@github.com:' if USE_SSH else 'https://github.com/'}michimussato/OpenStudioLandscapes.git\n",
+                f"git -C {openstudiolandscapes_repo_dir.parent.as_posix()} checkout tags/{OPENSTUDIOLANDSCAPES_VERSION_TAG} -B {OPENSTUDIOLANDSCAPES_VERSION_TAG}\n",
             ]
         )
 
