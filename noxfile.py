@@ -274,12 +274,12 @@ def clone_features(session):
         logging.info(f"{cmd_clone = }")
 
         session.run(
-            *cmd_checkout,
+            *cmd_clone,
             external=True,
             silent=SESSION_RUN_SILENT,
         )
 
-        logging.info(f"{cmd_clone = }")
+        logging.info(f"{cmd_checkout = }")
 
         session.run(
             *cmd_checkout,
