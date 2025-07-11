@@ -233,7 +233,7 @@ def clone_features(session):
 
         # if cd repo; then git pull; else git clone https://server/repo repo; fi
 
-        repo_dest = pathlib.Path.cwd() / ".features" / repo
+        repo_dest = pathlib.Path.cwd() / ".features" / name
 
         if repo_dest.exists():
             raise FileExistsError(
