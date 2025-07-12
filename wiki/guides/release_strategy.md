@@ -12,23 +12,21 @@
 
 # Release / Branching Strategy
 
+Based on [Semantic Versioning]()
+
 ## Tags
 
 ### Release Candidates
 
-| Branch Name                     | Tag                                       | Increment |
-|---------------------------------|-------------------------------------------|-----------|
-| `<issue#>-<issue_descpription>` | `v<major>.<minor>.<patch>-<issue#>-rc<#>` | `rc<#>`   |
+| Branch Name                     | Tag                                        | Increment |
+|---------------------------------|--------------------------------------------|-----------|
+| `<issue#>-<issue_descpription>` | `v<major>.<minor>.<patch>-rc.<issue#>.<#>` | `<#>`     |
 
 ```shell
-TAG_VERSION="v<major>.<minor>.<patch>-<issue#>-rc<#>"
-# BRANCH="<issue#>-<issue_descpription>"
+TAG_VERSION="v<major>.<minor>.<patch>-rc.<issue#>-<#>"
 
-
-git pull --tags
 
 git tag --annotate "${TAG_VERSION}" --message "RC Release Version ${TAG_VERSION}" --force
-# git tag --annotate "latest" --message "Latest Release Version (pointing to ${TAG_VERSION})" "${TAG_VERSION}^{}" --force
 
 git push --tags --force
 
@@ -53,9 +51,9 @@ popd || exit
 
 ### Releases
 
-| Branch Name | Tag                        | Increment                     |
-|-------------|----------------------------|-------------------------------|
-| `main`      | `v<major>.<minor>.<patch>` | `<major>`/`<minor>`/`<patch>` |
+| Branch Name | Tag                        | Increment                           |
+|-------------|----------------------------|-------------------------------------|
+| `main`      | `v<major>.<minor>.<patch>` | `<major>` or `<minor>` or `<patch>` |
 
 ```shell
 TAG_VERSION="v<major>.<minor>.<patch>"
@@ -102,24 +100,24 @@ gitGraph
    branch 1-issue1
    checkout 1-issue1
    commit id: "1-wip-1"
-   commit id: "1-fixed-2" tag: "v1.0.1-1-rc1"
+   commit id: "1-fixed-2" tag: "v1.0.1-rc.1.1"
    commit id: "1-wip-3"
-   commit id: "1-fixed-4" tag: "v1.0.1-1-rc2"
+   commit id: "1-fixed-4" tag: "v1.0.1-rc.1.2"
    commit id: "1-wip-5"
-   commit id: "1-fixed-6" tag: "v1.0.1-1-rc3"
+   commit id: "1-fixed-6" tag: "v1.0.1-rc.1.3"
    checkout main
    merge 1-issue1 tag: "v1.0.2"
    branch 2-issue2
    checkout 2-issue2
    commit id: "2-wip-1"
-   commit id: "2-wip-2" tag: "v1.0.2-2-rc1"
+   commit id: "2-wip-2" tag: "v1.0.2-rc.2.1"
    commit id: "2-wip-3"
-   commit id: "2-fixed-4" tag: "v1.0.2-2-rc2"
+   commit id: "2-fixed-4" tag: "v1.0.2-rc.2.2"
    checkout main
    merge 2-issue2 tag: "v1.0.3"
    branch 3-issue3
    commit id: "3-wip-1"
-   commit id: "3-wip-2" tag: "v1.0.3-3-rc1"
+   commit id: "3-wip-2" tag: "v1.0.3-rc.3.1"
    checkout main
    commit tag: "v1.0.4"
    commit tag: "v1.0.5, latest"
@@ -138,22 +136,22 @@ gitGraph
    branch 2-issue2
    checkout 1-issue1
    commit id: "1-wip-1"
-   commit id: "1-fixed-2" tag: "v1.0.1-1-rc1"
+   commit id: "1-fixed-2" tag: "v1.0.1-rc.1.1"
    commit id: "1-wip-3"
-   commit id: "1-fixed-4" tag: "v1.0.1-1-rc2"
+   commit id: "1-fixed-4" tag: "v1.0.1-rc.1.2"
    commit id: "1-wip-5"
-   commit id: "1-fixed-6" tag: "v1.0.1-1-rc3"
+   commit id: "1-fixed-6" tag: "v1.0.1-rc.1.3"
    checkout main
    merge 1-issue1 tag: "v1.0.2"
    branch 3-issue3
    commit id: "3-wip-1"
-   commit id: "3-wip-2" tag: "v1.0.2-3-rc1"
+   commit id: "3-wip-2" tag: "v1.0.2-rc.3.1"
    checkout main
    checkout 2-issue2
    commit id: "2-wip-1"
-   commit id: "2-wip-2" tag: "v1.0.1-2-rc1"
+   commit id: "2-wip-2" tag: "v1.0.1-rc.2.1"
    commit id: "2-wip-3"
-   commit id: "2-fixed-4" tag: "v1.0.1-2-rc2"
+   commit id: "2-fixed-4" tag: "v1.0.1-rc.2.2"
    checkout main
    merge 2-issue2 tag: "v1.0.3"
    commit tag: "v1.0.4"
