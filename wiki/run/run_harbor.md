@@ -4,6 +4,9 @@
 * [Table Of Contents](#table-of-contents)
 * [Launch Harbor](#launch-harbor)
   * [nox](#nox)
+    * [Preparation](#preparation)
+      * [`harbor_prepare`](#harbor_prepare)
+      * [`harbor_clear`](#harbor_clear)
     * [up](#up)
       * [detached](#detached)
     * [down](#down)
@@ -24,6 +27,20 @@
 > ```
 
 ## nox
+
+### Preparation
+
+#### `harbor_prepare`
+
+```shell
+nox --session harbor_prepare
+```
+
+#### `harbor_clear`
+
+```shell
+nox --session harbor_clear
+```
 
 ### up
 
