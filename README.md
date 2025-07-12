@@ -102,8 +102,19 @@ continue building your system around it. Right? Wrong! OpenStudioLandscapes
 is here to change that by making sure your **future you** is not going to 
 regret decisions of its **past you**!
 
+Now you're asking: **"So, tell me! What exactly does it produce? Is
+it even worth the hassle? And wtf is a Landscape?"**. Good you're asking! To get an idea
+what the actual output (or product if you will) of OpenStudioLandscapes
+looks like and what it can be used for, I have created a **ready-made, portable
+[Demo Landscape](https://github.com/michimussato/OpenStudioLandscapes-Demo-Landscape)**
+(well, OpenStudioLandscape created it of course). No need to go through the installation process at all.
+Just clone the repository and follow the (very short) instructions. Here's a Landscape Map of
+the Demo Landscape:
+
+[![Demo Landscape](https://raw.githubusercontent.com/michimussato/OpenStudioLandscapes-Demo-Landscape/refs/heads/main/2025-07-10-22-36-50-47cd6c0a7dd141429707ab6d91190a27/Landscape_Map__Landscape_Map/Landscape_Map__landscape_map/Landscape_Map__landscape_map.svg)](https://github.com/michimussato/OpenStudioLandscapes-Demo-Landscape)
+
 Bear in mind: OpenStudioLandscapes is a young project.
-There are still many items to implement, such as for example a release strategy.
+There are still many items to be implemented (and potentially bug-fixed).
 I lack experience in many fields when it comes to software development. The documentation
 is not in a shape I would like to see it in. So, before adding features and Features to 
 OpenStudioLandscapes, I plan to work on stability, documentation and support. 
@@ -112,6 +123,7 @@ that are being asked for - and this is your part. Ask anything. Request anything
 Suggest anything. Anything that leads to a better experience - without hiccups and without
 too much noise at the same time - from installation to usage. If your field of expertise
 can improve this project, please step forward and jump on board!
+
 Now, it's time to head over to the [Wiki](wiki/README.md)!
 
 # Community
