@@ -107,7 +107,7 @@ it even worth the hassle? And wtf is a Landscape?"**. Good you're asking! To get
 what the actual output (or product if you will) of OpenStudioLandscapes
 looks like and what it can be used for, I have created a **ready-made, portable
 [Demo Landscape](https://github.com/michimussato/OpenStudioLandscapes-Demo-Landscape)**
-(well, OpenStudioLandscape created it of course). No need to go through the installation process at all.
+(well, OpenStudioLandscapes created it of course). No need to go through the installation process at all.
 Just clone the repository and follow the (very short) instructions. Here's a Landscape Map of
 the Demo Landscape:
 
