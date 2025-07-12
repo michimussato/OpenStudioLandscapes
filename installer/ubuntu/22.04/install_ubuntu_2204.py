@@ -205,6 +205,22 @@ def script_clone_openstudiolandscapes(
     #  - [ ] git clone fails silently if ~/git/repos/OpenStudioLandscapes
     #        already exists. FIX!
 
+    # 1 : #!/bin/env bash
+    # 2 :
+    # 3 :
+    # 4 : if [ -d /home/user/git/repos/OpenStudioLandscapes ]; then
+    # 5 :     echo "Backing up previous Installation..."
+    # 6 :     mv /home/user/git/repos/OpenStudioLandscapes /home/user/git/repos/OpenStudioLandscapes_$(date +"%Y-%m-%d_%H-%m-%S")
+    # 7 : fi
+    # 8 :
+    # 9 : if [ ! -d /home/user/git/repos/OpenStudioLandscapes ]; then
+    # 10:     mkdir -p /home/user/git/repos/OpenStudioLandscapes
+    # 11: fi
+    # 12: git -C /home/user/git/repos clone --tags https://github.com/michimussato/OpenStudioLandscapes.git
+    # 13: git -C /home/user/git/repos/OpenStudioLandscapes checkout tags/v1.0.3 -B v1.0.3
+    # 14:
+    # 15: exit 0
+
     print(" CLONE OPENSTUDIOLANDSCAPES ".center(_get_terminal_size()[0], "#"))
 
     if USE_SSH:
@@ -504,6 +520,37 @@ def script_install_docker(
 def script_install_openstudiolandscapes(
     openstudiolandscapes_repo_dir: pathlib.Path,
 ) -> pathlib.Path:
+
+    # ######################################## INSTALL OPENSTUDIOLANDSCAPES #######################################
+    # ================================================ BLOCK START ================================================
+    # -------------------------------------------------- COMMAND --------------------------------------------------
+    #                /usr/bin/bash /tmp/ubuntu_2204__script_install_openstudiolandscapes__57ruz9z9.sh
+    # ------------------------------------------------ SCRIPT START -----------------------------------------------
+    #
+    # 1 : #!/bin/env bash
+    # 2 :
+    # 3 :
+    # 4 : cd /home/user/git/repos/OpenStudioLandscapes
+    # 5 : /usr/local/bin/python3.11 -m venv .venv
+    # 6 :
+    # 7 : source .venv/bin/activate
+    # 8 : pip install --upgrade pip setuptools setuptools_scm wheel
+    # 9 :
+    # 10: pip install -e .[dev]
+    # 11:
+    # 12: nox -s clone_features
+    # 13: nox -s install_features_into_engine
+    # 14:
+    # 15: deactivate
+    # 16:
+    # 17: exit 0
+    #
+    # ------------------------------------------------- SCRIPT END ------------------------------------------------
+    #
+    #
+    # ERROR: file:///home/user/git/repos/OpenStudioLandscapes does not appear to be a Python project: neither 'setup.py' nor 'pyproject.toml' found.
+    # /tmp/ubuntu_2204__script_install_openstudiolandscapes__57ruz9z9.sh: line 12: nox: command not found
+    # /tmp/ubuntu_2204__script_install_openstudiolandscapes__57ruz9z9.sh: line 13: nox: command not found
 
     print(" INSTALL OPENSTUDIOLANDSCAPES ".center(_get_terminal_size()[0], "#"))
 
