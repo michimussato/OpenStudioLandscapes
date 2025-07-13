@@ -93,6 +93,7 @@ tmp*/
 !.payload/bin/.gitkeep
 .payload/data/*
 !.payload/data/.gitkeep
+!.payload/data/foundry.lic.example
 
 # Obsidian
 .obsidian/hotkeys.json
