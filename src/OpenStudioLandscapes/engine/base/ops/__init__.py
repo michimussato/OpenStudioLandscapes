@@ -1032,6 +1032,8 @@ def op_docker_compose_graph(
         "env": In(dict),
         "docker_config": In(DockerConfig),
         "docker_config_json": In(pathlib.Path),
+        "cmd_extend": In(list),
+        "cmd_append": In(dict[str, list]),
     },
     out={
         "group_out": Out(pathlib.Path),
@@ -1048,6 +1050,8 @@ def op_group_out(
     # group_in: dict,  # pylint: disable=redefined-outer-name
     docker_config: DockerConfig,  # pylint: disable=redefined-outer-name
     docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name
+    cmd_extend: list,  # pylint: disable=redefined-outer-name
+    cmd_append: dict[str, list],  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[pathlib.Path] | Output[MutableMapping] | Output[str] | Output[List] | AssetMaterialization, None, None]:
 
     DOCKER_COMPOSE = pathlib.Path(env["DOCKER_COMPOSE"])
@@ -1084,6 +1088,8 @@ def op_group_out(
         "--project-name", compose_project_name,
         "up",
         "--remove-orphans",
+        *cmd_extend,
+        *cmd_append["cmd"],
     ]
     script_cmd_docker_compose_up = DOCKER_COMPOSE.parent / "docker_compose_up.sh"
 
@@ -1156,12 +1162,59 @@ def op_group_out(
         encoding="utf-8",
     ) as fw:
         fw.write(docker_script["script"])
-        fw.write(f"{shlex.join(cmd_docker_compose_up)}\n".replace(DOCKER_COMPOSE.parent.as_posix(), '"${SCRIPT_DIR}"'))
+        fw.write("\n")
+        fw.write("pushd ${SCRIPT_DIR}\n")
+        fw.write(
+            f"{shlex.join(cmd_docker_compose_up)}\n".replace(
+                # docker-compose.yml
+                DOCKER_COMPOSE.as_posix(),
+                get_relative_path_via_common_root(
+                    context=context,
+                    path_src=script_cmd_docker_compose_up,
+                    path_dst=DOCKER_COMPOSE,
+                    path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
+                ).as_posix()
+            ).replace(
+                # OpenStudioLandscapes_Base__docker_config_json
+                pathlib.Path(env["DOT_LANDSCAPES"]).as_posix(),
+                get_relative_path_via_common_root(
+                    context=context,
+                    path_src=script_cmd_docker_compose_up,
+                    path_dst=docker_config_json,
+                    path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
+                ).as_posix()
+            )
+        )
+        fw.write("popd\n")
         fw.write("\n")
         fw.write("exit 0;\n")
     os.chmod(
         script_cmd_docker_compose_up,
         mode=os.stat(script_cmd_docker_compose_up).st_mode | 0o111,
+    )
+    docker_compose_scope = "__".join(context.asset_key_for_output("cmd_docker_compose_up").path)
+    script_cmd_docker_compose_up_convenience = pathlib.Path(env["DOT_LANDSCAPES"], env.get('LANDSCAPE', 'default'), f"{docker_compose_scope}.sh")
+    rel_path = get_relative_path_via_common_root(
+        context=context,
+        path_src=script_cmd_docker_compose_up_convenience,
+        path_dst=script_cmd_docker_compose_up,
+        path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
+    )
+    with open(
+        file=script_cmd_docker_compose_up_convenience,
+        mode="w",
+        encoding="utf-8",
+    ) as fw:
+        fw.write(docker_script["script"])
+        fw.write("\n")
+        fw.write("pushd ${SCRIPT_DIR}\n")
+        fw.write(f"{rel_path.as_posix()}\n")
+        fw.write("popd\n")
+        fw.write("\n")
+        fw.write("exit 0;\n")
+    os.chmod(
+        script_cmd_docker_compose_up_convenience,
+        mode=os.stat(script_cmd_docker_compose_up_convenience).st_mode | 0o111,
     )
     scripts.append(script_cmd_docker_compose_up.as_posix())
 
@@ -1275,7 +1328,7 @@ def op_group_out(
                 # ),
                 "cmd_docker_compose_up": MetadataValue.path(
                     " ".join(
-                        shlex.quote(s) if not s in ["&&", ";"] else s
+                        shlex.quote(s) if not s in cmd_append["exclude_from_quote"] else s
                         for s in cmd_docker_compose_up
                     )
                 ),

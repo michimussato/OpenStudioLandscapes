@@ -308,6 +308,48 @@ def features_in(
     )
 
 
+@asset(
+    **ASSET_HEADER_COMPOSE,
+    ins={
+    },
+)
+def cmd_extend(
+        context: AssetExecutionContext,
+):
+
+    ret = []
+
+    yield Output(ret)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.json(ret),
+        },
+    )
+
+
+@asset(
+    **ASSET_HEADER_COMPOSE,
+    ins={
+    },
+)
+def cmd_append(
+        context: AssetExecutionContext,
+):
+
+    ret = []
+
+    yield Output(ret)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.json(ret),
+        },
+    )
+
+
 group_out = get_group_out(
     ASSET_HEADER=ASSET_HEADER_COMPOSE,
 )
