@@ -47,6 +47,8 @@ def get_group_out(
             "env": AssetKey([*ASSET_HEADER["key_prefix"], "env"]),
             "docker_config": AssetKey([*ASSET_HEADER["key_prefix"], "docker_config"]),
             "docker_config_json": AssetKey([*ASSET_HEADER["key_prefix"], "docker_config_json"]),
+            "cmd_extend": AssetKey([*ASSET_HEADER["key_prefix"], "cmd_extend"]),
+            "cmd_append": AssetKey([*ASSET_HEADER["key_prefix"], "cmd_append"]),
         },
     )
 
