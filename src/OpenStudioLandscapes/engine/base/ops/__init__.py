@@ -1334,19 +1334,19 @@ def op_group_out(
                 ),
                 "cmd_docker_compose_pull_up": MetadataValue.path(
                     " ".join(
-                        shlex.quote(s) if not s in ["&&", ";"] else s
+                        shlex.quote(s) if not s in cmd_append["exclude_from_quote"] else s
                         for s in cmd_docker_compose_pull_up
                     )
                 ),
                 "cmd_docker_compose_down": MetadataValue.path(
                     " ".join(
-                        shlex.quote(s) if not s in ["&&", ";"] else s
+                        shlex.quote(s) if not s in cmd_append["exclude_from_quote"] else s
                         for s in cmd_docker_compose_down
                     )
                 ),
                 "cmd_docker_compose_logs": MetadataValue.path(
                     " ".join(
-                        shlex.quote(s) if not s in ["&&", ";"] else s
+                        shlex.quote(s) if not s in cmd_append["exclude_from_quote"] else s
                         for s in cmd_docker_compose_logs
                     )
                 ),
