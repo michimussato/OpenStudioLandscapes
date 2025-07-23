@@ -30,7 +30,6 @@ def get_group_out(
 
     group_out = AssetsDefinition.from_op(
         op_group_out,
-        # op_group_out,
         can_subset=False,
         group_name=ASSET_HEADER["group_name"],
         keys_by_output_name={
