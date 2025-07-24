@@ -1163,9 +1163,15 @@ def op_group_out(
     ) as fw:
         fw.write(docker_script["script"])
         fw.write("\n")
-        fw.write("pushd ${SCRIPT_DIR}\n")
+        fw.write("pushd \"${SCRIPT_DIR}\" || exit 1\n")
+
+        cmd_str = " ".join(
+            shlex.quote(s) if not s in cmd_append["exclude_from_quote"] else s
+            for s in cmd_docker_compose_up
+        )
+
         fw.write(
-            f"{shlex.join(cmd_docker_compose_up)}\n".replace(
+            f"{cmd_str}\n".replace(
                 # docker-compose.yml
                 DOCKER_COMPOSE.as_posix(),
                 get_relative_path_via_common_root(
@@ -1185,7 +1191,7 @@ def op_group_out(
                 ).as_posix()
             )
         )
-        fw.write("popd\n")
+        fw.write("popd || exit 1\n")
         fw.write("\n")
         fw.write("exit 0;\n")
     os.chmod(
@@ -1207,9 +1213,9 @@ def op_group_out(
     ) as fw:
         fw.write(docker_script["script"])
         fw.write("\n")
-        fw.write("pushd ${SCRIPT_DIR}\n")
+        fw.write("pushd \"${SCRIPT_DIR}\" || exit 1\n")
         fw.write(f"{rel_path.as_posix()}\n")
-        fw.write("popd\n")
+        fw.write("popd || exit 1\n")
         fw.write("\n")
         fw.write("exit 0;\n")
     os.chmod(
@@ -1224,7 +1230,36 @@ def op_group_out(
         encoding="utf-8",
     ) as fw:
         fw.write(docker_script["script"])
-        fw.write(f"{shlex.join(cmd_docker_compose_pull_up)}\n".replace(DOCKER_COMPOSE.parent.as_posix(), '"${SCRIPT_DIR}"'))
+        fw.write("\n")
+        fw.write("pushd \"${SCRIPT_DIR}\" || exit 1\n")
+
+        cmd_str = " ".join(
+            shlex.quote(s) if not s in cmd_append["exclude_from_quote"] else s
+            for s in cmd_docker_compose_pull_up
+        )
+
+        fw.write(
+            f"{cmd_str}\n".replace(
+                # docker-compose.yml
+                DOCKER_COMPOSE.as_posix(),
+                get_relative_path_via_common_root(
+                    context=context,
+                    path_src=script_cmd_docker_compose_up,
+                    path_dst=DOCKER_COMPOSE,
+                    path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
+                ).as_posix()
+            ).replace(
+                # OpenStudioLandscapes_Base__docker_config_json
+                pathlib.Path(env["DOT_LANDSCAPES"]).as_posix(),
+                get_relative_path_via_common_root(
+                    context=context,
+                    path_src=script_cmd_docker_compose_up,
+                    path_dst=docker_config_json,
+                    path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
+                ).as_posix()
+            )
+        )
+        fw.write("popd || exit 1\n")
         fw.write("\n")
         fw.write("exit 0;\n")
     os.chmod(
@@ -1239,7 +1274,36 @@ def op_group_out(
         encoding="utf-8",
     ) as fw:
         fw.write(docker_script["script"])
-        fw.write(f"{shlex.join(cmd_docker_compose_down)}\n".replace(DOCKER_COMPOSE.parent.as_posix(), '"${SCRIPT_DIR}"'))
+        fw.write("\n")
+        fw.write("pushd \"${SCRIPT_DIR}\" || exit 1\n")
+
+        cmd_str = " ".join(
+            shlex.quote(s) if not s in cmd_append["exclude_from_quote"] else s
+            for s in cmd_docker_compose_up
+        )
+
+        fw.write(
+            f"{cmd_str}\n".replace(
+                # docker-compose.yml
+                DOCKER_COMPOSE.as_posix(),
+                get_relative_path_via_common_root(
+                    context=context,
+                    path_src=script_cmd_docker_compose_up,
+                    path_dst=DOCKER_COMPOSE,
+                    path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
+                ).as_posix()
+            ).replace(
+                # OpenStudioLandscapes_Base__docker_config_json
+                pathlib.Path(env["DOT_LANDSCAPES"]).as_posix(),
+                get_relative_path_via_common_root(
+                    context=context,
+                    path_src=script_cmd_docker_compose_up,
+                    path_dst=docker_config_json,
+                    path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
+                ).as_posix()
+            )
+        )
+        fw.write("popd || exit 1\n")
         fw.write("\n")
         fw.write("exit 0;\n")
     os.chmod(
@@ -1254,7 +1318,37 @@ def op_group_out(
         encoding="utf-8",
     ) as fw:
         fw.write(docker_script["script"])
-        fw.write(f"{shlex.join(cmd_docker_compose_logs)}\n".replace(DOCKER_COMPOSE.parent.as_posix(), '"${SCRIPT_DIR}"'))
+        fw.write("\n")
+        fw.write("pushd \"${SCRIPT_DIR}\" || exit 1\n")
+
+        cmd_str = " ".join(
+            shlex.quote(s) if not s in cmd_append["exclude_from_quote"] else s
+            for s in cmd_docker_compose_up
+        )
+
+        fw.write(
+            f"{cmd_str}\n".replace(
+                # docker-compose.yml
+                DOCKER_COMPOSE.as_posix(),
+                get_relative_path_via_common_root(
+                    context=context,
+                    path_src=script_cmd_docker_compose_up,
+                    path_dst=DOCKER_COMPOSE,
+                    path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
+                ).as_posix()
+            ).replace(
+                # OpenStudioLandscapes_Base__docker_config_json
+                pathlib.Path(env["DOT_LANDSCAPES"]).as_posix(),
+                get_relative_path_via_common_root(
+                    context=context,
+                    path_src=script_cmd_docker_compose_up,
+                    path_dst=docker_config_json,
+                    path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
+                ).as_posix()
+            )
+        )
+
+        fw.write("popd || exit 1\n")
         fw.write("\n")
         fw.write("exit 0;\n")
     os.chmod(
