@@ -26,7 +26,7 @@ nox --sessions dagster_postgres_up_detach dagster_postgres
 # With Harbor:
 # nox --session harbor_prepare  # Only once
 # To clear Harbor: nox 
-# nox --sessions harbor_up_detach dagster_postgres_up_detach dagster_postgres
+# nox --sessions harbor_up_detach dagster_postgres_up_detach dagster_postgres && nox --sessions dagster_postgres_down harbor_down
 ```
 
 ## down
