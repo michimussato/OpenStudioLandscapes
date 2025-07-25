@@ -18,7 +18,7 @@ import shlex
 import shutil
 from collections import ChainMap
 from functools import reduce
-from typing import Generator, MutableMapping, Any, List
+from typing import Generator, MutableMapping, Any, List, Union
 
 import yaml
 from docker_compose_graph.utils import *
@@ -1161,36 +1161,35 @@ def op_group_out(
     docker_script["script"] += "SCRIPT_DIR=$( cd -- \"$( dirname -- \"${BASH_SOURCE[0]}\" )\" &> /dev/null && pwd )\n"
     docker_script["script"] += "\n"
 
-    scripts = [
+    script_dicts = [
         {
-            "cmd": script_cmd_docker_compose_up,
-            "script": cmd_docker_compose_up,
-            "create_convenience_scripts": True,
+            "script": script_cmd_docker_compose_up,
+            "cmd": cmd_docker_compose_up,
+            "create_convenience_script": True,
             "asset_key_for_output": "cmd_docker_compose_up",
         },
         {
-            "cmd": script_cmd_docker_compose_pull_up,
-            "script": cmd_docker_compose_pull_up,
-            "create_convenience_scripts": False,
+            "script": script_cmd_docker_compose_pull_up,
+            "cmd": cmd_docker_compose_pull_up,
+            "create_convenience_script": False,
             "asset_key_for_output": "cmd_docker_compose_pull_up",
         },
         {
-            "cmd": script_cmd_docker_compose_down,
-            "script": cmd_docker_compose_down,
-            "create_convenience_scripts": False,
+            "script": script_cmd_docker_compose_down,
+            "cmd": cmd_docker_compose_down,
+            "create_convenience_script": False,
             "asset_key_for_output": "cmd_docker_compose_down",
         },
         {
-            "cmd": script_cmd_docker_compose_logs,
-            "script": cmd_docker_compose_logs,
-            "create_convenience_scripts": False,
+            "script": script_cmd_docker_compose_logs,
+            "cmd": cmd_docker_compose_logs,
+            "create_convenience_script": False,
             "asset_key_for_output": "cmd_docker_compose_logs",
         },
     ]
 
     def _write_script(
-            script: dict,
-            create_convenience_script: bool,
+            script_dict: dict[str, Union[str, List, pathlib.Path]],
     ):
         """
         This writes the launch scripts that contain the commands to handle Landscapes (up/down etc.).
@@ -1200,8 +1199,11 @@ def op_group_out(
         themselves. They *should* be portable, hence, the SCRIPT_DIR varible inside the scripts
         is dynamic and, from there, all paths need to be relative to that variable.
         """
+
+        context.log.error(script_dict)
+
         with open(
-                file=script["script"],
+                file=script_dict["script"],
                 mode="w",
                 encoding="utf-8",
         ) as fw:
@@ -1211,7 +1213,7 @@ def op_group_out(
 
             cmd_str = " ".join(
                 shlex.quote(s) if not s in cmd_append["exclude_from_quote"] else s
-                for s in script["cmd"]
+                for s in script_dict["cmd"]
             )
 
             fw.write(
@@ -1239,14 +1241,14 @@ def op_group_out(
             fw.write("\n")
             fw.write("exit 0;\n")
         os.chmod(
-            script["script"],
-            mode=os.stat(script["script"]).st_mode | 0o111,
+            script_dict["script"],
+            mode=os.stat(script_dict["script"]).st_mode | 0o111,
         )
 
-        scripts.append(script["script"].as_posix())
+        scripts.append(script_dict["script"].as_posix())
 
-        if create_convenience_script:
-            docker_compose_scope = "__".join(context.asset_key_for_output(script["asset_key_for_output"]).path)
+        if script_dict["create_convenience_script"]:
+            docker_compose_scope = "__".join(context.asset_key_for_output(script_dict["asset_key_for_output"]).path)
             script_cmd_convenience = pathlib.Path(
                 env["DOT_LANDSCAPES"],
                 env.get('LANDSCAPE', 'default'),
@@ -1255,7 +1257,7 @@ def op_group_out(
             rel_path = get_relative_path_via_common_root(
                 context=context,
                 path_src=script_cmd_convenience,
-                path_dst=script["script"],
+                path_dst=script_dict["script"],
                 path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
             )
             with open(
@@ -1275,8 +1277,8 @@ def op_group_out(
                 mode=os.stat(script_cmd_convenience).st_mode | 0o111,
             )
 
-    for script in scripts:
-        _write_script(script)
+    for script_dict in script_dicts:
+        _write_script(script_dict)
 
     if "group_out" in context.selected_output_names:
 
