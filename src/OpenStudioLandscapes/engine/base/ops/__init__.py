@@ -1078,21 +1078,6 @@ def op_group_out(
     # {AssetKey(['Compose_default', 'group_out']): 'Compose_default', AssetKey(['Compose_default', 'compose_project_name']): 'Compose_default'}
     context.log.debug(group_names_by_key_dict)
 
-    cmd_docker_compose_up = [
-        shutil.which("docker"),
-        "--config", docker_config_json.as_posix(),
-        "compose",
-        "--progress",
-        DOCKER_PROGRESS,
-        "--file",  DOCKER_COMPOSE.as_posix(),
-        "--project-name", compose_project_name,
-        "up",
-        "--remove-orphans",
-        *cmd_extend,
-        *cmd_append["cmd"],
-    ]
-    script_cmd_docker_compose_up = DOCKER_COMPOSE.parent / "docker_compose_up.sh"
-
     cmd_docker_compose_logs = [
         shutil.which("docker"),
         "--config", docker_config_json.as_posix(),
@@ -1105,6 +1090,26 @@ def op_group_out(
         "--follow",
     ]
     script_cmd_docker_compose_logs = DOCKER_COMPOSE.parent / "docker_compose_logs.sh"
+
+    cmd_docker_compose_up = [
+        shutil.which("docker"),
+        "--config", docker_config_json.as_posix(),
+        "compose",
+        "--progress",
+        DOCKER_PROGRESS,
+        "--file",  DOCKER_COMPOSE.as_posix(),
+        "--project-name", compose_project_name,
+        "up",
+        "--remove-orphans",
+        [
+            [*cmd_extend],
+            "--detach",
+        ][1],
+        *cmd_append["cmd"],
+        "&&",
+        *cmd_docker_compose_logs,
+    ]
+    script_cmd_docker_compose_up = DOCKER_COMPOSE.parent / "docker_compose_up.sh"
 
     cmd_docker_compose_pull_up = [
         shutil.which("docker"),
@@ -1156,206 +1161,122 @@ def op_group_out(
     docker_script["script"] += "SCRIPT_DIR=$( cd -- \"$( dirname -- \"${BASH_SOURCE[0]}\" )\" &> /dev/null && pwd )\n"
     docker_script["script"] += "\n"
 
-    with open(
-        file=script_cmd_docker_compose_up,
-        mode="w",
-        encoding="utf-8",
-    ) as fw:
-        fw.write(docker_script["script"])
-        fw.write("\n")
-        fw.write("pushd \"${SCRIPT_DIR}\" || exit 1\n")
+    scripts = [
+        {
+            "cmd": script_cmd_docker_compose_up,
+            "script": cmd_docker_compose_up,
+            "create_convenience_scripts": True,
+            "asset_key_for_output": "cmd_docker_compose_up",
+        },
+        {
+            "cmd": script_cmd_docker_compose_pull_up,
+            "script": cmd_docker_compose_pull_up,
+            "create_convenience_scripts": False,
+            "asset_key_for_output": "cmd_docker_compose_pull_up",
+        },
+        {
+            "cmd": script_cmd_docker_compose_down,
+            "script": cmd_docker_compose_down,
+            "create_convenience_scripts": False,
+            "asset_key_for_output": "cmd_docker_compose_down",
+        },
+        {
+            "cmd": script_cmd_docker_compose_logs,
+            "script": cmd_docker_compose_logs,
+            "create_convenience_scripts": False,
+            "asset_key_for_output": "cmd_docker_compose_logs",
+        },
+    ]
 
-        cmd_str = " ".join(
-            shlex.quote(s) if not s in cmd_append["exclude_from_quote"] else s
-            for s in cmd_docker_compose_up
-        )
+    def _write_script(
+            script: dict,
+            create_convenience_script: bool,
+    ):
+        """
+        This writes the launch scripts that contain the commands to handle Landscapes (up/down etc.).
+        If we are not working in Dagster (or the Materializations have been removed, there is
+        no other way to reproduce the actual commands other than storing them in these scripts.
+        Convenience scripts get created at the root level of a Landscape and point the launch scripts
+        themselves. They *should* be portable, hence, the SCRIPT_DIR varible inside the scripts
+        is dynamic and, from there, all paths need to be relative to that variable.
+        """
+        with open(
+                file=script["script"],
+                mode="w",
+                encoding="utf-8",
+        ) as fw:
+            fw.write(docker_script["script"])
+            fw.write("\n")
+            fw.write("pushd \"${SCRIPT_DIR}\" || exit 1\n")
 
-        fw.write(
-            f"{cmd_str}\n".replace(
-                # docker-compose.yml
-                DOCKER_COMPOSE.as_posix(),
-                get_relative_path_via_common_root(
-                    context=context,
-                    path_src=script_cmd_docker_compose_up,
-                    path_dst=DOCKER_COMPOSE,
-                    path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
-                ).as_posix()
-            ).replace(
-                # OpenStudioLandscapes_Base__docker_config_json
-                pathlib.Path(env["DOT_LANDSCAPES"]).as_posix(),
-                get_relative_path_via_common_root(
-                    context=context,
-                    path_src=script_cmd_docker_compose_up,
-                    path_dst=docker_config_json,
-                    path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
-                ).as_posix()
+            cmd_str = " ".join(
+                shlex.quote(s) if not s in cmd_append["exclude_from_quote"] else s
+                for s in script["cmd"]
             )
-        )
-        fw.write("popd || exit 1\n")
-        fw.write("\n")
-        fw.write("exit 0;\n")
-    os.chmod(
-        script_cmd_docker_compose_up,
-        mode=os.stat(script_cmd_docker_compose_up).st_mode | 0o111,
-    )
-    docker_compose_scope = "__".join(context.asset_key_for_output("cmd_docker_compose_up").path)
-    script_cmd_docker_compose_up_convenience = pathlib.Path(env["DOT_LANDSCAPES"], env.get('LANDSCAPE', 'default'), f"{docker_compose_scope}.sh")
-    rel_path = get_relative_path_via_common_root(
-        context=context,
-        path_src=script_cmd_docker_compose_up_convenience,
-        path_dst=script_cmd_docker_compose_up,
-        path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
-    )
-    with open(
-        file=script_cmd_docker_compose_up_convenience,
-        mode="w",
-        encoding="utf-8",
-    ) as fw:
-        fw.write(docker_script["script"])
-        fw.write("\n")
-        fw.write("pushd \"${SCRIPT_DIR}\" || exit 1\n")
-        fw.write(f"{rel_path.as_posix()}\n")
-        fw.write("popd || exit 1\n")
-        fw.write("\n")
-        fw.write("exit 0;\n")
-    os.chmod(
-        script_cmd_docker_compose_up_convenience,
-        mode=os.stat(script_cmd_docker_compose_up_convenience).st_mode | 0o111,
-    )
-    scripts.append(script_cmd_docker_compose_up.as_posix())
 
-    with open(
-        file=script_cmd_docker_compose_pull_up,
-        mode="w",
-        encoding="utf-8",
-    ) as fw:
-        fw.write(docker_script["script"])
-        fw.write("\n")
-        fw.write("pushd \"${SCRIPT_DIR}\" || exit 1\n")
-
-        cmd_str = " ".join(
-            shlex.quote(s) if not s in cmd_append["exclude_from_quote"] else s
-            for s in cmd_docker_compose_pull_up
-        )
-
-        fw.write(
-            f"{cmd_str}\n".replace(
-                # docker-compose.yml
-                DOCKER_COMPOSE.as_posix(),
-                get_relative_path_via_common_root(
-                    context=context,
-                    path_src=script_cmd_docker_compose_up,
-                    path_dst=DOCKER_COMPOSE,
-                    path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
-                ).as_posix()
-            ).replace(
-                # OpenStudioLandscapes_Base__docker_config_json
-                pathlib.Path(env["DOT_LANDSCAPES"]).as_posix(),
-                get_relative_path_via_common_root(
-                    context=context,
-                    path_src=script_cmd_docker_compose_up,
-                    path_dst=docker_config_json,
-                    path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
-                ).as_posix()
+            fw.write(
+                f"{cmd_str}\n".replace(
+                    # docker-compose.yml
+                    DOCKER_COMPOSE.as_posix(),
+                    get_relative_path_via_common_root(
+                        context=context,
+                        path_src=script_cmd_docker_compose_up,
+                        path_dst=DOCKER_COMPOSE,
+                        path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
+                    ).as_posix()
+                ).replace(
+                    # OpenStudioLandscapes_Base__docker_config_json
+                    pathlib.Path(env["DOT_LANDSCAPES"]).as_posix(),
+                    get_relative_path_via_common_root(
+                        context=context,
+                        path_src=script_cmd_docker_compose_up,
+                        path_dst=docker_config_json,
+                        path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
+                    ).as_posix()
+                )
             )
-        )
-        fw.write("popd || exit 1\n")
-        fw.write("\n")
-        fw.write("exit 0;\n")
-    os.chmod(
-        script_cmd_docker_compose_pull_up,
-        mode=os.stat(script_cmd_docker_compose_pull_up).st_mode | 0o111,
-    )
-    scripts.append(script_cmd_docker_compose_pull_up.as_posix())
-
-    with open(
-        file=script_cmd_docker_compose_down,
-        mode="w",
-        encoding="utf-8",
-    ) as fw:
-        fw.write(docker_script["script"])
-        fw.write("\n")
-        fw.write("pushd \"${SCRIPT_DIR}\" || exit 1\n")
-
-        cmd_str = " ".join(
-            shlex.quote(s) if not s in cmd_append["exclude_from_quote"] else s
-            for s in cmd_docker_compose_up
+            fw.write("popd || exit 1\n")
+            fw.write("\n")
+            fw.write("exit 0;\n")
+        os.chmod(
+            script["script"],
+            mode=os.stat(script["script"]).st_mode | 0o111,
         )
 
-        fw.write(
-            f"{cmd_str}\n".replace(
-                # docker-compose.yml
-                DOCKER_COMPOSE.as_posix(),
-                get_relative_path_via_common_root(
-                    context=context,
-                    path_src=script_cmd_docker_compose_up,
-                    path_dst=DOCKER_COMPOSE,
-                    path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
-                ).as_posix()
-            ).replace(
-                # OpenStudioLandscapes_Base__docker_config_json
-                pathlib.Path(env["DOT_LANDSCAPES"]).as_posix(),
-                get_relative_path_via_common_root(
-                    context=context,
-                    path_src=script_cmd_docker_compose_up,
-                    path_dst=docker_config_json,
-                    path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
-                ).as_posix()
+        scripts.append(script["script"].as_posix())
+
+        if create_convenience_script:
+            docker_compose_scope = "__".join(context.asset_key_for_output(script["asset_key_for_output"]).path)
+            script_cmd_convenience = pathlib.Path(
+                env["DOT_LANDSCAPES"],
+                env.get('LANDSCAPE', 'default'),
+                f"{docker_compose_scope}.sh",
             )
-        )
-        fw.write("popd || exit 1\n")
-        fw.write("\n")
-        fw.write("exit 0;\n")
-    os.chmod(
-        script_cmd_docker_compose_down,
-        mode=os.stat(script_cmd_docker_compose_down).st_mode | 0o111,
-    )
-    scripts.append(script_cmd_docker_compose_down.as_posix())
-
-    with open(
-        file=script_cmd_docker_compose_logs,
-        mode="w",
-        encoding="utf-8",
-    ) as fw:
-        fw.write(docker_script["script"])
-        fw.write("\n")
-        fw.write("pushd \"${SCRIPT_DIR}\" || exit 1\n")
-
-        cmd_str = " ".join(
-            shlex.quote(s) if not s in cmd_append["exclude_from_quote"] else s
-            for s in cmd_docker_compose_up
-        )
-
-        fw.write(
-            f"{cmd_str}\n".replace(
-                # docker-compose.yml
-                DOCKER_COMPOSE.as_posix(),
-                get_relative_path_via_common_root(
-                    context=context,
-                    path_src=script_cmd_docker_compose_up,
-                    path_dst=DOCKER_COMPOSE,
-                    path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
-                ).as_posix()
-            ).replace(
-                # OpenStudioLandscapes_Base__docker_config_json
-                pathlib.Path(env["DOT_LANDSCAPES"]).as_posix(),
-                get_relative_path_via_common_root(
-                    context=context,
-                    path_src=script_cmd_docker_compose_up,
-                    path_dst=docker_config_json,
-                    path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
-                ).as_posix()
+            rel_path = get_relative_path_via_common_root(
+                context=context,
+                path_src=script_cmd_convenience,
+                path_dst=script["script"],
+                path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
             )
-        )
+            with open(
+                    file=script_cmd_convenience,
+                    mode="w",
+                    encoding="utf-8",
+            ) as fw:
+                fw.write(docker_script["script"])
+                fw.write("\n")
+                fw.write("pushd \"${SCRIPT_DIR}\" || exit 1\n")
+                fw.write(f"{rel_path.as_posix()}\n")
+                fw.write("popd || exit 1\n")
+                fw.write("\n")
+                fw.write("exit 0;\n")
+            os.chmod(
+                script_cmd_convenience,
+                mode=os.stat(script_cmd_convenience).st_mode | 0o111,
+            )
 
-        fw.write("popd || exit 1\n")
-        fw.write("\n")
-        fw.write("exit 0;\n")
-    os.chmod(
-        script_cmd_docker_compose_logs,
-        mode=os.stat(script_cmd_docker_compose_logs).st_mode | 0o111,
-    )
-    scripts.append(script_cmd_docker_compose_logs.as_posix())
+    for script in scripts:
+        _write_script(script)
 
     if "group_out" in context.selected_output_names:
 
