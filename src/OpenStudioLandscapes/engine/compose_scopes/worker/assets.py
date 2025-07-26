@@ -385,8 +385,6 @@ if bool(ins):
             composes: dict,  # pylint: disable=redefined-outer-name,
     ) -> Generator[Output[dict[str, list[Any]]] | AssetMaterialization | Any, Any, None]:
 
-
-
         ret = {
             "cmd": [],
             "exclude_from_quote": []
@@ -454,13 +452,7 @@ if bool(ins):
             )
 
         ret["cmd"].extend(cmd_docker_compose_set_dynamic_hostnames)
-        ret["exclude_from_quote"].extend(
-            [
-                "&&",
-                ";",
-                *exclude_from_quote,
-            ]
-        )
+        ret["exclude_from_quote"].extend(exclude_from_quote)
 
         yield Output(ret)
 
