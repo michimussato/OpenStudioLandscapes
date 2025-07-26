@@ -2,6 +2,7 @@ __all__ = [
     "GroupIn",
     "OpenStudioLandscapesConfig",
     "ComposeScope",
+    "ComposeCmdExclusion",
     "ComposeNetworkMode",
     "DockerRepositoryType",
     "DockerConfig",
@@ -25,6 +26,13 @@ class ComposeScope(enum.StrEnum):
     DEFAULT = "default"
     WORKER = "worker"
     LICENSE_SERVER = "license_server"
+
+
+class ComposeCmdExclusion(enum.Enum):
+    CMD_APPEND_ALWAYS_EXCLUDE_FROM_QUOTATION = [
+        "&&",
+        ";",
+    ]
 
 
 class ComposeNetworkMode(enum.StrEnum):

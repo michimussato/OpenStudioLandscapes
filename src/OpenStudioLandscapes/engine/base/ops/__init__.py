@@ -1054,6 +1054,10 @@ def op_group_out(
     cmd_append: dict[str, list],  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[pathlib.Path] | Output[MutableMapping] | Output[str] | Output[List] | AssetMaterialization, None, None]:
 
+    cmd_append["exclude_from_quote"].extend(
+        ComposeCmdExclusion.CMD_APPEND_ALWAYS_EXCLUDE_FROM_QUOTATION.value
+    )
+
     DOCKER_COMPOSE = pathlib.Path(env["DOCKER_COMPOSE"])
     # Todo:
     #  - [ ] Is this necessary here?
@@ -1200,13 +1204,22 @@ def op_group_out(
         is dynamic and, from there, all paths need to be relative to that variable.
         """
 
-        context.log.error(script_dict)
+        context.log.debug(f"{script_dict = }")
 
         with open(
                 file=script_dict["script"],
                 mode="w",
                 encoding="utf-8",
         ) as fw:
+
+            context.log.debug(f"Writing script: {script_dict['script'].as_posix()}")
+
+            # import inspect
+            # context.log.debug(f"{__package__} :: Writing script: {script_dict['script'].as_posix()}")
+            # context.log.debug(f"{__name__} :: Writing script: {script_dict['script'].as_posix()}")
+            # context.log.debug(f"{inspect.currentframe().f_code.co_name} :: Writing script: {script_dict['script'].as_posix()}")
+            # context.log.debug(f"{inspect.currentframe().co}:{inspect.currentframe().f_lineno} :: Writing script: {script_dict['script'].as_posix()}")
+
             fw.write(docker_script["script"])
             fw.write("\n")
             fw.write("pushd \"${SCRIPT_DIR}\" || exit 1\n")
@@ -1265,6 +1278,9 @@ def op_group_out(
                     mode="w",
                     encoding="utf-8",
             ) as fw:
+
+                context.log.debug(f"Writing convenience script: {script_cmd_convenience.as_posix()}")
+
                 fw.write(docker_script["script"])
                 fw.write("\n")
                 fw.write("pushd \"${SCRIPT_DIR}\" || exit 1\n")
