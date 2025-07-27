@@ -55,7 +55,7 @@ Go to _Administration/Registries_ and set up
 your ([hub.docker.com](https://hub.docker.com/) in this example) 
 [Harbor Replication Endpoint(s)](https://goharbor.io/docs/1.10/administration/configuring-replication/create-replication-endpoints/):
 
-![2025-07-25_08-57.png](../../media/images/2025-07-25_08-57.png)
+![2025-07-27_11-16.png](../../media/images/2025-07-27_11-16.png)
 
 Testing the connection must result in a green banner
 as shown (what else :).
@@ -67,7 +67,13 @@ your replication:
 
 ([Online Manual](https://goharbor.io/docs/1.10/administration/configuring-replication/create-replication-rules/))
 
-![2025-07-25_09-41.png](../../media/images/2025-07-25_09-41.png)
+Event based example:
+
+![2025-07-27_11-14_event.png](../../media/images/2025-07-27_11-14_event.png)
+
+Schedule example:
+
+![2025-07-27_11-13_daily.png](../../media/images/2025-07-27_11-13_daily.png)
 
 If you prefer `Scheduled` over `Event Based`, [Crontab Guru](https://crontab.guru/)
 can help setting up your schedule.
