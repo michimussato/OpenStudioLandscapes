@@ -29,6 +29,35 @@ nox --sessions dagster_postgres_up_detach dagster_postgres
 # nox --sessions harbor_up_detach dagster_postgres_up_detach dagster_postgres && nox --sessions dagster_postgres_down harbor_down
 ```
 
+### With Harbor
+
+> [!IMPORTANT]
+> Perform the [initial steps](#initial-steps) first if you haven't done so before running
+> OpenStudioLandscapes _with_ Harbor.
+
+```shell
+nox --sessions harbor_up_detach dagster_postgres_up_detach dagster_postgres && nox --sessions dagster_postgres_down harbor_down
+```
+
+#### Initial Steps
+
+##### Setup
+
+```shell
+nox --session harbor_prepare
+```
+
+##### Clear (Reset)
+
+> [!CAUTION]
+> This removes all data and configuration associated with 
+> your local Harbor installation. It effectively performs
+> `sudo git clean -x --force` operation.
+
+```shell
+nox --session harbor_clear
+```
+
 ## down
 
 ```shell
