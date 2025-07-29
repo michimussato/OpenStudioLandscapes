@@ -31,12 +31,23 @@ sequenceDiagram
     participant openstudiolandscapes as OpenStudioLandscapes
     participant harbor as Harbor
     participant docker as hub.docker.com
-    participant 3rdparties as 3rd Parties
+    participant local_deployment as Local Deployment
+    %%participant 3rdparties as 3rd Parties
     
     openstudiolandscapes->>harbor: Push
     harbor->>openstudiolandscapes: Pull
     harbor->>docker: Push
-    docker->>3rdparties: Pull
+    alt REGISTRY_NAMESPACE_OVERRIDE in .overrides
+        harbor->>local_deployment: Pull
+    else REGISTRY_NAMESPACE_OVERRIDE not in .overrides
+        %%harbor->>local_deployment: Pull
+        alt Image found locally
+            openstudiolandscapes->>local_deployment: Pull
+        else Image not found locally
+            docker->>local_deployment: Pull
+        end
+    end
+    %%docker->>3rdparties: Pull
 ```
 Here's the
 full list of [Harbor Replication Endpoints](https://goharbor.io/docs/1.10/administration/configuring-replication/create-replication-endpoints/)
