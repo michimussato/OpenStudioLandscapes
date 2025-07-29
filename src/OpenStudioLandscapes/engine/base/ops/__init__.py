@@ -1223,6 +1223,22 @@ def op_group_out(
             fw.write(docker_script["script"])
             fw.write("\n")
             fw.write("pushd \"${SCRIPT_DIR}\" || exit 1\n")
+            fw.write("\n")
+            fw.write("# Source Overrides defined in {LANDSCAPE}/.overrides\n")
+            fw.write("echo \"Working Directory: $(pwd)\"\n")
+            overrides_file = get_relative_path_via_common_root(
+                context=context,
+                path_src=script_cmd_docker_compose_up,
+                path_dst=pathlib.Path(
+                    env["DOT_LANDSCAPES"],
+                    env.get('LANDSCAPE', 'default'),
+                    ".overrides",
+                ),
+                path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
+            )
+            fw.write(f"echo \"Sourcing {overrides_file.as_posix()} file...\"\n")
+            fw.write(f"source {overrides_file.as_posix()} && echo \"Sourced successfully.\" || echo \"No .overrides file found.\"\n")
+            fw.write("\n")
 
             cmd_str = " ".join(
                 shlex.quote(s) if not s in cmd_append["exclude_from_quote"] else s
@@ -1356,32 +1372,9 @@ def op_group_out(
         yield AssetMaterialization(
             asset_key=context.asset_key_for_output("cmd_docker_compose_up"),
             metadata={
-                # "__".join(context.asset_key_for_output("cmd_docker_compose_up").path): MetadataValue.md(
-                #     f"```shell\n{' '.join(shlex.quote(s) for s in cmd_docker_compose_up)}\n```"
-                # ),
-                "cmd_docker_compose_up": MetadataValue.path(
-                    " ".join(
-                        shlex.quote(s) if not s in cmd_append["exclude_from_quote"] else s
-                        for s in cmd_docker_compose_up
-                    )
-                ),
-                "cmd_docker_compose_pull_up": MetadataValue.path(
-                    " ".join(
-                        shlex.quote(s) if not s in cmd_append["exclude_from_quote"] else s
-                        for s in cmd_docker_compose_pull_up
-                    )
-                ),
-                "cmd_docker_compose_down": MetadataValue.path(
-                    " ".join(
-                        shlex.quote(s) if not s in cmd_append["exclude_from_quote"] else s
-                        for s in cmd_docker_compose_down
-                    )
-                ),
-                "cmd_docker_compose_logs": MetadataValue.path(
-                    " ".join(
-                        shlex.quote(s) if not s in cmd_append["exclude_from_quote"] else s
-                        for s in cmd_docker_compose_logs
-                    )
-                ),
+                "script_cmd_docker_compose_up": MetadataValue.path(script_cmd_docker_compose_up),
+                "script_cmd_docker_compose_pull_up": MetadataValue.path(script_cmd_docker_compose_pull_up),
+                "script_cmd_docker_compose_down": MetadataValue.path(script_cmd_docker_compose_down),
+                "script_cmd_docker_compose_logs": MetadataValue.path(script_cmd_docker_compose_logs),
             },
         )
