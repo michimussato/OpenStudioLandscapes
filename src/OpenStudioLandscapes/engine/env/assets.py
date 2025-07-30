@@ -22,6 +22,7 @@ from dagster import (
 
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.utils import *
+from OpenStudioLandscapes.engine import exceptions
 
 
 @asset(
@@ -76,14 +77,14 @@ def landscape_id(
 )
 def dot_overrides_file(
     context: AssetExecutionContext,
-    env: dict,
+    env: dict,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
 
     overrides_file = pathlib.Path(env["DOT_OVERRIDES"])
 
-    if overrides_file.exists():
+    if overrides_file.expanduser().exists():
 
-        context.log.info(f".overrides file {overrides_file} already exists. Skipping creation.")
+        context.log.info(f".overrides file {overrides_file.as_posix()} already exists. Skipping creation.")
 
     else:
 
@@ -163,6 +164,9 @@ def dot_landscapes(
                 parents=True,
                 exist_ok=True,
             )
+
+            context.log.debug(f"{_dot_landscapes.as_posix()} was created successfully.")
+
         except PermissionError as e:
             context.log.exception("No permission to create .landscapes directory.")
             raise PermissionError(
@@ -194,6 +198,8 @@ def dot_landscapes(
                     "I was here.",
                 ]
             )
+
+        context.log.debug(f"Write test to {_dot_landscapes.as_posix()} completed successfully.")
 
     except PermissionError as e:
         raise PermissionError(
@@ -230,6 +236,8 @@ def dot_features(
         parents=True,
         exist_ok=True,
     )
+
+    context.log.debug(f"{_dot_features.as_posix()} created successfully.")
 
     yield Output(_dot_features)
 
@@ -282,6 +290,21 @@ def env(
     if tz not in pytz.all_timezones:
         raise Exception("Unknown container timezone: {tz}".format(tz=tz))
 
+    landscape_root_dir = pathlib.Path(dot_landscapes, landscape_id["LANDSCAPE"])
+
+    try:
+        landscape_root_dir.expanduser().mkdir(
+            exist_ok=True,
+            parents=True,
+        )
+
+        context.log.debug(f"{landscape_root_dir.as_posix()} created successfully.")
+
+    except Exception as e:
+        raise exceptions.OpenStudioLandscapesException(
+            f"OpenStudioLandscapes could not create landscape root directory: {landscape_root_dir.as_posix()}."
+        ) from e
+
     ENVIRONMENT_BASE: dict = {
         "GIT_ROOT": git_root.as_posix(),
         # Todo
@@ -292,7 +315,7 @@ def env(
         ).as_posix(),
         "DOT_LANDSCAPES": dot_landscapes.as_posix(),
         "DOT_FEATURES": dot_features.as_posix(),
-        "DOT_OVERRIDES": pathlib.Path(dot_landscapes, landscape_id["LANDSCAPE"], ".overrides").as_posix(),
+        "DOT_OVERRIDES": pathlib.Path(landscape_root_dir, ".overrides").as_posix(),
         "AUTHOR": "michimussato@gmail.com",
         "CREATED_BY": str(getpass.getuser()),
         "CREATED_ON": str(socket.gethostname()),
