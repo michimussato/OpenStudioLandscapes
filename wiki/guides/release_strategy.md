@@ -157,3 +157,14 @@ gitGraph
    commit tag: "v1.0.4"
    commit tag: "v1.0.5, latest"
 ```
+
+To run `nox -s readme`, change the deps in `setup.cfg` from something like
+```
+OpenStudioLandscapes @ git+https://github.com/michimussato/OpenStudioLandscapes@v1.1.0-rc1
+OpenStudioLandscapes-Deadline-10-2 @ git+https://github.com/michimussato/OpenStudioLandscapes-Deadline-10-2@v1.1.0-rc1
+```
+to something like
+```
+OpenStudioLandscapes @ file://localhost/home/michael/git/repos/OpenStudioLandscapes
+OpenStudioLandscapes-Deadline-10-2 @ file://localhost/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Deadline-10-2
+```
