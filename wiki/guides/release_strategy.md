@@ -1,8 +1,9 @@
 <!-- TOC -->
 * [Release / Branching Strategy](#release--branching-strategy)
   * [Tags](#tags)
-    * [Release Candidates](#release-candidates)
     * [Releases](#releases)
+      * [Release Candidate](#release-candidate)
+      * [Main Release](#main-release)
   * [Examples](#examples)
   * [Sequential Branches](#sequential-branches)
   * [Concurrent Branches](#concurrent-branches)
@@ -16,17 +17,23 @@ Based on [Semantic Versioning]()
 
 ## Tags
 
-### Release Candidates
+### Releases
 
-| Branch Name                     | Tag                                        | Increment |
-|---------------------------------|--------------------------------------------|-----------|
-| `<issue#>-<issue_descpription>` | `v<major>.<minor>.<patch>-rc.<issue#>.<#>` | `<#>`     |
+| Branch Name | Tag                                      | Increment                           |
+|-------------|------------------------------------------|-------------------------------------|
+| `feature`   | `v<major>.<minor>.<patch>-rc<increment>` | `<increment>`                       |
+| `main`      | `v<major>.<minor>.<patch>`               | `<major>` or `<minor>` or `<patch>` |
+
+#### Release Candidate
 
 ```shell
-TAG_VERSION="v<major>.<minor>.<patch>-rc.<issue#>-<#>"
+TAG_VERSION="v<major>.<minor>.<patch>-rc<increment>"
+# BRANCH="feature"
 
 
-git tag --annotate "${TAG_VERSION}" --message "RC Release Version ${TAG_VERSION}" --force
+git fetch --tags --force
+
+git tag --annotate "${TAG_VERSION}" --message "Release Candidate Version ${TAG_VERSION}" --force
 
 git push --tags --force
 
@@ -36,10 +43,9 @@ pushd .features || exit
 for dir in */; do
     pushd "${dir}" || exit
 
-    git pull --tags
+    git fetch --tags --force
 
-    git tag --annotate "${TAG_VERSION}" --message "RC Release Version ${TAG_VERSION}" --force
-    # git tag --annotate "latest" --message "Latest Release Version (pointing to ${TAG_VERSION})" "${TAG_VERSION}^{}" --force
+    git tag --annotate "${TAG_VERSION}" --message "Release Candidate Version ${TAG_VERSION}" --force
 
     git push --tags --force
 
@@ -49,18 +55,14 @@ done;
 popd || exit
 ```
 
-### Releases
-
-| Branch Name | Tag                        | Increment                           |
-|-------------|----------------------------|-------------------------------------|
-| `main`      | `v<major>.<minor>.<patch>` | `<major>` or `<minor>` or `<patch>` |
+#### Main Release
 
 ```shell
 TAG_VERSION="v<major>.<minor>.<patch>"
 # BRANCH="main"
 
 
-git pull --tags
+git fetch --tags --force
 
 git tag --annotate "${TAG_VERSION}" --message "Main Release Version ${TAG_VERSION}" --force
 git tag --annotate "latest" --message "Latest Release Version (pointing to ${TAG_VERSION})" "${TAG_VERSION}^{}" --force
@@ -73,7 +75,7 @@ pushd .features || exit
 for dir in */; do
     pushd "${dir}" || exit
 
-    git pull --tags
+    git fetch --tags --force
 
     git tag --annotate "${TAG_VERSION}" --message "Main Release Version ${TAG_VERSION}" --force
     git tag --annotate "latest" --message "Latest Release Version (pointing to ${TAG_VERSION})" "${TAG_VERSION}^{}" --force
