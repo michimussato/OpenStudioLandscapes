@@ -160,7 +160,7 @@ def build_docker_image(
 
     # @formatter:off
     docker_file_str = textwrap.dedent(
-        """
+        """\
         # {auto_generated}
         # {dagster_url}
         FROM ubuntu:20.04 AS {image_name}
@@ -197,7 +197,7 @@ def build_docker_image(
         RUN apt-get clean
 
         ENTRYPOINT []
-    """
+        """
     ).format(
         apt_install_str_base=apt_install_str_base,
         apt_install_str_build_python311=apt_install_str_build_python311,
