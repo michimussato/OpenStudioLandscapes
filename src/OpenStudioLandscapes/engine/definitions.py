@@ -11,6 +11,7 @@ imports_engine = [
     "OpenStudioLandscapes.engine.base.definitions",
     "OpenStudioLandscapes.engine.env.definitions",
     "OpenStudioLandscapes.engine.landscape_map.definitions",
+    "OpenStudioLandscapes.engine.distributable.definitions",
 ]
 
 # ComposeScope Definitions
