@@ -37,9 +37,9 @@ sequenceDiagram
     openstudiolandscapes->>harbor: Push
     harbor->>openstudiolandscapes: Pull
     harbor->>docker: Push
-    alt REGISTRY_NAMESPACE_OVERRIDE in .overrides
+    alt DOT_OVERRIDES_REGISTRY_NAMESPACE in .overrides
         harbor->>local_deployment: Pull
-    else REGISTRY_NAMESPACE_OVERRIDE not in .overrides
+    else DOT_OVERRIDES_REGISTRY_NAMESPACE not in .overrides
         %%harbor->>local_deployment: Pull
         alt Image found locally
             openstudiolandscapes->>local_deployment: Pull
