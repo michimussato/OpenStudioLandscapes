@@ -25,6 +25,7 @@ from dagster import (
 )
 
 from OpenStudioLandscapes.engine.enums import *
+from OpenStudioLandscapes.engine.features import FEATURES  # used in OpenStudioLandscapes.engine.discovery.discovery
 
 
 DOCKER_PROGRESS = [
