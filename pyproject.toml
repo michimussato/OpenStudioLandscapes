@@ -1,129 +1,180 @@
 [build-system]
-# AVOID CHANGING REQUIRES: IT WILL BE UPDATED BY PYSCAFFOLD!
-requires = ["setuptools>=46.1.0", "setuptools_scm[toml]>=5"]
+requires = ["setuptools>=61.2"]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools_scm]
-# For smarter version schemes and other configuration options,
-# check out https://github.com/pypa/setuptools_scm
-version_scheme = "no-guess-dev"
+[project]
+name = "OpenStudioLandscapes"
+description = "A Toolkit to create dynamic Animation and VFX studio environments and pipelines."
+authors = [{name = "Michael Mussato", email = "michimussato@gmail.com"}]
+license = {text = "AGPL-3.0"}
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python",
+]
+requires-python = ">=3.11"
+dependencies = [
+    'importlib-metadata; python_version<"3.8"',
+    "PyYAML",
+    "pydot",
+    "gitpython",
+    "dagster==1.9.11",
+    "dagster-postgres",
+    "docker",
+    "nox",
+    "pyscaffold",
+    "docker-compose-graph @ git+https://github.com/michimussato/docker-compose-graph.git@v1.0.0",
+]
+dynamic = ["version"]
 
+[project.readme]
+file = "README.md"
+content-type = "text/markdown; charset=UTF-8"
+# Change if running only on Windows, Mac or Linux (comma-separated)
+# Add here all kinds of additional classifiers as defined under
+# https://pypi.org/classifiers/
 
-# From Dagster
-#
-# [project]
-# name = "my_skeleton_mackage"
-# version = "0.1.0"
-# description = "Add your description here"
-# readme = "README.md"
-# requires-python = ">=3.9,<3.13"
-# dependencies = [
-#     "dagster",
-#     "dagster-cloud",
-# ]
-#
-# [project.optional-dependencies]
-# dev = [
-#     "dagster-webserver",
-#     "pytest",
-# ]
-#
-# [build-system]
-# requires = ["setuptools"]
-# build-backend = "setuptools.build_meta"
+[project.urls]
+Homepage = "https://github.com/michimussato/OpenStudioLandscapes"
 
- [tool.dagster]
- module_name = "OpenStudioLandscapes.engine.definitions"
- project_name = "OpenStudioLandscapes"
+[project.optional-dependencies]
+# Add here additional requirements for extra features, to install with:
+# `pip install OpenStudioLandscapes[PDF]` like:
+# PDF = ReportLab; RXP
+# Add here test requirements (semicolon/line-separated)
+testing = [
+    "setuptools",
+    "pytest",
+    "pytest-cov",
+]
+graphviz = [
+    "graphviz",
+    "pipdeptree",
+]
+sbom = [
+    "OpenStudioLandscapes[graphviz]",
+    "cyclonedx-bom",
+]
+lint = [
+    "black",
+    "isort",
+    "pre-commit",
+    "pylint",
+]
+coverage = [
+    "coverage",
+    "pytest",
+]
+nox = [
+    "OpenStudioLandscapes[testing]",
+    "nox",
+]
+readme = ["OpenStudioLandscapesUtil-ReadmeGenerator @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-ReadmeGenerator.git@v1.0.1"]
+dagster_mysql = [
+    "OpenStudioLandscapes[nox]",
+    "dagster==1.9.11",
+    "dagster-webserver==1.9.11",
+]
+dagster_postgres = [
+    "OpenStudioLandscapes[nox]",
+    "dagster==1.9.11",
+    "dagster-postgres",
+    "dagster-webserver==1.9.11",
+]
+dev = [
+    "OpenStudioLandscapes[testing]",
+    "OpenStudioLandscapes[lint]",
+    "OpenStudioLandscapes[nox]",
+    "OpenStudioLandscapes[sbom]",
+    "OpenStudioLandscapes[coverage]",
+    "OpenStudioLandscapes[readme]",
+    "snakemd",
+    "dagster-webserver==1.9.11",
+]
 
-# [tool.setuptools.packages.find]
-# exclude=["my_skeleton_mackage_tests"]
+[tool.dagster]
+module_name = "OpenStudioLandscapes.engine.definitions"
+project_name = "OpenStudioLandscapes"
 
+[project.entry-points]
+# Add here console scripts like:
+# console_scripts =
+# script_name = OpenStudioLandscapes.engine.module:function
+# For example:
+# console_scripts =
+# fibonacci = OpenStudioLandscapes.engine.skeleton:run
+# And any other entry points, for example:
+# pyscaffold.cli =
+# awesome = pyscaffoldext.awesome.extension:AwesomeExtension
+# [tool:pytest]
+# # Specify command line options as you would do when invoking pytest directly.
+# # e.g. --cov-report html (or xml) for html/xml output or --junitxml junit.xml
+# # in order to write a coverage file that can be read by Jenkins.
+# # CAUTION: --cov flags may prohibit setting breakpoints while debugging.
+# #          Comment those flags to avoid this pytest issue.
+# addopts =
+# --cov OpenStudioLandscapes.engine --cov-report term-missing
+# --verbose
+# norecursedirs =
+# dist
+# build
+# .nox
+# testpaths = tests
+# # Use pytest markers to select/deselect specific tests
+# # markers =
+# #     slow: mark tests as slow (deselect with '-m "not slow"')
+# #     system: mark end-to-end system tests
 
-# From pimo
-# [build-system]
-# requires = ["setuptools>=46.1.0", "setuptools_scm[toml]>=5"]
-# build-backend = "setuptools.build_meta"
-#
-# [project]
-# authors = [
-#     {name = "Michael Mussato", email = "michimussato@gmail.com"},
-# ]
-# maintainers = [
-#     {name = "Michael Mussato", email = "michimussato@gmail.com"},
-# ]
-# description = "TBD"
-# readme = "README.md"
-# name = "pimo"
-# dynamic = ["version"]
-# requires-python = ">= 3.9"
-# # https://pypi.org/project/inky/
-# dependencies = [
-#     "pillow",
-#     "pillow-lut",
-#     "inky[rpi]>=1.5.0,<1.6",
-#     "ascii-magic",
-#     "moon_clock @ git+https://github.com/michimussato/moon-clock.git",
-# ]
-# classifiers = [
-#     "Development Status :: 4 - Beta",
-#     "License :: OSI Approved :: MIT License",
-#     "Programming Language :: Python :: 3",
-# ]
-#
-# # https://stackoverflow.com/questions/75490231/pip-pyproject-toml-can-optional-dependency-groups-require-other-optional-depend#75503961
-# [project.optional-dependencies]
-# tests = [
-#     "nox",
-#     "pytest",
-# ]
-# dev = [
-#     "pre-commit",
-#     "pimo[tests]"
-# ]
-# sbom = [
-#     "graphviz",
-#     "pipdeptree",
-#     "cyclonedx-bom",
-# ]
-# #readthedocs = [
-# #]
-# #sphinx = [
-# #]
-# lint = [
-#     "black",
-#     "isort",
-#     "pylint",
-# ]
-# coverage = [
-#     "coverage",
-#     "pytest"
-# ]
-# release = [
-# ]
-#
-# [project.urls]
-# Repository = "https://github.com/michimussato/pimo.git"
-#
-# [project.scripts]
-# pimo = "pimo.pimo:run"
-#
-# [tool.setuptools]
-# # https://setuptools.pypa.io/en/latest/userguide/pyproject_config.html
-# platforms = ["Linux"]
-# include-package-data = true
-# zip-safe = false  # This just means it's safe to zip up the bdist
-#
-# [tool.setuptools.packages.find]
-# where = ["src"]
-# exclude = ["docs*", "tests*"]
-#
-# [tool.setuptools.package-data]
-# pimo = [
-#     "*.ttf",
-# ]
-#
-# [tool.setuptools_scm]
-# # For smarter version schemes and other configuration options,
-# # check out https://github.com/pypa/setuptools_scm
-# version_scheme = "no-guess-dev"
+[tool.setuptools]
+zip-safe = false
+include-package-data = true
+package-dir = {"" = "src"}
+# Require a min/specific Python version (comma-separated conditions)
+# Add here dependencies of your project (line-separated), e.g. requests>=2.2,<3.0.
+# Version specifiers like >=2.2,<3.0 avoid problems due to API changes in
+# new major versions. This works if the required packages follow Semantic Versioning.
+# For more information, check out https://semver.org/.
+platforms = ["Linux"]
+license-files = ["LICENSE.txt"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+exclude = ["tests"]
+# [options.package_data]
+# # * = *.txt, *.rst
+# hello = *.msg
+namespaces = true
+
+[tool.devpi.upload]
+# Options for the devpi: PyPI server and packaging tool
+# VCS export must be deactivated since we are using setuptools-scm
+no_vcs = "1"
+formats = "bdist_wheel"
+# [flake8]
+# # Some sane defaults for the code style checker flake8
+# max_line_length = 88
+# extend_ignore = E203, W503
+# # ^  Black-compatible
+# #    E203 and W503 have edge cases handled by black
+# exclude =
+# .nox
+# .svg
+# build
+# dist
+# .eggs
+# docs/conf.py
+
+[tool.pyscaffold]
+# PyScaffold's parameters when the project was created.
+# This will be used when updating. Do not change!
+version = "4.6"
+package = "OpenStudioLandscapes"
+extensions = """
+namespace"""
+namespace = "OpenStudioLandscapes"
+# This file is used to configure your project.
+# Read more about the various options under:
+# https://setuptools.pypa.io/en/latest/userguide/declarative_config.html
+# https://setuptools.pypa.io/en/latest/references/keywords.html
+# pypa Sample Project:
+# https://github.com/pypa/sampleproject/blob/main/pyproject.toml
+# https://labex.io/tutorials/python-how-to-include-additional-files-in-a-python-package-398030
