@@ -118,4 +118,13 @@ FEATURES: dict[str, dict[str, bool | str | ComposeScope | OpenStudioLandscapesCo
         "compose_scope": ComposeScope.DEFAULT,
         "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
+    # OpenStudioLandscapes-Template
+    "OpenStudioLandscapes-Template": {
+        "enabled": False or get_bool_env(
+            "OPENSTUDIOLANDSCAPES__ENABLE_FEATURE_OPENSTUDIOLANDSCAPES_TEMPLATE"
+        ),
+        "module": "OpenStudioLandscapes.Template.definitions",
+        "compose_scope": ComposeScope.DEFAULT,
+        "feature_config": OpenStudioLandscapesConfig.DEFAULT,
+    },
 }
