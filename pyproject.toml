@@ -140,25 +140,6 @@ exclude = ["tests"]
 # hello = *.msg
 namespaces = true
 
-# [tool.devpi.upload]
-# # Options for the devpi: PyPI server and packaging tool
-# # VCS export must be deactivated since we are using setuptools-scm
-# no_vcs = "1"
-# formats = "bdist_wheel"
-# # [flake8]
-# # # Some sane defaults for the code style checker flake8
-# # max_line_length = 88
-# # extend_ignore = E203, W503
-# # # ^  Black-compatible
-# # #    E203 and W503 have edge cases handled by black
-# # exclude =
-# # .nox
-# # .svg
-# # build
-# # dist
-# # .eggs
-# # docs/conf.py
-
 [tool.dagster]
 # We can define ONE SINGLE TOP-LEVEL code location
 # here in this pyproject.toml.
@@ -169,19 +150,3 @@ namespaces = true
 # https://docs.dagster.io/guides/build/projects/dagster-project-file-reference
 module_name = "OpenStudioLandscapes.engine.definitions"
 project_name = "OpenStudioLandscapes"
-
-# [tool.pyscaffold]
-# # PyScaffold's parameters when the project was created.
-# # This will be used when updating. Do not change!
-# version = "4.6"
-# package = "OpenStudioLandscapes"
-# extensions = """
-# namespace"""
-# namespace = "OpenStudioLandscapes"
-# # This file is used to configure your project.
-# # Read more about the various options under:
-# # https://setuptools.pypa.io/en/latest/userguide/declarative_config.html
-# # https://setuptools.pypa.io/en/latest/references/keywords.html
-# # pypa Sample Project:
-# # https://github.com/pypa/sampleproject/blob/main/pyproject.toml
-# # https://labex.io/tutorials/python-how-to-include-additional-files-in-a-python-package-398030
