@@ -100,7 +100,8 @@ old little script that you wrote 5 years ago which is being used in so many
 places you can't even remember? There you have it. Better don't touch it. Better
 continue building your system around it. Right? Wrong! OpenStudioLandscapes
 is here to change that by making sure your **future you** is not going to 
-regret decisions of its **past you**!
+regret decisions of its **past you** by providing structure while keeping 
+systems and pipeline features as isolated (read: portable) as possible!
 
 Now you're asking: **"So, tell me! What exactly does it produce? Is
 it even worth the hassle? And wtf is a Landscape?"**. Good you're asking! To get an idea
