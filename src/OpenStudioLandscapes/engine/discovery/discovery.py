@@ -29,6 +29,9 @@ DISCOVERED_MODULE = [
 ]
 
 
+LOGGER.info("Discovered Modules: " % DISCOVERED_MODULE)
+
+
 IMPORTABLE_FEATURES = []
 
 feature_keys = FEATURES.keys()

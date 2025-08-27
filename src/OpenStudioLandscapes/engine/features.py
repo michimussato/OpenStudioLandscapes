@@ -76,6 +76,14 @@ FEATURES: dict[str, dict[str, bool | str | ComposeScope | OpenStudioLandscapesCo
         "compose_scope": ComposeScope.LICENSE_SERVER,
         "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
+    "OpenStudioLandscapes-n8n": {
+        "enabled": False or get_bool_env(
+            "OPENSTUDIOLANDSCAPES__ENABLE_FEATURE_OPENSTUDIOLANDSCAPES_N8N"
+        ),
+        "module": "OpenStudioLandscapes.n8n.definitions",
+        "compose_scope": ComposeScope.DEFAULT,
+        "feature_config": OpenStudioLandscapesConfig.DEFAULT,
+    },
     "OpenStudioLandscapes-NukeRLM-8": {
         "enabled": False or get_bool_env(
             "OPENSTUDIOLANDSCAPES__ENABLE_FEATURE_OPENSTUDIOLANDSCAPES_NUKERLM_8"
