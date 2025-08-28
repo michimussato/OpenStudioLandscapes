@@ -27,8 +27,8 @@ Based on [Semantic Versioning]()
 #### Release Candidate
 
 ```shell
-echo -n "Version Tag (Release Candidate):" 
-echo -n "v<major>.<minor>.<patch>-rc<increment>" 
+echo "Version Tag (Release Candidate):" 
+echo "v<major>.<minor>.<patch>-rc<increment>" 
 echo -n "v" 
 read TAG_VERSION
 TAG_VERSION="v${TAG_VERSION}"
@@ -62,8 +62,8 @@ popd || exit
 #### Main Release
 
 ```shell
-echo -n "Version Tag (Main Release):" 
-echo -n "v<major>.<minor>.<patch>"
+echo "Version Tag (Main Release):" 
+echo "v<major>.<minor>.<patch>"
 echo -n "v" 
 read TAG_VERSION
 TAG_VERSION="v${TAG_VERSION}"
