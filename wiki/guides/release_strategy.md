@@ -155,16 +155,17 @@ gh pr create --title "Pull request title" --body "Pull request body"
 echo "Create PR:"
 echo -n "Branch: "  # feature-openstudiolandscapes-n8n
 read BRANCH
-# echo -n "Comment: "
-# read COMMENT
+# echo -n "Body: "
+# read BODY
 
 
 COMMAND="gh pr create \
-    --title '${BRANCH}' \
-    --head '${BRANCH}' \
-    --base 'main' \
+    --title ${BRANCH} \
+    --head ${BRANCH} \
+    --base main \
     --dry-run \
-    --draft"  # \
+    --body \"\""  # \
+    # --draft"  # \
     # --body-file ""
 
 
@@ -176,7 +177,6 @@ pushd .features || exit
 for dir in */; do
     pushd "${dir}" || exit
     
-    # gh pr close "${BRANCH}" --comment "${COMMENT}"
     ${COMMAND}
 
     popd || exit
@@ -206,7 +206,6 @@ pushd .features || exit
 for dir in */; do
     pushd "${dir}" || exit
     
-    # gh pr close "${BRANCH}" --comment "${COMMENT}"
     ${COMMAND}
 
     popd || exit
@@ -234,7 +233,6 @@ pushd .features || exit
 for dir in */; do
     pushd "${dir}" || exit
     
-    # gh pr close "${BRANCH}" --comment "${COMMENT}"
     ${COMMAND}
 
     popd || exit
@@ -255,11 +253,9 @@ echo -n "Branch: "  # feature-openstudiolandscapes-n8n
 read BRANCH
 echo -n "Comment: "
 read COMMENT
-# BRANCH="feature"
 
 
-COMMAND="gh pr close '${BRANCH}' --comment '${COMMENT}'"
-#gh pr close "${BRANCH}" --comment "${COMMENT}"
+COMMAND="gh pr close ${BRANCH} --comment \"${COMMENT}\""
 
 
 ${COMMAND}
@@ -270,7 +266,6 @@ pushd .features || exit
 for dir in */; do
     pushd "${dir}" || exit
     
-    # gh pr close "${BRANCH}" --comment "${COMMENT}"
     ${COMMAND}
 
     popd || exit
