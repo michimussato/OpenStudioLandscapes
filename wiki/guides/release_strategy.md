@@ -42,11 +42,14 @@ TAG_VERSION="v${TAG_VERSION}"
 # BRANCH="feature"
 
 
+read -r -d '' COMMAND <<'EOF'
 git fetch --tags --force
-
 git tag --annotate "${TAG_VERSION}" --message "Release Candidate Version ${TAG_VERSION}" --force
-
 git push --tags --force
+EOF
+
+
+eval "${COMMAND}"
 
 
 pushd .features || exit
@@ -54,11 +57,7 @@ pushd .features || exit
 for dir in */; do
     pushd "${dir}" || exit
 
-    git fetch --tags --force
-
-    git tag --annotate "${TAG_VERSION}" --message "Release Candidate Version ${TAG_VERSION}" --force
-
-    git push --tags --force
+    eval "${COMMAND}"
 
     popd || exit
 done;
@@ -77,25 +76,23 @@ TAG_VERSION="v${TAG_VERSION}"
 # BRANCH="main"
 
 
+read -r -d '' COMMAND <<'EOF'
 git fetch --tags --force
-
 git tag --annotate "${TAG_VERSION}" --message "Main Release Version ${TAG_VERSION}" --force
 git tag --annotate "latest" --message "Latest Release Version (pointing to ${TAG_VERSION})" "${TAG_VERSION}^{}" --force
-
 git push --tags --force
+EOF
+
+
+eval "${COMMAND}"
 
 
 pushd .features || exit
 
 for dir in */; do
     pushd "${dir}" || exit
-
-    git fetch --tags --force
-
-    git tag --annotate "${TAG_VERSION}" --message "Main Release Version ${TAG_VERSION}" --force
-    git tag --annotate "latest" --message "Latest Release Version (pointing to ${TAG_VERSION})" "${TAG_VERSION}^{}" --force
-
-    git push --tags --force
+    
+    eval "${COMMAND}"
 
     popd || exit
 done;
@@ -117,21 +114,22 @@ TAG_VERSION="v${TAG_VERSION}"
 # BRANCH="feature"
 
 
+read -r -d '' COMMAND <<'EOF'
 git fetch --tags --force
-
 git tag -d ${TAG_VERSION}
-
 git push origin :refs/tags/${TAG_VERSION}
+EOF
+
+
+eval "${COMMAND}"
 
 
 pushd .features || exit
 
 for dir in */; do
     pushd "${dir}" || exit
-
-    git tag -d ${TAG_VERSION}
-
-    git push origin :refs/tags/${TAG_VERSION}
+    
+    eval "${COMMAND}"
 
     popd || exit
 done;
@@ -159,17 +157,17 @@ read BRANCH
 # read BODY
 
 
-COMMAND="gh pr create \
+read -r -d '' COMMAND <<'EOF'
+gh pr create \
     --title ${BRANCH} \
     --head ${BRANCH} \
     --base main \
     --dry-run \
-    --body \"\""  # \
-    # --draft"  # \
-    # --body-file ""
+    --body ""
+EOF
 
 
-${COMMAND}
+eval "${COMMAND}"
 
 
 pushd .features || exit
@@ -177,7 +175,7 @@ pushd .features || exit
 for dir in */; do
     pushd "${dir}" || exit
     
-    ${COMMAND}
+    eval "${COMMAND}"
 
     popd || exit
 done;
@@ -195,10 +193,12 @@ echo -n "Branch: "  # feature-openstudiolandscapes-n8n
 read BRANCH
 
 
-COMMAND="gh pr ready ${BRANCH}"
+read -r -d '' COMMAND <<'EOF'
+gh pr ready ${BRANCH}
+EOF
 
 
-${COMMAND}
+eval "${COMMAND}"
 
 
 pushd .features || exit
@@ -206,7 +206,7 @@ pushd .features || exit
 for dir in */; do
     pushd "${dir}" || exit
     
-    ${COMMAND}
+    eval "${COMMAND}"
 
     popd || exit
 done;
@@ -222,10 +222,12 @@ echo -n "Branch: "  # feature-openstudiolandscapes-n8n
 read BRANCH
 
 
-COMMAND="gh pr ready ${BRANCH} --undo"
+read -r -d '' COMMAND <<'EOF'
+gh pr ready ${BRANCH} --undo
+EOF
 
 
-${COMMAND}
+eval "${COMMAND}"
 
 
 pushd .features || exit
@@ -233,7 +235,7 @@ pushd .features || exit
 for dir in */; do
     pushd "${dir}" || exit
     
-    ${COMMAND}
+    eval "${COMMAND}"
 
     popd || exit
 done;
@@ -255,10 +257,15 @@ echo -n "Comment: "
 read COMMENT
 
 
-COMMAND="gh pr close ${BRANCH} --comment \"${COMMENT}\""
+COMMAND=""
 
 
-${COMMAND}
+read -r -d '' COMMAND <<'EOF'
+gh pr close ${BRANCH} --comment "${COMMENT}"
+EOF
+
+
+eval "${COMMAND}"
 
 
 pushd .features || exit
@@ -266,7 +273,7 @@ pushd .features || exit
 for dir in */; do
     pushd "${dir}" || exit
     
-    ${COMMAND}
+    eval "${COMMAND}"
 
     popd || exit
 done;
