@@ -4,6 +4,7 @@
     * [Releases](#releases)
       * [Release Candidate](#release-candidate)
       * [Main Release](#main-release)
+      * [Delete Tags](#delete-tags)
   * [Examples](#examples)
   * [Sequential Branches](#sequential-branches)
   * [Concurrent Branches](#concurrent-branches)
