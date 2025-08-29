@@ -1,4 +1,8 @@
-
+<!-- TOC -->
+* [Docker](#docker)
+  * [Cleanup](#cleanup)
+    * [Prune All](#prune-all)
+<!-- TOC -->
 
 ---
 
