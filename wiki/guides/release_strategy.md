@@ -96,6 +96,42 @@ done;
 popd || exit
 ```
 
+#### Delete Tags
+
+This deletes a local _and_ remote Git tag. a tag.
+
+Ref: [How To Delete Local and Remote Tags on Git](https://devconnected.com/how-to-delete-local-and-remote-tags-on-git/)
+
+```shell
+echo "Version Tag (Delete Tag):" 
+echo -n "v" 
+read TAG_VERSION
+TAG_VERSION="v${TAG_VERSION}"
+# BRANCH="feature"
+
+
+git fetch --tags --force
+
+git tag -d ${TAG_VERSION}
+
+git push origin :refs/tags/${TAG_VERSION}
+
+
+pushd .features || exit
+
+for dir in */; do
+    pushd "${dir}" || exit
+
+    git tag -d ${TAG_VERSION}
+
+    git push origin :refs/tags/${TAG_VERSION}
+
+    popd || exit
+done;
+
+popd || exit
+```
+
 ## Examples
 
 ## Sequential Branches
