@@ -5,6 +5,12 @@
       * [Release Candidate](#release-candidate)
       * [Main Release](#main-release)
       * [Delete Tags](#delete-tags)
+  * [Pull Requests (`gh`)](#pull-requests-gh)
+    * [Create PR](#create-pr)
+    * [Edit PR](#edit-pr)
+      * [Ready for Review](#ready-for-review)
+      * [Set to Draft](#set-to-draft)
+    * [Close PR](#close-pr)
   * [Examples](#examples)
   * [Sequential Branches](#sequential-branches)
   * [Concurrent Branches](#concurrent-branches)
@@ -126,6 +132,146 @@ for dir in */; do
     git tag -d ${TAG_VERSION}
 
     git push origin :refs/tags/${TAG_VERSION}
+
+    popd || exit
+done;
+
+popd || exit
+```
+
+## Pull Requests (`gh`)
+
+```shell
+gh auth login
+```
+
+### Create PR
+
+```shell
+gh pr create --title "Pull request title" --body "Pull request body"
+```
+
+```shell
+echo "Create PR:"
+echo -n "Branch: "  # feature-openstudiolandscapes-n8n
+read BRANCH
+# echo -n "Comment: "
+# read COMMENT
+
+
+COMMAND="gh pr create \
+    --title '${BRANCH}' \
+    --head '${BRANCH}' \
+    --base 'main' \
+    --dry-run \
+    --draft"  # \
+    # --body-file ""
+
+
+${COMMAND}
+
+
+pushd .features || exit
+
+for dir in */; do
+    pushd "${dir}" || exit
+    
+    # gh pr close "${BRANCH}" --comment "${COMMENT}"
+    ${COMMAND}
+
+    popd || exit
+done;
+
+popd || exit
+```
+
+### Edit PR
+
+#### Ready for Review
+
+```shell
+echo "PR Ready for Review:"
+echo -n "Branch: "  # feature-openstudiolandscapes-n8n
+read BRANCH
+
+
+COMMAND="gh pr ready ${BRANCH}"
+
+
+${COMMAND}
+
+
+pushd .features || exit
+
+for dir in */; do
+    pushd "${dir}" || exit
+    
+    # gh pr close "${BRANCH}" --comment "${COMMENT}"
+    ${COMMAND}
+
+    popd || exit
+done;
+
+popd || exit
+```
+
+#### Set to Draft
+
+```shell
+echo "PR Set to Draft:"
+echo -n "Branch: "  # feature-openstudiolandscapes-n8n
+read BRANCH
+
+
+COMMAND="gh pr ready ${BRANCH} --undo"
+
+
+${COMMAND}
+
+
+pushd .features || exit
+
+for dir in */; do
+    pushd "${dir}" || exit
+    
+    # gh pr close "${BRANCH}" --comment "${COMMENT}"
+    ${COMMAND}
+
+    popd || exit
+done;
+
+popd || exit
+```
+
+### Close PR
+
+```shell
+gh pr close {<number> | <url> | <branch>} [flags]
+```
+
+```shell
+echo "Close PR:"
+echo -n "Branch: "  # feature-openstudiolandscapes-n8n
+read BRANCH
+echo -n "Comment: "
+read COMMENT
+# BRANCH="feature"
+
+
+COMMAND="gh pr close '${BRANCH}' --comment '${COMMENT}'"
+#gh pr close "${BRANCH}" --comment "${COMMENT}"
+
+
+${COMMAND}
+
+
+pushd .features || exit
+
+for dir in */; do
+    pushd "${dir}" || exit
+    
+    # gh pr close "${BRANCH}" --comment "${COMMENT}"
+    ${COMMAND}
 
     popd || exit
 done;
