@@ -132,7 +132,7 @@ dev = [
 # https://setuptools.pypa.io/en/latest/userguide/pyproject_config.html#setuptools-specific-configuration
 [tool.setuptools]
 include-package-data = true
-package-dir = {"" = "src"}
+#package-dir = {"" = "src"}
 # Require a min/specific Python version (comma-separated conditions)
 # Add here dependencies of your project (line-separated), e.g. requests>=2.2,<3.0.
 # Version specifiers like >=2.2,<3.0 avoid problems due to API changes in
@@ -157,9 +157,21 @@ platforms = ["Linux"]
 # additional value in doing so as
 # long as the structure of all Features
 # stays consistent
-packages = [
-    "OpenStudioLandscapes.engine"
-]
+#packages = [
+#    "OpenStudioLandscapes.engine"
+#]
+# for OpenStudioLandscapes.engine, we leave
+# autodiscovery enabled for now. Otherwise,
+# packages like OpenStudioLandscapes.engine.utils
+# would have to be specified explicitly
+
+[tool.setuptools.packages.find]
+where = ["src"]
+exclude = ["tests"]
+# [options.package_data]
+# # * = *.txt, *.rst
+# hello = *.msg
+namespaces = true
 
 # [tool.pytest.ini_options]
 # # Specify command line options as you would do when invoking pytest directly.
