@@ -1,15 +1,22 @@
+# pyproject.toml
+# - https://packaging.python.org/en/latest/specifications/pyproject-toml/
+# - https://xebia.com/blog/an-updated-guide-to-setuptools-and-pyproject-toml/
+# - https://devsjc.github.io/blog/20240627-the-complete-guide-to-pyproject-toml/
+
 [build-system]
 requires = ["setuptools>=61.2"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "OpenStudioLandscapes"
-description = "A Toolkit to create dynamic Animation and VFX studio environments and pipelines."
+description = "A Toolkit to create dynamic Animation and VFX studio environments for robust automation and pipelines."
 authors = [{name = "Michael Mussato", email = "michimussato@gmail.com"}]
-license = {text = "AGPL-3.0"}
+maintainers = [{name = "Michael Mussato", email = "michimussato@gmail.com"}]
+license-files = ["LICENSE.txt"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Programming Language :: Python",
+    "Framework :: OpenStudioLandscapes",
 ]
 requires-python = ">=3.11"
 dependencies = [
@@ -68,7 +75,9 @@ nox = [
     "OpenStudioLandscapes[testing]",
     "nox",
 ]
-readme = ["OpenStudioLandscapesUtil-ReadmeGenerator @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-ReadmeGenerator.git@v1.0.1"]
+readme = [
+    "OpenStudioLandscapesUtil-ReadmeGenerator @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-ReadmeGenerator.git@v1.2.0-rc1"
+]
 dagster_mysql = [
     "OpenStudioLandscapes[nox]",
     "dagster==1.9.11",
@@ -120,8 +129,8 @@ dev = [
 # #     slow: mark tests as slow (deselect with '-m "not slow"')
 # #     system: mark end-to-end system tests
 
+# https://setuptools.pypa.io/en/latest/userguide/pyproject_config.html#setuptools-specific-configuration
 [tool.setuptools]
-zip-safe = false
 include-package-data = true
 package-dir = {"" = "src"}
 # Require a min/specific Python version (comma-separated conditions)
@@ -130,15 +139,47 @@ package-dir = {"" = "src"}
 # new major versions. This works if the required packages follow Semantic Versioning.
 # For more information, check out https://semver.org/.
 platforms = ["Linux"]
-license-files = ["LICENSE.txt"]
+# Use `packages` for explicit
+# packabe definition because
+# `readme_generator` will look
+# for this section.
+# ONLY ONE IS ALLOWED HERE!
+# In theory, we could also define a custom
+# metadata section like for example:
+#
+# [tool.openstudiolandscapes.ayon]
+# namespace = "OpenStudioLandscapes"
+# package = "Ayon"
+# constants = "constants.py"
+# ...
+#
+# and so on. For now, there is no obvious
+# additional value in doing so as
+# long as the structure of all Features
+# stays consistent
+packages = [
+    "OpenStudioLandscapes.engine"
+]
 
-[tool.setuptools.packages.find]
-where = ["src"]
-exclude = ["tests"]
-# [options.package_data]
-# # * = *.txt, *.rst
-# hello = *.msg
-namespaces = true
+# [tool.pytest.ini_options]
+# # Specify command line options as you would do when invoking pytest directly.
+# # e.g. --cov-report html (or xml) for html/xml output or --junitxml junit.xml
+# # in order to write a coverage file that can be read by Jenkins.
+# # CAUTION: --cov flags may prohibit setting breakpoints while debugging.
+# # Comment those flags to avoid this pytest issue.
+# addopts = """
+# --cov OpenStudioLandscapes.engine --cov-report term-missing
+# --verbose"""
+# norecursedirs = [
+#     "dist",
+#     "build",
+#     ".nox",
+# ]
+# testpaths = ["tests"]
+# # Use pytest markers to select/deselect specific tests
+# # markers =
+# # slow: mark tests as slow (deselect with '-m "not slow"')
+# # system: mark end-to-end system tests
 
 [tool.dagster]
 # We can define ONE SINGLE TOP-LEVEL code location
