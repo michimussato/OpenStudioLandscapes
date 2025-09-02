@@ -213,10 +213,14 @@ def clone_features(session):
 
     # git -C .features clone https://github.com/michimussato/OpenStudioLandscapes-<Feature>
 
-    OPENSTUDIOLANDSCAPES_VERSION_TAG: str = os.environ.get("OPENSTUDIOLANDSCAPES_VERSION_TAG", None)
+    OPENSTUDIOLANDSCAPES_VERSION_TAG: str = os.environ.get(
+        "OPENSTUDIOLANDSCAPES_VERSION_TAG", None
+    )
 
     if OPENSTUDIOLANDSCAPES_VERSION_TAG is None:
-        print(f"OPENSTUDIOLANDSCAPES_VERSION_TAG is not set, checking out {MAIN_BRANCH} branch.")
+        print(
+            f"OPENSTUDIOLANDSCAPES_VERSION_TAG is not set, checking out {MAIN_BRANCH} branch."
+        )
 
     sudo = False
 
@@ -233,7 +237,8 @@ def clone_features(session):
 
         if repo_dest.exists():
             raise FileExistsError(
-                "The repo %s already exists. Please remove it before cloning." % repo_dest.as_posix()
+                "The repo %s already exists. Please remove it before cloning."
+                % repo_dest.as_posix()
             )
 
         else:
@@ -2025,7 +2030,9 @@ def dagster_postgres_clear(session):
         # cmd.insert(2, "--stdin")
 
     if dagster_postgres_root_dir.exists():
-        logging.warning("Clearing out Dagster-Postgres...\nContinue? Type `yes` to confirm.")
+        logging.warning(
+            "Clearing out Dagster-Postgres...\nContinue? Type `yes` to confirm."
+        )
         answer = input()
         if answer.lower() == "yes":
 
@@ -2038,7 +2045,9 @@ def dagster_postgres_clear(session):
                 silent=SESSION_RUN_SILENT,
             )
         else:
-            logging.info("Clearing %s was aborted." % dagster_postgres_root_dir.as_posix())
+            logging.info(
+                "Clearing %s was aborted." % dagster_postgres_root_dir.as_posix()
+            )
             return 1
 
     logging.debug("%s removed" % dagster_postgres_root_dir.as_posix())
@@ -2178,9 +2187,7 @@ def dagster_mysql_clear(session):
 
     sudo = True
 
-    dagster_mysql_root_dir: pathlib.Path = ENVIRONMENT_DAGSTER[
-        "DAGSTER_MYSQL_ROOT_DIR"
-    ]
+    dagster_mysql_root_dir: pathlib.Path = ENVIRONMENT_DAGSTER["DAGSTER_MYSQL_ROOT_DIR"]
 
     logging.debug("Clearing Dagster-MySQL...")
     logging.debug("Removing Dir %s" % dagster_mysql_root_dir.as_posix())
@@ -2199,7 +2206,9 @@ def dagster_mysql_clear(session):
         # cmd.insert(2, "--stdin")
 
     if dagster_mysql_root_dir.exists():
-        logging.warning("Clearing out Dagster-MySQL...\nContinue? Type `yes` to confirm.")
+        logging.warning(
+            "Clearing out Dagster-MySQL...\nContinue? Type `yes` to confirm."
+        )
         answer = input()
         if answer.lower() == "yes":
 
@@ -2333,7 +2342,7 @@ def sbom(session):
         "environment",
         "--output-format",
         "JSON",
-        "--outfile",
+        "--output-file",
         target_dir / f"cyclonedx-py.{session.name}.json",
         env=ENV,
         # external=True,
