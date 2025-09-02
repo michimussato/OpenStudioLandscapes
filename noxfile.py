@@ -81,7 +81,7 @@ SESSION_RUN_SILENT = False
 # or
 # nox --tag [TAG] [TAG] [...]
 nox.options.sessions = [
-    "readme",
+    # "readme",  # not applicable for OpenStudioLandscapes.engine
     "sbom",
     "coverage",
     "lint",
