@@ -216,7 +216,7 @@ def clone_features(session):
     OPENSTUDIOLANDSCAPES_VERSION_TAG: str = os.environ.get("OPENSTUDIOLANDSCAPES_VERSION_TAG", None)
 
     if OPENSTUDIOLANDSCAPES_VERSION_TAG is None:
-        raise ValueError("OPENSTUDIOLANDSCAPES_VERSION_TAG is not set.")
+        print(f"OPENSTUDIOLANDSCAPES_VERSION_TAG is not set, checking out {MAIN_BRANCH} branch.")
 
     sudo = False
 
@@ -249,16 +249,17 @@ def clone_features(session):
                 repo,
             ]
 
-            # Checkout a specifig Git tag
-            cmd_checkout = [
-                shutil.which("git"),
-                "-C",
-                repo_dest.as_posix(),
-                "checkout",
-                f"tags/{OPENSTUDIOLANDSCAPES_VERSION_TAG}",
-                "-B",
-                OPENSTUDIOLANDSCAPES_VERSION_TAG,
-            ]
+            if OPENSTUDIOLANDSCAPES_VERSION_TAG is not None:
+                # Checkout a specifig Git tag
+                cmd_checkout = [
+                    shutil.which("git"),
+                    "-C",
+                    repo_dest.as_posix(),
+                    "checkout",
+                    f"tags/{OPENSTUDIOLANDSCAPES_VERSION_TAG}",
+                    "-B",
+                    OPENSTUDIOLANDSCAPES_VERSION_TAG,
+                ]
 
         if sudo:
             cmd_clone.insert(0, shutil.which("sudo"))
