@@ -90,40 +90,7 @@ nox.options.sessions = [
     # "release",
 ]
 
-BATCH_EXCLUDED = [
-    # Todo
-    #  - [ ] Problem might go away when public:
-    #        nox > cd /home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Deadline-10-2-Worker
-    #        nox > python -m pip install -e '.[readme]'
-    #        nox > generate-readme --versions 3.11 3.12
-    #        Traceback (most recent call last):
-    #          File "/home/michael/git/repos/OpenStudioLandscapes/.nox/readme_all/bin/generate-readme", line 8, in <module>
-    #            sys.exit(run())
-    #                     ^^^^^
-    #          File "/home/michael/git/repos/OpenStudioLandscapes/.nox/readme_all/lib/python3.11/site-packages/OpenStudioLandscapesUtil/ReadmeGenerator/readme_generator.py", line 943, in run
-    #            main(sys.argv[1:])
-    #          File "/home/michael/git/repos/OpenStudioLandscapes/.nox/readme_all/lib/python3.11/site-packages/OpenStudioLandscapesUtil/ReadmeGenerator/readme_generator.py", line 934, in main
-    #            generate_readme(args.versions)
-    #          File "/home/michael/git/repos/OpenStudioLandscapes/.nox/readme_all/lib/python3.11/site-packages/OpenStudioLandscapesUtil/ReadmeGenerator/readme_generator.py", line 74, in generate_readme
-    #            constants = importlib.import_module(f'{namespace}.{package}.constants')
-    #                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    #          File "/usr/lib/python3.11/importlib/__init__.py", line 126, in import_module
-    #            return _bootstrap._gcd_import(name[level:], package, level)
-    #                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    #          File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
-    #          File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
-    #          File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
-    #          File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
-    #          File "<frozen importlib._bootstrap_external>", line 940, in exec_module
-    #          File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
-    #          File "/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Deadline-10-2-Worker/src/OpenStudioLandscapes/Deadline_10_2_Worker/constants.py", line 26, in <module>
-    #            from OpenStudioLandscapes.Deadline_10_2.constants import ASSET_HEADER as ASSET_HEADER_PARENT
-    #          File "/home/michael/git/repos/OpenStudioLandscapes/.nox/readme_all/lib/python3.11/site-packages/OpenStudioLandscapes/Deadline_10_2/constants.py", line 23, in <module>
-    #            from OpenStudioLandscapes.engine.constants import DOCKER_USE_CACHE_GLOBAL, THIRD_PARTY
-    #        ImportError: cannot import name 'THIRD_PARTY' from 'OpenStudioLandscapes.engine.constants' (/home/michael/git/repos/OpenStudioLandscapes/.nox/readme_all/lib/python3.11/site-packages/OpenStudioLandscapes/engine/constants.py)
-    # "OpenStudioLandscapes-Deadline-10-2-Worker",
-    # "OpenStudioLandscapes-Watchtower",
-]
+BATCH_EXCLUDED = []
 
 # Python versions to test against
 # dagster==1.9.11 needs >=3.9 but 3.13 does not seem to be working
