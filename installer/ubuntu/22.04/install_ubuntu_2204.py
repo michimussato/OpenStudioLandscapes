@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # https://www.baeldung.com/linux/curl-fetched-script-arguments
+import os
 import base64
 import inspect
 import json
@@ -31,7 +32,9 @@ DOCKER_GID: str = "959"
 # Todo
 #  - [ ] Remove this switch after release
 USE_SSH: bool = False
-OPENSTUDIOLANDSCAPES_VERSION_TAG: str = "v1.2.0-rc1"
+OPENSTUDIOLANDSCAPES_VERSION_TAG: str = os.environ.get("OPENSTUDIOLANDSCAPES_VERSION_TAG", None)
+if OPENSTUDIOLANDSCAPES_VERSION_TAG is None:
+    raise ValueError("OPENSTUDIOLANDSCAPES_VERSION_TAG is not set.")
 # Todo
 #  - [ ] Create DOT_LANDSCAPES automatically
 DOT_LANDSCAPES: pathlib.Path = pathlib.Path("/opt/openstudiolandscapes/.landscapes")

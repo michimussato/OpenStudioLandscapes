@@ -193,15 +193,6 @@ REPOS_FEATURE = {
 
 # # MAIN BRANCH
 MAIN_BRANCH = "main"
-CHECKOUT = [
-    "latest",
-    MAIN_BRANCH,
-    "v1.0.0",
-    "v1.0.1",
-    "v1.0.2",
-    "v1.0.3",
-][5]
-
 
 # # clone_features
 @nox.session(python=None, tags=["clone_features"])
@@ -221,6 +212,11 @@ def clone_features(session):
     # nox --tags clone_features
 
     # git -C .features clone https://github.com/michimussato/OpenStudioLandscapes-<Feature>
+
+    OPENSTUDIOLANDSCAPES_VERSION_TAG: str = os.environ.get("OPENSTUDIOLANDSCAPES_VERSION_TAG", None)
+
+    if OPENSTUDIOLANDSCAPES_VERSION_TAG is None:
+        raise ValueError("OPENSTUDIOLANDSCAPES_VERSION_TAG is not set.")
 
     sudo = False
 
@@ -259,9 +255,9 @@ def clone_features(session):
                 "-C",
                 repo_dest.as_posix(),
                 "checkout",
-                f"tags/{CHECKOUT}",
+                f"tags/{OPENSTUDIOLANDSCAPES_VERSION_TAG}",
                 "-B",
-                CHECKOUT,
+                OPENSTUDIOLANDSCAPES_VERSION_TAG,
             ]
 
         if sudo:
