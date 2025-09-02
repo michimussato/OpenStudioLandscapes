@@ -1143,7 +1143,7 @@ def pi_hole_clear(session):
     # nox --session pi_hole_clear
     # nox --tags pi_hole_clear
 
-    sudo = False
+    sudo = True
 
     pi_hole_root_dir: pathlib.Path = ENVIRONMENT_PI_HOLE["PI_HOLE_ROOT_DIR"]
 
@@ -1163,23 +1163,21 @@ def pi_hole_clear(session):
         # cmd.insert(2, "--stdin")
 
     if pi_hole_root_dir.exists():
-        logging.warning("Clearing out Pi-hole...\n" "Continue? Type `yes` to confirm.")
+        logging.warning("Clearing out Pi-hole...\nContinue? Type `yes` to confirm.")
         answer = input()
         if answer.lower() == "yes":
 
             logging.info(f"{cmd = }")
 
             session.run(
-                # Todo
-                #  - [ ] maybe use git checkout -f to reset?
                 *cmd,
                 env=ENV,
                 external=True,
                 silent=SESSION_RUN_SILENT,
             )
         else:
-            logging.info("Clearing Pi-hole was aborted.")
-            return
+            logging.info("Clearing %s was aborted." % pi_hole_root_dir.as_posix())
+            return 1
 
     logging.debug("%s removed" % pi_hole_root_dir.as_posix())
 
@@ -1612,7 +1610,7 @@ def harbor_clear(session):
         # cmd.insert(2, "--stdin")
 
     if harbor_root_dir.exists():
-        logging.warning("Clearing out Harbor...\n" "Continue? Type `yes` to confirm.")
+        logging.warning("Clearing out Harbor...\nContinue? Type `yes` to confirm.")
         answer = input()
         if answer.lower() == "yes":
 
@@ -1625,10 +1623,12 @@ def harbor_clear(session):
                 silent=SESSION_RUN_SILENT,
             )
         else:
-            logging.info("Clearing Harbor was aborted.")
-            return
+            logging.info("Clearing %s was aborted." % harbor_root_dir.as_posix())
+            return 1
 
     logging.debug("%s removed" % harbor_root_dir.as_posix())
+
+    return 0
 
 
 # # Harbor up
@@ -1950,11 +1950,7 @@ def write_dagster_postgres_compose() -> pathlib.Path:
 
 #######################################################################################################################
 # # Dagster Postgres
-# Todo:
-#  - [x] dagster_postgres_up
-#  - [x] dagster_postgres_down
-#  or
-#  - [ ] dagster_postgres_attach
+
 # # dagster_postgres_up
 @nox.session(python=None, tags=["dagster_postgres_up"])
 def dagster_postgres_up(session):
@@ -2009,7 +2005,7 @@ def dagster_postgres_clear(session):
     # nox --session dagster_postgres_clear
     # nox --tags dagster_postgres_clear
 
-    sudo = False
+    sudo = True
 
     dagster_postgres_root_dir: pathlib.Path = ENVIRONMENT_DAGSTER[
         "DAGSTER_POSTGRES_ROOT_DIR"
@@ -2019,9 +2015,10 @@ def dagster_postgres_clear(session):
     logging.debug("Removing Dir %s" % dagster_postgres_root_dir.as_posix())
 
     cmd = [
-        shutil.which("sudo"),
-        shutil.which("rm"),
-        "-rf",
+        shutil.which("git"),
+        "clean",
+        "-x",
+        "--force",
         dagster_postgres_root_dir.as_posix(),
     ]
 
@@ -2031,9 +2028,7 @@ def dagster_postgres_clear(session):
         # cmd.insert(2, "--stdin")
 
     if dagster_postgres_root_dir.exists():
-        logging.warning(
-            "Clearing out Dagster-Postgres...\n " "Continue? Type `yes` to confirm."
-        )
+        logging.warning("Clearing out Dagster-Postgres...\nContinue? Type `yes` to confirm.")
         answer = input()
         if answer.lower() == "yes":
 
@@ -2046,10 +2041,12 @@ def dagster_postgres_clear(session):
                 silent=SESSION_RUN_SILENT,
             )
         else:
-            logging.info("Clearing Dagster-Postgres was aborted.")
-            return
+            logging.info("Clearing %s was aborted." % dagster_postgres_root_dir.as_posix())
+            return 1
 
     logging.debug("%s removed" % dagster_postgres_root_dir.as_posix())
+
+    return 0
 
 
 # # dagster_postgres_up_detach
@@ -2166,6 +2163,64 @@ def dagster_postgres(session):
         external=True,
         silent=SESSION_RUN_SILENT,
     )
+
+
+# # dagster_mysql_clear
+@nox.session(python=None, tags=["dagster_mysql_clear"])
+def dagster_mysql_clear(session):
+    """
+    Clear Dagster-Postgres with `sudo`. WARNING: DATA LOSS!
+
+    Scope:
+    - [x] Engine
+    - [ ] Features
+    """
+    # Ex:
+    # nox --session dagster_mysql_clear
+    # nox --tags dagster_mysql_clear
+
+    sudo = True
+
+    dagster_mysql_root_dir: pathlib.Path = ENVIRONMENT_DAGSTER[
+        "DAGSTER_MYSQL_ROOT_DIR"
+    ]
+
+    logging.debug("Clearing Dagster-MySQL...")
+    logging.debug("Removing Dir %s" % dagster_mysql_root_dir.as_posix())
+
+    cmd = [
+        shutil.which("git"),
+        "clean",
+        "-x",
+        "--force",
+        dagster_mysql_root_dir.as_posix(),
+    ]
+
+    if sudo:
+        cmd.insert(0, shutil.which("sudo"))
+        cmd.insert(1, "--reset-timestamp")
+        # cmd.insert(2, "--stdin")
+
+    if dagster_mysql_root_dir.exists():
+        logging.warning("Clearing out Dagster-MySQL...\nContinue? Type `yes` to confirm.")
+        answer = input()
+        if answer.lower() == "yes":
+
+            logging.info(f"{cmd = }")
+
+            session.run(
+                *cmd,
+                env=ENV,
+                external=True,
+                silent=SESSION_RUN_SILENT,
+            )
+        else:
+            logging.info("Clearing %s was aborted." % dagster_mysql_root_dir.as_posix())
+            return 1
+
+    logging.debug("%s removed" % dagster_mysql_root_dir.as_posix())
+
+    return 0
 
 
 @nox.session(python=None, tags=["dagster_mysql"])
