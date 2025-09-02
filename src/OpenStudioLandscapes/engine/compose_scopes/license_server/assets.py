@@ -1,7 +1,7 @@
 import copy
 import os
 import pathlib
-from typing import Generator, List, MutableMapping, Any
+from typing import Any, Generator, List, MutableMapping
 
 import yaml
 from dagster import (
@@ -18,13 +18,11 @@ from dagster import (
 from OpenStudioLandscapes.engine.base.ops import (
     op_docker_compose_graph,
 )
+from OpenStudioLandscapes.engine.common_assets.group_out import get_group_out
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.discovery.discovery import *
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.utils import *
-
-from OpenStudioLandscapes.engine.common_assets.group_out import get_group_out
-
 
 # Todo:
 #  - [ ] get assets from common_assets
@@ -46,11 +44,23 @@ for i in IMPORTED_FEATURES:
 
 
 if bool(ins):
+
     @asset(
         **ASSET_HEADER_COMPOSE_LICENSE_SERVER,
         ins={
-        "env_base": AssetIn(AssetKey([*ASSET_HEADER_COMPOSE_LICENSE_SERVER['key_prefix'], "env_base"])),
-        "DOCKER_COMPOSE": AssetIn(AssetKey([*ASSET_HEADER_COMPOSE_LICENSE_SERVER['key_prefix'], "DOCKER_COMPOSE"])),
+            "env_base": AssetIn(
+                AssetKey(
+                    [*ASSET_HEADER_COMPOSE_LICENSE_SERVER["key_prefix"], "env_base"]
+                )
+            ),
+            "DOCKER_COMPOSE": AssetIn(
+                AssetKey(
+                    [
+                        *ASSET_HEADER_COMPOSE_LICENSE_SERVER["key_prefix"],
+                        "DOCKER_COMPOSE",
+                    ]
+                )
+            ),
         },
     )
     def env(
@@ -63,9 +73,7 @@ if bool(ins):
 
         env_in.update(
             expand_dict_vars(
-                dict_to_expand={
-                    "DOCKER_COMPOSE": DOCKER_COMPOSE.as_posix()
-                },
+                dict_to_expand={"DOCKER_COMPOSE": DOCKER_COMPOSE.as_posix()},
                 kv=env_in,
             )
         )
@@ -85,11 +93,14 @@ if bool(ins):
             },
         )
 
-
     @asset(
         **ASSET_HEADER_COMPOSE_LICENSE_SERVER,
         ins={
-            "features_in": AssetIn(AssetKey([*ASSET_HEADER_COMPOSE_LICENSE_SERVER['key_prefix'], "features_in"])),
+            "features_in": AssetIn(
+                AssetKey(
+                    [*ASSET_HEADER_COMPOSE_LICENSE_SERVER["key_prefix"], "features_in"]
+                )
+            ),
         },
     )
     def env_base(
@@ -110,11 +121,14 @@ if bool(ins):
             },
         )
 
-
     @asset(
         **ASSET_HEADER_COMPOSE_LICENSE_SERVER,
         ins={
-            "features_in": AssetIn(AssetKey([*ASSET_HEADER_COMPOSE_LICENSE_SERVER['key_prefix'], "features_in"])),
+            "features_in": AssetIn(
+                AssetKey(
+                    [*ASSET_HEADER_COMPOSE_LICENSE_SERVER["key_prefix"], "features_in"]
+                )
+            ),
         },
     )
     def docker_config_json(
@@ -131,15 +145,20 @@ if bool(ins):
         yield AssetMaterialization(
             asset_key=context.asset_key,
             metadata={
-                "__".join(context.asset_key.path): MetadataValue.path(docker_config_json),
+                "__".join(context.asset_key.path): MetadataValue.path(
+                    docker_config_json
+                ),
             },
         )
-
 
     @asset(
         **ASSET_HEADER_COMPOSE_LICENSE_SERVER,
         ins={
-            "features_in": AssetIn(AssetKey([*ASSET_HEADER_COMPOSE_LICENSE_SERVER['key_prefix'], "features_in"])),
+            "features_in": AssetIn(
+                AssetKey(
+                    [*ASSET_HEADER_COMPOSE_LICENSE_SERVER["key_prefix"], "features_in"]
+                )
+            ),
         },
     )
     def docker_config(
@@ -160,7 +179,6 @@ if bool(ins):
                 _docker_config.name: MetadataValue.json(_docker_config.value),
             },
         )
-
 
     # Todo:
     #  - [ ] Why was this here? Duplicate compose()
@@ -223,7 +241,6 @@ if bool(ins):
     #         },
     #     )
 
-
     @asset(
         **ASSET_HEADER_COMPOSE_LICENSE_SERVER,
         ins={
@@ -231,7 +248,9 @@ if bool(ins):
                 AssetKey([*ASSET_HEADER_COMPOSE_LICENSE_SERVER["key_prefix"], "env"]),
             ),
             "features_in": AssetIn(
-                AssetKey([*ASSET_HEADER_COMPOSE_LICENSE_SERVER["key_prefix"], "features_in"]),
+                AssetKey(
+                    [*ASSET_HEADER_COMPOSE_LICENSE_SERVER["key_prefix"], "features_in"]
+                ),
             ),
         },
     )
@@ -240,7 +259,10 @@ if bool(ins):
         env: dict,  # pylint: disable=redefined-outer-name
         features_in: dict,  # pylint: disable=redefined-outer-name
     ) -> Generator[
-        Output[MutableMapping[str, List[MutableMapping[str, List]]]] | AssetMaterialization, None, None
+        Output[MutableMapping[str, List[MutableMapping[str, List]]]]
+        | AssetMaterialization,
+        None,
+        None,
     ]:
         """ """
 
@@ -292,16 +314,19 @@ if bool(ins):
         yield AssetMaterialization(
             asset_key=context.asset_key,
             metadata={
-                "__".join(context.asset_key.path): MetadataValue.json(docker_dict_include),
+                "__".join(context.asset_key.path): MetadataValue.json(
+                    docker_dict_include
+                ),
                 "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml_include}\n```"),
             },
         )
 
-
     @asset(
         **ASSET_HEADER_COMPOSE_LICENSE_SERVER,
         ins={
-            "group_out_base": AssetIn(AssetKey([*ASSET_HEADER_BASE["key_prefix"], str(GroupIn.BASE_IN)])),
+            "group_out_base": AssetIn(
+                AssetKey([*ASSET_HEADER_BASE["key_prefix"], str(GroupIn.BASE_IN)])
+            ),
             **feature_ins,
         },
     )
@@ -310,7 +335,10 @@ if bool(ins):
         group_out_base: dict,  # pylint: disable=redefined-outer-name
         **kwargs,
     ) -> Generator[
-        Output[MutableMapping[str, List[MutableMapping[str, List]]]] | AssetMaterialization, None, None
+        Output[MutableMapping[str, List[MutableMapping[str, List]]]]
+        | AssetMaterialization,
+        None,
+        None,
     ]:
         """ """
 
@@ -359,7 +387,9 @@ if bool(ins):
         yield AssetMaterialization(
             asset_key=context.asset_key,
             metadata={
-                "__".join(context.asset_key.path): MetadataValue.json(kwargs_serialized),
+                "__".join(context.asset_key.path): MetadataValue.json(
+                    kwargs_serialized
+                ),
                 "docker_compose_yaml": MetadataValue.json(docker_compose_yaml),
                 "docker_compose": MetadataValue.json(docker_compose),
                 **metadatavalues_from_dict(
@@ -369,14 +399,12 @@ if bool(ins):
             },
         )
 
-
     @asset(
         **ASSET_HEADER_COMPOSE_LICENSE_SERVER,
-        ins={
-        },
+        ins={},
     )
     def cmd_extend(
-            context: AssetExecutionContext,
+        context: AssetExecutionContext,
     ) -> Generator[Output[list[Any]] | AssetMaterialization | Any, Any, None]:
 
         ret = []
@@ -390,20 +418,17 @@ if bool(ins):
             },
         )
 
-
     @asset(
         **ASSET_HEADER_COMPOSE_LICENSE_SERVER,
-        ins={
-        },
+        ins={},
     )
     def cmd_append(
-            context: AssetExecutionContext,
-    ) -> Generator[Output[dict[str, list[Any]]] | AssetMaterialization | Any, Any, None]:
+        context: AssetExecutionContext,
+    ) -> Generator[
+        Output[dict[str, list[Any]]] | AssetMaterialization | Any, Any, None
+    ]:
 
-        ret = {
-            "cmd": [],
-            "exclude_from_quote": []
-        }
+        ret = {"cmd": [], "exclude_from_quote": []}
 
         yield Output(ret)
 
@@ -414,18 +439,23 @@ if bool(ins):
             },
         )
 
-
     group_out = get_group_out(
         ASSET_HEADER=ASSET_HEADER_COMPOSE_LICENSE_SERVER,
     )
-
 
     docker_compose_graph = AssetsDefinition.from_op(
         op_docker_compose_graph,
         group_name=ASSET_HEADER_COMPOSE_LICENSE_SERVER["group_name"],
         key_prefix=ASSET_HEADER_COMPOSE_LICENSE_SERVER["key_prefix"],
         keys_by_input_name={
-            "group_out": AssetKey([*ASSET_HEADER_COMPOSE_LICENSE_SERVER["key_prefix"], "group_out"]),
-            "compose_project_name": AssetKey([*ASSET_HEADER_COMPOSE_LICENSE_SERVER["key_prefix"], "compose_project_name"]),
+            "group_out": AssetKey(
+                [*ASSET_HEADER_COMPOSE_LICENSE_SERVER["key_prefix"], "group_out"]
+            ),
+            "compose_project_name": AssetKey(
+                [
+                    *ASSET_HEADER_COMPOSE_LICENSE_SERVER["key_prefix"],
+                    "compose_project_name",
+                ]
+            ),
         },
     )

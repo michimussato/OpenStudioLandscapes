@@ -1,7 +1,7 @@
-import os
 import copy
+import os
 import pathlib
-from typing import Generator, MutableMapping, Any, List
+from typing import Any, Generator, List, MutableMapping
 
 import yaml
 from dagster import (
@@ -18,14 +18,12 @@ from dagster import (
 from OpenStudioLandscapes.engine.base.ops import (
     op_docker_compose_graph,
 )
+from OpenStudioLandscapes.engine.common_assets.group_out import get_group_out
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.discovery.discovery import *
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.utils import *
-
-from OpenStudioLandscapes.engine.common_assets.group_out import get_group_out
 from OpenStudioLandscapes.engine.utils import serialize_dict
-
 
 # Todo:
 #  - [ ] get assets from common_assets
@@ -34,8 +32,12 @@ from OpenStudioLandscapes.engine.utils import serialize_dict
 @asset(
     **ASSET_HEADER_COMPOSE,
     ins={
-        "env_base": AssetIn(AssetKey([*ASSET_HEADER_COMPOSE['key_prefix'], "env_base"])),
-        "DOCKER_COMPOSE": AssetIn(AssetKey([*ASSET_HEADER_COMPOSE['key_prefix'], "DOCKER_COMPOSE"])),
+        "env_base": AssetIn(
+            AssetKey([*ASSET_HEADER_COMPOSE["key_prefix"], "env_base"])
+        ),
+        "DOCKER_COMPOSE": AssetIn(
+            AssetKey([*ASSET_HEADER_COMPOSE["key_prefix"], "DOCKER_COMPOSE"])
+        ),
     },
 )
 def env(
@@ -48,9 +50,7 @@ def env(
 
     env_in.update(
         expand_dict_vars(
-            dict_to_expand={
-                "DOCKER_COMPOSE": DOCKER_COMPOSE.as_posix()
-            },
+            dict_to_expand={"DOCKER_COMPOSE": DOCKER_COMPOSE.as_posix()},
             kv=env_in,
         )
     )
@@ -74,7 +74,9 @@ def env(
 @asset(
     **ASSET_HEADER_COMPOSE,
     ins={
-        "features_in": AssetIn(AssetKey([*ASSET_HEADER_COMPOSE['key_prefix'], "features_in"])),
+        "features_in": AssetIn(
+            AssetKey([*ASSET_HEADER_COMPOSE["key_prefix"], "features_in"])
+        ),
     },
 )
 def env_base(
@@ -99,7 +101,9 @@ def env_base(
 @asset(
     **ASSET_HEADER_COMPOSE,
     ins={
-        "features_in": AssetIn(AssetKey([*ASSET_HEADER_COMPOSE['key_prefix'], "features_in"])),
+        "features_in": AssetIn(
+            AssetKey([*ASSET_HEADER_COMPOSE["key_prefix"], "features_in"])
+        ),
     },
 )
 def docker_config_json(
@@ -124,7 +128,9 @@ def docker_config_json(
 @asset(
     **ASSET_HEADER_COMPOSE,
     ins={
-        "features_in": AssetIn(AssetKey([*ASSET_HEADER_COMPOSE['key_prefix'], "features_in"])),
+        "features_in": AssetIn(
+            AssetKey([*ASSET_HEADER_COMPOSE["key_prefix"], "features_in"])
+        ),
     },
 )
 def docker_config(
@@ -178,7 +184,9 @@ def compose(
     env: dict,  # pylint: disable=redefined-outer-name
     features_in: dict,  # pylint: disable=redefined-outer-name
 ) -> Generator[
-    Output[MutableMapping[str, List[MutableMapping[str, List]]]] | AssetMaterialization, None, None
+    Output[MutableMapping[str, List[MutableMapping[str, List]]]] | AssetMaterialization,
+    None,
+    None,
 ]:
     """ """
 
@@ -239,7 +247,9 @@ def compose(
 @asset(
     **ASSET_HEADER_COMPOSE,
     ins={
-        "group_out_base": AssetIn(AssetKey([*ASSET_HEADER_BASE["key_prefix"], str(GroupIn.BASE_IN)])),
+        "group_out_base": AssetIn(
+            AssetKey([*ASSET_HEADER_BASE["key_prefix"], str(GroupIn.BASE_IN)])
+        ),
         **feature_ins,
     },
 )
@@ -248,7 +258,9 @@ def features_in(
     group_out_base: dict,  # pylint: disable=redefined-outer-name
     **kwargs,
 ) -> Generator[
-    Output[MutableMapping[str, List[MutableMapping[str, List]]]] | AssetMaterialization, None, None
+    Output[MutableMapping[str, List[MutableMapping[str, List]]]] | AssetMaterialization,
+    None,
+    None,
 ]:
     """ """
 
@@ -310,11 +322,10 @@ def features_in(
 
 @asset(
     **ASSET_HEADER_COMPOSE,
-    ins={
-    },
+    ins={},
 )
 def cmd_extend(
-        context: AssetExecutionContext,
+    context: AssetExecutionContext,
 ) -> Generator[Output[list[Any]] | AssetMaterialization | Any, Any, None]:
 
     ret = []
@@ -331,17 +342,13 @@ def cmd_extend(
 
 @asset(
     **ASSET_HEADER_COMPOSE,
-    ins={
-    },
+    ins={},
 )
 def cmd_append(
-        context: AssetExecutionContext,
+    context: AssetExecutionContext,
 ) -> Generator[Output[dict[str, list[Any]]] | AssetMaterialization | Any, Any, None]:
 
-    ret = {
-        "cmd": [],
-        "exclude_from_quote": []
-    }
+    ret = {"cmd": [], "exclude_from_quote": []}
 
     yield Output(ret)
 
@@ -364,6 +371,8 @@ docker_compose_graph = AssetsDefinition.from_op(
     key_prefix=ASSET_HEADER_COMPOSE["key_prefix"],
     keys_by_input_name={
         "group_out": AssetKey([*ASSET_HEADER_COMPOSE["key_prefix"], "group_out"]),
-        "compose_project_name": AssetKey([*ASSET_HEADER_COMPOSE["key_prefix"], "compose_project_name"]),
+        "compose_project_name": AssetKey(
+            [*ASSET_HEADER_COMPOSE["key_prefix"], "compose_project_name"]
+        ),
     },
 )

@@ -9,9 +9,11 @@ from dagster import (
     asset,
 )
 
+from OpenStudioLandscapes.engine.constants import (
+    DOCKER_USE_CACHE_GLOBAL,
+    PREFIX_COMPOSE_SCOPE,
+)
 from OpenStudioLandscapes.engine.enums import *
-from OpenStudioLandscapes.engine.constants import DOCKER_USE_CACHE_GLOBAL, PREFIX_COMPOSE_SCOPE
-
 
 DOCKER_USE_CACHE = DOCKER_USE_CACHE_GLOBAL or False
 

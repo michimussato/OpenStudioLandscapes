@@ -14,7 +14,7 @@
 
 # Nox
 
-`OpenStudioLandscapes` comes with several convenience shortcuts for 
+`OpenStudioLandscapes` comes with several convenience shortcuts for
 repetitive tasks unsing `nox` as its task runner.
 
 ```shell

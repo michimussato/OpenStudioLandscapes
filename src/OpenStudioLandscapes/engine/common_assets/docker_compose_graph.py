@@ -1,13 +1,13 @@
 from dagster import (
-    AssetsDefinition,
     AssetKey,
+    AssetsDefinition,
 )
 
 from OpenStudioLandscapes.engine.base.ops import op_docker_compose_graph
 
 
 def get_docker_compose_graph(
-        ASSET_HEADER: dict,
+    ASSET_HEADER: dict,
 ) -> AssetsDefinition:
 
     docker_compose_graph = AssetsDefinition.from_op(

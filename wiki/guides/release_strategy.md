@@ -34,9 +34,9 @@ Based on [Semantic Versioning]()
 #### Release Candidate
 
 ```shell
-echo "Version Tag (Release Candidate):" 
-echo "v<major>.<minor>.<patch>-rc<increment>" 
-echo -n "v" 
+echo "Version Tag (Release Candidate):"
+echo "v<major>.<minor>.<patch>-rc<increment>"
+echo -n "v"
 read TAG_VERSION
 TAG_VERSION="v${TAG_VERSION}"
 # BRANCH="feature"
@@ -68,9 +68,9 @@ popd || exit
 #### Main Release
 
 ```shell
-echo "Version Tag (Main Release):" 
+echo "Version Tag (Main Release):"
 echo "v<major>.<minor>.<patch>"
-echo -n "v" 
+echo -n "v"
 read TAG_VERSION
 TAG_VERSION="v${TAG_VERSION}"
 # BRANCH="main"
@@ -91,7 +91,7 @@ pushd .features || exit
 
 for dir in */; do
     pushd "${dir}" || exit
-    
+
     eval "${COMMAND}"
 
     popd || exit
@@ -107,8 +107,8 @@ This deletes a local _and_ remote Git tag. a tag.
 Ref: [How To Delete Local and Remote Tags on Git](https://devconnected.com/how-to-delete-local-and-remote-tags-on-git/)
 
 ```shell
-echo "Version Tag (Delete Tag):" 
-echo -n "v" 
+echo "Version Tag (Delete Tag):"
+echo -n "v"
 read TAG_VERSION
 TAG_VERSION="v${TAG_VERSION}"
 # BRANCH="feature"
@@ -128,7 +128,7 @@ pushd .features || exit
 
 for dir in */; do
     pushd "${dir}" || exit
-    
+
     eval "${COMMAND}"
 
     popd || exit
@@ -174,7 +174,7 @@ pushd .features || exit
 
 for dir in */; do
     pushd "${dir}" || exit
-    
+
     eval "${COMMAND}"
 
     popd || exit
@@ -205,7 +205,7 @@ pushd .features || exit
 
 for dir in */; do
     pushd "${dir}" || exit
-    
+
     eval "${COMMAND}"
 
     popd || exit
@@ -234,7 +234,7 @@ pushd .features || exit
 
 for dir in */; do
     pushd "${dir}" || exit
-    
+
     eval "${COMMAND}"
 
     popd || exit
@@ -272,7 +272,7 @@ pushd .features || exit
 
 for dir in */; do
     pushd "${dir}" || exit
-    
+
     eval "${COMMAND}"
 
     popd || exit

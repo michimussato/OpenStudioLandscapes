@@ -1,11 +1,10 @@
-import shutil
-import subprocess
 import base64
 import pathlib
+import shutil
+import subprocess
 from typing import Generator, MutableMapping
 
 import pydot
-
 from dagster import (
     AssetExecutionContext,
     AssetIn,
@@ -18,9 +17,7 @@ from dagster import (
 
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.enums import *
-
 from OpenStudioLandscapes.engine.features import FEATURES
-
 
 # Dynamic inputs based on the imported
 # third party code locations
@@ -37,17 +34,22 @@ for key in feature_keys:
     if compose_scope in compose_scopes:
         continue
     compose_scopes.update(compose_scope)
-    ins[f"compose_scope_{compose_scope}"] = AssetIn(AssetKey([f"{PREFIX_COMPOSE_SCOPE}_{compose_scope}", "docker_compose_graph_dot"]))
+    ins[f"compose_scope_{compose_scope}"] = AssetIn(
+        AssetKey(
+            [f"{PREFIX_COMPOSE_SCOPE}_{compose_scope}", "docker_compose_graph_dot"]
+        )
+    )
 
 
 if bool(ins):
+
     @asset(
         **ASSET_HEADER_LANDSCAPE_MAP,
         ins={
             "group_out": AssetIn(
                 AssetKey([*ASSET_HEADER_BASE["key_prefix"], str(GroupIn.BASE_IN)]),
             ),
-            **ins
+            **ins,
         },
     )
     def landscape_map(

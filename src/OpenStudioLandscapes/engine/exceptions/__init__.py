@@ -2,7 +2,6 @@ class OpenStudioLandscapesException(Exception):
     """
     This is the base class for all OpenStudioLandscapes exceptions.
     """
-    pass
 
 
 class ComposeScopeException(OpenStudioLandscapesException):
@@ -11,4 +10,3 @@ class ComposeScopeException(OpenStudioLandscapesException):
     That means that a module might not be enabled in
     OpenStudioLandscapes.engine.constants.THIRD_PARTY
     """
-    pass

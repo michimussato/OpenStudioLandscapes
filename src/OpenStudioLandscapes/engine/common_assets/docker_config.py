@@ -1,16 +1,16 @@
 from dagster import (
+    AssetKey,
+    AssetsDefinition,
     In,
     Out,
-    AssetsDefinition,
-    AssetKey,
 )
 
-from OpenStudioLandscapes.engine.enums import DockerConfig
 from OpenStudioLandscapes.engine.base.ops import factory_docker_config
+from OpenStudioLandscapes.engine.enums import DockerConfig
 
 
 def get_docker_config(
-        ASSET_HEADER: dict,
+    ASSET_HEADER: dict,
 ) -> AssetsDefinition:
 
     docker_config_op = factory_docker_config(

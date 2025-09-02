@@ -18,11 +18,11 @@
 # Launch Harbor
 
 > [!NOTE]
-> I tried `include` but Harbor needs `sudo` whereas openstudiolandscapes does not. 
+> I tried `include` but Harbor needs `sudo` whereas openstudiolandscapes does not.
 > This lead to problems, hence, launch them separately.
 > ```shell
-> include:  
->   - path:  
+> include:
+>   - path:
 >     - ../.landscapes/.harbor/bin/docker-compose.yml
 > ```
 

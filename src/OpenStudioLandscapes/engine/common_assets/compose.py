@@ -1,15 +1,15 @@
 from dagster import (
+    AssetKey,
+    AssetsDefinition,
     In,
     Out,
-    AssetsDefinition,
-    AssetKey,
 )
 
 from OpenStudioLandscapes.engine.base.ops import factory_compose
 
 
 def get_compose(
-        ASSET_HEADER: dict,
+    ASSET_HEADER: dict,
 ) -> AssetsDefinition:
 
     compose_op = factory_compose(
@@ -36,7 +36,9 @@ def get_compose(
         group_name=ASSET_HEADER["group_name"],
         key_prefix=ASSET_HEADER["key_prefix"],
         keys_by_input_name={
-            "compose_networks": AssetKey([*ASSET_HEADER["key_prefix"], "compose_networks"]),
+            "compose_networks": AssetKey(
+                [*ASSET_HEADER["key_prefix"], "compose_networks"]
+            ),
             "compose_maps": AssetKey([*ASSET_HEADER["key_prefix"], "compose_maps"]),
             "env": AssetKey([*ASSET_HEADER["key_prefix"], "env"]),
         },

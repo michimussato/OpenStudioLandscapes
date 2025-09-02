@@ -1,6 +1,6 @@
 from dagster import (
-    AssetsDefinition,
     AssetKey,
+    AssetsDefinition,
     In,
     Out,
 )
@@ -9,8 +9,8 @@ from OpenStudioLandscapes.engine.base.ops import factory_feature_out
 
 
 def get_feature_out(
-        ASSET_HEADER: dict,
-        feature_out_ins: dict,
+    ASSET_HEADER: dict,
+    feature_out_ins: dict,
 ) -> AssetsDefinition:
 
     feature_out_ins_op = {}

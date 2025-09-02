@@ -12,7 +12,7 @@
 
 # Basic Installation from Installer Script
 
-An easy way to get yourself up and running is 
+An easy way to get yourself up and running is
 installing OpenStudioLandscapes via installer script.
 
 As of now, the installer is tested and supported for
@@ -42,20 +42,20 @@ these Linux distros/versions:
 The Installer Script will guide you through the process
 and installs all requirements for
 OpenStudioLandscapes to work. Ideally, you want to
-run it on a vanilla OS installation. However, 
+run it on a vanilla OS installation. However,
 if you run it multiple times, it will create backups
 of previous installations if there were any.
 
 > [!IMPORTANT]
-> As a first step, the script will create the group `docker` 
+> As a first step, the script will create the group `docker`
 > and add the user `$USER` to it. After that, it will ask for a reboot.
-> **JUST DO IT** - subsequent steps depend on it! 
+> **JUST DO IT** - subsequent steps depend on it!
 > Re-run the script again afterwards.
 
 > [!WARNING]
 > **Todo**
 > A possible workaround to avoid the reboot could be to run
-> `sudo newgroup docker` to activate the changes dynamically. 
+> `sudo newgroup docker` to activate the changes dynamically.
 > But, to stay on the safe side, I didn't mess around with that
 > so far.
 

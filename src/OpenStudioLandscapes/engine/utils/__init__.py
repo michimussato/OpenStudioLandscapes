@@ -23,9 +23,9 @@ __all__ = [
 
 import os
 import pathlib
-import shlex
 import select
-from typing import MutableMapping, List, Any, Optional, IO, Union
+import shlex
+from typing import IO, Any, List, MutableMapping, Optional, Union
 
 import git
 from dagster import AssetExecutionContext, MetadataValue, OpExecutionContext
@@ -47,9 +47,9 @@ def get_pip_install_str(
 ) -> str:
     pip_install_str: str = str()
     for pip_package in pip_install_packages:
-        pip_install_str += (
-            "RUN %s -m pip install --root-user-action=ignore '%s'\n"
-            % (python_str, pip_package)
+        pip_install_str += "RUN %s -m pip install --root-user-action=ignore '%s'\n" % (
+            python_str,
+            pip_package,
         )
 
     return pip_install_str
@@ -191,16 +191,17 @@ def parse_docker_image_path(
 
 
 def iterate_fds(
-        *,
-        handles: tuple[
-            Optional[IO[bytes]],
-            Optional[IO[bytes]],
-        ],
-        labels: tuple[str, str],
-        functions: tuple[
-            callable, callable,
-        ],
-        live_print=False,
+    *,
+    handles: tuple[
+        Optional[IO[bytes]],
+        Optional[IO[bytes]],
+    ],
+    labels: tuple[str, str],
+    functions: tuple[
+        callable,
+        callable,
+    ],
+    live_print=False,
 ) -> MutableMapping[str, list[str]]:
     """
     Can be used to live-feed stdout and stderr of a
@@ -286,9 +287,9 @@ def iterate_fds(
 
 
 def get_compose_scope(
-        context: AssetExecutionContext,
-        features: MutableMapping,
-        name: str,
+    context: AssetExecutionContext,
+    features: MutableMapping,
+    name: str,
 ) -> ComposeScope:
 
     feature_keys = features.keys()
@@ -313,9 +314,9 @@ def get_compose_scope(
 
 
 def get_feature_config(
-        context: AssetExecutionContext,
-        features: MutableMapping,
-        name: str,
+    context: AssetExecutionContext,
+    features: MutableMapping,
+    name: str,
 ) -> Any | None:
 
     feature_keys = features.keys()
@@ -339,8 +340,8 @@ def get_feature_config(
 
 
 def expand_dict_vars(
-        dict_to_expand: MutableMapping,
-        kv: MutableMapping,
+    dict_to_expand: MutableMapping,
+    kv: MutableMapping,
 ) -> MutableMapping:
     """
     This helper expands key-value pairs into the
@@ -374,8 +375,8 @@ def expand_dict_vars(
 # serializable input.
 # Serializes in place.
 def serialize_dict(
-        context: Union[AssetExecutionContext, OpExecutionContext],
-        d: MutableMapping,
+    context: Union[AssetExecutionContext, OpExecutionContext],
+    d: MutableMapping,
 ) -> None:
 
     for k_, v_ in d.items():
@@ -438,8 +439,8 @@ def serialize_dict(
 
 
 def metadatavalues_from_dict(
-        context: Union[AssetExecutionContext, OpExecutionContext],
-        d_serialized: MutableMapping,
+    context: Union[AssetExecutionContext, OpExecutionContext],
+    d_serialized: MutableMapping,
 ) -> MutableMapping[str, MetadataValue]:
 
     metadata = {}
@@ -453,10 +454,10 @@ def metadatavalues_from_dict(
 
 
 def get_relative_path_via_common_root(
-        context: Union[AssetExecutionContext, OpExecutionContext],
-        path_src: pathlib.Path,
-        path_dst: pathlib.Path,
-        path_common_root: pathlib.Path,
+    context: Union[AssetExecutionContext, OpExecutionContext],
+    path_src: pathlib.Path,
+    path_dst: pathlib.Path,
+    path_common_root: pathlib.Path,
 ) -> pathlib.Path:
     """
     Returns a relative path from `path_src` to `path_dst` where `path_common_root`
@@ -488,7 +489,9 @@ def get_relative_path_via_common_root(
         raise Exception(f"{path_common_root = } must be absolute.")
 
     common_root_name = path_common_root.name  # .landscapes
-    common_root_parts = path_common_root.parts  # ('/', 'opt', 'openstudiolandscapes', '.landscapes')
+    common_root_parts = (
+        path_common_root.parts
+    )  # ('/', 'opt', 'openstudiolandscapes', '.landscapes')
 
     # Todo
     #  - [ ] What if common_root_name occurs multiple times?
@@ -499,23 +502,29 @@ def get_relative_path_via_common_root(
     index_common_root_name += 1  # 4
     context.log.debug(f"{index_common_root_name = }")
 
-    rel_path_src_from_common_root = path_src.parent.parts[index_common_root_name:]  # ('2025-06-06-00-40-48-0ef417aaff9d4da7a435412ae6f27929', 'ComposeScope_default__ComposeScope_default', 'ComposeScope_default__DOCKER_COMPOSE', 'docker_compose')
+    rel_path_src_from_common_root = path_src.parent.parts[
+        index_common_root_name:
+    ]  # ('2025-06-06-00-40-48-0ef417aaff9d4da7a435412ae6f27929', 'ComposeScope_default__ComposeScope_default', 'ComposeScope_default__DOCKER_COMPOSE', 'docker_compose')
     context.log.debug(f"{rel_path_src_from_common_root = }")
-    rel_path_dst_from_common_root = path_dst.parts[index_common_root_name:]  # ('2025-06-06-00-40-48-0ef417aaff9d4da7a435412ae6f27929', 'Dagster__Dagster', 'Dagster__DOCKER_COMPOSE', 'docker_compose', 'docker-compose.yml')
+    rel_path_dst_from_common_root = path_dst.parts[
+        index_common_root_name:
+    ]  # ('2025-06-06-00-40-48-0ef417aaff9d4da7a435412ae6f27929', 'Dagster__Dagster', 'Dagster__DOCKER_COMPOSE', 'docker_compose', 'docker-compose.yml')
     context.log.debug(f"{rel_path_dst_from_common_root = }")
 
     path_src_up = "../" * len(rel_path_src_from_common_root)  # '../../../../'
     context.log.debug(f"{path_src_up = }")
 
-    rel_path_from_src_to_dst_via_common_root = pathlib.Path(path_src_up, *rel_path_dst_from_common_root)  # PosixPath('../../../../2025-06-06-00-40-48-0ef417aaff9d4da7a435412ae6f27929/Dagster__Dagster/Dagster__DOCKER_COMPOSE/docker_compose/docker-compose.yml')
+    rel_path_from_src_to_dst_via_common_root = pathlib.Path(
+        path_src_up, *rel_path_dst_from_common_root
+    )  # PosixPath('../../../../2025-06-06-00-40-48-0ef417aaff9d4da7a435412ae6f27929/Dagster__Dagster/Dagster__DOCKER_COMPOSE/docker_compose/docker-compose.yml')
     context.log.debug(f"{rel_path_from_src_to_dst_via_common_root = }")
 
     return rel_path_from_src_to_dst_via_common_root
 
 
 def get_bool_env(
-        env: str,
-        default: bool = False,
+    env: str,
+    default: bool = False,
 ):
     # os.getenv("VAR") always returns a string if VAR is set
 
@@ -539,8 +548,8 @@ def get_bool_env(
 
 
 def get_str_env(
-        env: str,
-        default: str,
+    env: str,
+    default: str,
 ):
 
     # EMPTY_VAR=

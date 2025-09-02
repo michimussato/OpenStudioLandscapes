@@ -1,13 +1,13 @@
 from dagster import (
-    AssetsDefinition,
     AssetKey,
+    AssetsDefinition,
 )
 
 from OpenStudioLandscapes.engine.base.ops import op_constants
 
 
 def get_constants(
-        ASSET_HEADER: dict,
+    ASSET_HEADER: dict,
 ) -> AssetsDefinition:
 
     constants = AssetsDefinition.from_op(

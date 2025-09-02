@@ -1,22 +1,25 @@
 """
 This is the Feature discovery engine for OpenStudioLandscapes.
 """
+
 __all__ = [
     "DISCOVERED_MODULE",
     "IMPORTABLE_FEATURES",
     "IMPORTED_FEATURES",
 ]
 
-from setuptools import find_namespace_packages
 import importlib
 
 from dagster import get_dagster_logger
+from setuptools import find_namespace_packages
 
 from OpenStudioLandscapes.engine.constants import FEATURES
 
 LOGGER = get_dagster_logger(__name__)
 
-namespace_packages = find_namespace_packages(where=".features", include=["*src.OpenStudioLandscapes.*"])
+namespace_packages = find_namespace_packages(
+    where=".features", include=["*src.OpenStudioLandscapes.*"]
+)
 
 DISCOVERED_MODULE = [
     ".".join(
@@ -25,7 +28,8 @@ DISCOVERED_MODULE = [
             i.rsplit(".", 2)[-1],
             "definitions",
         ]
-    ) for i in namespace_packages
+    )
+    for i in namespace_packages
 ]
 
 
@@ -35,7 +39,10 @@ feature_keys = FEATURES.keys()
 
 for key in feature_keys:
     if FEATURES[key]["module"] not in DISCOVERED_MODULE:
-        LOGGER.info("Feature %s is not in discovered modules. Skipped." % FEATURES[key]["module"])
+        LOGGER.info(
+            "Feature %s is not in discovered modules. Skipped."
+            % FEATURES[key]["module"]
+        )
         continue
     if not FEATURES[key]["enabled"]:
         LOGGER.info("Feature %s is not enabled. Skipped." % FEATURES[key]["module"])

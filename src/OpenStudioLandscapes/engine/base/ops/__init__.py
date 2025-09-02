@@ -18,28 +18,26 @@ import shlex
 import shutil
 from collections import ChainMap
 from functools import reduce
-from typing import Generator, MutableMapping, Any, List, Union
+from typing import Any, Generator, List, MutableMapping, Union
 
-import yaml
-from docker_compose_graph.utils import *
 import pydot
-
+import yaml
 from dagster import (
     AssetMaterialization,
     In,
     MetadataValue,
+    OpDefinition,
     OpExecutionContext,
     Out,
     Output,
     op,
-    OpDefinition,
 )
-
 from docker_compose_graph.docker_compose_graph import DockerComposeGraph
+from docker_compose_graph.utils import *
 
+from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.utils import *
-from OpenStudioLandscapes.engine.constants import *
 
 
 def factory_feature_out(
@@ -108,7 +106,9 @@ def factory_feature_out(
         yield AssetMaterialization(
             asset_key=context.asset_key_for_output(output_name),
             metadata={
-                "__".join(context.asset_key.path): MetadataValue.json(kwargs_serialized),
+                "__".join(context.asset_key.path): MetadataValue.json(
+                    kwargs_serialized
+                ),
                 **metadatavalues_from_dict(
                     context=context,
                     d_serialized=kwargs_serialized,
@@ -162,7 +162,9 @@ def factory_feature_in(
         yield AssetMaterialization(
             asset_key=context.asset_key_for_output(output_name),
             metadata={
-                "__".join(context.asset_key.path): MetadataValue.json(kwargs_serialized),
+                "__".join(context.asset_key.path): MetadataValue.json(
+                    kwargs_serialized
+                ),
                 **metadatavalues_from_dict(
                     context=context,
                     d_serialized=kwargs_serialized,
@@ -442,9 +444,7 @@ def op_env(
 
     env_in.update(
         expand_dict_vars(
-            dict_to_expand={
-                "DOCKER_COMPOSE": DOCKER_COMPOSE.as_posix()
-            },
+            dict_to_expand={"DOCKER_COMPOSE": DOCKER_COMPOSE.as_posix()},
             kv=env_in,
         )
     )
@@ -535,7 +535,11 @@ def op_constants(
     Output[ComposeScope]
     | AssetMaterialization
     | Output[Any]
-    | Output[MutableMapping[OpenStudioLandscapesConfig, MutableMapping[str, bool | str | Any]]]
+    | Output[
+        MutableMapping[
+            OpenStudioLandscapesConfig, MutableMapping[str, bool | str | Any]
+        ]
+    ]
     | Output[bool | Any]
     | Any,
     None,
@@ -607,7 +611,9 @@ def op_docker_compose_graph(
     context: OpExecutionContext,
     group_out: pathlib.Path,  # pylint: disable=redefined-outer-name
     compose_project_name: str,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[pydot.Dot] | Output[pathlib.Path] | AssetMaterialization, None, None]:
+) -> Generator[
+    Output[pydot.Dot] | Output[pathlib.Path] | AssetMaterialization, None, None
+]:
     """ """
 
     dcg = DockerComposeGraph(
@@ -619,12 +625,17 @@ def op_docker_compose_graph(
 
     dcg.iterate_trees(trees)
 
-    docker_compose_dir = group_out.parent / "__".join(context.asset_key_for_output("docker_compose_graph").path)
+    docker_compose_dir = group_out.parent / "__".join(
+        context.asset_key_for_output("docker_compose_graph").path
+    )
 
     docker_compose_dir.mkdir(parents=True, exist_ok=True)
 
     # SVG
-    svg = docker_compose_dir / f"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.svg"
+    svg = (
+        docker_compose_dir
+        / f"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.svg"
+    )
     try:
         dcg.graph.write(
             path=svg,
@@ -641,7 +652,10 @@ def op_docker_compose_graph(
     svg_md = f"![Image](data:image/svg+xml;base64,{svg_base64})"
 
     # PNG
-    png = docker_compose_dir / f"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.png"
+    png = (
+        docker_compose_dir
+        / f"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.png"
+    )
     try:
         dcg.graph.write(
             path=png,
@@ -659,7 +673,10 @@ def op_docker_compose_graph(
     # png_md = f"![Image](data:image/png;base64,{png_base64})"
 
     # DOT
-    dot = docker_compose_dir / f"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.dot"
+    dot = (
+        docker_compose_dir
+        / f"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.dot"
+    )
     try:
         dcg.graph.write(
             path=dot,
@@ -684,7 +701,9 @@ def op_docker_compose_graph(
         asset_key=context.asset_key_for_output("docker_compose_graph"),
         metadata={
             "svg": MetadataValue.md(svg_md),
-            "__".join(context.asset_key_for_output("docker_compose_graph").path): MetadataValue.json(str(dcg.graph)),
+            "__".join(
+                context.asset_key_for_output("docker_compose_graph").path
+            ): MetadataValue.json(str(dcg.graph)),
             "svg_path": MetadataValue.path(svg),
             "png_path": MetadataValue.path(png),
         },
@@ -704,7 +723,9 @@ def op_docker_compose_graph(
     yield AssetMaterialization(
         asset_key=context.asset_key_for_output("docker_compose_graph_dot"),
         metadata={
-            "__".join(context.asset_key_for_output("docker_compose_graph_dot").path): MetadataValue.path(dot),
+            "__".join(
+                context.asset_key_for_output("docker_compose_graph_dot").path
+            ): MetadataValue.path(dot),
         },
     )
 
@@ -1052,7 +1073,15 @@ def op_group_out(
     docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name
     cmd_extend: list,  # pylint: disable=redefined-outer-name
     cmd_append: dict[str, list],  # pylint: disable=redefined-outer-name
-) -> Generator[Output[pathlib.Path] | Output[MutableMapping] | Output[str] | Output[List] | AssetMaterialization, None, None]:
+) -> Generator[
+    Output[pathlib.Path]
+    | Output[MutableMapping]
+    | Output[str]
+    | Output[List]
+    | AssetMaterialization,
+    None,
+    None,
+]:
 
     cmd_append["exclude_from_quote"].extend(
         ComposeCmdExclusion.CMD_APPEND_ALWAYS_EXCLUDE_FROM_QUOTATION.value
@@ -1070,11 +1099,11 @@ def op_group_out(
     build_base_docker_config: DockerConfig = docker_config
     build_base_docker_config_value = build_base_docker_config.value
 
-    compose_project_name = f"{env.get('LANDSCAPE', 'default').replace('.', '-')}-{env['COMPOSE_SCOPE']}"
-
-    group_names_by_key_dict = (
-        context.assets_def.group_names_by_key
+    compose_project_name = (
+        f"{env.get('LANDSCAPE', 'default').replace('.', '-')}-{env['COMPOSE_SCOPE']}"
     )
+
+    group_names_by_key_dict = context.assets_def.group_names_by_key
     # Results in:
     # Single Output:
     # {AssetKey(['OpenCue', 'group_out']): 'OpenCue'}
@@ -1084,12 +1113,15 @@ def op_group_out(
 
     cmd_docker_compose_logs = [
         shutil.which("docker"),
-        "--config", docker_config_json.as_posix(),
+        "--config",
+        docker_config_json.as_posix(),
         "compose",
         "--progress",
         DOCKER_PROGRESS,
-        "--file", DOCKER_COMPOSE.as_posix(),
-        "--project-name", compose_project_name,
+        "--file",
+        DOCKER_COMPOSE.as_posix(),
+        "--project-name",
+        compose_project_name,
         "logs",
         "--follow",
     ]
@@ -1097,12 +1129,15 @@ def op_group_out(
 
     cmd_docker_compose_up = [
         shutil.which("docker"),
-        "--config", docker_config_json.as_posix(),
+        "--config",
+        docker_config_json.as_posix(),
         "compose",
         "--progress",
         DOCKER_PROGRESS,
-        "--file",  DOCKER_COMPOSE.as_posix(),
-        "--project-name", compose_project_name,
+        "--file",
+        DOCKER_COMPOSE.as_posix(),
+        "--project-name",
+        compose_project_name,
         "up",
         "--remove-orphans",
         [
@@ -1117,27 +1152,35 @@ def op_group_out(
 
     cmd_docker_compose_pull_up = [
         shutil.which("docker"),
-        "--config", docker_config_json.as_posix(),
+        "--config",
+        docker_config_json.as_posix(),
         "compose",
         "--progress",
         DOCKER_PROGRESS,
-        "--file", DOCKER_COMPOSE.as_posix(),
-        "--project-name", compose_project_name,
+        "--file",
+        DOCKER_COMPOSE.as_posix(),
+        "--project-name",
+        compose_project_name,
         "pull",
         "--ignore-pull-failures",
         "&&",
         *cmd_docker_compose_up,
     ]
-    script_cmd_docker_compose_pull_up = DOCKER_COMPOSE.parent / "docker_compose_pull_up.sh"
+    script_cmd_docker_compose_pull_up = (
+        DOCKER_COMPOSE.parent / "docker_compose_pull_up.sh"
+    )
 
     cmd_docker_compose_down = [
         shutil.which("docker"),
-        "--config", docker_config_json.as_posix(),
+        "--config",
+        docker_config_json.as_posix(),
         "compose",
         "--progress",
         DOCKER_PROGRESS,
-        "--file", DOCKER_COMPOSE.as_posix(),
-        "--project-name", compose_project_name,
+        "--file",
+        DOCKER_COMPOSE.as_posix(),
+        "--project-name",
+        compose_project_name,
         "down",
         "--remove-orphans",
     ]
@@ -1160,9 +1203,13 @@ def op_group_out(
     docker_script["script"] = str()
 
     docker_script["script"] += f"#!{docker_script['exe']}\n"
-    docker_script["script"] += f"# AUTO-GENERATED by Dagster Asset {'__'.join(context.asset_key_for_output('group_out').path)}\n"
+    docker_script[
+        "script"
+    ] += f"# AUTO-GENERATED by Dagster Asset {'__'.join(context.asset_key_for_output('group_out').path)}\n"
     docker_script["script"] += "\n"
-    docker_script["script"] += "SCRIPT_DIR=$( cd -- \"$( dirname -- \"${BASH_SOURCE[0]}\" )\" &> /dev/null && pwd )\n"
+    docker_script[
+        "script"
+    ] += 'SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )\n'
     docker_script["script"] += "\n"
 
     script_dicts = [
@@ -1193,7 +1240,7 @@ def op_group_out(
     ]
 
     def _write_script(
-            script_dict: dict[str, Union[str, List, pathlib.Path]],
+        script_dict: dict[str, Union[str, List, pathlib.Path]],
     ):
         """
         This writes the launch scripts that contain the commands to handle Landscapes (up/down etc.).
@@ -1207,9 +1254,9 @@ def op_group_out(
         context.log.debug(f"{script_dict = }")
 
         with open(
-                file=script_dict["script"],
-                mode="w",
-                encoding="utf-8",
+            file=script_dict["script"],
+            mode="w",
+            encoding="utf-8",
         ) as fw:
 
             context.log.debug(f"Writing script: {script_dict['script'].as_posix()}")
@@ -1222,22 +1269,24 @@ def op_group_out(
 
             fw.write(docker_script["script"])
             fw.write("\n")
-            fw.write("pushd \"${SCRIPT_DIR}\" || exit 1\n")
+            fw.write('pushd "${SCRIPT_DIR}" || exit 1\n')
             fw.write("\n")
             fw.write("# Source Overrides defined in {LANDSCAPE}/.overrides\n")
-            fw.write("echo \"Working Directory: $(pwd)\"\n")
+            fw.write('echo "Working Directory: $(pwd)"\n')
             overrides_file = get_relative_path_via_common_root(
                 context=context,
                 path_src=script_cmd_docker_compose_up,
                 path_dst=pathlib.Path(
                     env["DOT_LANDSCAPES"],
-                    env.get('LANDSCAPE', 'default'),
+                    env.get("LANDSCAPE", "default"),
                     ".overrides",
                 ),
                 path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
             )
-            fw.write(f"echo \"Sourcing {overrides_file.as_posix()} file...\"\n")
-            fw.write(f"source {overrides_file.as_posix()} && echo \"Sourced successfully.\" || echo \"No .overrides file found.\"\n")
+            fw.write(f'echo "Sourcing {overrides_file.as_posix()} file..."\n')
+            fw.write(
+                f'source {overrides_file.as_posix()} && echo "Sourced successfully." || echo "No .overrides file found."\n'
+            )
             fw.write("\n")
 
             cmd_str = " ".join(
@@ -1254,7 +1303,7 @@ def op_group_out(
                         path_src=script_cmd_docker_compose_up,
                         path_dst=DOCKER_COMPOSE,
                         path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
-                    ).as_posix()
+                    ).as_posix(),
                 ).replace(
                     # OpenStudioLandscapes_Base__docker_config_json
                     pathlib.Path(env["DOT_LANDSCAPES"]).as_posix(),
@@ -1263,7 +1312,7 @@ def op_group_out(
                         path_src=script_cmd_docker_compose_up,
                         path_dst=docker_config_json,
                         path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
-                    ).as_posix()
+                    ).as_posix(),
                 )
             )
             fw.write("popd || exit 1\n")
@@ -1277,10 +1326,12 @@ def op_group_out(
         scripts.append(script_dict["script"].as_posix())
 
         if script_dict["create_convenience_script"]:
-            docker_compose_scope = "__".join(context.asset_key_for_output(script_dict["asset_key_for_output"]).path)
+            docker_compose_scope = "__".join(
+                context.asset_key_for_output(script_dict["asset_key_for_output"]).path
+            )
             script_cmd_convenience = pathlib.Path(
                 env["DOT_LANDSCAPES"],
-                env.get('LANDSCAPE', 'default'),
+                env.get("LANDSCAPE", "default"),
                 f"{docker_compose_scope}.sh",
             )
             rel_path = get_relative_path_via_common_root(
@@ -1290,16 +1341,18 @@ def op_group_out(
                 path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
             )
             with open(
-                    file=script_cmd_convenience,
-                    mode="w",
-                    encoding="utf-8",
+                file=script_cmd_convenience,
+                mode="w",
+                encoding="utf-8",
             ) as fw:
 
-                context.log.debug(f"Writing convenience script: {script_cmd_convenience.as_posix()}")
+                context.log.debug(
+                    f"Writing convenience script: {script_cmd_convenience.as_posix()}"
+                )
 
                 fw.write(docker_script["script"])
                 fw.write("\n")
-                fw.write("pushd \"${SCRIPT_DIR}\" || exit 1\n")
+                fw.write('pushd "${SCRIPT_DIR}" || exit 1\n')
                 fw.write(f"{rel_path.as_posix()}\n")
                 fw.write("popd || exit 1\n")
                 fw.write("\n")
@@ -1328,7 +1381,9 @@ def op_group_out(
         yield AssetMaterialization(
             asset_key=context.asset_key_for_output("group_out"),
             metadata={
-                "__".join(context.asset_key_for_output("group_out").path): MetadataValue.path(DOCKER_COMPOSE),
+                "__".join(
+                    context.asset_key_for_output("group_out").path
+                ): MetadataValue.path(DOCKER_COMPOSE),
                 "root_dir": MetadataValue.path(DOCKER_COMPOSE.parent),
                 # "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
                 "scripts": MetadataValue.json(scripts),
@@ -1349,7 +1404,9 @@ def op_group_out(
         yield AssetMaterialization(
             asset_key=context.asset_key_for_output("compose_project_name"),
             metadata={
-                "__".join(context.asset_key_for_output("compose_project_name").path): MetadataValue.path(compose_project_name),
+                "__".join(
+                    context.asset_key_for_output("compose_project_name").path
+                ): MetadataValue.path(compose_project_name),
             },
         )
 
@@ -1372,9 +1429,17 @@ def op_group_out(
         yield AssetMaterialization(
             asset_key=context.asset_key_for_output("cmd_docker_compose_up"),
             metadata={
-                "script_cmd_docker_compose_up": MetadataValue.path(script_cmd_docker_compose_up),
-                "script_cmd_docker_compose_pull_up": MetadataValue.path(script_cmd_docker_compose_pull_up),
-                "script_cmd_docker_compose_down": MetadataValue.path(script_cmd_docker_compose_down),
-                "script_cmd_docker_compose_logs": MetadataValue.path(script_cmd_docker_compose_logs),
+                "script_cmd_docker_compose_up": MetadataValue.path(
+                    script_cmd_docker_compose_up
+                ),
+                "script_cmd_docker_compose_pull_up": MetadataValue.path(
+                    script_cmd_docker_compose_pull_up
+                ),
+                "script_cmd_docker_compose_down": MetadataValue.path(
+                    script_cmd_docker_compose_down
+                ),
+                "script_cmd_docker_compose_logs": MetadataValue.path(
+                    script_cmd_docker_compose_logs
+                ),
             },
         )

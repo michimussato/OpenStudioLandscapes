@@ -1,8 +1,8 @@
 from dagster import (
+    AssetKey,
+    AssetsDefinition,
     In,
     Out,
-    AssetsDefinition,
-    AssetKey,
 )
 
 from OpenStudioLandscapes.engine.base.ops import factory_group_in
@@ -10,11 +10,11 @@ from OpenStudioLandscapes.engine.base.ops import factory_group_in
 
 # get_base_in ?
 def get_group_in(
-        ASSET_HEADER: dict,
-        ASSET_HEADER_PARENT: dict,
-        # Todo:
-        #  - [ ] To accept an input_name here is not very elegant
-        input_name: str = "group_out",
+    ASSET_HEADER: dict,
+    ASSET_HEADER_PARENT: dict,
+    # Todo:
+    #  - [ ] To accept an input_name here is not very elegant
+    input_name: str = "group_out",
 ) -> AssetsDefinition:
 
     group_in_op = factory_group_in(

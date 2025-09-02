@@ -1,7 +1,7 @@
-import zipfile
 import pathlib
+import zipfile
 from pathlib import Path
-from typing import Generator, Any
+from typing import Any, Generator
 
 from dagster import (
     AssetExecutionContext,
@@ -26,8 +26,7 @@ from OpenStudioLandscapes.engine.enums import *
     },
     deps=[
         AssetKey([*ASSET_HEADER_LANDSCAPE_MAP["key_prefix"], "landscape_map"]),
-    ]
-
+    ],
 )
 def distributable(
     context: AssetExecutionContext,

@@ -14,7 +14,7 @@ __all__ = [
     "DOCKER_PROGRESS",
 ]
 
-from typing import Generator, MutableMapping, Any
+from typing import Any, Generator, MutableMapping
 
 from dagster import (
     AssetExecutionContext,
@@ -25,8 +25,9 @@ from dagster import (
 )
 
 from OpenStudioLandscapes.engine.enums import *
-from OpenStudioLandscapes.engine.features import FEATURES  # used in OpenStudioLandscapes.engine.discovery.discovery
-
+from OpenStudioLandscapes.engine.features import (  # used in OpenStudioLandscapes.engine.discovery.discovery
+    FEATURES,
+)
 
 DOCKER_PROGRESS = [
     "auto",
@@ -43,25 +44,31 @@ DOCKER_USE_CACHE_BASE = DOCKER_USE_CACHE_GLOBAL or False
 PREFIX_COMPOSE_SCOPE = "ComposeScope"
 
 
-from OpenStudioLandscapes.engine.compose_scopes.default import constants as constants_compose
+from OpenStudioLandscapes.engine.compose_scopes.default import (
+    constants as constants_compose,
+)
 
-GROUP_COMPOSE= constants_compose.GROUP
+GROUP_COMPOSE = constants_compose.GROUP
 KEY_COMPOSE = constants_compose.KEY
 ASSET_HEADER_COMPOSE = constants_compose.ASSET_HEADER
 ENVIRONMENT_COMPOSE = constants_compose.ENVIRONMENT
 
 
-from OpenStudioLandscapes.engine.compose_scopes.license_server import constants as constants_compose_license_server
+from OpenStudioLandscapes.engine.compose_scopes.license_server import (
+    constants as constants_compose_license_server,
+)
 
-GROUP_COMPOSE_LICENSE_SERVER= constants_compose_license_server.GROUP
+GROUP_COMPOSE_LICENSE_SERVER = constants_compose_license_server.GROUP
 KEY_COMPOSE_LICENSE_SERVER = constants_compose_license_server.KEY
 ASSET_HEADER_COMPOSE_LICENSE_SERVER = constants_compose_license_server.ASSET_HEADER
 ENVIRONMENT_COMPOSE_LICENSE_SERVER = constants_compose_license_server.ENVIRONMENT
 
 
-from OpenStudioLandscapes.engine.compose_scopes.worker import constants as constants_compose_worker
+from OpenStudioLandscapes.engine.compose_scopes.worker import (
+    constants as constants_compose_worker,
+)
 
-GROUP_COMPOSE_WORKER= constants_compose_worker.GROUP
+GROUP_COMPOSE_WORKER = constants_compose_worker.GROUP
 KEY_COMPOSE_WORKER = constants_compose_worker.KEY
 ASSET_HEADER_COMPOSE_WORKER = constants_compose_worker.ASSET_HEADER
 ENVIRONMENT_COMPOSE_WORKER = constants_compose_worker.ENVIRONMENT

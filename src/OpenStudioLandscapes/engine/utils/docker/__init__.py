@@ -4,10 +4,10 @@ __all__ = [
     "docker_process_cmds",
 ]
 
-import shutil
 import pathlib
+import shutil
 import subprocess
-from typing import Generator, MutableMapping, List
+from typing import Generator, List, MutableMapping
 
 from dagster import AssetExecutionContext
 
@@ -19,11 +19,11 @@ class OpenStudioLandscapesDockerException(Exception):
 
 
 def docker_build_cmd(
-        context: AssetExecutionContext,
-        docker_config_json: pathlib.Path,
-        docker_file: pathlib.Path,
-        tags_local: list[str],
-        tags_full: list[str],
+    context: AssetExecutionContext,
+    docker_config_json: pathlib.Path,
+    docker_file: pathlib.Path,
+    tags_local: list[str],
+    tags_full: list[str],
 ) -> list:
 
     # with buildx, the target command could look like:
@@ -39,11 +39,14 @@ def docker_build_cmd(
     cmd_build = [
         shutil.which("docker"),
         "--debug",
-        "--config", docker_config_json.as_posix(),
+        "--config",
+        docker_config_json.as_posix(),
         "build",
-        "--progress", "plain",
+        "--progress",
+        "plain",
         "--pull",
-        "--file", docker_file.as_posix(),
+        "--file",
+        docker_file.as_posix(),
         "--no-cache",
         # https://stackoverflow.com/a/11869360
         *[i(tag) for tag in tags_local for i in (lambda x: "--tag", lambda x: tag)],
@@ -58,9 +61,9 @@ def docker_build_cmd(
 
 
 def docker_push_cmd(
-        context: AssetExecutionContext,
-        docker_config_json: pathlib.Path,
-        tags_full: list[str],
+    context: AssetExecutionContext,
+    docker_config_json: pathlib.Path,
+    tags_full: list[str],
 ) -> list[list[str]]:
 
     push_cmds = []
@@ -69,7 +72,8 @@ def docker_push_cmd(
 
         cmd_push = [
             shutil.which("docker"),
-            "--config", docker_config_json.as_posix(),
+            "--config",
+            docker_config_json.as_posix(),
             "push",
             tag,
         ]
@@ -83,8 +87,8 @@ def docker_push_cmd(
 
 
 def docker_process_cmds(
-        context: AssetExecutionContext,
-        cmds: list[str],
+    context: AssetExecutionContext,
+    cmds: list[str],
 ) -> Generator[MutableMapping[str, List[str]], None, None]:
 
     for cmd in cmds:

@@ -49,7 +49,7 @@ nox --session harbor_prepare
 ##### Clear (Reset)
 
 > [!CAUTION]
-> This removes all data and configuration associated with 
+> This removes all data and configuration associated with
 > your local Harbor installation. It effectively performs
 > `sudo git clean -x --force` operation.
 

@@ -3,10 +3,9 @@ import json
 import pathlib
 import shutil
 import textwrap
-
 import time
 import urllib.parse
-from typing import Generator, MutableMapping, List
+from typing import Generator, List, MutableMapping
 
 from dagster import (
     AssetExecutionContext,
@@ -18,8 +17,8 @@ from dagster import (
     asset,
 )
 
-from OpenStudioLandscapes.engine.enums import DockerConfig, DockerRepositoryType
 from OpenStudioLandscapes.engine.constants import *
+from OpenStudioLandscapes.engine.enums import DockerConfig, DockerRepositoryType
 from OpenStudioLandscapes.engine.utils import *
 from OpenStudioLandscapes.engine.utils.docker import *
 
@@ -105,10 +104,18 @@ def apt_packages(
     **ASSET_HEADER_BASE,
     ins={
         "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
-        "docker_config": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "DOCKER_CONFIG"])),
-        "docker_config_json": AssetIn(AssetKey([*ASSET_HEADER_BASE["key_prefix"], "docker_config_json"])),
-        "apt_packages": AssetIn(AssetKey([*ASSET_HEADER_BASE["key_prefix"], "apt_packages"])),
-        "pip_packages": AssetIn(AssetKey([*ASSET_HEADER_BASE["key_prefix"], "pip_packages"])),
+        "docker_config": AssetIn(
+            AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "DOCKER_CONFIG"])
+        ),
+        "docker_config_json": AssetIn(
+            AssetKey([*ASSET_HEADER_BASE["key_prefix"], "docker_config_json"])
+        ),
+        "apt_packages": AssetIn(
+            AssetKey([*ASSET_HEADER_BASE["key_prefix"], "apt_packages"])
+        ),
+        "pip_packages": AssetIn(
+            AssetKey([*ASSET_HEADER_BASE["key_prefix"], "pip_packages"])
+        ),
     },
 )
 def build_docker_image(
@@ -145,7 +152,7 @@ def build_docker_image(
     )
 
     tags = [
-        env.get('LANDSCAPE', str(time.time())),
+        env.get("LANDSCAPE", str(time.time())),
     ]
 
     apt_install_str_base: str = get_apt_install_str(
@@ -289,10 +296,18 @@ def build_docker_image(
     },
     ins={
         "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
-        "constants_base": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "constants_base"])),
-        "docker_config": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "DOCKER_CONFIG"])),
-        "docker_config_json": AssetIn(AssetKey([*ASSET_HEADER_BASE["key_prefix"], "docker_config_json"])),
-        "features": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "features"])),
+        "constants_base": AssetIn(
+            AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "constants_base"])
+        ),
+        "docker_config": AssetIn(
+            AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "DOCKER_CONFIG"])
+        ),
+        "docker_config_json": AssetIn(
+            AssetKey([*ASSET_HEADER_BASE["key_prefix"], "docker_config_json"])
+        ),
+        "features": AssetIn(
+            AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "features"])
+        ),
         "build_docker_image": AssetIn(
             AssetKey([*ASSET_HEADER_BASE["key_prefix"], "build_docker_image"]),
         ),
@@ -336,12 +351,13 @@ def group_out_base(
     )
 
 
-
 @asset(
     **ASSET_HEADER_BASE,
     ins={
         "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
-        "docker_config": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "DOCKER_CONFIG"])),
+        "docker_config": AssetIn(
+            AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "DOCKER_CONFIG"])
+        ),
         # "constants_base": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "constants_base"])),
         # "docker_config": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "DOCKER_CONFIG"])),
         # "features": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "features"])),
@@ -358,7 +374,9 @@ def docker_config_json(
 
     context.log.info(f"{dir(docker_config.value) = }")
 
-    login_required: bool = docker_config.value["docker_repository_type"] == DockerRepositoryType.PRIVATE
+    login_required: bool = (
+        docker_config.value["docker_repository_type"] == DockerRepositoryType.PRIVATE
+    )
     context.log.debug(f"{login_required = }")
 
     dockercfg_path = pathlib.Path(
@@ -386,9 +404,7 @@ def docker_config_json(
     credentials_bytes = credentials_str.encode("utf-8")
     credentials_encoded = base64.b64encode(credentials_bytes).decode("ascii")
 
-    auths[f"{url_}:{port_}"] = {
-        "auth": credentials_encoded
-    }
+    auths[f"{url_}:{port_}"] = {"auth": credentials_encoded}
 
     # docker client does not pick up the dockercfg_path
     # if the file is not present
@@ -410,7 +426,9 @@ def docker_config_json(
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.path(dockercfg_path.parent),
+            "__".join(context.asset_key.path): MetadataValue.path(
+                dockercfg_path.parent
+            ),
             "config_json": MetadataValue.path(dockercfg_path),
             "docker_auth": MetadataValue.json(docker_auth),
         },

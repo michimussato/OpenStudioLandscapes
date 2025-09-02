@@ -16,7 +16,7 @@
 # Harbor
 
 Harbor is a local Docker image registry and an integral
-part of the OpenStudioLandscapes ecosystem. 
+part of the OpenStudioLandscapes ecosystem.
 
 OpenStudioLandscapes creates Docker images and pulls/pushes them
 (by default) from/to this local instance of Harbor. Harbor,
@@ -33,7 +33,7 @@ sequenceDiagram
     participant docker as hub.docker.com
     participant local_deployment as Local Deployment
     %%participant 3rdparties as 3rd Parties
-    
+
     openstudiolandscapes->>harbor: Push
     harbor->>openstudiolandscapes: Pull
     harbor->>docker: Push
@@ -63,7 +63,7 @@ Go to the web UI of your Harbor instance:
 ### Registry (Replication Endpoint)
 
 Go to _Administration/Registries_ and set up
-your ([hub.docker.com](https://hub.docker.com/) in this example) 
+your ([hub.docker.com](https://hub.docker.com/) in this example)
 [Harbor Replication Endpoint(s)](https://goharbor.io/docs/1.10/administration/configuring-replication/create-replication-endpoints/):
 
 ![2025-07-27_11-16.png](../../media/images/2025-07-27_11-16.png)
@@ -108,4 +108,3 @@ Illegal Namespace: `michimussato/openstudiolandscapes`
 
 Legal Namespace: `michimussato`
 With Flattening: `Flatten All Levels`
-

@@ -1,17 +1,15 @@
 # import pathlib
 
-from dagster import (
-    # In,
-    # Out,
-    AssetsDefinition,
+from dagster import (  # In,; Out,
     AssetKey,
+    AssetsDefinition,
 )
 
 from OpenStudioLandscapes.engine.base.ops import op_group_out
 
 
 def get_group_out(
-        ASSET_HEADER: dict,
+    ASSET_HEADER: dict,
 ) -> AssetsDefinition:
 
     # group_out_op = factory_group_out(
@@ -45,7 +43,9 @@ def get_group_out(
             "compose": AssetKey([*ASSET_HEADER["key_prefix"], "compose"]),
             "env": AssetKey([*ASSET_HEADER["key_prefix"], "env"]),
             "docker_config": AssetKey([*ASSET_HEADER["key_prefix"], "docker_config"]),
-            "docker_config_json": AssetKey([*ASSET_HEADER["key_prefix"], "docker_config_json"]),
+            "docker_config_json": AssetKey(
+                [*ASSET_HEADER["key_prefix"], "docker_config_json"]
+            ),
             "cmd_extend": AssetKey([*ASSET_HEADER["key_prefix"], "cmd_extend"]),
             "cmd_append": AssetKey([*ASSET_HEADER["key_prefix"], "cmd_append"]),
         },

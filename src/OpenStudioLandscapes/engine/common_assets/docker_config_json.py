@@ -1,13 +1,13 @@
 from dagster import (
-    AssetsDefinition,
     AssetKey,
+    AssetsDefinition,
 )
 
 from OpenStudioLandscapes.engine.base.ops import op_docker_config_json
 
 
 def get_docker_config_json(
-        ASSET_HEADER: dict,
+    ASSET_HEADER: dict,
 ) -> AssetsDefinition:
 
     docker_config_json = AssetsDefinition.from_op(
@@ -18,7 +18,9 @@ def get_docker_config_json(
             "group_in": AssetKey([*ASSET_HEADER["key_prefix"], "group_in"]),
         },
         keys_by_output_name={
-            "docker_config_json": AssetKey([*ASSET_HEADER["key_prefix"], "docker_config_json"]),
+            "docker_config_json": AssetKey(
+                [*ASSET_HEADER["key_prefix"], "docker_config_json"]
+            ),
         },
     )
 

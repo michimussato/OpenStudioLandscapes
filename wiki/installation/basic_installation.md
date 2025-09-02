@@ -34,24 +34,24 @@
 - [Harbor](https://goharbor.io/)
 
 > [!NOTE]
-> Additional requirements may vary based on the flavor of 
+> Additional requirements may vary based on the flavor of
 > OpenStudioLandscapes.
 
 > [!TIP]
 > The installation of the requirements varies based on your Linux distro.
-> 
+>
 > As an example that might work for most of us, I'm including the setup
-> routine for Ubuntu (Server or Desktop Editions based on your preference), 
+> routine for Ubuntu (Server or Desktop Editions based on your preference),
 > however, OpenStudioLandscapes has been successfully set up on an Arch based
-> distro already (my personal preference: 
+> distro already (my personal preference:
 > [Manjaro Linux](https://manjaro.org/products/download/x86)):
-> 
+>
 > - Ubuntu Jammy 22.04 (LTS) (Recommended)
 > - Ubuntu Noble 24.04 (LTS)
-> 
-> This guide assumes that Ubuntu Jammy 22.04 (LTS) has been installed using 
+>
+> This guide assumes that Ubuntu Jammy 22.04 (LTS) has been installed using
 > one of the following variants:
-> 
+>
 > | Image   | Installer Options                                                                  |
 > |---------|------------------------------------------------------------------------------------|
 > | Desktop | ![Install_UbuntuDesktop2204.png](../../media/images/Install_UbuntuDesktop2204.png) |
@@ -193,8 +193,8 @@ exit 0
 ```
 
 ```shell
-for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do 
-  sudo apt-get remove $pkg; 
+for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do
+  sudo apt-get remove $pkg;
 done
 ```
 
@@ -236,8 +236,8 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin 
 sudo groupadd docker
 ```
 
-It is advisable in order for the Docker image to work properly 
-on different machines to set the `GID` for group `docker` to 
+It is advisable in order for the Docker image to work properly
+on different machines to set the `GID` for group `docker` to
 a specific `GID`:
 
 ```shell
@@ -283,7 +283,7 @@ sudo mkdir -p ${LANDSCAPES_DIR}/.landscapes && sudo chmod -R a+rw ${LANDSCAPES_D
 #
 # ln -sfn ${LANDSCAPES_DIR}/.landscapes docker/.landscapes
 ```
- 
+
 ## Harbor
 
 > [!IMPORTANT]
