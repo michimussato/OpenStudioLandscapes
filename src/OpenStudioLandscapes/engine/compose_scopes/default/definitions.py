@@ -9,6 +9,7 @@ import OpenStudioLandscapes.engine.compose_scopes.default.constants
 assets = load_assets_from_modules(
     modules=[OpenStudioLandscapes.engine.compose_scopes.default.assets]
 )
+
 if bool(assets):
     constants = load_assets_from_modules(
         [OpenStudioLandscapes.engine.compose_scopes.default.constants]
