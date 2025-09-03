@@ -1,4 +1,5 @@
 import json
+import shlex
 import shutil
 import os
 import nox
@@ -81,13 +82,13 @@ SESSION_RUN_SILENT = False
 # or
 # nox --tag [TAG] [TAG] [...]
 nox.options.sessions = [
-    # "readme",  # not applicable for OpenStudioLandscapes.engine
     "sbom",
-    "coverage",
     "lint",
-    "testing",
-    # "docs_live",
-    # "release",
+    "readme",
+    # Todo:
+    #  - "coverage",
+    #  - "testing",
+    #  - "release",
 ]
 
 BATCH_EXCLUDED = []
@@ -96,13 +97,29 @@ BATCH_EXCLUDED = []
 # dagster==1.9.11 needs >=3.9 but 3.13 does not seem to be working
 VERSIONS = [
     "3.11",
-    "3.12",
+    # "3.12",
     # "3.13",
 ]
 
 VERSIONS_README = VERSIONS[0]
 
 ENV = {}
+
+
+#######################################################################################################################
+# Parameterized Features
+engine_dir: pathlib.Path = pathlib.Path(__file__).parent
+features_dir: pathlib.Path = engine_dir / ".features"
+FEATURES_PARAMETERIZED: list[pathlib.Path] = []
+
+for dir_ in features_dir.iterdir():
+    # dir_ is always the full path
+    if any(dir_.name == i for i in BATCH_EXCLUDED):
+        logging.info(f"Skipped: {dir_ = }")
+        continue
+    if dir_.is_dir():
+        if pathlib.Path(dir_ / ".git").exists():
+            FEATURES_PARAMETERIZED.append(dir_.relative_to(engine_dir.parent))
 
 
 #######################################################################################################################
@@ -289,47 +306,47 @@ def clone_features(session):
 #         )
 
 
-# # readme_features
-@nox.session(python=None, tags=["readme_features"])
-def readme_features(session):
-    """
-    Create README.md for all listed (REPOS_FEATURE) Features.
-
-    Scope:
-    - [ ] Engine
-    - [x] Features
-    """
-    # Ex:
-    # nox --session readme_all
-    # nox --tags readme_all
-
-    features_dir = pathlib.Path.cwd() / ".features"
-
-    for dir_ in features_dir.iterdir():
-        # dir_ is always the full path
-        logging.info("Creating README for %s" % dir_.name)
-        if any(dir_.name == i for i in BATCH_EXCLUDED):
-            logging.info(f"Skipped: {dir_ = }")
-            continue
-        if dir_.is_dir():
-            if pathlib.Path(dir_ / ".git").exists():
-                with session.chdir(dir_):
-
-                    session.install(
-                        "--no-cache-dir",
-                        "-e",
-                        ".[nox]",
-                        silent=SESSION_INSTALL_SILENT,
-                    )
-                    session.run(
-                        shutil.which("nox"),
-                        "-v",
-                        "--add-timestamp",
-                        "--session",
-                        "readme",
-                        external=True,
-                        silent=SESSION_RUN_SILENT,
-                    )
+# # # readme_features
+# @nox.session(python=None, tags=["readme_features"])
+# def readme_features(session):
+#     """
+#     Create README.md for all listed (REPOS_FEATURE) Features.
+#
+#     Scope:
+#     - [ ] Engine
+#     - [x] Features
+#     """
+#     # Ex:
+#     # nox --session readme_all
+#     # nox --tags readme_all
+#
+#     features_dir = pathlib.Path.cwd() / ".features"
+#
+#     for dir_ in features_dir.iterdir():
+#         # dir_ is always the full path
+#         logging.info("Creating README for %s" % dir_.name)
+#         if any(dir_.name == i for i in BATCH_EXCLUDED):
+#             logging.info(f"Skipped: {dir_ = }")
+#             continue
+#         if dir_.is_dir():
+#             if pathlib.Path(dir_ / ".git").exists():
+#                 with session.chdir(dir_):
+#
+#                     session.install(
+#                         "--no-cache-dir",
+#                         "-e",
+#                         ".[nox]",
+#                         silent=SESSION_INSTALL_SILENT,
+#                     )
+#                     session.run(
+#                         shutil.which("nox"),
+#                         "-v",
+#                         "--add-timestamp",
+#                         "--session",
+#                         "readme",
+#                         external=True,
+#                         silent=SESSION_RUN_SILENT,
+#                     )
 
 
 # # stash_features
@@ -2278,13 +2295,21 @@ def dagster_mysql(session):
 #######################################################################################################################
 # SBOM
 @nox.session(python=VERSIONS, tags=["sbom"])
-def sbom(session):
+@nox.parametrize(
+    "working_directory",
+    # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
+    [
+        nox.param(engine_dir.name, id=engine_dir.name),
+        *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED],
+    ],
+)
+def sbom(session, working_directory):
     """
     Runs Software Bill of Materials (SBOM).
 
     Scope:
     - [x] Engine
-    - [x] Features
+    - [ ]
     """
     # Ex:
     # nox --session sbom
@@ -2294,45 +2319,51 @@ def sbom(session):
 
     sudo = False
 
-    session.install(
-        "--no-cache-dir",
-        "-e",
-        ".[sbom]",
-        silent=SESSION_INSTALL_SILENT,
-    )
+    with session.chdir(engine_dir.parent / working_directory):
 
-    target_dir = pathlib.Path(__file__).parent / ".sbom"
-    target_dir.mkdir(parents=True, exist_ok=True)
+        session.log(
+            f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
+        )
 
-    session.run(
-        "cyclonedx-py",
-        "environment",
-        "--output-format",
-        "JSON",
-        "--output-file",
-        target_dir / f"cyclonedx-py.{session.name}.json",
-        env=ENV,
-        # external=True,
-        silent=SESSION_RUN_SILENT,
-    )
+        session.install(
+            "--no-cache-dir",
+            "-e",
+            ".[sbom]",
+            silent=SESSION_INSTALL_SILENT,
+        )
 
-    session.run(
-        "bash",
-        "-c",
-        f"pipdeptree --mermaid > {target_dir}/pipdeptree.{session.name}.mermaid",
-        env=ENV,
-        external=True,
-        silent=SESSION_RUN_SILENT,
-    )
+        sbom_dir = pathlib.Path.cwd() / ".sbom"
+        sbom_dir.mkdir(parents=True, exist_ok=True)
 
-    session.run(
-        "bash",
-        "-c",
-        f"pipdeptree --graph-output dot > {target_dir}/pipdeptree.{session.name}.dot",
-        env=ENV,
-        external=True,
-        silent=SESSION_RUN_SILENT,
-    )
+        session.run(
+            "cyclonedx-py",
+            "environment",
+            "--output-format",
+            "JSON",
+            "--output-file",
+            sbom_dir / f"cyclonedx-py.{session.python}.json",
+            env=ENV,
+            # external=True,
+            silent=SESSION_RUN_SILENT,
+        )
+
+        session.run(
+            "bash",
+            "-c",
+            f"pipdeptree --mermaid > {sbom_dir}/pipdeptree.{session.python}.mermaid",
+            env=ENV,
+            external=True,
+            silent=SESSION_RUN_SILENT,
+        )
+
+        session.run(
+            "bash",
+            "-c",
+            f"pipdeptree --graph-output dot > {sbom_dir}/pipdeptree.{session.python}.dot",
+            env=ENV,
+            external=True,
+            silent=SESSION_RUN_SILENT,
+        )
 
 
 #######################################################################################################################
@@ -2399,13 +2430,21 @@ def coverage(session):
 #######################################################################################################################
 # Lint
 @nox.session(python=VERSIONS, tags=["lint"])
-def lint(session):
+@nox.parametrize(
+    "working_directory",
+    # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
+    [
+        nox.param(engine_dir.name, id=engine_dir.name),
+        *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED],
+    ],
+)
+def lint(session, working_directory):
     """
     Runs linters and fixers
 
     Scope:
     - [x] Engine
-    - [x] Features
+    - [ ] Features
     """
     # Ex:
     # nox --session lint
@@ -2413,63 +2452,69 @@ def lint(session):
 
     sudo = False
 
-    session.install(
-        "--no-cache-dir",
-        "-e",
-        ".[lint]",
-        silent=SESSION_INSTALL_SILENT,
-    )
+    with session.chdir(engine_dir.parent / working_directory):
 
-    # exclude = [
-    #     # Add one line per exclusion:
-    #     # "--extend-exclude '^.ext'",
-    #     "--extend-exclude", "'^.svg'",
-    # ]
+        session.log(
+            f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
+        )
 
-    # session.run("black", "src", *exclude, *session.posargs)
-    session.run(
-        "black",
-        "src",
-        *session.posargs,
-        # external=True,
-        silent=SESSION_RUN_SILENT,
-    )
-    session.run(
-        "isort",
-        "--profile",
-        "black",
-        "src",
-        *session.posargs,
-        # external=True,
-        silent=SESSION_RUN_SILENT,
-    )
+        session.install(
+            "--no-cache-dir",
+            "-e",
+            ".[lint]",
+            silent=SESSION_INSTALL_SILENT,
+        )
 
-    if pathlib.PosixPath(".pre-commit-config.yaml").absolute().exists():
+        # exclude = [
+        #     # Add one line per exclusion:
+        #     # "--extend-exclude '^.ext'",
+        #     "--extend-exclude", "'^.svg'",
+        # ]
+
+        # session.run("black", "src", *exclude, *session.posargs)
         session.run(
-            "pre-commit",
-            "run",
-            "--all-files",
+            "black",
+            "src",
+            *session.posargs,
+            # external=True,
+            silent=SESSION_RUN_SILENT,
+        )
+        session.run(
+            "isort",
+            "--profile",
+            "black",
+            "src",
             *session.posargs,
             # external=True,
             silent=SESSION_RUN_SILENT,
         )
 
-    # # nox > Command pylint src failed with exit code 30
-    # # nox > Session lint-3.12 failed.
-    # session.run("pylint", "src")
-    # # https://github.com/actions/starter-workflows/issues/2303#issuecomment-1973743119
-    session.run(
-        "pylint",
-        "--exit-zero",
-        "src",
-        # external=True,
-        silent=SESSION_RUN_SILENT,
-    )
-    # session.run("pylint", "--disable=C0114,C0115,C0116", "--exit-zero", "src")
-    # https://stackoverflow.com/questions/7877522/how-do-i-disable-missing-docstring-warnings-at-a-file-level-in-pylint
-    # C0114 (missing-module-docstring)
-    # C0115 (missing-class-docstring)
-    # C0116 (missing-function-docstring)
+        if pathlib.PosixPath(".pre-commit-config.yaml").absolute().exists():
+            session.run(
+                "pre-commit",
+                "run",
+                "--all-files",
+                *session.posargs,
+                # external=True,
+                silent=SESSION_RUN_SILENT,
+            )
+
+        # # nox > Command pylint src failed with exit code 30
+        # # nox > Session lint-3.12 failed.
+        # session.run("pylint", "src")
+        # # https://github.com/actions/starter-workflows/issues/2303#issuecomment-1973743119
+        session.run(
+            "pylint",
+            "--exit-zero",
+            "src",
+            # external=True,
+            silent=SESSION_RUN_SILENT,
+        )
+        # session.run("pylint", "--disable=C0114,C0115,C0116", "--exit-zero", "src")
+        # https://stackoverflow.com/questions/7877522/how-do-i-disable-missing-docstring-warnings-at-a-file-level-in-pylint
+        # C0114 (missing-module-docstring)
+        # C0115 (missing-class-docstring)
+        # C0116 (missing-function-docstring)
 
 
 #######################################################################################################################
@@ -2514,7 +2559,15 @@ def testing(session):
 #######################################################################################################################
 # Readme
 @nox.session(python=VERSIONS_README, tags=["readme"])
-def readme(session):
+@nox.parametrize(
+    "working_directory",
+    # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
+    [
+        # nox.param(engine_dir.name, id=engine_dir.name),  # readme is not built for OpenStudioLandscapes.engine
+        *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED]
+    ],
+)
+def readme(session, working_directory):
     """
     Generate dynamically created README.md file for OpenStudioLandscapes modules.
 
@@ -2528,20 +2581,26 @@ def readme(session):
 
     sudo = False
 
-    session.install(
-        "--no-cache-dir",
-        "-e",
-        ".[readme]",
-        silent=SESSION_INSTALL_SILENT,
-    )
+    with session.chdir(engine_dir.parent / working_directory):
 
-    session.run(
-        "generate-readme",
-        "--versions",
-        *VERSIONS,
-        # external=True,
-        silent=SESSION_RUN_SILENT,
-    )
+        session.log(
+            f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
+        )
+
+        session.install(
+            "--no-cache-dir",
+            "-e",
+            ".[readme]",
+            silent=SESSION_INSTALL_SILENT,
+        )
+
+        session.run(
+            "generate-readme",
+            "--versions",
+            *VERSIONS,
+            # external=True,
+            silent=SESSION_RUN_SILENT,
+        )
 
 
 #######################################################################################################################
@@ -2595,6 +2654,201 @@ def release(session):
     #     pypi_pass,
     #     external=True,
     # )
+
+
+#######################################################################################################################
+
+
+#######################################################################################################################
+# Tag
+@nox.session(python=None, tags=["tag_rc"])
+@nox.parametrize(
+    "working_directory",
+    # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
+    [
+        nox.param(engine_dir.name, id=engine_dir.name),
+        *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED],
+    ],
+)
+def tag_rc(session, working_directory):
+    """
+    Git tag rc OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_rc -- v1.2.0-rc1`).
+
+    Scope:
+    - [x] Engine
+    - [x] Features
+    """
+    # Ex:
+    # nox --session tag_rc -- v1.2.0-rc1
+    # nox --tags tag_rc -- v1.2.0-rc1
+
+    # sudo = False
+
+    cmds = []
+
+    tag = session.posargs
+
+    session.log(f"Args: {tag}")
+
+    if len(tag) != 1:
+        msg = "Invalid tag length. Tag argument must be exactly 1 argument."
+        session.log(msg)
+        raise ValueError(msg)
+
+    tag = tag[0]
+
+    cmd_fetch = [
+        shutil.which("git"),
+        "fetch",
+        "--tags",
+        "--force",
+    ]
+    cmds.append(cmd_fetch)
+
+    cmd_annotate = [
+        shutil.which("git"),
+        "tag",
+        "--annotate",
+        tag,
+        "--message",
+        f"Release Candidate Version {tag}",
+        "--force",
+    ]
+    cmds.append(cmd_annotate)
+
+    cmd_push = [
+        shutil.which("git"),
+        "push",
+        "--tags",
+        "--force",
+    ]
+    cmds.append(cmd_push)
+
+    # if sudo:
+    #     cmd.insert(0, shutil.which("sudo"))
+    #     cmd.insert(1, "--reset-timestamp")
+    #     # cmd.insert(2, "--stdin")
+
+    with session.chdir(engine_dir.parent / working_directory):
+
+        session.log(
+            f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
+        )
+
+        for cmd in cmds:
+
+            session.log(
+                f"Running Command:\n\t{shlex.join(cmd)}"
+            )
+
+            # session.run(
+            #     *cmd,
+            #     env=ENV,
+            #     external=True,
+            #     silent=SESSION_RUN_SILENT,
+            # )
+
+
+@nox.session(python=None, tags=["tag_main"])
+@nox.parametrize(
+    "working_directory",
+    # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
+    [
+        nox.param(engine_dir.name, id=engine_dir.name),
+        *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED],
+    ],
+)
+def tag_main(session, working_directory):
+    """
+    Git tag main OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_main -- v1.2.0`).
+
+    Scope:
+    - [x] Engine
+    - [x] Features
+    """
+    # Ex:
+    # nox --session tag_main -- v1.2.0
+    # nox --tags tag_main -- v1.2.0
+
+    sudo = False
+
+    cmds = []
+
+    tag = session.posargs
+
+    session.log(f"Args: {tag}")
+
+    if len(tag) != 1:
+        msg = "Invalid tag length. Tag argument must be exactly 1 argument."
+        session.log(msg)
+        raise ValueError(msg)
+
+    tag = tag[0]
+
+    cmd_fetch = [
+        shutil.which("git"),
+        "fetch",
+        "--tags",
+        "--force",
+    ]
+    cmds.append(cmd_fetch)
+
+    cmd_annotate = [
+        shutil.which("git"),
+        "tag",
+        "--annotate",
+        tag,
+        "--message",
+        f"Main Release Version {tag}",
+        "--force",
+    ]
+    cmds.append(cmd_annotate)
+
+    cmd_annotate_latest = [
+        shutil.which("git"),
+        "tag",
+        "--annotate",
+        "latest",
+        "--message",
+        f"Latest Release Version (pointing to {tag}",
+        "%s^{}" % tag,
+        "--force",
+    ]
+    cmds.append(cmd_annotate_latest)
+
+    cmd_push = [
+        shutil.which("git"),
+        "push",
+        "--tags",
+        "--force",
+    ]
+    cmds.append(cmd_push)
+
+    # if sudo:
+    #     cmd.insert(0, shutil.which("sudo"))
+    #     cmd.insert(1, "--reset-timestamp")
+    #     # cmd.insert(2, "--stdin")
+
+    with session.chdir(engine_dir.parent / working_directory):
+
+        session.log(
+            f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
+        )
+
+        for cmd in cmds:
+
+            session.log(
+                f"Running Command:\n\t{shlex.join(cmd)}"
+            )
+
+            # session.run(
+            #     *cmd,
+            #     env=ENV,
+            #     external=True,
+            #     silent=SESSION_RUN_SILENT,
+            # )
+
+
 
 
 #######################################################################################################################
