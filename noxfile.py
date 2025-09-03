@@ -2738,9 +2738,7 @@ def tag_rc(session, working_directory):
 
         for cmd in cmds:
 
-            session.log(
-                f"Running Command:\n\t{shlex.join(cmd)}"
-            )
+            session.log(f"Running Command:\n\t{shlex.join(cmd)}")
 
             session.run(
                 *cmd,
@@ -2839,9 +2837,7 @@ def tag_main(session, working_directory):
 
         for cmd in cmds:
 
-            session.log(
-                f"Running Command:\n\t{shlex.join(cmd)}"
-            )
+            session.log(f"Running Command:\n\t{shlex.join(cmd)}")
 
             session.run(
                 *cmd,
@@ -2925,9 +2921,7 @@ def tag_delete(session, working_directory):
 
         for cmd in cmds:
 
-            session.log(
-                f"Running Command:\n\t{shlex.join(cmd)}"
-            )
+            session.log(f"Running Command:\n\t{shlex.join(cmd)}")
 
             session.run(
                 *cmd,
