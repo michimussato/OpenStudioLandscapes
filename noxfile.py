@@ -2673,6 +2673,7 @@ def release(session):
 def tag_rc(session, working_directory):
     """
     Git tag rc OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_rc -- v1.2.0-rc1`).
+    See wiki/guides/release_strategy.md#release-candidate
 
     Scope:
     - [x] Engine
@@ -2761,6 +2762,7 @@ def tag_rc(session, working_directory):
 def tag_main(session, working_directory):
     """
     Git tag main OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_main -- v1.2.0`).
+    See wiki/guides/release_strategy.md#main-release
 
     Scope:
     - [x] Engine
@@ -2847,6 +2849,110 @@ def tag_main(session, working_directory):
                 external=True,
                 silent=SESSION_RUN_SILENT,
             )
+
+
+@nox.session(python=None, tags=["tag_delete"])
+@nox.parametrize(
+    "working_directory",
+    # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
+    [
+        nox.param(engine_dir.name, id=engine_dir.name),
+        *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED],
+    ],
+)
+def tag_delete(session, working_directory):
+    """
+    Git tag delete OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_delete -- v1.2.0-xy`).
+    See wiki/guides/release_strategy.md#delete-tags
+
+    Scope:
+    - [x] Engine
+    - [x] Features
+    """
+    # Ex:
+    # nox --session tag_delete -- v1.2.0
+    # nox --tags tag_delete -- v1.2.0
+
+    sudo = False
+
+    cmds = []
+
+    tag = session.posargs
+
+    session.log(f"Args: {tag}")
+
+    if len(tag) != 1:
+        msg = "Invalid tag length. Tag argument must be exactly 1 argument."
+        session.log(msg)
+        raise ValueError(msg)
+
+    tag = tag[0]
+
+    cmd_fetch = [
+        shutil.which("git"),
+        "fetch",
+        "--tags",
+        "--force",
+    ]
+    cmds.append(cmd_fetch)
+
+    cmd_delete_tag = [
+        shutil.which("git"),
+        "tag",
+        "-d",
+        tag,
+    ]
+    cmds.append(cmd_delete_tag)
+
+    cmd_push = [
+        shutil.which("git"),
+        "push",
+        "origin",
+        f":refs/tags/{tag}",
+    ]
+    cmds.append(cmd_push)
+
+    # if sudo:
+    #     cmd.insert(0, shutil.which("sudo"))
+    #     cmd.insert(1, "--reset-timestamp")
+    #     # cmd.insert(2, "--stdin")
+
+    with session.chdir(engine_dir.parent / working_directory):
+
+        session.log(
+            f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
+        )
+
+        for cmd in cmds:
+
+            session.log(
+                f"Running Command:\n\t{shlex.join(cmd)}"
+            )
+
+            session.run(
+                *cmd,
+                env=ENV,
+                external=True,
+                silent=SESSION_RUN_SILENT,
+            )
+
+
+#######################################################################################################################
+
+
+#######################################################################################################################
+# PR
+# Todo:
+#  - [ ] gh_login
+#        See wiki/guides/release_strategy.md#pull-requests-gh
+#  - [ ] gh_pr_create
+#        See wiki/guides/release_strategy.md#create-pr
+#  - [ ] gh_pr_edit
+#        See wiki/guides/release_strategy.md#edit-pr
+#  - [ ] gh_pr_close
+#        See wiki/guides/release_strategy.md#close-pr
+#  - [ ] gh_pr_merge
+#  - [ ] gh_pr_close
 
 
 #######################################################################################################################
