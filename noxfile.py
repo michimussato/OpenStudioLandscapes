@@ -2741,12 +2741,12 @@ def tag_rc(session, working_directory):
                 f"Running Command:\n\t{shlex.join(cmd)}"
             )
 
-            # session.run(
-            #     *cmd,
-            #     env=ENV,
-            #     external=True,
-            #     silent=SESSION_RUN_SILENT,
-            # )
+            session.run(
+                *cmd,
+                env=ENV,
+                external=True,
+                silent=SESSION_RUN_SILENT,
+            )
 
 
 @nox.session(python=None, tags=["tag_main"])
@@ -2841,14 +2841,12 @@ def tag_main(session, working_directory):
                 f"Running Command:\n\t{shlex.join(cmd)}"
             )
 
-            # session.run(
-            #     *cmd,
-            #     env=ENV,
-            #     external=True,
-            #     silent=SESSION_RUN_SILENT,
-            # )
-
-
+            session.run(
+                *cmd,
+                env=ENV,
+                external=True,
+                silent=SESSION_RUN_SILENT,
+            )
 
 
 #######################################################################################################################

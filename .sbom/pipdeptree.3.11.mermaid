@@ -27,7 +27,7 @@ flowchart TD
     docstring-parser["docstring_parser\n0.17.0"]
     filelock["filelock\n3.19.1"]
     fqdn["fqdn\n1.5.1"]
-    fsspec["fsspec\n2025.7.0"]
+    fsspec["fsspec\n2025.9.0"]
     gitdb["gitdb\n4.0.12"]
     gitpython["GitPython\n3.1.45"]
     graphviz["graphviz\n0.21"]
@@ -53,7 +53,7 @@ flowchart TD
     packageurl-python["packageurl-python\n0.17.5"]
     packaging["packaging\n25.0"]
     pip-requirements-parser["pip-requirements-parser\n32.0.1"]
-    pip["pip\n25.0.1"]
+    pip["pip\n25.1.1"]
     pipdeptree["pipdeptree\n2.28.0"]
     platformdirs["platformdirs\n4.4.0"]
     protobuf["protobuf\n5.29.5"]
@@ -116,7 +116,6 @@ flowchart TD
     dagster -- "<3" --> tomli
     dagster -- "<5" --> tqdm
     dagster -- "==1.9.11" --> dagster-pipes
-    dagster -- ">=0.2.0" --> universal-pathlib
     dagster -- ">=0.8.3,<6" --> watchdog
     dagster -- ">=1.0" --> toposort
     dagster -- ">=1.0,<3" --> sqlalchemy
@@ -142,6 +141,7 @@ flowchart TD
     dagster -- "any" --> six
     dagster -- "any" --> structlog
     dagster -- "any" --> tabulate
+    dagster -- "any" --> universal-pathlib
     dagster-postgres -- "==1.9.11" --> dagster
     dagster-postgres -- "any" --> psycopg2-binary
     dependency-groups -- "any" --> packaging

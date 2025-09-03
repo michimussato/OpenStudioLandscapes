@@ -211,7 +211,7 @@
       "version": "0.0.0"
     },
     {
-      "bom-ref": "BomRef.23819799537801523.45895939690939636",
+      "bom-ref": "BomRef.4693237347561534.7233046208042748",
       "description": "A Toolkit to create dynamic Animation and VFX studio environments for robust automation and pipelines.",
       "externalReferences": [
         {
@@ -1376,7 +1376,7 @@
       "version": "1.5.1"
     },
     {
-      "bom-ref": "fsspec==2025.7.0",
+      "bom-ref": "fsspec==2025.9.0",
       "description": "File-system specification",
       "externalReferences": [
         {
@@ -1399,14 +1399,14 @@
         {
           "license": {
             "acknowledgement": "declared",
-            "name": "License :: OSI Approved :: BSD License"
+            "id": "BSD-3-Clause"
           }
         }
       ],
       "name": "fsspec",
-      "purl": "pkg:pypi/fsspec@2025.7.0",
+      "purl": "pkg:pypi/fsspec@2025.9.0",
       "type": "library",
-      "version": "2025.7.0"
+      "version": "2025.9.0"
     },
     {
       "bom-ref": "gitdb==4.0.12",
@@ -3647,7 +3647,7 @@
         "docker==7.1.0",
         "docstring_parser==0.17.0",
         "filelock==3.19.1",
-        "fsspec==2025.7.0",
+        "fsspec==2025.9.0",
         "grpcio-health-checking==1.71.2",
         "grpcio==1.74.0",
         "packaging==25.0",
@@ -3718,7 +3718,7 @@
         "tqdm==4.67.1",
         "urllib3==2.5.0"
       ],
-      "ref": "fsspec==2025.7.0"
+      "ref": "fsspec==2025.9.0"
     },
     {
       "dependsOn": [
@@ -4018,7 +4018,7 @@
     },
     {
       "dependsOn": [
-        "fsspec==2025.7.0",
+        "fsspec==2025.9.0",
         "packaging==25.0",
         "pydantic==2.11.7",
         "requests==2.32.5",
@@ -4054,7 +4054,7 @@
     }
   ],
   "metadata": {
-    "timestamp": "2025-09-02T18:59:44.767875+00:00",
+    "timestamp": "2025-09-03T08:46:08.100823+00:00",
     "tools": {
       "components": [
         {
@@ -4158,7 +4158,7 @@
       ]
     }
   },
-  "serialNumber": "urn:uuid:44614266-57ee-4125-9f97-57fb91ca886a",
+  "serialNumber": "urn:uuid:f7c6e5cd-bbc2-45af-8c63-ec3575a24187",
   "version": 1,
   "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
   "bomFormat": "CycloneDX",
