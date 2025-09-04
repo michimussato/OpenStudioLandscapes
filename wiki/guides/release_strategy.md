@@ -36,8 +36,7 @@ Based on [Semantic Versioning]()
 ```shell
 echo "Version Tag (Release Candidate):"
 echo "v<major>.<minor>.<patch>-rc<increment>"
-echo -n "v"
-read TAG_VERSION
+read -p "v" TAG_VERSION
 TAG_VERSION="v${TAG_VERSION}"
 
 nox --session tag_rc -- ${TAG_VERSION}
@@ -48,8 +47,7 @@ Manual:
 ```shell
 echo "Version Tag (Release Candidate):"
 echo "v<major>.<minor>.<patch>-rc<increment>"
-echo -n "v"
-read TAG_VERSION
+read -p "v" TAG_VERSION
 TAG_VERSION="v${TAG_VERSION}"
 # BRANCH="feature"
 
@@ -82,8 +80,7 @@ popd || exit
 ```shell
 echo "Version Tag (Main Release):"
 echo "v<major>.<minor>.<patch>"
-echo -n "v"
-read TAG_VERSION
+read -p "v" TAG_VERSION
 TAG_VERSION="v${TAG_VERSION}"
 
 nox --session tag_main -- ${TAG_VERSION}
@@ -94,8 +91,7 @@ Manual:
 ```shell
 echo "Version Tag (Main Release):"
 echo "v<major>.<minor>.<patch>"
-echo -n "v"
-read TAG_VERSION
+read -p "v" TAG_VERSION
 TAG_VERSION="v${TAG_VERSION}"
 # BRANCH="main"
 
@@ -130,8 +126,7 @@ This deletes a local _and_ remote Git tag. a tag.
 
 ```shell
 echo "Version Tag (Delete Tag):"
-echo -n "v"
-read TAG_VERSION
+read -p "v" TAG_VERSION
 TAG_VERSION="v${TAG_VERSION}"
 
 nox --session tag_delete -- ${TAG_VERSION}
@@ -143,8 +138,7 @@ Ref: [How To Delete Local and Remote Tags on Git](https://devconnected.com/how-t
 
 ```shell
 echo "Version Tag (Delete Tag):"
-echo -n "v"
-read TAG_VERSION
+read -p "v" TAG_VERSION
 TAG_VERSION="v${TAG_VERSION}"
 # BRANCH="feature"
 
@@ -175,10 +169,25 @@ popd || exit
 ## Pull Requests (`gh`)
 
 ```shell
+nox --session gh_login
+```
+
+Manual:
+
+```shell
 gh auth login
 ```
 
 ### Create PR
+
+```shell
+echo "Create PR:"
+read -p "Branch: " BRANCH
+
+nox --session gh_pr_create -- ${BRANCH}
+```
+
+Manual:
 
 ```shell
 gh pr create --title "Pull request title" --body "Pull request body"
@@ -186,8 +195,7 @@ gh pr create --title "Pull request title" --body "Pull request body"
 
 ```shell
 echo "Create PR:"
-echo -n "Branch: "  # feature-openstudiolandscapes-n8n
-read BRANCH
+read -p "Branch: " BRANCH  # feature-openstudiolandscapes-n8n
 # echo -n "Body: "
 # read BODY
 
@@ -220,12 +228,22 @@ popd || exit
 
 ### Edit PR
 
+```shell
+echo "Edit PR:"
+read -p "Mode [draft]: " MODE
+MODE=${MODE:-draft}
+read -p "Branch: " BRANCH
+
+nox --session gh_pr_set_mode -- ${BRANCH}
+```
+
+Manual:
+
 #### Ready for Review
 
 ```shell
 echo "PR Ready for Review:"
-echo -n "Branch: "  # feature-openstudiolandscapes-n8n
-read BRANCH
+read -p "Branch: " BRANCH  # feature-openstudiolandscapes-n8n
 
 
 read -r -d '' COMMAND <<'EOF'
@@ -253,8 +271,7 @@ popd || exit
 
 ```shell
 echo "PR Set to Draft:"
-echo -n "Branch: "  # feature-openstudiolandscapes-n8n
-read BRANCH
+read -p "Branch: " BRANCH  # feature-openstudiolandscapes-n8n
 
 
 read -r -d '' COMMAND <<'EOF'
