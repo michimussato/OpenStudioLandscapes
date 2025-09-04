@@ -27,8 +27,7 @@ nox --help
 nox --list-sessions
 Sessions defined in OpenStudioLandscapes/noxfile.py:
 
-- clone_features -> `git clone` all listed (REPOS_FEATURE) Features into .features. Performs `git pull` if repos already exist.
-- readme_features -> Create README.md for all listed (REPOS_FEATURE) Features.
+- clone_features -> `git clone` all listed (REPOS_FEATURE) Features into .features.
 - stash_features -> `git stash` all listed (REPOS_FEATURE) Features.
 - stash_apply_features -> `git stash apply` all listed (REPOS_FEATURE) Features.
 - pull_engine -> `git pull` engine.
@@ -52,20 +51,131 @@ Sessions defined in OpenStudioLandscapes/noxfile.py:
 - dagster_postgres_up_detach -> Start Postgres backend for Dagster in detached mode.
 - dagster_postgres_down -> Shut down Postgres backend for Dagster.
 - dagster_postgres -> Start Dagster with Postgres as backend after `nox --session dagster_postgres_up_detach`.
+- dagster_mysql_clear -> Clear Dagster-Postgres with `sudo`. WARNING: DATA LOSS!
 - dagster_mysql -> Start Dagster with MySQL as backend (not recommended).
-* sbom-3.11 -> Runs Software Bill of Materials (SBOM).
-* sbom-3.12 -> Runs Software Bill of Materials (SBOM).
-* coverage-3.11 -> Runs coverage
-* coverage-3.12 -> Runs coverage
-* lint-3.11 -> Runs linters and fixers
-* lint-3.12 -> Runs linters and fixers
-* testing-3.11 -> Runs pytests.
-* testing-3.12 -> Runs pytests.
-* readme -> Generate dynamically created README.md file for OpenStudioLandscapes modules.
+* sbom-3.11(OpenStudioLandscapes) -> Runs Software Bill of Materials (SBOM).
+* sbom-3.11(OpenStudioLandscapes-NukeRLM-8) -> Runs Software Bill of Materials (SBOM).
+* sbom-3.11(OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20) -> Runs Software Bill of Materials (SBOM).
+* sbom-3.11(OpenStudioLandscapes-Deadline-10-2) -> Runs Software Bill of Materials (SBOM).
+* sbom-3.11(OpenStudioLandscapes-Syncthing) -> Runs Software Bill of Materials (SBOM).
+* sbom-3.11(OpenStudioLandscapes-filebrowser) -> Runs Software Bill of Materials (SBOM).
+* sbom-3.11(OpenStudioLandscapes-Dagster) -> Runs Software Bill of Materials (SBOM).
+* sbom-3.11(OpenStudioLandscapes-Kitsu) -> Runs Software Bill of Materials (SBOM).
+* sbom-3.11(OpenStudioLandscapes-OpenCue) -> Runs Software Bill of Materials (SBOM).
+* sbom-3.11(OpenStudioLandscapes-Grafana) -> Runs Software Bill of Materials (SBOM).
+* sbom-3.11(OpenStudioLandscapes-LikeC4) -> Runs Software Bill of Materials (SBOM).
+* sbom-3.11(OpenStudioLandscapes-Ayon) -> Runs Software Bill of Materials (SBOM).
+* sbom-3.11(OpenStudioLandscapes-Template) -> Runs Software Bill of Materials (SBOM).
+* sbom-3.11(OpenStudioLandscapes-Watchtower) -> Runs Software Bill of Materials (SBOM).
+* sbom-3.11(OpenStudioLandscapes-Deadline-10-2-Worker) -> Runs Software Bill of Materials (SBOM).
+- coverage-3.11 -> Runs coverage
+* lint-3.11(OpenStudioLandscapes) -> Runs linters and fixers
+* lint-3.11(OpenStudioLandscapes-NukeRLM-8) -> Runs linters and fixers
+* lint-3.11(OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20) -> Runs linters and fixers
+* lint-3.11(OpenStudioLandscapes-Deadline-10-2) -> Runs linters and fixers
+* lint-3.11(OpenStudioLandscapes-Syncthing) -> Runs linters and fixers
+* lint-3.11(OpenStudioLandscapes-filebrowser) -> Runs linters and fixers
+* lint-3.11(OpenStudioLandscapes-Dagster) -> Runs linters and fixers
+* lint-3.11(OpenStudioLandscapes-Kitsu) -> Runs linters and fixers
+* lint-3.11(OpenStudioLandscapes-OpenCue) -> Runs linters and fixers
+* lint-3.11(OpenStudioLandscapes-Grafana) -> Runs linters and fixers
+* lint-3.11(OpenStudioLandscapes-LikeC4) -> Runs linters and fixers
+* lint-3.11(OpenStudioLandscapes-Ayon) -> Runs linters and fixers
+* lint-3.11(OpenStudioLandscapes-Template) -> Runs linters and fixers
+* lint-3.11(OpenStudioLandscapes-Watchtower) -> Runs linters and fixers
+* lint-3.11(OpenStudioLandscapes-Deadline-10-2-Worker) -> Runs linters and fixers
+- testing-3.11 -> Runs pytests.
+* readme(OpenStudioLandscapes-NukeRLM-8) -> Generate dynamically created README.md file for OpenStudioLandscapes modules.
+* readme(OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20) -> Generate dynamically created README.md file for OpenStudioLandscapes modules.
+* readme(OpenStudioLandscapes-Deadline-10-2) -> Generate dynamically created README.md file for OpenStudioLandscapes modules.
+* readme(OpenStudioLandscapes-Syncthing) -> Generate dynamically created README.md file for OpenStudioLandscapes modules.
+* readme(OpenStudioLandscapes-filebrowser) -> Generate dynamically created README.md file for OpenStudioLandscapes modules.
+* readme(OpenStudioLandscapes-Dagster) -> Generate dynamically created README.md file for OpenStudioLandscapes modules.
+* readme(OpenStudioLandscapes-Kitsu) -> Generate dynamically created README.md file for OpenStudioLandscapes modules.
+* readme(OpenStudioLandscapes-OpenCue) -> Generate dynamically created README.md file for OpenStudioLandscapes modules.
+* readme(OpenStudioLandscapes-Grafana) -> Generate dynamically created README.md file for OpenStudioLandscapes modules.
+* readme(OpenStudioLandscapes-LikeC4) -> Generate dynamically created README.md file for OpenStudioLandscapes modules.
+* readme(OpenStudioLandscapes-Ayon) -> Generate dynamically created README.md file for OpenStudioLandscapes modules.
+* readme(OpenStudioLandscapes-Template) -> Generate dynamically created README.md file for OpenStudioLandscapes modules.
+* readme(OpenStudioLandscapes-Watchtower) -> Generate dynamically created README.md file for OpenStudioLandscapes modules.
+* readme(OpenStudioLandscapes-Deadline-10-2-Worker) -> Generate dynamically created README.md file for OpenStudioLandscapes modules.
 - release-3.11 -> Build and release to a repository
-- release-3.12 -> Build and release to a repository
-* docs -> Creates Sphinx documentation.
-- docs_features -> Create README.md for all listed (REPOS_FEATURE) Features.
+- tag_rc(OpenStudioLandscapes) -> Git tag rc OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_rc -- v1.2.0-rc1`).
+- tag_rc(OpenStudioLandscapes-NukeRLM-8) -> Git tag rc OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_rc -- v1.2.0-rc1`).
+- tag_rc(OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20) -> Git tag rc OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_rc -- v1.2.0-rc1`).
+- tag_rc(OpenStudioLandscapes-Deadline-10-2) -> Git tag rc OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_rc -- v1.2.0-rc1`).
+- tag_rc(OpenStudioLandscapes-Syncthing) -> Git tag rc OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_rc -- v1.2.0-rc1`).
+- tag_rc(OpenStudioLandscapes-filebrowser) -> Git tag rc OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_rc -- v1.2.0-rc1`).
+- tag_rc(OpenStudioLandscapes-Dagster) -> Git tag rc OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_rc -- v1.2.0-rc1`).
+- tag_rc(OpenStudioLandscapes-Kitsu) -> Git tag rc OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_rc -- v1.2.0-rc1`).
+- tag_rc(OpenStudioLandscapes-OpenCue) -> Git tag rc OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_rc -- v1.2.0-rc1`).
+- tag_rc(OpenStudioLandscapes-Grafana) -> Git tag rc OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_rc -- v1.2.0-rc1`).
+- tag_rc(OpenStudioLandscapes-LikeC4) -> Git tag rc OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_rc -- v1.2.0-rc1`).
+- tag_rc(OpenStudioLandscapes-Ayon) -> Git tag rc OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_rc -- v1.2.0-rc1`).
+- tag_rc(OpenStudioLandscapes-Template) -> Git tag rc OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_rc -- v1.2.0-rc1`).
+- tag_rc(OpenStudioLandscapes-Watchtower) -> Git tag rc OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_rc -- v1.2.0-rc1`).
+- tag_rc(OpenStudioLandscapes-Deadline-10-2-Worker) -> Git tag rc OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_rc -- v1.2.0-rc1`).
+- tag_main(OpenStudioLandscapes) -> Git tag main OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_main -- v1.2.0`).
+- tag_main(OpenStudioLandscapes-NukeRLM-8) -> Git tag main OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_main -- v1.2.0`).
+- tag_main(OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20) -> Git tag main OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_main -- v1.2.0`).
+- tag_main(OpenStudioLandscapes-Deadline-10-2) -> Git tag main OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_main -- v1.2.0`).
+- tag_main(OpenStudioLandscapes-Syncthing) -> Git tag main OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_main -- v1.2.0`).
+- tag_main(OpenStudioLandscapes-filebrowser) -> Git tag main OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_main -- v1.2.0`).
+- tag_main(OpenStudioLandscapes-Dagster) -> Git tag main OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_main -- v1.2.0`).
+- tag_main(OpenStudioLandscapes-Kitsu) -> Git tag main OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_main -- v1.2.0`).
+- tag_main(OpenStudioLandscapes-OpenCue) -> Git tag main OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_main -- v1.2.0`).
+- tag_main(OpenStudioLandscapes-Grafana) -> Git tag main OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_main -- v1.2.0`).
+- tag_main(OpenStudioLandscapes-LikeC4) -> Git tag main OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_main -- v1.2.0`).
+- tag_main(OpenStudioLandscapes-Ayon) -> Git tag main OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_main -- v1.2.0`).
+- tag_main(OpenStudioLandscapes-Template) -> Git tag main OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_main -- v1.2.0`).
+- tag_main(OpenStudioLandscapes-Watchtower) -> Git tag main OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_main -- v1.2.0`).
+- tag_main(OpenStudioLandscapes-Deadline-10-2-Worker) -> Git tag main OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_main -- v1.2.0`).
+- tag_delete(OpenStudioLandscapes) -> Git tag delete OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_delete -- v1.2.0-xy`).
+- tag_delete(OpenStudioLandscapes-NukeRLM-8) -> Git tag delete OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_delete -- v1.2.0-xy`).
+- tag_delete(OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20) -> Git tag delete OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_delete -- v1.2.0-xy`).
+- tag_delete(OpenStudioLandscapes-Deadline-10-2) -> Git tag delete OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_delete -- v1.2.0-xy`).
+- tag_delete(OpenStudioLandscapes-Syncthing) -> Git tag delete OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_delete -- v1.2.0-xy`).
+- tag_delete(OpenStudioLandscapes-filebrowser) -> Git tag delete OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_delete -- v1.2.0-xy`).
+- tag_delete(OpenStudioLandscapes-Dagster) -> Git tag delete OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_delete -- v1.2.0-xy`).
+- tag_delete(OpenStudioLandscapes-Kitsu) -> Git tag delete OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_delete -- v1.2.0-xy`).
+- tag_delete(OpenStudioLandscapes-OpenCue) -> Git tag delete OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_delete -- v1.2.0-xy`).
+- tag_delete(OpenStudioLandscapes-Grafana) -> Git tag delete OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_delete -- v1.2.0-xy`).
+- tag_delete(OpenStudioLandscapes-LikeC4) -> Git tag delete OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_delete -- v1.2.0-xy`).
+- tag_delete(OpenStudioLandscapes-Ayon) -> Git tag delete OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_delete -- v1.2.0-xy`).
+- tag_delete(OpenStudioLandscapes-Template) -> Git tag delete OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_delete -- v1.2.0-xy`).
+- tag_delete(OpenStudioLandscapes-Watchtower) -> Git tag delete OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_delete -- v1.2.0-xy`).
+- tag_delete(OpenStudioLandscapes-Deadline-10-2-Worker) -> Git tag delete OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_delete -- v1.2.0-xy`).
+- gh_login -> GitHub CLI Login.
+- gh_pr_create(OpenStudioLandscapes) -> Create PR for OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
+- gh_pr_create(OpenStudioLandscapes-NukeRLM-8) -> Create PR for OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
+- gh_pr_create(OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20) -> Create PR for OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
+- gh_pr_create(OpenStudioLandscapes-Deadline-10-2) -> Create PR for OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
+- gh_pr_create(OpenStudioLandscapes-Syncthing) -> Create PR for OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
+- gh_pr_create(OpenStudioLandscapes-filebrowser) -> Create PR for OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
+- gh_pr_create(OpenStudioLandscapes-Dagster) -> Create PR for OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
+- gh_pr_create(OpenStudioLandscapes-Kitsu) -> Create PR for OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
+- gh_pr_create(OpenStudioLandscapes-OpenCue) -> Create PR for OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
+- gh_pr_create(OpenStudioLandscapes-Grafana) -> Create PR for OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
+- gh_pr_create(OpenStudioLandscapes-LikeC4) -> Create PR for OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
+- gh_pr_create(OpenStudioLandscapes-Ayon) -> Create PR for OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
+- gh_pr_create(OpenStudioLandscapes-Template) -> Create PR for OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
+- gh_pr_create(OpenStudioLandscapes-Watchtower) -> Create PR for OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
+- gh_pr_create(OpenStudioLandscapes-Deadline-10-2-Worker) -> Create PR for OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
+- gh_pr_set_mode(OpenStudioLandscapes) -> Set mode for OpenStudioLandscapes PRs (`draft`|`ready`). Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
+- gh_pr_set_mode(OpenStudioLandscapes-NukeRLM-8) -> Set mode for OpenStudioLandscapes PRs (`draft`|`ready`). Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
+- gh_pr_set_mode(OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20) -> Set mode for OpenStudioLandscapes PRs (`draft`|`ready`). Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
+- gh_pr_set_mode(OpenStudioLandscapes-Deadline-10-2) -> Set mode for OpenStudioLandscapes PRs (`draft`|`ready`). Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
+- gh_pr_set_mode(OpenStudioLandscapes-Syncthing) -> Set mode for OpenStudioLandscapes PRs (`draft`|`ready`). Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
+- gh_pr_set_mode(OpenStudioLandscapes-filebrowser) -> Set mode for OpenStudioLandscapes PRs (`draft`|`ready`). Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
+- gh_pr_set_mode(OpenStudioLandscapes-Dagster) -> Set mode for OpenStudioLandscapes PRs (`draft`|`ready`). Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
+- gh_pr_set_mode(OpenStudioLandscapes-Kitsu) -> Set mode for OpenStudioLandscapes PRs (`draft`|`ready`). Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
+- gh_pr_set_mode(OpenStudioLandscapes-OpenCue) -> Set mode for OpenStudioLandscapes PRs (`draft`|`ready`). Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
+- gh_pr_set_mode(OpenStudioLandscapes-Grafana) -> Set mode for OpenStudioLandscapes PRs (`draft`|`ready`). Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
+- gh_pr_set_mode(OpenStudioLandscapes-LikeC4) -> Set mode for OpenStudioLandscapes PRs (`draft`|`ready`). Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
+- gh_pr_set_mode(OpenStudioLandscapes-Ayon) -> Set mode for OpenStudioLandscapes PRs (`draft`|`ready`). Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
+- gh_pr_set_mode(OpenStudioLandscapes-Template) -> Set mode for OpenStudioLandscapes PRs (`draft`|`ready`). Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
+- gh_pr_set_mode(OpenStudioLandscapes-Watchtower) -> Set mode for OpenStudioLandscapes PRs (`draft`|`ready`). Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
+- gh_pr_set_mode(OpenStudioLandscapes-Deadline-10-2-Worker) -> Set mode for OpenStudioLandscapes PRs (`draft`|`ready`). Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
 
 sessions marked with * are selected, sessions marked with - are skipped.
 ```

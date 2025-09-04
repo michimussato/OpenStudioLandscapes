@@ -95,15 +95,18 @@ BATCH_EXCLUDED = []
 
 # Python versions to test against
 # dagster==1.9.11 needs >=3.9 but 3.13 does not seem to be working
-VERSIONS = [
+PYTHON_TEST_VERSIONS = [
     "3.11",
     # "3.12",
     # "3.13",
 ]
 
-VERSIONS_README = VERSIONS[0]
+PYTHON_VERSION_MAIN = PYTHON_TEST_VERSIONS[0]
 
 ENV = {}
+
+
+GIT_MAIN_BRANCH = "main"
 
 
 #######################################################################################################################
@@ -2294,7 +2297,7 @@ def dagster_mysql(session):
 
 #######################################################################################################################
 # SBOM
-@nox.session(python=VERSIONS, tags=["sbom"])
+@nox.session(python=PYTHON_TEST_VERSIONS, tags=["sbom"])
 @nox.parametrize(
     "working_directory",
     # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
@@ -2371,7 +2374,7 @@ def sbom(session, working_directory):
 
 #######################################################################################################################
 # Coverage
-@nox.session(python=VERSIONS, tags=["coverage"])
+@nox.session(python=PYTHON_TEST_VERSIONS, tags=["coverage"])
 def coverage(session):
     """
     Runs coverage
@@ -2429,7 +2432,7 @@ def coverage(session):
 
 #######################################################################################################################
 # Lint
-@nox.session(python=VERSIONS, tags=["lint"])
+@nox.session(python=PYTHON_TEST_VERSIONS, tags=["lint"])
 @nox.parametrize(
     "working_directory",
     # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
@@ -2522,7 +2525,7 @@ def lint(session, working_directory):
 
 #######################################################################################################################
 # Testing
-@nox.session(python=VERSIONS, tags=["testing"])
+@nox.session(python=PYTHON_TEST_VERSIONS, tags=["testing"])
 def testing(session):
     """
     Runs pytests.
@@ -2558,7 +2561,7 @@ def testing(session):
 
 #######################################################################################################################
 # Readme
-@nox.session(python=VERSIONS_README, tags=["readme"])
+@nox.session(python=PYTHON_VERSION_MAIN, tags=["readme"])
 @nox.parametrize(
     "working_directory",
     # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
@@ -2597,7 +2600,7 @@ def readme(session, working_directory):
         session.run(
             "generate-readme",
             "--versions",
-            *VERSIONS,
+            *PYTHON_TEST_VERSIONS,
             # external=True,
             silent=SESSION_RUN_SILENT,
         )
@@ -2609,7 +2612,7 @@ def readme(session, working_directory):
 #######################################################################################################################
 # Release
 # Todo
-@nox.session(python=VERSIONS, tags=["release"])
+@nox.session(python=PYTHON_TEST_VERSIONS, tags=["release"])
 def release(session):
     """
     Build and release to a repository
@@ -2937,16 +2940,248 @@ def tag_delete(session, working_directory):
 #######################################################################################################################
 # PR
 # Todo:
-#  - [ ] gh_login
+#  - [x] gh_login
 #        See wiki/guides/release_strategy.md#pull-requests-gh
-#  - [ ] gh_pr_create
+#  - [x] gh_pr_create
 #        See wiki/guides/release_strategy.md#create-pr
-#  - [ ] gh_pr_edit
+#  - [x] gh_pr_edit
 #        See wiki/guides/release_strategy.md#edit-pr
 #  - [ ] gh_pr_close
 #        See wiki/guides/release_strategy.md#close-pr
 #  - [ ] gh_pr_merge
 #  - [ ] gh_pr_close
+
+
+@nox.session(python=None, tags=["gh_login"])
+# @nox.parametrize(
+#     "working_directory",
+#     # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
+#     [
+#         nox.param(engine_dir.name, id=engine_dir.name),
+#         *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED],
+#     ],
+# )
+def gh_login(session):
+    """
+    GitHub CLI Login.
+    See wiki/guides/release_strategy.md#pull-requests-gh
+
+    Scope:
+    - [ ] Engine
+    - [ ] Features
+    """
+    # Ex:
+    # nox --session gh_login
+    # nox --tags gh_login
+
+    # sudo = False
+
+    cmds = []
+
+    gh = shutil.which("gh")
+
+    if bool(gh):
+
+        cmd_gh_login = [
+            gh,
+            "auth",
+            "login",
+            "--web",
+        ]
+        cmds.append(cmd_gh_login)
+
+        for cmd in cmds:
+
+            session.log(f"Running Command:\n\t{shlex.join(cmd)}")
+
+            session.run(
+                *cmd,
+                env=ENV,
+                external=True,
+                silent=SESSION_RUN_SILENT,
+            )
+
+    else:
+        msg = "No Github CLI Found."
+        session.skip(msg)
+
+
+@nox.session(python=None, tags=["gh_pr_create"])
+@nox.parametrize(
+    "working_directory",
+    # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
+    [
+        nox.param(engine_dir.name, id=engine_dir.name),
+        *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED],
+    ],
+)
+def gh_pr_create(session, working_directory):
+    """
+    Create PR for OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
+    See wiki/guides/release_strategy.md#create-pr
+
+    <branch_name> so that we can associate a PR with the
+    branch of the same name.
+
+    Scope:
+    - [x] Engine
+    - [x] Features
+    """
+    # Ex:
+    # DRY_RUN=1 nox --session gh_pr_create -- <branch_name>
+    # DRY_RUN=1 nox --tags gh_pr_create -- <branch_name>
+
+    cmds = []
+
+    gh = shutil.which("gh")
+
+    # defaults to --dry-run if not overridden
+    dry_run = bool(int(os.environ.get("DRY_RUN", 1)))
+
+    # body_file = str(os.environ.get("BODY_FILE", ""))
+    # session.log(f"{body_file = }")
+
+    if bool(gh):
+
+        branch_name = session.posargs
+
+        if len(branch_name) != 1:
+            msg = "Invalid branch name. Tag argument must be exactly 1 argument."
+            session.log(msg)
+            raise ValueError(msg)
+
+        branch_name = branch_name[0]
+
+        cmd_gh_pr_create = [
+            gh,
+            "pr",
+            "create",
+            "--title",
+            branch_name,
+            "--head",
+            branch_name,
+            "--base",
+            GIT_MAIN_BRANCH,
+            "--dry-run" if dry_run else "",
+            # Todo
+            #  - [ ] --body-file
+            "--body",
+            "",
+        ]
+        cmds.append(cmd_gh_pr_create)
+
+        with session.chdir(engine_dir.parent / working_directory):
+
+            session.log(
+                f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
+            )
+
+            if dry_run:
+                session.warn(f"DRY_RUN is set to {dry_run}")
+
+            for cmd in cmds:
+
+                session.log(f"Running Command:\n\t{shlex.join(cmd)}")
+
+                session.run(
+                    *cmd,
+                    env=ENV,
+                    external=True,
+                    silent=SESSION_RUN_SILENT,
+                )
+
+    else:
+        msg = "No Github CLI Found."
+        session.skip(msg)
+
+
+@nox.session(python=None, tags=["gh_pr_set_mode"])
+@nox.parametrize(
+    "working_directory",
+    # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
+    [
+        nox.param(engine_dir.name, id=engine_dir.name),
+        *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED],
+    ],
+)
+def gh_pr_set_mode(session, working_directory):
+    """
+    Set mode for OpenStudioLandscapes PRs (`draft`|`ready`). Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
+    See wiki/guides/release_strategy.md#edit-pr
+
+    <branch> so that we can associate a PR with the
+    branch of the same name.
+
+    Scope:
+    - [x] Engine
+    - [x] Features
+    """
+    # Ex:
+    # MODE=draft nox --session gh_pr_set_mode -- <branch_name>
+    # MODE=draft nox --tags gh_pr_set_mode -- <branch_name>
+
+    cmds = []
+
+    gh = shutil.which("gh")
+
+    # defaults to --dry-run if not overridden
+    mode = str(os.environ.get("MODE", "draft")).lower()
+
+    # body_file = str(os.environ.get("BODY_FILE", ""))
+    # session.log(f"{body_file = }")
+
+    if bool(gh):
+
+        branch_name = session.posargs
+
+        if len(branch_name) != 1:
+            msg = "Invalid branch name. Tag argument must be exactly 1 argument."
+            session.warn(msg)
+            raise ValueError(msg)
+
+        branch_name = branch_name[0]
+
+        cmd_gh_pr_set_mode = [
+            gh,
+            "pr",
+            "ready",
+            branch_name,
+        ]
+        if mode == "draft":
+            cmd_gh_pr_set_mode.append(
+                "--undo"
+            )
+        elif mode == "ready":
+            pass
+        else:
+            msg = "Invalid mode. Must be either 'draft' or 'ready'."
+            session.warn(msg)
+            raise ValueError(msg)
+
+        cmds.append(cmd_gh_pr_set_mode)
+
+        with session.chdir(engine_dir.parent / working_directory):
+
+            session.log(
+                f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
+            )
+
+            session.warn(f"MODE is set to '{mode}'")
+
+            for cmd in cmds:
+
+                session.log(f"Running Command:\n\t{shlex.join(cmd)}")
+
+                session.run(
+                    *cmd,
+                    env=ENV,
+                    external=True,
+                    silent=SESSION_RUN_SILENT,
+                )
+
+    else:
+        msg = "No Github CLI Found."
+        session.skip(msg)
 
 
 #######################################################################################################################
