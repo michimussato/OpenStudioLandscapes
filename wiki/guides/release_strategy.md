@@ -32,33 +32,13 @@ Based on [Semantic Versioning]()
 #### Release Candidate
 
 ```shell
-echo "Version Tag (Release Candidate):"
-export RELEASE_TYPE=rc
-echo "v<major>.<minor>.<patch>-rc<increment>"
-read -p "v" TAG_VERSION
-export TAG_VERSION
-read -p "Force [0]: " FORCE
-export FORCE=${FORCE:-0}
-
-nox --session tag -- ${TAG_VERSION}
-
-unset TAG_VERSION FORCE RELEASE_TYPE
+nox --session tag
 ```
 
 #### Main Release
 
 ```shell
-echo "Version Tag (Main Release):"
-export RELEASE_TYPE=main
-echo "v<major>.<minor>.<patch>"
-read -p "v" TAG_VERSION
-export TAG_VERSION
-read -p "Force [0]: " FORCE
-export FORCE=${FORCE:-0}
-
-nox --session tag -- ${TAG_VERSION}
-
-unset TAG_VERSION FORCE RELEASE_TYPE
+nox --session tag
 ```
 
 #### Delete Tags
@@ -66,14 +46,7 @@ unset TAG_VERSION FORCE RELEASE_TYPE
 This deletes a local _and_ remote Git tag. a tag.
 
 ```shell
-echo "Version Tag (Delete Tag):"
-read -p "v" TAG_VERSION
-TAG_VERSION="v${TAG_VERSION}"
-export TAG_VERSION
-
-nox --session tag_delete -- ${TAG_VERSION}
-
-unset TAG_VERSION
+nox --session tag_delete
 ```
 
 Ref: [How To Delete Local and Remote Tags on Git](https://devconnected.com/how-to-delete-local-and-remote-tags-on-git/)
@@ -84,80 +57,16 @@ Ref: [How To Delete Local and Remote Tags on Git](https://devconnected.com/how-t
 nox --session gh_login
 ```
 
-Manual:
-
-```shell
-gh auth login
-```
-
 ### Create PR
 
 ```shell
-echo "Create PR (draft):"
-read -p "Branch: " BRANCH
-export BRANCH
-read -p "Dry run [1]: " DRY_RUN
-DRY_RUN=${DRY_RUN:-1}
-export DRY_RUN
-
-nox --session gh_pr_create -- ${BRANCH}
-
-unset BRANCH DRY_RUN
-```
-
-Manual:
-
-```shell
-gh pr create --title "Pull request title" --body "Pull request body"
-```
-
-```shell
-echo "Create PR:"
-read -p "Branch: " BRANCH  # feature-openstudiolandscapes-n8n
-# echo -n "Body: "
-# read BODY
-
-
-read -r -d '' COMMAND <<'EOF'
-gh pr create \
-    --draft \
-    --title ${BRANCH} \
-    --head ${BRANCH} \
-    --base main \
-    --dry-run \
-    --body ""
-EOF
-
-
-eval "${COMMAND}"
-
-
-pushd .features || exit
-
-for dir in */; do
-    pushd "${dir}" || exit
-
-    eval "${COMMAND}"
-
-    popd || exit
-done;
-
-popd || exit
+nox --session gh_pr_create
 ```
 
 ### Edit PR
 
 ```shell
-echo "Edit PR:"
-read -p "Mode [draft]: " MODE
-MODE=${MODE:-draft}
-export MODE
-read -p "Branch: " BRANCH
-export BRANCH
-
-nox --session gh_pr_set_mode -- ${BRANCH}
-
-unset MODE BRANCH
+nox --session gh_pr_set_mode
 ```
 
 ### Close PR

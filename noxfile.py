@@ -2683,7 +2683,7 @@ def release(session, working_directory):
 )
 def tag(session, working_directory):
     """
-    Git tag OpenStudioLandscapes modules (RELEASE_TYPE=`rc`|`main`, FORCE=`0`|`1`). Needs exactly one argument (i.e. `nox --session tag -- 1.2.0[-rc1]`).
+    Git tag OpenStudioLandscapes modules.
     See wiki/guides/release_strategy.md#main-release
 
     Scope:
@@ -2691,41 +2691,69 @@ def tag(session, working_directory):
     - [x] Features
     """
     # Ex:
-    # RELEASE_TYPE=rc FORCE=0 nox --session tag -- 1.2.0[-rc1]
-    # RELEASE_TYPE=rc FORCE=0 nox --tags tag -- 1.2.0[-rc1]
+    # nox --session tag
+    # nox --tags tag
 
-    sudo = False
+    # TAG
+    tag_ = os.environ.get("TAG", None)
+    if tag_ is None:
+        input_message = "Version tag:\n"
+
+        input_message += "v"
+
+        user_input = ""
+
+        while not RE_SEMVER.match(user_input):
+            user_input = input(input_message)
+
+        tag_ = f"v{user_input}"
+        os.environ["TAG"] = tag_
+
+    # RELEASE_TYPE
+    release_type = os.environ.get("RELEASE_TYPE", None)
+    if release_type is None:
+        release_types = ["rc", "main"]
+
+        input_message = "Tag type:\n"
+
+        for index, item in enumerate(release_types):
+            input_message += f"{index + 1}) {item}\n"
+
+        input_message += "Choice: "
+
+        user_input = ""
+
+        while user_input not in map(str, range(1, len(release_types) + 1)):
+            user_input = input(input_message)
+
+        release_type = release_types[int(user_input) - 1]
+        os.environ["RELEASE_TYPE"] = release_type
+
+    # FORCE
+    force = os.environ.get("FORCE", None)
+    if force is None:
+        forced = ["no", "yes"]
+
+        input_message = "Force:\n"
+
+        for index, item in enumerate(forced):
+            input_message += f"{index + 1}) {item}\n"
+
+        input_message += "Choice: "
+
+        user_input = ""
+
+        while user_input not in map(str, range(1, len(forced) + 1)):
+            user_input = input(input_message)
+
+        force = forced[int(user_input) - 1]
+        os.environ["FORCE"] = force
+
+    session.log(f"{tag_ = }")
+    session.log(f"{release_type = }")
+    session.log(f"{force = }")
 
     cmds = []
-
-    # defaults to rc if not overridden
-    _release_type = os.environ.get("RELEASE_TYPE", "rc").lower()
-    if _release_type not in ["rc", "main"]:
-        session.error("RELEASE_TYPE must be rc or main.")
-    release_type = str(_release_type)
-
-    # defaults to !--force if not overridden
-    _force = os.environ.get("FORCE", "0")
-    session.log(_force)
-    if _force not in ["0", "1"]:
-        session.error("FORCE must be 0 or 1.")
-    force = bool(int(_force))
-
-    tag = session.posargs
-
-    session.log(f"Args: {tag}")
-
-    if len(tag) != 1:
-        msg = "Invalid tag length. Tag argument must be exactly 1 argument."
-        session.error(msg)
-
-    tag = tag[0]
-
-    if not RE_SEMVER.match(tag):
-        msg = "Invalid tag pattern (SemVer)."
-        session.error(msg)
-
-    tag = f"v{tag}"
 
     cmd_fetch = [
         shutil.which("git"),
@@ -2736,19 +2764,19 @@ def tag(session, working_directory):
     cmds.append(cmd_fetch)
 
     if release_type == "rc":
-        msg = f"Release Candidate Version {tag}"
+        msg = f"Release Candidate Version {tag_}"
     elif release_type == "main":
-        msg = f"Main Release Version {tag}"
+        msg = f"Main Release Version {tag_}"
 
     cmd_annotate = [
         shutil.which("git"),
         "tag",
         "--annotate",
-        tag,
+        tag_,
         "--message",
         msg,
     ]
-    if force:
+    if force == "yes":
         cmd_annotate.append("--force")
     cmds.append(cmd_annotate)
 
@@ -2760,10 +2788,10 @@ def tag(session, working_directory):
             "--annotate",
             "latest",
             "--message",
-            f"Latest Release Version (pointing to {tag}",
-            "%s^{}" % tag,
+            f"Latest Release Version (pointing to {tag_}",
+            "%s^{}" % tag_,
         ]
-        if force:
+        if force == "yes":
             cmd_annotate_latest.append("--force")
         cmds.append(cmd_annotate_latest)
 
@@ -2772,14 +2800,9 @@ def tag(session, working_directory):
         "push",
         "--tags",
     ]
-    if force:
+    if force == "yes":
         cmd_push.append("--force")
     cmds.append(cmd_push)
-
-    # if sudo:
-    #     cmd.insert(0, shutil.which("sudo"))
-    #     cmd.insert(1, "--reset-timestamp")
-    #     # cmd.insert(2, "--stdin")
 
     with session.chdir(engine_dir.parent / working_directory):
 
@@ -2810,7 +2833,7 @@ def tag(session, working_directory):
 )
 def tag_delete(session, working_directory):
     """
-    Git tag delete OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_delete -- 1.2.0[-rc1]`).
+    Git tag delete OpenStudioLandscapes modules.
     See wiki/guides/release_strategy.md#delete-tags
 
     Scope:
@@ -2818,30 +2841,25 @@ def tag_delete(session, working_directory):
     - [x] Features
     """
     # Ex:
-    # nox --session tag_delete -- 1.2.0[-rc1]
-    # nox --tags tag_delete -- 1.2.0[-rc1]
+    # nox --session tag_delete
+    # nox --tags tag_delete
 
-    sudo = False
+    # TAG
+    tag_ = os.environ.get("TAG", None)
+    if tag_ is None:
+        input_message = "Version tag:\n"
+
+        input_message += "v"
+
+        user_input = ""
+
+        while not RE_SEMVER.match(user_input):
+            user_input = input(input_message)
+
+        tag_ = f"v{user_input}"
+        os.environ["TAG"] = tag_
 
     cmds = []
-
-    tag = session.posargs
-
-    session.log(f"Args: {tag}")
-
-    if len(tag) != 1:
-        msg = "Invalid tag length. Tag argument must be exactly 1 argument."
-        session.log(msg)
-        raise ValueError(msg)
-
-    tag = tag[0]
-
-    if not RE_SEMVER.match(tag):
-        msg = "Invalid tag pattern (SemVer)."
-        session.log(msg)
-        raise ValueError(msg)
-
-    tag = f"v{tag}"
 
     cmd_fetch = [
         shutil.which("git"),
@@ -2855,7 +2873,7 @@ def tag_delete(session, working_directory):
         shutil.which("git"),
         "tag",
         "-d",
-        tag,
+        tag_,
     ]
     cmds.append(cmd_delete_tag)
 
@@ -2863,14 +2881,9 @@ def tag_delete(session, working_directory):
         shutil.which("git"),
         "push",
         "origin",
-        f":refs/tags/{tag}",
+        f":refs/tags/{tag_}",
     ]
     cmds.append(cmd_push)
-
-    # if sudo:
-    #     cmd.insert(0, shutil.which("sudo"))
-    #     cmd.insert(1, "--reset-timestamp")
-    #     # cmd.insert(2, "--stdin")
 
     with session.chdir(engine_dir.parent / working_directory):
 
@@ -2965,43 +2978,60 @@ def gh_login(session):
 )
 def gh_pr_create(session, working_directory):
     """
-    Create PR (draft) for OpenStudioLandscapes modules (DRY_RUN=`0`|`1`). Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
+    Create PR (draft) for OpenStudioLandscapes modules.
     See wiki/guides/release_strategy.md#create-pr
-
-    <branch_name> so that we can associate a PR with the
-    branch of the same name.
 
     Scope:
     - [x] Engine
     - [x] Features
     """
     # Ex:
-    # DRY_RUN=1 nox --session gh_pr_create -- <branch_name>
-    # DRY_RUN=1 nox --tags gh_pr_create -- <branch_name>
+    # nox --session gh_pr_create
+    # nox --tags gh_pr_create
+
+    # BRANCH
+    branch = os.environ.get("BRANCH", None)
+    if branch is None:
+        input_message = "Branch:\n"
+
+        # input_message += "v"
+
+        # user_input = ""
+
+        # while not RE_SEMVER.match(user_input):
+        branch = input(input_message)
+
+        # branch = f"v{user_input}"
+        os.environ["BRANCH"] = branch
+
+    # DRY_RUN
+    dry_run = os.environ.get("DRY_RUN", None)
+    if dry_run is None:
+        options = ["yes", "no"]
+
+        input_message = "Dry run:\n"
+
+        for index, item in enumerate(options):
+            input_message += f"{index + 1}) {item}\n"
+
+        input_message += "Choice: "
+
+        user_input = ""
+
+        while user_input not in map(str, range(1, len(options) + 1)):
+            user_input = input(input_message)
+
+        dry_run = options[int(user_input) - 1]
+        os.environ["DRY_RUN"] = dry_run
 
     cmds = []
 
     gh = shutil.which("gh")
 
-    # defaults to --dry-run if not overridden
-    _dry_run = os.environ.get("DRY_RUN", "1")
-    if _dry_run not in ["0", "1"]:
-        session.error("DRY_RUN must be rc or main.")
-    dry_run = bool(int(_dry_run))
-
     # body_file = str(os.environ.get("BODY_FILE", ""))
     # session.log(f"{body_file = }")
 
     if bool(gh):
-
-        branch_name = session.posargs
-
-        if len(branch_name) != 1:
-            msg = "Invalid branch name. Tag argument must be exactly 1 argument."
-            session.log(msg)
-            raise ValueError(msg)
-
-        branch_name = branch_name[0]
 
         cmd_gh_pr_create = [
             gh,
@@ -3009,9 +3039,9 @@ def gh_pr_create(session, working_directory):
             "create",
             "--draft",
             "--title",
-            branch_name,
+            branch,
             "--head",
-            branch_name,
+            branch,
             "--base",
             GIT_MAIN_BRANCH,
             # Todo
@@ -3059,49 +3089,81 @@ def gh_pr_create(session, working_directory):
 )
 def gh_pr_set_mode(session, working_directory):
     """
-    Set mode for OpenStudioLandscapes PRs (MODE=`draft`|`ready`). Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
+    Set mode for OpenStudioLandscapes PRs.
     See wiki/guides/release_strategy.md#edit-pr
-
-    <branch> so that we can associate a PR with the
-    branch of the same name.
 
     Scope:
     - [x] Engine
     - [x] Features
     """
     # Ex:
-    # MODE=draft nox --session gh_pr_set_mode -- <branch_name>
-    # MODE=draft nox --tags gh_pr_set_mode -- <branch_name>
+    # nox --session gh_pr_set_mode
+    # nox --tags gh_pr_set_mode
+
+    # BRANCH
+    branch = os.environ.get("BRANCH", None)
+    if branch is None:
+        input_message = "Branch:\n"
+
+        # input_message += "v"
+
+        # user_input = ""
+
+        # while not RE_SEMVER.match(user_input):
+        branch = input(input_message)
+
+        # branch = f"v{user_input}"
+        os.environ["BRANCH"] = branch
+
+    # RELEASE_TYPE
+    mode = os.environ.get("MODE", None)
+    if mode is None:
+        modes = ["draft", "ready"]
+
+        input_message = "PR mode:\n"
+
+        for index, item in enumerate(modes):
+            input_message += f"{index + 1}) {item}\n"
+
+        input_message += "Choice: "
+
+        user_input = ""
+
+        while user_input not in map(str, range(1, len(modes) + 1)):
+            user_input = input(input_message)
+
+        mode = modes[int(user_input) - 1]
+        os.environ["MODE"] = mode
 
     cmds = []
 
     gh = shutil.which("gh")
 
-    # defaults to draft if not overridden
-    _mode = os.environ.get("MODE", "draft").lower()
-    if _mode not in ["draft", "ready"]:
-        session.error("MODE must be draft or ready.")
-    mode = str(_mode)
+    # # defaults to draft if not overridden
+    # _mode = os.environ.get("MODE", "draft").lower()
+    # if _mode not in ["draft", "ready"]:
+    #     session.error("MODE must be draft or ready.")
+    # modes = str(_mode)
 
     # body_file = str(os.environ.get("BODY_FILE", ""))
     # session.log(f"{body_file = }")
 
     if bool(gh):
 
-        branch_name = session.posargs
-
-        if len(branch_name) != 1:
-            msg = "Invalid branch name. Tag argument must be exactly 1 argument."
-            session.warn(msg)
-            raise ValueError(msg)
-
-        branch_name = branch_name[0]
+        # branch_name = session.posargs
+        #
+        # if len(branch_name) != 1:
+        #     msg = "Invalid branch name. Tag argument must be exactly 1 argument."
+        #     session.warn(msg)
+        #     raise ValueError(msg)
+        #
+        # branch_name = branch_name[0]
 
         cmd_gh_pr_set_mode = [
             gh,
             "pr",
             "ready",
-            branch_name,
+            branch,
         ]
         if mode == "draft":
             cmd_gh_pr_set_mode.append("--undo")
