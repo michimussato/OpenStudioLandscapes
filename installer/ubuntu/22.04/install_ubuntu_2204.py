@@ -94,12 +94,10 @@ def script_run(
             + bcolors.ENDC
         )
         print(" SCRIPT START ".center(_get_terminal_size()[0], "-"))
-        lno = 0
         len_ = len(str(len(lines)))
         print(bcolors.OKCYAN)
-        for l in lines:
-            lno += 1
-            print(f"{str(lno).ljust(len_)}: {l.rstrip()}")
+        for i, l in enumerate(lines):
+            print(f"{str(i+1).rjust(len_)}: {l.rstrip()}")
         print(bcolors.ENDC)
         print(" SCRIPT END ".center(_get_terminal_size()[0], "-"))
 
