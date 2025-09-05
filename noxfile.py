@@ -2738,10 +2738,6 @@ def tag(session, working_directory):
         msg = f"Release Candidate Version {tag}"
     elif release_type == "main":
         msg = f"Main Release Version {tag}"
-    # else:
-    #     msg = "Invalid release_type. Must be either 'rc' or 'main'."
-    #     session.warn(msg)
-    #     raise ValueError(msg)
 
     cmd_annotate = [
         shutil.which("git"),
@@ -2794,12 +2790,12 @@ def tag(session, working_directory):
 
             session.log(f"Running Command:\n\t{shlex.join(cmd)}")
 
-            # session.run(
-            #     *cmd,
-            #     env=ENV,
-            #     external=True,
-            #     silent=SESSION_RUN_SILENT,
-            # )
+            session.run(
+                *cmd,
+                env=ENV,
+                external=True,
+                silent=SESSION_RUN_SILENT,
+            )
 
 
 @nox.session(python=None, tags=["tag_delete"])
@@ -2912,14 +2908,6 @@ def tag_delete(session, working_directory):
 
 
 @nox.session(python=None, tags=["gh_login"])
-# @nox.parametrize(
-#     "working_directory",
-#     # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
-#     [
-#         nox.param(engine_dir.name, id=engine_dir.name),
-#         *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED],
-#     ],
-# )
 def gh_login(session):
     """
     GitHub CLI Login.
