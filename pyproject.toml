@@ -4,7 +4,10 @@
 # - https://devsjc.github.io/blog/20240627-the-complete-guide-to-pyproject-toml/
 
 [build-system]
-requires = ["setuptools>=61.2"]
+requires = [
+    "setuptools>=80",
+    "setuptools-scm>=9",
+]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -28,7 +31,6 @@ dependencies = [
     "dagster-postgres",
     "docker",
     "nox",
-    "pyscaffold",
     "docker-compose-graph @ git+https://github.com/michimussato/docker-compose-graph.git@v1.0.0",
 ]
 dynamic = ["version"]
@@ -49,7 +51,7 @@ Homepage = "https://github.com/michimussato/OpenStudioLandscapes"
 # PDF = ReportLab; RXP
 # Add here test requirements (semicolon/line-separated)
 testing = [
-    "setuptools",
+#    "setuptools",
     "pytest",
     "pytest-cov",
 ]
@@ -192,6 +194,9 @@ namespaces = true
 # # markers =
 # # slow: mark tests as slow (deselect with '-m "not slow"')
 # # system: mark end-to-end system tests
+
+[tool.setuptools_scm]
+version_file = "src/OpenStudioLandscapes/engine/_version.py"
 
 [tool.dagster]
 # We can define ONE SINGLE TOP-LEVEL code location
