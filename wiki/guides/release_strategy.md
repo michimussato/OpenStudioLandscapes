@@ -37,9 +37,9 @@ Based on [Semantic Versioning]()
 echo "Version Tag (Release Candidate):"
 echo "v<major>.<minor>.<patch>-rc<increment>"
 read -p "v" TAG_VERSION
-TAG_VERSION="v${TAG_VERSION}"
+RELEASE_TYPE=rc
 
-nox --session tag_rc -- ${TAG_VERSION}
+nox --session tag -- ${TAG_VERSION}
 ```
 
 Manual:
@@ -81,9 +81,9 @@ popd || exit
 echo "Version Tag (Main Release):"
 echo "v<major>.<minor>.<patch>"
 read -p "v" TAG_VERSION
-TAG_VERSION="v${TAG_VERSION}"
+RELEASE_TYPE=main
 
-nox --session tag_main -- ${TAG_VERSION}
+nox --session tag -- ${TAG_VERSION}
 ```
 
 Manual:
@@ -181,8 +181,10 @@ gh auth login
 ### Create PR
 
 ```shell
-echo "Create PR:"
+echo "Create PR (draft):"
 read -p "Branch: " BRANCH
+read -p "Dry run [1]: " DRY_RUN
+DRY_RUN=${DRY_RUN:-1}
 
 nox --session gh_pr_create -- ${BRANCH}
 ```
@@ -202,6 +204,7 @@ read -p "Branch: " BRANCH  # feature-openstudiolandscapes-n8n
 
 read -r -d '' COMMAND <<'EOF'
 gh pr create \
+    --draft \
     --title ${BRANCH} \
     --head ${BRANCH} \
     --base main \

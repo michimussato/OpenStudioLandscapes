@@ -3,6 +3,7 @@ import shlex
 import shutil
 import os
 import nox
+import re
 import pathlib
 import requests
 import logging
@@ -106,6 +107,14 @@ ENV = {}
 
 
 GIT_MAIN_BRANCH = "main"
+
+
+# Semantic Versioning
+# https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
+# RE_SEMVER = r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"
+RE_SEMVER = re.compile(
+    r"^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"
+)
 
 
 #######################################################################################################################
@@ -306,49 +315,6 @@ def clone_features(session):
 #             "--tags",
 #             external=True,
 #         )
-
-
-# # # readme_features
-# @nox.session(python=None, tags=["readme_features"])
-# def readme_features(session):
-#     """
-#     Create README.md for all listed (REPOS_FEATURE) Features.
-#
-#     Scope:
-#     - [ ] Engine
-#     - [x] Features
-#     """
-#     # Ex:
-#     # nox --session readme_all
-#     # nox --tags readme_all
-#
-#     features_dir = pathlib.Path.cwd() / ".features"
-#
-#     for dir_ in features_dir.iterdir():
-#         # dir_ is always the full path
-#         logging.info("Creating README for %s" % dir_.name)
-#         if any(dir_.name == i for i in BATCH_EXCLUDED):
-#             logging.info(f"Skipped: {dir_ = }")
-#             continue
-#         if dir_.is_dir():
-#             if pathlib.Path(dir_ / ".git").exists():
-#                 with session.chdir(dir_):
-#
-#                     session.install(
-#                         "--no-cache-dir",
-#                         "-e",
-#                         ".[nox]",
-#                         silent=SESSION_INSTALL_SILENT,
-#                     )
-#                     session.run(
-#                         shutil.which("nox"),
-#                         "-v",
-#                         "--add-timestamp",
-#                         "--session",
-#                         "readme",
-#                         external=True,
-#                         silent=SESSION_RUN_SILENT,
-#                     )
 
 
 # # stash_features
@@ -2602,7 +2568,7 @@ def testing(session, working_directory):
 )
 def readme(session, working_directory):
     """
-    Generate dynamically created README.md file for OpenStudioLandscapes modules.
+    Generate dynamic README.md file for OpenStudioLandscapes modules.
 
     Scope:
     - [ ] Engine
@@ -2706,7 +2672,7 @@ def release(session, working_directory):
 
 #######################################################################################################################
 # Tag
-@nox.session(python=None, tags=["tag_rc"])
+@nox.session(python=None, tags=["tag"])
 @nox.parametrize(
     "working_directory",
     # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
@@ -2715,96 +2681,9 @@ def release(session, working_directory):
         *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED],
     ],
 )
-def tag_rc(session, working_directory):
+def tag(session, working_directory):
     """
-    Git tag rc OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_rc -- v1.2.0-rc1`).
-    See wiki/guides/release_strategy.md#release-candidate
-
-    Scope:
-    - [x] Engine
-    - [x] Features
-    """
-    # Ex:
-    # nox --session tag_rc -- v1.2.0-rc1
-    # nox --tags tag_rc -- v1.2.0-rc1
-
-    # sudo = False
-
-    cmds = []
-
-    tag = session.posargs
-
-    session.log(f"Args: {tag}")
-
-    if len(tag) != 1:
-        msg = "Invalid tag length. Tag argument must be exactly 1 argument."
-        session.log(msg)
-        raise ValueError(msg)
-
-    tag = tag[0]
-
-    cmd_fetch = [
-        shutil.which("git"),
-        "fetch",
-        "--tags",
-        "--force",
-    ]
-    cmds.append(cmd_fetch)
-
-    cmd_annotate = [
-        shutil.which("git"),
-        "tag",
-        "--annotate",
-        tag,
-        "--message",
-        f"Release Candidate Version {tag}",
-        "--force",
-    ]
-    cmds.append(cmd_annotate)
-
-    cmd_push = [
-        shutil.which("git"),
-        "push",
-        "--tags",
-        "--force",
-    ]
-    cmds.append(cmd_push)
-
-    # if sudo:
-    #     cmd.insert(0, shutil.which("sudo"))
-    #     cmd.insert(1, "--reset-timestamp")
-    #     # cmd.insert(2, "--stdin")
-
-    with session.chdir(engine_dir.parent / working_directory):
-
-        session.log(
-            f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
-        )
-
-        for cmd in cmds:
-
-            session.log(f"Running Command:\n\t{shlex.join(cmd)}")
-
-            session.run(
-                *cmd,
-                env=ENV,
-                external=True,
-                silent=SESSION_RUN_SILENT,
-            )
-
-
-@nox.session(python=None, tags=["tag_main"])
-@nox.parametrize(
-    "working_directory",
-    # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
-    [
-        nox.param(engine_dir.name, id=engine_dir.name),
-        *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED],
-    ],
-)
-def tag_main(session, working_directory):
-    """
-    Git tag main OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_main -- v1.2.0`).
+    Git tag OpenStudioLandscapes modules (RELEASE_TYPE=`rc`|`main`, FORCE=`0`|`1`). Needs exactly one argument (i.e. `nox --session tag -- 1.2.0[-rc1]`).
     See wiki/guides/release_strategy.md#main-release
 
     Scope:
@@ -2812,12 +2691,24 @@ def tag_main(session, working_directory):
     - [x] Features
     """
     # Ex:
-    # nox --session tag_main -- v1.2.0
-    # nox --tags tag_main -- v1.2.0
+    # RELEASE_TYPE=rc FORCE=0 nox --session tag -- 1.2.0[-rc1]
+    # RELEASE_TYPE=rc FORCE=0 nox --tags tag -- 1.2.0[-rc1]
 
     sudo = False
 
     cmds = []
+
+    # defaults to rc if not overridden
+    _release_type = os.environ.get("RELEASE_TYPE", "rc").lower()
+    if _release_type not in ["rc", "main"]:
+        session.error("RELEASE_TYPE must be rc or main.")
+    release_type = str(_release_type)
+
+    # defaults to !--force if not overridden
+    _force = os.environ.get("FORCE", "0")
+    if _force not in ["0", "1"]:
+        session.error("FORCE must be 0 or 1.")
+    force = bool(int(_force))
 
     tag = session.posargs
 
@@ -2825,10 +2716,15 @@ def tag_main(session, working_directory):
 
     if len(tag) != 1:
         msg = "Invalid tag length. Tag argument must be exactly 1 argument."
-        session.log(msg)
-        raise ValueError(msg)
+        session.error(msg)
 
     tag = tag[0]
+
+    if not RE_SEMVER.match(tag):
+        msg = "Invalid tag pattern (SemVer)."
+        session.error(msg)
+
+    tag = f"v{tag}"
 
     cmd_fetch = [
         shutil.which("git"),
@@ -2838,35 +2734,49 @@ def tag_main(session, working_directory):
     ]
     cmds.append(cmd_fetch)
 
+    if release_type == "rc":
+        msg = f"Release Candidate Version {tag}"
+    elif release_type == "main":
+        msg = f"Main Release Version {tag}"
+    # else:
+    #     msg = "Invalid release_type. Must be either 'rc' or 'main'."
+    #     session.warn(msg)
+    #     raise ValueError(msg)
+
     cmd_annotate = [
         shutil.which("git"),
         "tag",
         "--annotate",
         tag,
         "--message",
-        f"Main Release Version {tag}",
-        "--force",
+        msg,
     ]
+    if force:
+        cmd_annotate.append("--force")
     cmds.append(cmd_annotate)
 
-    cmd_annotate_latest = [
-        shutil.which("git"),
-        "tag",
-        "--annotate",
-        "latest",
-        "--message",
-        f"Latest Release Version (pointing to {tag}",
-        "%s^{}" % tag,
-        "--force",
-    ]
-    cmds.append(cmd_annotate_latest)
+    if release_type == "main":
+
+        cmd_annotate_latest = [
+            shutil.which("git"),
+            "tag",
+            "--annotate",
+            "latest",
+            "--message",
+            f"Latest Release Version (pointing to {tag}",
+            "%s^{}" % tag,
+        ]
+        if force:
+            cmd_annotate_latest.append("--force")
+        cmds.append(cmd_annotate_latest)
 
     cmd_push = [
         shutil.which("git"),
         "push",
         "--tags",
-        "--force",
     ]
+    if force:
+        cmd_push.append("--force")
     cmds.append(cmd_push)
 
     # if sudo:
@@ -2884,12 +2794,12 @@ def tag_main(session, working_directory):
 
             session.log(f"Running Command:\n\t{shlex.join(cmd)}")
 
-            session.run(
-                *cmd,
-                env=ENV,
-                external=True,
-                silent=SESSION_RUN_SILENT,
-            )
+            # session.run(
+            #     *cmd,
+            #     env=ENV,
+            #     external=True,
+            #     silent=SESSION_RUN_SILENT,
+            # )
 
 
 @nox.session(python=None, tags=["tag_delete"])
@@ -2903,7 +2813,7 @@ def tag_main(session, working_directory):
 )
 def tag_delete(session, working_directory):
     """
-    Git tag delete OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_delete -- v1.2.0-xy`).
+    Git tag delete OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_delete -- 1.2.0[-rc1]`).
     See wiki/guides/release_strategy.md#delete-tags
 
     Scope:
@@ -2911,8 +2821,8 @@ def tag_delete(session, working_directory):
     - [x] Features
     """
     # Ex:
-    # nox --session tag_delete -- v1.2.0
-    # nox --tags tag_delete -- v1.2.0
+    # nox --session tag_delete -- 1.2.0[-rc1]
+    # nox --tags tag_delete -- 1.2.0[-rc1]
 
     sudo = False
 
@@ -2928,6 +2838,13 @@ def tag_delete(session, working_directory):
         raise ValueError(msg)
 
     tag = tag[0]
+
+    if not RE_SEMVER.match(tag):
+        msg = "Invalid tag pattern (SemVer)."
+        session.log(msg)
+        raise ValueError(msg)
+
+    tag = f"v{tag}"
 
     cmd_fetch = [
         shutil.which("git"),
@@ -3059,7 +2976,7 @@ def gh_login(session):
 )
 def gh_pr_create(session, working_directory):
     """
-    Create PR for OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
+    Create PR (draft) for OpenStudioLandscapes modules (DRY_RUN=`0`|`1`). Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
     See wiki/guides/release_strategy.md#create-pr
 
     <branch_name> so that we can associate a PR with the
@@ -3078,7 +2995,10 @@ def gh_pr_create(session, working_directory):
     gh = shutil.which("gh")
 
     # defaults to --dry-run if not overridden
-    dry_run = bool(int(os.environ.get("DRY_RUN", 1)))
+    _dry_run = os.environ.get("DRY_RUN", "1")
+    if _dry_run not in ["0", "1"]:
+        session.error("DRY_RUN must be rc or main.")
+    dry_run = bool(int(_dry_run))
 
     # body_file = str(os.environ.get("BODY_FILE", ""))
     # session.log(f"{body_file = }")
@@ -3098,18 +3018,20 @@ def gh_pr_create(session, working_directory):
             gh,
             "pr",
             "create",
+            "--draft",
             "--title",
             branch_name,
             "--head",
             branch_name,
             "--base",
             GIT_MAIN_BRANCH,
-            "--dry-run" if dry_run else "",
             # Todo
             #  - [ ] --body-file
             "--body",
             "",
         ]
+        if dry_run:
+            cmd_gh_pr_create.append("--dry-run")
         cmds.append(cmd_gh_pr_create)
 
         with session.chdir(engine_dir.parent / working_directory):
@@ -3148,7 +3070,7 @@ def gh_pr_create(session, working_directory):
 )
 def gh_pr_set_mode(session, working_directory):
     """
-    Set mode for OpenStudioLandscapes PRs (`draft`|`ready`). Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
+    Set mode for OpenStudioLandscapes PRs (MODE=`draft`|`ready`). Needs exactly one argument (i.e. `nox --session gh_pr_create -- <branch>`).
     See wiki/guides/release_strategy.md#edit-pr
 
     <branch> so that we can associate a PR with the
@@ -3166,8 +3088,11 @@ def gh_pr_set_mode(session, working_directory):
 
     gh = shutil.which("gh")
 
-    # defaults to --dry-run if not overridden
-    mode = str(os.environ.get("MODE", "draft")).lower()
+    # defaults to draft if not overridden
+    _mode = os.environ.get("MODE", "draft").lower()
+    if _mode not in ["draft", "ready"]:
+        session.error("MODE must be draft or ready.")
+    mode = str(_mode)
 
     # body_file = str(os.environ.get("BODY_FILE", ""))
     # session.log(f"{body_file = }")
@@ -3190,16 +3115,7 @@ def gh_pr_set_mode(session, working_directory):
             branch_name,
         ]
         if mode == "draft":
-            cmd_gh_pr_set_mode.append(
-                "--undo"
-            )
-        elif mode == "ready":
-            pass
-        else:
-            msg = "Invalid mode. Must be either 'draft' or 'ready'."
-            session.warn(msg)
-            raise ValueError(msg)
-
+            cmd_gh_pr_set_mode.append("--undo")
         cmds.append(cmd_gh_pr_set_mode)
 
         with session.chdir(engine_dir.parent / working_directory):
