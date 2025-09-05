@@ -68,7 +68,21 @@ Sessions defined in OpenStudioLandscapes/noxfile.py:
 * sbom-3.11(OpenStudioLandscapes-Template) -> Runs Software Bill of Materials (SBOM).
 * sbom-3.11(OpenStudioLandscapes-Watchtower) -> Runs Software Bill of Materials (SBOM).
 * sbom-3.11(OpenStudioLandscapes-Deadline-10-2-Worker) -> Runs Software Bill of Materials (SBOM).
-- coverage-3.11 -> Runs coverage
+* coverage-3.11(OpenStudioLandscapes) -> Runs coverage (not implemented).
+* coverage-3.11(OpenStudioLandscapes-NukeRLM-8) -> Runs coverage (not implemented).
+* coverage-3.11(OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20) -> Runs coverage (not implemented).
+* coverage-3.11(OpenStudioLandscapes-Deadline-10-2) -> Runs coverage (not implemented).
+* coverage-3.11(OpenStudioLandscapes-Syncthing) -> Runs coverage (not implemented).
+* coverage-3.11(OpenStudioLandscapes-filebrowser) -> Runs coverage (not implemented).
+* coverage-3.11(OpenStudioLandscapes-Dagster) -> Runs coverage (not implemented).
+* coverage-3.11(OpenStudioLandscapes-Kitsu) -> Runs coverage (not implemented).
+* coverage-3.11(OpenStudioLandscapes-OpenCue) -> Runs coverage (not implemented).
+* coverage-3.11(OpenStudioLandscapes-Grafana) -> Runs coverage (not implemented).
+* coverage-3.11(OpenStudioLandscapes-LikeC4) -> Runs coverage (not implemented).
+* coverage-3.11(OpenStudioLandscapes-Ayon) -> Runs coverage (not implemented).
+* coverage-3.11(OpenStudioLandscapes-Template) -> Runs coverage (not implemented).
+* coverage-3.11(OpenStudioLandscapes-Watchtower) -> Runs coverage (not implemented).
+* coverage-3.11(OpenStudioLandscapes-Deadline-10-2-Worker) -> Runs coverage (not implemented).
 * lint-3.11(OpenStudioLandscapes) -> Runs linters and fixers
 * lint-3.11(OpenStudioLandscapes-NukeRLM-8) -> Runs linters and fixers
 * lint-3.11(OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20) -> Runs linters and fixers
@@ -84,7 +98,21 @@ Sessions defined in OpenStudioLandscapes/noxfile.py:
 * lint-3.11(OpenStudioLandscapes-Template) -> Runs linters and fixers
 * lint-3.11(OpenStudioLandscapes-Watchtower) -> Runs linters and fixers
 * lint-3.11(OpenStudioLandscapes-Deadline-10-2-Worker) -> Runs linters and fixers
-- testing-3.11 -> Runs pytests.
+* testing-3.11(OpenStudioLandscapes) -> Runs pytests (not implemented).
+* testing-3.11(OpenStudioLandscapes-NukeRLM-8) -> Runs pytests (not implemented).
+* testing-3.11(OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20) -> Runs pytests (not implemented).
+* testing-3.11(OpenStudioLandscapes-Deadline-10-2) -> Runs pytests (not implemented).
+* testing-3.11(OpenStudioLandscapes-Syncthing) -> Runs pytests (not implemented).
+* testing-3.11(OpenStudioLandscapes-filebrowser) -> Runs pytests (not implemented).
+* testing-3.11(OpenStudioLandscapes-Dagster) -> Runs pytests (not implemented).
+* testing-3.11(OpenStudioLandscapes-Kitsu) -> Runs pytests (not implemented).
+* testing-3.11(OpenStudioLandscapes-OpenCue) -> Runs pytests (not implemented).
+* testing-3.11(OpenStudioLandscapes-Grafana) -> Runs pytests (not implemented).
+* testing-3.11(OpenStudioLandscapes-LikeC4) -> Runs pytests (not implemented).
+* testing-3.11(OpenStudioLandscapes-Ayon) -> Runs pytests (not implemented).
+* testing-3.11(OpenStudioLandscapes-Template) -> Runs pytests (not implemented).
+* testing-3.11(OpenStudioLandscapes-Watchtower) -> Runs pytests (not implemented).
+* testing-3.11(OpenStudioLandscapes-Deadline-10-2-Worker) -> Runs pytests (not implemented).
 * readme(OpenStudioLandscapes-NukeRLM-8) -> Generate dynamically created README.md file for OpenStudioLandscapes modules.
 * readme(OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20) -> Generate dynamically created README.md file for OpenStudioLandscapes modules.
 * readme(OpenStudioLandscapes-Deadline-10-2) -> Generate dynamically created README.md file for OpenStudioLandscapes modules.
@@ -99,7 +127,21 @@ Sessions defined in OpenStudioLandscapes/noxfile.py:
 * readme(OpenStudioLandscapes-Template) -> Generate dynamically created README.md file for OpenStudioLandscapes modules.
 * readme(OpenStudioLandscapes-Watchtower) -> Generate dynamically created README.md file for OpenStudioLandscapes modules.
 * readme(OpenStudioLandscapes-Deadline-10-2-Worker) -> Generate dynamically created README.md file for OpenStudioLandscapes modules.
-- release-3.11 -> Build and release to a repository
+* release-3.11(OpenStudioLandscapes) -> Build and release to a repository (not implemented).
+* release-3.11(OpenStudioLandscapes-NukeRLM-8) -> Build and release to a repository (not implemented).
+* release-3.11(OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20) -> Build and release to a repository (not implemented).
+* release-3.11(OpenStudioLandscapes-Deadline-10-2) -> Build and release to a repository (not implemented).
+* release-3.11(OpenStudioLandscapes-Syncthing) -> Build and release to a repository (not implemented).
+* release-3.11(OpenStudioLandscapes-filebrowser) -> Build and release to a repository (not implemented).
+* release-3.11(OpenStudioLandscapes-Dagster) -> Build and release to a repository (not implemented).
+* release-3.11(OpenStudioLandscapes-Kitsu) -> Build and release to a repository (not implemented).
+* release-3.11(OpenStudioLandscapes-OpenCue) -> Build and release to a repository (not implemented).
+* release-3.11(OpenStudioLandscapes-Grafana) -> Build and release to a repository (not implemented).
+* release-3.11(OpenStudioLandscapes-LikeC4) -> Build and release to a repository (not implemented).
+* release-3.11(OpenStudioLandscapes-Ayon) -> Build and release to a repository (not implemented).
+* release-3.11(OpenStudioLandscapes-Template) -> Build and release to a repository (not implemented).
+* release-3.11(OpenStudioLandscapes-Watchtower) -> Build and release to a repository (not implemented).
+* release-3.11(OpenStudioLandscapes-Deadline-10-2-Worker) -> Build and release to a repository (not implemented).
 - tag_rc(OpenStudioLandscapes) -> Git tag rc OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_rc -- v1.2.0-rc1`).
 - tag_rc(OpenStudioLandscapes-NukeRLM-8) -> Git tag rc OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_rc -- v1.2.0-rc1`).
 - tag_rc(OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20) -> Git tag rc OpenStudioLandscapes modules. Needs exactly one argument (i.e. `nox --session tag_rc -- v1.2.0-rc1`).

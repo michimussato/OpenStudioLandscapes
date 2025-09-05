@@ -82,13 +82,12 @@ SESSION_RUN_SILENT = False
 # or
 # nox --tag [TAG] [TAG] [...]
 nox.options.sessions = [
+    "coverage",  # Todo
     "sbom",
     "lint",
     "readme",
-    # Todo:
-    #  - "coverage",
-    #  - "testing",
-    #  - "release",
+    "release",  # Todo
+    "testing",  # Todo
 ]
 
 BATCH_EXCLUDED = []
@@ -2375,9 +2374,17 @@ def sbom(session, working_directory):
 #######################################################################################################################
 # Coverage
 @nox.session(python=PYTHON_TEST_VERSIONS, tags=["coverage"])
-def coverage(session):
+@nox.parametrize(
+    "working_directory",
+    # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
+    [
+        nox.param(engine_dir.name, id=engine_dir.name),
+        *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED],
+    ],
+)
+def coverage(session, working_directory):
     """
-    Runs coverage
+    Runs coverage (not implemented).
 
     Scope:
     - [x] Engine
@@ -2387,44 +2394,52 @@ def coverage(session):
     # nox --session coverage
     # nox --tags coverage
 
+    session.skip("Not implemented")
+
     sudo = False
 
-    session.install(
-        "--no-cache-dir",
-        "-e",
-        ".[coverage]",
-        silent=SESSION_INSTALL_SILENT,
-    )
+    with session.chdir(engine_dir.parent / working_directory):
 
-    session.run(
-        "coverage",
-        "run",
-        "--source",
-        "src",
-        "-m",
-        "pytest",
-        "-sv",
-        env=ENV,
-        # external=True,
-        silent=SESSION_RUN_SILENT,
-    )  # ./.coverage
-    session.run(
-        "coverage",
-        "report",
-        # external=True,
-        silent=SESSION_RUN_SILENT,
-    )  # report to console
-    # session.run("coverage", "json", "-o", ".coverage", "coverage.json")  # report to json
-    session.run(
-        "coverage",
-        "json",
-        "-o",
-        "coverage.json",
-        # external=True,
-        silent=SESSION_RUN_SILENT,
-    )  # report to json
-    # session.run("coverage", "xml")  # ./coverage.xml
-    # session.run("coverage", "html")  # ./htmlcov/
+        session.log(
+            f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
+        )
+
+        session.install(
+            "--no-cache-dir",
+            "-e",
+            ".[coverage]",
+            silent=SESSION_INSTALL_SILENT,
+        )
+
+        session.run(
+            "coverage",
+            "run",
+            "--source",
+            "src",
+            "-m",
+            "pytest",
+            "-sv",
+            env=ENV,
+            # external=True,
+            silent=SESSION_RUN_SILENT,
+        )  # ./.coverage
+        session.run(
+            "coverage",
+            "report",
+            # external=True,
+            silent=SESSION_RUN_SILENT,
+        )  # report to console
+        # session.run("coverage", "json", "-o", ".coverage", "coverage.json")  # report to json
+        session.run(
+            "coverage",
+            "json",
+            "-o",
+            "coverage.json",
+            # external=True,
+            silent=SESSION_RUN_SILENT,
+        )  # report to json
+        # session.run("coverage", "xml")  # ./coverage.xml
+        # session.run("coverage", "html")  # ./htmlcov/
 
 
 #######################################################################################################################
@@ -2474,7 +2489,6 @@ def lint(session, working_directory):
         #     "--extend-exclude", "'^.svg'",
         # ]
 
-        # session.run("black", "src", *exclude, *session.posargs)
         session.run(
             "black",
             "src",
@@ -2526,9 +2540,17 @@ def lint(session, working_directory):
 #######################################################################################################################
 # Testing
 @nox.session(python=PYTHON_TEST_VERSIONS, tags=["testing"])
-def testing(session):
+@nox.parametrize(
+    "working_directory",
+    # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
+    [
+        nox.param(engine_dir.name, id=engine_dir.name),
+        *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED],
+    ],
+)
+def testing(session, working_directory):
     """
-    Runs pytests.
+    Runs pytests (not implemented).
 
     Scope:
     - [x] Engine
@@ -2538,22 +2560,30 @@ def testing(session):
     # nox --session testing
     # nox --tags testing
 
+    session.skip("Not implemented")
+
     sudo = False
 
-    session.install(
-        "--no-cache-dir",
-        "-e",
-        ".[testing]",
-        silent=SESSION_INSTALL_SILENT,
-    )
+    with session.chdir(engine_dir.parent / working_directory):
 
-    session.run(
-        "pytest",
-        *session.posargs,
-        env=ENV,
-        # external=True,
-        silent=SESSION_RUN_SILENT,
-    )
+        session.log(
+            f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
+        )
+
+        session.install(
+            "--no-cache-dir",
+            "-e",
+            ".[testing]",
+            silent=SESSION_INSTALL_SILENT,
+        )
+
+        session.run(
+            "pytest",
+            *session.posargs,
+            env=ENV,
+            # external=True,
+            silent=SESSION_RUN_SILENT,
+        )
 
 
 #######################################################################################################################
@@ -2613,9 +2643,17 @@ def readme(session, working_directory):
 # Release
 # Todo
 @nox.session(python=PYTHON_TEST_VERSIONS, tags=["release"])
-def release(session):
+@nox.parametrize(
+    "working_directory",
+    # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
+    [
+        nox.param(engine_dir.name, id=engine_dir.name),
+        *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED],
+    ],
+)
+def release(session, working_directory):
     """
-    Build and release to a repository
+    Build and release to a repository (not implemented).
 
     Scope:
     - [x] Engine
@@ -2625,38 +2663,42 @@ def release(session):
     # nox --session release
     # nox --tags release
 
-    sudo = False
-
-    session.install(
-        "--no-cache-dir",
-        "-e",
-        ".[release]",
-        silent=SESSION_INSTALL_SILENT,
-    )
-
     session.skip("Not implemented")
 
-    raise NotImplementedError
+    sudo = False
 
-    # pypi_user: str = os.environ.get("PYPI_USER")
-    # pypi_pass: str = os.environ.get("PYPI_PASS")
-    # if not pypi_user or not pypi_pass:
-    #     session.error(
-    #         "Environment variables for release: PYPI_USER, PYPI_PASS are missing!",
-    #     )
-    # session.run("poetry", "install", external=True)
-    # session.run("poetry", "build", external=True)
-    # session.run(
-    #     "poetry",
-    #     "publish",
-    #     "-r",
-    #     "testpypi",
-    #     "-u",
-    #     pypi_user,
-    #     "-p",
-    #     pypi_pass,
-    #     external=True,
-    # )
+    with session.chdir(engine_dir.parent / working_directory):
+
+        session.log(
+            f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
+        )
+
+        session.install(
+            "--no-cache-dir",
+            "-e",
+            ".[release]",
+            silent=SESSION_INSTALL_SILENT,
+        )
+
+        pypi_user: str = os.environ.get("PYPI_USER")
+        pypi_pass: str = os.environ.get("PYPI_PASS")
+        if not pypi_user or not pypi_pass:
+            session.error(
+                "Environment variables for release: PYPI_USER, PYPI_PASS are missing!",
+            )
+        session.run("poetry", "install", external=True)
+        session.run("poetry", "build", external=True)
+        session.run(
+            "poetry",
+            "publish",
+            "-r",
+            "testpypi",
+            "-u",
+            pypi_user,
+            "-p",
+            pypi_pass,
+            external=True,
+        )
 
 
 #######################################################################################################################
