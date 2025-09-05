@@ -8,8 +8,6 @@
   * [Pull Requests (`gh`)](#pull-requests-gh)
     * [Create PR](#create-pr)
     * [Edit PR](#edit-pr)
-      * [Ready for Review](#ready-for-review)
-      * [Set to Draft](#set-to-draft)
     * [Close PR](#close-pr)
   * [Examples](#examples)
   * [Sequential Branches](#sequential-branches)
@@ -35,93 +33,32 @@ Based on [Semantic Versioning]()
 
 ```shell
 echo "Version Tag (Release Candidate):"
+export RELEASE_TYPE=rc
 echo "v<major>.<minor>.<patch>-rc<increment>"
 read -p "v" TAG_VERSION
+export TAG_VERSION
 read -p "Force [0]: " FORCE
-FORCE=${FORCE:-0}
-RELEASE_TYPE=rc
+export FORCE=${FORCE:-0}
 
-FORCE=${FORCE} RELEASE_TYPE=${RELEASE_TYPE} nox --session tag -- ${TAG_VERSION}
-```
+nox --session tag -- ${TAG_VERSION}
 
-Manual:
-
-```shell
-echo "Version Tag (Release Candidate):"
-echo "v<major>.<minor>.<patch>-rc<increment>"
-read -p "v" TAG_VERSION
-TAG_VERSION="v${TAG_VERSION}"
-# BRANCH="feature"
-
-
-read -r -d '' COMMAND <<'EOF'
-git fetch --tags --force
-git tag --annotate "${TAG_VERSION}" --message "Release Candidate Version ${TAG_VERSION}" --force
-git push --tags --force
-EOF
-
-
-eval "${COMMAND}"
-
-
-pushd .features || exit
-
-for dir in */; do
-    pushd "${dir}" || exit
-
-    eval "${COMMAND}"
-
-    popd || exit
-done;
-
-popd || exit
+unset TAG_VERSION FORCE RELEASE_TYPE
 ```
 
 #### Main Release
 
 ```shell
 echo "Version Tag (Main Release):"
+export RELEASE_TYPE=main
 echo "v<major>.<minor>.<patch>"
 read -p "v" TAG_VERSION
+export TAG_VERSION
 read -p "Force [0]: " FORCE
-FORCE=${FORCE:-0}
-RELEASE_TYPE=main
+export FORCE=${FORCE:-0}
 
-FORCE=${FORCE} RELEASE_TYPE=${RELEASE_TYPE} nox --session tag -- ${TAG_VERSION}
-```
+nox --session tag -- ${TAG_VERSION}
 
-Manual:
-
-```shell
-echo "Version Tag (Main Release):"
-echo "v<major>.<minor>.<patch>"
-read -p "v" TAG_VERSION
-TAG_VERSION="v${TAG_VERSION}"
-# BRANCH="main"
-
-
-read -r -d '' COMMAND <<'EOF'
-git fetch --tags --force
-git tag --annotate "${TAG_VERSION}" --message "Main Release Version ${TAG_VERSION}" --force
-git tag --annotate "latest" --message "Latest Release Version (pointing to ${TAG_VERSION})" "${TAG_VERSION}^{}" --force
-git push --tags --force
-EOF
-
-
-eval "${COMMAND}"
-
-
-pushd .features || exit
-
-for dir in */; do
-    pushd "${dir}" || exit
-
-    eval "${COMMAND}"
-
-    popd || exit
-done;
-
-popd || exit
+unset TAG_VERSION FORCE RELEASE_TYPE
 ```
 
 #### Delete Tags
@@ -132,43 +69,14 @@ This deletes a local _and_ remote Git tag. a tag.
 echo "Version Tag (Delete Tag):"
 read -p "v" TAG_VERSION
 TAG_VERSION="v${TAG_VERSION}"
+export TAG_VERSION
 
 nox --session tag_delete -- ${TAG_VERSION}
-```
 
-Manual:
+unset TAG_VERSION
+```
 
 Ref: [How To Delete Local and Remote Tags on Git](https://devconnected.com/how-to-delete-local-and-remote-tags-on-git/)
-
-```shell
-echo "Version Tag (Delete Tag):"
-read -p "v" TAG_VERSION
-TAG_VERSION="v${TAG_VERSION}"
-# BRANCH="feature"
-
-
-read -r -d '' COMMAND <<'EOF'
-git fetch --tags --force
-git tag -d ${TAG_VERSION}
-git push origin :refs/tags/${TAG_VERSION}
-EOF
-
-
-eval "${COMMAND}"
-
-
-pushd .features || exit
-
-for dir in */; do
-    pushd "${dir}" || exit
-
-    eval "${COMMAND}"
-
-    popd || exit
-done;
-
-popd || exit
-```
 
 ## Pull Requests (`gh`)
 
@@ -187,10 +95,14 @@ gh auth login
 ```shell
 echo "Create PR (draft):"
 read -p "Branch: " BRANCH
+export BRANCH
 read -p "Dry run [1]: " DRY_RUN
 DRY_RUN=${DRY_RUN:-1}
+export DRY_RUN
 
 nox --session gh_pr_create -- ${BRANCH}
+
+unset BRANCH DRY_RUN
 ```
 
 Manual:
@@ -239,67 +151,13 @@ popd || exit
 echo "Edit PR:"
 read -p "Mode [draft]: " MODE
 MODE=${MODE:-draft}
+export MODE
 read -p "Branch: " BRANCH
+export BRANCH
 
 nox --session gh_pr_set_mode -- ${BRANCH}
-```
 
-Manual:
-
-#### Ready for Review
-
-```shell
-echo "PR Ready for Review:"
-read -p "Branch: " BRANCH  # feature-openstudiolandscapes-n8n
-
-
-read -r -d '' COMMAND <<'EOF'
-gh pr ready ${BRANCH}
-EOF
-
-
-eval "${COMMAND}"
-
-
-pushd .features || exit
-
-for dir in */; do
-    pushd "${dir}" || exit
-
-    eval "${COMMAND}"
-
-    popd || exit
-done;
-
-popd || exit
-```
-
-#### Set to Draft
-
-```shell
-echo "PR Set to Draft:"
-read -p "Branch: " BRANCH  # feature-openstudiolandscapes-n8n
-
-
-read -r -d '' COMMAND <<'EOF'
-gh pr ready ${BRANCH} --undo
-EOF
-
-
-eval "${COMMAND}"
-
-
-pushd .features || exit
-
-for dir in */; do
-    pushd "${dir}" || exit
-
-    eval "${COMMAND}"
-
-    popd || exit
-done;
-
-popd || exit
+unset MODE BRANCH
 ```
 
 ### Close PR
