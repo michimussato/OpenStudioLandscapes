@@ -2706,6 +2706,7 @@ def tag(session, working_directory):
 
     # defaults to !--force if not overridden
     _force = os.environ.get("FORCE", "0")
+    session.log(_force)
     if _force not in ["0", "1"]:
         session.error("FORCE must be 0 or 1.")
     force = bool(int(_force))

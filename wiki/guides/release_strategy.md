@@ -37,9 +37,11 @@ Based on [Semantic Versioning]()
 echo "Version Tag (Release Candidate):"
 echo "v<major>.<minor>.<patch>-rc<increment>"
 read -p "v" TAG_VERSION
+read -p "Force [0]: " FORCE
+FORCE=${FORCE:-0}
 RELEASE_TYPE=rc
 
-nox --session tag -- ${TAG_VERSION}
+FORCE=${FORCE} RELEASE_TYPE=${RELEASE_TYPE} nox --session tag -- ${TAG_VERSION}
 ```
 
 Manual:
@@ -81,9 +83,11 @@ popd || exit
 echo "Version Tag (Main Release):"
 echo "v<major>.<minor>.<patch>"
 read -p "v" TAG_VERSION
+read -p "Force [0]: " FORCE
+FORCE=${FORCE:-0}
 RELEASE_TYPE=main
 
-nox --session tag -- ${TAG_VERSION}
+FORCE=${FORCE} RELEASE_TYPE=${RELEASE_TYPE} nox --session tag -- ${TAG_VERSION}
 ```
 
 Manual:
