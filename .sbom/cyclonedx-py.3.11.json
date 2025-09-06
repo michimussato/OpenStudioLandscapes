@@ -1,59 +1,6 @@
 {
   "components": [
     {
-      "bom-ref": "ConfigUpdater==3.2",
-      "description": "Parser like ConfigParser but for updating configuration files",
-      "externalReferences": [
-        {
-          "comment": "from packaging metadata Project-URL: Download",
-          "type": "distribution",
-          "url": "https://pypi.org/project/configupdater/#files"
-        },
-        {
-          "comment": "from packaging metadata Project-URL: Documentation",
-          "type": "documentation",
-          "url": "https://configupdater.readthedocs.io/"
-        },
-        {
-          "comment": "from packaging metadata Project-URL: Tracker",
-          "type": "issue-tracker",
-          "url": "https://github.com/pyscaffold/configupdater/issues"
-        },
-        {
-          "comment": "from packaging metadata Project-URL: Conda-Forge",
-          "type": "other",
-          "url": "https://anaconda.org/conda-forge/configupdater"
-        },
-        {
-          "comment": "from packaging metadata Project-URL: Source",
-          "type": "other",
-          "url": "https://github.com/pyscaffold/configupdater/"
-        },
-        {
-          "comment": "from packaging metadata Project-URL: Changelog",
-          "type": "release-notes",
-          "url": "https://configupdater.readthedocs.io/en/latest/changelog.html"
-        },
-        {
-          "comment": "from packaging metadata: Home-page",
-          "type": "website",
-          "url": "https://github.com/pyscaffold/configupdater"
-        }
-      ],
-      "licenses": [
-        {
-          "license": {
-            "acknowledgement": "declared",
-            "id": "MIT"
-          }
-        }
-      ],
-      "name": "ConfigUpdater",
-      "purl": "pkg:pypi/configupdater@3.2",
-      "type": "library",
-      "version": "3.2"
-    },
-    {
       "bom-ref": "GitPython==3.1.45",
       "description": "GitPython is a Python library used to interact with Git repositories",
       "externalReferences": [
@@ -196,7 +143,7 @@
       "version": "3.0.2"
     },
     {
-      "bom-ref": "OpenStudioLandscapes==0.0.0",
+      "bom-ref": "OpenStudioLandscapes==1.2.0rc2.dev0+g4fccbd35a.d20250906",
       "description": "A Toolkit to create dynamic Animation and VFX studio environments for robust automation and pipelines.",
       "externalReferences": [
         {
@@ -206,12 +153,12 @@
         }
       ],
       "name": "OpenStudioLandscapes",
-      "purl": "pkg:pypi/openstudiolandscapes@0.0.0",
+      "purl": "pkg:pypi/openstudiolandscapes@1.2.0rc2.dev0%2Bg4fccbd35a.d20250906",
       "type": "library",
-      "version": "0.0.0"
+      "version": "1.2.0rc2.dev0+g4fccbd35a.d20250906"
     },
     {
-      "bom-ref": "BomRef.4274229021963849.7456565237642873",
+      "bom-ref": "BomRef.33956499570634946.5341243779304848",
       "description": "A Toolkit to create dynamic Animation and VFX studio environments for robust automation and pipelines.",
       "externalReferences": [
         {
@@ -227,65 +174,7 @@
       ],
       "name": "OpenStudioLandscapes",
       "type": "library",
-      "version": "0.0.0"
-    },
-    {
-      "bom-ref": "PyScaffold==4.6",
-      "description": "Template tool for putting up the scaffold of a Python project",
-      "externalReferences": [
-        {
-          "comment": "from packaging metadata Project-URL: Download",
-          "type": "distribution",
-          "url": "https://pypi.org/project/PyScaffold/#files"
-        },
-        {
-          "comment": "from packaging metadata Project-URL: Documentation",
-          "type": "documentation",
-          "url": "https://pyscaffold.org/"
-        },
-        {
-          "comment": "from packaging metadata Project-URL: Tracker",
-          "type": "issue-tracker",
-          "url": "https://github.com/pyscaffold/pyscaffold/issues"
-        },
-        {
-          "comment": "from packaging metadata Project-URL: Conda-Forge",
-          "type": "other",
-          "url": "https://anaconda.org/conda-forge/pyscaffold"
-        },
-        {
-          "comment": "from packaging metadata Project-URL: Source",
-          "type": "other",
-          "url": "https://github.com/pyscaffold/pyscaffold/"
-        },
-        {
-          "comment": "from packaging metadata Project-URL: Twitter",
-          "type": "other",
-          "url": "https://twitter.com/PyScaffold"
-        },
-        {
-          "comment": "from packaging metadata Project-URL: Changelog",
-          "type": "release-notes",
-          "url": "https://pyscaffold.org/en/latest/changelog.html"
-        },
-        {
-          "comment": "from packaging metadata: Home-page",
-          "type": "website",
-          "url": "https://github.com/pyscaffold/pyscaffold/"
-        }
-      ],
-      "licenses": [
-        {
-          "license": {
-            "acknowledgement": "declared",
-            "id": "MIT"
-          }
-        }
-      ],
-      "name": "PyScaffold",
-      "purl": "pkg:pypi/pyscaffold@4.6",
-      "type": "library",
-      "version": "4.6"
+      "version": "1.2.0rc2.dev0+g4fccbd35a.d20250906"
     },
     {
       "bom-ref": "PyYAML==6.0.2",
@@ -2823,40 +2712,6 @@
       "version": "80.9.0"
     },
     {
-      "bom-ref": "setuptools-scm==9.2.0",
-      "description": "the blessed package to manage your versions by scm tags",
-      "externalReferences": [
-        {
-          "comment": "from packaging metadata Project-URL: documentation",
-          "type": "documentation",
-          "url": "https://setuptools-scm.readthedocs.io/"
-        },
-        {
-          "comment": "from packaging metadata Project-URL: repository",
-          "type": "vcs",
-          "url": "https://github.com/pypa/setuptools-scm/"
-        }
-      ],
-      "licenses": [
-        {
-          "license": {
-            "acknowledgement": "declared",
-            "id": "MIT"
-          }
-        }
-      ],
-      "name": "setuptools-scm",
-      "properties": [
-        {
-          "name": "cdx:python:package:required-extra",
-          "value": "toml"
-        }
-      ],
-      "purl": "pkg:pypi/setuptools-scm@9.2.0",
-      "type": "library",
-      "version": "9.2.0"
-    },
-    {
       "bom-ref": "six==1.17.0",
       "description": "Python 2 and 3 compatibility utilities",
       "externalReferences": [
@@ -3037,34 +2892,6 @@
       "purl": "pkg:pypi/tomli@2.2.1",
       "type": "library",
       "version": "2.2.1"
-    },
-    {
-      "bom-ref": "tomlkit==0.13.3",
-      "description": "Style preserving TOML library",
-      "externalReferences": [
-        {
-          "comment": "from packaging metadata Project-URL: Repository",
-          "type": "vcs",
-          "url": "https://github.com/sdispater/tomlkit"
-        },
-        {
-          "comment": "from packaging metadata Project-URL: Homepage",
-          "type": "website",
-          "url": "https://github.com/sdispater/tomlkit"
-        }
-      ],
-      "licenses": [
-        {
-          "license": {
-            "acknowledgement": "declared",
-            "id": "MIT"
-          }
-        }
-      ],
-      "name": "tomlkit",
-      "purl": "pkg:pypi/tomlkit@0.13.3",
-      "type": "library",
-      "version": "0.13.3"
     },
     {
       "bom-ref": "toposort==1.10",
@@ -3475,9 +3302,6 @@
   ],
   "dependencies": [
     {
-      "ref": "ConfigUpdater==3.2"
-    },
-    {
       "dependsOn": [
         "gitdb==4.0.12",
         "typing_extensions==4.15.0"
@@ -3502,7 +3326,6 @@
     {
       "dependsOn": [
         "GitPython==3.1.45",
-        "PyScaffold==4.6",
         "PyYAML==6.0.2",
         "cyclonedx-bom==7.1.0",
         "dagster-postgres==0.25.11",
@@ -3512,23 +3335,9 @@
         "graphviz==0.21",
         "nox==2025.5.1",
         "pipdeptree==2.28.0",
-        "pydot==4.0.1",
-        "setuptools==80.9.0"
+        "pydot==4.0.1"
       ],
-      "ref": "OpenStudioLandscapes==0.0.0"
-    },
-    {
-      "dependsOn": [
-        "ConfigUpdater==3.2",
-        "certifi==2025.8.3",
-        "packaging==25.0",
-        "platformdirs==4.4.0",
-        "setuptools-scm==9.2.0",
-        "setuptools==80.9.0",
-        "tomlkit==0.13.3",
-        "virtualenv==20.34.0"
-      ],
-      "ref": "PyScaffold==4.6"
+      "ref": "OpenStudioLandscapes==1.2.0rc2.dev0+g4fccbd35a.d20250906"
     },
     {
       "ref": "PyYAML==6.0.2"
@@ -3952,16 +3761,6 @@
     },
     {
       "dependsOn": [
-        "packaging==25.0",
-        "rich==14.1.0",
-        "setuptools==80.9.0",
-        "tomli==2.2.1",
-        "typing_extensions==4.15.0"
-      ],
-      "ref": "setuptools-scm==9.2.0"
-    },
-    {
-      "dependsOn": [
         "filelock==3.19.1",
         "packaging==25.0",
         "pip==25.1.1",
@@ -3991,9 +3790,6 @@
     },
     {
       "ref": "tomli==2.2.1"
-    },
-    {
-      "ref": "tomlkit==0.13.3"
     },
     {
       "ref": "toposort==1.10"
@@ -4054,7 +3850,7 @@
     }
   ],
   "metadata": {
-    "timestamp": "2025-09-03T10:01:37.426904+00:00",
+    "timestamp": "2025-09-06T00:06:59.845971+00:00",
     "tools": {
       "components": [
         {
@@ -4158,7 +3954,7 @@
       ]
     }
   },
-  "serialNumber": "urn:uuid:77fb3522-50ca-4ceb-9851-0897aa832c69",
+  "serialNumber": "urn:uuid:153092c0-46fa-44ce-b338-6e813524d0da",
   "version": 1,
   "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
   "bomFormat": "CycloneDX",

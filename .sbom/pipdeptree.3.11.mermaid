@@ -13,7 +13,6 @@ flowchart TD
     click_0["click\n8.2.1"]
     coloredlogs["coloredlogs\n14.0"]
     colorlog["colorlog\n6.9.0"]
-    configupdater["ConfigUpdater\n3.2"]
     cyclonedx-bom["cyclonedx-bom\n7.1.0"]
     cyclonedx-python-lib["cyclonedx-python-lib\n11.0.0"]
     dagster-pipes["dagster-pipes\n1.9.11"]
@@ -49,7 +48,7 @@ flowchart TD
     markupsafe["MarkupSafe\n3.0.2"]
     mdurl["mdurl\n0.1.2"]
     nox["nox\n2025.5.1"]
-    openstudiolandscapes["OpenStudioLandscapes\n0.0.0"]
+    openstudiolandscapes["OpenStudioLandscapes\n1.2.0rc2.dev0+g4fccbd35a.d20250906"]
     packageurl-python["packageurl-python\n0.17.5"]
     packaging["packaging\n25.0"]
     pip-requirements-parser["pip-requirements-parser\n32.0.1"]
@@ -64,7 +63,6 @@ flowchart TD
     pydot["pydot\n4.0.1"]
     pygments["Pygments\n2.19.2"]
     pyparsing["pyparsing\n3.2.3"]
-    pyscaffold["PyScaffold\n4.6"]
     python-dateutil["python-dateutil\n2.9.0.post0"]
     python-dotenv["python-dotenv\n1.1.1"]
     pytz["pytz\n2025.2"]
@@ -76,7 +74,6 @@ flowchart TD
     rfc3987-syntax["rfc3987-syntax\n1.1.0"]
     rich["rich\n14.1.0"]
     rpds-py["rpds-py\n0.27.1"]
-    setuptools-scm["setuptools-scm\n9.2.0"]
     setuptools["setuptools\n80.9.0"]
     six["six\n1.17.0"]
     smmap["smmap\n5.0.2"]
@@ -85,7 +82,6 @@ flowchart TD
     structlog["structlog\n25.4.0"]
     tabulate["tabulate\n0.9.0"]
     tomli["tomli\n2.2.1"]
-    tomlkit["tomlkit\n0.13.3"]
     toposort["toposort\n1.10"]
     tqdm["tqdm\n4.67.1"]
     types-python-dateutil["types-python-dateutil\n2.9.0.20250822"]
@@ -179,7 +175,6 @@ flowchart TD
     openstudiolandscapes -- "any" --> gitpython
     openstudiolandscapes -- "any" --> nox
     openstudiolandscapes -- "any" --> pydot
-    openstudiolandscapes -- "any" --> pyscaffold
     openstudiolandscapes -- "any" --> pyyaml
     pip-requirements-parser -- "any" --> packaging
     pip-requirements-parser -- "any" --> pyparsing
@@ -192,12 +187,6 @@ flowchart TD
     pydantic -- ">=4.12.2" --> typing-extensions
     pydantic-core -- ">=4.6.0,!=4.7.0" --> typing-extensions
     pydot -- ">=3.1.0" --> pyparsing
-    pyscaffold -- ">=0.7.0,<2" --> tomlkit
-    pyscaffold -- ">=2" --> platformdirs
-    pyscaffold -- ">=20.7" --> packaging
-    pyscaffold -- ">=3.0,<4" --> configupdater
-    pyscaffold -- ">=46.1.0" --> setuptools
-    pyscaffold -- ">=5" --> setuptools-scm
     python-dateutil -- ">=1.5" --> six
     referencing -- ">=0.7.0" --> rpds-py
     referencing -- ">=22.2.0" --> attrs
@@ -210,8 +199,6 @@ flowchart TD
     rfc3987-syntax -- ">=1.2.2" --> lark
     rich -- ">=2.13.0,<3.0.0" --> pygments
     rich -- ">=2.2.0" --> markdown-it-py
-    setuptools-scm -- ">=20" --> packaging
-    setuptools-scm -- "any" --> setuptools
     sqlalchemy -- ">=1" --> greenlet
     sqlalchemy -- ">=4.6.0" --> typing-extensions
     typing-inspection -- ">=4.12.0" --> typing-extensions

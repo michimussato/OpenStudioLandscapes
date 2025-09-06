@@ -46,7 +46,6 @@ for i in IMPORTED_FEATURES:
 
 if bool(ins):
 
-
     @asset(
         **ASSET_HEADER_COMPOSE,
         ins={
@@ -88,7 +87,6 @@ if bool(ins):
             },
         )
 
-
     @asset(
         **ASSET_HEADER_COMPOSE,
         ins={
@@ -115,7 +113,6 @@ if bool(ins):
             },
         )
 
-
     @asset(
         **ASSET_HEADER_COMPOSE,
         ins={
@@ -138,10 +135,11 @@ if bool(ins):
         yield AssetMaterialization(
             asset_key=context.asset_key,
             metadata={
-                "__".join(context.asset_key.path): MetadataValue.path(docker_config_json),
+                "__".join(context.asset_key.path): MetadataValue.path(
+                    docker_config_json
+                ),
             },
         )
-
 
     @asset(
         **ASSET_HEADER_COMPOSE,
@@ -170,7 +168,6 @@ if bool(ins):
             },
         )
 
-
     # Dynamic inputs based on the imported
     # third party code locations
     ins = {}
@@ -183,8 +180,9 @@ if bool(ins):
             split = module.split(".")
             key = split[1]  # key = "Ayon"
             ins[f"{split[0]}_{split[1]}"] = AssetIn(AssetKey([key, "group_out"]))
-            feature_ins[f"{split[0]}_{split[1]}"] = AssetIn(AssetKey([key, "feature_out"]))
-
+            feature_ins[f"{split[0]}_{split[1]}"] = AssetIn(
+                AssetKey([key, "feature_out"])
+            )
 
     @asset(
         **ASSET_HEADER_COMPOSE,
@@ -202,7 +200,8 @@ if bool(ins):
         env: dict,  # pylint: disable=redefined-outer-name
         features_in: dict,  # pylint: disable=redefined-outer-name
     ) -> Generator[
-        Output[MutableMapping[str, List[MutableMapping[str, List]]]] | AssetMaterialization,
+        Output[MutableMapping[str, List[MutableMapping[str, List]]]]
+        | AssetMaterialization,
         None,
         None,
     ]:
@@ -256,11 +255,12 @@ if bool(ins):
         yield AssetMaterialization(
             asset_key=context.asset_key,
             metadata={
-                "__".join(context.asset_key.path): MetadataValue.json(docker_dict_include),
+                "__".join(context.asset_key.path): MetadataValue.json(
+                    docker_dict_include
+                ),
                 "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml_include}\n```"),
             },
         )
-
 
     @asset(
         **ASSET_HEADER_COMPOSE,
@@ -276,7 +276,8 @@ if bool(ins):
         group_out_base: dict,  # pylint: disable=redefined-outer-name
         **kwargs,
     ) -> Generator[
-        Output[MutableMapping[str, List[MutableMapping[str, List]]]] | AssetMaterialization,
+        Output[MutableMapping[str, List[MutableMapping[str, List]]]]
+        | AssetMaterialization,
         None,
         None,
     ]:
@@ -327,7 +328,9 @@ if bool(ins):
         yield AssetMaterialization(
             asset_key=context.asset_key,
             metadata={
-                "__".join(context.asset_key.path): MetadataValue.json(kwargs_serialized),
+                "__".join(context.asset_key.path): MetadataValue.json(
+                    kwargs_serialized
+                ),
                 "docker_compose_yaml": MetadataValue.json(docker_compose_yaml),
                 "docker_compose": MetadataValue.json(docker_compose),
                 **metadatavalues_from_dict(
@@ -336,7 +339,6 @@ if bool(ins):
                 ),
             },
         )
-
 
     @asset(
         **ASSET_HEADER_COMPOSE,
@@ -357,14 +359,15 @@ if bool(ins):
             },
         )
 
-
     @asset(
         **ASSET_HEADER_COMPOSE,
         ins={},
     )
     def cmd_append(
         context: AssetExecutionContext,
-    ) -> Generator[Output[dict[str, list[Any]]] | AssetMaterialization | Any, Any, None]:
+    ) -> Generator[
+        Output[dict[str, list[Any]]] | AssetMaterialization | Any, Any, None
+    ]:
 
         ret = {"cmd": [], "exclude_from_quote": []}
 
@@ -377,11 +380,9 @@ if bool(ins):
             },
         )
 
-
     group_out = get_group_out(
         ASSET_HEADER=ASSET_HEADER_COMPOSE,
     )
-
 
     docker_compose_graph = AssetsDefinition.from_op(
         op_docker_compose_graph,
