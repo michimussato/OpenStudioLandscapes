@@ -78,7 +78,7 @@ nox = [
     "nox",
 ]
 readme = [
-    "OpenStudioLandscapesUtil-ReadmeGenerator @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-ReadmeGenerator.git@v1.2.0"
+    "OpenStudioLandscapesUtil-ReadmeGenerator @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-ReadmeGenerator.git@v1.3.0-rc1"
 ]
 dagster_mysql = [
     "OpenStudioLandscapes[nox]",

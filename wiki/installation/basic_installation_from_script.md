@@ -72,7 +72,7 @@ of previous installations if there were any.
 | Desktop | ![Install_UbuntuDesktop2204.png](../../media/images/Install_UbuntuDesktop2204.png) |
 | Server  | ![Install_UbuntuServer2204.png](../../media/images/Install_UbuntuServer2204.png)   |
 
-Source: [`install_ubuntu_2204.py`](https://github.com/michimussato/OpenStudioLandscapes/blob/v1.2.0/installer/ubuntu/22.04/install_ubuntu_2204.py)
+Source: [`install_ubuntu_2204.py`](../../installer/ubuntu/22.04/install_ubuntu_2204.py)
 
 Install requirements:
 
@@ -84,7 +84,7 @@ sudo apt-get install -y --no-install-recommends curl python3 sudo
 Run installer (reboot if being asked for)
 
 ```shell
-export OPENSTUDIOLANDSCAPES_VERSION_TAG="v1.2.0"
+export OPENSTUDIOLANDSCAPES_VERSION_TAG="v1.3.0-rc1"
 
 python3 <(curl --header 'Cache-Control: no-cache, no-store' --silent https://raw.githubusercontent.com/michimussato/OpenStudioLandscapes/refs/tags/${OPENSTUDIOLANDSCAPES_VERSION_TAG}/installer/ubuntu/22.04/install_ubuntu_2204.py)
 ```
