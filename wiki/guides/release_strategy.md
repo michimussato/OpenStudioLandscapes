@@ -22,6 +22,10 @@ Based on [Semantic Versioning]()
 
 ## Tags
 
+Global version bump (for now):
+
+![versionbump_rc-main.png](../../media/images/versionbump_rc-main.png)
+
 ### Releases
 
 | Branch Name | Tag                                      | Increment                           |
