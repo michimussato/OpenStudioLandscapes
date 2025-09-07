@@ -55,6 +55,8 @@ We might come back to Sphinx/ReadTheDocs at some point.
 
 ```mermaid
 graph TB
+    %% Bug in Github:
+    %% https://github.com/orgs/community/discussions/106690#discussioncomment-14330873
     installation_methods(Installation Methods)
     manual((Manual))
     click manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/v1.2.0/wiki/installation/basic_installation.md#basic-installation"
