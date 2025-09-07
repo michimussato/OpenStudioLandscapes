@@ -62,6 +62,7 @@ graph TB
     %% click docker "/installation/basic_installation.md#install-docker"
     script(("<a href='installation/basic_installation_from_script.md'>Installer</a>"))
     script2["<a href='https://github.com/'>A link to GitHub</a>"]
+    script3["<a href='installation/basic_installation_from_script.md'>A link to GitHub</a>"]
     %% click script href "#contributors"
 
     classDef clone_repo fill:#004f00;
