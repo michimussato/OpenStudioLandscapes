@@ -72,7 +72,7 @@ of previous installations if there were any.
 | Desktop | ![Install_UbuntuDesktop2204.png](../../media/images/Install_UbuntuDesktop2204.png) |
 | Server  | ![Install_UbuntuServer2204.png](../../media/images/Install_UbuntuServer2204.png)   |
 
-Source: [`install_ubuntu_2204.py`](https://github.com/michimussato/OpenStudioLandscapes/blob/main/installer/ubuntu/22.04/install_ubuntu_2204.py)
+Source: [`install_ubuntu_2204.py`](https://github.com/michimussato/OpenStudioLandscapes/blob/v1.2.0/installer/ubuntu/22.04/install_ubuntu_2204.py)
 
 Install requirements:
 
