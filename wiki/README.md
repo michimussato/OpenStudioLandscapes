@@ -60,7 +60,7 @@ graph TB
     click manual "/installation/basic_installation.md#basic-installation"
     %% docker((Docker))
     %% click docker "/installation/basic_installation.md#install-docker"
-    script(("`[Installer](./installation/basic_installation_from_script.md)`"))
+    script(("<a href='installation/basic_installation_from_script.md'>Installer</a>"))
     %% click script href "#contributors"
 
     classDef clone_repo fill:#004f00;
