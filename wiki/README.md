@@ -61,7 +61,7 @@ graph TB
     %% docker((Docker))
     %% click docker "/installation/basic_installation.md#install-docker"
     script((Installer))
-    click script "/installation/basic_installation_from_script.md"
+    click script href "#contributors"
 
     classDef clone_repo fill:#004f00;
     clone_repo_manual[Clone OpenStudioLandscapes Repository]
