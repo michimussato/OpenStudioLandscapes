@@ -164,6 +164,7 @@ REPOS_FEATURE = {
         # "OpenStudioLandscapes-LikeC4": "https://github.com/michimussato/OpenStudioLandscapes-LikeC4.git",
         # "OpenStudioLandscapes-NukeRLM-8": "https://github.com/michimussato/OpenStudioLandscapes-NukeRLM-8.git",
         # "OpenStudioLandscapes-OpenCue": "https://github.com/michimussato/OpenStudioLandscapes-OpenCue.git",
+        # "OpenStudioLandscapes-RustDeskServer": "https://github.com/michimussato/OpenStudioLandscapes-RustDeskServer.git",
         # "OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20": "https://github.com/michimussato/OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20.git",
         # "OpenStudioLandscapes-Syncthing": "https://github.com/michimussato/OpenStudioLandscapes-Syncthing.git",
         # "OpenStudioLandscapes-Watchtower": "https://github.com/michimussato/OpenStudioLandscapes-Watchtower.git",
@@ -180,6 +181,7 @@ REPOS_FEATURE = {
         "OpenStudioLandscapes-LikeC4": "git@github.com:michimussato/OpenStudioLandscapes-LikeC4.git",
         "OpenStudioLandscapes-NukeRLM-8": "git@github.com:michimussato/OpenStudioLandscapes-NukeRLM-8.git",
         "OpenStudioLandscapes-OpenCue": "git@github.com:michimussato/OpenStudioLandscapes-OpenCue.git",
+        "OpenStudioLandscapes-RustDeskServer": "git@github.com:michimussato/OpenStudioLandscapes-RustDeskServer.git",
         "OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20": "git@github.com:michimussato/OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20.git",
         "OpenStudioLandscapes-Syncthing": "git@github.com:michimussato/OpenStudioLandscapes-Syncthing.git",
         "OpenStudioLandscapes-Watchtower": "git@github.com:michimussato/OpenStudioLandscapes-Watchtower.git",
@@ -3049,7 +3051,7 @@ def gh_pr_create(session, working_directory):
             "--body",
             "",
         ]
-        if dry_run:
+        if dry_run == "yes":
             cmd_gh_pr_create.append("--dry-run")
         cmds.append(cmd_gh_pr_create)
 

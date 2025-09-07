@@ -94,6 +94,18 @@ FEATURES: dict[
         "compose_scope": ComposeScope.LICENSE_SERVER,
         "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
+    "OpenStudioLandscapes-RustDeskServer": {
+        # "enabled": True,
+        # - from ENVIRONMENT VARIABLE (.env):
+        #   "enabled": get_bool_env("ENV_VAR")
+        # - combined:
+        "enabled": True or get_bool_env(
+            "OPENSTUDIOLANDSCAPES__ENABLE_FEATURE_OPENSTUDIOLANDSCAPES_RUSTDESKSERVER"
+        ),
+        "module": "OpenStudioLandscapes.RustDeskServer.definitions",
+        "compose_scope": ComposeScope.DEFAULT,
+        "feature_config": OpenStudioLandscapesConfig.DEFAULT,
+    },
     "OpenStudioLandscapes-OpenCue": {
         "enabled": False
         or get_bool_env(
