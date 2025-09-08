@@ -143,7 +143,7 @@
       "version": "3.0.2"
     },
     {
-      "bom-ref": "OpenStudioLandscapes==1.2.0rc2.dev0+g4fccbd35a.d20250906",
+      "bom-ref": "OpenStudioLandscapes==0.0.0",
       "description": "A Toolkit to create dynamic Animation and VFX studio environments for robust automation and pipelines.",
       "externalReferences": [
         {
@@ -153,12 +153,12 @@
         }
       ],
       "name": "OpenStudioLandscapes",
-      "purl": "pkg:pypi/openstudiolandscapes@1.2.0rc2.dev0%2Bg4fccbd35a.d20250906",
+      "purl": "pkg:pypi/openstudiolandscapes@0.0.0",
       "type": "library",
-      "version": "1.2.0rc2.dev0+g4fccbd35a.d20250906"
+      "version": "0.0.0"
     },
     {
-      "bom-ref": "BomRef.33956499570634946.5341243779304848",
+      "bom-ref": "BomRef.39805878824306307.328866629675197",
       "description": "A Toolkit to create dynamic Animation and VFX studio environments for robust automation and pipelines.",
       "externalReferences": [
         {
@@ -174,7 +174,7 @@
       ],
       "name": "OpenStudioLandscapes",
       "type": "library",
-      "version": "1.2.0rc2.dev0+g4fccbd35a.d20250906"
+      "version": "0.0.0"
     },
     {
       "bom-ref": "PyYAML==6.0.2",
@@ -1647,7 +1647,7 @@
       "version": "4.25.1"
     },
     {
-      "bom-ref": "jsonschema-specifications==2025.4.1",
+      "bom-ref": "jsonschema-specifications==2025.9.1",
       "description": "The JSON Schema meta-schemas and vocabularies, exposed as a Registry",
       "externalReferences": [
         {
@@ -1690,9 +1690,9 @@
         }
       ],
       "name": "jsonschema-specifications",
-      "purl": "pkg:pypi/jsonschema-specifications@2025.4.1",
+      "purl": "pkg:pypi/jsonschema-specifications@2025.9.1",
       "type": "library",
-      "version": "2025.4.1"
+      "version": "2025.9.1"
     },
     {
       "bom-ref": "lark==1.2.2",
@@ -3337,7 +3337,7 @@
         "pipdeptree==2.28.0",
         "pydot==4.0.1"
       ],
-      "ref": "OpenStudioLandscapes==1.2.0rc2.dev0+g4fccbd35a.d20250906"
+      "ref": "OpenStudioLandscapes==0.0.0"
     },
     {
       "ref": "PyYAML==6.0.2"
@@ -3573,7 +3573,7 @@
       "dependsOn": [
         "referencing==0.36.2"
       ],
-      "ref": "jsonschema-specifications==2025.4.1"
+      "ref": "jsonschema-specifications==2025.9.1"
     },
     {
       "dependsOn": [
@@ -3582,7 +3582,7 @@
         "idna==3.10",
         "isoduration==20.11.0",
         "jsonpointer==3.0.0",
-        "jsonschema-specifications==2025.4.1",
+        "jsonschema-specifications==2025.9.1",
         "referencing==0.36.2",
         "rfc3339-validator==0.1.4",
         "rfc3986-validator==0.1.1",
@@ -3850,7 +3850,7 @@
     }
   ],
   "metadata": {
-    "timestamp": "2025-09-06T00:06:59.845971+00:00",
+    "timestamp": "2025-09-08T10:21:41.566075+00:00",
     "tools": {
       "components": [
         {
@@ -3954,7 +3954,7 @@
       ]
     }
   },
-  "serialNumber": "urn:uuid:153092c0-46fa-44ce-b338-6e813524d0da",
+  "serialNumber": "urn:uuid:7dc202fc-5054-43b5-a86f-440e694f39eb",
   "version": 1,
   "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
   "bomFormat": "CycloneDX",
