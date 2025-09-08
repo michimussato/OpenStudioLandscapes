@@ -195,8 +195,8 @@ namespaces = true
 # # slow: mark tests as slow (deselect with '-m "not slow"')
 # # system: mark end-to-end system tests
 
-[tool.setuptools_scm]
-version_file = "src/OpenStudioLandscapes/engine/_version.py"
+# [tool.setuptools_scm]
+# version_file = "src/OpenStudioLandscapes/engine/_version.py"
 
 [tool.dagster]
 # We can define ONE SINGLE TOP-LEVEL code location
