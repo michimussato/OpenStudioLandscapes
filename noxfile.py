@@ -164,7 +164,7 @@ REPOS_FEATURE = {
         # "OpenStudioLandscapes-LikeC4": "https://github.com/michimussato/OpenStudioLandscapes-LikeC4.git",
         # "OpenStudioLandscapes-NukeRLM-8": "https://github.com/michimussato/OpenStudioLandscapes-NukeRLM-8.git",
         # "OpenStudioLandscapes-OpenCue": "https://github.com/michimussato/OpenStudioLandscapes-OpenCue.git",
-        # "OpenStudioLandscapes-RustDeskServer": "https://github.com/michimussato/OpenStudioLandscapes-RustDeskServer.git",
+        "OpenStudioLandscapes-RustDeskServer": "https://github.com/michimussato/OpenStudioLandscapes-RustDeskServer.git",
         # "OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20": "https://github.com/michimussato/OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20.git",
         # "OpenStudioLandscapes-Syncthing": "https://github.com/michimussato/OpenStudioLandscapes-Syncthing.git",
         # "OpenStudioLandscapes-Watchtower": "https://github.com/michimussato/OpenStudioLandscapes-Watchtower.git",
