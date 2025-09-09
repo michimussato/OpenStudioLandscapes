@@ -95,7 +95,7 @@ FEATURES: dict[
         "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
     "OpenStudioLandscapes-RustDeskServer": {
-        "enabled": True
+        "enabled": False
         or get_bool_env(
             "OPENSTUDIOLANDSCAPES__ENABLE_FEATURE_OPENSTUDIOLANDSCAPES_RUSTDESKSERVER"
         ),
@@ -129,6 +129,15 @@ FEATURES: dict[
             "OPENSTUDIOLANDSCAPES__ENABLE_FEATURE_OPENSTUDIOLANDSCAPES_SYNCTHING"
         ),
         "module": "OpenStudioLandscapes.Syncthing.definitions",
+        "compose_scope": ComposeScope.DEFAULT,
+        "feature_config": OpenStudioLandscapesConfig.DEFAULT,
+    },
+    "OpenStudioLandscapes-Twingate": {
+        "enabled": False
+        or get_bool_env(
+            "OPENSTUDIOLANDSCAPES__ENABLE_FEATURE_OPENSTUDIOLANDSCAPES_TWINGATE"
+        ),
+        "module": "OpenStudioLandscapes.Twingate.definitions",
         "compose_scope": ComposeScope.DEFAULT,
         "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
