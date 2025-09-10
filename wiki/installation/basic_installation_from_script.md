@@ -84,7 +84,7 @@ sudo apt-get install -y --no-install-recommends curl python3 sudo
 Run installer (reboot if being asked for)
 
 ```shell
-export OPENSTUDIOLANDSCAPES_VERSION_TAG="v1.4.0-rc1"
+export OPENSTUDIOLANDSCAPES_VERSION_TAG="v1.4.0"
 
 python3 <(curl --header 'Cache-Control: no-cache, no-store' --silent https://raw.githubusercontent.com/michimussato/OpenStudioLandscapes/refs/tags/${OPENSTUDIOLANDSCAPES_VERSION_TAG}/installer/ubuntu/22.04/install_ubuntu_2204.py)
 ```
