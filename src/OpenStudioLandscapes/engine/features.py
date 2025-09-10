@@ -132,6 +132,15 @@ FEATURES: dict[
         "compose_scope": ComposeScope.DEFAULT,
         "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
+    "OpenStudioLandscapes-Teleport": {
+        "enabled": False
+        or get_bool_env(
+            "OPENSTUDIOLANDSCAPES__ENABLE_FEATURE_OPENSTUDIOLANDSCAPES_TELEPORT"
+        ),
+        "module": "OpenStudioLandscapes.Teleport.definitions",
+        "compose_scope": ComposeScope.DEFAULT,
+        "feature_config": OpenStudioLandscapesConfig.DEFAULT,
+    },
     "OpenStudioLandscapes-Twingate": {
         "enabled": False
         or get_bool_env(
