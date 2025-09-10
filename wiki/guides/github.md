@@ -1,10 +1,10 @@
 <!-- TOC -->
 * [Github](#github)
-  * [Create new
-  * issue](#create-new-issue)
-    * [Feature](#feature)
-      * [Title](#title)
-      * [Description](#description)
+  * [Templates](#templates)
+    * [Create new issue](#create-new-issue)
+      * [Feature](#feature)
+        * [Title](#title)
+        * [Description](#description)
 <!-- TOC -->
 
 ---
