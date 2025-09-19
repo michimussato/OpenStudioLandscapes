@@ -2,6 +2,8 @@ import json
 import shlex
 import shutil
 import os
+import subprocess
+
 import nox
 import re
 import pathlib
@@ -9,6 +11,7 @@ import requests
 import logging
 import tarfile
 import platform
+from itertools import zip_longest, chain
 from typing import Tuple
 
 import yaml
@@ -121,6 +124,7 @@ RE_SEMVER = re.compile(
 # Parameterized Features
 engine_dir: pathlib.Path = pathlib.Path(__file__).parent
 features_dir: pathlib.Path = engine_dir / ".features"
+landscapes_dir: pathlib.Path = engine_dir / ".landscapes"
 FEATURES_PARAMETERIZED: list[pathlib.Path] = []
 
 for dir_ in features_dir.iterdir():
@@ -1255,7 +1259,7 @@ ENVIRONMENT_HARBOR = {
     #  - [ ] Try with:
     # "HARBOR_ADMIN": "harbor@openstudiolandscapes.org",
     # "HARBOR_PASSWORD": "0penstudiolandscapes",
-    "HARBOR_PORT": 80,
+    "HARBOR_PORT": 88,  # port 80 is reserved for acme_sh for now
     "HARBOR_RELEASE": [
         "v2.12.2",
         "v2.13.0",
@@ -2911,6 +2915,501 @@ def tag_delete(session, working_directory):
 
 
 #######################################################################################################################
+# acme.sh (SSL Certificates)
+
+# shortcut:  nox -s acme_sh_prepare acme_sh_up_detach acme_sh_register_account acme_sh_create_certificate acme_sh_down
+
+# # ENVIRONMENT
+ENVIRONMENT_ACME_SH = {
+    "OPENSTUDIOLANDSCAPES__DOMAIN_LAN": "farm.evil",
+    "OPENSTUDIOLANDSCAPES__DOMAIN_WAN": "evil-farmer.cloud-ip.cc",
+    "OPENSTUDIOLANDSCAPES__CLOUDNS_AUTH_ID": "44124",
+    # "OPENSTUDIOLANDSCAPES__CLOUDNS_SUB_AUTH_ID": "",
+    "OPENSTUDIOLANDSCAPES__CLOUDNS_AUTH_PASSWORD": "helloworld",
+    # "OPENSTUDIOLANDSCAPES__SUBDOMAINS": [
+    #     # "",  # for the top level domain
+    #     # each subdomain terminates with .
+    #     # for now, only http-01 challenge is supported
+    #     # but hopefully we can implement dns-1 challenge
+    #     # too for wildcards as in:
+    #     # "*.",
+    #     # "*.teleport.",
+    #     # etc.
+    #     "teleport.",
+    #     "*.teleport.",
+    # ],
+    "ACME_ROOT_DIR": landscapes_dir / ".acme.sh",
+    "ACME_CERTS_DIR": landscapes_dir / ".acme.sh" / "certs",
+    "ACME_DOCKER_SERVICE_NAME": "acme-sh",
+}
+
+
+compose_acme_sh = ENVIRONMENT_ACME_SH["ACME_ROOT_DIR"] / "docker-compose.yml"
+
+cmd_acme_sh = [
+    # sudo = False
+    shutil.which("docker"),
+    "compose",
+    "--progress",
+    DOCKER_PROGRESS,
+    "--file",
+    compose_acme_sh.as_posix(),
+    "--project-name",
+    "openstudiolandscapes-acme-sh",
+]
+
+# ACME_SH_CA
+# https://github.com/acmesh-official/acme.sh/wiki/Server
+# if not specified with `--server`,
+# the default is `zerossl
+acme_sh_ca_options = [
+    "letsencrypt",
+    "letsencrypt_test",
+    "buypass",
+    "buypass_test",
+    "zerossl",
+    "sslcom",
+    "google",
+    "googletest",
+]
+
+
+def write_acme_sh_yml(
+    ca: str,
+    register_email: str,
+    cloudns_auth_id: str,
+    cloudns_auth_password: str,
+    # yaml_out: pathlib.Path,
+) -> pathlib.Path:
+
+    acme_sh_root_dir: pathlib.Path = ENVIRONMENT_ACME_SH["ACME_ROOT_DIR"]
+    acme_sh_root_dir.mkdir(parents=True, exist_ok=True)
+
+    acme_sh_certs_dir: pathlib.Path = ENVIRONMENT_ACME_SH["ACME_CERTS_DIR"]
+    acme_sh_certs_dir.mkdir(parents=True, exist_ok=True)
+
+    service_name = ENVIRONMENT_ACME_SH["ACME_DOCKER_SERVICE_NAME"]
+    container_name = service_name
+    host_name = ".".join([service_name, ENVIRONMENT_ACME_SH["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"]])
+
+    acme_sh_dict = {
+        "services": {
+            service_name: {
+                "container_name": container_name,
+                "hostname": host_name,
+                "domainname": ENVIRONMENT_ACME_SH["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"],
+                "restart": "always",
+                "image": "docker.io/neilpang/acme.sh",
+                "volumes": [
+                    f"{acme_sh_certs_dir.as_posix()}:/acme.sh:rw",
+                ],
+                "network_mode": "host",
+                "command": [
+                    "daemon"
+                ],
+                "environment": {
+                    "ACME_SH_CA": ca,
+                    "ACME_SH_EMAIL": register_email,
+                    "ACME_SH_CLOUDNS_AUTH_ID": cloudns_auth_id,
+                    "CLOUDNS_AUTH_ID": cloudns_auth_id,  #
+                    "ACME_SH_CLOUDNS_AUTH_PASSWORD": cloudns_auth_password,
+                    "CLOUDNS_AUTH_PASSWORD": cloudns_auth_password,
+                    # "CLOUDNS_AUTH_ID": ENVIRONMENT_ACME_SH["OPENSTUDIOLANDSCAPES__CLOUDNS_AUTH_ID"],
+                    # # "CLOUDNS_SUB_AUTH_ID": ENVIRONMENT_ACME_SH["OPENSTUDIOLANDSCAPES__CLOUDNS_SUB_AUTH_ID"],
+                    # "CLOUDNS_AUTH_PASSWORD": ENVIRONMENT_ACME_SH["OPENSTUDIOLANDSCAPES__CLOUDNS_AUTH_PASSWORD"],
+                },
+                "stdin_open": True,
+                "tty": True,
+
+            },
+        },
+    }
+
+    acme_sh_yml: str = yaml.dump(
+        acme_sh_dict,
+        indent=2,
+    )
+
+    with open(compose_acme_sh.as_posix(), "w") as fw:
+        fw.write(acme_sh_yml)
+
+    logging.debug("Contents Pi-hole docker-compose.yml: \n%s" % acme_sh_yml)
+
+    return compose_acme_sh
+
+
+def get_container_vars():
+    env_ = {}
+    cmd_get_container_vars = f"{shutil.which('docker')} exec {ENVIRONMENT_ACME_SH['ACME_DOCKER_SERVICE_NAME']} env"
+    p = subprocess.Popen(
+        cmd_get_container_vars,
+        stdout=subprocess.PIPE,
+        shell=True,
+        executable=shutil.which("bash"),
+    )
+    for line in iter(p.stdout.readline, b''):
+        k, v = line.strip().split(b"=")
+        env_[k.decode("utf-8")] = v.decode("utf-8")
+    return env_
+
+
+# # acme_sh_prepare
+@nox.session(python=None, tags=["acme_sh_prepare"])
+def acme_sh_prepare(session):
+    """
+    Create acme.sh docker-compose.yml.
+
+    Scope:
+    - [x] Engine
+    - [ ] Features
+    """
+    # Ex:
+    # nox --session acme_sh_prepare
+    # nox --tags acme_sh_prepare
+
+    # ACME_SH_CA
+    acme_sh_ca = os.environ.get("ACME_SH_CA", None)
+    if acme_sh_ca is None:
+        input_message = "Certificate CA:\n"
+
+        for index, item in enumerate(acme_sh_ca_options):
+            input_message += f"{index + 1}) {item}\n"
+
+        input_message += "Choice: "
+
+        user_input = ""
+
+        while user_input not in map(str, range(1, len(acme_sh_ca_options) + 1)):
+            user_input = input(input_message)
+
+        acme_sh_ca = acme_sh_ca_options[int(user_input) - 1]
+
+    # ACME_SH_EMAIL
+    acme_sh_email = os.environ.get("ACME_SH_EMAIL", None)
+    if acme_sh_email is None:
+        input_message = "Email account:\n"
+
+        # Todo:
+        #  - [ ] Regex for valid email structure
+        # while not RE_SEMVER.match(user_input):
+        acme_sh_email = input(input_message)
+
+    # ACME_SH_CLOUDNS_AUTH_ID
+    cloudns_auth_id = os.environ.get("ACME_SH_CLOUDNS_AUTH_ID", None)
+    if cloudns_auth_id is None:
+        input_message = "ClouDNS Auth ID: "
+
+        cloudns_auth_id = input(input_message)
+
+    # ACME_SH_CLOUDNS_AUTH_ID
+    cloudns_auth_password = os.environ.get("ACME_SH_CLOUDNS_AUTH_PASSWORD", None)
+    if cloudns_auth_password is None:
+        input_message = "ClouDNS Auth Password: "
+
+        cloudns_auth_password = input(input_message)
+
+    if compose_acme_sh.exists():
+        logging.info(
+            "`docker-compose.yml` already present in. Use that or start fresh by "
+            "issuing `nox --session acme_sh_clear` first."
+        )
+        return 0
+
+    docker_compose: pathlib.Path = write_acme_sh_yml(
+        ca=acme_sh_ca,
+        register_email=acme_sh_email,
+        cloudns_auth_id=cloudns_auth_id,
+        cloudns_auth_password=cloudns_auth_password,
+    )
+
+    logging.debug("docker-compose.yml created: \n%s" % docker_compose.as_posix())
+
+    return 0
+
+
+# # acme_sh_clear
+@nox.session(python=None, tags=["acme_sh_clear"])
+def acme_sh_clear(session):
+    """
+    Clear acme.sh with `sudo`. WARNING: DATA LOSS!
+
+    Scope:
+    - [x] Engine
+    - [ ] Features
+    """
+    # Ex:
+    # nox --session acme_sh_clear
+    # nox --tags acme_sh_clear
+
+    session.skip("Not implemented")
+
+
+@nox.session(python=None, tags=["acme_sh_up_detach"])
+def acme_sh_up_detach(session):
+    """
+    Start acme.sh container in detached mode
+
+    Scope:
+    - [x] Engine
+    - [ ] Features
+    """
+    # Ex:
+    # nox --session acme_sh_up_detach
+    # nox --tags acme_sh_up_detach
+
+    if not compose_acme_sh.exists():
+        raise FileNotFoundError(
+            f"Compose file not found: {compose_acme_sh}. "
+            f"Run `nox -s acme_sh_prepare`."
+        )
+
+    cmd = [
+        *cmd_acme_sh,
+        "up",
+        "--remove-orphans",
+        "--detach",
+    ]
+
+    logging.info(f"{cmd = }")
+
+    session.run(
+        *cmd,
+        env=ENV,
+        external=True,
+        silent=SESSION_RUN_SILENT,
+    )
+
+
+@nox.session(python=None, tags=["acme_sh_print_help"])
+def acme_sh_print_help(session):
+    """
+    Print acme.sh help inside running container
+
+    Scope:
+    - [x] Engine
+    - [ ] Features
+    """
+    # Ex:
+    # nox --session acme_sh_print_help
+    # nox --tags acme_sh_print_help
+
+    # acme_exe = "acme.sh"
+
+    # # ACME_SH_EMAIL
+    # email_ = os.environ.get("ACME_SH_EMAIL", None)
+    # if email_ is None:
+    #     input_message = "Email account:\n"
+    #
+    #     # Todo:
+    #     #  - [ ] Regex for valid email structure
+    #     # while not RE_SEMVER.match(user_input):
+    #     user_input = input(input_message)
+    #
+    #     email_ = f"{user_input}"
+    #     os.environ["ACME_SH_EMAIL"] = email_
+
+    cmd_register_account = [
+        shutil.which("docker"),
+        "exec",
+        ENVIRONMENT_ACME_SH["ACME_DOCKER_SERVICE_NAME"],
+        "--help",
+    ]
+
+    session.run(
+        *cmd_register_account,
+        env=ENV,
+        external=True,
+        silent=SESSION_RUN_SILENT,
+    )
+
+
+@nox.session(python=None, tags=["acme_sh_down"])
+def acme_sh_down(session):
+    """
+    Stop acme.sh container
+
+    Scope:
+    - [x] Engine
+    - [ ] Features
+    """
+    # Ex:
+    # nox --session acme_sh_down
+    # nox --tags acme_sh_down
+
+    if not compose_acme_sh.exists():
+        raise FileNotFoundError(
+            f"Compose file not found: {compose_acme_sh}. "
+            f"Run `nox -s acme_sh_prepare`."
+        )
+
+    cmd = [
+        *cmd_acme_sh,
+        "down",
+    ]
+
+    logging.info(f"{cmd = }")
+
+    session.run(
+        *cmd,
+        env=ENV,
+        external=True,
+        silent=SESSION_RUN_SILENT,
+    )
+
+
+@nox.session(python=None, tags=["acme_sh_register_account"])
+def acme_sh_register_account(session):
+    """
+    Register account inside running container
+
+    Scope:
+    - [x] Engine
+    - [ ] Features
+    """
+    # Ex:
+    # nox --session acme_sh_register_account
+    # nox --tags acme_sh_register_account
+
+    container_env = get_container_vars()
+    session.log(f"{container_env = }")
+
+    cmd_register_account = [
+        shutil.which("docker"),
+        "exec",
+        ENVIRONMENT_ACME_SH["ACME_DOCKER_SERVICE_NAME"],
+        "--register-account",
+        "--server",
+        '$ACME_SH_CA',
+        "--email",
+        '$ACME_SH_EMAIL',
+    ]
+
+    session.run(
+        "bash",
+        "-c",
+        " ".join(cmd_register_account),
+        env=container_env,
+        external=True,
+        silent=SESSION_RUN_SILENT,
+    )
+
+
+@nox.session(python=None, tags=["acme_sh_create_certificate"])
+def acme_sh_create_certificate(session):
+    """
+    Register account inside running container
+
+    Scope:
+    - [x] Engine
+    - [ ] Features
+    """
+    # Ex:
+    # nox --session acme_sh_create_certificate
+    # nox --tags acme_sh_create_certificate
+
+    container_env = get_container_vars()
+    session.log(f"{container_env = }")
+
+    # acme_exe = "acme.sh"
+
+    # ACME_SH_DOMAINS
+    domains_ = os.environ.get("ACME_SH_DOMAINS", None)
+    all_domains = []
+    if domains_ is None:
+        input_message = "Sub-Domains (comma-separated):\n"
+
+        input_message += f"Top Level Domain: {ENVIRONMENT_ACME_SH['OPENSTUDIOLANDSCAPES__DOMAIN_WAN']}\n"
+        input_message += f"Sub-Domains: "
+
+        user_input = ""
+
+        # Todo:
+        #  - [ ] Regex for valid email structure
+        # while not RE_SEMVER.match(user_input):
+        user_input = input(input_message)
+
+        # ENVIRONMENT_ACME_SH["OPENSTUDIOLANDSCAPES__DOMAIN_WAN"]
+        # ENVIRONMENT_ACME_SH["OPENSTUDIOLANDSCAPES__SUBDOMAINS"]
+
+        sub_domains = list(chain.from_iterable((j, f"{i}{ENVIRONMENT_ACME_SH['OPENSTUDIOLANDSCAPES__DOMAIN_WAN']}") for i, j in zip_longest(user_input.split(sep=","), [], fillvalue="--domain")))
+
+        all_domains = [
+            "--domain",
+            ENVIRONMENT_ACME_SH["OPENSTUDIOLANDSCAPES__DOMAIN_WAN"],
+            *sub_domains,
+        ]
+
+        # all_domains_ = f"{all_domains}"
+        # os.environ["ACME_SH_EMAIL"] = email_
+
+    cmd_issue_cert = [
+        shutil.which("docker"),
+        "exec",
+        # "-e",
+        # f"CLOUDNS_AUTH_ID={ENVIRONMENT_ACME_SH['OPENSTUDIOLANDSCAPES__CLOUDNS_AUTH_ID']}",
+        # "-e",
+        # f"CLOUDNS_AUTH_PASSWORD={ENVIRONMENT_ACME_SH['OPENSTUDIOLANDSCAPES__CLOUDNS_AUTH_PASSWORD']}",
+        ENVIRONMENT_ACME_SH["ACME_DOCKER_SERVICE_NAME"],
+        # DNS API:
+        # https://github.com/acmesh-official/acme.sh/wiki/dnsapi
+        "--issue",
+        "--server",
+        '$ACME_SH_CA',
+        "--force",
+        "--dns",
+        "dns_cloudns",  # Todo: try the same as for `--server`
+        *all_domains,
+        # "--standalone",
+        # "--debug",
+        # https://github.com/acmesh-official/acme.sh/wiki/dnscheck
+        # [Fri Sep 19 03:05:47 UTC 2025] Verifying: evil-farmer.cloud-ip.cc
+        # [Fri Sep 19 03:05:48 UTC 2025] Processing. The CA is processing your order, please wait. (1/30)
+        # [Fri Sep 19 03:05:56 UTC 2025] Pending. The CA is processing your order, please wait. (2/30)
+        # [Fri Sep 19 03:06:04 UTC 2025] Pending. The CA is processing your order, please wait. (3/30)
+        # [Fri Sep 19 03:06:12 UTC 2025] Pending. The CA is processing your order, please wait. (4/30)
+        # [Fri Sep 19 03:06:20 UTC 2025] Pending. The CA is processing your order, please wait. (5/30)
+        # [Fri Sep 19 03:06:28 UTC 2025] Pending. The CA is processing your order, please wait. (6/30)
+        # [Fri Sep 19 03:06:35 UTC 2025] Pending. The CA is processing your order, please wait. (7/30)
+        # [Fri Sep 19 03:06:43 UTC 2025] Pending. The CA is processing your order, please wait. (8/30)
+        # [Fri Sep 19 03:06:51 UTC 2025] Pending. The CA is processing your order, please wait. (9/30)
+        # [Fri Sep 19 03:06:59 UTC 2025] Pending. The CA is processing your order, please wait. (10/30)
+        # [Fri Sep 19 03:07:07 UTC 2025] Pending. The CA is processing your order, please wait. (11/30)
+        # [Fri Sep 19 03:07:14 UTC 2025] Pending. The CA is processing your order, please wait. (12/30)
+        # [Fri Sep 19 03:07:22 UTC 2025] Pending. The CA is processing your order, please wait. (13/30)
+        # [Fri Sep 19 03:07:25 UTC 2025] The retryafter=86400 value is too large (> 600), will not retry anymore.
+        # It seems to be related to ZeroSSL with very strict abuse policies. We can change the default
+        # CA (ZeroSSL) to something else:
+        # https://github.com/acmesh-official/acme.sh/issues/6221#issuecomment-2669665014
+    ]
+
+    # [Fri Sep 19 02:35:38 UTC 2025] Adding TXT value: 7UWDjlJMU4cPzjX_6BcyMSkYQzk072RYfJ4-FhrH620 for domain: _acme-challenge.evil-farmer.cloud-ip.cc
+    # [Fri Sep 19 02:35:38 UTC 2025] Using cloudns
+    # [Fri Sep 19 02:35:38 UTC 2025] CLOUDNS_AUTH_ID='<id>'
+    # [Fri Sep 19 02:35:38 UTC 2025] CLOUDNS_SUB_AUTH_ID
+    # [Fri Sep 19 02:35:38 UTC 2025] CLOUDNS_AUTH_PASSWORD='<password>'
+    # [Fri Sep 19 02:35:38 UTC 2025] GET
+    # [Fri Sep 19 02:35:38 UTC 2025] url='https://api.cloudns.net/dns/login.json?auth-id=<id>&auth-password=<password>'
+    # [Fri Sep 19 02:35:38 UTC 2025] timeout=
+    # [Fri Sep 19 02:35:38 UTC 2025] Http already initialized.
+    # [Fri Sep 19 02:35:38 UTC 2025] _CURL='curl --silent --dump-header /acme.sh/http.header  -L  --trace-ascii /tmp/tmp.1XgPxwvyjP  -g '
+    # [Fri Sep 19 02:35:38 UTC 2025] ret='0'
+    # [Fri Sep 19 02:35:38 UTC 2025] response='{"status":"Failed","statusDescription":"You don't have access to the HTTP API. Check your plan."}'
+    # [Fri Sep 19 02:35:38 UTC 2025] Invalid CLOUDNS_AUTH_ID or CLOUDNS_AUTH_PASSWORD. Please check your login credentials.
+    # [Fri Sep 19 02:35:38 UTC 2025] Error adding TXT record to domain: _acme-challenge.evil-farmer.cloud-ip.cc
+    # [Fri Sep 19 02:35:38 UTC 2025] _on_issue_err
+    # [Fri Sep 19 02:35:38 UTC 2025] Please check log file for more details: /acme.sh/acme.sh.log
+
+    session.run(
+        "bash",
+        "-c",
+        " ".join(cmd_issue_cert),
+        env=container_env,
+        external=True,
+        silent=SESSION_RUN_SILENT,
+    )
+
+
+#######################################################################################################################
 # PR
 # Todo:
 #  - [x] gh_login
@@ -2923,6 +3422,7 @@ def tag_delete(session, working_directory):
 #        See wiki/guides/release_strategy.md#close-pr
 #  - [ ] gh_pr_merge
 #  - [ ] gh_pr_close
+#  - [ ] acme.sh
 
 
 @nox.session(python=None, tags=["gh_login"])
