@@ -15,6 +15,7 @@ from dagster import (
     AssetKey,
     AssetMaterialization,
     AssetOut,
+    EnvVar,
     MetadataValue,
     Output,
     asset,
@@ -356,7 +357,14 @@ def env(
         # Todo:
         #  - [ ] Where is this being used?
         "DEFAULT_CONFIG_DBPATH": "/data/configdb",
-        "ROOT_DOMAIN": "farm.evil",
+        # Todo:
+        #  - [ ] Change ROOT_DOMAIN to OPENSTUDIOLANDSCAPES__DOMAIN_LAN globally
+        "ROOT_DOMAIN": EnvVar(
+            "OPENSTUDIOLANDSCAPES__DOMAIN_LAN"
+        ).get_value(),
+        "OPENSTUDIOLANDSCAPES__DOMAIN_WAN": EnvVar(
+            "OPENSTUDIOLANDSCAPES__DOMAIN_WAN"
+        ).get_value(),
         # https://vfxplatform.com/
         "PYTHON_MAJ": "3",
         "PYTHON_MIN": "11",
