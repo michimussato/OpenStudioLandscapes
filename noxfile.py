@@ -2922,41 +2922,19 @@ def tag_delete(session, working_directory):
 # # ENVIRONMENT
 ENVIRONMENT_ACME_SH = {
     "OPENSTUDIOLANDSCAPES__DOMAIN_LAN": "farm.evil",
-    "OPENSTUDIOLANDSCAPES__DOMAIN_WAN": "evil-farmer.cloud-ip.cc",
-    "OPENSTUDIOLANDSCAPES__CLOUDNS_AUTH_ID": "44124",
-    # "OPENSTUDIOLANDSCAPES__CLOUDNS_SUB_AUTH_ID": "",
-    "OPENSTUDIOLANDSCAPES__CLOUDNS_AUTH_PASSWORD": "helloworld",
-    # "OPENSTUDIOLANDSCAPES__SUBDOMAINS": [
-    #     # "",  # for the top level domain
-    #     # each subdomain terminates with .
-    #     # for now, only http-01 challenge is supported
-    #     # but hopefully we can implement dns-1 challenge
-    #     # too for wildcards as in:
-    #     # "*.",
-    #     # "*.teleport.",
-    #     # etc.
-    #     "teleport.",
-    #     "*.teleport.",
-    # ],
+    "OPENSTUDIOLANDSCAPES__DOMAIN_WAN": [
+        "evil-farmer.cloud-ip.cc",
+        "openstudiolandscapes.cloud-ip.cc",
+    ],
     "ACME_ROOT_DIR": landscapes_dir / ".acme.sh",
-    "ACME_CERTS_DIR": landscapes_dir / ".acme.sh" / "certs",
     "ACME_DOCKER_SERVICE_NAME": "acme-sh",
 }
 
 
-compose_acme_sh = ENVIRONMENT_ACME_SH["ACME_ROOT_DIR"] / "docker-compose.yml"
+compose_acme_sh: pathlib.Path = ENVIRONMENT_ACME_SH["ACME_ROOT_DIR"] / "docker-compose.yml"
+tld: str = ""
+acme_docker_service_name: str = ""
 
-cmd_acme_sh = [
-    # sudo = False
-    shutil.which("docker"),
-    "compose",
-    "--progress",
-    DOCKER_PROGRESS,
-    "--file",
-    compose_acme_sh.as_posix(),
-    "--project-name",
-    "openstudiolandscapes-acme-sh",
-]
 
 # ACME_SH_CA
 # https://github.com/acmesh-official/acme.sh/wiki/Server
@@ -2974,7 +2952,12 @@ acme_sh_ca_options = [
 ]
 
 
+def clean_tld(s) -> str:
+    return s.replace("_", "-").replace(".", "-")
+
+
 def write_acme_sh_yml(
+    tld: str,
     ca: str,
     register_email: str,
     cloudns_auth_id: str,
@@ -2982,13 +2965,23 @@ def write_acme_sh_yml(
     # yaml_out: pathlib.Path,
 ) -> pathlib.Path:
 
-    acme_sh_root_dir: pathlib.Path = ENVIRONMENT_ACME_SH["ACME_ROOT_DIR"]
+    global compose_acme_sh
+    global acme_docker_service_name
+
+    acme_sh_root_dir_: pathlib.Path = ENVIRONMENT_ACME_SH["ACME_ROOT_DIR"]
+    acme_sh_root_dir_.mkdir(parents=True, exist_ok=True)
+
+    acme_sh_root_dir: pathlib.Path = acme_sh_root_dir_ / tld
     acme_sh_root_dir.mkdir(parents=True, exist_ok=True)
 
-    acme_sh_certs_dir: pathlib.Path = ENVIRONMENT_ACME_SH["ACME_CERTS_DIR"]
+    compose_acme_sh = acme_sh_root_dir_ / tld / "docker-compose.yml"
+
+    acme_sh_certs_dir: pathlib.Path = acme_sh_root_dir / "certs"
     acme_sh_certs_dir.mkdir(parents=True, exist_ok=True)
 
-    service_name = ENVIRONMENT_ACME_SH["ACME_DOCKER_SERVICE_NAME"]
+    acme_docker_service_name = f"{ENVIRONMENT_ACME_SH['ACME_DOCKER_SERVICE_NAME']}-{clean_tld(tld)}"
+
+    service_name = acme_docker_service_name
     container_name = service_name
     host_name = ".".join([service_name, ENVIRONMENT_ACME_SH["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"]])
 
@@ -3008,15 +3001,13 @@ def write_acme_sh_yml(
                     "daemon"
                 ],
                 "environment": {
+                    "ACME_SH_TLD": tld,
                     "ACME_SH_CA": ca,
                     "ACME_SH_EMAIL": register_email,
                     "ACME_SH_CLOUDNS_AUTH_ID": cloudns_auth_id,
                     "CLOUDNS_AUTH_ID": cloudns_auth_id,  #
                     "ACME_SH_CLOUDNS_AUTH_PASSWORD": cloudns_auth_password,
                     "CLOUDNS_AUTH_PASSWORD": cloudns_auth_password,
-                    # "CLOUDNS_AUTH_ID": ENVIRONMENT_ACME_SH["OPENSTUDIOLANDSCAPES__CLOUDNS_AUTH_ID"],
-                    # # "CLOUDNS_SUB_AUTH_ID": ENVIRONMENT_ACME_SH["OPENSTUDIOLANDSCAPES__CLOUDNS_SUB_AUTH_ID"],
-                    # "CLOUDNS_AUTH_PASSWORD": ENVIRONMENT_ACME_SH["OPENSTUDIOLANDSCAPES__CLOUDNS_AUTH_PASSWORD"],
                 },
                 "stdin_open": True,
                 "tty": True,
@@ -3030,6 +3021,16 @@ def write_acme_sh_yml(
         indent=2,
     )
 
+    if compose_acme_sh.exists():
+        msg = (
+            f"`{compose_acme_sh.as_posix()}` already present in. "
+            f"Use that or start fresh by issuing `nox --session acme_sh_clear` first."
+        )
+        logging.info(
+            msg
+        )
+        raise Exception(msg)
+
     with open(compose_acme_sh.as_posix(), "w") as fw:
         fw.write(acme_sh_yml)
 
@@ -3038,9 +3039,25 @@ def write_acme_sh_yml(
     return compose_acme_sh
 
 
+def get_cmd_acme_sh() -> list:
+    cmd_acme_sh = [
+        # sudo = False
+        shutil.which("docker"),
+        "compose",
+        "--progress",
+        DOCKER_PROGRESS,
+        "--file",
+        compose_acme_sh.as_posix(),
+        "--project-name",
+        "openstudiolandscapes-acme-sh",
+    ]
+    return cmd_acme_sh
+
+
 def get_container_vars():
+    global acme_docker_service_name
     env_ = {}
-    cmd_get_container_vars = f"{shutil.which('docker')} exec {ENVIRONMENT_ACME_SH['ACME_DOCKER_SERVICE_NAME']} env"
+    cmd_get_container_vars = f"{shutil.which('docker')} exec {acme_docker_service_name} env"
     p = subprocess.Popen(
         cmd_get_container_vars,
         stdout=subprocess.PIPE,
@@ -3067,6 +3084,9 @@ def acme_sh_prepare(session):
     # nox --session acme_sh_prepare
     # nox --tags acme_sh_prepare
 
+    global compose_acme_sh
+    global tld
+
     # ACME_SH_CA
     acme_sh_ca = os.environ.get("ACME_SH_CA", None)
     if acme_sh_ca is None:
@@ -3083,6 +3103,25 @@ def acme_sh_prepare(session):
             user_input = input(input_message)
 
         acme_sh_ca = acme_sh_ca_options[int(user_input) - 1]
+
+    # ACME_SH_TLD
+    tld = os.environ.get("ACME_SH_TLD", None)
+    if not bool(tld):
+        input_message = "Top Level Domain:\n"
+
+        tlds = ENVIRONMENT_ACME_SH["OPENSTUDIOLANDSCAPES__DOMAIN_WAN"]
+
+        for index, item in enumerate(tlds):
+            input_message += f"{index + 1}) {item}\n"
+
+        input_message += "Choice: "
+
+        user_input = ""
+
+        while user_input not in map(str, range(1, len(tlds) + 1)):
+            user_input = input(input_message)
+
+        tld = tlds[int(user_input) - 1]
 
     # ACME_SH_EMAIL
     acme_sh_email = os.environ.get("ACME_SH_EMAIL", None)
@@ -3113,9 +3152,10 @@ def acme_sh_prepare(session):
             "`docker-compose.yml` already present in. Use that or start fresh by "
             "issuing `nox --session acme_sh_clear` first."
         )
-        return 0
+        return 1
 
     docker_compose: pathlib.Path = write_acme_sh_yml(
+        tld=tld,
         ca=acme_sh_ca,
         register_email=acme_sh_email,
         cloudns_auth_id=cloudns_auth_id,
@@ -3157,6 +3197,8 @@ def acme_sh_up_detach(session):
     # nox --session acme_sh_up_detach
     # nox --tags acme_sh_up_detach
 
+    global compose_acme_sh
+
     if not compose_acme_sh.exists():
         raise FileNotFoundError(
             f"Compose file not found: {compose_acme_sh}. "
@@ -3164,7 +3206,7 @@ def acme_sh_up_detach(session):
         )
 
     cmd = [
-        *cmd_acme_sh,
+        *get_cmd_acme_sh(),
         "up",
         "--remove-orphans",
         "--detach",
@@ -3193,25 +3235,12 @@ def acme_sh_print_help(session):
     # nox --session acme_sh_print_help
     # nox --tags acme_sh_print_help
 
-    # acme_exe = "acme.sh"
-
-    # # ACME_SH_EMAIL
-    # email_ = os.environ.get("ACME_SH_EMAIL", None)
-    # if email_ is None:
-    #     input_message = "Email account:\n"
-    #
-    #     # Todo:
-    #     #  - [ ] Regex for valid email structure
-    #     # while not RE_SEMVER.match(user_input):
-    #     user_input = input(input_message)
-    #
-    #     email_ = f"{user_input}"
-    #     os.environ["ACME_SH_EMAIL"] = email_
+    global acme_docker_service_name
 
     cmd_register_account = [
         shutil.which("docker"),
         "exec",
-        ENVIRONMENT_ACME_SH["ACME_DOCKER_SERVICE_NAME"],
+        acme_docker_service_name,
         "--help",
     ]
 
@@ -3236,6 +3265,8 @@ def acme_sh_down(session):
     # nox --session acme_sh_down
     # nox --tags acme_sh_down
 
+    global compose_acme_sh
+
     if not compose_acme_sh.exists():
         raise FileNotFoundError(
             f"Compose file not found: {compose_acme_sh}. "
@@ -3243,7 +3274,7 @@ def acme_sh_down(session):
         )
 
     cmd = [
-        *cmd_acme_sh,
+        *get_cmd_acme_sh(),
         "down",
     ]
 
@@ -3270,13 +3301,16 @@ def acme_sh_register_account(session):
     # nox --session acme_sh_register_account
     # nox --tags acme_sh_register_account
 
+    global compose_acme_sh
+    global acme_docker_service_name
+
     container_env = get_container_vars()
     session.log(f"{container_env = }")
 
     cmd_register_account = [
         shutil.which("docker"),
         "exec",
-        ENVIRONMENT_ACME_SH["ACME_DOCKER_SERVICE_NAME"],
+        acme_docker_service_name,
         "--register-account",
         "--server",
         '$ACME_SH_CA',
@@ -3307,10 +3341,12 @@ def acme_sh_create_certificate(session):
     # nox --session acme_sh_create_certificate
     # nox --tags acme_sh_create_certificate
 
+    global compose_acme_sh
+    global tld
+    global acme_docker_service_name
+
     container_env = get_container_vars()
     session.log(f"{container_env = }")
-
-    # acme_exe = "acme.sh"
 
     # ACME_SH_DOMAINS
     domains_ = os.environ.get("ACME_SH_DOMAINS", None)
@@ -3318,7 +3354,7 @@ def acme_sh_create_certificate(session):
     if domains_ is None:
         input_message = "Sub-Domains (comma-separated):\n"
 
-        input_message += f"Top Level Domain: {ENVIRONMENT_ACME_SH['OPENSTUDIOLANDSCAPES__DOMAIN_WAN']}\n"
+        input_message += f"Top Level Domain: {tld}\n"
         input_message += f"Sub-Domains: "
 
         user_input = ""
@@ -3328,28 +3364,18 @@ def acme_sh_create_certificate(session):
         # while not RE_SEMVER.match(user_input):
         user_input = input(input_message)
 
-        # ENVIRONMENT_ACME_SH["OPENSTUDIOLANDSCAPES__DOMAIN_WAN"]
-        # ENVIRONMENT_ACME_SH["OPENSTUDIOLANDSCAPES__SUBDOMAINS"]
-
-        sub_domains = list(chain.from_iterable((j, f"{i}{ENVIRONMENT_ACME_SH['OPENSTUDIOLANDSCAPES__DOMAIN_WAN']}") for i, j in zip_longest(user_input.split(sep=","), [], fillvalue="--domain")))
+        sub_domains = list(chain.from_iterable((j, f"{i}{tld}") for i, j in zip_longest(user_input.split(sep=","), [], fillvalue="--domain")))
 
         all_domains = [
             "--domain",
-            ENVIRONMENT_ACME_SH["OPENSTUDIOLANDSCAPES__DOMAIN_WAN"],
+            tld,
             *sub_domains,
         ]
-
-        # all_domains_ = f"{all_domains}"
-        # os.environ["ACME_SH_EMAIL"] = email_
 
     cmd_issue_cert = [
         shutil.which("docker"),
         "exec",
-        # "-e",
-        # f"CLOUDNS_AUTH_ID={ENVIRONMENT_ACME_SH['OPENSTUDIOLANDSCAPES__CLOUDNS_AUTH_ID']}",
-        # "-e",
-        # f"CLOUDNS_AUTH_PASSWORD={ENVIRONMENT_ACME_SH['OPENSTUDIOLANDSCAPES__CLOUDNS_AUTH_PASSWORD']}",
-        ENVIRONMENT_ACME_SH["ACME_DOCKER_SERVICE_NAME"],
+        acme_docker_service_name,
         # DNS API:
         # https://github.com/acmesh-official/acme.sh/wiki/dnsapi
         "--issue",
