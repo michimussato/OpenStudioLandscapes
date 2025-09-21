@@ -23,9 +23,11 @@ class OpenStudioLandscapesConfig(enum.StrEnum):
 
 
 class ComposeScope(enum.StrEnum):
+    # New Compose Scopes need `pip install -e .[dev]`?
     DEFAULT = "default"
-    WORKER = "worker"
     LICENSE_SERVER = "license_server"
+    TELEPORT = "teleport"
+    WORKER = "worker"
 
 
 class ComposeCmdExclusion(enum.Enum):
