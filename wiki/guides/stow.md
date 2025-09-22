@@ -84,7 +84,7 @@ too much going on for you.
 ### stow .env for Client_A
 
 ```shell
-stow --dir ~/git/repos/stow/env/OpenStudioLandscapes --target ~/git/repos/OpenStudioLandscapes --stow Client_A -vvv
+stow --override .env --dir ~/git/repos/stow/env/OpenStudioLandscapes --target ~/git/repos/OpenStudioLandscapes --stow Client_A -vvv
 stow dir is /home/michael/git/repos/stow/env/OpenStudioLandscapes
 stow dir path relative to target /home/michael/git/repos/OpenStudioLandscapes is ../stow/env/OpenStudioLandscapes
 Planning stow of: Client_A ...
@@ -104,18 +104,8 @@ Processing tasks... don
 
 ### stow .env for Client_B
 
-Not sure if there is a forceable way yet. For
-now, we just remove the existing link to the 
-previously stowed `.env` file
-
 ```shell
-rm ~/git/repos/OpenStudioLandscapes/.env
-```
-
-And (re-) stow as previously
-
-```shell
-stow --dir ~/git/repos/stow/env/OpenStudioLandscapes --target ~/git/repos/OpenStudioLandscapes --stow Client_B -vvv
+stow --override .env --dir ~/git/repos/stow/env/OpenStudioLandscapes --target ~/git/repos/OpenStudioLandscapes --stow Client_B -vvv
 stow dir is /home/michael/git/repos/stow/env/OpenStudioLandscapes
 stow dir path relative to target /home/michael/git/repos/OpenStudioLandscapes is ../stow/env/OpenStudioLandscapes
 Planning stow of: Client_B ...
