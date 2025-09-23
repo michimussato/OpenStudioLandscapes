@@ -3724,3 +3724,73 @@ def gh_pr_set_mode(session, working_directory):
 
 
 #######################################################################################################################
+
+
+#######################################################################################################################
+# teleport (SSL Certificates)
+
+# Todo: Sessions
+#  - [ ] create admin user
+#        https://goteleport.com/docs/enroll-resources/server-access/getting-started/#access-the-web-ui
+#        # tctl users add myuser --roles=editor,access --logins=root,ubuntu,ec2-user
+#        /usr/local/bin/docker exec teleport--2025-09-22-12-41-13-ba0ce97b27014461ad2d007970cc4758 tctl users add admin --roles=editor,access --logins=root,ubuntu,ec2-user
+#  - [ ] Enroll SSH Server
+#        local install of tsh and tctl
+#        https://goteleport.com/docs/enroll-resources/server-access/getting-started/
+#
+#        tsh login --proxy=teleport.openstudiolandscapes.cloud-ip.cc --user=admin
+#
+#        tctl status
+#
+#        tctl tokens add --type=node --format=text > ./teleport_token
+#
+#        sudo teleport node configure \
+#            --output=file:///etc/teleport.yaml \
+#            --token=/home/michael/.config/teleport/teleport_token \
+#            --proxy=teleport.openstudiolandscapes.cloud-ip.cc:443
+#
+#        sudo teleport start --config="/etc/teleport.yaml"
+#
+#        sudo teleport install systemd -o /etc/systemd/system/teleport.service
+#        sudo systemctl enable teleport
+#        sudo systemctl start teleport
+#
+#        # tctl users add michael --roles=editor,access --logins=michael
+
+"""
+$ sudo cat /etc/teleport.yaml 
+version: v3
+teleport:
+  nodename: lenovo
+  data_dir: /var/lib/teleport
+  join_params:
+    token_name: /home/michael/.config/teleport/teleport_token
+    method: token
+  proxy_server: teleport.openstudiolandscapes.cloud-ip.cc:443
+  log:
+    output: stderr
+    severity: INFO
+    format:
+      output: text
+  ca_pin: ""
+  diag_addr: ""
+auth_service:
+  enabled: "no"
+ssh_service:
+  enabled: "yes"
+proxy_service:
+  enabled: "no"
+  https_keypairs: []
+  https_keypairs_reload_interval: 0s
+  acme: {}
+"""
+
+
+#######################################################################################################################
+
+
+#######################################################################################################################
+# stow (switch .env)
+
+# Todo
+#######################################################################################################################

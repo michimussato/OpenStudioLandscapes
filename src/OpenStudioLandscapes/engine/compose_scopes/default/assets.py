@@ -1,5 +1,4 @@
 import copy
-import os
 import pathlib
 from typing import Any, Generator, List, MutableMapping
 
@@ -168,21 +167,6 @@ if bool(ins):
             },
         )
 
-    # Dynamic inputs based on the imported
-    # third party code locations
-    ins = {}
-    feature_ins = {}
-    for i in IMPORTED_FEATURES:
-        # ex: module = "OpenStudioLandscapes.Ayon.definitions"
-        module = i["module"]
-        compose_scope = i["compose_scope"]
-        if compose_scope == ComposeScope.DEFAULT:
-            split = module.split(".")
-            key = split[1]  # key = "Ayon"
-            ins[f"{split[0]}_{split[1]}"] = AssetIn(AssetKey([key, "group_out"]))
-            feature_ins[f"{split[0]}_{split[1]}"] = AssetIn(
-                AssetKey([key, "feature_out"])
-            )
 
     @asset(
         **ASSET_HEADER_COMPOSE,
