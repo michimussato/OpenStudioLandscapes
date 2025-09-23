@@ -3738,12 +3738,16 @@ def gh_pr_set_mode(session, working_directory):
 #        local install of tsh and tctl
 #        https://goteleport.com/docs/enroll-resources/server-access/getting-started/
 #
+#        # ERROR: Cannot connect to the auth server. Is the auth server running on "teleport.openstudiolandscapes.cloud-ip.cc:443"?
+#        tsh logout
+#
 #        tsh login --proxy=teleport.openstudiolandscapes.cloud-ip.cc --user=admin
 #
 #        tctl status
 #
 #        tctl tokens add --type=node --format=text > ./teleport_token
 #
+#        # sudo rm -rf /var/lib/teleport
 #        sudo teleport node configure \
 #            --output=file:///etc/teleport.yaml \
 #            --token=/home/michael/.config/teleport/teleport_token \
@@ -3754,8 +3758,18 @@ def gh_pr_set_mode(session, working_directory):
 #        sudo teleport install systemd -o /etc/systemd/system/teleport.service
 #        sudo systemctl enable teleport
 #        sudo systemctl start teleport
+#        sudo journalctl -fu teleport
 #
 #        # tctl users add michael --roles=editor,access --logins=michael
+
+"""
+start over
+
+tsh logout
+sudo rm -rf /var/lib/teleport
+sudo rm /etc/teleport.yaml
+rm -rf ~/.config/teleport/*
+"""
 
 """
 $ sudo cat /etc/teleport.yaml 
