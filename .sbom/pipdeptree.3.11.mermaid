@@ -10,11 +10,11 @@ flowchart TD
     certifi["certifi\n2025.8.3"]
     chardet["chardet\n5.2.0"]
     charset-normalizer["charset-normalizer\n3.4.3"]
-    click_0["click\n8.2.1"]
+    click_0["click\n8.3.0"]
     coloredlogs["coloredlogs\n14.0"]
     colorlog["colorlog\n6.9.0"]
     cyclonedx-bom["cyclonedx-bom\n7.1.0"]
-    cyclonedx-python-lib["cyclonedx-python-lib\n11.0.0"]
+    cyclonedx-python-lib["cyclonedx-python-lib\n11.1.0"]
     dagster-pipes["dagster-pipes\n1.9.11"]
     dagster-postgres["dagster-postgres\n0.25.11"]
     dagster["dagster\n1.9.11"]
@@ -32,7 +32,7 @@ flowchart TD
     graphviz["graphviz\n0.21"]
     greenlet["greenlet\n3.2.4"]
     grpcio-health-checking["grpcio-health-checking\n1.71.2"]
-    grpcio["grpcio\n1.74.0"]
+    grpcio["grpcio\n1.75.0"]
     humanfriendly["humanfriendly\n10.0"]
     idna["idna\n3.10"]
     isoduration["isoduration\n20.11.0"]
@@ -40,9 +40,9 @@ flowchart TD
     jsonpointer["jsonpointer\n3.0.0"]
     jsonschema-specifications["jsonschema-specifications\n2025.9.1"]
     jsonschema["jsonschema\n4.25.1"]
-    lark["lark\n1.2.2"]
+    lark["lark\n1.3.0"]
     license-expression["license-expression\n30.4.4"]
-    lxml["lxml\n6.0.1"]
+    lxml["lxml\n6.0.2"]
     mako["Mako\n1.3.10"]
     markdown-it-py["markdown-it-py\n4.0.0"]
     markupsafe["MarkupSafe\n3.0.2"]
@@ -59,10 +59,10 @@ flowchart TD
     psycopg2-binary["psycopg2-binary\n2.9.10"]
     py-serializable["py-serializable\n2.1.0"]
     pydantic-core["pydantic_core\n2.33.2"]
-    pydantic["pydantic\n2.11.7"]
+    pydantic["pydantic\n2.11.9"]
     pydot["pydot\n4.0.1"]
     pygments["Pygments\n2.19.2"]
-    pyparsing["pyparsing\n3.2.3"]
+    pyparsing["pyparsing\n3.2.5"]
     python-dateutil["python-dateutil\n2.9.0.post0"]
     python-dotenv["python-dotenv\n1.1.1"]
     pytz["pytz\n2025.2"]
@@ -150,6 +150,7 @@ flowchart TD
     docker-compose-graph -- "any" --> pyyaml
     gitdb -- ">=3.0.1,<6" --> smmap
     gitpython -- ">=4.0.1,<5" --> gitdb
+    grpcio -- "~=4.12" --> typing-extensions
     grpcio-health-checking -- ">=1.71.2" --> grpcio
     grpcio-health-checking -- ">=5.26.1,<6.0dev" --> protobuf
     isoduration -- ">=0.15.0" --> arrow

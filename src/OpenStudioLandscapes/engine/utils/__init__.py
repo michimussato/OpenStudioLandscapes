@@ -578,11 +578,14 @@ def get_str_env(
 
 
 def get_dynamic_ins(
-        compose_scope_filter: ComposeScope,
-        imported_features: List[dict[
-            str, [str | dict[str, bool | str | ComposeScope | OpenStudioLandscapesConfig]]
-        ]],
-        operator: Union[operator_.eq, operator_.ne],
+    compose_scope_filter: ComposeScope,
+    imported_features: List[
+        dict[
+            str,
+            [str | dict[str, bool | str | ComposeScope | OpenStudioLandscapesConfig]],
+        ]
+    ],
+    operator: Union[operator_.eq, operator_.ne],
 ) -> tuple[dict[str, AssetIn], dict[str, AssetIn]]:
     """
     Dynamic inputs based on the imported
@@ -607,5 +610,7 @@ def get_dynamic_ins(
             split = module.split(".")
             key = split[1]  # key = "Ayon"
             ins[f"{split[0]}_{split[1]}"] = AssetIn(AssetKey([key, "group_out"]))
-            feature_ins[f"{split[0]}_{split[1]}"] = AssetIn(AssetKey([key, "feature_out"]))
+            feature_ins[f"{split[0]}_{split[1]}"] = AssetIn(
+                AssetKey([key, "feature_out"])
+            )
     return ins, feature_ins

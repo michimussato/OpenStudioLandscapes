@@ -45,9 +45,9 @@ Now go ahead and create, say, an
 1. `mkdir -p ~/git/repos/stow/OpenStudioLandscapes`
 
 Then, you can create a nested (sub-) package for each `.env` file
-that you intend to use. For example, you have a `Client_A` 
+that you intend to use. For example, you have a `Client_A`
 and a `Client_B` that you want to be able to create custom
-Lanscapes for - each of which with different environments of 
+Lanscapes for - each of which with different environments of
 course.
 
 1. `mkdir -p ~/git/repos/stow/OpenStudioLandscapes/Client_A`
@@ -59,7 +59,7 @@ create them:
 1. `touch ~/git/repos/stow/OpenStudioLandscapes/Client_A/.env`
 2. `touch ~/git/repos/stow/OpenStudioLandscapes/Client_B/.env`
 
-These new files being part of a version controlled Git 
+These new files being part of a version controlled Git
 repo, we can start tracking and commit them:
 
 1. `git -C ~/git/repos/stow add *.env`

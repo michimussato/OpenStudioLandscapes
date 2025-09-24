@@ -160,7 +160,6 @@ if bool(ins):
             },
         )
 
-
     @asset(
         **ASSET_HEADER_COMPOSE,
         ins={

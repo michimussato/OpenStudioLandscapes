@@ -923,7 +923,9 @@ def write_pi_hole_yml(
     service_name = "pihole-unbound"
     network_name = "pi-hole"
     container_name = service_name
-    host_name = ".".join([service_name, ENVIRONMENT_PI_HOLE["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"]])
+    host_name = ".".join(
+        [service_name, ENVIRONMENT_PI_HOLE["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"]]
+    )
 
     pi_hole_dict = {
         "networks": {
@@ -1791,7 +1793,9 @@ def write_dagster_postgres_yml(
     service_name = "postgres-dagster"
     # network_name = service_name
     # container_name = service_name
-    host_name = ".".join([service_name, ENVIRONMENT_DAGSTER["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"]])
+    host_name = ".".join(
+        [service_name, ENVIRONMENT_DAGSTER["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"]]
+    )
 
     # https://docs.dagster.io/guides/limiting-concurrency-in-data-pipelines
     dagster_postgres_dict = {
@@ -1859,7 +1863,9 @@ def write_dagster_postgres_compose() -> pathlib.Path:
     service_name = "postgres-dagster"
     network_name = service_name
     container_name = service_name
-    host_name = ".".join([service_name, ENVIRONMENT_DAGSTER["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"]])
+    host_name = ".".join(
+        [service_name, ENVIRONMENT_DAGSTER["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"]]
+    )
 
     dagster_postgres_dict = {
         "networks": {
@@ -2935,7 +2941,9 @@ ENVIRONMENT_ACME_SH = {
 }
 
 
-compose_acme_sh: pathlib.Path = ENVIRONMENT_ACME_SH["ACME_ROOT_DIR"] / "docker-compose.yml"
+compose_acme_sh: pathlib.Path = (
+    ENVIRONMENT_ACME_SH["ACME_ROOT_DIR"] / "docker-compose.yml"
+)
 tld: str = ""
 acme_docker_service_name: str = ""
 
@@ -2983,11 +2991,15 @@ def write_acme_sh_yml(
     acme_sh_certs_dir: pathlib.Path = acme_sh_root_dir / "certs"
     acme_sh_certs_dir.mkdir(parents=True, exist_ok=True)
 
-    acme_docker_service_name = f"{ENVIRONMENT_ACME_SH['ACME_DOCKER_SERVICE_NAME']}-{clean_tld(tld)}"
+    acme_docker_service_name = (
+        f"{ENVIRONMENT_ACME_SH['ACME_DOCKER_SERVICE_NAME']}-{clean_tld(tld)}"
+    )
 
     service_name = acme_docker_service_name
     container_name = service_name
-    host_name = ".".join([service_name, ENVIRONMENT_ACME_SH["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"]])
+    host_name = ".".join(
+        [service_name, ENVIRONMENT_ACME_SH["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"]]
+    )
 
     acme_sh_dict = {
         "services": {
@@ -3001,9 +3013,7 @@ def write_acme_sh_yml(
                     f"{acme_sh_certs_dir.as_posix()}:/acme.sh:rw",
                 ],
                 "network_mode": "host",
-                "command": [
-                    "daemon"
-                ],
+                "command": ["daemon"],
                 "environment": {
                     "ACME_SH_TLD": tld,
                     "ACME_SH_CA": ca,
@@ -3015,7 +3025,6 @@ def write_acme_sh_yml(
                 },
                 "stdin_open": True,
                 "tty": True,
-
             },
         },
     }
@@ -3030,9 +3039,7 @@ def write_acme_sh_yml(
             f"`{compose_acme_sh.as_posix()}` already present in. "
             f"Use that or start fresh by issuing `nox --session acme_sh_clear` first."
         )
-        logging.info(
-            msg
-        )
+        logging.info(msg)
         raise Exception(msg)
 
     with open(compose_acme_sh.as_posix(), "w") as fw:
@@ -3061,14 +3068,16 @@ def get_cmd_acme_sh() -> list:
 def get_container_vars():
     global acme_docker_service_name
     env_ = {}
-    cmd_get_container_vars = f"{shutil.which('docker')} exec {acme_docker_service_name} env"
+    cmd_get_container_vars = (
+        f"{shutil.which('docker')} exec {acme_docker_service_name} env"
+    )
     p = subprocess.Popen(
         cmd_get_container_vars,
         stdout=subprocess.PIPE,
         shell=True,
         executable=shutil.which("bash"),
     )
-    for line in iter(p.stdout.readline, b''):
+    for line in iter(p.stdout.readline, b""):
         k, v = line.strip().split(b"=")
         env_[k.decode("utf-8")] = v.decode("utf-8")
     return env_
@@ -3317,9 +3326,9 @@ def acme_sh_register_account(session):
         acme_docker_service_name,
         "--register-account",
         "--server",
-        '$ACME_SH_CA',
+        "$ACME_SH_CA",
         "--email",
-        '$ACME_SH_EMAIL',
+        "$ACME_SH_EMAIL",
     ]
 
     session.run(
@@ -3368,7 +3377,14 @@ def acme_sh_create_certificate(session):
         # while not RE_SEMVER.match(user_input):
         user_input = input(input_message)
 
-        sub_domains = list(chain.from_iterable((j, f"{i}{tld}") for i, j in zip_longest(user_input.split(sep=","), [], fillvalue="--domain")))
+        sub_domains = list(
+            chain.from_iterable(
+                (j, f"{i}{tld}")
+                for i, j in zip_longest(
+                    user_input.split(sep=","), [], fillvalue="--domain"
+                )
+            )
+        )
 
         all_domains = [
             "--domain",
@@ -3384,7 +3400,7 @@ def acme_sh_create_certificate(session):
         # https://github.com/acmesh-official/acme.sh/wiki/dnsapi
         "--issue",
         "--server",
-        '$ACME_SH_CA',
+        "$ACME_SH_CA",
         "--force",
         "--dns",
         "dns_cloudns",  # Todo: try the same as for `--server`
@@ -3776,7 +3792,7 @@ rm -rf ~/.config/teleport/*
 """
 
 """
-$ sudo cat /etc/teleport.yaml 
+$ sudo cat /etc/teleport.yaml
 version: v3
 teleport:
   nodename: lenovo

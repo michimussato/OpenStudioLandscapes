@@ -18,7 +18,7 @@
       from OpenStudioLandscapes.engine.compose_scopes.new_composescope import (
           constants as constants_compose_new_composescope,
       )
-      
+
       GROUP_COMPOSE_NEW_COMPOSESCOPE = constants_compose_new_composescope.GROUP
       KEY_COMPOSE_NEW_COMPOSESCOPE = constants_compose_new_composescope.KEY
       ASSET_HEADER_COMPOSE_NEW_COMPOSESCOPE = constants_compose_new_composescope.ASSET_HEADER

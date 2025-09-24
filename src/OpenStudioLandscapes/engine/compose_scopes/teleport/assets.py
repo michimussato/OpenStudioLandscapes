@@ -41,9 +41,7 @@ if bool(ins):
         **ASSET_HEADER_COMPOSE_TELEPORT,
         ins={
             "env_base": AssetIn(
-                AssetKey(
-                    [*ASSET_HEADER_COMPOSE_TELEPORT["key_prefix"], "env_base"]
-                )
+                AssetKey([*ASSET_HEADER_COMPOSE_TELEPORT["key_prefix"], "env_base"])
             ),
             "DOCKER_COMPOSE": AssetIn(
                 AssetKey(
@@ -89,9 +87,7 @@ if bool(ins):
         **ASSET_HEADER_COMPOSE_TELEPORT,
         ins={
             "features_in": AssetIn(
-                AssetKey(
-                    [*ASSET_HEADER_COMPOSE_TELEPORT["key_prefix"], "features_in"]
-                )
+                AssetKey([*ASSET_HEADER_COMPOSE_TELEPORT["key_prefix"], "features_in"])
             ),
         },
     )
@@ -117,9 +113,7 @@ if bool(ins):
         **ASSET_HEADER_COMPOSE_TELEPORT,
         ins={
             "features_in": AssetIn(
-                AssetKey(
-                    [*ASSET_HEADER_COMPOSE_TELEPORT["key_prefix"], "features_in"]
-                )
+                AssetKey([*ASSET_HEADER_COMPOSE_TELEPORT["key_prefix"], "features_in"])
             ),
         },
     )
@@ -147,9 +141,7 @@ if bool(ins):
         **ASSET_HEADER_COMPOSE_TELEPORT,
         ins={
             "features_in": AssetIn(
-                AssetKey(
-                    [*ASSET_HEADER_COMPOSE_TELEPORT["key_prefix"], "features_in"]
-                )
+                AssetKey([*ASSET_HEADER_COMPOSE_TELEPORT["key_prefix"], "features_in"])
             ),
         },
     )
@@ -240,9 +232,7 @@ if bool(ins):
                 AssetKey([*ASSET_HEADER_COMPOSE_TELEPORT["key_prefix"], "env"]),
             ),
             "features_in": AssetIn(
-                AssetKey(
-                    [*ASSET_HEADER_COMPOSE_TELEPORT["key_prefix"], "features_in"]
-                ),
+                AssetKey([*ASSET_HEADER_COMPOSE_TELEPORT["key_prefix"], "features_in"]),
             ),
         },
     )
