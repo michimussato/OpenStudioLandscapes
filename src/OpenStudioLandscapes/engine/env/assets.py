@@ -357,9 +357,7 @@ def env(
         # Todo:
         #  - [ ] Where is this being used?
         "DEFAULT_CONFIG_DBPATH": "/data/configdb",
-        # Todo:
-        #  - [ ] Change ROOT_DOMAIN to OPENSTUDIOLANDSCAPES__DOMAIN_LAN globally
-        "ROOT_DOMAIN": EnvVar(
+        "OPENSTUDIOLANDSCAPES__DOMAIN_LAN": EnvVar(
             "OPENSTUDIOLANDSCAPES__DOMAIN_LAN"
         ).get_value(),
         "OPENSTUDIOLANDSCAPES__DOMAIN_WAN": EnvVar(

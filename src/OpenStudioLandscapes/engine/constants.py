@@ -119,34 +119,6 @@ ASSET_HEADER_DISTRIBUTABLE = {
     "key_prefix": KEY_DISTRIBUTABLE,
 }
 
-# BASE_CONFIGS = {
-#     "ENVIRONMENT_BASE": {
-#         "GIT_ROOT": pathlib.Path("{GIT_ROOT}"),
-#         # Todo
-#         #  - [ ] Move CONFIGS_ROOT to individual modules
-#         "DOT_LANDSCAPES": pathlib.Path("{GIT_ROOT}", ".landscapes"),
-#         "DOT_FEATURES": pathlib.Path("{GIT_ROOT}", ".features"),
-#         "CONFIGS_ROOT": pathlib.Path(
-#             git_root,
-#             "configs",
-#         ).as_posix(),
-#         "AUTHOR": "michimussato@gmail.com",
-#         "CREATED_BY": str(getpass.getuser()),
-#         "CREATED_ON": str(socket.gethostname()),
-#         "CREATED_AT": str(datetime.strftime(datetime.now(), "%Y-%m-%d_%H-%M-%S")),
-#         "TIMEZONE": "Europe/Zurich",
-#         # "IMAGE_PREFIX": "michimussato",
-#         # Todo:
-#         #  - [ ] Where is this being used?
-#         "DEFAULT_CONFIG_DBPATH": "/data/configdb",
-#         "ROOT_DOMAIN": "farm.evil",
-#         # https://vfxplatform.com/
-#         "PYTHON_MAJ": "3",
-#         "PYTHON_MIN": "11",
-#         "PYTHON_PAT": "11",
-#     }
-# }["ENVIRONMENT_BASE"]
-
 
 @asset(
     **ASSET_HEADER_BASE_ENV,

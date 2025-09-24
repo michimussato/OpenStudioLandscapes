@@ -19,8 +19,10 @@ __all__ = [
     "get_relative_path_via_common_root",
     "get_bool_env",
     "get_str_env",
+    "get_dynamic_ins",
 ]
 
+import operator as operator_
 import os
 import pathlib
 import select
@@ -28,7 +30,13 @@ import shlex
 from typing import IO, Any, List, MutableMapping, Optional, Union
 
 import git
-from dagster import AssetExecutionContext, MetadataValue, OpExecutionContext
+from dagster import (
+    AssetExecutionContext,
+    AssetIn,
+    AssetKey,
+    MetadataValue,
+    OpExecutionContext,
+)
 
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.exceptions import ComposeScopeException
@@ -567,3 +575,37 @@ def get_str_env(
         _env = default
 
     return _env
+
+
+def get_dynamic_ins(
+        compose_scope_filter: ComposeScope,
+        imported_features: List[dict[
+            str, [str | dict[str, bool | str | ComposeScope | OpenStudioLandscapesConfig]]
+        ]],
+        operator: Union[operator_.eq, operator_.ne],
+) -> tuple[dict[str, AssetIn], dict[str, AssetIn]]:
+    """
+    Dynamic inputs based on the imported
+    third party code locations
+
+    Args:
+        compose_scope_filter:
+        imported_features:
+        operator:
+
+    Returns:
+
+    """
+
+    ins = {}
+    feature_ins = {}
+    for i in imported_features:
+        # ex: module = "OpenStudioLandscapes.Ayon.definitions"
+        module = i["module"]
+        compose_scope_ = i["compose_scope"]
+        if operator(compose_scope_, compose_scope_filter):
+            split = module.split(".")
+            key = split[1]  # key = "Ayon"
+            ins[f"{split[0]}_{split[1]}"] = AssetIn(AssetKey([key, "group_out"]))
+            feature_ins[f"{split[0]}_{split[1]}"] = AssetIn(AssetKey([key, "feature_out"]))
+    return ins, feature_ins

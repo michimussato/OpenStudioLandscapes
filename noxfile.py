@@ -863,7 +863,9 @@ def fix_hardlinks_in_features(session):
 
 # # ENVIRONMENT
 ENVIRONMENT_PI_HOLE = {
-    "ROOT_DOMAIN": "farm.evil",
+    # Todo:
+    #  - [ ] maybe better to source .env instead of hardcoding these values
+    "OPENSTUDIOLANDSCAPES__DOMAIN_LAN": "farm.evil",
     "PIHOLE_USE_UNBOUND": True,
     "PIHOLE_WEB_PORT_HOST": "81",
     "PIHOLE_WEB_PASSWORD": "myp4ssword",
@@ -921,7 +923,7 @@ def write_pi_hole_yml(
     service_name = "pihole-unbound"
     network_name = "pi-hole"
     container_name = service_name
-    host_name = ".".join([service_name, ENVIRONMENT_PI_HOLE["ROOT_DOMAIN"]])
+    host_name = ".".join([service_name, ENVIRONMENT_PI_HOLE["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"]])
 
     pi_hole_dict = {
         "networks": {
@@ -933,7 +935,7 @@ def write_pi_hole_yml(
             service_name: {
                 "container_name": container_name,
                 "hostname": host_name,
-                "domainname": ENVIRONMENT_PI_HOLE["ROOT_DOMAIN"],
+                "domainname": ENVIRONMENT_PI_HOLE["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"],
                 "restart": "unless-stopped",
                 "image": "docker.io/mpgirro/pihole-unbound:latest",
                 "volumes": [
@@ -1730,7 +1732,9 @@ def harbor_down(session):
 
 # # ENVIRONMENT
 ENVIRONMENT_DAGSTER = {
-    "ROOT_DOMAIN": "farm.evil",
+    # Todo:
+    #  - [ ] maybe better to source .env instead of hardcoding these values
+    "OPENSTUDIOLANDSCAPES__DOMAIN_LAN": "farm.evil",
     # Todo:
     #  - [ ] move these two into `.landscapes`
     "DAGSTER_POSTGRES_ROOT_DIR": pathlib.Path.cwd() / ".dagster-postgres",
@@ -1785,9 +1789,9 @@ def write_dagster_postgres_yml(
     dagster_postgres_root_dir.mkdir(parents=True, exist_ok=True)
 
     service_name = "postgres-dagster"
-    network_name = service_name
-    container_name = service_name
-    host_name = ".".join([service_name, ENVIRONMENT_DAGSTER["ROOT_DOMAIN"]])
+    # network_name = service_name
+    # container_name = service_name
+    host_name = ".".join([service_name, ENVIRONMENT_DAGSTER["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"]])
 
     # https://docs.dagster.io/guides/limiting-concurrency-in-data-pipelines
     dagster_postgres_dict = {
@@ -1855,7 +1859,7 @@ def write_dagster_postgres_compose() -> pathlib.Path:
     service_name = "postgres-dagster"
     network_name = service_name
     container_name = service_name
-    host_name = ".".join([service_name, ENVIRONMENT_DAGSTER["ROOT_DOMAIN"]])
+    host_name = ".".join([service_name, ENVIRONMENT_DAGSTER["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"]])
 
     dagster_postgres_dict = {
         "networks": {
@@ -1867,7 +1871,7 @@ def write_dagster_postgres_compose() -> pathlib.Path:
             service_name: {
                 "container_name": container_name,
                 "hostname": host_name,
-                "domainname": ENVIRONMENT_DAGSTER["ROOT_DOMAIN"],
+                "domainname": ENVIRONMENT_DAGSTER["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"],
                 "restart": "unless-stopped",
                 "image": "docker.io/postgres",
                 "volumes": [
