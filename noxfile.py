@@ -691,6 +691,11 @@ def install_features_into_engine(session):
     # nox --session install_features_into_engine
     # nox --tags install_features_into_engine
 
+    # Todo:
+    #  - [ ] option to install local package instead of
+    #        being limited to install from Github
+    #        `for i in .features/*; do pip install --editable "$(pwd)/${i}[dev]"; done; pip install --editable ".[dev]"`
+
     sudo = False
 
     features_dir = pathlib.Path.cwd() / ".features"
