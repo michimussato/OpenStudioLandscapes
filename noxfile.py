@@ -3770,7 +3770,7 @@ def gh_pr_set_mode(session, working_directory):
 #
 #        tctl status
 #
-#        tctl tokens add --type=node --format=text > ./teleport_token
+#        tctl tokens add --type=node --format=text > ~/.config/teleport/teleport_token
 #
 #        # sudo rm -rf /var/lib/teleport
 #        sudo teleport node configure \
