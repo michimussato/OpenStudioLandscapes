@@ -1059,7 +1059,7 @@ def op_docker_compose_graph(
     out={
         "group_out": Out(pathlib.Path),
         "compose_project_name": Out(str),
-        "cmd_docker_compose_up": Out(dict[str, list]),
+        "docker_compose_commands": Out(dict[str, list]),
     },
 )
 def op_group_out(
@@ -1217,7 +1217,17 @@ def op_group_out(
             "script": script_cmd_docker_compose_up,
             "cmd": cmd_docker_compose_up,
             "create_convenience_script": True,
-            "asset_key_for_output": "cmd_docker_compose_up",
+            # Todo:
+            #  - [ ] this is not very elegant (besides, the asset output is
+            #        not used anywhere yet:
+            #        ```python
+            #        if script_dict["create_convenience_script"]:
+            #            docker_compose_scope = "__".join(
+            #                context.asset_key_for_output(script_dict["asset_key_for_output"]).path
+            #            )
+            #        ```
+            # "asset_key_for_output": "cmd_docker_compose_up",
+            "asset_key_for_output": "docker_compose_commands",
         },
         {
             "script": script_cmd_docker_compose_pull_up,
@@ -1410,14 +1420,14 @@ def op_group_out(
             },
         )
 
-    if "cmd_docker_compose_up" in context.selected_output_names:
+    if "docker_compose_commands" in context.selected_output_names:
 
-        #########################
-        # CMD_DOCKER_COMPOSE_UP #
-        #########################
+        ###########################
+        # DOCKER_COMPOSE_COMMANDS #
+        ###########################
 
         yield Output(
-            output_name="cmd_docker_compose_up",
+            output_name="docker_compose_commands",
             value={
                 "cmd_docker_compose_up": cmd_docker_compose_up,
                 "cmd_docker_compose_pull_up": cmd_docker_compose_pull_up,
@@ -1427,8 +1437,16 @@ def op_group_out(
         )
 
         yield AssetMaterialization(
-            asset_key=context.asset_key_for_output("cmd_docker_compose_up"),
+            asset_key=context.asset_key_for_output("docker_compose_commands"),
             metadata={
+                "script_cmd_docker_compose_up_down": MetadataValue.path(
+                    "; ".join(
+                        [
+                            script_cmd_docker_compose_up.as_posix(),
+                            script_cmd_docker_compose_down.as_posix(),
+                        ]
+                    )
+                ),
                 "script_cmd_docker_compose_up": MetadataValue.path(
                     script_cmd_docker_compose_up
                 ),

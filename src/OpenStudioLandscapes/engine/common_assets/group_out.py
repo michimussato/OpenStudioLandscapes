@@ -35,8 +35,8 @@ def get_group_out(
             "compose_project_name": AssetKey(
                 [*ASSET_HEADER["key_prefix"], "compose_project_name"]
             ),
-            "cmd_docker_compose_up": AssetKey(
-                [*ASSET_HEADER["key_prefix"], "cmd_docker_compose_up"]
+            "docker_compose_commands": AssetKey(
+                [*ASSET_HEADER["key_prefix"], "docker_compose_commands"]
             ),
         },
         keys_by_input_name={

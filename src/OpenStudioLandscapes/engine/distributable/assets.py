@@ -35,10 +35,11 @@ def distributable(
 
     env = group_out.get("env", {})
 
-    landscape_path = pathlib.Path(
-        env["DOT_LANDSCAPES"],
-        env.get("LANDSCAPE", "default"),
-    )
+    base_landscapes = pathlib.Path(env.get("DOT_LANDSCAPES"))
+
+    landscape_id = env.get("LANDSCAPE", "default")
+
+    landscape_path = base_landscapes / landscape_id
 
     distributable_out = pathlib.Path(
         landscape_path,
@@ -57,19 +58,57 @@ def distributable(
 
     else:
         with zipfile.ZipFile(distributable_out, "w") as distributable_zip:
-            for file_path in landscape_path.rglob("*"):
-                if file_path == distributable_out:
+            context.log.info(f"Creating Distributable...")
+            context.log.info(f"{base_landscapes.as_posix() = }")
+            context.log.info(f"{landscape_id = }")
+            # Todo:
+            #  - [ ] contolling what ends up in the Zip file
+            #        and what does not could be more dynamic
+            for file_path in base_landscapes.rglob("*"):
+
+                # Skip if...
+                if file_path.name == ".gitkeep":
+                    context.log.info(f"File skipped: {file_path.as_posix()}")
+                    continue
+
+                if file_path.name == ".gitignore":
+                    context.log.info(f"File skipped: {file_path.as_posix()}")
+                    continue
+
+                if file_path.name == distributable_out.name:
+                    context.log.info(f"File skipped: {file_path.as_posix()}")
                     # skip the actual Zip file to prevent
                     # recursion
                     continue
 
+                if base_landscapes.joinpath(".acme.sh").as_posix() in file_path.as_posix():
+                    if not base_landscapes.joinpath(".acme.sh") == file_path:
+                        if not file_path.match('*_ecc/*'):
+                            context.log.warning(f"File skipped: {file_path.as_posix()}")
+                            continue
+
+                if base_landscapes.joinpath(".dagster", "postgres").as_posix() in file_path.as_posix():
+                    if not base_landscapes.joinpath(".dagster", "postgres") == file_path:
+                        context.log.warning(f"File skipped: {file_path.as_posix()}")
+                        continue
+
+                if base_landscapes.joinpath(".n8n").as_posix() in file_path.as_posix():
+                    if not base_landscapes.joinpath(".n8n") == file_path:
+                        context.log.warning(f"File skipped: {file_path.as_posix()}")
+                        continue
+
                 context.log.info(f"Adding {file_path.as_posix()}")
 
-                # Add file to zip
-                distributable_zip.write(
-                    filename=file_path,
-                    arcname=file_path.relative_to(landscape_path),
-                )
+                try:
+                    # Add file to zip
+                    distributable_zip.write(
+                        filename=file_path,
+                        arcname=file_path.relative_to(base_landscapes),
+                    )
+                except PermissionError as e:
+                    context.log.error(e)
+                except OSError as e:
+                    context.log.error(e)
 
     yield Output(distributable_out)
 
