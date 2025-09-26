@@ -66,6 +66,12 @@ def distributable(
             #        and what does not could be more dynamic
             for file_path in base_landscapes.rglob("*"):
 
+                # skip the actual Zip file to prevent
+                # recursion
+                if file_path.name == distributable_out.name:
+                    context.log.info(f"File skipped: {file_path.as_posix()}")
+                    continue
+
                 # Skip if...
                 if file_path.name == ".gitkeep":
                     context.log.info(f"File skipped: {file_path.as_posix()}")
@@ -73,12 +79,6 @@ def distributable(
 
                 if file_path.name == ".gitignore":
                     context.log.info(f"File skipped: {file_path.as_posix()}")
-                    continue
-
-                if file_path.name == distributable_out.name:
-                    context.log.info(f"File skipped: {file_path.as_posix()}")
-                    # skip the actual Zip file to prevent
-                    # recursion
                     continue
 
                 if base_landscapes.joinpath(".acme.sh").as_posix() in file_path.as_posix():
@@ -94,6 +94,18 @@ def distributable(
 
                 if base_landscapes.joinpath(".n8n").as_posix() in file_path.as_posix():
                     if not base_landscapes.joinpath(".n8n") == file_path:
+                        context.log.warning(f"File skipped: {file_path.as_posix()}")
+                        continue
+
+                if base_landscapes.joinpath(".shared_volumes").as_posix() in file_path.as_posix():
+                    if len(file_path.relative_to(base_landscapes.joinpath(".shared_volumes")).parts) > 1:
+                        # Just add the base dir of the shared volumes but not its contents
+                        context.log.warning(f"File skipped: {file_path.as_posix()}")
+                        continue
+
+
+                if base_landscapes.joinpath(".n8n").as_posix() in file_path.as_posix():
+                    if not base_landscapes == file_path.parent:
                         context.log.warning(f"File skipped: {file_path.as_posix()}")
                         continue
 
