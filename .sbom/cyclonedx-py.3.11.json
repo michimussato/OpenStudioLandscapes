@@ -158,7 +158,7 @@
       "version": "0.0.0"
     },
     {
-      "bom-ref": "BomRef.9927348370660836.3554774514050756",
+      "bom-ref": "BomRef.4010169830041389.5492503692241621",
       "description": "A Toolkit to create dynamic Animation and VFX studio environments for robust automation and pipelines.",
       "externalReferences": [
         {
@@ -177,7 +177,7 @@
       "version": "0.0.0"
     },
     {
-      "bom-ref": "PyYAML==6.0.2",
+      "bom-ref": "PyYAML==6.0.3",
       "description": "YAML parser and emitter for Python",
       "externalReferences": [
         {
@@ -225,9 +225,9 @@
         }
       ],
       "name": "PyYAML",
-      "purl": "pkg:pypi/pyyaml@6.0.2",
+      "purl": "pkg:pypi/pyyaml@6.0.3",
       "type": "library",
-      "version": "6.0.2"
+      "version": "6.0.3"
     },
     {
       "bom-ref": "Pygments==2.19.2",
@@ -1410,7 +1410,7 @@
       "version": "3.2.4"
     },
     {
-      "bom-ref": "grpcio==1.75.0",
+      "bom-ref": "grpcio==1.75.1",
       "description": "HTTP/2-based RPC framework",
       "externalReferences": [
         {
@@ -1443,9 +1443,9 @@
         }
       ],
       "name": "grpcio",
-      "purl": "pkg:pypi/grpcio@1.75.0",
+      "purl": "pkg:pypi/grpcio@1.75.1",
       "type": "library",
-      "version": "1.75.0"
+      "version": "1.75.1"
     },
     {
       "bom-ref": "grpcio-health-checking==1.71.2",
@@ -3320,7 +3320,7 @@
     {
       "dependsOn": [
         "GitPython==3.1.45",
-        "PyYAML==6.0.2",
+        "PyYAML==6.0.3",
         "cyclonedx-bom==7.1.0",
         "dagster-postgres==0.25.11",
         "dagster==1.9.11",
@@ -3334,7 +3334,7 @@
       "ref": "OpenStudioLandscapes==0.0.0"
     },
     {
-      "ref": "PyYAML==6.0.2"
+      "ref": "PyYAML==6.0.3"
     },
     {
       "ref": "Pygments==2.19.2"
@@ -3440,7 +3440,7 @@
     {
       "dependsOn": [
         "Jinja2==3.1.6",
-        "PyYAML==6.0.2",
+        "PyYAML==6.0.3",
         "SQLAlchemy==2.0.43",
         "alembic==1.16.5",
         "antlr4-python3-runtime==4.13.2",
@@ -3452,7 +3452,7 @@
         "filelock==3.19.1",
         "fsspec==2025.9.0",
         "grpcio-health-checking==1.71.2",
-        "grpcio==1.75.0",
+        "grpcio==1.75.1",
         "packaging==25.0",
         "protobuf==5.29.5",
         "pydantic==2.11.9",
@@ -3490,7 +3490,7 @@
     {
       "dependsOn": [
         "Jinja2==3.1.6",
-        "PyYAML==6.0.2",
+        "PyYAML==6.0.3",
         "graphviz==0.21",
         "pydot==4.0.1",
         "python-dotenv==1.1.1",
@@ -3540,7 +3540,7 @@
     },
     {
       "dependsOn": [
-        "grpcio==1.75.0",
+        "grpcio==1.75.1",
         "protobuf==5.29.5"
       ],
       "ref": "grpcio-health-checking==1.71.2"
@@ -3549,7 +3549,7 @@
       "dependsOn": [
         "typing_extensions==4.15.0"
       ],
-      "ref": "grpcio==1.75.0"
+      "ref": "grpcio==1.75.1"
     },
     {
       "ref": "humanfriendly==10.0"
@@ -3604,7 +3604,7 @@
     },
     {
       "dependsOn": [
-        "PyYAML==6.0.2",
+        "PyYAML==6.0.3",
         "mdurl==0.1.2",
         "requests==2.32.5"
       ],
@@ -3838,7 +3838,7 @@
     },
     {
       "dependsOn": [
-        "PyYAML==6.0.2"
+        "PyYAML==6.0.3"
       ],
       "ref": "watchdog==5.0.3"
     },
@@ -3847,7 +3847,7 @@
     }
   ],
   "metadata": {
-    "timestamp": "2025-09-24T11:47:22.547391+00:00",
+    "timestamp": "2025-09-26T10:54:35.660995+00:00",
     "tools": {
       "components": [
         {
@@ -3951,7 +3951,7 @@
       ]
     }
   },
-  "serialNumber": "urn:uuid:b43d988f-ac32-42b7-a6f9-6ccc6b5d7d60",
+  "serialNumber": "urn:uuid:de488c85-decb-4580-862d-4608895ae0eb",
   "version": 1,
   "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
   "bomFormat": "CycloneDX",

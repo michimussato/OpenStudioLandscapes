@@ -81,14 +81,23 @@ def distributable(
                     context.log.info(f"File skipped: {file_path.as_posix()}")
                     continue
 
-                if base_landscapes.joinpath(".acme.sh").as_posix() in file_path.as_posix():
+                if (
+                    base_landscapes.joinpath(".acme.sh").as_posix()
+                    in file_path.as_posix()
+                ):
                     if not base_landscapes.joinpath(".acme.sh") == file_path:
-                        if not file_path.match('*_ecc/*'):
+                        if not file_path.match("*_ecc/*"):
                             context.log.warning(f"File skipped: {file_path.as_posix()}")
                             continue
 
-                if base_landscapes.joinpath(".dagster", "postgres").as_posix() in file_path.as_posix():
-                    if not base_landscapes.joinpath(".dagster", "postgres") == file_path:
+                if (
+                    base_landscapes.joinpath(".dagster", "postgres").as_posix()
+                    in file_path.as_posix()
+                ):
+                    if (
+                        not base_landscapes.joinpath(".dagster", "postgres")
+                        == file_path
+                    ):
                         context.log.warning(f"File skipped: {file_path.as_posix()}")
                         continue
 
@@ -97,12 +106,21 @@ def distributable(
                         context.log.warning(f"File skipped: {file_path.as_posix()}")
                         continue
 
-                if base_landscapes.joinpath(".shared_volumes").as_posix() in file_path.as_posix():
-                    if len(file_path.relative_to(base_landscapes.joinpath(".shared_volumes")).parts) > 1:
+                if (
+                    base_landscapes.joinpath(".shared_volumes").as_posix()
+                    in file_path.as_posix()
+                ):
+                    if (
+                        len(
+                            file_path.relative_to(
+                                base_landscapes.joinpath(".shared_volumes")
+                            ).parts
+                        )
+                        > 1
+                    ):
                         # Just add the base dir of the shared volumes but not its contents
                         context.log.warning(f"File skipped: {file_path.as_posix()}")
                         continue
-
 
                 if base_landscapes.joinpath(".n8n").as_posix() in file_path.as_posix():
                     if not base_landscapes == file_path.parent:
