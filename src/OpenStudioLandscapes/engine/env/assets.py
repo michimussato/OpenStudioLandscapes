@@ -346,6 +346,7 @@ def env(
             "configs",
         ).as_posix(),
         "DOT_LANDSCAPES": dot_landscapes.as_posix(),
+        "DOT_SHARED_VOLUMES": ".shared_volumes",
         "DOT_FEATURES": dot_features.as_posix(),
         "DOT_OVERRIDES": pathlib.Path(landscape_root_dir, ".overrides").as_posix(),
         "AUTHOR": "michimussato@gmail.com",
