@@ -2932,6 +2932,9 @@ def tag_delete(session, working_directory):
 #######################################################################################################################
 # acme.sh (SSL Certificates)
 
+# Information:
+# https://github.com/acmesh-official/acme.sh/wiki/Run-acme.sh-in-docker#3-run-acmesh-as-a-docker-daemon
+
 # shortcut:  nox -s acme_sh_prepare acme_sh_up_detach acme_sh_register_account acme_sh_create_certificate acme_sh_down
 
 # # ENVIRONMENT
@@ -3243,7 +3246,8 @@ def acme_sh_up_detach(session):
 @nox.session(python=None, tags=["acme_sh_print_help"])
 def acme_sh_print_help(session):
     """
-    Print acme.sh help inside running container
+    Print acme.sh help inside running container.
+    `docker exec <CONTAINER_ID> --help`
 
     Scope:
     - [x] Engine
@@ -3309,7 +3313,8 @@ def acme_sh_down(session):
 @nox.session(python=None, tags=["acme_sh_register_account"])
 def acme_sh_register_account(session):
     """
-    Register account inside running container
+    Register account inside running container.
+    `docker exec <CONTAINER_ID> --register-account -m michimussato@gmail.com`
 
     Scope:
     - [x] Engine
@@ -3349,7 +3354,7 @@ def acme_sh_register_account(session):
 @nox.session(python=None, tags=["acme_sh_create_certificate"])
 def acme_sh_create_certificate(session):
     """
-    Register account inside running container
+    Create certificates using DNS-01 challenge (`--dns`).
 
     Scope:
     - [x] Engine
@@ -3407,48 +3412,27 @@ def acme_sh_create_certificate(session):
         "--server",
         "$ACME_SH_CA",
         "--force",
-        "--dns",
-        "dns_cloudns",  # Todo: try the same as for `--server`
+        [
+            # https://letsencrypt.org/docs/challenge-types/
+            "--standalone",  # TLS_ALPN-01 challenge
+            "--dns",  # DNS-1 challenge
+        ][1],
+        "dns_cloudns",
         *all_domains,
-        # "--standalone",
         # "--debug",
         # https://github.com/acmesh-official/acme.sh/wiki/dnscheck
-        # [Fri Sep 19 03:05:47 UTC 2025] Verifying: evil-farmer.cloud-ip.cc
-        # [Fri Sep 19 03:05:48 UTC 2025] Processing. The CA is processing your order, please wait. (1/30)
-        # [Fri Sep 19 03:05:56 UTC 2025] Pending. The CA is processing your order, please wait. (2/30)
-        # [Fri Sep 19 03:06:04 UTC 2025] Pending. The CA is processing your order, please wait. (3/30)
-        # [Fri Sep 19 03:06:12 UTC 2025] Pending. The CA is processing your order, please wait. (4/30)
-        # [Fri Sep 19 03:06:20 UTC 2025] Pending. The CA is processing your order, please wait. (5/30)
-        # [Fri Sep 19 03:06:28 UTC 2025] Pending. The CA is processing your order, please wait. (6/30)
-        # [Fri Sep 19 03:06:35 UTC 2025] Pending. The CA is processing your order, please wait. (7/30)
-        # [Fri Sep 19 03:06:43 UTC 2025] Pending. The CA is processing your order, please wait. (8/30)
-        # [Fri Sep 19 03:06:51 UTC 2025] Pending. The CA is processing your order, please wait. (9/30)
-        # [Fri Sep 19 03:06:59 UTC 2025] Pending. The CA is processing your order, please wait. (10/30)
-        # [Fri Sep 19 03:07:07 UTC 2025] Pending. The CA is processing your order, please wait. (11/30)
-        # [Fri Sep 19 03:07:14 UTC 2025] Pending. The CA is processing your order, please wait. (12/30)
-        # [Fri Sep 19 03:07:22 UTC 2025] Pending. The CA is processing your order, please wait. (13/30)
+        # Issues:
+        # [...]
         # [Fri Sep 19 03:07:25 UTC 2025] The retryafter=86400 value is too large (> 600), will not retry anymore.
         # It seems to be related to ZeroSSL with very strict abuse policies. We can change the default
         # CA (ZeroSSL) to something else:
         # https://github.com/acmesh-official/acme.sh/issues/6221#issuecomment-2669665014
     ]
 
-    # [Fri Sep 19 02:35:38 UTC 2025] Adding TXT value: 7UWDjlJMU4cPzjX_6BcyMSkYQzk072RYfJ4-FhrH620 for domain: _acme-challenge.evil-farmer.cloud-ip.cc
-    # [Fri Sep 19 02:35:38 UTC 2025] Using cloudns
-    # [Fri Sep 19 02:35:38 UTC 2025] CLOUDNS_AUTH_ID='<id>'
-    # [Fri Sep 19 02:35:38 UTC 2025] CLOUDNS_SUB_AUTH_ID
-    # [Fri Sep 19 02:35:38 UTC 2025] CLOUDNS_AUTH_PASSWORD='<password>'
-    # [Fri Sep 19 02:35:38 UTC 2025] GET
-    # [Fri Sep 19 02:35:38 UTC 2025] url='https://api.cloudns.net/dns/login.json?auth-id=<id>&auth-password=<password>'
-    # [Fri Sep 19 02:35:38 UTC 2025] timeout=
-    # [Fri Sep 19 02:35:38 UTC 2025] Http already initialized.
-    # [Fri Sep 19 02:35:38 UTC 2025] _CURL='curl --silent --dump-header /acme.sh/http.header  -L  --trace-ascii /tmp/tmp.1XgPxwvyjP  -g '
-    # [Fri Sep 19 02:35:38 UTC 2025] ret='0'
+    # API not enabled?
+    # [...]
     # [Fri Sep 19 02:35:38 UTC 2025] response='{"status":"Failed","statusDescription":"You don't have access to the HTTP API. Check your plan."}'
-    # [Fri Sep 19 02:35:38 UTC 2025] Invalid CLOUDNS_AUTH_ID or CLOUDNS_AUTH_PASSWORD. Please check your login credentials.
-    # [Fri Sep 19 02:35:38 UTC 2025] Error adding TXT record to domain: _acme-challenge.evil-farmer.cloud-ip.cc
-    # [Fri Sep 19 02:35:38 UTC 2025] _on_issue_err
-    # [Fri Sep 19 02:35:38 UTC 2025] Please check log file for more details: /acme.sh/acme.sh.log
+    # [...]
 
     session.run(
         "bash",
@@ -3786,44 +3770,6 @@ def gh_pr_set_mode(session, working_directory):
 #        sudo journalctl -fu teleport
 #
 #        # tctl users add michael --roles=editor,access --logins=michael
-
-"""
-start over
-
-tsh logout
-sudo rm -rf /var/lib/teleport
-sudo rm /etc/teleport.yaml
-rm -rf ~/.config/teleport/*
-"""
-
-"""
-$ sudo cat /etc/teleport.yaml
-version: v3
-teleport:
-  nodename: lenovo
-  data_dir: /var/lib/teleport
-  join_params:
-    token_name: /home/michael/.config/teleport/teleport_token
-    method: token
-  proxy_server: teleport.openstudiolandscapes.cloud-ip.cc:443
-  log:
-    output: stderr
-    severity: INFO
-    format:
-      output: text
-  ca_pin: ""
-  diag_addr: ""
-auth_service:
-  enabled: "no"
-ssh_service:
-  enabled: "yes"
-proxy_service:
-  enabled: "no"
-  https_keypairs: []
-  https_keypairs_reload_interval: 0s
-  acme: {}
-"""
-
 
 #######################################################################################################################
 
