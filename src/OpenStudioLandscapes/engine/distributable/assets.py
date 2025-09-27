@@ -39,6 +39,8 @@ def distributable(
 
     landscape_id = env.get("LANDSCAPE", "default")
 
+    shared_volumes = env.get("DOT_SHARED_VOLUMES")
+
     landscape_path = base_landscapes / landscape_id
 
     distributable_out = pathlib.Path(
@@ -107,13 +109,13 @@ def distributable(
                         continue
 
                 if (
-                    base_landscapes.joinpath(".shared_volumes").as_posix()
+                    base_landscapes.joinpath(shared_volumes).as_posix()
                     in file_path.as_posix()
                 ):
                     if (
                         len(
                             file_path.relative_to(
-                                base_landscapes.joinpath(".shared_volumes")
+                                base_landscapes.joinpath(shared_volumes)
                             ).parts
                         )
                         > 1
