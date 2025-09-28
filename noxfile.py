@@ -2723,10 +2723,10 @@ def release(session, working_directory):
 
 
 def menu_from_choices(
-        input_message: str,
-        choices: list,
-        manual_value: bool = False,
-        regex: re.Pattern = None,
+    input_message: str,
+    choices: list,
+    manual_value: bool = False,
+    regex: re.Pattern = None,
 ):
     """
     Create a menu from a list of choices.

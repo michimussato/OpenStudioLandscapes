@@ -25,6 +25,7 @@ Work in progress (there's more to do than that), but _conceptually_, here's how.
 ## up/down
 
 ```shell
+cd ../../
 nox --sessions dagster_postgres_up_detach dagster_postgres; nox --sessions dagster_postgres_down
 ```
 
@@ -35,6 +36,7 @@ nox --sessions dagster_postgres_up_detach dagster_postgres; nox --sessions dagst
 > OpenStudioLandscapes _with_ Harbor.
 
 ```shell
+cd ../../
 nox --sessions harbor_up_detach dagster_postgres_up_detach dagster_postgres; nox --sessions dagster_postgres_down harbor_down
 ```
 
@@ -43,6 +45,7 @@ nox --sessions harbor_up_detach dagster_postgres_up_detach dagster_postgres; nox
 ##### Setup
 
 ```shell
+cd ../../
 nox --session harbor_prepare
 ```
 
@@ -54,5 +57,6 @@ nox --session harbor_prepare
 > `sudo git clean -x --force` operation.
 
 ```shell
+cd ../../
 nox --session harbor_clear
 ```
