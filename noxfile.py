@@ -4,6 +4,7 @@ import shutil
 import os
 import subprocess
 
+import git
 import nox
 import re
 import pathlib
@@ -2746,18 +2747,33 @@ def tag(session, working_directory):
     # nox --tags tag
 
     # TAG
+    repo = git.Repo(engine_dir.parent / working_directory)
+    tags = repo.tags
+
     tag_ = os.environ.get("TAG", None)
     if tag_ is None:
         input_message = "Version tag:\n"
 
-        input_message += "v"
+        # input_message += "Existing tags"
+
+        for index, item in enumerate(tags):
+            input_message += f"{index + 1}) {item}\n"
+
+        input_message += "Choose tag or specify (no `v`): "
 
         user_input = ""
 
-        while not RE_SEMVER.match(user_input):
-            user_input = input(input_message)
+        # while not RE_SEMVER.match(user_input):
+        #     user_input = input(input_message)
 
-        tag_ = f"v{user_input}"
+        if user_input not in map(str, range(1, len(tags) + 1)):
+            user_input = input(input_message)
+            
+        try:
+            tag_ = tags[int(user_input) - 1].name
+        except (IndexError, ValueError):
+            tag_ = f"v{user_input}"
+
         os.environ["TAG"] = tag_
 
     # RELEASE_TYPE
@@ -2896,18 +2912,31 @@ def tag_delete(session, working_directory):
     # nox --tags tag_delete
 
     # TAG
+    repo = git.Repo(engine_dir.parent / working_directory)
+    tags = repo.tags
+
     tag_ = os.environ.get("TAG", None)
     if tag_ is None:
-        input_message = "Version tag:\n"
+        input_message = "Existing tags:\n"
 
-        input_message += "v"
+        for index, item in enumerate(tags):
+            input_message += f"{index + 1}) {item}\n"
+
+        input_message += "Choose tag or specify (no `v`): "
 
         user_input = ""
 
-        while not RE_SEMVER.match(user_input):
-            user_input = input(input_message)
+        # while not RE_SEMVER.match(user_input):
+        user_input = input(input_message)
 
-        tag_ = f"v{user_input}"
+        try:
+            tag_ = tags[int(user_input) - 1].name
+        except IndexError as e:
+            if not RE_SEMVER.match(user_input):
+                raise ValueError(e) from e
+            tag_ = f"v{user_input}"
+
+        # tag_ = f"v{user_input}"
         os.environ["TAG"] = tag_
 
     cmds = []
