@@ -117,7 +117,7 @@ GIT_MAIN_BRANCH = "main"
 # https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
 # RE_SEMVER = r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"
 RE_SEMVER = re.compile(
-    r"^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"
+    r"^(?P<major>0|v[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"
 )
 
 
@@ -2722,6 +2722,52 @@ def release(session, working_directory):
 #######################################################################################################################
 
 
+def menu_from_choices(
+        input_message: str,
+        choices: list,
+        manual_value: bool = False,
+        regex: re.Pattern = None,
+):
+    """
+    Create a menu from a list of choices.
+    The choices can be extended by a manual one.
+    The final choice can be matched against an `re.Pattern`.
+
+    :param input_message: The message shown to the user.
+    :param choices: list of choices.
+    :param manual_value: Will there be a manual value or not.
+    :param regex: match choice against a regular expression if regex is specified.
+    :return: string of the choice.
+    """
+
+    if manual_value:
+        choices.append("Manual")
+
+    for index, item in enumerate(choices):
+        input_message += f"{index + 1}) {item}\n"
+
+    input_message += "Choice: "
+
+    user_input = ""
+
+    while user_input not in map(str, range(1, len(choices) + 1)):
+        user_input = input(input_message)
+
+    if user_input not in map(str, range(1, len(choices) + 1)):
+        user_input = input(input_message)
+
+    choice = str(choices[int(user_input) - 1])
+
+    if choice == "Manual":
+        choice = input("Specify value: ")
+
+        if regex is not None:
+            while not regex.match(choice):
+                choice = input(f"Match regex: {regex.pattern}\nSpecify value: ")
+
+    return choice
+
+
 #######################################################################################################################
 # Tag
 @nox.session(python=None, tags=["tag"])
@@ -2754,25 +2800,11 @@ def tag(session, working_directory):
     if tag_ is None:
         input_message = "Version tag:\n"
 
-        # input_message += "Existing tags"
-
-        for index, item in enumerate(tags):
-            input_message += f"{index + 1}) {item}\n"
-
-        input_message += "Choose tag or specify (no `v`): "
-
-        user_input = ""
-
-        # while not RE_SEMVER.match(user_input):
-        #     user_input = input(input_message)
-
-        if user_input not in map(str, range(1, len(tags) + 1)):
-            user_input = input(input_message)
-            
-        try:
-            tag_ = tags[int(user_input) - 1].name
-        except (IndexError, ValueError):
-            tag_ = f"v{user_input}"
+        tag_ = menu_from_choices(
+            input_message=input_message,
+            choices=tags,
+            manual_value=True,
+        )
 
         os.environ["TAG"] = tag_
 
@@ -2783,17 +2815,12 @@ def tag(session, working_directory):
 
         input_message = "Tag type:\n"
 
-        for index, item in enumerate(release_types):
-            input_message += f"{index + 1}) {item}\n"
+        release_type = menu_from_choices(
+            input_message=input_message,
+            choices=release_types,
+            manual_value=False,
+        )
 
-        input_message += "Choice: "
-
-        user_input = ""
-
-        while user_input not in map(str, range(1, len(release_types) + 1)):
-            user_input = input(input_message)
-
-        release_type = release_types[int(user_input) - 1]
         os.environ["RELEASE_TYPE"] = release_type
 
     # FORCE
@@ -2803,17 +2830,12 @@ def tag(session, working_directory):
 
         input_message = "Force:\n"
 
-        for index, item in enumerate(forced):
-            input_message += f"{index + 1}) {item}\n"
+        force = menu_from_choices(
+            input_message=input_message,
+            choices=forced,
+            manual_value=False,
+        )
 
-        input_message += "Choice: "
-
-        user_input = ""
-
-        while user_input not in map(str, range(1, len(forced) + 1)):
-            user_input = input(input_message)
-
-        force = forced[int(user_input) - 1]
         os.environ["FORCE"] = force
 
     session.log(f"{tag_ = }")
@@ -2919,24 +2941,13 @@ def tag_delete(session, working_directory):
     if tag_ is None:
         input_message = "Existing tags:\n"
 
-        for index, item in enumerate(tags):
-            input_message += f"{index + 1}) {item}\n"
+        tag_ = menu_from_choices(
+            input_message=input_message,
+            choices=tags,
+            manual_value=True,
+            regex=RE_SEMVER,
+        )
 
-        input_message += "Choose tag or specify (no `v`): "
-
-        user_input = ""
-
-        # while not RE_SEMVER.match(user_input):
-        user_input = input(input_message)
-
-        try:
-            tag_ = tags[int(user_input) - 1].name
-        except IndexError as e:
-            if not RE_SEMVER.match(user_input):
-                raise ValueError(e) from e
-            tag_ = f"v{user_input}"
-
-        # tag_ = f"v{user_input}"
         os.environ["TAG"] = tag_
 
     cmds = []
@@ -3170,17 +3181,11 @@ def acme_sh_prepare(session):
     if acme_sh_ca is None:
         input_message = "Certificate CA:\n"
 
-        for index, item in enumerate(acme_sh_ca_options):
-            input_message += f"{index + 1}) {item}\n"
-
-        input_message += "Choice: "
-
-        user_input = ""
-
-        while user_input not in map(str, range(1, len(acme_sh_ca_options) + 1)):
-            user_input = input(input_message)
-
-        acme_sh_ca = acme_sh_ca_options[int(user_input) - 1]
+        acme_sh_ca = menu_from_choices(
+            input_message=input_message,
+            choices=acme_sh_ca_options,
+            manual_value=True,
+        )
 
     # ACME_SH_TLD
     tld = os.environ.get("ACME_SH_TLD", None)
@@ -3189,17 +3194,11 @@ def acme_sh_prepare(session):
 
         tlds = ENVIRONMENT_ACME_SH["OPENSTUDIOLANDSCAPES__DOMAIN_WAN"]
 
-        for index, item in enumerate(tlds):
-            input_message += f"{index + 1}) {item}\n"
-
-        input_message += "Choice: "
-
-        user_input = ""
-
-        while user_input not in map(str, range(1, len(tlds) + 1)):
-            user_input = input(input_message)
-
-        tld = tlds[int(user_input) - 1]
+        tld = menu_from_choices(
+            input_message=input_message,
+            choices=tlds,
+            manual_value=True,
+        )
 
     # ACME_SH_EMAIL
     acme_sh_email = os.environ.get("ACME_SH_EMAIL", None)
@@ -3586,18 +3585,19 @@ def gh_pr_create(session, working_directory):
     # nox --tags gh_pr_create
 
     # BRANCH
+    repo = git.Repo(engine_dir.parent / working_directory)
+    branches = repo.branches
+
     branch = os.environ.get("BRANCH", None)
     if branch is None:
         input_message = "Branch:\n"
 
-        # input_message += "v"
+        branch = menu_from_choices(
+            input_message=input_message,
+            choices=branches,
+            manual_value=True,
+        )
 
-        # user_input = ""
-
-        # while not RE_SEMVER.match(user_input):
-        branch = input(input_message)
-
-        # branch = f"v{user_input}"
         os.environ["BRANCH"] = branch
 
     # DRY_RUN
@@ -3607,17 +3607,12 @@ def gh_pr_create(session, working_directory):
 
         input_message = "Dry run:\n"
 
-        for index, item in enumerate(options):
-            input_message += f"{index + 1}) {item}\n"
+        dry_run = menu_from_choices(
+            input_message=input_message,
+            choices=options,
+            manual_value=False,
+        )
 
-        input_message += "Choice: "
-
-        user_input = ""
-
-        while user_input not in map(str, range(1, len(options) + 1)):
-            user_input = input(input_message)
-
-        dry_run = options[int(user_input) - 1]
         os.environ["DRY_RUN"] = dry_run
 
     cmds = []
@@ -3697,18 +3692,19 @@ def gh_pr_set_mode(session, working_directory):
     # nox --tags gh_pr_set_mode
 
     # BRANCH
+    repo = git.Repo(engine_dir.parent / working_directory)
+    branches = repo.branches
+
     branch = os.environ.get("BRANCH", None)
     if branch is None:
         input_message = "Branch:\n"
 
-        # input_message += "v"
+        branch = menu_from_choices(
+            input_message=input_message,
+            choices=branches,
+            manual_value=True,
+        )
 
-        # user_input = ""
-
-        # while not RE_SEMVER.match(user_input):
-        branch = input(input_message)
-
-        # branch = f"v{user_input}"
         os.environ["BRANCH"] = branch
 
     # RELEASE_TYPE
@@ -3718,17 +3714,12 @@ def gh_pr_set_mode(session, working_directory):
 
         input_message = "PR mode:\n"
 
-        for index, item in enumerate(modes):
-            input_message += f"{index + 1}) {item}\n"
+        mode = menu_from_choices(
+            input_message=input_message,
+            choices=modes,
+            manual_value=False,
+        )
 
-        input_message += "Choice: "
-
-        user_input = ""
-
-        while user_input not in map(str, range(1, len(modes) + 1)):
-            user_input = input(input_message)
-
-        mode = modes[int(user_input) - 1]
         os.environ["MODE"] = mode
 
     cmds = []
