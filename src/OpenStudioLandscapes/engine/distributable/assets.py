@@ -18,10 +18,10 @@ from OpenStudioLandscapes.engine.enums import *
 
 
 def add_file(
-        context,
-        distributable_zip,
-        file_name,
-        arcname,
+    context,
+    distributable_zip,
+    file_name,
+    arcname,
 ) -> None:
     try:
         # Add file to zip
@@ -107,7 +107,9 @@ def distributable(
                     ):
                         if not base_landscapes.joinpath(".acme.sh") == file_path_glob:
                             if not file_path_glob.match("*_ecc/*"):
-                                context.log.warning(f"File skipped: {file_path_glob.as_posix()}")
+                                context.log.warning(
+                                    f"File skipped: {file_path_glob.as_posix()}"
+                                )
                                 continue
 
                     if (
@@ -118,12 +120,19 @@ def distributable(
                             not base_landscapes.joinpath(".dagster", "postgres")
                             == file_path_glob
                         ):
-                            context.log.warning(f"File skipped: {file_path_glob.as_posix()}")
+                            context.log.warning(
+                                f"File skipped: {file_path_glob.as_posix()}"
+                            )
                             continue
 
-                    if base_landscapes.joinpath(".n8n").as_posix() in file_path_glob.as_posix():
+                    if (
+                        base_landscapes.joinpath(".n8n").as_posix()
+                        in file_path_glob.as_posix()
+                    ):
                         if not base_landscapes.joinpath(".n8n") == file_path_glob:
-                            context.log.warning(f"File skipped: {file_path_glob.as_posix()}")
+                            context.log.warning(
+                                f"File skipped: {file_path_glob.as_posix()}"
+                            )
                             continue
 
                     if (
@@ -139,12 +148,19 @@ def distributable(
                             > 1
                         ):
                             # Just add the base dir of the shared volumes but not its contents
-                            context.log.warning(f"File skipped: {file_path_glob.as_posix()}")
+                            context.log.warning(
+                                f"File skipped: {file_path_glob.as_posix()}"
+                            )
                             continue
 
-                    if base_landscapes.joinpath(".n8n").as_posix() in file_path_glob.as_posix():
+                    if (
+                        base_landscapes.joinpath(".n8n").as_posix()
+                        in file_path_glob.as_posix()
+                    ):
                         if not base_landscapes == file_path_glob.parent:
-                            context.log.warning(f"File skipped: {file_path_glob.as_posix()}")
+                            context.log.warning(
+                                f"File skipped: {file_path_glob.as_posix()}"
+                            )
                             continue
 
                     context.log.warning(f"Adding file: {file_path_glob.as_posix()}")

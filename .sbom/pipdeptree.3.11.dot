@@ -139,7 +139,7 @@ digraph {
 	lxml [label="lxml\n6.0.2"]
 	mako -> markupsafe [label=">=0.9.2"]
 	mako [label="Mako\n1.3.10"]
-	markupsafe [label="MarkupSafe\n3.0.2"]
+	markupsafe [label="MarkupSafe\n3.0.3"]
 	mdurl [label="mdurl\n0.1.2"]
 	nox -> "dependency-groups" [label=">=1.1"]
 	nox -> argcomplete [label=">=1.9.4,<4"]

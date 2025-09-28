@@ -100,7 +100,7 @@
       "version": "1.3.10"
     },
     {
-      "bom-ref": "MarkupSafe==3.0.2",
+      "bom-ref": "MarkupSafe==3.0.3",
       "description": "Safely add untrusted strings to HTML/XML markup.",
       "externalReferences": [
         {
@@ -126,21 +126,21 @@
         {
           "comment": "from packaging metadata Project-URL: Changes",
           "type": "release-notes",
-          "url": "https://markupsafe.palletsprojects.com/changes/"
+          "url": "https://markupsafe.palletsprojects.com/page/changes/"
         }
       ],
       "licenses": [
         {
           "license": {
             "acknowledgement": "declared",
-            "name": "License :: OSI Approved :: BSD License"
+            "id": "BSD-3-Clause"
           }
         }
       ],
       "name": "MarkupSafe",
-      "purl": "pkg:pypi/markupsafe@3.0.2",
+      "purl": "pkg:pypi/markupsafe@3.0.3",
       "type": "library",
-      "version": "3.0.2"
+      "version": "3.0.3"
     },
     {
       "bom-ref": "OpenStudioLandscapes==0.0.0",
@@ -158,7 +158,7 @@
       "version": "0.0.0"
     },
     {
-      "bom-ref": "BomRef.06150854196705602.7373774479995147",
+      "bom-ref": "BomRef.05196511026971684.8660281404572497",
       "description": "A Toolkit to create dynamic Animation and VFX studio environments for robust automation and pipelines.",
       "externalReferences": [
         {
@@ -3304,18 +3304,18 @@
     },
     {
       "dependsOn": [
-        "MarkupSafe==3.0.2"
+        "MarkupSafe==3.0.3"
       ],
       "ref": "Jinja2==3.1.6"
     },
     {
       "dependsOn": [
-        "MarkupSafe==3.0.2"
+        "MarkupSafe==3.0.3"
       ],
       "ref": "Mako==1.3.10"
     },
     {
-      "ref": "MarkupSafe==3.0.2"
+      "ref": "MarkupSafe==3.0.3"
     },
     {
       "dependsOn": [
@@ -3847,7 +3847,7 @@
     }
   ],
   "metadata": {
-    "timestamp": "2025-09-27T16:38:02.331505+00:00",
+    "timestamp": "2025-09-28T10:21:10.258804+00:00",
     "tools": {
       "components": [
         {
@@ -3951,7 +3951,7 @@
       ]
     }
   },
-  "serialNumber": "urn:uuid:fc35ce4f-6b54-4cba-8491-199b20f3e394",
+  "serialNumber": "urn:uuid:11d71cef-8ed1-4463-95a8-609a16317015",
   "version": 1,
   "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
   "bomFormat": "CycloneDX",

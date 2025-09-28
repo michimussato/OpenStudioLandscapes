@@ -2509,9 +2509,14 @@ def lint(session, working_directory):
         # # nox > Session lint-3.12 failed.
         # session.run("pylint", "src")
         # # https://github.com/actions/starter-workflows/issues/2303#issuecomment-1973743119
+        pylintt_report_dir = pathlib.Path.cwd() / ".nox"
+        pylintt_report_dir.mkdir(parents=True, exist_ok=True)
         session.run(
             "pylint",
             "--exit-zero",
+            "--persistent=y",
+            f"--output-format=json:{pylintt_report_dir.as_posix()}/pylint-report.json,colorized",
+            # f"--output={pylintt_report_dir.as_posix()}"
             "src",
             # external=True,
             silent=SESSION_RUN_SILENT,
