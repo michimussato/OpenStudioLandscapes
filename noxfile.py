@@ -2509,14 +2509,14 @@ def lint(session, working_directory):
         # # nox > Session lint-3.12 failed.
         # session.run("pylint", "src")
         # # https://github.com/actions/starter-workflows/issues/2303#issuecomment-1973743119
-        pylintt_report_dir = pathlib.Path.cwd() / ".nox"
-        pylintt_report_dir.mkdir(parents=True, exist_ok=True)
+        pylint_report_dir = pathlib.Path.cwd() / ".nox"
+        pylint_report_dir.mkdir(parents=True, exist_ok=True)
         session.run(
             "pylint",
             "--exit-zero",
             "--persistent=y",
-            f"--output-format=json:{pylintt_report_dir.as_posix()}/pylint-report.json,colorized",
-            # f"--output={pylintt_report_dir.as_posix()}"
+            f"--output-format=json:{pylint_report_dir.as_posix()}/pylint-report.json,colorized",
+            # f"--output={pylint_report_dir.as_posix()}"
             "src",
             # external=True,
             silent=SESSION_RUN_SILENT,
@@ -2526,6 +2526,29 @@ def lint(session, working_directory):
         # C0114 (missing-module-docstring)
         # C0115 (missing-class-docstring)
         # C0116 (missing-function-docstring)
+
+        # # pyreverse
+        # # https://pylint.pycqa.org/en/latest/additional_tools/pyreverse/index.html
+        # pyreverse_dir = pathlib.Path.cwd() / ".nox" / "pyreverse"
+        # pyreverse_dir.mkdir(parents=True, exist_ok=True)
+        # session.run(
+        #     "pyreverse",
+        #     f"--output-directory",
+        #     pyreverse_dir.as_posix(),
+        #     "--output",
+        #     [
+        #         "dot",
+        #         "puml",
+        #         "plantuml",
+        #         "mmd",
+        #         "html",
+        #     ][4],
+        #     "OpenStudioLandscapes.engine",
+        #     "OpenStudioLandscapes.Ayon",
+        #     "OpenStudioLandscapes.Dagster",
+        #     ...,
+        #     silent=SESSION_RUN_SILENT,
+        # )
 
 
 #######################################################################################################################
