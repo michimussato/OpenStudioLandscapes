@@ -25,6 +25,7 @@ requires-python = ">=3.11"
 dependencies = [
     'importlib-metadata; python_version<"3.8"',
     "PyYAML",
+    "snakemd",
     "pydot",
     "gitpython",
     "dagster==1.9.11",
@@ -98,7 +99,6 @@ dev = [
     "OpenStudioLandscapes[sbom]",
     "OpenStudioLandscapes[coverage]",
     "OpenStudioLandscapes[readme]",
-    "snakemd",
     "dagster-webserver==1.9.11",
 ]
 
