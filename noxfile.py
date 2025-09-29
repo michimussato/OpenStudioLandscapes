@@ -3827,3 +3827,69 @@ def gh_pr_set_mode(session, working_directory):
 
 # Todo
 #######################################################################################################################
+
+
+
+#######################################################################################################################
+# Create new Feature from Template
+
+# Todo
+#  A set of sessions to facilitate Feature creation process
+#  - https://github.com/michimussato/OpenStudioLandscapes-Template
+#
+# v1.2.0-rc1 -> v1.2.0
+#
+# - pyproject.toml [all]
+# - wiki/installation/basic_installation_from_script.md
+# - wiki/README.md (https://github.com/michimussato/OpenStudioLandscapes/blob/main -> https://github.com/michimussato/OpenStudioLandscapes/blob/v1.2.0)
+#
+#
+# - Create step by step guide
+# - update OpenStudioLandscapes.ReadmeGenerator.readme_generator (_generator() -> community_channels)
+# - include tag updates in OpenStudioLandscapesUtil-ReadmeGenerator
+# fetch:  git fetch --tags --force
+# # tag commit: https://graphite.dev/guides/add-tag-to-git-commit
+# tag:
+#         main:   TAG=v1.3.0 && git tag --annotate ${TAG} --message "Main Release Version ${TAG}" --force
+#         rc:     TAG=v1.4.0-rc1 && git tag --annotate ${TAG} --message "Release Candidate Version ${TAG}" --force
+# push:   git push --tags --force
+# - update README.md#current-feature-statuses
+#
+# main tags only on main branch
+# rc tags only on work branches
+#
+#
+# create new feature:
+# checkout main
+# create new feature OpenStudioLandscapes-<Feature> from template on github
+# clone new feature into .features
+# add new repo as project in pycharm
+# - create .venv `python3.11 -m venv .venv`
+# - project settings: dependencies
+#   - project structure: `src` mark directory as sources root
+#   - project dependencies: mark `OpenStudioLandscapes` engine as dependency
+# add feature pyproject.toml to bookmarks
+# checkout feature `feature-openstudiolandscapes-<feature>` branch
+# nox -s fix_hardlinks_in_features
+# version bump in pyproject.toml to main tag+1(minor)-rc1
+# update .env
+# update src/OpenStudioLandscapes/engine/features.py
+# update README.md#current-feature-statuses
+# replace Template with Feature:
+# - rename feature/src/OpenStudioLandscapes/Template to feature/src/OpenStudioLandscapes/Feature
+# - edit feature/pyproject.toml
+# - update src/OpenStudioLandscapes/Feature/__init__.py
+# - update src/OpenStudioLandscapes/Feature/assets.py
+# - update src/OpenStudioLandscapes/Feature/constants.py
+# - update src/OpenStudioLandscapes/Feature/definitions.py
+# update wiki/README.md paths from [...]/blob/v1.4.0/wiki/[...] to [...]/blob/v1.5.0-rc1/wiki/[...]
+# update wiki/installation/basic_installation_from_script.md OPENSTUDIOLANDSCAPES_VERSION_TAG from v1.4.0 to v1.5.0-rc1
+# git push
+# nox -s tag rc
+# git tag ReadmeGenerator with same rc
+#
+# nox -s gh_pr_create
+#
+# pip install -e .features/OpenStudioLandscapes-Feature[dev]
+# pip install -e .[dev]
+#######################################################################################################################
