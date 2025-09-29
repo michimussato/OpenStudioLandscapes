@@ -843,10 +843,10 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
     # Todo:
     #  - [ ] Why was this here? Duplicate compose()
     # @asset(
-    #     **ASSET_HEADER_COMPOSE_TELEPORT,
+    #     **ASSET_HEADER_COMPOSE_LICENSE_SERVER,
     #     ins={
     #         "env": AssetIn(
-    #             AssetKey([*ASSET_HEADER_COMPOSE_TELEPORT["key_prefix"], "env"]),
+    #             AssetKey([*ASSET_HEADER_COMPOSE_LICENSE_SERVER["key_prefix"], "env"]),
     #         ),
     #         **ins,
     #     },
@@ -867,7 +867,7 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
     #     docker_compose = pathlib.PurePosixPath(
     #         env["DOT_LANDSCAPES"],
     #         env.get("LANDSCAPE", "default"),
-    #         f"{ASSET_HEADER_COMPOSE_TELEPORT['group_name']}__{'__'.join(ASSET_HEADER_COMPOSE_TELEPORT['key_prefix'])}",
+    #         f"{ASSET_HEADER_COMPOSE_LICENSE_SERVER['group_name']}__{'__'.join(ASSET_HEADER_COMPOSE_LICENSE_SERVER['key_prefix'])}",
     #         "__".join(context.asset_key.path),
     #         "docker_compose",
     #         "docker-compose.yml",
@@ -1360,14 +1360,14 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[444:452]
 ==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[64:72]
-        env_in.update(
-            expand_dict_vars(
-                dict_to_expand={"DOCKER_COMPOSE": DOCKER_COMPOSE.as_posix()},
-                kv=env_in,
-            )
+    env_in.update(
+        expand_dict_vars(
+            dict_to_expand={"DOCKER_COMPOSE": DOCKER_COMPOSE.as_posix()},
+            kv=env_in,
         )
+    )
 
-        env_in.update( (duplicate-code)
+    env_in.update( (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.compose_scopes.worker.constants:[45:64]
 ==OpenStudioLandscapes.engine.constants:[137:157]
@@ -1456,11 +1456,11 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
         )
 
         yield AssetMaterialization( (duplicate-code)
-src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.license_server.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.worker.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
-src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.default.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.teleport.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
+src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.default.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
+src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.license_server.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
 
 ------------------------------------------------------------------
-Your code has been rated at 6.62/10 (previous run: 7.39/10, -0.77)
+Your code has been rated at 6.62/10 (previous run: 7.21/10, -0.59)
 
