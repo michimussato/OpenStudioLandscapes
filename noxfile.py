@@ -2516,7 +2516,7 @@ def lint(session, working_directory):
             "pylint",
             "--exit-zero",
             "--persistent=y",
-            f"--output-format=json:{pylint_report_dir.as_posix()}/pylint-report.json,text:{pylint_report_dir.as_posix()}/pylint-report.log,colorized",
+            f"--output-format=json:{pylint_report_dir.as_posix()}/pylint-report.json,text:{pylint_report_dir.as_posix()}/pylint-report.txt,colorized",
             "src",
             # external=True,
             silent=SESSION_RUN_SILENT,
