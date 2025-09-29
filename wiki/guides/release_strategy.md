@@ -224,7 +224,7 @@ dependencies = [
 ]
 ```
 
-That means that `nox` sessions pull the `remote` state of the package - 
+That means that `nox` sessions pull the `remote` state of the package -
 local changes won't be included in `nox` sessions.
 
 To use `local` code in `nox` sessions, the dependencies have to
