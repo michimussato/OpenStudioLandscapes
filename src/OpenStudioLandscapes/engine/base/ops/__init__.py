@@ -1140,15 +1140,46 @@ def op_group_out(
         compose_project_name,
         "up",
         "--remove-orphans",
-        [
-            [*cmd_extend],
-            "--detach",
-        ][1],
+        # Todo
+        #  - [ ] `cmd_extend` seems to have no effect
+        #        this can't be intentional...
+        *{
+            "cmd_extend": cmd_extend,
+            "detach": ["--detach"],
+            "nothing": [],
+        }["detach"],
         *cmd_append["cmd"],
         "&&",
         *cmd_docker_compose_logs,
     ]
     script_cmd_docker_compose_up = DOCKER_COMPOSE.parent / "docker_compose_up.sh"
+
+    cmd_docker_compose_restart = [
+        shutil.which("docker"),
+        "--config",
+        docker_config_json.as_posix(),
+        "compose",
+        "--progress",
+        DOCKER_PROGRESS,
+        "--file",
+        DOCKER_COMPOSE.as_posix(),
+        "--project-name",
+        compose_project_name,
+        "restart",
+        "--remove-orphans",
+        # Todo
+        #  - [ ] `cmd_extend` seems to have no effect
+        #        this can't be intentional...
+        *{
+            "cmd_extend": cmd_extend,
+            "detach": ["--detach"],
+            "nothing": [],
+        }["nothing"],
+        *cmd_append["cmd"],
+        "&&",
+        *cmd_docker_compose_logs,
+    ]
+    script_cmd_docker_compose_restart = DOCKER_COMPOSE.parent / "docker_compose_restart.sh"
 
     cmd_docker_compose_pull_up = [
         shutil.which("docker"),
@@ -1213,6 +1244,8 @@ def op_group_out(
     docker_script["script"] += "\n"
 
     script_dicts = [
+        # A convenience script is a script at the {DOT_LANDSCAPES}/{LANDSCAPE_ID}
+        # root that wraps another script.
         {
             "script": script_cmd_docker_compose_up,
             "cmd": cmd_docker_compose_up,
@@ -1228,6 +1261,49 @@ def op_group_out(
             #        ```
             # "asset_key_for_output": "cmd_docker_compose_up",
             "asset_key_for_output": "docker_compose_commands",
+        },
+        {
+            "script": script_cmd_docker_compose_restart,
+            "cmd": cmd_docker_compose_restart,
+            # Todo
+            #  - [ ] "create_convenience_script": True causes the following error (looks like only one can be True):
+            # dagster._core.errors.DagsterExecutionStepExecutionError: Error occurred while executing op "group_out_4":
+            #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/execution/plan/execute_plan.py", line 245, in dagster_event_sequence_for_step
+            #     yield from check.generator(step_events)
+            #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/execution/plan/execute_step.py", line 501, in core_dagster_event_sequence_for_step
+            #     for user_event in _step_output_error_checked_user_event_sequence(
+            #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/execution/plan/execute_step.py", line 184, in _step_output_error_checked_user_event_sequence
+            #     for user_event in user_event_sequence:
+            #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/execution/plan/execute_step.py", line 88, in _process_asset_results_to_events
+            #     for user_event in user_event_sequence:
+            #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/execution/plan/compute.py", line 190, in execute_core_compute
+            #     for step_output in _yield_compute_results(step_context, inputs, compute_fn, compute_context):
+            #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/execution/plan/compute.py", line 159, in _yield_compute_results
+            #     for event in iterate_with_context(
+            #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_utils/__init__.py", line 478, in iterate_with_context
+            #     with context_fn():
+            #   File "/usr/lib/python3.11/contextlib.py", line 158, in __exit__
+            #     self.gen.throw(typ, value, traceback)
+            #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/execution/plan/utils.py", line 86, in op_execution_error_boundary
+            #     raise error_cls(
+            # The above exception was caused by the following exception:
+            # dagster._check.functions.CheckError: Failure condition: Output 'cmd_docker_compose_restart' has no asset
+            #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/execution/plan/utils.py", line 56, in op_execution_error_boundary
+            #     yield
+            #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_utils/__init__.py", line 480, in iterate_with_context
+            #     next_output = next(iterator)
+            #                   ^^^^^^^^^^^^^^
+            #   File "/home/michael/git/repos/OpenStudioLandscapes/src/OpenStudioLandscapes/engine/base/ops/__init__.py", line 1413, in op_group_out
+            #     _write_script(script_dict)
+            #   File "/home/michael/git/repos/OpenStudioLandscapes/src/OpenStudioLandscapes/engine/base/ops/__init__.py", line 1377, in _write_script
+            #     context.asset_key_for_output(script_dict["asset_key_for_output"]).path
+            #     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/execution/context/op_execution_context.py", line 592, in asset_key_for_output
+            #     check.failed(f"Output '{output_name}' has no asset")
+            #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_check/functions.py", line 1696, in failed
+            #     raise CheckError(f"Failure condition: {desc}")
+            "create_convenience_script": False,
+            "asset_key_for_output": "cmd_docker_compose_restart",
         },
         {
             "script": script_cmd_docker_compose_pull_up,
@@ -1430,6 +1506,7 @@ def op_group_out(
             output_name="docker_compose_commands",
             value={
                 "cmd_docker_compose_up": cmd_docker_compose_up,
+                "cmd_docker_compose_restart": cmd_docker_compose_restart,
                 "cmd_docker_compose_pull_up": cmd_docker_compose_pull_up,
                 "cmd_docker_compose_down": cmd_docker_compose_down,
                 "cmd_docker_compose_logs": cmd_docker_compose_logs,
@@ -1449,6 +1526,9 @@ def op_group_out(
                 ),
                 "script_cmd_docker_compose_up": MetadataValue.path(
                     script_cmd_docker_compose_up
+                ),
+                "script_cmd_docker_compose_restart": MetadataValue.path(
+                    script_cmd_docker_compose_restart
                 ),
                 "script_cmd_docker_compose_pull_up": MetadataValue.path(
                     script_cmd_docker_compose_pull_up
