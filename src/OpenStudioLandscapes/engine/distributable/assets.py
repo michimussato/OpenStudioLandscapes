@@ -25,6 +25,9 @@ def add_file(
 ) -> None:
     try:
         # Add file to zip
+
+        context.log.info(f"Adding file: {file_name.as_posix()}")
+
         distributable_zip.write(
             filename=file_name,
             arcname=arcname,
@@ -90,7 +93,7 @@ def distributable(
 
                 for file_path_glob in file_path.rglob("*"):
 
-                    context.log.error(f"{file_path_glob = }")
+                    context.log.debug(f"{file_path_glob = }")
 
                     # Skip if...
                     if file_path_glob.name == ".gitkeep":
@@ -163,7 +166,7 @@ def distributable(
                             )
                             continue
 
-                    context.log.warning(f"Adding file: {file_path_glob.as_posix()}")
+                    # context.log.warning(f"Adding file: {file_path_glob.as_posix()}")
 
                     add_file(
                         context=context,
@@ -176,8 +179,6 @@ def distributable(
             # Landscapes that live inside the `base_landscape` directory
             for file_path in base_landscapes.joinpath(landscape_id).rglob("*"):
 
-                context.log.error(f"{file_path = }")
-
                 context.log.debug(f"{base_landscapes = }")
                 context.log.debug(f"{file_path = }")
 
@@ -189,8 +190,6 @@ def distributable(
                 if file_path.name == distributable_out.name:
                     context.log.info(f"File skipped: {file_path.as_posix()}")
                     continue
-
-                context.log.info(f"Adding {file_path.as_posix()}")
 
                 add_file(
                     context=context,
