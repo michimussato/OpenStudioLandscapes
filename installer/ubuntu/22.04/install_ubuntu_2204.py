@@ -626,6 +626,19 @@ def script_harbor_prepare(
     openstudiolandscapes_repo_dir: pathlib.Path,
 ) -> pathlib.Path:
 
+    """
+$ cat /tmp/ubuntu_2204__script_harbor_prepare__c6v72e8j.sh
+#!/bin/env bash
+
+
+cd /home/user/git/repos/OpenStudioLandscapes
+source .venv/bin/activate
+nox --session harbor_prepare
+deactivate
+
+exit 0
+    """
+
     print(" INIT HARBOR ".center(_get_terminal_size()[0], "#"))
 
     # Todo:
@@ -677,6 +690,20 @@ def script_harbor_up(
     openstudiolandscapes_repo_dir: pathlib.Path,
 ) -> pathlib.Path:
 
+    """
+$ cat /tmp/ubuntu_2204__script_harbor_up__f_104gqr.sh
+#!/bin/env bash
+
+
+cd /home/user/git/repos/OpenStudioLandscapes
+source .venv/bin/activate
+nox --session harbor_up_detach
+
+deactivate
+
+exit 0
+    """
+
     print(" INIT HARBOR UP ".center(_get_terminal_size()[0], "#"))
 
     with tempfile.NamedTemporaryFile(
@@ -715,6 +742,76 @@ def script_harbor_init(
     username_harbor: str = ADMIN_HARBOR,
     password_harbor: str = PASSWORD_HARBOR,
 ) -> pathlib.Path:
+
+    """
+$ cat /tmp/ubuntu_2204__script_harbor_init__ohn4yctp.sh
+#!/bin/env bash
+
+
+
+# Create project openstudiolandscapes
+# curl returns "HTTP/1.1 200 OK" if project exists
+# curl returns "HTTP/1.1 201 Created" if created successfully
+
+
+if [[ $(curl -s -o '/dev/null' -w '%{http_code}' -v \
+    'http://harbor.farm.evil:80/api/v2.0/projects?project_name=openstudiolandscapes' \
+      -H 'accept: application/json' \
+      -H 'authorization: Basic YWRtaW46SGFyYm9yMTIzNDU=') \
+    == "200" ]]; then
+    echo "Project openstudionlandscapes exists. Nothing to do."
+else
+    echo "Project openstudionlandscapes does not exist. Creating..."
+
+    until [ \
+        "$(curl -s -o '/dev/null' -w '%{http_code}' -v -X 'POST' \
+          'http://harbor.farm.evil:80/api/v2.0/projects' \
+          -H 'accept: application/json' \
+          -H 'X-Resource-Name-In-Location: false' \
+          -H 'authorization: Basic YWRtaW46SGFyYm9yMTIzNDU=' \
+          -H 'Content-Type: application/json' \
+          -d '{
+          "project_name": "openstudiolandscapes",
+          "public": true
+        }')" \
+        -eq 201 ]
+
+    do
+        sleep 3
+        echo "Trying again..."
+    done
+
+
+fi
+
+
+
+
+
+
+
+# Delete project library
+# curl returns "HTTP/1.1 200 OK" if library deleted successfully
+# curl returns "HTTP/1.1 404 Not Found" if successful
+
+until [ \
+    "$(curl -w '%{http_code}' -s -o '/dev/null' -v -X 'DELETE' \
+      'http://harbor.farm.evil:80/api/v2.0/projects/library' \
+      -H 'accept: application/json' \
+      -H 'X-Is-Resource-Name: false' \
+      -H 'authorization: Basic YWRtaW46SGFyYm9yMTIzNDU=')" \
+    -eq 200 ]
+do
+    sleep 3
+    echo "Trying again..."
+done
+
+echo "Project library successfully deleted."
+
+
+
+exit 0
+    """
 
     print(" INIT HARBOR ".center(_get_terminal_size()[0], "#"))
 
@@ -853,38 +950,6 @@ def script_harbor_init(
                 "exit 0\n",
             ]
         )
-
-        """
-until [ \
-    "$(curl -s -w '%{http_code}' -v -X 'POST' \
-      'http://harbor.farm.evil:80/api/v2.0/projects' \
-      -H 'accept: application/json' \
-      -H 'X-Resource-Name-In-Location: false' \
-      -H 'authorization: Basic YWRtaW46SGFyYm9yMTIzNDU=' \
-      -H 'Content-Type: application/json' \
-      -d '{
-      "project_name": "openstudiolandscapes",
-      "public": true
-    }')" \
-    -eq 201 \
-    || \
-    "$(curl -s -w '%{http_code}' -v -X 'POST' \
-      'http://harbor.farm.evil:80/api/v2.0/projects' \
-      -H 'accept: application/json' \
-      -H 'X-Resource-Name-In-Location: false' \
-      -H 'authorization: Basic YWRtaW46SGFyYm9yMTIzNDU=' \
-      -H 'Content-Type: application/json' \
-      -d '{
-      "project_name": "openstudiolandscapes",
-      "public": true
-    }')" \
-    -eq 409 ]
-
-do
-    sleep 10
-    echo "Trying again..."
-done
-        """
 
         """
 1 : #!/bin/env bash
