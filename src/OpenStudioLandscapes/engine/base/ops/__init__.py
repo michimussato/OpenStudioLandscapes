@@ -1166,7 +1166,7 @@ def op_group_out(
         "--project-name",
         compose_project_name,
         "restart",
-        "--remove-orphans",
+        # "--remove-orphans",
         # Todo
         #  - [ ] `cmd_extend` seems to have no effect
         #        this can't be intentional...
@@ -1175,9 +1175,9 @@ def op_group_out(
             "detach": ["--detach"],
             "nothing": [],
         }["nothing"],
-        *cmd_append["cmd"],
-        "&&",
-        *cmd_docker_compose_logs,
+        # *cmd_append["cmd"],
+        # "&&",
+        # *cmd_docker_compose_logs,
     ]
     script_cmd_docker_compose_restart = DOCKER_COMPOSE.parent / "docker_compose_restart.sh"
 
