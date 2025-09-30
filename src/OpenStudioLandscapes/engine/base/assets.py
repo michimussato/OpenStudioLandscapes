@@ -21,6 +21,33 @@ from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.enums import DockerConfig, DockerRepositoryType
 from OpenStudioLandscapes.engine.utils import *
 from OpenStudioLandscapes.engine.utils.docker import *
+# from OpenStudioLandscapes.engine.base.resources import HarborResource
+#
+#
+# @asset
+# def my_test_asset(
+#         context: AssetExecutionContext,
+#         harbor_resource: HarborResource,
+# ) -> None:
+#     f"""{harbor_resource.harbor_url}/devcenter-api-2.0"""
+#
+#     library_exists = harbor_resource.query_project_exists(
+#         project_name="library",
+#     )
+#
+#     context.log.info(f"Library exists: {library_exists}")
+#
+#     project_exists = harbor_resource.query_project_exists(
+#         project_name="openstudiolandscapes",
+#     )
+#
+#     context.log.info(f"Project exists: {project_exists}")
+#
+#     random_exists = harbor_resource.query_project_exists(
+#         project_name="random",
+#     )
+#
+#     context.log.info(f"Random exists: {random_exists}")
 
 
 @asset(
