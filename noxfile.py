@@ -1473,6 +1473,192 @@ def harbor_prepare(session):
     # Todo
     #  - [ ] Maybe use env var HARBOR_BUNDLE_DIR for prepare
 
+    # Todo
+    #  - [ ] IsADirectoryError: [Errno 21] Is a directory: '/config/portal/nginx.conf'
+    # ################################################## INIT HARBOR ##################################################
+    # ================================================== BLOCK START ==================================================
+    # ---------------------------------------------------- COMMAND ----------------------------------------------------
+    #                         /usr/bin/bash /tmp/ubuntu_2204__script_harbor_prepare__w12flz1f.sh
+    # -------------------------------------------------- SCRIPT START -------------------------------------------------
+    #
+    # 1: #!/bin/env bash
+    # 2:
+    # 3:
+    # 4: cd /home/user/git/repos/OpenStudioLandscapes
+    # 5: source .venv/bin/activate
+    # 6: nox --session harbor_prepare
+    # 7: deactivate
+    # 8:
+    # 9: exit 0
+    #
+    # --------------------------------------------------- SCRIPT END --------------------------------------------------
+    # --------------------------------------------- SCRIPT EXECUTION START --------------------------------------------
+    # git.cmd > Popen(['git', 'version'], cwd=/home/user/git/repos/OpenStudioLandscapes, stdin=None, shell=False, universal_newlines=False)
+    # git.cmd > Popen(['git', 'version'], cwd=/home/user/git/repos/OpenStudioLandscapes, stdin=None, shell=False, universal_newlines=False)
+    # nox > Running session harbor_prepare
+    # nox > Creating virtual environment (virtualenv) using python3.11 in .nox/harbor_prepare
+    # urllib3.connectionpool > Starting new HTTPS connection (1): github.com:443
+    # urllib3.connectionpool > https://github.com:443 "GET /goharbor/harbor/releases/download/v2.12.2/harbor-online-installer-v2.12.2.tgz HTTP/1.1" 302 0
+    # urllib3.connectionpool > Starting new HTTPS connection (1): release-assets.githubusercontent.com:443
+    # urllib3.connectionpool > https://release-assets.githubusercontent.com:443 "GET /github-production-release-asset/50613991/05296209-9177-4e6e-ac7c-2523ab637233?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-09-30T10%3A42%3A39Z&rscd=attachment%3B+filename%3Dharbor-online-installer-v2.12.2.tgz&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-30T09%3A42%3A09Z&ske=2025-09-30T10%3A42%3A39Z&sks=b&skv=2018-11-09&sig=UMBKCTaPVeeZ9JNynsHxonAR1SJQOtfH4fk1rCjksxw%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1OTIyNjYxNiwibmJmIjoxNzU5MjI2MzE2LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.V01lvg8Z75fVLSWDPWXAS8rMacre-jZH_NgXCciJajY&response-content-disposition=attachment%3B%20filename%3Dharbor-online-installer-v2.12.2.tgz&response-content-type=application%2Foctet-stream HTTP/1.1" 200 11699
+    # root > Saving to /home/user/git/repos/OpenStudioLandscapes/.harbor/download/harbor-online-installer-v2.12.2.tgz
+    # root > File successfully downloaded to /home/user/git/repos/OpenStudioLandscapes/.harbor/download/harbor-online-installer-v2.12.2.tgz
+    # root > Extracting tar file...
+    # root > All files extracted to /home/user/git/repos/OpenStudioLandscapes/.harbor/bin
+    # root > Harbor Configuration = {
+    #   "_version": "2.12.0",
+    #   "cache": {
+    #     "enabled": false,
+    #     "expire_hours": 24
+    #   },
+    #   "data_volume": "/home/user/git/repos/OpenStudioLandscapes/.harbor/data",
+    #   "database": {
+    #     "conn_max_idle_time": 0,
+    #     "max_idle_conns": 100,
+    #     "max_open_conns": 900,
+    #     "password": "root123"
+    #   },
+    #   "harbor_admin_password": "Harbor12345",
+    #   "hostname": "harbor.farm.evil",
+    #   "http": {
+    #     "port": 88
+    #   },
+    #   "jobservice": {
+    #     "job_loggers": [
+    #       "STD_OUTPUT",
+    #       "FILE"
+    #     ],
+    #     "logger_sweeper_duration": 1,
+    #     "max_job_workers": 10
+    #   },
+    #   "log": {
+    #     "level": "info",
+    #     "local": {
+    #       "location": "/var/log/harbor",
+    #       "rotate_count": 50,
+    #       "rotate_size": "200M"
+    #     }
+    #   },
+    #   "notification": {
+    #     "webhook_job_http_client_timeout": 3,
+    #     "webhook_job_max_retry": 3
+    #   },
+    #   "proxy": {
+    #     "components": [
+    #       "core",
+    #       "jobservice",
+    #       "trivy"
+    #     ],
+    #     "http_proxy": null,
+    #     "https_proxy": null,
+    #     "no_proxy": null
+    #   },
+    #   "trivy": {
+    #     "ignore_unfixed": false,
+    #     "insecure": false,
+    #     "offline_scan": false,
+    #     "security_check": "vuln",
+    #     "skip_java_db_update": false,
+    #     "skip_update": false,
+    #     "timeout": "5m0s"
+    #   },
+    #   "upload_purging": {
+    #     "age": "168h",
+    #     "dryrun": false,
+    #     "enabled": true,
+    #     "interval": "24h"
+    #   }
+    # }
+    # root > Contents harbor.yml:
+    # _version: 2.12.0
+    # cache:
+    #   enabled: false
+    #   expire_hours: 24
+    # data_volume: /home/user/git/repos/OpenStudioLandscapes/.harbor/data
+    # database:
+    #   conn_max_idle_time: 0
+    #   max_idle_conns: 100
+    #   max_open_conns: 900
+    #   password: root123
+    # harbor_admin_password: Harbor12345
+    # hostname: harbor.farm.evil
+    # http:
+    #   port: 88
+    # jobservice:
+    #   job_loggers:
+    #   - STD_OUTPUT
+    #   - FILE
+    #   logger_sweeper_duration: 1
+    #   max_job_workers: 10
+    # log:
+    #   level: info
+    #   local:
+    #     location: /var/log/harbor
+    #     rotate_count: 50
+    #     rotate_size: 200M
+    # notification:
+    #   webhook_job_http_client_timeout: 3
+    #   webhook_job_max_retry: 3
+    # proxy:
+    #   components:
+    #   - core
+    #   - jobservice
+    #   - trivy
+    #   http_proxy: null
+    #   https_proxy: null
+    #   no_proxy: null
+    # trivy:
+    #   ignore_unfixed: false
+    #   insecure: false
+    #   offline_scan: false
+    #   security_check: vuln
+    #   skip_java_db_update: false
+    #   skip_update: false
+    #   timeout: 5m0s
+    # upload_purging:
+    #   age: 168h
+    #   dryrun: false
+    #   enabled: true
+    #   interval: 24h
+    #
+    # root > Preparing Harbor...
+    # root > cmd = ['/usr/bin/bash', '/home/user/git/repos/OpenStudioLandscapes/.harbor/bin/prepare']
+    # nox > /usr/bin/bash /home/user/git/repos/OpenStudioLandscapes/.harbor/bin/prepare
+    # prepare base dir is set to /home/user/git/repos/OpenStudioLandscapes/.harbor/bin
+    # WARNING:root:WARNING: HTTP protocol is insecure. Harbor will deprecate http protocol in the future. Please make sure to upgrade to https
+    # Traceback (most recent call last):
+    #   File "/usr/src/app/main.py", line 15, in <module>
+    #     cli()
+    #   File "/usr/lib/python3.11/site-packages/click/core.py", line 1137, in __call__
+    #     return self.main(*args, **kwargs)
+    #            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    #   File "/usr/lib/python3.11/site-packages/click/core.py", line 1062, in main
+    #     rv = self.invoke(ctx)
+    #          ^^^^^^^^^^^^^^^^
+    #   File "/usr/lib/python3.11/site-packages/click/core.py", line 1668, in invoke
+    #     return _process_result(sub_ctx.command.invoke(sub_ctx))
+    #                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    #   File "/usr/lib/python3.11/site-packages/click/core.py", line 1404, in invoke
+    #     return ctx.invoke(self.callback, **ctx.params)
+    #            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    #   File "/usr/lib/python3.11/site-packages/click/core.py", line 763, in invoke
+    #     return __callback(*args, **kwargs)
+    #            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    #   File "/usr/src/app/commands/prepare.py", line 41, in prepare
+    #     prepare_portal(config_dict)
+    #   File "/usr/src/app/utils/portal.py", line 13, in prepare_portal
+    #     render_jinja(
+    #   File "/usr/src/app/utils/jinja.py", line 16, in render_jinja
+    #     with open(dest, 'w') as f:
+    #          ^^^^^^^^^^^^^^^
+    # IsADirectoryError: [Errno 21] Is a directory: '/config/portal/nginx.conf'
+    # nox > Command /usr/bin/bash /home/user/git/repos/OpenStudioLandscapes/.harbor/bin/prepare failed with exit code 1
+    # nox > Session harbor_prepare failed.
+    # ---------------------------------------------- SCRIPT EXECUTION END ---------------------------------------------
+    # -------------------------------------------------- RETURN CODE --------------------------------------------------
+    # Return Code = 0
+    # =================================================== BLOCK END ===================================================
+
     sudo = False
 
     harbor_root_dir: pathlib.Path = ENVIRONMENT_HARBOR["HARBOR_ROOT_DIR"]
