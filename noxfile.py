@@ -172,7 +172,7 @@ REPOS_FEATURE = {
         "OpenStudioLandscapes-RustDeskServer": "https://github.com/michimussato/OpenStudioLandscapes-RustDeskServer.git",
         # "OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20": "https://github.com/michimussato/OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20.git",
         # "OpenStudioLandscapes-Syncthing": "https://github.com/michimussato/OpenStudioLandscapes-Syncthing.git",
-        "OpenStudioLandscapes-Twingate": "https://github.com/michimussato/OpenStudioLandscapes-Twingate.git",
+        # "OpenStudioLandscapes-Twingate": "https://github.com/michimussato/OpenStudioLandscapes-Twingate.git",
         # "OpenStudioLandscapes-Watchtower": "https://github.com/michimussato/OpenStudioLandscapes-Watchtower.git",
     },
     "ssh": {
