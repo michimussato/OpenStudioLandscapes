@@ -2910,6 +2910,7 @@ def release(session, working_directory):
 def menu_from_choices(
     input_message: str,
     choices: list,
+    description: str,
     manual_value: bool = False,
     regex: re.Pattern = None,
 ):
@@ -2920,10 +2921,13 @@ def menu_from_choices(
 
     :param input_message: The message shown to the user.
     :param choices: list of choices.
+    :param description: arbitrary description string.
     :param manual_value: Will there be a manual value or not.
     :param regex: match choice against a regular expression if regex is specified.
     :return: string of the choice.
     """
+
+    print(description)
 
     if manual_value:
         choices.append("Manual")
@@ -2988,6 +2992,7 @@ def tag(session, working_directory):
         tag_ = menu_from_choices(
             input_message=input_message,
             choices=tags,
+            description="",
             manual_value=True,
         )
 
@@ -2997,11 +3002,6 @@ def tag(session, working_directory):
     release_type = os.environ.get("RELEASE_TYPE", None)
     if release_type is None:
 
-        # difference between rc and main:
-        # rc will only create/update given tag
-        # main will create/update given tag and also
-        # update latest with a pointer the same commit
-        # as given tag
         release_types = ["rc", "main"]
 
         input_message = "Tag type:\n"
@@ -3009,6 +3009,9 @@ def tag(session, working_directory):
         release_type = menu_from_choices(
             input_message=input_message,
             choices=release_types,
+            description="- `rc` will only create/update given tag\n"
+                        "- `main` main will create/update given tag and also "
+                        "update latest with a pointer the same commit as given tag\n",
             manual_value=False,
         )
 
@@ -3024,6 +3027,7 @@ def tag(session, working_directory):
         force = menu_from_choices(
             input_message=input_message,
             choices=forced,
+            description="",
             manual_value=False,
         )
 
@@ -3135,6 +3139,7 @@ def tag_delete(session, working_directory):
         tag_ = menu_from_choices(
             input_message=input_message,
             choices=tags,
+            description="- force delete tag if it exists\n",
             manual_value=True,
             regex=RE_SEMVER,
         )
@@ -3375,6 +3380,7 @@ def acme_sh_prepare(session):
         acme_sh_ca = menu_from_choices(
             input_message=input_message,
             choices=acme_sh_ca_options,
+            description="",
             manual_value=True,
         )
 
@@ -3388,6 +3394,7 @@ def acme_sh_prepare(session):
         tld = menu_from_choices(
             input_message=input_message,
             choices=tlds,
+            description="",
             manual_value=True,
         )
 
@@ -3786,6 +3793,7 @@ def gh_pr_create(session, working_directory):
         branch = menu_from_choices(
             input_message=input_message,
             choices=branches,
+            description="",
             manual_value=True,
         )
 
@@ -3801,6 +3809,7 @@ def gh_pr_create(session, working_directory):
         dry_run = menu_from_choices(
             input_message=input_message,
             choices=options,
+            description="",
             manual_value=False,
         )
 
@@ -3893,6 +3902,7 @@ def gh_pr_set_mode(session, working_directory):
         branch = menu_from_choices(
             input_message=input_message,
             choices=branches,
+            description="",
             manual_value=True,
         )
 
@@ -3908,6 +3918,7 @@ def gh_pr_set_mode(session, working_directory):
         mode = menu_from_choices(
             input_message=input_message,
             choices=modes,
+            description="",
             manual_value=False,
         )
 
