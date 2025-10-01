@@ -670,11 +670,13 @@ ASSET_HEADER = {
 ENVIRONMENT = {}
 
 
+# Todo:
+#  - [ ] This asset is not currently connected to the tree
 @asset(
     **ASSET_HEADER,
     description="",
 )
-def constants_compose_license_server(
+def constants_compose_worker(
     context: AssetExecutionContext,
 ) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
     """ """
@@ -886,10 +888,10 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
     # Todo:
     #  - [ ] Why was this here? Duplicate compose()
     # @asset(
-    #     **ASSET_HEADER_COMPOSE_LICENSE_SERVER,
+    #     **ASSET_HEADER_COMPOSE_TELEPORT,
     #     ins={
     #         "env": AssetIn(
-    #             AssetKey([*ASSET_HEADER_COMPOSE_LICENSE_SERVER["key_prefix"], "env"]),
+    #             AssetKey([*ASSET_HEADER_COMPOSE_TELEPORT["key_prefix"], "env"]),
     #         ),
     #         **ins,
     #     },
@@ -910,7 +912,7 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
     #     docker_compose = pathlib.PurePosixPath(
     #         env["DOT_LANDSCAPES"],
     #         env.get("LANDSCAPE", "default"),
-    #         f"{ASSET_HEADER_COMPOSE_LICENSE_SERVER['group_name']}__{'__'.join(ASSET_HEADER_COMPOSE_LICENSE_SERVER['key_prefix'])}",
+    #         f"{ASSET_HEADER_COMPOSE_TELEPORT['group_name']}__{'__'.join(ASSET_HEADER_COMPOSE_TELEPORT['key_prefix'])}",
     #         "__".join(context.asset_key.path),
     #         "docker_compose",
     #         "docker-compose.yml",
@@ -1499,11 +1501,11 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
         )
 
         yield AssetMaterialization( (duplicate-code)
-src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.default.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
-src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.worker.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.license_server.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
+src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.worker.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
+src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.default.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.teleport.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
 
 ------------------------------------------------------------------
-Your code has been rated at 6.39/10 (previous run: 7.21/10, -0.82)
+Your code has been rated at 6.39/10 (previous run: 6.39/10, +0.00)
 
