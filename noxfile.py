@@ -2996,6 +2996,12 @@ def tag(session, working_directory):
     # RELEASE_TYPE
     release_type = os.environ.get("RELEASE_TYPE", None)
     if release_type is None:
+
+        # difference between rc and main:
+        # rc will only create/update given tag
+        # main will create/update given tag and also
+        # update latest with a pointer the same commit
+        # as given tag
         release_types = ["rc", "main"]
 
         input_message = "Tag type:\n"
