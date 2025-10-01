@@ -51,6 +51,7 @@ flowchart TD
     openstudiolandscapes["OpenStudioLandscapes\n0.0.0"]
     packageurl-python["packageurl-python\n0.17.5"]
     packaging["packaging\n25.0"]
+    pathlib-abc["pathlib_abc\n0.5.1"]
     pip-requirements-parser["pip-requirements-parser\n32.0.1"]
     pip["pip\n25.1.1"]
     pipdeptree["pipdeptree\n2.28.0"]
@@ -87,8 +88,8 @@ flowchart TD
     tqdm["tqdm\n4.67.1"]
     types-python-dateutil["types-python-dateutil\n2.9.0.20250822"]
     typing-extensions["typing_extensions\n4.15.0"]
-    typing-inspection["typing-inspection\n0.4.1"]
-    universal-pathlib["universal_pathlib\n0.2.6"]
+    typing-inspection["typing-inspection\n0.4.2"]
+    universal-pathlib["universal_pathlib\n0.3.0"]
     uri-template["uri-template\n1.3.0"]
     urllib3["urllib3\n2.5.0"]
     virtualenv["virtualenv\n20.34.0"]
@@ -205,7 +206,8 @@ flowchart TD
     sqlalchemy -- ">=1" --> greenlet
     sqlalchemy -- ">=4.6.0" --> typing-extensions
     typing-inspection -- ">=4.12.0" --> typing-extensions
-    universal-pathlib -- ">=2022.1.0,!=2024.3.1" --> fsspec
+    universal-pathlib -- "==0.5.1" --> pathlib-abc
+    universal-pathlib -- ">=2024.5.0" --> fsspec
     virtualenv -- ">=0.3.7,<1" --> distlib
     virtualenv -- ">=3.12.2,<4" --> filelock
     virtualenv -- ">=3.9.1,<5" --> platformdirs

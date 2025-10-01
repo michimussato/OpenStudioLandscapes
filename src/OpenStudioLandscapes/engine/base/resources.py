@@ -2,7 +2,6 @@ import base64
 from typing import Dict
 
 import requests
-
 from dagster import ConfigurableResource, EnvVar, get_dagster_logger
 
 LOGGER = get_dagster_logger(__name__)
@@ -52,8 +51,8 @@ class HarborResource(ConfigurableResource):
             return library_exists
 
     def query_project_exists(
-            self,
-            project_name: str,
+        self,
+        project_name: str,
     ) -> requests.Response:
         response = requests.head(
             url=f"{self.endpoint_projects}?project_name={project_name}",

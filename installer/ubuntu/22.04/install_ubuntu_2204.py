@@ -627,16 +627,16 @@ def script_harbor_prepare(
 ) -> pathlib.Path:
 
     """
-$ cat /tmp/ubuntu_2204__script_harbor_prepare__c6v72e8j.sh
-#!/bin/env bash
+    $ cat /tmp/ubuntu_2204__script_harbor_prepare__c6v72e8j.sh
+    #!/bin/env bash
 
 
-cd /home/user/git/repos/OpenStudioLandscapes
-source .venv/bin/activate
-nox --session harbor_prepare
-deactivate
+    cd /home/user/git/repos/OpenStudioLandscapes
+    source .venv/bin/activate
+    nox --session harbor_prepare
+    deactivate
 
-exit 0
+    exit 0
     """
 
     print(" INIT HARBOR ".center(_get_terminal_size()[0], "#"))
@@ -691,17 +691,17 @@ def script_harbor_up(
 ) -> pathlib.Path:
 
     """
-$ cat /tmp/ubuntu_2204__script_harbor_up__f_104gqr.sh
-#!/bin/env bash
+    $ cat /tmp/ubuntu_2204__script_harbor_up__f_104gqr.sh
+    #!/bin/env bash
 
 
-cd /home/user/git/repos/OpenStudioLandscapes
-source .venv/bin/activate
-nox --session harbor_up_detach
+    cd /home/user/git/repos/OpenStudioLandscapes
+    source .venv/bin/activate
+    nox --session harbor_up_detach
 
-deactivate
+    deactivate
 
-exit 0
+    exit 0
     """
 
     print(" INIT HARBOR UP ".center(_get_terminal_size()[0], "#"))

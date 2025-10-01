@@ -3010,8 +3010,8 @@ def tag(session, working_directory):
             input_message=input_message,
             choices=release_types,
             description="- `rc` will only create/update given tag\n"
-                        "- `main` will create/update given tag and also "
-                        "update latest with a pointer the same commit as given tag\n",
+            "- `main` will create/update given tag and also "
+            "update latest with a pointer the same commit as given tag\n",
             manual_value=False,
         )
 

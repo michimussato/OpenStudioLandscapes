@@ -1179,7 +1179,9 @@ def op_group_out(
         # "&&",
         # *cmd_docker_compose_logs,
     ]
-    script_cmd_docker_compose_restart = DOCKER_COMPOSE.parent / "docker_compose_restart.sh"
+    script_cmd_docker_compose_restart = (
+        DOCKER_COMPOSE.parent / "docker_compose_restart.sh"
+    )
 
     cmd_docker_compose_pull_up = [
         shutil.which("docker"),
