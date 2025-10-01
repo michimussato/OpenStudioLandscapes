@@ -2927,7 +2927,7 @@ def menu_from_choices(
     :return: string of the choice.
     """
 
-    print(description)
+    print(f"\nDescription:\n{description}")
 
     if manual_value:
         choices.append("Manual")
@@ -3010,7 +3010,7 @@ def tag(session, working_directory):
             input_message=input_message,
             choices=release_types,
             description="- `rc` will only create/update given tag\n"
-                        "- `main` main will create/update given tag and also "
+                        "- `main` will create/update given tag and also "
                         "update latest with a pointer the same commit as given tag\n",
             manual_value=False,
         )
