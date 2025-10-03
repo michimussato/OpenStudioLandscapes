@@ -1,5 +1,6 @@
 import base64
 import multiprocessing
+import os
 import pathlib
 # import pexpect
 import shutil
@@ -26,10 +27,20 @@ multiprocessing.set_start_method(
 
 
 """
+import os
+os.environ["SUDO_PASS"] = ""
 from OpenStudioLandscapes.engine.base import resources
-p = resources.run_command(resources.HarborResource.cmd_harbor_up(), sudo=True)
-resources.HarborResource().health().json()
-# nox -s harbor_down
+r = resources.HarborResource()
+pu = r.harbor_up()
+r.health().json()
+r.query_project_exists("library")
+r.create_project("hello_world")
+r.list_projects().json()
+r.delete_project("hello_world")
+pd = r.harbor_down()
+with pu.stdout:
+    for l in iter(pu.stdout.readline, b""):
+        print(l)
 """
 
 
@@ -40,11 +51,13 @@ def run_command(
 ) -> subprocess.Popen:
 
     if sudo:
+
+        assert "SUDO_PASS" in os.environ
         # https://pexpect.readthedocs.io/en/stable/
         command = [
             # https://gist.github.com/aeroaks/f6150bd0add14bdbc244?permalink_comment_id=4686799#gistcomment-4686799
             "echo",
-            "mysudopass",
+            "${SUDO_PASS}",
             "|",
             shutil.which("sudo"),
             "-S",
@@ -57,7 +70,9 @@ def run_command(
     process = subprocess.Popen(
         " ".join(command),
         # cwd=,
-        # env=,
+        env={
+            "SUDO_PASS": os.environ.get("SUDO_PASS"),
+        },
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         start_new_session=True,
@@ -76,22 +91,32 @@ class TeleportResource(ConfigurableResource):
     pass
 
 
-    # proc: multiprocessing.Process = multiprocessing.Process()
+# Resource State
+# https://release-1-9-13.archive.dagster-docs.io/guides/build/external-resources/managing-resource-state
+
+
+class HarborPool:
+    def __init__(self, *args, **kwargs):
+        super().__init__(args, kwargs)
+
+        self.pool = multiprocessing.Pool(*args, **kwargs)
+
 
 
 # https://release-1-9-13.archive.dagster-docs.io/guides/build/external-resources/
 class HarborResource(ConfigurableResource):
     username: str = "admin"
     password: str = "Harbor12345"
-    project_name: str = "openstudiolandscapes"
 
-    # def __init__(self, **kwargs):
-    #     super().__init__(**kwargs)
+    def run_in_pool(self, func, cmd):
+        self._pool.pool.map(func, cmd)
 
-    #     self.proc: multiprocessing.Process = multiprocessing.Process()
+    @property
+    def project_name(self):
+        return "openstudiolandscapes"
 
-    @classmethod
-    def docker_progress(cls) -> List:
+    @property
+    def docker_progress(self) -> List:
         return [
             "auto",
             "quiet",
@@ -134,26 +159,25 @@ class HarborResource(ConfigurableResource):
                 "docker-compose.yml"
             )
 
-    @classmethod
-    def _cmd_harbor(cls) -> List:
+    @property
+    def _cmd_harbor(self) -> List:
         return [
             shutil.which("docker"),
             "compose",
             "--progress",
-            HarborResource().docker_progress()[2],
+            self.docker_progress[2],
             "--file",
-            HarborResource().compose_harbor().as_posix(),
+            self.compose_harbor().as_posix(),
             "--project-name",
             "openstudiolandscapes-harbor",
         ]
 
-    @classmethod
     def _cmd_harbor_up(
-            cls,
+            self,
             detach: bool,
     ) -> List[str]:
         cmd = [
-            *HarborResource()._cmd_harbor(),
+            *self._cmd_harbor,
             "up",
             "--remove-orphans",
         ]
@@ -163,13 +187,18 @@ class HarborResource(ConfigurableResource):
 
         return cmd
 
-    cmd_harbor_up = partialmethod(_cmd_harbor_up, detach=False)
-    cmd_harbor_up_detach = partialmethod(_cmd_harbor_up, detach=True)
+    @property
+    def cmd_harbor_up(self) -> List[str]:
+        return self._cmd_harbor_up(detach=False)
 
-    @classmethod
-    def cmd_harbor_down(cls) -> List[str]:
+    @property
+    def cmd_harbor_up_detached(self) -> List[str]:
+        return self._cmd_harbor_up(detach=True)
+
+    @property
+    def cmd_harbor_down(self) -> List[str]:
         cmd = [
-            *HarborResource().cmd_harbor(),
+            *self._cmd_harbor,
             "down",
         ]
 
@@ -182,10 +211,10 @@ class HarborResource(ConfigurableResource):
     harbor_url: str = EnvVar("OPENSTUDIOLANDSCAPES__HARBOR_URL").get_value() or "http://localhost:80"
     endpoint_api: str = f"{harbor_url}/api/v2.0"
 
-    @classmethod
-    def _ping(cls) -> Dict:
+    @property
+    def _ping(self) -> Dict:
         _ping_: dict = {
-            "endpoint": f"{HarborResource().endpoint_api}/ping",
+            "endpoint": f"{self.endpoint_api}/ping",
             "method": requests.get,
             "headers": {
                 "accept": "text/plain",
@@ -193,10 +222,10 @@ class HarborResource(ConfigurableResource):
         }
         return _ping_
 
-    @classmethod
-    def _health(cls) -> Dict:
+    @property
+    def _health(self) -> Dict:
         _health_: dict = {
-            "endpoint": f"{HarborResource().endpoint_api}/health",
+            "endpoint": f"{self.endpoint_api}/health",
             "method": requests.get,
             "headers": {
                 "accept": "application/json",
@@ -204,64 +233,75 @@ class HarborResource(ConfigurableResource):
         }
         return _health_
 
-    @classmethod
-    def _systeminfo(cls) -> Dict:
+    @property
+    def _systeminfo(self) -> Dict:
         _systeminfo_: dict = {
-            "endpoint": f"{HarborResource().endpoint_api}/systeminfo",
+            "endpoint": f"{self.endpoint_api}/systeminfo",
             "method": requests.get,
             "headers": {
                 "accept": "application/json",
-                "authorization": f"Basic {HarborResource()._authorization}",
+                "authorization": f"Basic {self._authorization}",
             },
         }
         return _systeminfo_
 
-    @classmethod
-    def _systeminfo_volumes(cls) -> Dict:
+    @property
+    def _systeminfo_volumes(self) -> Dict:
         _systeminfo_volumes_: dict = {
-            "endpoint": f"{HarborResource().systeminfo['endpoint']}/volumes",
+            "endpoint": f"{self.systeminfo['endpoint']}/volumes",
             "method": requests.get,
             "headers": {
                 "accept": "application/json",
-                "authorization": f"Basic {HarborResource()._authorization}",
+                "authorization": f"Basic {self._authorization}",
             },
         }
         return _systeminfo_volumes_
 
-    @classmethod
-    def _projects_head(cls) -> Dict:
+    @property
+    def _projects_list(self) -> Dict:
         _projects_head_: dict = {
-            "endpoint": f"{HarborResource().endpoint_api}/projects",
-            "method": requests.head,
+            "endpoint": f"{self.endpoint_api}/projects?with_detail=true",
+            "method": requests.get,
             "headers": {
                 "accept": "application/json",
-                "authorization": f"Basic {HarborResource()._authorization}",
             },
         }
         return _projects_head_
 
-    @classmethod
-    def _projects_create(cls) -> Dict:
+    @property
+    def _projects_head(self) -> Dict:
+        _projects_head_: dict = {
+            "endpoint": f"{self.endpoint_api}/projects",
+            "method": requests.head,
+            "headers": {
+                "accept": "application/json",
+                "authorization": f"Basic {self._authorization}",
+            },
+        }
+        return _projects_head_
+
+    @property
+    def _projects_create(self) -> Dict:
         _projects_create_: dict = {
-            "endpoint": f"{HarborResource().projects_head['endpoint']}",
+            "endpoint": f"{self._projects_head['endpoint']}",
             "method": requests.post,
             "headers": {
                 "accept": "application/json",
-                "authorization": f"Basic {HarborResource()._authorization}",
+                "authorization": f"Basic {self._authorization}",
                 "X-Resource-Name-In-Location": "false",
                 "Content-Type": "application/json",
             },
         }
         return _projects_create_
 
-    @classmethod
-    def _projects_delete(cls) -> Dict:
+    @property
+    def _projects_delete(self) -> Dict:
         _projects_delete_: dict = {
-            "endpoint": f"{HarborResource().projects_head['endpoint']}",
+            "endpoint": f"{self._projects_head['endpoint']}",
             "method": requests.delete,
             "headers": {
                 "accept": "application/json",
-                "authorization": f"Basic {HarborResource()._authorization}",
+                "authorization": f"Basic {self._authorization}",
                 "X-Is-Resource-Name": "false"
             },
         }
@@ -274,9 +314,9 @@ class HarborResource(ConfigurableResource):
         )
 
         if project_exists.status_code == requests.codes.ok:
-            response = self._projects_delete()["method"](
-                url=f"{self._projects_delete()['endpoint']}/{project_name}",
-                headers=self._projects_delete()["headers"]
+            response = self._projects_delete["method"](
+                url=f"{self._projects_delete['endpoint']}/{project_name}",
+                headers=self._projects_delete["headers"]
             )
             return response
 
@@ -285,55 +325,66 @@ class HarborResource(ConfigurableResource):
 
     delete_library = partialmethod(delete_project, project_name="library")
 
-    @classmethod
     def health(
-        cls,
+        self,
     ) -> requests.Response:
 
-        response = cls._health()["method"](
-            url=cls._health()["endpoint"],
-            headers=cls._health()["headers"],
+        response = self._health["method"](
+            url=self._health["endpoint"],
+            headers=self._health["headers"],
         )
 
         return response
 
-    @classmethod
     def ping(
-        cls,
+        self,
     ) -> requests.Response:
 
-        response = cls._ping()["method"](
-            url=cls._ping()["endpoint"],
-            headers=cls._ping()["headers"],
+        response = self._ping["method"](
+            url=self._ping["endpoint"],
+            headers=self._ping["headers"],
         )
 
         return response
 
-    @classmethod
+    def list_projects(
+        self,
+    ) -> requests.Response:
+
+        response = self._projects_list["method"](
+            url=self._projects_list["endpoint"],
+            headers=self._projects_list["headers"],
+        )
+
+        return response
+
     def query_project_exists(
-        cls,
+        self,
         project_name: str,
     ) -> requests.Response:
 
-        response = cls._projects_head()["method"](
-            url=f"{cls._projects_head()['endpoint']}?project_name={project_name}",
-            headers=cls._projects_head()["headers"],
+        response = self._projects_head["method"](
+            url=f"{self._projects_head['endpoint']}?project_name={project_name}",
+            headers=self._projects_head["headers"],
         )
 
         return response
 
-    def create_project(self) -> requests.Response:
+    def create_project(
+            self,
+            project_name: str,
+    ) -> requests.Response:
 
         project_exists = self.query_project_exists(
-            project_name=self.project_name,
+            project_name=project_name,
         )
 
         if not project_exists.status_code == requests.codes.ok:
-            response = self.projects_create["method"](
-                url=self.projects_create["endpoint"],
-                headers=self.projects_create["headers"],
+            response = self._projects_create["method"](
+                url=self._projects_create["endpoint"],
+                headers=self._projects_create["headers"],
                 json={
-                    "project_name": self.project_name,
+                    "project_name": project_name,
                     "public": True,
                 },
             )
@@ -344,19 +395,21 @@ class HarborResource(ConfigurableResource):
     def harbor_prepare(self) -> Exception:
         raise NotImplementedError("This is not implemented yet")
 
-    def harbor_up(self) -> Exception:
-        raise NotImplementedError("This is not implemented yet")
+    def harbor_up(self) -> subprocess.Popen:
+        p = run_command(self.cmd_harbor_up, sudo=True)
+        return p
 
     def harbor_init(self) -> Exception:
         raise NotImplementedError("This is not implemented yet")
 
-    def harbor_down(self) -> Exception:
-        raise NotImplementedError("This is not implemented yet")
+    def harbor_down(self) -> subprocess.Popen:
+        p = run_command(self.cmd_harbor_down, sudo=True)
+        return p
 
 
 resources = {
     "harbor_resource": HarborResource(
         username=EnvVar("OPENSTUDIOLANDSCAPES__HARBOR_USERNAME"),
-        password=EnvVar("OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD"),
+        password=EnvVar("OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD")
     )
 }
