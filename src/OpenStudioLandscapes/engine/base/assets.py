@@ -22,33 +22,48 @@ from OpenStudioLandscapes.engine.enums import DockerConfig, DockerRepositoryType
 from OpenStudioLandscapes.engine.utils import *
 from OpenStudioLandscapes.engine.utils.docker import *
 
-# from OpenStudioLandscapes.engine.base.resources import HarborResource
-#
-#
-# @asset
-# def my_test_asset(
-#         context: AssetExecutionContext,
-#         harbor_resource: HarborResource,
-# ) -> None:
-#     f"""{harbor_resource.harbor_url}/devcenter-api-2.0"""
-#
-#     library_exists = harbor_resource.query_project_exists(
-#         project_name="library",
-#     )
-#
-#     context.log.info(f"Library exists: {library_exists}")
-#
-#     project_exists = harbor_resource.query_project_exists(
-#         project_name="openstudiolandscapes",
-#     )
-#
-#     context.log.info(f"Project exists: {project_exists}")
-#
-#     random_exists = harbor_resource.query_project_exists(
-#         project_name="random",
-#     )
-#
-#     context.log.info(f"Random exists: {random_exists}")
+from OpenStudioLandscapes.engine.base.resources import HarborResource
+
+
+@asset(
+    **ASSET_HEADER_BASE,
+    description=f"{HarborResource().harbor_url = }\n"
+                f"Dev Center: {HarborResource().harbor_url}/devcenter-api-2.0",
+)
+def harbor(
+        context: AssetExecutionContext,
+        harbor_resource: HarborResource,
+) -> Generator[Output[str] | AssetMaterialization, None, None]:
+
+    library_exists = harbor_resource.query_project_exists(
+        project_name="library",
+    )
+
+    context.log.info(f"Library exists: {library_exists}")
+
+    project_exists = harbor_resource.query_project_exists(
+        project_name="openstudiolandscapes",
+    )
+
+    context.log.info(f"Project exists: {project_exists}")
+
+    random_exists = harbor_resource.query_project_exists(
+        project_name="random",
+    )
+
+    context.log.info(f"Random exists: {random_exists}")
+
+    yield Output(harbor_resource.harbor_url)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            # "__".join(context.asset_key.path): MetadataValue.json(_pip_packages),
+            "library_exists": MetadataValue.text(f"{library_exists.status_code = }"),
+            "project_exists": MetadataValue.text(f"{project_exists.status_code = }"),
+            "random_exists": MetadataValue.text(f"{random_exists.status_code = }"),
+        },
+    )
 
 
 @asset(
