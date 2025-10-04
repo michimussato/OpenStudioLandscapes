@@ -1,14 +1,16 @@
 import base64
 import multiprocessing
+import os
 import pathlib
 import shutil
 import subprocess
 from functools import partialmethod
+from pydantic import PrivateAttr
 from typing import Dict, List
 
 import requests
 from dagster import (
-    ConfigurableResource, EnvVar, get_dagster_logger, Config, ResourceDependency
+    ConfigurableResource, EnvVar, get_dagster_logger, Config, ResourceDependency, InitResourceContext
 )
 
 LOGGER = get_dagster_logger(__name__)
@@ -16,15 +18,26 @@ LOGGER = get_dagster_logger(__name__)
 
 # Fork vs. Spawn
 # https://www.geeksforgeeks.org/operating-systems/understanding-fork-and-spawn-in-python-multiprocessing/
-multiprocessing.set_start_method(
-    [
-        "fork",
-        "spawn",
-    ][1]
-)
+try:
+    multiprocessing.set_start_method(
+        [
+            "fork",
+            "spawn",
+        ][1]
+    )
+except RuntimeError:
+    pass
 
 
 """
+import os
+os.environ["OPENSTUDIOLANDSCAPES__HARBOR_USERNAME"] = "admin"
+os.environ["OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD"] = "Harbor12345"
+os.environ["OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR"] = "/home/michael/git/repos/OpenStudioLandscapes/.harbor"
+os.environ["OPENSTUDIOLANDSCAPES__HARBOR_BIN_DIR"] = "bin"
+os.environ["OPENSTUDIOLANDSCAPES__HARBOR_DOWNLOAD_DIR"] = "download"
+os.environ["OPENSTUDIOLANDSCAPES__HARBOR_DATA_DIR"] = "data"
+
 from OpenStudioLandscapes.engine.base import resources
 r = resources.HarborResource()
 returncode = r.harbor_up()
@@ -158,8 +171,16 @@ class Pipe:
 
 # https://release-1-9-13.archive.dagster-docs.io/guides/build/external-resources/
 class HarborResource(ConfigurableResource):
+
+    # _username: str = PrivateAttr()
     username: str = "admin"
+    # _password: str = PrivateAttr()
     password: str = "Harbor12345"
+
+    root_dir: ResourceDependency[pathlib.Path] = pathlib.Path("/home/michael/git/repos/OpenStudioLandscapes/.harbor")
+    bin_dir: ResourceDependency[str] = "bin"
+    download_dir: ResourceDependency[str] = "download"
+    data_dir: ResourceDependency[str] = "data"
 
     pipe: ResourceDependency[object] = Pipe
 
@@ -185,40 +206,9 @@ class HarborResource(ConfigurableResource):
             "rawjson",
         ]
 
-    # # ENVIRONMENT
-    @property
-    def environment_harbor(self) -> Dict:
-        return {
-            "HARBOR_HOSTNAME": "harbor.farm.evil",
-            "HARBOR_ADMIN": "admin",
-            "HARBOR_PASSWORD": "Harbor12345",
-            # Todo:
-            #  - [ ] Try with:
-            # "HARBOR_ADMIN": "harbor@openstudiolandscapes.org",
-            # "HARBOR_PASSWORD": "0penstudiolandscapes",
-            "HARBOR_PORT": "88",  # port 80 is reserved for acme_sh for now
-            "HARBOR_RELEASE": [
-                "v2.12.2",
-                "v2.13.0",
-            ][0],
-            "HARBOR_INSTALLER": {
-                "online": "https://github.com/goharbor/harbor/releases/download/{HARBOR_RELEASE}/harbor-online-installer-{HARBOR_RELEASE}.tgz",
-                "offline": "https://github.com/goharbor/harbor/releases/download/{HARBOR_RELEASE}/harbor-offline-installer-{HARBOR_RELEASE}.tgz",
-            }["online"],
-            # "HARBOR_ROOT_DIR": pathlib.Path(pathlib.Path.cwd() / ".harbor").as_posix(),
-            "HARBOR_ROOT_DIR": pathlib.Path("/home/michael/git/repos/OpenStudioLandscapes", ".harbor").as_posix(),
-            "HARBOR_BIN_DIR": "bin",
-            "HARBOR_DOWNLOAD_DIR": "download",
-            "HARBOR_DATA_DIR": "data",
-        }
-
     @property
     def compose_harbor(self) -> pathlib.Path:
-        return pathlib.Path(
-                self.environment_harbor["HARBOR_ROOT_DIR"],
-                self.environment_harbor["HARBOR_BIN_DIR"],
-                "docker-compose.yml"
-            )
+        return self.root_dir / self.bin_dir / "docker-compose.yml"
 
     @property
     def _cmd_harbor(self) -> List:
@@ -261,6 +251,16 @@ class HarborResource(ConfigurableResource):
         cmd = [
             *self._cmd_harbor,
             "down",
+        ]
+
+        return cmd
+
+    @property
+    def cmd_harbor_ps(self) -> List[str]:
+        cmd = [
+            *self._cmd_harbor,
+            "ps",
+            "--format=json",
         ]
 
         return cmd
@@ -309,7 +309,7 @@ class HarborResource(ConfigurableResource):
     @property
     def _systeminfo_volumes(self) -> Dict:
         _systeminfo_volumes_: dict = {
-            "endpoint": f"{self.systeminfo['endpoint']}/volumes",
+            "endpoint": f"{self._systeminfo['endpoint']}/volumes",
             "method": requests.get,
             "headers": {
                 "accept": "application/json",
@@ -383,6 +383,24 @@ class HarborResource(ConfigurableResource):
 
         else:
             return project_exists
+
+    def systeminfo(self) -> requests.Response:
+
+        response = self._systeminfo["method"](
+            url=self._systeminfo["endpoint"],
+            headers=self._systeminfo["headers"],
+        )
+
+        return response
+
+    def systeminfo_volumes(self) -> requests.Response:
+
+        response = self._systeminfo_volumes["method"](
+            url=self._systeminfo_volumes["endpoint"],
+            headers=self._systeminfo_volumes["headers"],
+        )
+
+        return response
 
     delete_library = partialmethod(delete_project, project_name="library")
 
@@ -509,6 +527,10 @@ class HarborResource(ConfigurableResource):
 resources = {
     "harbor_resource": HarborResource(
         username=EnvVar("OPENSTUDIOLANDSCAPES__HARBOR_USERNAME"),
-        password=EnvVar("OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD")
+        password=EnvVar("OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD"),
+        root_dir=pathlib.Path(os.environ.get("OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR", "/home/michael/git/repos/OpenStudioLandscapes/.harbor")),
+        bin_dir=os.environ.get("OPENSTUDIOLANDSCAPES__HARBOR_BIN_DIR", "bin"),
+        download_dir=os.environ.get("OPENSTUDIOLANDSCAPES__HARBOR_DOWNLOAD_DIR", "download"),
+        data_dir=os.environ.get("OPENSTUDIOLANDSCAPES__HARBOR_DATA_DIR", "data"),
     )
 }

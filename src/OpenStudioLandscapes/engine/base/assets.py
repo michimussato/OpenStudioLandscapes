@@ -19,6 +19,7 @@ from dagster import (
 
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.enums import DockerConfig, DockerRepositoryType
+from OpenStudioLandscapes.engine.exceptions import OpenStudioLandscapesException
 from OpenStudioLandscapes.engine.utils import *
 from OpenStudioLandscapes.engine.utils.docker import *
 
@@ -34,6 +35,15 @@ def harbor(
         context: AssetExecutionContext,
         harbor_resource: HarborResource,
 ) -> Generator[Output[str] | AssetMaterialization, None, None]:
+
+    # cmd_harbor_up = harbor_resource.harbor_up(detached=True)
+
+    harbor_up = harbor_resource.harbor_up()
+
+    if harbor_up:
+        raise OpenStudioLandscapesException("Could not start Harbor")
+
+    projects = harbor_resource.list_projects()
 
     library_exists = harbor_resource.query_project_exists(
         project_name="library",
@@ -58,7 +68,13 @@ def harbor(
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            # "__".join(context.asset_key.path): MetadataValue.json(_pip_packages),
+            "cmd_harbor_up": MetadataValue.path(" ".join(harbor_resource.cmd_harbor_up)),
+            "cmd_harbor_up_detached": MetadataValue.path(" ".join(harbor_resource.cmd_harbor_up_detached)),
+            "cmd_harbor_down": MetadataValue.path(" ".join(harbor_resource.cmd_harbor_down)),
+            "cmd_harbor_ps": MetadataValue.path(" ".join(harbor_resource.cmd_harbor_ps)),
+            "systeminfo": MetadataValue.json(harbor_resource.systeminfo().json()),
+            "systeminfo_volumes": MetadataValue.json(harbor_resource.systeminfo_volumes().json()),
+            "projects": MetadataValue.json(harbor_resource.list_projects().json()),
             "library_exists": MetadataValue.text(f"{library_exists.status_code = }"),
             "project_exists": MetadataValue.text(f"{project_exists.status_code = }"),
             "random_exists": MetadataValue.text(f"{random_exists.status_code = }"),
