@@ -187,6 +187,14 @@ class HarborResource(ConfigurableResource):
 
         return cmd
 
+    def _cmd_harbor_restart(self) -> List[str]:
+        cmd = [
+            *self._cmd_harbor,
+            "restart",
+        ]
+
+        return cmd
+
     @property
     def cmd_harbor_up(self) -> List[str]:
         return self._cmd_harbor_up(detach=False)
@@ -194,6 +202,10 @@ class HarborResource(ConfigurableResource):
     @property
     def cmd_harbor_up_detached(self) -> List[str]:
         return self._cmd_harbor_up(detach=True)
+
+    @property
+    def cmd_harbor_restart(self) -> List[str]:
+        return self._cmd_harbor_restart()
 
     @property
     def cmd_harbor_down(self) -> List[str]:
@@ -397,6 +409,10 @@ class HarborResource(ConfigurableResource):
 
     def harbor_up(self) -> subprocess.Popen:
         p = run_command(self.cmd_harbor_up, sudo=True)
+        return p
+
+    def harbor_restart(self) -> subprocess.Popen:
+        p = run_command(self.cmd_harbor_restart, sudo=True)
         return p
 
     def harbor_init(self) -> Exception:
