@@ -2,7 +2,7 @@ import base64
 import json
 import pathlib
 import shutil
-import subprocess
+# import subprocess
 import textwrap
 import time
 import urllib.parse
@@ -29,7 +29,7 @@ from OpenStudioLandscapes.engine.base.resources import HarborResource
 
 @asset(
     **ASSET_HEADER_BASE,
-    description=f"{HarborResource().harbor_url = }\n"
+    description=f"{HarborResource().harbor_url = }\n\n"
                 f"Dev Center: {HarborResource().harbor_url}/devcenter-api-2.0",
 )
 def harbor_popen(
