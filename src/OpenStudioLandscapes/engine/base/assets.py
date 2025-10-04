@@ -2,6 +2,7 @@ import base64
 import json
 import pathlib
 import shutil
+import subprocess
 import textwrap
 import time
 import urllib.parse
@@ -31,10 +32,10 @@ from OpenStudioLandscapes.engine.base.resources import HarborResource
     description=f"{HarborResource().harbor_url = }\n"
                 f"Dev Center: {HarborResource().harbor_url}/devcenter-api-2.0",
 )
-def harbor(
+def harbor_popen(
         context: AssetExecutionContext,
         harbor_resource: HarborResource,
-) -> Generator[Output[str] | AssetMaterialization, None, None]:
+) -> Generator[Output[int] | AssetMaterialization, None, None]:
 
     # cmd_harbor_up = harbor_resource.harbor_up(detached=True)
 
@@ -42,8 +43,8 @@ def harbor(
 
     if harbor_up:
         raise OpenStudioLandscapesException("Could not start Harbor")
-
-    projects = harbor_resource.list_projects()
+    # else:
+    #     ret = harbor_resource.proc
 
     library_exists = harbor_resource.query_project_exists(
         project_name="library",
@@ -63,7 +64,7 @@ def harbor(
 
     context.log.info(f"Random exists: {random_exists}")
 
-    yield Output(harbor_resource.harbor_url)
+    yield Output(harbor_up)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
@@ -83,40 +84,48 @@ def harbor(
     )
 
 
-@asset(
-    **ASSET_HEADER_BASE,
-    description=f"{HarborResource().harbor_url = }\n"
-                f"Dev Center: {HarborResource().harbor_url}/devcenter-api-2.0",
-)
-def harbor_down(
-        # context: AssetExecutionContext,
-        harbor_resource: HarborResource,
-) -> int:
-
-    # Looks like harbor_resource is not stateful.
-    # hence, harbor_resource.harbor_down() won't
-    # work because self.pipe.proc is None.
-
-    harbor_down_ = harbor_resource.harbor_down()
-
-    if harbor_down:
-        raise OpenStudioLandscapesException("Could not stop Harbor")
-
-    return harbor_down_
-
-    # yield AssetMaterialization(
-    #     asset_key=context.asset_key,
-    #     metadata={
-    #         "harbor_down_": MetadataValue.path(" ".join(harbor_resource.cmd_harbor_up)),
-    #         "cmd_harbor_up": MetadataValue.path(" ".join(harbor_resource.cmd_harbor_up)),
-    #         "cmd_harbor_up_detached": MetadataValue.path(" ".join(harbor_resource.cmd_harbor_up_detached)),
-    #         "cmd_harbor_down": MetadataValue.path(" ".join(harbor_resource.cmd_harbor_down)),
-    #         "cmd_harbor_ps": MetadataValue.path(" ".join(harbor_resource.cmd_harbor_ps)),
-    #         "systeminfo": MetadataValue.json(harbor_resource.systeminfo().json()),
-    #         "systeminfo_volumes": MetadataValue.json(harbor_resource.systeminfo_volumes().json()),
-    #         "projects": MetadataValue.json(harbor_resource.list_projects().json()),
-    #     },
-    # )
+# @asset(
+#     **ASSET_HEADER_BASE,
+#     ins={
+#         "harbor_popen": AssetIn(
+#             AssetKey([*ASSET_HEADER_BASE["key_prefix"], "harbor_popen"])
+#         ),
+#     },
+#     # description=f"{HarborResource().harbor_url = }\n"
+#     #             f"Dev Center: {HarborResource().harbor_url}/devcenter-api-2.0",
+# )
+# def harbor_down(
+#         context: AssetExecutionContext,
+#         harbor_resource: HarborResource,
+#         harbor_popen: subprocess.Popen,
+# ) -> int:
+#
+#     # Looks like harbor_resource is not stateful.
+#     # hence, harbor_resource.harbor_down() won't
+#     # work because self.pipe.proc is None.
+#
+#     harbor_resource.proc = harbor_popen
+#
+#     harbor_down_ = harbor_resource.harbor_down()
+#
+#     if harbor_down:
+#         raise OpenStudioLandscapesException("Could not stop Harbor")
+#
+#     return harbor_down_
+#
+#     # yield AssetMaterialization(
+#     #     asset_key=context.asset_key,
+#     #     metadata={
+#     #         "harbor_down_": MetadataValue.path(" ".join(harbor_resource.cmd_harbor_up)),
+#     #         "cmd_harbor_up": MetadataValue.path(" ".join(harbor_resource.cmd_harbor_up)),
+#     #         "cmd_harbor_up_detached": MetadataValue.path(" ".join(harbor_resource.cmd_harbor_up_detached)),
+#     #         "cmd_harbor_down": MetadataValue.path(" ".join(harbor_resource.cmd_harbor_down)),
+#     #         "cmd_harbor_ps": MetadataValue.path(" ".join(harbor_resource.cmd_harbor_ps)),
+#     #         "systeminfo": MetadataValue.json(harbor_resource.systeminfo().json()),
+#     #         "systeminfo_volumes": MetadataValue.json(harbor_resource.systeminfo_volumes().json()),
+#     #         "projects": MetadataValue.json(harbor_resource.list_projects().json()),
+#     #     },
+#     # )
 
 
 @asset(

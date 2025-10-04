@@ -568,5 +568,6 @@ resources = {
         bin_dir=os.environ.get("OPENSTUDIOLANDSCAPES__HARBOR_BIN_DIR", "bin"),
         download_dir=os.environ.get("OPENSTUDIOLANDSCAPES__HARBOR_DOWNLOAD_DIR", "download"),
         data_dir=os.environ.get("OPENSTUDIOLANDSCAPES__HARBOR_DATA_DIR", "data"),
-    )
+    ),
+    # "harbor_popen" : HarborResource,
 }
