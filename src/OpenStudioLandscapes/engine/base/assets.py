@@ -29,8 +29,13 @@ from OpenStudioLandscapes.engine.base.resources import HarborResource
 
 @asset(
     **ASSET_HEADER_BASE,
-    description=f"{HarborResource().harbor_url = }\n\n"
-                f"Dev Center: {HarborResource().harbor_url}/devcenter-api-2.0",
+    description=textwrap.dedent(
+        f"""
+        Harbor URL: {HarborResource().harbor_url}
+        
+        Dev Center: {HarborResource().harbor_url}/devcenter-api-2.0
+        """
+    )
 )
 def harbor_popen(
         context: AssetExecutionContext,
