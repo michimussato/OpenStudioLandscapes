@@ -103,11 +103,11 @@ print(output.decode("utf-8"))
 #     return process
 
 
-def run_command(
+def get_full_command(
         command: List[str],
         sudo: bool = False,
         **kwargs,
-) -> subprocess.Popen:
+) -> List[str]:
 
     if sudo:
 
@@ -119,6 +119,14 @@ def run_command(
             # - "X minutes left to unlock"
             # https://wiki.archlinux.org/title/Security#Lock_out_user_after_three_failed_login_attempts
         ] + command
+
+    return command
+
+
+def run_command(
+        command: List[str],
+        **kwargs,
+) -> subprocess.Popen:
 
     LOGGER.info("Starting Harbor...")
     LOGGER.debug(f"{command = }")
@@ -238,13 +246,34 @@ class HarborResource(ConfigurableResource):
 
         return cmd
 
+    def _cmd_harbor_restart(self) -> List[str]:
+        cmd = [
+            *self._cmd_harbor,
+            "restart",
+        ]
+
+        return cmd
+
     @property
     def cmd_harbor_up(self) -> List[str]:
-        return self._cmd_harbor_up(detach=False)
+        return get_full_command(
+            command=self._cmd_harbor_up(detach=False),
+            sudo=True,
+        )
+
+    @property
+    def cmd_harbor_restart(self) -> List[str]:
+        return get_full_command(
+            command=self._cmd_harbor_restart(),
+            sudo=True,
+        )
 
     @property
     def cmd_harbor_up_detached(self) -> List[str]:
-        return self._cmd_harbor_up(detach=True)
+        return get_full_command(
+            command=self._cmd_harbor_up(detach=True),
+            sudo=True,
+        )
 
     @property
     def cmd_harbor_down(self) -> List[str]:
@@ -253,10 +282,17 @@ class HarborResource(ConfigurableResource):
             "down",
         ]
 
-        return cmd
+        return get_full_command(
+            command=cmd,
+            sudo=True,
+        )
 
     @property
     def cmd_harbor_ps(self) -> List[str]:
+        """
+        Docker Documentation:
+        https://docs.docker.com/reference/cli/docker/compose/ps/
+        """
         cmd = [
             *self._cmd_harbor,
             "ps",
@@ -481,7 +517,7 @@ class HarborResource(ConfigurableResource):
             cmd = self.cmd_harbor_up
 
         if self.proc is None:
-            self.pipe.proc = run_command(cmd, sudo=True)
+            self.pipe.proc = run_command(cmd)
             if detached:
                 self.pipe.proc.wait()
         elif not detached and self.proc.poll() is None:
@@ -512,7 +548,7 @@ class HarborResource(ConfigurableResource):
                 or self.proc.poll() is None:
             raise Exception("Harbor is not running.")
 
-        self.pipe.proc = run_command(self.cmd_harbor_down, sudo=True)
+        self.pipe.proc = run_command(self.cmd_harbor_down)
         self.pipe.proc.wait()
         ret = self.pipe.proc.returncode
 
