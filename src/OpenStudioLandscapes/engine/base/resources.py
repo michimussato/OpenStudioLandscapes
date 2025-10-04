@@ -1,8 +1,6 @@
 import base64
 import multiprocessing
-import os
 import pathlib
-# import pexpect
 import shutil
 import subprocess
 from functools import partialmethod
@@ -10,7 +8,7 @@ from typing import Dict, List
 
 import requests
 from dagster import (
-    ConfigurableResource, EnvVar, get_dagster_logger
+    ConfigurableResource, EnvVar, get_dagster_logger, Config, ResourceDependency
 )
 
 LOGGER = get_dagster_logger(__name__)
@@ -27,11 +25,13 @@ multiprocessing.set_start_method(
 
 
 """
-import os
-os.environ["SUDO_PASS"] = ""
 from OpenStudioLandscapes.engine.base import resources
 r = resources.HarborResource()
-pu = r.harbor_up()
+returncode = r.harbor_up()
+
+
+
+
 r.health().json()
 r.query_project_exists("library")
 r.create_project("hello_world")
@@ -43,6 +43,52 @@ with pu.stdout:
         print(l)
 """
 
+"""
+s = r.shell()
+ls = "ls -al".encode("utf-8")
+output, _ = s.communicate(input=ls)
+print(output.decode("utf-8"))
+"""
+
+
+# def run_command(
+#         command: List[str],
+#         sudo: bool = False,
+#         **kwargs,
+# ) -> subprocess.Popen:
+#
+#     if sudo:
+#
+#         assert "SUDO_PASS" in os.environ
+#         # https://pexpect.readthedocs.io/en/stable/
+#         command = [
+#             # https://gist.github.com/aeroaks/f6150bd0add14bdbc244?permalink_comment_id=4686799#gistcomment-4686799
+#             "echo",
+#             "${SUDO_PASS}",
+#             "|",
+#             shutil.which("sudo"),
+#             "-S",
+#             "--reset-timestamp",
+#         ] + command
+#
+#     LOGGER.info("Starting Harbor...")
+#     LOGGER.debug(f"{command = }")
+#
+#     process = subprocess.Popen(
+#         " ".join(command),
+#         # cwd=,
+#         env={
+#             "SUDO_PASS": os.environ.get("SUDO_PASS"),
+#         },
+#         stdout=subprocess.PIPE,
+#         stderr=subprocess.STDOUT,
+#         start_new_session=True,
+#         shell=True,
+#         **kwargs,
+#     )
+#
+#     return process
+
 
 def run_command(
         command: List[str],
@@ -52,31 +98,34 @@ def run_command(
 
     if sudo:
 
-        assert "SUDO_PASS" in os.environ
-        # https://pexpect.readthedocs.io/en/stable/
         command = [
             # https://gist.github.com/aeroaks/f6150bd0add14bdbc244?permalink_comment_id=4686799#gistcomment-4686799
-            "echo",
-            "${SUDO_PASS}",
-            "|",
-            shutil.which("sudo"),
-            "-S",
-            "--reset-timestamp",
+            # https://www.cyberciti.biz/open-source/command-line-hacks/linux-run-command-as-different-user/
+            shutil.which("pkexec"),
+            # To unlock a user after failed login attempt
+            # - "X minutes left to unlock"
+            # https://wiki.archlinux.org/title/Security#Lock_out_user_after_three_failed_login_attempts
         ] + command
 
     LOGGER.info("Starting Harbor...")
     LOGGER.debug(f"{command = }")
 
+    print(f"{command = }")
+    # print(f"{' '.join(command) = }")
+
     process = subprocess.Popen(
         " ".join(command),
         # cwd=,
-        env={
-            "SUDO_PASS": os.environ.get("SUDO_PASS"),
-        },
+        # env={
+        #     "SUDO_PASS": os.environ.get("SUDO_PASS"),
+        # },
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
+        stdin=subprocess.PIPE,
         start_new_session=True,
         shell=True,
+        text=True,
+        # bufsize=1,
         **kwargs,
     )
 
@@ -95,12 +144,16 @@ class TeleportResource(ConfigurableResource):
 # https://release-1-9-13.archive.dagster-docs.io/guides/build/external-resources/managing-resource-state
 
 
-class HarborPool:
-    def __init__(self, *args, **kwargs):
-        super().__init__(args, kwargs)
+# class HarborPool:
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(args, kwargs)
+#
+#         self.pool = multiprocessing.Pool(*args, **kwargs)
 
-        self.pool = multiprocessing.Pool(*args, **kwargs)
 
+# https://coderivers.org/blog/python-subprocess-popen/
+class Pipe:
+    proc = None
 
 
 # https://release-1-9-13.archive.dagster-docs.io/guides/build/external-resources/
@@ -108,8 +161,15 @@ class HarborResource(ConfigurableResource):
     username: str = "admin"
     password: str = "Harbor12345"
 
-    def run_in_pool(self, func, cmd):
-        self._pool.pool.map(func, cmd)
+    pipe: ResourceDependency[object] = Pipe
+
+    @property
+    def proc(self):
+        return self.pipe.proc
+
+    @proc.setter
+    def proc(self, value):
+        self.pipe.proc = value
 
     @property
     def project_name(self):
@@ -126,8 +186,8 @@ class HarborResource(ConfigurableResource):
         ]
 
     # # ENVIRONMENT
-    @classmethod
-    def environment_harbor(cls) -> Dict:
+    @property
+    def environment_harbor(self) -> Dict:
         return {
             "HARBOR_HOSTNAME": "harbor.farm.evil",
             "HARBOR_ADMIN": "admin",
@@ -145,17 +205,18 @@ class HarborResource(ConfigurableResource):
                 "online": "https://github.com/goharbor/harbor/releases/download/{HARBOR_RELEASE}/harbor-online-installer-{HARBOR_RELEASE}.tgz",
                 "offline": "https://github.com/goharbor/harbor/releases/download/{HARBOR_RELEASE}/harbor-offline-installer-{HARBOR_RELEASE}.tgz",
             }["online"],
-            "HARBOR_ROOT_DIR": pathlib.Path(pathlib.Path.cwd() / ".harbor").as_posix(),
+            # "HARBOR_ROOT_DIR": pathlib.Path(pathlib.Path.cwd() / ".harbor").as_posix(),
+            "HARBOR_ROOT_DIR": pathlib.Path("/home/michael/git/repos/OpenStudioLandscapes", ".harbor").as_posix(),
             "HARBOR_BIN_DIR": "bin",
             "HARBOR_DOWNLOAD_DIR": "download",
             "HARBOR_DATA_DIR": "data",
         }
 
-    @classmethod
-    def compose_harbor(cls) -> pathlib.Path:
+    @property
+    def compose_harbor(self) -> pathlib.Path:
         return pathlib.Path(
-                HarborResource().environment_harbor()["HARBOR_ROOT_DIR"],
-                HarborResource().environment_harbor()["HARBOR_BIN_DIR"],
+                self.environment_harbor["HARBOR_ROOT_DIR"],
+                self.environment_harbor["HARBOR_BIN_DIR"],
                 "docker-compose.yml"
             )
 
@@ -167,7 +228,7 @@ class HarborResource(ConfigurableResource):
             "--progress",
             self.docker_progress[2],
             "--file",
-            self.compose_harbor().as_posix(),
+            self.compose_harbor.as_posix(),
             "--project-name",
             "openstudiolandscapes-harbor",
         ]
@@ -187,14 +248,6 @@ class HarborResource(ConfigurableResource):
 
         return cmd
 
-    def _cmd_harbor_restart(self) -> List[str]:
-        cmd = [
-            *self._cmd_harbor,
-            "restart",
-        ]
-
-        return cmd
-
     @property
     def cmd_harbor_up(self) -> List[str]:
         return self._cmd_harbor_up(detach=False)
@@ -202,10 +255,6 @@ class HarborResource(ConfigurableResource):
     @property
     def cmd_harbor_up_detached(self) -> List[str]:
         return self._cmd_harbor_up(detach=True)
-
-    @property
-    def cmd_harbor_restart(self) -> List[str]:
-        return self._cmd_harbor_restart()
 
     @property
     def cmd_harbor_down(self) -> List[str]:
@@ -407,20 +456,54 @@ class HarborResource(ConfigurableResource):
     def harbor_prepare(self) -> Exception:
         raise NotImplementedError("This is not implemented yet")
 
-    def harbor_up(self) -> subprocess.Popen:
-        p = run_command(self.cmd_harbor_up, sudo=True)
-        return p
+    def harbor_up(self, detached=True) -> int:
+        if detached:
+            cmd = self.cmd_harbor_up_detached
+        else:
+            cmd = self.cmd_harbor_up
 
-    def harbor_restart(self) -> subprocess.Popen:
-        p = run_command(self.cmd_harbor_restart, sudo=True)
-        return p
+        if self.proc is None:
+            self.pipe.proc = run_command(cmd, sudo=True)
+            if detached:
+                self.pipe.proc.wait()
+        elif not detached and self.proc.poll() is None:
+            # if detached is True, polling doesn't work in a useful way.
+            # need some other mechanism to verify whether Harbor is running or not.
+            raise Exception(f"Harbor is already running.")
+
+        return self.pipe.proc.returncode
+
+    def harbor_restart(self) -> int:
+        """
+        It might be a bit crippled but for now I don't have a
+        good idea how to leverage `docker compose restart`
+        without loosing track of the self.pipe.proc object.
+        So, for now: `docker compose down` and `docker compose up`.
+        """
+        if not self.harbor_down():
+            ret = self.harbor_up(detached=True)
+
+        return ret
 
     def harbor_init(self) -> Exception:
         raise NotImplementedError("This is not implemented yet")
 
-    def harbor_down(self) -> subprocess.Popen:
-        p = run_command(self.cmd_harbor_down, sudo=True)
-        return p
+    def harbor_down(self) -> int:
+
+        if self.proc is None \
+                or self.proc.poll() is None:
+            raise Exception("Harbor is not running.")
+
+        self.pipe.proc = run_command(self.cmd_harbor_down, sudo=True)
+        self.pipe.proc.wait()
+        ret = self.pipe.proc.returncode
+
+        if bool(ret):
+            raise Exception(f"Unable to stop Harbor.")
+
+        self.pipe.proc = None
+
+        return ret
 
 
 resources = {
