@@ -1,12 +1,14 @@
 import base64
+import configparser
 import json
+import os
 import pathlib
 import shutil
-# import subprocess
 import textwrap
 import time
 import urllib.parse
-from typing import Generator, List, MutableMapping
+from pathlib import Path
+from typing import Generator, List, MutableMapping, Any
 
 from dagster import (
     AssetExecutionContext,
@@ -89,48 +91,241 @@ def harbor_popen(
     )
 
 
-# @asset(
-#     **ASSET_HEADER_BASE,
-#     ins={
-#         "harbor_popen": AssetIn(
-#             AssetKey([*ASSET_HEADER_BASE["key_prefix"], "harbor_popen"])
-#         ),
-#     },
-#     # description=f"{HarborResource().harbor_url = }\n"
-#     #             f"Dev Center: {HarborResource().harbor_url}/devcenter-api-2.0",
-# )
-# def harbor_down(
-#         context: AssetExecutionContext,
-#         harbor_resource: HarborResource,
-#         harbor_popen: subprocess.Popen,
-# ) -> int:
-#
-#     # Looks like harbor_resource is not stateful.
-#     # hence, harbor_resource.harbor_down() won't
-#     # work because self.pipe.proc is None.
-#
-#     harbor_resource.proc = harbor_popen
-#
-#     harbor_down_ = harbor_resource.harbor_down()
-#
-#     if harbor_down:
-#         raise OpenStudioLandscapesException("Could not stop Harbor")
-#
-#     return harbor_down_
-#
-#     # yield AssetMaterialization(
-#     #     asset_key=context.asset_key,
-#     #     metadata={
-#     #         "harbor_down_": MetadataValue.path(" ".join(harbor_resource.cmd_harbor_up)),
-#     #         "cmd_harbor_up": MetadataValue.path(" ".join(harbor_resource.cmd_harbor_up)),
-#     #         "cmd_harbor_up_detached": MetadataValue.path(" ".join(harbor_resource.cmd_harbor_up_detached)),
-#     #         "cmd_harbor_down": MetadataValue.path(" ".join(harbor_resource.cmd_harbor_down)),
-#     #         "cmd_harbor_ps": MetadataValue.path(" ".join(harbor_resource.cmd_harbor_ps)),
-#     #         "systeminfo": MetadataValue.json(harbor_resource.systeminfo().json()),
-#     #         "systeminfo_volumes": MetadataValue.json(harbor_resource.systeminfo_volumes().json()),
-#     #         "projects": MetadataValue.json(harbor_resource.list_projects().json()),
-#     #     },
-#     # )
+@asset(
+    **ASSET_HEADER_BASE,
+    ins={
+        "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
+    },
+    deps=[
+        AssetKey([*ASSET_HEADER_BASE["key_prefix"], "harbor_prepare"]),
+        AssetKey([*ASSET_HEADER_BASE["key_prefix"], "harbor_popen"]),
+    ],
+    description=textwrap.dedent(
+        f"""
+        Harbor URL: {HarborResource().harbor_url}
+        
+        Dev Center: {HarborResource().harbor_url}/devcenter-api-2.0
+        """
+    )
+)
+def harbor_systemd(
+        context: AssetExecutionContext,
+        harbor_resource: HarborResource,
+        env: dict,  # pylint: disable=redefined-outer-name
+) -> Generator[Output[Path] | AssetMaterialization | Any, None, None]:
+
+    unit_dict: dict = harbor_resource.systemd_unit_dict(context=context)
+
+    unit: configparser.ConfigParser = configparser.ConfigParser()
+    # Change from case insensitive to case sensitive
+    # https://docs.python.org/3/library/configparser.html#configparser.ConfigParser.optionxform
+    unit.optionxform = str
+
+    unit.read_dict(unit_dict)
+
+    unit_destination = pathlib.Path("/usr/lib/systemd/system")
+
+    unit_file = pathlib.Path(
+        env["DOT_LANDSCAPES"],
+        env.get("LANDSCAPE", "default"),
+        f"{ASSET_HEADER_BASE['group_name']}__{'__'.join(ASSET_HEADER_BASE['key_prefix'])}",
+        "__".join(context.asset_key.path),
+        "systemd",
+        "harbor.service",
+    )
+
+    unit_file.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(unit_file, "w") as fw:
+        unit.write(fw, space_around_delimiters=False)
+
+    with open(unit_file, "r") as fr:
+        unit_file_content = fr.read()
+
+    # ENABLE UNIT
+
+    copy_service = [
+        shutil.which("cp"),
+        unit_file.as_posix(),
+        unit_destination.as_posix(),
+    ]
+
+    set_permissions = [
+        shutil.which("chmod"),
+        "644",
+        pathlib.Path(unit_destination, unit_file.name).as_posix(),
+    ]
+
+    daemon_reload = [
+        shutil.which("systemctl"),
+        "daemon-reload",
+    ]
+
+    systemctl_start = [
+        shutil.which("systemctl"),
+        "start",
+        unit_file.name,
+    ]
+
+    systemctl_enable = [
+        shutil.which("systemctl"),
+        "enable",
+        unit_file.name,
+    ]
+
+    install_service = [
+        # shutil.which("pkexec"),
+        *copy_service,
+        "&&",
+        *set_permissions,
+        "&&",
+        *daemon_reload,
+        "&&",
+        *systemctl_start,
+        "&&",
+        *systemctl_enable,
+    ]
+
+    # DISABLE UNIT
+
+    systemctl_disable = [
+        shutil.which("systemctl"),
+        "disable",
+        unit_file.name,
+    ]
+
+    systemctl_stop = [
+        shutil.which("systemctl"),
+        "stop",
+        unit_file.name,
+    ]
+
+    remove_service = [
+        shutil.which("rm"),
+        pathlib.Path(unit_destination, unit_file.name).as_posix(),
+    ]
+
+    remove_service = [
+        # shutil.which("pkexec"),
+        *systemctl_disable,
+        "&&",
+        *systemctl_stop,
+        "&&",
+        *remove_service,
+        "&&",
+        *daemon_reload,
+    ]
+
+    # JOURNALCTL
+
+    journalctl = [
+        shutil.which("journalctl"),
+        "--follow",
+        f"--unit={unit_file.name}",
+    ]
+
+    su_method = {
+        "su": [
+            shutil.which("su"),
+            "-",
+            "root",
+        ],
+        "sudo": [
+            shutil.which("sudo"),
+            "--user=root",
+        ],
+        "pkexec": [
+            shutil.which("pkexec"),
+        ],
+    }["pkexec"]
+
+    sudo_bash_c = [
+        *su_method,
+        shutil.which("bash"),
+        "-c",
+    ]
+
+    yield Output(unit_file)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.path(unit_file),
+            "unit_dict": MetadataValue.json(unit_dict),
+            unit_file.name: MetadataValue.md(f"```shell\n{unit_file_content}\n```"),
+            "journald": MetadataValue.path(f"{' '.join(sudo_bash_c)} \"{' '.join(journalctl)}\""),
+            "install_service": MetadataValue.path(f"{' '.join(sudo_bash_c)} \"{' '.join(install_service)}\""),
+            "remove_service": MetadataValue.path(f"{' '.join(sudo_bash_c)} \"{' '.join(remove_service)}\""),
+        },
+    )
+
+
+@asset(
+    **ASSET_HEADER_BASE,
+    # ins={
+    #     "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
+    # },
+    description=textwrap.dedent(
+        f"""
+        Harbor URL: {HarborResource().harbor_url}
+        
+        Dev Center: {HarborResource().harbor_url}/devcenter-api-2.0
+        """
+    )
+)
+def harbor_prepare(
+        context: AssetExecutionContext,
+        harbor_resource: HarborResource,
+        # env: dict,  # pylint: disable=redefined-outer-name
+) -> Generator[Output[Path] | AssetMaterialization | Any, None, None]:
+
+    harbor_root_dir: pathlib.Path = pathlib.Path(os.environ.get("OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR", "/home/michael/git/repos/OpenStudioLandscapes/.harbor"))
+
+    git_clean = [
+        shutil.which("git"),
+        "clean",
+        "-x",
+        "--force",
+        harbor_root_dir.as_posix(),
+    ]
+
+    su_method = {
+        "su": [
+            shutil.which("su"),
+            "-",
+            "root",
+        ],
+        "sudo": [
+            shutil.which("sudo"),
+            "--user=root",
+        ],
+        "pkexec": [
+            shutil.which("pkexec"),
+        ],
+    }["pkexec"]
+
+    sudo_bash_c = [
+        *su_method,
+        shutil.which("bash"),
+        "-c",
+    ]
+
+    prepare: List = harbor_resource.harbor_prepare(context=context)
+
+    yield Output(prepare)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            # "__".join(context.asset_key.path): MetadataValue.path(unit_file),
+            # "unit_dict": MetadataValue.json(unit_dict),
+            # unit_file.name: MetadataValue.md(f"```shell\n{unit_file_content}\n```"),
+            "prepare": MetadataValue.path(f"{' '.join(prepare)}"),
+            "git_clean": MetadataValue.path(f"{' '.join(sudo_bash_c)} \"{' '.join(git_clean)}\""),
+            # "install_service": MetadataValue.path(f"{' '.join(sudo_bash_c)} \"{' '.join(install_service)}\""),
+            # "remove_service": MetadataValue.path(f"{' '.join(sudo_bash_c)} \"{' '.join(remove_service)}\""),
+        },
+    )
 
 
 @asset(
@@ -392,7 +587,7 @@ def build_docker_image(
         asset_key=context.asset_key,
         metadata={
             "__".join(context.asset_key.path): MetadataValue.json(image_data),
-            "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
+            docker_file.name: MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
             "env": MetadataValue.json(env),
             "logs": MetadataValue.json(logs),
         },
