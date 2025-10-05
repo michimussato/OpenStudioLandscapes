@@ -779,7 +779,7 @@ class HarborResource(ConfigurableResource):
         prepare: pathlib.Path = harbor_bin_dir / "prepare"
 
         if not prepare.exists():
-            raise FileNotFoundError("`prepare` file not found. " "Not able to continue.")
+            raise FileNotFoundError("`prepare` file not found. Not able to continue.")
 
         context.log.debug("Preparing Harbor...")
 
