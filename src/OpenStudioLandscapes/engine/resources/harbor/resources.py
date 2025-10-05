@@ -1,4 +1,5 @@
 import base64
+import copy
 import json
 import multiprocessing
 import os
@@ -19,6 +20,9 @@ from dagster import (
     ResourceDependency,
     AssetExecutionContext
 )
+
+from OpenStudioLandscapes.engine.exceptions import OpenStudioLandscapesException
+from OpenStudioLandscapes.engine.utils import expand_dict_vars
 
 LOGGER = get_dagster_logger(__name__)
 
@@ -279,8 +283,19 @@ class HarborResource(ConfigurableResource):
     def _authorization(self) -> str:
         return f"{base64.b64encode(str(':'.join([self.username, self.password])).encode('utf-8')).decode('ascii')}"
 
-    harbor_url: str = f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_URL']}".format(**os.environ)
-    endpoint_api: str = f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_API_URL']}".format(**os.environ)
+    @staticmethod
+    def expanded_env() -> dict[str, str]:
+        d_ = expand_dict_vars(
+            dict_to_expand=copy.deepcopy(os.environ),
+            kv=os.environ,
+        )
+
+        return d_
+
+    LOGGER.error(expanded_env())
+
+    harbor_url: str = expanded_env()["OPENSTUDIOLANDSCAPES__HARBOR_URL"]
+    endpoint_api: str = expanded_env()['OPENSTUDIOLANDSCAPES__HARBOR_API_URL']
 
     # API ACCESS BLUE PRINTS
     @property
@@ -344,7 +359,7 @@ class HarborResource(ConfigurableResource):
     def _projects_head(self) -> Dict:
         _projects_head_: dict = {
             "endpoint": f"{self.endpoint_api}/projects",
-            "method": requests.head,
+            "method": "HEAD",
             "headers": {
                 "accept": "application/json",
                 "authorization": f"Basic {self._authorization}",
@@ -356,7 +371,7 @@ class HarborResource(ConfigurableResource):
     def _projects_create(self) -> Dict:
         _projects_create_: dict = {
             "endpoint": f"{self._projects_head['endpoint']}",
-            "method": requests.post,
+            "method": "POST",
             "headers": {
                 "accept": "application/json",
                 "authorization": f"Basic {self._authorization}",
@@ -380,6 +395,19 @@ class HarborResource(ConfigurableResource):
         return _projects_delete_
 
     # API ACCESS
+
+    def delete_project_prepared_request(
+            self,
+            project_name: str,
+    ) -> requests.PreparedRequest:
+
+        prepared_request: requests.PreparedRequest = self._projects_delete["method"](
+                url=f"{self._projects_delete['endpoint']}/{project_name}",
+                headers=self._projects_delete["headers"]
+            )
+
+        return prepared_request
+
     def delete_project(self, project_name) -> requests.Response:
 
         project_exists = self.query_project_exists(
@@ -387,11 +415,14 @@ class HarborResource(ConfigurableResource):
         )
 
         if project_exists.status_code == requests.codes.ok:
-            response = self._projects_delete["method"](
-                url=f"{self._projects_delete['endpoint']}/{project_name}",
-                headers=self._projects_delete["headers"]
-            )
-            return response
+
+            with requests.Session() as session:
+                response: requests.Response = session.send(
+                    self.delete_project_prepared_request(
+                        project_name=project_name,
+                    )
+                )
+                return response
 
         else:
             return project_exists
@@ -449,39 +480,75 @@ class HarborResource(ConfigurableResource):
 
         return response
 
+    def query_project_exists_request(
+            self,
+            project_name: str,
+    ) -> requests.PreparedRequest:
+
+        prepared_request = requests.Request(
+            method="HEAD",
+            url=f"{self._projects_head['endpoint']}?project_name={project_name}",
+            headers=self._projects_head["headers"],
+        )
+
+        return prepared_request.prepare()
+
     def query_project_exists(
         self,
         project_name: str,
     ) -> requests.Response:
 
-        response = self._projects_head["method"](
-            url=f"{self._projects_head['endpoint']}?project_name={project_name}",
-            headers=self._projects_head["headers"],
+        try:
+
+            with requests.Session() as session:
+
+                response: requests.Response = session.send(
+                    self.query_project_exists_request(
+                        project_name=project_name,
+                    )
+                )
+
+            return response
+
+        except requests.exceptions.ConnectionError as e:
+            raise OpenStudioLandscapesException(
+                "Harbor seems down."
+            ) from e
+
+    def create_project_request(
+            self,
+            project_name: str,
+    ) -> requests.PreparedRequest:
+
+        prepared_request = requests.Request(
+            method=self._projects_create["method"],
+            url=f"{self._projects_create['endpoint']}?project_name={project_name}",
+            headers=self._projects_create["headers"],
         )
 
-        return response
+        return prepared_request.prepare()
 
     def create_project(
             self,
             project_name: str,
     ) -> requests.Response:
 
-        project_exists = self.query_project_exists(
-            project_name=project_name,
-        )
+        try:
 
-        if not project_exists.status_code == requests.codes.ok:
-            response = self._projects_create["method"](
-                url=self._projects_create["endpoint"],
-                headers=self._projects_create["headers"],
-                json={
-                    "project_name": project_name,
-                    "public": True,
-                },
-            )
+            with requests.Session() as session:
+
+                response: requests.Response = session.send(
+                    self.create_project_request(
+                        project_name=project_name,
+                    )
+                )
+
             return response
-        else:
-            return project_exists
+
+        except requests.exceptions.ConnectionError as e:
+            raise OpenStudioLandscapesException(
+                "Harbor seems down."
+            ) from e
 
     # HARBOR EXECUTION API
     def harbor_prepare(

@@ -1,4 +1,5 @@
 import configparser
+import copy
 import os
 import pathlib
 import shutil
@@ -6,21 +7,173 @@ import textwrap
 from pathlib import Path
 from typing import Generator, List, Any
 
+import requests
 from dagster import (
     AssetExecutionContext,
     AssetIn,
     AssetKey,
     AssetMaterialization,
+    MaterializeResult,
     MetadataValue,
     Output,
     asset,
 )
 
 from OpenStudioLandscapes.engine.constants import *
+from OpenStudioLandscapes.engine.utils import *
 from OpenStudioLandscapes.engine.resources.harbor.constants import *
 from OpenStudioLandscapes.engine.exceptions import OpenStudioLandscapesException
 
 from OpenStudioLandscapes.engine.resources.harbor.resources import HarborResource
+
+
+@asset(
+    **ASSET_HEADER_RESOURCE_HARBOR,
+    description=textwrap.dedent(
+        f"""
+        Harbor URL: {os.environ['OPENSTUDIOLANDSCAPES__HARBOR_URL']}
+
+        Dev Center: {os.environ['OPENSTUDIOLANDSCAPES__HARBOR_URL']}/devcenter-api-2.0
+        """.format(
+            **os.environ
+        ).format(
+            **os.environ
+        )
+    )
+)
+def LIBRARY_DELETED(
+        context: AssetExecutionContext,
+        harbor_resource: HarborResource,
+) -> Generator[Output[requests.PreparedRequest] | AssetMaterialization, None, None]:
+
+    # harbor_up = harbor_resource.harbor_up()
+    #
+    # if harbor_up:
+    #     raise OpenStudioLandscapesException("Could not start Harbor")
+    # # else:
+    # #     ret = harbor_resource.proc
+
+    library_exists_response = harbor_resource.query_project_exists(
+        project_name="library",
+    )
+
+    library_exists = library_exists_response.status_code == requests.status_codes.codes.NOT_FOUND
+
+    context.log.info(f"Library exists: {library_exists_response}")
+
+    delete_libraray_request = harbor_resource.delete_project_prepared_request(
+        project_name="library",
+    )
+
+    yield Output(delete_libraray_request)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.bool(library_exists),
+            "library_exists_response": MetadataValue.text(f"{library_exists_response = }"),
+            "delete_libraray_request_url": MetadataValue.text(delete_libraray_request.url),
+        },
+    )
+
+
+@asset(
+    **ASSET_HEADER_RESOURCE_HARBOR,
+    description=textwrap.dedent(
+        f"""
+        Harbor URL: {os.environ['OPENSTUDIOLANDSCAPES__HARBOR_URL']}
+
+        Dev Center: {os.environ['OPENSTUDIOLANDSCAPES__HARBOR_URL']}/devcenter-api-2.0
+        """.format(
+            **os.environ
+        ).format(
+            **os.environ
+        )
+    )
+)
+def OPENSTUDIOLANDSCAPES_EXISTS(
+        context: AssetExecutionContext,
+        harbor_resource: HarborResource,
+) -> Generator[Output[requests.PreparedRequest] | AssetMaterialization, None, None]:
+
+    # harbor_up = harbor_resource.harbor_up()
+    #
+    # if harbor_up:
+    #     raise OpenStudioLandscapesException("Could not start Harbor")
+    # # else:
+    # #     ret = harbor_resource.proc
+
+    project_name = "openstudiolandscapes"
+
+    project_exists_response = harbor_resource.query_project_exists(
+        project_name=project_name,
+    )
+
+    project_exists = project_exists_response.status_code == requests.status_codes.codes.OK
+
+    context.log.info(f"Project exists: {project_exists_response}")
+
+    create_openstudiolandscapes_request = harbor_resource.delete_project_prepared_request(
+        project_name=project_name,
+    )
+
+    yield Output(create_openstudiolandscapes_request)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.bool(project_exists),
+            "library_exists_response": MetadataValue.text(f"{project_exists_response = }"),
+            "delete_libraray_request_url": MetadataValue.text(create_openstudiolandscapes_request.url),
+        },
+    )
+
+
+@asset(
+    **ASSET_HEADER_RESOURCE_HARBOR,
+    description=textwrap.dedent(
+        f"""
+        Harbor URL: {os.environ['OPENSTUDIOLANDSCAPES__HARBOR_URL']}
+
+        Dev Center: {os.environ['OPENSTUDIOLANDSCAPES__HARBOR_URL']}/devcenter-api-2.0
+        """.format(
+            **os.environ
+        ).format(
+            **os.environ
+        )
+    )
+)
+def su_method(
+        context: AssetExecutionContext,
+) -> Generator[Output[list[str]] | AssetMaterialization, None, None]:
+
+    su_methods = {
+        "su": [
+            shutil.which("su"),
+            "-",
+            "root",
+        ],
+        "sudo": [
+            shutil.which("sudo"),
+            "--user=root",
+        ],
+        "pkexec": [
+            shutil.which("pkexec"),
+        ],
+    }
+
+    su_method = "pkexec"
+
+    yield Output(su_methods[su_method])
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.json(su_methods[su_method]),
+            "su_methods": MetadataValue.json(su_methods),
+            "su_method": MetadataValue.text(su_method),
+        },
+    )
 
 
 @asset(
@@ -37,41 +190,12 @@ from OpenStudioLandscapes.engine.resources.harbor.resources import HarborResourc
         )
     )
 )
-def harbor_popen(
+def HARBOR_COMMANDS(
         context: AssetExecutionContext,
         harbor_resource: HarborResource,
-) -> Generator[Output[int] | AssetMaterialization, None, None]:
+) -> MaterializeResult:
 
-    # cmd_harbor_up = harbor_resource.harbor_up(detached=True)
-
-    harbor_up = harbor_resource.harbor_up()
-
-    if harbor_up:
-        raise OpenStudioLandscapesException("Could not start Harbor")
-    # else:
-    #     ret = harbor_resource.proc
-
-    library_exists = harbor_resource.query_project_exists(
-        project_name="library",
-    )
-
-    context.log.info(f"Library exists: {library_exists}")
-
-    project_exists = harbor_resource.query_project_exists(
-        project_name="openstudiolandscapes",
-    )
-
-    context.log.info(f"Project exists: {project_exists}")
-
-    random_exists = harbor_resource.query_project_exists(
-        project_name="random",
-    )
-
-    context.log.info(f"Random exists: {random_exists}")
-
-    yield Output(harbor_up)
-
-    yield AssetMaterialization(
+    return MaterializeResult(
         asset_key=context.asset_key,
         metadata={
             # "cmd_harbor_up": MetadataValue.path(" ".join(harbor_resource.cmd_harbor_up)),
@@ -82,9 +206,79 @@ def harbor_popen(
             "systeminfo": MetadataValue.json(harbor_resource.systeminfo().json()),
             "systeminfo_volumes": MetadataValue.json(harbor_resource.systeminfo_volumes().json()),
             "projects": MetadataValue.json(harbor_resource.list_projects().json()),
-            "library_exists": MetadataValue.text(f"{library_exists.status_code = }"),
-            "project_exists": MetadataValue.text(f"{project_exists.status_code = }"),
-            "random_exists": MetadataValue.text(f"{random_exists.status_code = }"),
+            # "library_exists": MetadataValue.text(f"{library_exists.status_code = }"),
+            # "project_exists": MetadataValue.text(f"{project_exists.status_code = }"),
+            # "random_exists": MetadataValue.text(f"{random_exists.status_code = }"),
+        },
+    )
+
+
+@asset(
+    **ASSET_HEADER_RESOURCE_HARBOR,
+    ins={
+        "su_method": AssetIn(AssetKey([*ASSET_HEADER_RESOURCE_HARBOR["key_prefix"], "su_method"])),
+    },
+    description=textwrap.dedent(
+        f"""
+        Harbor URL: {os.environ['OPENSTUDIOLANDSCAPES__HARBOR_URL']}
+        
+        Dev Center: {os.environ['OPENSTUDIOLANDSCAPES__HARBOR_URL']}/devcenter-api-2.0
+        """.format(
+            **os.environ
+        ).format(
+            **os.environ
+        )
+    )
+)
+def HARBOR_RESET(
+        context: AssetExecutionContext,
+        su_method: list[str],
+        # harbor_resource: HarborResource,
+        # env: dict,  # pylint: disable=redefined-outer-name
+) -> MaterializeResult:
+
+    d_ = expand_dict_vars(
+        dict_to_expand=copy.deepcopy(os.environ),
+        kv=os.environ,
+    )
+
+    harbor_root_dir: pathlib.Path = pathlib.Path(
+        d_['OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR']
+    )
+
+    git_clean = [
+        shutil.which("git"),
+        "clean",
+        "-x",
+        "--force",
+        harbor_root_dir.as_posix(),
+    ]
+
+    # su_method = {
+    #     "su": [
+    #         shutil.which("su"),
+    #         "-",
+    #         "root",
+    #     ],
+    #     "sudo": [
+    #         shutil.which("sudo"),
+    #         "--user=root",
+    #     ],
+    #     "pkexec": [
+    #         shutil.which("pkexec"),
+    #     ],
+    # }["pkexec"]
+
+    sudo_bash_c = [
+        *su_method,
+        shutil.which("bash"),
+        "-c",
+    ]
+
+    return MaterializeResult(
+        asset_key=context.asset_key,
+        metadata={
+            "git_clean": MetadataValue.path(f"{' '.join(sudo_bash_c)} \"{' '.join(git_clean)}\""),
         },
     )
 
@@ -95,8 +289,8 @@ def harbor_popen(
         "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
     },
     deps=[
-        AssetKey([*ASSET_HEADER_RESOURCE_HARBOR["key_prefix"], "harbor_prepare"]),
-        AssetKey([*ASSET_HEADER_RESOURCE_HARBOR["key_prefix"], "harbor_popen"]),
+        AssetKey([*ASSET_HEADER_RESOURCE_HARBOR["key_prefix"], "HARBOR_PREPARE"]),
+        # AssetKey([*ASSET_HEADER_RESOURCE_HARBOR["key_prefix"], "harbor_popen"]),
     ],
     description=textwrap.dedent(
         f"""
@@ -110,7 +304,7 @@ def harbor_popen(
         )
     )
 )
-def harbor_systemd(
+def HARBOR_SYSTEMD(
         context: AssetExecutionContext,
         harbor_resource: HarborResource,
         env: dict,  # pylint: disable=redefined-outer-name
@@ -265,9 +459,9 @@ def harbor_systemd(
 
 @asset(
     **ASSET_HEADER_RESOURCE_HARBOR,
-    ins={
-        "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
-    },
+    # ins={
+    #     "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
+    # },
     description=textwrap.dedent(
         f"""
         Harbor URL: {os.environ['OPENSTUDIOLANDSCAPES__HARBOR_URL']}
@@ -280,60 +474,50 @@ def harbor_systemd(
         )
     )
 )
-def harbor_prepare(
+def HARBOR_PREPARE(
         context: AssetExecutionContext,
         harbor_resource: HarborResource,
-        env: dict,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[Path] | AssetMaterialization | Any, None, None]:
+        # env: dict,  # pylint: disable=redefined-outer-name
+) -> MaterializeResult:
 
-    harbor_root_dir: pathlib.Path = pathlib.Path(
-        f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR']}".format(
-            **os.environ,
-            **env,
-        )
-    )
+    # harbor_root_dir: pathlib.Path = pathlib.Path(
+    #     f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR']}".format(
+    #         **os.environ,
+    #         **env,
+    #     )
+    # )
 
-    git_clean = [
-        shutil.which("git"),
-        "clean",
-        "-x",
-        "--force",
-        harbor_root_dir.as_posix(),
-    ]
+    # su_method = {
+    #     "su": [
+    #         shutil.which("su"),
+    #         "-",
+    #         "root",
+    #     ],
+    #     "sudo": [
+    #         shutil.which("sudo"),
+    #         "--user=root",
+    #     ],
+    #     "pkexec": [
+    #         shutil.which("pkexec"),
+    #     ],
+    # }["pkexec"]
 
-    su_method = {
-        "su": [
-            shutil.which("su"),
-            "-",
-            "root",
-        ],
-        "sudo": [
-            shutil.which("sudo"),
-            "--user=root",
-        ],
-        "pkexec": [
-            shutil.which("pkexec"),
-        ],
-    }["pkexec"]
-
-    sudo_bash_c = [
-        *su_method,
-        shutil.which("bash"),
-        "-c",
-    ]
+    # sudo_bash_c = [
+    #     *su_method,
+    #     shutil.which("bash"),
+    #     "-c",
+    # ]
 
     prepare: List = harbor_resource.harbor_prepare(context=context)
 
-    yield Output(prepare)
-
-    yield AssetMaterialization(
+    return MaterializeResult(
         asset_key=context.asset_key,
         metadata={
             # "__".join(context.asset_key.path): MetadataValue.path(unit_file),
             # "unit_dict": MetadataValue.json(unit_dict),
             # unit_file.name: MetadataValue.md(f"```shell\n{unit_file_content}\n```"),
             "prepare": MetadataValue.path(f"{' '.join(prepare)}"),
-            "git_clean": MetadataValue.path(f"{' '.join(sudo_bash_c)} \"{' '.join(git_clean)}\""),
+            # "git_clean": MetadataValue.path(f"{' '.join(sudo_bash_c)} \"{' '.join(git_clean)}\""),
             # "install_service": MetadataValue.path(f"{' '.join(sudo_bash_c)} \"{' '.join(install_service)}\""),
             # "remove_service": MetadataValue.path(f"{' '.join(sudo_bash_c)} \"{' '.join(remove_service)}\""),
         },
