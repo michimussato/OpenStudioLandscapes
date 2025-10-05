@@ -287,6 +287,7 @@ def HARBOR_RESET(
     **ASSET_HEADER_RESOURCE_HARBOR,
     ins={
         "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
+        "su_method": AssetIn(AssetKey([*ASSET_HEADER_RESOURCE_HARBOR["key_prefix"], "su_method"])),
     },
     deps=[
         AssetKey([*ASSET_HEADER_RESOURCE_HARBOR["key_prefix"], "HARBOR_PREPARE"]),
@@ -308,7 +309,8 @@ def HARBOR_SYSTEMD(
         context: AssetExecutionContext,
         harbor_resource: HarborResource,
         env: dict,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[Path] | AssetMaterialization | Any, None, None]:
+        su_method: list[str],  # pylint: disable=redefined-outer-name
+) -> MaterializeResult:
 
     unit_dict: dict = harbor_resource.systemd_unit_dict(context=context)
 
@@ -420,39 +422,22 @@ def HARBOR_SYSTEMD(
         f"--unit={unit_file.name}",
     ]
 
-    su_method = {
-        "su": [
-            shutil.which("su"),
-            "-",
-            "root",
-        ],
-        "sudo": [
-            shutil.which("sudo"),
-            "--user=root",
-        ],
-        "pkexec": [
-            shutil.which("pkexec"),
-        ],
-    }["pkexec"]
-
     sudo_bash_c = [
         *su_method,
         shutil.which("bash"),
         "-c",
     ]
 
-    yield Output(unit_file)
-
-    yield AssetMaterialization(
+    return MaterializeResult(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.path(unit_file),
+            "install_service": MetadataValue.path(f"{' '.join(sudo_bash_c)} \"{' '.join(install_service)}\""),
+            "remove_service": MetadataValue.path(f"{' '.join(sudo_bash_c)} \"{' '.join(remove_service)}\""),
+            "journald": MetadataValue.path(f"{' '.join(journalctl)}"),
+            "unit": MetadataValue.path(unit_file),
             "unit_dict": MetadataValue.json(unit_dict),
             unit_file.name: MetadataValue.md(f"```shell\n{unit_file_content}\n```"),
             # "journald": MetadataValue.path(f"{' '.join(sudo_bash_c)} \"{' '.join(journalctl)}\""),
-            "journald": MetadataValue.path(f"{' '.join(journalctl)}"),
-            "install_service": MetadataValue.path(f"{' '.join(sudo_bash_c)} \"{' '.join(install_service)}\""),
-            "remove_service": MetadataValue.path(f"{' '.join(sudo_bash_c)} \"{' '.join(remove_service)}\""),
         },
     )
 
