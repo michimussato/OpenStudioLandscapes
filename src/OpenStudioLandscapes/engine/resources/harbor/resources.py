@@ -37,14 +37,6 @@ except RuntimeError:
 
 
 """
-import os
-os.environ["OPENSTUDIOLANDSCAPES__HARBOR_USERNAME"] = "admin"
-os.environ["OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD"] = "Harbor12345"
-os.environ["OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR"] = "/home/michael/git/repos/OpenStudioLandscapes/.harbor"
-os.environ["OPENSTUDIOLANDSCAPES__HARBOR_BIN_DIR"] = "bin"
-os.environ["OPENSTUDIOLANDSCAPES__HARBOR_DOWNLOAD_DIR"] = "download"
-os.environ["OPENSTUDIOLANDSCAPES__HARBOR_DATA_DIR"] = "data"
-
 from OpenStudioLandscapes.engine.base import resources
 r = resources.HarborResource()
 returncode = r.harbor_up()
@@ -275,8 +267,8 @@ class HarborResource(ConfigurableResource):
     def _authorization(self) -> str:
         return f"{base64.b64encode(str(':'.join([self.username, self.password])).encode('utf-8')).decode('ascii')}"
 
-    harbor_url: str = EnvVar("OPENSTUDIOLANDSCAPES__HARBOR_URL").get_value() or "http://localhost:80"
-    endpoint_api: str = f"{harbor_url}/api/v2.0"
+    harbor_url: str = f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_URL']}".format(**os.environ)
+    endpoint_api: str = f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_API_URL']}".format(**os.environ)
 
     # API ACCESS BLUE PRINTS
     @property
@@ -486,11 +478,11 @@ class HarborResource(ConfigurableResource):
     ) -> List:
         sudo = False
 
-        harbor_root_dir: pathlib.Path = pathlib.Path(os.environ.get("OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR", "/home/michael/git/repos/OpenStudioLandscapes/.harbor"))
+        harbor_root_dir: pathlib.Path = pathlib.Path(f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR']}".format(**os.environ))
         harbor_root_dir.mkdir(parents=True, exist_ok=True)
 
         harbor_bin_dir: pathlib.Path = (
-                harbor_root_dir / os.environ.get("OPENSTUDIOLANDSCAPES__HARBOR_BIN_DIR", "bin")
+                harbor_root_dir / f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_BIN_DIR']}".format(**os.environ)
         )
         harbor_bin_dir.mkdir(parents=True, exist_ok=True)
 
@@ -503,7 +495,7 @@ class HarborResource(ConfigurableResource):
             )
             return []
 
-        harbor_download_dir = harbor_root_dir / os.environ.get("OPENSTUDIOLANDSCAPES__HARBOR_DOWNLOAD_DIR", "download")
+        harbor_download_dir = harbor_root_dir / f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_DOWNLOAD_DIR']}".format(**os.environ)
         harbor_download_dir.mkdir(parents=True, exist_ok=True)
 
         def download(
@@ -570,15 +562,15 @@ class HarborResource(ConfigurableResource):
                 yaml_out: pathlib.Path,
         ) -> pathlib.Path:
 
-            harbor_root_dir: pathlib.Path = pathlib.Path(os.environ.get("OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR", "/home/michael/git/repos/OpenStudioLandscapes/.harbor"))
+            harbor_root_dir: pathlib.Path = pathlib.Path(f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR']}".format(**os.environ))
             harbor_root_dir.mkdir(parents=True, exist_ok=True)
 
-            harbor_data_dir = harbor_root_dir / os.environ.get("OPENSTUDIOLANDSCAPES__HARBOR_DATA_DIR", "data")
+            harbor_data_dir = harbor_root_dir / f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_DATA_DIR']}".format(**os.environ)
             harbor_data_dir.mkdir(parents=True, exist_ok=True)
 
             harbor_dict = {
-                "hostname": os.environ.get("OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME", "harbor.farm.evil"),
-                "http": {"port": os.environ.get("OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAMEOPENSTUDIOLANDSCAPES__HARBOR_PORT", "80")},
+                "hostname": f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME']}".format(**os.environ),
+                "http": {"port": f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_PORT']}".format(**os.environ)},
                 "harbor_admin_password": EnvVar("OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD").get_value(),
                 "database": {
                     "password": "root123",
@@ -763,14 +755,14 @@ class HarborResource(ConfigurableResource):
         return unit_dict
 
 
-resources = {
-    "harbor_resource": HarborResource(
+resources = {}
+
+if f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_ENABLE']}".format(**os.environ) == "True":
+    resources["harbor_resource"] = HarborResource(
         username=EnvVar("OPENSTUDIOLANDSCAPES__HARBOR_USERNAME"),
         password=EnvVar("OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD"),
-        root_dir=pathlib.Path(os.environ.get("OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR", "/home/michael/git/repos/OpenStudioLandscapes/.harbor")),
-        bin_dir=os.environ.get("OPENSTUDIOLANDSCAPES__HARBOR_BIN_DIR", "bin"),
-        download_dir=os.environ.get("OPENSTUDIOLANDSCAPES__HARBOR_DOWNLOAD_DIR", "download"),
-        data_dir=os.environ.get("OPENSTUDIOLANDSCAPES__HARBOR_DATA_DIR", "data"),
-    ),
-    # "harbor_popen" : HarborResource,
-}
+        root_dir=pathlib.Path(f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR']}".format(**os.environ)),
+        bin_dir=f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_BIN_DIR']}".format(**os.environ),
+        download_dir=f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_DOWNLOAD_DIR']}".format(**os.environ),
+        data_dir=f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_DATA_DIR']}".format(**os.environ),
+    )

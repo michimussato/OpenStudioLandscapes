@@ -1,4 +1,5 @@
 import importlib
+import os
 
 from dagster import Definitions, get_dagster_logger
 
@@ -13,6 +14,11 @@ imports_engine = [
     "OpenStudioLandscapes.engine.landscape_map.definitions",
     "OpenStudioLandscapes.engine.distributable.definitions",
 ]
+
+
+if f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_ENABLE']}".format(**os.environ) == "True":
+    imports_engine.append("OpenStudioLandscapes.engine.resources.harbor.definitions")
+
 
 # ComposeScope Definitions
 imports_engine.extend(
