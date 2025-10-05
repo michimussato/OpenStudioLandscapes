@@ -1,5 +1,6 @@
 import base64
 import copy
+import enum
 import json
 import multiprocessing
 import os
@@ -10,7 +11,7 @@ import tarfile
 from functools import partialmethod
 
 import yaml
-from typing import Dict, List
+from typing import Dict, List, Union
 
 import requests
 from dagster import (
@@ -25,6 +26,14 @@ from OpenStudioLandscapes.engine.exceptions import OpenStudioLandscapesException
 from OpenStudioLandscapes.engine.utils import expand_dict_vars
 
 LOGGER = get_dagster_logger(__name__)
+
+
+class RequestMethod(enum.StrEnum):
+    GET = "GET"
+    POST = "POST"
+    PUT = "PUT"
+    DELETE = "DELETE"
+    HEAD = "HEAD"
 
 
 # Fork vs. Spawn
@@ -232,6 +241,15 @@ class HarborResource(ConfigurableResource):
 
         return cmd
 
+    def _cmd_harbor_ps(self) -> List[str]:
+        cmd = [
+            *self._cmd_harbor,
+            "ps",
+            "--format=json",
+        ]
+
+        return cmd
+
     # COMMANDS
     @property
     def cmd_harbor_up(self) -> List[str]:
@@ -254,30 +272,31 @@ class HarborResource(ConfigurableResource):
             sudo=True,
         )
 
-    @property
-    def cmd_harbor_down(self) -> List[str]:
-        cmd = [
-            *self._cmd_harbor_down(),
-        ]
+    # @property
+    # def cmd_harbor_down(self) -> List[str]:
+    #     cmd = [
+    #         *self._cmd_harbor_down(),
+    #     ]
+    #
+    #     return get_full_command(
+    #         command=cmd,
+    #         sudo=True,
+    #     )
 
-        return get_full_command(
-            command=cmd,
-            sudo=True,
-        )
-
-    @property
-    def cmd_harbor_ps(self) -> List[str]:
-        """
-        Docker Documentation:
-        https://docs.docker.com/reference/cli/docker/compose/ps/
-        """
-        cmd = [
-            *self._cmd_harbor,
-            "ps",
-            "--format=json",
-        ]
-
-        return cmd
+    # @property
+    # def cmd_harbor_ps(self) -> List[str]:
+    #     """
+    #     Docker Documentation:
+    #     https://docs.docker.com/reference/cli/docker/compose/ps/
+    #     """
+    #     cmd = [
+    #         *self._cmd_harbor,
+    #     ]
+    #
+    #     return get_full_command(
+    #         command=cmd,
+    #         sudo=False,
+    #     )
 
     @property
     def _authorization(self) -> str:
@@ -302,7 +321,7 @@ class HarborResource(ConfigurableResource):
     def _ping(self) -> Dict:
         _ping_: dict = {
             "endpoint": f"{self.endpoint_api}/ping",
-            "method": requests.get,
+            "method": RequestMethod.GET.value,
             "headers": {
                 "accept": "text/plain",
             },
@@ -313,7 +332,7 @@ class HarborResource(ConfigurableResource):
     def _health(self) -> Dict:
         _health_: dict = {
             "endpoint": f"{self.endpoint_api}/health",
-            "method": requests.get,
+            "method": RequestMethod.GET.value,
             "headers": {
                 "accept": "application/json",
             },
@@ -324,7 +343,7 @@ class HarborResource(ConfigurableResource):
     def _systeminfo(self) -> Dict:
         _systeminfo_: dict = {
             "endpoint": f"{self.endpoint_api}/systeminfo",
-            "method": requests.get,
+            "method": RequestMethod.GET.value,
             "headers": {
                 "accept": "application/json",
                 "authorization": f"Basic {self._authorization}",
@@ -336,7 +355,7 @@ class HarborResource(ConfigurableResource):
     def _systeminfo_volumes(self) -> Dict:
         _systeminfo_volumes_: dict = {
             "endpoint": f"{self._systeminfo['endpoint']}/volumes",
-            "method": requests.get,
+            "method": RequestMethod.GET.value,
             "headers": {
                 "accept": "application/json",
                 "authorization": f"Basic {self._authorization}",
@@ -348,7 +367,7 @@ class HarborResource(ConfigurableResource):
     def _projects_list(self) -> Dict:
         _projects_head_: dict = {
             "endpoint": f"{self.endpoint_api}/projects?with_detail=true",
-            "method": requests.get,
+            "method": RequestMethod.GET.value,
             "headers": {
                 "accept": "application/json",
             },
@@ -359,7 +378,7 @@ class HarborResource(ConfigurableResource):
     def _projects_head(self) -> Dict:
         _projects_head_: dict = {
             "endpoint": f"{self.endpoint_api}/projects",
-            "method": "HEAD",
+            "method": RequestMethod.HEAD.value,
             "headers": {
                 "accept": "application/json",
                 "authorization": f"Basic {self._authorization}",
@@ -371,7 +390,7 @@ class HarborResource(ConfigurableResource):
     def _projects_create(self) -> Dict:
         _projects_create_: dict = {
             "endpoint": f"{self._projects_head['endpoint']}",
-            "method": "POST",
+            "method": RequestMethod.POST.value,
             "headers": {
                 "accept": "application/json",
                 "authorization": f"Basic {self._authorization}",
@@ -385,7 +404,7 @@ class HarborResource(ConfigurableResource):
     def _projects_delete(self) -> Dict:
         _projects_delete_: dict = {
             "endpoint": f"{self._projects_head['endpoint']}",
-            "method": requests.delete,
+            "method": RequestMethod.DELETE.value,
             "headers": {
                 "accept": "application/json",
                 "authorization": f"Basic {self._authorization}",
@@ -395,6 +414,22 @@ class HarborResource(ConfigurableResource):
         return _projects_delete_
 
     # API ACCESS
+    @staticmethod
+    def send_request(
+            request: requests.PreparedRequest,
+    ) -> Union[requests.Response, OpenStudioLandscapesException]:
+        try:
+            with requests.Session() as session:
+                response: requests.Response = session.send(
+                    request=request,
+                )
+
+            return response
+
+        except requests.exceptions.ConnectionError as e:
+            raise OpenStudioLandscapesException(
+                "Harbor seems down."
+            ) from e
 
     def delete_project_prepared_request(
             self,
@@ -416,77 +451,112 @@ class HarborResource(ConfigurableResource):
 
         if project_exists.status_code == requests.codes.ok:
 
-            with requests.Session() as session:
-                response: requests.Response = session.send(
-                    self.delete_project_prepared_request(
-                        project_name=project_name,
+            try:
+                with requests.Session() as session:
+                    response: requests.Response = session.send(
+                        self.delete_project_prepared_request(
+                            project_name=project_name,
+                        )
                     )
-                )
-                return response
+                    return response
+
+            except requests.exceptions.ConnectionError as e:
+                raise OpenStudioLandscapesException(
+                    "Harbor seems down."
+                ) from e
 
         else:
             return project_exists
 
-    def systeminfo(self) -> requests.Response:
+    def systeminfo_prepared_request(
+            self,
+    ) -> requests.PreparedRequest:
 
-        response = self._systeminfo["method"](
+        prepared_request = requests.Request(
+            method=self._systeminfo["method"],
             url=self._systeminfo["endpoint"],
             headers=self._systeminfo["headers"],
         )
 
+        return prepared_request.prepare()
+
+    def systeminfo(self) -> requests.Response:
+        response = self.send_request(self.systeminfo_prepared_request())
         return response
 
-    def systeminfo_volumes(self) -> requests.Response:
+    def systeminfo_volumes_prepared_request(
+            self,
+    ) -> requests.PreparedRequest:
 
-        response = self._systeminfo_volumes["method"](
+        prepared_request = requests.Request(
+            method=self._systeminfo_volumes["method"],
             url=self._systeminfo_volumes["endpoint"],
             headers=self._systeminfo_volumes["headers"],
         )
 
+        return prepared_request.prepare()
+
+    def systeminfo_volumes(self) -> requests.Response:
+        response = self.send_request(self.systeminfo_volumes_prepared_request())
         return response
 
     delete_library = partialmethod(delete_project, project_name="library")
 
-    def health(
-        self,
-    ) -> requests.Response:
+    def health_prepared_request(
+            self,
+    ) -> requests.PreparedRequest:
 
-        response = self._health["method"](
+        prepared_request = requests.Request(
+            method=self._health["method"],
             url=self._health["endpoint"],
             headers=self._health["headers"],
         )
 
+        return prepared_request.prepare()
+
+    def health(self) -> requests.Response:
+        response = self.send_request(self.health_prepared_request())
         return response
 
-    def ping(
-        self,
-    ) -> requests.Response:
+    def ping_prepared_request(
+            self,
+    ) -> requests.PreparedRequest:
 
-        response = self._ping["method"](
+        prepared_request = requests.Request(
+            method=self._ping["method"],
             url=self._ping["endpoint"],
             headers=self._ping["headers"],
         )
 
+        return prepared_request.prepare()
+
+    def ping(self) -> requests.Response:
+        response = self.send_request(self.ping_prepared_request())
         return response
 
-    def list_projects(
-        self,
-    ) -> requests.Response:
+    def list_projects_prepared_request(
+            self,
+    ) -> requests.PreparedRequest:
 
-        response = self._projects_list["method"](
+        prepared_request = requests.Request(
+            method=self._projects_list["method"],
             url=self._projects_list["endpoint"],
             headers=self._projects_list["headers"],
         )
 
+        return prepared_request.prepare()
+
+    def list_projects(self) -> requests.Response:
+        response = self.send_request(self.list_projects_prepared_request())
         return response
 
-    def query_project_exists_request(
+    def query_project_exists_prepared_request(
             self,
             project_name: str,
     ) -> requests.PreparedRequest:
 
         prepared_request = requests.Request(
-            method="HEAD",
+            method=self._projects_head["method"],
             url=f"{self._projects_head['endpoint']}?project_name={project_name}",
             headers=self._projects_head["headers"],
         )
@@ -497,25 +567,14 @@ class HarborResource(ConfigurableResource):
         self,
         project_name: str,
     ) -> requests.Response:
+        response = self.send_request(
+            self.self.query_project_exists_prepared_request(
+                project_name=project_name
+            )
+        )
+        return response
 
-        try:
-
-            with requests.Session() as session:
-
-                response: requests.Response = session.send(
-                    self.query_project_exists_request(
-                        project_name=project_name,
-                    )
-                )
-
-            return response
-
-        except requests.exceptions.ConnectionError as e:
-            raise OpenStudioLandscapesException(
-                "Harbor seems down."
-            ) from e
-
-    def create_project_request(
+    def create_project_prepared_request(
             self,
             project_name: str,
     ) -> requests.PreparedRequest:
@@ -532,23 +591,12 @@ class HarborResource(ConfigurableResource):
             self,
             project_name: str,
     ) -> requests.Response:
-
-        try:
-
-            with requests.Session() as session:
-
-                response: requests.Response = session.send(
-                    self.create_project_request(
-                        project_name=project_name,
-                    )
-                )
-
-            return response
-
-        except requests.exceptions.ConnectionError as e:
-            raise OpenStudioLandscapesException(
-                "Harbor seems down."
-            ) from e
+        response = self.send_request(
+            self.create_project_prepared_request(
+                project_name=project_name,
+            )
+        )
+        return response
 
     # HARBOR EXECUTION API
     def harbor_prepare(
@@ -781,33 +829,27 @@ class HarborResource(ConfigurableResource):
     def harbor_init(self) -> Exception:
         raise NotImplementedError("This is not implemented yet")
 
-    def harbor_down(self) -> int:
-
-        if self.proc is None \
-                or self.proc.poll() is None:
-            raise Exception("Harbor is not running.")
-
-        self.pipe.proc = run_command(self.cmd_harbor_down)
-        self.pipe.proc.wait()
-        ret = self.pipe.proc.returncode
-
-        if bool(ret):
-            raise Exception(f"Unable to stop Harbor.")
-
-        self.pipe.proc = None
-
-        return ret
+    # def harbor_down(self) -> int:
+    #
+    #     if self.proc is None \
+    #             or self.proc.poll() is None:
+    #         raise Exception("Harbor is not running.")
+    #
+    #     self.pipe.proc = run_command(self.cmd_harbor_down)
+    #     self.pipe.proc.wait()
+    #     ret = self.pipe.proc.returncode
+    #
+    #     if bool(ret):
+    #         raise Exception(f"Unable to stop Harbor.")
+    #
+    #     self.pipe.proc = None
+    #
+    #     return ret
 
     def systemd_unit_dict(
             self,
             context: AssetExecutionContext,
     ) -> Dict:
-        # /usr/bin/pkexec /usr/local/bin/docker compose --progress plain --file /home/michael/git/repos/OpenStudioLandscapes/.harbor/bin/docker-compose.yml --project-name openstudiolandscapes-harbor up --remove-orphans --detach
-
-        # unit = configparser.ConfigParser()
-        # # Change from case insensitive to case sensitive
-        # # https://docs.python.org/3/library/configparser.html#configparser.ConfigParser.optionxform
-        # unit.optionxform = str
 
         unit_dict = {
             "Unit": {

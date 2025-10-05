@@ -4,8 +4,7 @@ import os
 import pathlib
 import shutil
 import textwrap
-from pathlib import Path
-from typing import Generator, List, Any
+from typing import Generator, List
 
 import requests
 from dagster import (
@@ -181,6 +180,44 @@ def su_method(
     description=textwrap.dedent(
         f"""
         Harbor URL: {os.environ['OPENSTUDIOLANDSCAPES__HARBOR_URL']}
+
+        Dev Center: {os.environ['OPENSTUDIOLANDSCAPES__HARBOR_URL']}/devcenter-api-2.0
+        """.format(
+            **os.environ
+        ).format(
+            **os.environ
+        )
+    )
+)
+def shell(
+        context: AssetExecutionContext,
+) -> Generator[Output[list[str]] | AssetMaterialization, None, None]:
+
+    shell = [
+        shutil.which("bash"),
+        "-c",
+    ]
+
+    yield Output(shell)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.json(shell),
+            # "shell": MetadataValue.json(shell),
+        },
+    )
+
+
+@asset(
+    **ASSET_HEADER_RESOURCE_HARBOR,
+    ins={
+        "su_method": AssetIn(AssetKey([*ASSET_HEADER_RESOURCE_HARBOR["key_prefix"], "su_method"])),
+        "shell": AssetIn(AssetKey([*ASSET_HEADER_RESOURCE_HARBOR["key_prefix"], "shell"])),
+    },
+    description=textwrap.dedent(
+        f"""
+        Harbor URL: {os.environ['OPENSTUDIOLANDSCAPES__HARBOR_URL']}
         
         Dev Center: {os.environ['OPENSTUDIOLANDSCAPES__HARBOR_URL']}/devcenter-api-2.0
         """.format(
@@ -193,19 +230,24 @@ def su_method(
 def HARBOR_COMMANDS(
         context: AssetExecutionContext,
         harbor_resource: HarborResource,
+        su_method: list[str],
+        shell: list[str],
 ) -> MaterializeResult:
+
+    harbor_up = harbor_resource._cmd_harbor_up(detach=False)
+    harbor_up_detach = harbor_resource._cmd_harbor_up(detach=True)
+    harbor_down = harbor_resource._cmd_harbor_down()
+    harbor_restart = harbor_resource._cmd_harbor_restart()
+    harbor_ps = harbor_resource._cmd_harbor_ps()
 
     return MaterializeResult(
         asset_key=context.asset_key,
         metadata={
-            # "cmd_harbor_up": MetadataValue.path(" ".join(harbor_resource.cmd_harbor_up)),
-            "cmd_harbor_up_detached": MetadataValue.path(" ".join(harbor_resource.cmd_harbor_up_detached)),
-            "cmd_harbor_down": MetadataValue.path(" ".join(harbor_resource.cmd_harbor_down)),
-            "cmd_harbor_restart": MetadataValue.path(" ".join(harbor_resource.cmd_harbor_restart)),
-            "cmd_harbor_ps": MetadataValue.path(" ".join(harbor_resource.cmd_harbor_ps)),
-            # "library_exists": MetadataValue.text(f"{library_exists.status_code = }"),
-            # "project_exists": MetadataValue.text(f"{project_exists.status_code = }"),
-            # "random_exists": MetadataValue.text(f"{random_exists.status_code = }"),
+            "harbor_up": MetadataValue.path(f"{' '.join(su_method + shell)} \"{' '.join(harbor_up)}\""),
+            "harbor_up_detach": MetadataValue.path(f"{' '.join(su_method + shell)} \"{' '.join(harbor_up_detach)}\""),
+            "harbor_down": MetadataValue.path(f"{' '.join(su_method + shell)} \"{' '.join(harbor_down)}\""),
+            "harbor_restart": MetadataValue.path(f"{' '.join(su_method + shell)} \"{' '.join(harbor_restart)}\""),
+            "harbor_ps": MetadataValue.path(f"{' '.join(shell)} \"{' '.join(harbor_ps)}\""),
         },
     )
 
@@ -242,6 +284,7 @@ def HARBOR_HEALTH(
     **ASSET_HEADER_RESOURCE_HARBOR,
     ins={
         "su_method": AssetIn(AssetKey([*ASSET_HEADER_RESOURCE_HARBOR["key_prefix"], "su_method"])),
+        "shell": AssetIn(AssetKey([*ASSET_HEADER_RESOURCE_HARBOR["key_prefix"], "shell"])),
     },
     description=textwrap.dedent(
         f"""
@@ -258,6 +301,7 @@ def HARBOR_HEALTH(
 def HARBOR_RESET(
         context: AssetExecutionContext,
         su_method: list[str],
+        shell: list[str],
         # harbor_resource: HarborResource,
         # env: dict,  # pylint: disable=redefined-outer-name
 ) -> MaterializeResult:
@@ -279,25 +323,9 @@ def HARBOR_RESET(
         harbor_root_dir.as_posix(),
     ]
 
-    # su_method = {
-    #     "su": [
-    #         shutil.which("su"),
-    #         "-",
-    #         "root",
-    #     ],
-    #     "sudo": [
-    #         shutil.which("sudo"),
-    #         "--user=root",
-    #     ],
-    #     "pkexec": [
-    #         shutil.which("pkexec"),
-    #     ],
-    # }["pkexec"]
-
     sudo_bash_c = [
         *su_method,
-        shutil.which("bash"),
-        "-c",
+        *shell,
     ]
 
     return MaterializeResult(
