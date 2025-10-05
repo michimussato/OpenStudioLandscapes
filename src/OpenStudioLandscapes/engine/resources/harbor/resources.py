@@ -436,12 +436,13 @@ class HarborResource(ConfigurableResource):
             project_name: str,
     ) -> requests.PreparedRequest:
 
-        prepared_request: requests.PreparedRequest = self._projects_delete["method"](
-                url=f"{self._projects_delete['endpoint']}/{project_name}",
-                headers=self._projects_delete["headers"]
-            )
+        request: requests.Request = requests.Request(
+            method=self._projects_delete["method"],
+            url=f"{self._projects_delete['endpoint']}/{project_name}",
+            headers=self._projects_delete["headers"]
+        )
 
-        return prepared_request
+        return request.prepare()
 
     def delete_project(self, project_name) -> requests.Response:
 
@@ -472,13 +473,13 @@ class HarborResource(ConfigurableResource):
             self,
     ) -> requests.PreparedRequest:
 
-        prepared_request = requests.Request(
+        request: requests.Request = requests.Request(
             method=self._systeminfo["method"],
             url=self._systeminfo["endpoint"],
             headers=self._systeminfo["headers"],
         )
 
-        return prepared_request.prepare()
+        return request.prepare()
 
     def systeminfo(self) -> requests.Response:
         response = self.send_request(self.systeminfo_prepared_request())
@@ -488,13 +489,13 @@ class HarborResource(ConfigurableResource):
             self,
     ) -> requests.PreparedRequest:
 
-        prepared_request = requests.Request(
+        request: requests.Request = requests.Request(
             method=self._systeminfo_volumes["method"],
             url=self._systeminfo_volumes["endpoint"],
             headers=self._systeminfo_volumes["headers"],
         )
 
-        return prepared_request.prepare()
+        return request.prepare()
 
     def systeminfo_volumes(self) -> requests.Response:
         response = self.send_request(self.systeminfo_volumes_prepared_request())
@@ -506,13 +507,13 @@ class HarborResource(ConfigurableResource):
             self,
     ) -> requests.PreparedRequest:
 
-        prepared_request = requests.Request(
+        request: requests.Request = requests.Request(
             method=self._health["method"],
             url=self._health["endpoint"],
             headers=self._health["headers"],
         )
 
-        return prepared_request.prepare()
+        return request.prepare()
 
     def health(self) -> requests.Response:
         response = self.send_request(self.health_prepared_request())
@@ -522,13 +523,13 @@ class HarborResource(ConfigurableResource):
             self,
     ) -> requests.PreparedRequest:
 
-        prepared_request = requests.Request(
+        request: requests.Request = requests.Request(
             method=self._ping["method"],
             url=self._ping["endpoint"],
             headers=self._ping["headers"],
         )
 
-        return prepared_request.prepare()
+        return request.prepare()
 
     def ping(self) -> requests.Response:
         response = self.send_request(self.ping_prepared_request())
@@ -538,13 +539,13 @@ class HarborResource(ConfigurableResource):
             self,
     ) -> requests.PreparedRequest:
 
-        prepared_request = requests.Request(
+        request: requests.Request = requests.Request(
             method=self._projects_list["method"],
             url=self._projects_list["endpoint"],
             headers=self._projects_list["headers"],
         )
 
-        return prepared_request.prepare()
+        return request.prepare()
 
     def list_projects(self) -> requests.Response:
         response = self.send_request(self.list_projects_prepared_request())
@@ -555,20 +556,20 @@ class HarborResource(ConfigurableResource):
             project_name: str,
     ) -> requests.PreparedRequest:
 
-        prepared_request = requests.Request(
+        request: requests.Request = requests.Request(
             method=self._projects_head["method"],
             url=f"{self._projects_head['endpoint']}?project_name={project_name}",
             headers=self._projects_head["headers"],
         )
 
-        return prepared_request.prepare()
+        return request.prepare()
 
     def query_project_exists(
         self,
         project_name: str,
     ) -> requests.Response:
         response = self.send_request(
-            self.self.query_project_exists_prepared_request(
+            self.query_project_exists_prepared_request(
                 project_name=project_name
             )
         )
@@ -579,13 +580,13 @@ class HarborResource(ConfigurableResource):
             project_name: str,
     ) -> requests.PreparedRequest:
 
-        prepared_request = requests.Request(
+        request: requests.Request = requests.Request(
             method=self._projects_create["method"],
             url=f"{self._projects_create['endpoint']}?project_name={project_name}",
             headers=self._projects_create["headers"],
         )
 
-        return prepared_request.prepare()
+        return request.prepare()
 
     def create_project(
             self,
