@@ -138,10 +138,10 @@ class HarborResource(ConfigurableResource):
     # _password: str = PrivateAttr()
     password: str = "Harbor12345"
 
-    root_dir: ResourceDependency[pathlib.Path] = pathlib.Path("/home/michael/git/repos/OpenStudioLandscapes/.harbor")
-    bin_dir: ResourceDependency[str] = "bin"
-    download_dir: ResourceDependency[str] = "download"
-    data_dir: ResourceDependency[str] = "data"
+    root_dir: ResourceDependency[pathlib.Path]
+    bin_dir: ResourceDependency[str]
+    download_dir: ResourceDependency[str]
+    data_dir: ResourceDependency[str]
 
     pipe: ResourceDependency[object] = Pipe
 
@@ -166,6 +166,18 @@ class HarborResource(ConfigurableResource):
             "tty",
             "rawjson",
         ]
+
+    # @property
+    # def root_dir(self) -> pathlib.Path:
+    #     return pathlib.Path(
+    #         f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR']}".format(
+    #             **os.environ,
+    #         )
+    #     )
+    #
+    # @property
+    # def bin_dir(self) -> str:
+    #     return os.environ['OPENSTUDIOLANDSCAPES__HARBOR_BIN_DIR']
 
     @property
     def compose_harbor(self) -> pathlib.Path:

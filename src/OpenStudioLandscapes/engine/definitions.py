@@ -4,6 +4,7 @@ import os
 from dagster import Definitions, get_dagster_logger
 
 from OpenStudioLandscapes.engine.discovery.discovery import IMPORTS
+from OpenStudioLandscapes.engine.utils import *
 
 LOGGER = get_dagster_logger(__name__)
 
@@ -15,7 +16,8 @@ imports_engine = [
     "OpenStudioLandscapes.engine.distributable.definitions",
 ]
 
-
+# Todo
+#  - [ ] if get_bool_env(f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_ENABLE']}".format(**os.environ)):
 if f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_ENABLE']}".format(**os.environ) == "True":
     imports_engine.append("OpenStudioLandscapes.engine.resources.harbor.definitions")
 
