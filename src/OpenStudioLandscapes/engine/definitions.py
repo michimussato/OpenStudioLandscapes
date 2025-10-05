@@ -1,3 +1,4 @@
+import copy
 import importlib
 import os
 
@@ -16,9 +17,14 @@ imports_engine = [
     "OpenStudioLandscapes.engine.distributable.definitions",
 ]
 
+e_ = expand_dict_vars(
+    dict_to_expand=copy.deepcopy(os.environ),
+    kv=os.environ,
+)
+
 # Todo
-#  - [ ] if get_bool_env(f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_ENABLE']}".format(**os.environ)):
-if f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_ENABLE']}".format(**os.environ) == "True":
+#  - [x] if get_bool_env(f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_ENABLE']}".format(**os.environ)):
+if e_["OPENSTUDIOLANDSCAPES__HARBOR_ENABLE"] == "True":
     imports_engine.append("OpenStudioLandscapes.engine.resources.harbor.definitions")
 
 

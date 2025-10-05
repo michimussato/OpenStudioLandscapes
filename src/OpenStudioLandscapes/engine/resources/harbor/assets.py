@@ -203,12 +203,37 @@ def HARBOR_COMMANDS(
             "cmd_harbor_down": MetadataValue.path(" ".join(harbor_resource.cmd_harbor_down)),
             "cmd_harbor_restart": MetadataValue.path(" ".join(harbor_resource.cmd_harbor_restart)),
             "cmd_harbor_ps": MetadataValue.path(" ".join(harbor_resource.cmd_harbor_ps)),
-            "systeminfo": MetadataValue.json(harbor_resource.systeminfo().json()),
-            "systeminfo_volumes": MetadataValue.json(harbor_resource.systeminfo_volumes().json()),
-            "projects": MetadataValue.json(harbor_resource.list_projects().json()),
             # "library_exists": MetadataValue.text(f"{library_exists.status_code = }"),
             # "project_exists": MetadataValue.text(f"{project_exists.status_code = }"),
             # "random_exists": MetadataValue.text(f"{random_exists.status_code = }"),
+        },
+    )
+
+
+@asset(
+    **ASSET_HEADER_RESOURCE_HARBOR,
+    description=textwrap.dedent(
+        f"""
+        Harbor URL: {os.environ['OPENSTUDIOLANDSCAPES__HARBOR_URL']}
+        
+        Dev Center: {os.environ['OPENSTUDIOLANDSCAPES__HARBOR_URL']}/devcenter-api-2.0
+        """.format(
+            **os.environ
+        ).format(
+            **os.environ
+        )
+    )
+)
+def HARBOR_HEALTH(
+        context: AssetExecutionContext,
+        harbor_resource: HarborResource,
+) -> MaterializeResult:
+
+    return MaterializeResult(
+        asset_key=context.asset_key,
+        metadata={
+            "systeminfo": MetadataValue.json(harbor_resource.systeminfo().json()),
+            "systeminfo_volumes": MetadataValue.json(harbor_resource.systeminfo_volumes().json()),
         },
     )
 
