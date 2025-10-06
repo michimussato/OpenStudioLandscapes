@@ -464,7 +464,7 @@ def HARBOR_SYSTEMD(
         unit_file.name,
     ]
 
-    remove_service = [
+    remove_unit = [
         shutil.which("rm"),
         pathlib.Path(unit_destination, unit_file.name).as_posix(),
     ]
@@ -475,7 +475,7 @@ def HARBOR_SYSTEMD(
         "&&",
         *systemctl_stop,
         "&&",
-        *remove_service,
+        *remove_unit,
         "&&",
         *daemon_reload,
     ]
@@ -504,35 +504,6 @@ def HARBOR_SYSTEMD(
             "unit_dict": MetadataValue.json(unit_dict),
             unit_file.name: MetadataValue.md(f"```shell\n{unit_file_content}\n```"),
             # "journald": MetadataValue.path(f"{' '.join(sudo_bash_c)} \"{' '.join(journalctl)}\""),
-        },
-    )
-
-
-@asset(
-    **ASSET_HEADER_RESOURCE_HARBOR,
-    description=textwrap.dedent(
-        f"""
-        Harbor URL: {os.environ['OPENSTUDIOLANDSCAPES__HARBOR_URL']}
-        
-        Dev Center: {os.environ['OPENSTUDIOLANDSCAPES__HARBOR_URL']}/devcenter-api-2.0
-        """.format(
-            **os.environ
-        ).format(
-            **os.environ
-        )
-    )
-)
-def HARBOR_PREPARE(
-        context: AssetExecutionContext,
-        harbor_resource: HarborResource,
-) -> MaterializeResult:
-
-    prepare: List = harbor_resource.harbor_prepare(context=context)
-
-    return MaterializeResult(
-        asset_key=context.asset_key,
-        metadata={
-            "prepare": MetadataValue.path(f"{' '.join(prepare)}"),
         },
     )
 
