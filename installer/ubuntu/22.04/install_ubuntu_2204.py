@@ -670,9 +670,11 @@ def script_harbor_prepare(
                 "\n",
                 "\n",
                 f"cd {openstudiolandscapes_repo_dir.as_posix()}\n",
-                "source .venv/bin/activate\n",
-                "nox --session harbor_prepare\n",
-                "deactivate\n",
+                f"{shutil.which('openstudiolandscapesutil-harborcli')} prepare download\n",
+                f"{shutil.which('openstudiolandscapesutil-harborcli')} prepare extract --tar-file ./download/harbor-*.tgz\n",
+                f"{shutil.which('openstudiolandscapesutil-harborcli')} prepare configure\n",
+                f"{shutil.which('openstudiolandscapesutil-harborcli')} prepare install\n",
+                "\n",
             ]
         )
 
@@ -720,10 +722,8 @@ def script_harbor_up(
                 "\n",
                 "\n",
                 f"cd {openstudiolandscapes_repo_dir.as_posix()}\n",
-                "source .venv/bin/activate\n",
-                "nox --session harbor_up_detach\n",
+                f"eval $({shutil.which('openstudiolandscapesutil-harborcli')} systemd install --enable --start)\n",
                 "\n",
-                "deactivate\n",
             ]
         )
 
@@ -742,76 +742,6 @@ def script_harbor_init(
     username_harbor: str = ADMIN_HARBOR,
     password_harbor: str = PASSWORD_HARBOR,
 ) -> pathlib.Path:
-
-    """
-$ cat /tmp/ubuntu_2204__script_harbor_init__ohn4yctp.sh
-#!/bin/env bash
-
-
-
-# Create project openstudiolandscapes
-# curl returns "HTTP/1.1 200 OK" if project exists
-# curl returns "HTTP/1.1 201 Created" if created successfully
-
-
-if [[ $(curl -s -o '/dev/null' -w '%{http_code}' -v \
-    'http://harbor.farm.evil:80/api/v2.0/projects?project_name=openstudiolandscapes' \
-      -H 'accept: application/json' \
-      -H 'authorization: Basic YWRtaW46SGFyYm9yMTIzNDU=') \
-    == "200" ]]; then
-    echo "Project openstudionlandscapes exists. Nothing to do."
-else
-    echo "Project openstudionlandscapes does not exist. Creating..."
-
-    until [ \
-        "$(curl -s -o '/dev/null' -w '%{http_code}' -v -X 'POST' \
-          'http://harbor.farm.evil:80/api/v2.0/projects' \
-          -H 'accept: application/json' \
-          -H 'X-Resource-Name-In-Location: false' \
-          -H 'authorization: Basic YWRtaW46SGFyYm9yMTIzNDU=' \
-          -H 'Content-Type: application/json' \
-          -d '{
-          "project_name": "openstudiolandscapes",
-          "public": true
-        }')" \
-        -eq 201 ]
-
-    do
-        sleep 3
-        echo "Trying again..."
-    done
-
-
-fi
-
-
-
-
-
-
-
-# Delete project library
-# curl returns "HTTP/1.1 200 OK" if library deleted successfully
-# curl returns "HTTP/1.1 404 Not Found" if successful
-
-until [ \
-    "$(curl -w '%{http_code}' -s -o '/dev/null' -v -X 'DELETE' \
-      'http://harbor.farm.evil:80/api/v2.0/projects/library' \
-      -H 'accept: application/json' \
-      -H 'X-Is-Resource-Name: false' \
-      -H 'authorization: Basic YWRtaW46SGFyYm9yMTIzNDU=')" \
-    -eq 200 ]
-do
-    sleep 3
-    echo "Trying again..."
-done
-
-echo "Project library successfully deleted."
-
-
-
-exit 0
-    """
 
     print(" INIT HARBOR ".center(_get_terminal_size()[0], "#"))
 
@@ -854,64 +784,7 @@ exit 0
                 '# curl returns "HTTP/1.1 201 Created" if created successfully\n',
                 "\n",
                 "\n",
-                "if [[ $(curl -s -o '/dev/null' -w '%{http_code}' -v \\\n",
-                f"    '{url_harbor}/api/v2.0/projects?project_name=openstudiolandscapes' \\\n",
-                "      -H 'accept: application/json' \\\n",
-                f"      -H 'authorization: Basic {base64.b64encode(str(':'.join([username_harbor, password_harbor])).encode('utf-8')).decode('ascii')}') \\\n",
-                '    == "200" ]]; then \n',
-                '    echo "Project openstudionlandscapes exists. Nothing to do."\n',
-                "else\n",
-                '    echo "Project openstudionlandscapes does not exist. Creating..."\n',
-                "    \n",
-                "    until [ \\\n",
-                # "    # Create New:\n",
-                "        \"$(curl -s -o '/dev/null' -w '%{http_code}' -v -X 'POST' \\\n",
-                f"          '{url_harbor}/api/v2.0/projects' \\\n",
-                "          -H 'accept: application/json' \\\n",
-                "          -H 'X-Resource-Name-In-Location: false' \\\n",
-                f"          -H 'authorization: Basic {base64.b64encode(str(':'.join([username_harbor, password_harbor])).encode('utf-8')).decode('ascii')}' \\\n",
-                "          -H 'Content-Type: application/json' \\\n",
-                "          -d '{\n",
-                '          "project_name": "openstudiolandscapes",\n',
-                '          "public": true\n',
-                "        }')\" \\\n",
-                "        -eq 201 ]\n",
-                "    \n",
-                "    do\n",
-                f"        sleep {sleep_}\n",
-                '        echo "Trying again..."\n',
-                "    done\n",
-                "    \n",
-                "\n",
-                "fi\n",
-                "\n",
-                "\n",
-                "\n",
-                # Todo:
-                #  - [ ] if not exists: until... else skip.
-                # "# curl returns \"HTTP/1.1 409 Conflict\" if already exists\n",
-                "\n",
-                # "until [ \\\n",
-                # # "    # Create New:\n",
-                # "    \"$(curl -s -w '%{http_code}' -v -X 'POST' \\\n",
-                # f"      '{url_harbor}/api/v2.0/projects' \\\n",
-                # "      -H 'accept: application/json' \\\n",
-                # "      -H 'X-Resource-Name-In-Location: false' \\\n",
-                # f"      -H 'authorization: Basic {base64.b64encode(str(':'.join([username_harbor, password_harbor])).encode('utf-8')).decode('ascii')}' \\\n",
-                # "      -H 'Content-Type: application/json' \\\n",
-                # "      -d '{\n",
-                # "      \"project_name\": \"openstudiolandscapes\",\n",
-                # "      \"public\": true\n",
-                # "    }')\" \\\n",
-                # "    -eq 201 ]\n",
-                # "\n",
-                # "do\n",
-                # f"    sleep {sleep_}\n",
-                # "    echo \"Trying again...\"\n",
-                # "done\n",
-                # "\n",
-                # "echo \"Project openstudionlandscapes successfully created.\"\n",
-                "\n",
+                f"{shutil.which('openstudiolandscapesutil-harborcli')} project create --project-name openstudiolandscapes --host 127.0.0.1 --port 80\n",
                 "\n",
             ]
         )
@@ -919,121 +792,14 @@ exit 0
         # Delete `library` if it does exist
         script.writelines(
             [
-                # Todo:
-                #  - [ ] implement `until`
                 "\n",
                 "# Delete project library\n",
                 '# curl returns "HTTP/1.1 200 OK" if library deleted successfully\n',
                 '# curl returns "HTTP/1.1 404 Not Found" if successful\n',
                 "\n",
-                "until [ \\\n",
-                "    \"$(curl -w '%{http_code}' -s -o '/dev/null' -v -X 'DELETE' \\\n",
-                f"      '{url_harbor}/api/v2.0/projects/library' \\\n",
-                "      -H 'accept: application/json' \\\n",
-                "      -H 'X-Is-Resource-Name: false' \\\n",
-                f"      -H 'authorization: Basic {base64.b64encode(str(':'.join([username_harbor, password_harbor])).encode('utf-8')).decode('ascii')}')\" \\\n",
-                "    -eq 200 ]\n",
-                "do\n",
-                f"    sleep {sleep_}\n",
-                '    echo "Trying again..."\n',
-                "done\n",
                 "\n",
-                'echo "Project library successfully deleted."\n',
+                f"{shutil.which('openstudiolandscapesutil-harborcli')} project delete --project-name library --host 127.0.0.1 --port 80\n",
                 "\n",
-                "\n",
-            ]
-        )
-
-        script.writelines(
-            [
-                "\n",
-                "exit 0\n",
-            ]
-        )
-
-        """
-1 : #!/bin/env bash
-2 :
-3 :
-4 :
-5 : # Create project openstudiolandscapes
-6 :
-7 : echo "Giving Harbor some time before performing this POST request..."
-8 : for i in $(seq 10); do
-9 :     echo -ne "."
-10:     sleep 1
-11: done
-12: echo -ne "
-13: "
-14:
-15: until [ \
-16:  "$(curl -s -w '%{http_code}' -v -X 'POST' \
-17:       'http://harbor.farm.evil:80/api/v2.0/projects' \
-18:       -H 'accept: application/json' \
-19:       -H 'X-Resource-Name-In-Location: false' \
-20:       -H 'authorization: Basic YWRtaW46SGFyYm9yMTIzNDU=' \
-21:       -H 'Content-Type: application/json' \
-22:       -d '{
-23:       "project_name": "openstudiolandscapes",
-24:       "public": true
-25:     }')" \
-26:     -eq 201 ]
-27: do
-28:     sleep 1
-29:     echo "Trying again..."
-30: done
-31:
-32:
-33:
-34: # Delete project library
-35:
-36: echo "Giving Harbor some time before performing this DELETE request..."
-37: for i in $(seq 10); do
-38:     echo -ne "."
-39:     sleep 1
-40: done
-41: echo -ne "
-42: "
-43:
-44: curl -v -X 'DELETE' \
-45:   'http://harbor.farm.evil:80/api/v2.0/projects/library' \
-46:   -H 'accept: application/json' \
-47:   -H 'X-Is-Resource-Name: false' \
-48:   -H 'authorization: Basic YWRtaW46SGFyYm9yMTIzNDU='
-49:
-50:
-51: exit 0
-
-        """
-
-        return pathlib.Path(script.name)
-
-
-def script_harbor_down(
-    openstudiolandscapes_repo_dir: pathlib.Path,
-) -> pathlib.Path:
-
-    print(" INIT HARBOR DOWN ".center(_get_terminal_size()[0], "#"))
-
-    with tempfile.NamedTemporaryFile(
-        delete=False,
-        encoding="utf-8",
-        prefix=f"{SHELL_SCRIPTS_PREFIX}__{inspect.currentframe().f_code.co_name}__",
-        suffix=".sh",
-        mode="x",
-    ) as script:
-        script.writelines(
-            [
-                "#!/bin/env bash\n",
-                # TRAP,
-                "\n",
-                "\n",
-                f"cd {openstudiolandscapes_repo_dir.as_posix()}\n",
-                "source .venv/bin/activate\n",
-                "\n",
-                "nox --session harbor_down\n",
-                "\n",
-                "deactivate\n",
             ]
         )
 
@@ -1047,40 +813,40 @@ def script_harbor_down(
         return pathlib.Path(script.name)
 
 
-def script_init_pihole(
-    openstudiolandscapes_repo_dir: pathlib.Path,
-) -> pathlib.Path:
-
-    print(" INIT PI-HOLE ".center(_get_terminal_size()[0], "#"))
-
-    with tempfile.NamedTemporaryFile(
-        delete=False,
-        encoding="utf-8",
-        prefix=f"{SHELL_SCRIPTS_PREFIX}__{inspect.currentframe().f_code.co_name}__",
-        suffix=".sh",
-        mode="x",
-    ) as script:
-        script.writelines(
-            [
-                "#!/bin/env bash\n",
-                # TRAP,
-                "\n",
-                "\n",
-                f"cd {openstudiolandscapes_repo_dir.as_posix()}\n",
-                "source .venv/bin/activate\n",
-                "nox --session pi_hole_prepare\n",
-                "deactivate\n",
-            ]
-        )
-
-        script.writelines(
-            [
-                "\n",
-                "exit 0\n",
-            ]
-        )
-
-        return pathlib.Path(script.name)
+# def script_init_pihole(
+#     openstudiolandscapes_repo_dir: pathlib.Path,
+# ) -> pathlib.Path:
+#
+#     print(" INIT PI-HOLE ".center(_get_terminal_size()[0], "#"))
+#
+#     with tempfile.NamedTemporaryFile(
+#         delete=False,
+#         encoding="utf-8",
+#         prefix=f"{SHELL_SCRIPTS_PREFIX}__{inspect.currentframe().f_code.co_name}__",
+#         suffix=".sh",
+#         mode="x",
+#     ) as script:
+#         script.writelines(
+#             [
+#                 "#!/bin/env bash\n",
+#                 # TRAP,
+#                 "\n",
+#                 "\n",
+#                 f"cd {openstudiolandscapes_repo_dir.as_posix()}\n",
+#                 "source .venv/bin/activate\n",
+#                 "nox --session pi_hole_prepare\n",
+#                 "deactivate\n",
+#             ]
+#         )
+#
+#         script.writelines(
+#             [
+#                 "\n",
+#                 "exit 0\n",
+#             ]
+#         )
+#
+#         return pathlib.Path(script.name)
 
 
 def script_add_alias(
