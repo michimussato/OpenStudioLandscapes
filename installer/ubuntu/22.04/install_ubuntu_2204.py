@@ -673,7 +673,7 @@ def script_harbor_prepare(
                 "\n",
                 f"cd {openstudiolandscapes_repo_dir.as_posix()}\n",
                 "source .venv/bin/activate\n",
-                "openstudiolandscapesutil-harborcli prepare download --destination-directory ./.harbor\n",
+                "openstudiolandscapesutil-harborcli prepare download --destination-directory ./.harbor/download\n",
                 "openstudiolandscapesutil-harborcli prepare extract --tar-file ./.harbor/download/harbor-*.tgz\n",
                 "openstudiolandscapesutil-harborcli prepare configure --destination-directory ./.harbor/bin\n",
                 "openstudiolandscapesutil-harborcli prepare install --prepare-script ./.harbor/bin/prepare\n",
