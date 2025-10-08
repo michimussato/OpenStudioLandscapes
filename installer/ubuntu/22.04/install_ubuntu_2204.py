@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # https://www.baeldung.com/linux/curl-fetched-script-arguments
 import os
-import base64
 import inspect
 import json
 import shlex
@@ -674,7 +673,7 @@ def script_harbor_prepare(
                 f"cd {openstudiolandscapes_repo_dir.as_posix()}\n",
                 "source .venv/bin/activate\n",
                 "openstudiolandscapesutil-harborcli prepare download --destination-directory ./.harbor/download\n",
-                "openstudiolandscapesutil-harborcli prepare extract --tar-file ./.harbor/download/harbor-*.tgz\n",
+                "openstudiolandscapesutil-harborcli prepare extract --extract-to ./.harbor/bin --tar-file ./.harbor/download/harbor-*.tgz\n",
                 "openstudiolandscapesutil-harborcli prepare configure --destination-directory ./.harbor/bin\n",
                 "openstudiolandscapesutil-harborcli prepare install --prepare-script ./.harbor/bin/prepare\n",
                 "deactivate\n",
