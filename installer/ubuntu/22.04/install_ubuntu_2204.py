@@ -744,6 +744,7 @@ def script_harbor_up(
 
 
 def script_harbor_init(
+    openstudiolandscapes_repo_dir: pathlib.Path,
     url_harbor: str = URL_HARBOR,
     username_harbor: str = ADMIN_HARBOR,
     password_harbor: str = PASSWORD_HARBOR,
@@ -790,6 +791,7 @@ def script_harbor_init(
                 '# curl returns "HTTP/1.1 201 Created" if created successfully\n',
                 "\n",
                 "\n",
+                f"cd {openstudiolandscapes_repo_dir.as_posix()}\n",
                 "source .venv/bin/activate\n",
                 "openstudiolandscapesutil-harborcli project create --project-name openstudiolandscapes --host 127.0.0.1 --port 80\n",
                 "deactivate\n",
@@ -806,6 +808,7 @@ def script_harbor_init(
                 '# curl returns "HTTP/1.1 404 Not Found" if successful\n',
                 "\n",
                 "\n",
+                f"cd {openstudiolandscapes_repo_dir.as_posix()}\n",
                 "source .venv/bin/activate\n",
                 "openstudiolandscapesutil-harborcli project delete --project-name library --host 127.0.0.1 --port 80\n",
                 "deactivate\n",
@@ -1214,7 +1217,9 @@ if __name__ == "__main__":
 
     result = script_run(
         sudo=False,
-        script=script_harbor_init(),
+        script=script_harbor_init(
+            openstudiolandscapes_repo_dir=OPENSTUDIOLANDSCAPES_DIR,
+        ),
     )
 
     if result:
