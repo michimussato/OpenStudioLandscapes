@@ -397,6 +397,10 @@ class HarborResource(ConfigurableResource):
                 "X-Resource-Name-In-Location": "false",
                 "Content-Type": "application/json",
             },
+            "json": {
+            "project_name": self._project_name,
+            "public": True,
+            },
         }
         return _projects_create_
 
@@ -408,7 +412,7 @@ class HarborResource(ConfigurableResource):
             "headers": {
                 "accept": "application/json",
                 "authorization": f"Basic {self._authorization}",
-                "X-Is-Resource-Name": "false"
+                "X-Is-Resource-Name": "false",
             },
         }
         return _projects_delete_
@@ -582,8 +586,10 @@ class HarborResource(ConfigurableResource):
 
         request: requests.Request = requests.Request(
             method=self._projects_create["method"],
-            url=f"{self._projects_create['endpoint']}?project_name={project_name}",
+            url=self._projects_create["endpoint"],
             headers=self._projects_create["headers"],
+            # Todo
+            #  - [ ] project_name
         )
 
         return request.prepare()
