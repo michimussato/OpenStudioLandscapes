@@ -673,10 +673,10 @@ def script_harbor_prepare(
                 "\n",
                 f"cd {openstudiolandscapes_repo_dir.as_posix()}\n",
                 "source .venv/bin/activate\n",
-                "openstudiolandscapesutil-harborcli prepare download\n",
-                "openstudiolandscapesutil-harborcli prepare extract --tar-file ./download/harbor-*.tgz\n",
-                "openstudiolandscapesutil-harborcli prepare configure\n",
-                "openstudiolandscapesutil-harborcli prepare install\n",
+                "openstudiolandscapesutil-harborcli prepare download --destination-directory ./.harbor\n",
+                "openstudiolandscapesutil-harborcli prepare extract --tar-file ./.harbor/download/harbor-*.tgz\n",
+                "openstudiolandscapesutil-harborcli prepare configure --destination-directory ./.harbor/bin\n",
+                "openstudiolandscapesutil-harborcli prepare install --prepare-script ./.harbor/bin/prepare\n",
                 "deactivate\n",
                 "\n",
             ]
@@ -727,7 +727,7 @@ def script_harbor_up(
                 "\n",
                 f"cd {openstudiolandscapes_repo_dir.as_posix()}\n",
                 "source .venv/bin/activate\n",
-                f"eval $(openstudiolandscapesutil-harborcli systemd install --enable --start --su-method sudo)\n",
+                f"eval $(openstudiolandscapesutil-harborcli systemd install --enable --start --outfile ./.harbor/bin/harbor.service --su-method sudo)\n",
                 "deactivate\n",
                 "\n",
             ]
