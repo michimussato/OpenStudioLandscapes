@@ -672,10 +672,12 @@ def script_harbor_prepare(
                 "\n",
                 "\n",
                 f"cd {openstudiolandscapes_repo_dir.as_posix()}\n",
+                "source .venv/bin/activate\n",
                 f"{shutil.which('openstudiolandscapesutil-harborcli')} prepare download\n",
                 f"{shutil.which('openstudiolandscapesutil-harborcli')} prepare extract --tar-file ./download/harbor-*.tgz\n",
                 f"{shutil.which('openstudiolandscapesutil-harborcli')} prepare configure\n",
                 f"{shutil.which('openstudiolandscapesutil-harborcli')} prepare install\n",
+                "deactivate\n",
                 "\n",
             ]
         )
@@ -724,7 +726,9 @@ def script_harbor_up(
                 "\n",
                 "\n",
                 f"cd {openstudiolandscapes_repo_dir.as_posix()}\n",
+                "source .venv/bin/activate\n",
                 f"eval $({shutil.which('openstudiolandscapesutil-harborcli')} systemd install --enable --start --su-method sudo)\n",
+                "deactivate\n",
                 "\n",
             ]
         )
@@ -786,7 +790,9 @@ def script_harbor_init(
                 '# curl returns "HTTP/1.1 201 Created" if created successfully\n',
                 "\n",
                 "\n",
+                "source .venv/bin/activate\n",
                 f"{shutil.which('openstudiolandscapesutil-harborcli')} project create --project-name openstudiolandscapes --host 127.0.0.1 --port 80\n",
+                "deactivate\n",
                 "\n",
             ]
         )
@@ -800,7 +806,9 @@ def script_harbor_init(
                 '# curl returns "HTTP/1.1 404 Not Found" if successful\n',
                 "\n",
                 "\n",
+                "source .venv/bin/activate\n",
                 f"{shutil.which('openstudiolandscapesutil-harborcli')} project delete --project-name library --host 127.0.0.1 --port 80\n",
+                "deactivate\n",
                 "\n",
             ]
         )
@@ -1211,16 +1219,6 @@ if __name__ == "__main__":
 
     if result:
         sys.exit(1)
-
-    # result = script_run(
-    #     sudo=False,
-    #     script=script_harbor_down(
-    #         openstudiolandscapes_repo_dir=OPENSTUDIOLANDSCAPES_DIR,
-    #     ),
-    # )
-    #
-    # if result:
-    #     sys.exit(1)
 
     # result = script_run(
     #     sudo=False,
