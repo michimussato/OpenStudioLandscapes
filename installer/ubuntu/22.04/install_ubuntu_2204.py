@@ -185,6 +185,8 @@ def script_prep() -> pathlib.Path:
                 "\n",
                 "sudo apt-get clean\n",
                 "\n",
+                "/lib/systemd/systemd-sysv-install enable ssh\n",
+                "\n",
                 "sudo systemctl enable --now ssh\n",
             ]
         )
@@ -722,7 +724,7 @@ def script_harbor_up(
                 "\n",
                 "\n",
                 f"cd {openstudiolandscapes_repo_dir.as_posix()}\n",
-                f"eval $({shutil.which('openstudiolandscapesutil-harborcli')} systemd install --enable --start)\n",
+                f"eval $({shutil.which('openstudiolandscapesutil-harborcli')} systemd install --enable --start --su-method sudo)\n",
                 "\n",
             ]
         )
@@ -1210,15 +1212,15 @@ if __name__ == "__main__":
     if result:
         sys.exit(1)
 
-    result = script_run(
-        sudo=False,
-        script=script_harbor_down(
-            openstudiolandscapes_repo_dir=OPENSTUDIOLANDSCAPES_DIR,
-        ),
-    )
-
-    if result:
-        sys.exit(1)
+    # result = script_run(
+    #     sudo=False,
+    #     script=script_harbor_down(
+    #         openstudiolandscapes_repo_dir=OPENSTUDIOLANDSCAPES_DIR,
+    #     ),
+    # )
+    #
+    # if result:
+    #     sys.exit(1)
 
     # result = script_run(
     #     sudo=False,
