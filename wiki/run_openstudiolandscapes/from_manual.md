@@ -6,9 +6,6 @@
   * [Requirements](#requirements)
   * [up/down](#updown)
     * [With Harbor](#with-harbor)
-      * [Initial Steps](#initial-steps)
-        * [Setup](#setup)
-        * [Clear (Reset)](#clear-reset)
 <!-- TOC -->
 
 ---
@@ -32,31 +29,11 @@ nox --sessions dagster_postgres_up_detach dagster_postgres; nox --sessions dagst
 ### With Harbor
 
 > [!IMPORTANT]
-> Perform the [initial steps](#initial-steps) first if you haven't done so before running
-> OpenStudioLandscapes _with_ Harbor.
+> Information about setting up Harbor can be found here:
+> [harbor.md](../guides/harbor.md)
+
+Provided Harbor can be controlled by `systemd`:
 
 ```shell
-cd ../../
-nox --sessions harbor_up_detach dagster_postgres_up_detach dagster_postgres; nox --sessions dagster_postgres_down harbor_down
-```
-
-#### Initial Steps
-
-##### Setup
-
-```shell
-cd ../../
-nox --session harbor_prepare
-```
-
-##### Clear (Reset)
-
-> [!CAUTION]
-> This removes all data and configuration associated with
-> your local Harbor installation. It effectively performs
-> `sudo git clean -x --force` operation.
-
-```shell
-cd ../../
-nox --session harbor_clear
+sudo systemctl enable --now harbor.service
 ```
