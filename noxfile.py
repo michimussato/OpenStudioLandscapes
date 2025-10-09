@@ -215,6 +215,9 @@ def clone_features(session):
 
     # git -C .features clone https://github.com/michimussato/OpenStudioLandscapes-<Feature>
 
+    # Todo
+    #  - [ ] sync OPENSTUDIOLANDSCAPES_VERSION_TAG with make
+
     OPENSTUDIOLANDSCAPES_VERSION_TAG: str = os.environ.get(
         "OPENSTUDIOLANDSCAPES_VERSION_TAG", None
     )

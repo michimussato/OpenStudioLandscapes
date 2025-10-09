@@ -30,6 +30,12 @@ else
 REPO_DIR := ~/git/repos/OpenStudioLandscapes
 endif
 
+ifdef OPENSTUDIOLANDSCAPES_VERSION_TAG
+OPENSTUDIOLANDSCAPES_VERSION_TAG := $(OPENSTUDIOLANDSCAPES_VERSION_TAG)
+else
+OPENSTUDIOLANDSCAPES_VERSION_TAG := v1.6.0-rc1
+endif
+
 install: \
 		disable_unattended \
 		install_deps \
@@ -40,8 +46,7 @@ install: \
 		harbor_prepare \
 		harbor_up \
 		harbor_init \
-		add_aliases \
-		reboot
+		add_aliases
 
 disable_unattended:
 	echo "Starting prep..."
