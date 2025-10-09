@@ -100,14 +100,18 @@ git pull --tags
 # list tags:
 clear
 PS3="Select Tag to checkout please: "
-select tag_ in $(git tag); do
+select tag_ in $(git tag) main; do
    GIT_TAG="${tag_}"
-   export OPENSTUDIOLANDSCAPES_VERSION_TAG=${GIT_TAG}
    break
 done
 
 
-git checkout tags/"${OPENSTUDIOLANDSCAPES_VERSION_TAG}" -B "${OPENSTUDIOLANDSCAPES_VERSION_TAG}"
+if [ ${GIT_TAG} == main]; then
+    git checkout main
+else
+    export OPENSTUDIOLANDSCAPES_VERSION_TAG=${GIT_TAG}
+    git checkout tags/"${OPENSTUDIOLANDSCAPES_VERSION_TAG}" -B "${OPENSTUDIOLANDSCAPES_VERSION_TAG}"
+fi
 
 make disable_unattended
 make install_deps

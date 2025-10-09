@@ -1411,7 +1411,15 @@ def write_dagster_postgres_compose() -> pathlib.Path:
                 "hostname": host_name,
                 "domainname": ENVIRONMENT_DAGSTER["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"],
                 "restart": "unless-stopped",
-                "image": "docker.io/postgres",
+                # Using "latest" (+18), the following issue occured:
+                # Container postgres-dagster  Starting
+                # Error response from daemon: failed to create task for container: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: error during container init: error mounting "/home/user/git/repos/OpenStudioLandscapes/.dagster-postgres/.postgres" to rootfs at "/var/lib/postgresql/data": change mount propagation through procfd: open o_path procfd: open /var/lib/docker/overlay2/ba0ae2dde0bc547b16a339100ed558b2e787a297fe9f3df37668223a2ad5433e/merged/var/lib/postgresql/data: no such file or directory: unknown
+                #
+                # Todo
+                #  - [x] 16 (seems fine)
+                #  - [ ] 17
+                #  - [ ] 18
+                "image": "docker.io/postgres:16",
                 "volumes": [
                     f"{dagster_postgres_db_dir.as_posix()}:/var/lib/postgresql/data:rw",
                 ],

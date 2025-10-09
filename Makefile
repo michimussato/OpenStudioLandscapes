@@ -189,6 +189,10 @@ install_docker:
 		docker-compose-plugin
 
 	sudo systemctl status --no-pager --full docker.service
+	sudo systemctl status --no-pager --full containerd.service
+
+	# sudo systemctl enable --now docker.service
+	# sudo systemctl enable --now containerd.service
 
 #	sudo systemctl daemon-reload
 #	# sudo systemctl restart docker
@@ -214,8 +218,8 @@ edit_hosts_file:
 		postgres-dagster.farm.evil \
 		harbor.farm.evil \
 		pi-hole.farm.evil \
-	do; \
-		sed -i -e "\$$a127.0.0.1    $$fqdn" -e "/127.0.0.1    $${fqdn}/d" /etc/hosts;\
+	; do \
+		sudo sed -i -e "\$a127.0.0.1    $$fqdn" -e "/127.0.0.1    $${fqdn}/d" /etc/hosts; \
 	done
 
 	echo "Your /etc/hosts file looks like:"
