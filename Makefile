@@ -183,7 +183,22 @@ edit_hosts_file:
 
 openstudiolandscapes_install:
 	cd ${REPO_DIR} \
-		&& python3.11 -m venv .venv
+		&& python3.11 -m venv .venv \
+		&& pip install --upgrade pip setuptools setuptools_scm wheel \
+		&& pip install -e .[dev] \
+		&& deactivate
+
+openstudiolandscapes_features_clone:
+	cd ${REPO_DIR} \
+		&& source .venv/bin/activate \
+		&& nox -s clone_features \
+		&& deactivate
+
+openstudiolandscapes_features_install:
+	cd ${REPO_DIR} \
+		&& source .venv/bin/activate \
+		&& nox -s install_features_into_engine \
+		&& deactivate
 
 harbor_prepare:
 	cd ${REPO_DIR} \
@@ -201,11 +216,11 @@ harbor_up:
 		&& deactivate
 
 harbor_init:
-	cd ${REPO_DIR}
-	source .venv/bin/activate
-	openstudiolandscapesutil-harborcli project create --project-name openstudiolandscapes --host 127.0.0.1 --port 80
-	openstudiolandscapesutil-harborcli project delete --project-name library --host 127.0.0.1 --port 80
-	deactivate
+	cd ${REPO_DIR} \
+		&& source .venv/bin/activate \
+		&& openstudiolandscapesutil-harborcli project create --project-name openstudiolandscapes --host 127.0.0.1 --port 80 \
+		&& openstudiolandscapesutil-harborcli project delete --project-name library --host 127.0.0.1 --port 80 \
+		&& deactivate
 
 add_aliases:
 	sed -i -e '$$asource ${REPO_DIR}/\.openstudiolandscapesrc' -e '/source $(${REPO_DIR} | tr "/" "\/")\/\.openstudiolandscapesrc/d' "~/.bashrc"
