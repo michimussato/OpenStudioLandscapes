@@ -49,7 +49,7 @@ install: \
 		edit_hosts_file \
 		harbor_prepare \
 		harbor_up \
-		harbor_init \
+		harbor_init_projects \
 		add_aliases
 
 disable_unattended:
@@ -271,11 +271,25 @@ add_aliases:
 	# your\/string
 	sed -i -e '$$asource ${REPO_DIR}/\.openstudiolandscapesrc' -e '/source ${REPLACED}\/\.openstudiolandscapesrc/d' "$${HOME}/.bashrc"
 
-reboot:
-	read -r -e -p "Reboot now? " choice_reboot
-	[[ "$choice_reboot" == [Yy]* ]] \
-		&& sudo systemctl reboot \
-		|| echo "Ok, let\'s reboot later."
+up:
+	cd ${REPO_DIR} \
+		&& source .venv/bin/activate \
+		&& nox --sessions dagster_postgres_up_detach dagster_postgres \
+		&& deactivate
+
+down:
+	cd ${REPO_DIR} \
+		&& source .venv/bin/activate \
+		&& nox --sessions dagster_postgres_down \
+		&& deactivate
+
+restart: down up
+
+#reboot:
+#	read -r -e -p "Reboot now? " choice_reboot
+#	[[ "$choice_reboot" == [Yy]* ]] \
+#		&& sudo systemctl reboot \
+#		|| echo "Ok, let\'s reboot later."
 
 #initial_checks:
 ##	#$ make initial_checks
