@@ -37,6 +37,19 @@ install_deps:
 	sudo systemctl enable --now ssh
 
 install_gh_cli:
+	# $ make install_gh_cli
+	#(type -p wget >/dev/null || (sudo apt update && sudo apt install wget -y)) \
+	#	&& sudo mkdir -p -m 755 /etc/apt/keyrings \
+	#	&& out= && wget -nv -Out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+	#	&& cat ut | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+	#	&& sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+	#	&& sudo mkdir -p -m 755 /etc/apt/sources.list.d \
+	#	&& echo "deb [arch= signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+	#	&& sudo apt update \
+	#	&& sudo apt install gh -y
+	#E: Malformed entry 1 in list file /etc/apt/sources.list.d/github-cli.list ([option] no value)
+	#E: The list of sources could not be read.
+	#make: *** [Makefile:40: install_gh_cli] Error 100
 	(type -p wget >/dev/null || (sudo apt update && sudo apt install wget -y)) \
 		&& sudo mkdir -p -m 755 /etc/apt/keyrings \
 		&& out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
@@ -49,28 +62,28 @@ install_gh_cli:
 
 # REPO_DIR=~/git/repos/OpenStudioLandscapes
 backup_previous:
-	if [ -d ${REPO_DIR} ]; then
-		echo "Backing up previous Installation..."
-		mv ${REPO_DIR} ${REPO_DIR}_$(date +"%Y-%m-%d_%H-%m-%S")
+	if [ -d ${REPO_DIR} ]; then;\
+		echo "Backing up previous Installation...";\
+		mv ${REPO_DIR} ${REPO_DIR}_$(date +"%Y-%m-%d_%H-%m-%S");\
 	fi
 
 # VERSION_TAG=v1.6.0-rc1
 clone_repo:
-	if [ ! -d ${REPO_DIR} ]; then
-		mkdir -p ${REPO_DIR}
+	if [ ! -d ${REPO_DIR} ]; then;\
+		mkdir -p ${REPO_DIR};\
 	fi
 	git -C ${REPO_DIR} clone --tags https://github.com/michimussato/OpenStudioLandscapes.git
 	git -C ${REPO_DIR} checkout tags/${VERSION_TAG} -B ${VERSION_TAG}
 
 install_python:
-	if which python3.11; then
-		echo "python3.11 is already installed"
-		exit 0
+	if which python3.11; then;\
+		echo "python3.11 is already installed";\
+		exit 0;\
 	fi
 
-	while ! sudo apt-get upgrade -y; do
-		echo "Update in progress in the background..."
-		sleep 5
+	while ! sudo apt-get upgrade -y; do;\
+		echo "Update in progress in the background...";\
+		sleep 5;\
 	done;
 
 	sudo apt-get install --no-install-recommends -y \
@@ -98,8 +111,8 @@ install_python:
 	popd || exit 1
 
 install_docker:
-	for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do
-		sudo apt-get remove $pkg
+	for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do;\
+		sudo apt-get remove $pkg;\
 	done
 
 	sudo apt autoremove -y
@@ -173,11 +186,11 @@ edit_hosts_file:
 		postgres-dagster.farm.evil \
 		harbor.farm.evil \
 		pi-hole.farm.evil \
-	do
-		sed -i -e "\$a127.0.0.1    $fqdn" -e "/127.0.0.1    ${fqdn}/d" /etc/hosts\n',
+	do;\
+		sed -i -e "\$a127.0.0.1    $fqdn" -e "/127.0.0.1    ${fqdn}/d" /etc/hosts;\
 	done
 
-	echo "Your /etc/hosts file looks like:
+	echo "Your /etc/hosts file looks like:"
 	cat /etc/hosts
 
 harbor_prepare:
@@ -212,32 +225,37 @@ reboot:
 		|| echo "Ok, let\'s reboot later."
 
 initial_checks:
+	#$ make initial_checks
+	#mkdir -p /home/user/git/repos/OpenStudioLandscapes || sudo mkdir -p /home/user/git/repos/OpenStudioLandscapes
+	#if [  -eq 0 ]; then
+	#/bin/sh: 1: Syntax error: end of file unexpected (expecting "fi")
+	#make: *** [Makefile:216: initial_checks] Error 2
 	mkdir -p ${REPO_DIR} || sudo mkdir -p ${REPO_DIR}
 
-	if [ $(id -u) -eq 0 ]; then
-		echo "Operation not permitted."
-		echo
-		echo "This OpenStudioLandscapes installer must not be executed as user root!"
-		echo "Re-run as regular user."
-		echo
-		exit 1
+	if [ $(id -u) -eq 0 ]; then\
+		echo "Operation not permitted.";\
+		echo;\
+		echo "This OpenStudioLandscapes installer must not be executed as user root!";\
+		echo "Re-run as regular user.";\
+		echo;\
+		exit 1;\
 	fi
 
-	if ! groups $USER | grep -qw "docker"; then
-		sudo groupadd --force --gid 959 docker || exit 1;
-		sudo usermod --append --groups docker "${USER}" || exit 1;
-		echo "User $USER has been added to group \`docker\`."
-		echo "Reboot now and re-run this scrip."
+	if ! groups $USER | grep -qw "docker"; then;\
+		sudo groupadd --force --gid 959 docker || exit 1;\
+		sudo usermod --append --groups docker "${USER}" || exit 1;\
+		echo "User $USER has been added to group \`docker\`.";\
+		echo "Reboot now and re-run this scrip.";\
 	fi
 
-	if command -v "docker/"; then
-		if docker ps | grep "goharbor/"; then
-			echo "Docker Container Harbor is running!"
-			echo "It is not advisable to perform this installation while Harbor is running."
-			echo
-			echo "Stop the containers and re-run the installer."
-			echo "Run `docker stop $(docker ps -q)` to stop all running containers."
-			echo
-			exit 1
+	if command -v "docker/"; then;\
+		if docker ps | grep "goharbor/"; then;\
+			echo "Docker Container Harbor is running!";\
+			echo "It is not advisable to perform this installation while Harbor is running.";\
+			echo;\
+			echo "Stop the containers and re-run the installer.";\
+			echo "Run `docker stop $(docker ps -q)` to stop all running containers.";\
+			echo;\
+			exit 1;\
 		fi
 	fi
