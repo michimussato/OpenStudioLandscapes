@@ -84,13 +84,13 @@ install_python:
 		libsqlite3-dev \
 		curl
 
-	cd "$$(mktemp -d)" || exit 1
-	curl "https://www.python.org/ftp/python/${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}/Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}.tgz" -o Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}.tgz
-	tar -xvf Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}.tgz
-	cd Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT} || exit 1
-	./configure --enable-optimizations
-	make -j "$$(nproc)"
-	sudo make altinstall
+	cd "$$(mktemp -d)" || exit 1 && \
+		curl "https://www.python.org/ftp/python/${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}/Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}.tgz" -o Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}.tgz \
+		&& tar -xvf Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT}.tgz \
+		&& cd Python-${PYTHON_MAJ}.${PYTHON_MIN}.${PYTHON_PAT} || exit 1 \
+		&& ./configure --enable-optimizations \
+		&& make -j "$$(nproc)" \
+		&& sudo make altinstall \
 	# popd || exit 1
 
 install_docker:
