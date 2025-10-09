@@ -237,7 +237,7 @@ harbor_init:
 		&& deactivate
 
 add_aliases:
-	sed -i -e '$$asource ${REPO_DIR}/\.openstudiolandscapesrc' -e '/source $(${REPO_DIR} | tr "/" "\/")\/\.openstudiolandscapesrc/d' "~/.bashrc"
+	sed -i -e '$$asource ${REPO_DIR}/\.openstudiolandscapesrc' -e '/source $$(${REPO_DIR} | tr "/" "\/")\/\.openstudiolandscapesrc/d' "~/.bashrc"
 
 reboot:
 	read -r -e -p "Reboot now? " choice_reboot
