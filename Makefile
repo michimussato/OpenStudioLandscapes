@@ -2,6 +2,26 @@
 # REPO_DIR=~/git/repos/OpenStudioLandscapes
 # VERSION_TAG=v1.6.0-rc1
 
+include .env
+
+ifdef PYTHON_MAJ
+PYTHON_MAJ := $(PYTHON_MAJ)
+else
+PYTHON_MAJ := 3
+endif
+
+ifdef PYTHON_MIN
+PYTHON_MIN := $(PYTHON_MIN)
+else
+PYTHON_MIN := 11
+endif
+
+ifdef PYTHON_PAT
+PYTHON_PAT := $(PYTHON_PAT)
+else
+PYTHON_PAT := 11
+endif
+
 install: \
 		disable_unattended \
 		install_deps \
@@ -70,6 +90,7 @@ install_gh_cli:
 #	fi
 #	git -C ${REPO_DIR} clone --tags https://github.com/michimussato/OpenStudioLandscapes.git
 #	git -C ${REPO_DIR} checkout tags/${VERSION_TAG} -B ${VERSION_TAG}
+
 
 install_python:
 	sudo apt-get install --no-install-recommends -y \
