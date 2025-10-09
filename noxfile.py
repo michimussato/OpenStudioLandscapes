@@ -1417,7 +1417,7 @@ def write_dagster_postgres_compose() -> pathlib.Path:
                 #
                 # Todo
                 #  - [x] 16 (seems fine)
-                #  - [ ] 17
+                #  - [x] 17 (seems fine)
                 #  - [ ] 18
                 "image": "docker.io/postgres:16",
                 "volumes": [
