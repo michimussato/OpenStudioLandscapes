@@ -76,6 +76,11 @@ Install requirements:
 sudo apt-get update
 sudo apt-get upgrade -y
 sudo apt-get install -y git make
+
+sudo groupadd --force --gid 959 docker
+sudo usermod --append --groups docker ${USER}
+
+sudo systemctl reboot
 ```
 
 Run installer (reboot if being asked for)
@@ -124,7 +129,7 @@ make openstudiolandscapes_install
 make openstudiolandscapes_features_clone
 make openstudiolandscapes_features_install
 
-sudo systemctl reboot
+# sudo systemctl reboot
 
 make harbor_prepare
 make harbor_up

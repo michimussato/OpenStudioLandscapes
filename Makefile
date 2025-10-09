@@ -135,8 +135,8 @@ install_python:
 
 install_docker:
 	# https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user
-	sudo groupadd --force --gid 959 docker
-	sudo usermod --append --groups docker $${USER}
+	# sudo groupadd --force --gid 959 docker
+	# sudo usermod --append --groups docker $${USER}
 
 	# https://docs.docker.com/engine/install/ubuntu/
 	for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do \
