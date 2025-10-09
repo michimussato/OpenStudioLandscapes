@@ -32,6 +32,9 @@ endif
 
 export OPENSTUDIOLANDSCAPES_VERSION_TAG=v1.6.0-rc1
 
+
+REPLACED := $(shell echo ${REPO_DIR} | sed 's/\//\\\//g')
+
 #ifdef OPENSTUDIOLANDSCAPES_VERSION_TAG
 #OPENSTUDIOLANDSCAPES_VERSION_TAG := $(OPENSTUDIOLANDSCAPES_VERSION_TAG)
 #else
@@ -242,8 +245,7 @@ add_aliases:
 	# sed -i -e '$asource /home/user/git/repos/OpenStudioLandscapes/\.openstudiolandscapesrc' -e '/source \/home\/user\/git\/repos\/OpenStudioLandscapes\/\.openstudiolandscapesrc/d' /home/user/.bashrc
 	# $ echo "your/string" | sed 's/\//\\\//g'
 	# your\/string
-	export REPLACED := $(shell echo ${REPO_DIR} | sed 's/\//\\\//g')
-	sed -i -e '$$asource ${REPO_DIR}/\.openstudiolandscapesrc' -e '/source ${REPLACED}\/\.openstudiolandscapesrc/d' "~/.bashrc"
+	sed -i -e '$$asource ${REPO_DIR}/\.openstudiolandscapesrc' -e '/source ${REPLACED}\/\.openstudiolandscapesrc/d' "$${HOME}/.bashrc"
 
 reboot:
 	read -r -e -p "Reboot now? " choice_reboot
