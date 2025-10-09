@@ -24,6 +24,12 @@ else
 PYTHON_PAT := 11
 endif
 
+ifdef REPO_DIR
+REPO_DIR := $(REPO_DIR)
+else
+REPO_DIR := ~/git/repos/OpenStudioLandscapes
+endif
+
 install: \
 		disable_unattended \
 		install_deps \
