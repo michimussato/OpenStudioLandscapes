@@ -260,6 +260,8 @@ harbor_up:
 		&& eval $$(openstudiolandscapesutil-harborcli systemd install --enable --start --outfile ./.harbor/bin/harbor.service --su-method sudo) \
 		&& deactivate
 
+	sudo systemctl status --no-pager --full harbor.service
+
 harbor_init_projects:
 	cd ${REPO_DIR} \
 		&& source .venv/bin/activate \
