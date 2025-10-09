@@ -2,7 +2,7 @@
 # REPO_DIR=~/git/repos/OpenStudioLandscapes
 # VERSION_TAG=v1.6.0-rc1
 
-include .env
+-include .env
 
 ifdef PYTHON_MAJ
 PYTHON_MAJ := $(PYTHON_MAJ)
