@@ -53,31 +53,16 @@ install_deps:
 	sudo systemctl enable --now ssh
 
 install_gh_cli:
+	# https://github.com/cli/cli/blob/trunk/docs/install_linux.md#debian
 	(type -p wget >/dev/null || (sudo apt update && sudo apt install wget -y)) \
 		&& sudo mkdir -p -m 755 /etc/apt/keyrings \
-		&& out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
-		&& cat $out | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+		&& out=$$(mktemp) && wget -nv -O$$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+		&& cat $$out | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
 		&& sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
 		&& sudo mkdir -p -m 755 /etc/apt/sources.list.d \
-		&& echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-		&& sudo apt-get update \
-		&& sudo apt-get install gh -y
-
-## REPO_DIR=~/git/repos/OpenStudioLandscapes
-#backup_previous:
-#	if [ -d ${REPO_DIR} ]; then;\
-#		echo "Backing up previous Installation...";\
-#		mv ${REPO_DIR} ${REPO_DIR}_$(date +"%Y-%m-%d_%H-%m-%S");\
-#	fi
-
-## VERSION_TAG=v1.6.0-rc1
-#clone_repo:
-#	if [ ! -d ${REPO_DIR} ]; then;\
-#		mkdir -p ${REPO_DIR};\
-#	fi
-#	git -C ${REPO_DIR} clone --tags https://github.com/michimussato/OpenStudioLandscapes.git
-#	git -C ${REPO_DIR} checkout tags/${VERSION_TAG} -B ${VERSION_TAG}
-
+		&& echo "deb [arch=$$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+		&& sudo apt update \
+		&& sudo apt install gh -y
 
 install_python:
 	sudo apt-get install --no-install-recommends -y \
@@ -105,8 +90,12 @@ install_python:
 	popd || exit 1
 
 install_docker:
-	for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do;\
-		sudo apt-get remove $pkg;\
+	sudo groupadd --force --gid 959 docker
+	sudo usermod --append --groups docker "$${USER}"
+
+	# https://docs.docker.com/engine/install/ubuntu/
+	for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do \
+		sudo apt-get remove $$pkg ; \
 	done
 
 	sudo apt autoremove -y
@@ -119,32 +108,32 @@ install_docker:
 	sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
 	sudo chmod a+r /etc/apt/keyrings/docker.asc
 
-	sudo -s << EOF
-	mkdir -p /etc/docker
-	touch /etc/docker/daemon.json
-	cat > /etc/docker/daemon.json
-	{
-		"features": {
-		"buildkit": true
-	},
-		"max-concurrent-uploads": 1,
-		"insecure-registries" : [
-			"http://harbor.farm.evil:80",
-			"http://192.168.1.162:5000",
-			"http://192.168.1.163:5000",
-			"http://192.168.1.164:80",
-			"http://192.168.1.165:80",
-			"http://127.0.0.1:5000",
-			"http://localhost:5000",
-			"http://10.1.2.15:5000",
-			"http://[::1]:5000"
-		]
-	}
-	EOF
+#	sudo -s << EOF
+#	mkdir -p /etc/docker
+#	touch /etc/docker/daemon.json
+#	cat > /etc/docker/daemon.json
+#	{
+#		"features": {
+#		"buildkit": true
+#	},
+#		"max-concurrent-uploads": 1,
+#		"insecure-registries" : [
+#			"http://harbor.farm.evil:80",
+#			"http://192.168.1.162:5000",
+#			"http://192.168.1.163:5000",
+#			"http://192.168.1.164:80",
+#			"http://192.168.1.165:80",
+#			"http://127.0.0.1:5000",
+#			"http://localhost:5000",
+#			"http://10.1.2.15:5000",
+#			"http://[::1]:5000"
+#		]
+#	}
+#	EOF
 
 	echo \
-		"deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-		$(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
+		"deb [arch=$$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+		$$(. /etc/os-release && echo "$${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
 		sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 	sudo apt-get update
 	sudo apt-get install --no-install-recommends -y \
@@ -153,17 +142,15 @@ install_docker:
 		containerd.io \
 		docker-buildx-plugin \
 		docker-compose-plugin
-	sudo groupadd --force --gid 959 docker
-	sudo usermod --append --groups docker "${USER}"
 
-	sudo systemctl daemon-reload
-	# sudo systemctl restart docker
-
-	sudo git config --global --add safe.directory ${REPO_DIR}
-	sudo git -C ${REPODIR} clean -d -x --force ${REPODIR}/.landscapes/.harbor
-
-	echo "Your /etc/docker/daemon.json file looks like:
-	cat /etc/docker/daemon.json
+#	sudo systemctl daemon-reload
+#	# sudo systemctl restart docker
+#
+#	sudo git config --global --add safe.directory ${REPO_DIR}
+#	sudo git -C ${REPODIR} clean -d -x --force ${REPODIR}/.landscapes/.harbor
+#
+#	echo "Your /etc/docker/daemon.json file looks like:
+#	cat /etc/docker/daemon.json
 
 #install_openstudiolandscapes:
 #	cd ${REPO_DIR}
