@@ -190,6 +190,7 @@ edit_hosts_file:
 openstudiolandscapes_install:
 	cd ${REPO_DIR} \
 		&& python3.11 -m venv .venv \
+		&& source .venv/bin/activate \
 		&& pip install --upgrade pip setuptools setuptools_scm wheel \
 		&& pip install -e .[dev] \
 		&& deactivate
