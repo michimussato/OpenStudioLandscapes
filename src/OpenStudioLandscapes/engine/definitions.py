@@ -24,7 +24,7 @@ e_ = expand_dict_vars(
 
 # Todo
 #  - [x] if get_bool_env(f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_ENABLE']}".format(**os.environ)):
-if e_["OPENSTUDIOLANDSCAPES__HARBOR_ENABLE"] == "True":
+if e_.get("OPENSTUDIOLANDSCAPES__HARBOR_ENABLE", "False") == "True":
     imports_engine.append("OpenStudioLandscapes.engine.resources.harbor.definitions")
 
 
