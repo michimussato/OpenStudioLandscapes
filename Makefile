@@ -3,15 +3,11 @@
 # VERSION_TAG=v1.6.0-rc1
 
 install: \
-		initial_checks \
 		disable_unattended \
 		install_deps \
 		install_gh_cli \
-		backup_previous \
-		clone_repo \
 		install_python \
 		install_docker \
-		install_openstudiolandscapes \
 		edit_hosts_file \
 		harbor_prepare \
 		harbor_up \
@@ -60,32 +56,22 @@ install_gh_cli:
 		&& sudo apt update \
 		&& sudo apt install gh -y
 
-# REPO_DIR=~/git/repos/OpenStudioLandscapes
-backup_previous:
-	if [ -d ${REPO_DIR} ]; then;\
-		echo "Backing up previous Installation...";\
-		mv ${REPO_DIR} ${REPO_DIR}_$(date +"%Y-%m-%d_%H-%m-%S");\
-	fi
+## REPO_DIR=~/git/repos/OpenStudioLandscapes
+#backup_previous:
+#	if [ -d ${REPO_DIR} ]; then;\
+#		echo "Backing up previous Installation...";\
+#		mv ${REPO_DIR} ${REPO_DIR}_$(date +"%Y-%m-%d_%H-%m-%S");\
+#	fi
 
-# VERSION_TAG=v1.6.0-rc1
-clone_repo:
-	if [ ! -d ${REPO_DIR} ]; then;\
-		mkdir -p ${REPO_DIR};\
-	fi
-	git -C ${REPO_DIR} clone --tags https://github.com/michimussato/OpenStudioLandscapes.git
-	git -C ${REPO_DIR} checkout tags/${VERSION_TAG} -B ${VERSION_TAG}
+## VERSION_TAG=v1.6.0-rc1
+#clone_repo:
+#	if [ ! -d ${REPO_DIR} ]; then;\
+#		mkdir -p ${REPO_DIR};\
+#	fi
+#	git -C ${REPO_DIR} clone --tags https://github.com/michimussato/OpenStudioLandscapes.git
+#	git -C ${REPO_DIR} checkout tags/${VERSION_TAG} -B ${VERSION_TAG}
 
 install_python:
-	if which python3.11; then;\
-		echo "python3.11 is already installed";\
-		exit 0;\
-	fi
-
-	while ! sudo apt-get upgrade -y; do;\
-		echo "Update in progress in the background...";\
-		sleep 5;\
-	done;
-
 	sudo apt-get install --no-install-recommends -y \
 		build-essential \
 		zlib1g-dev \
@@ -171,14 +157,14 @@ install_docker:
 	echo "Your /etc/docker/daemon.json file looks like:
 	cat /etc/docker/daemon.json
 
-install_openstudiolandscapes:
-	cd ${REPO_DIR}
-	source .venv/bin/activate
-	pip install --upgrade pip setuptools setuptools_scm wheel
-	pip install -e .[dev]
-	nox -s clone_features
-	nox -s install_features_into_engine
-	deactivate
+#install_openstudiolandscapes:
+#	cd ${REPO_DIR}
+#	source .venv/bin/activate
+#	pip install --upgrade pip setuptools setuptools_scm wheel
+#	pip install -e .[dev]
+#	nox -s clone_features
+#	nox -s install_features_into_engine
+#	deactivate
 
 edit_hosts_file:
 	for fqdn in \
@@ -224,38 +210,40 @@ reboot:
 		&& sudo systemctl reboot \
 		|| echo "Ok, let\'s reboot later."
 
-initial_checks:
-	#$ make initial_checks
-	#mkdir -p /home/user/git/repos/OpenStudioLandscapes || sudo mkdir -p /home/user/git/repos/OpenStudioLandscapes
-	#if [  -eq 0 ]; then
-	#/bin/sh: 1: Syntax error: end of file unexpected (expecting "fi")
-	#make: *** [Makefile:216: initial_checks] Error 2
-	mkdir -p ${REPO_DIR} || sudo mkdir -p ${REPO_DIR}
-
-	if [ $(id -u) -eq 0 ]; then\
-		echo "Operation not permitted.";\
-		echo;\
-		echo "This OpenStudioLandscapes installer must not be executed as user root!";\
-		echo "Re-run as regular user.";\
-		echo;\
-		exit 1;\
-	fi
-
-	if ! groups $USER | grep -qw "docker"; then;\
-		sudo groupadd --force --gid 959 docker || exit 1;\
-		sudo usermod --append --groups docker "${USER}" || exit 1;\
-		echo "User $USER has been added to group \`docker\`.";\
-		echo "Reboot now and re-run this scrip.";\
-	fi
-
-	if command -v "docker/"; then;\
-		if docker ps | grep "goharbor/"; then;\
-			echo "Docker Container Harbor is running!";\
-			echo "It is not advisable to perform this installation while Harbor is running.";\
-			echo;\
-			echo "Stop the containers and re-run the installer.";\
-			echo "Run `docker stop $(docker ps -q)` to stop all running containers.";\
-			echo;\
-			exit 1;\
-		fi
-	fi
+#initial_checks:
+##	#$ make initial_checks
+##	#mkdir -p /home/user/git/repos/OpenStudioLandscapes || sudo mkdir -p /home/user/git/repos/OpenStudioLandscapes
+##	#if [  -eq 0 ]; then
+##	#/bin/sh: 1: Syntax error: end of file unexpected (expecting "fi")
+##	#make: *** [Makefile:216: initial_checks] Error 2
+##	mkdir -p ${REPO_DIR}
+##	# sudo mkdir -p ${REPO_DIR}
+#
+#	UID := $(shell id -u)
+#	ifeq ($(UID),0)
+#		echo "Operation not permitted."
+#		echo
+#		echo "This OpenStudioLandscapes installer must not be executed as user root!"
+#		echo "Re-run as regular user."
+#		echo
+#		exit 1
+#	endif
+#
+##	if ! groups $$USER | grep -qw "docker"; then;\
+##		sudo groupadd --force --gid 959 docker || exit 1;\
+##		sudo usermod --append --groups docker "$${USER}" || exit 1;\
+##		echo "User $$USER has been added to group \`docker\`.";\
+##		echo "Reboot now and re-run this scrip.";\
+##	fi
+##
+##	if command -v "docker/"; then;\
+##		if docker ps | grep "goharbor/"; then;\
+##			echo "Docker Container Harbor is running!";\
+##			echo "It is not advisable to perform this installation while Harbor is running.";\
+##			echo;\
+##			echo "Stop the containers and re-run the installer.";\
+##			echo "Run `docker stop $(docker ps -q)` to stop all running containers.";\
+##			echo;\
+##			exit 1;\
+##		fi
+##	fi
