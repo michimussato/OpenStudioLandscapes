@@ -32,7 +32,6 @@ endif
 
 export OPENSTUDIOLANDSCAPES_VERSION_TAG=v1.6.0-rc1
 
-
 REPLACED := $(shell echo ${REPO_DIR} | sed 's/\//\\\//g')
 
 #ifdef OPENSTUDIOLANDSCAPES_VERSION_TAG
