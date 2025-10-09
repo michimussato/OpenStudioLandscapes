@@ -64,6 +64,8 @@ install_gh_cli:
 		&& sudo apt update \
 		&& sudo apt install gh -y
 
+	gh --version
+
 install_python:
 	sudo apt-get install --no-install-recommends -y \
 		build-essential \
@@ -90,8 +92,9 @@ install_python:
 	popd || exit 1
 
 install_docker:
+	# https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user
 	sudo groupadd --force --gid 959 docker
-	sudo usermod --append --groups docker "$${USER}"
+	sudo usermod --append --groups docker $${USER}
 
 	# https://docs.docker.com/engine/install/ubuntu/
 	for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do \
@@ -142,6 +145,8 @@ install_docker:
 		containerd.io \
 		docker-buildx-plugin \
 		docker-compose-plugin
+
+	sudo systemctl status --no-pager --full docker.service
 
 #	sudo systemctl daemon-reload
 #	# sudo systemctl restart docker
