@@ -53,19 +53,6 @@ install_deps:
 	sudo systemctl enable --now ssh
 
 install_gh_cli:
-	# $ make install_gh_cli
-	#(type -p wget >/dev/null || (sudo apt update && sudo apt install wget -y)) \
-	#	&& sudo mkdir -p -m 755 /etc/apt/keyrings \
-	#	&& out= && wget -nv -Out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
-	#	&& cat ut | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
-	#	&& sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
-	#	&& sudo mkdir -p -m 755 /etc/apt/sources.list.d \
-	#	&& echo "deb [arch= signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-	#	&& sudo apt update \
-	#	&& sudo apt install gh -y
-	#E: Malformed entry 1 in list file /etc/apt/sources.list.d/github-cli.list ([option] no value)
-	#E: The list of sources could not be read.
-	#make: *** [Makefile:40: install_gh_cli] Error 100
 	(type -p wget >/dev/null || (sudo apt update && sudo apt install wget -y)) \
 		&& sudo mkdir -p -m 755 /etc/apt/keyrings \
 		&& out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
@@ -73,8 +60,8 @@ install_gh_cli:
 		&& sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
 		&& sudo mkdir -p -m 755 /etc/apt/sources.list.d \
 		&& echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-		&& sudo apt update \
-		&& sudo apt install gh -y
+		&& sudo apt-get update \
+		&& sudo apt-get install gh -y
 
 ## REPO_DIR=~/git/repos/OpenStudioLandscapes
 #backup_previous:
