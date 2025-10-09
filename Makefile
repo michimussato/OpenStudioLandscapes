@@ -4,6 +4,8 @@
 
 -include .env
 
+SHELL := $(shell which bash)
+
 ifdef PYTHON_MAJ
 PYTHON_MAJ := $(PYTHON_MAJ)
 else
