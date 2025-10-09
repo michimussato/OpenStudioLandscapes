@@ -237,7 +237,10 @@ harbor_init:
 		&& deactivate
 
 add_aliases:
-	sed -i -e '$$asource ${REPO_DIR}/\.openstudiolandscapesrc' -e '/source $$(${REPO_DIR} | tr "/" "\/")\/\.openstudiolandscapesrc/d' "~/.bashrc"
+	# Escape dots
+	# Working syntax:
+	# sed -i -e '$asource /home/user/git/repos/OpenStudioLandscapes/\.openstudiolandscapesrc' -e '/source \/home\/user\/git\/repos\/OpenStudioLandscapes\/\.openstudiolandscapesrc/d' /home/user/.bashrc
+	sed -i -e '$$asource ${REPO_DIR}/\.openstudiolandscapesrc' -e '/source $$(echo ${REPO_DIR} | sed 's/\//\\\//g')\/\.openstudiolandscapesrc/d' "~/.bashrc"
 
 reboot:
 	read -r -e -p "Reboot now? " choice_reboot
