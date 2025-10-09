@@ -263,13 +263,13 @@ harbor_init_projects:
 		&& openstudiolandscapesutil-harborcli project delete --project-name library --host 127.0.0.1 --port 80 \
 		&& deactivate
 
-add_aliases:
-	# Escape dots
-	# Working syntax:
-	# sed -i -e '$asource /home/user/git/repos/OpenStudioLandscapes/\.openstudiolandscapesrc' -e '/source \/home\/user\/git\/repos\/OpenStudioLandscapes\/\.openstudiolandscapesrc/d' /home/user/.bashrc
-	# $ echo "your/string" | sed 's/\//\\\//g'
-	# your\/string
-	sed -i -e '$$asource ${REPO_DIR}/\.openstudiolandscapesrc' -e '/source ${REPLACED}\/\.openstudiolandscapesrc/d' "$${HOME}/.bashrc"
+#add_aliases:
+#	# Escape dots
+#	# Working syntax:
+#	# sed -i -e '$asource /home/user/git/repos/OpenStudioLandscapes/\.openstudiolandscapesrc' -e '/source \/home\/user\/git\/repos\/OpenStudioLandscapes\/\.openstudiolandscapesrc/d' /home/user/.bashrc
+#	# $ echo "your/string" | sed 's/\//\\\//g'
+#	# your\/string
+#	sed -i -e '$$asource ${REPO_DIR}/\.openstudiolandscapesrc' -e '/source ${REPLACED}\/\.openstudiolandscapesrc/d' "$${HOME}/.bashrc"
 
 up:
 	cd ${REPO_DIR} \
