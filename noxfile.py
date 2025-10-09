@@ -275,8 +275,9 @@ def clone_features(session):
             cmd_clone.insert(0, shutil.which("sudo"))
             cmd_clone.insert(1, "--reset-timestamp")
 
-            cmd_checkout.insert(0, shutil.which("sudo"))
-            cmd_checkout.insert(1, "--reset-timestamp")
+            if OPENSTUDIOLANDSCAPES_VERSION_TAG is not None:
+                cmd_checkout.insert(0, shutil.which("sudo"))
+                cmd_checkout.insert(1, "--reset-timestamp")
 
         logging.info(f"{cmd_clone = }")
 
@@ -286,13 +287,15 @@ def clone_features(session):
             silent=SESSION_RUN_SILENT,
         )
 
-        logging.info(f"{cmd_checkout = }")
+        if OPENSTUDIOLANDSCAPES_VERSION_TAG is not None:
 
-        session.run(
-            *cmd_checkout,
-            external=True,
-            silent=SESSION_RUN_SILENT,
-        )
+            logging.info(f"{cmd_checkout = }")
+
+            session.run(
+                *cmd_checkout,
+                external=True,
+                silent=SESSION_RUN_SILENT,
+            )
 
 
 # # # pull_features

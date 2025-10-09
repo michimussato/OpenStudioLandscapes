@@ -30,11 +30,13 @@ else
 REPO_DIR := ~/git/repos/OpenStudioLandscapes
 endif
 
-ifdef OPENSTUDIOLANDSCAPES_VERSION_TAG
-OPENSTUDIOLANDSCAPES_VERSION_TAG := $(OPENSTUDIOLANDSCAPES_VERSION_TAG)
-else
-OPENSTUDIOLANDSCAPES_VERSION_TAG := v1.6.0-rc1
-endif
+export OPENSTUDIOLANDSCAPES_VERSION_TAG=v1.6.0-rc1
+
+#ifdef OPENSTUDIOLANDSCAPES_VERSION_TAG
+#OPENSTUDIOLANDSCAPES_VERSION_TAG := $(OPENSTUDIOLANDSCAPES_VERSION_TAG)
+#else
+#OPENSTUDIOLANDSCAPES_VERSION_TAG := v1.6.0-rc1
+#endif
 
 install: \
 		disable_unattended \
@@ -230,8 +232,8 @@ harbor_up:
 harbor_init:
 	cd ${REPO_DIR} \
 		&& source .venv/bin/activate \
-		&& openstudiolandscapesutil-harborcli project create --project-name openstudiolandscapes --host 127.0.0.1 --port 80 \
-		&& openstudiolandscapesutil-harborcli project delete --project-name library --host 127.0.0.1 --port 80 \
+		&& eval $$(openstudiolandscapesutil-harborcli project create --project-name openstudiolandscapes --host 127.0.0.1 --port 80) \
+		&& eval $$(openstudiolandscapesutil-harborcli project delete --project-name library --host 127.0.0.1 --port 80) \
 		&& deactivate
 
 add_aliases:
