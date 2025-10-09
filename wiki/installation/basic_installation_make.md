@@ -110,8 +110,10 @@ select tag_ in $(git tag) main; do
    break
 done
 
+# find a way to not only checkout tags
+# but also branches
 
-if [ ${GIT_TAG} == main]; then
+if [ ${GIT_TAG} == "main" ]; then
     git checkout main
 else
     export OPENSTUDIOLANDSCAPES_VERSION_TAG=${GIT_TAG}
@@ -122,6 +124,7 @@ make disable_unattended
 make install_deps
 make install_gh_cli
 make install_python
+make edit_hosts_file
 make install_docker
 make openstudiolandscapes_install
 # Requires

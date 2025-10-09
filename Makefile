@@ -219,7 +219,7 @@ edit_hosts_file:
 		harbor.farm.evil \
 		pi-hole.farm.evil \
 	; do \
-		sudo sed -i -e "\$a127.0.0.1    $$fqdn" -e "/127.0.0.1    $${fqdn}/d" /etc/hosts; \
+		sudo sed -i -e "\$$a127.0.0.1    $$fqdn" -e "/127.0.0.1    $${fqdn}/d" /etc/hosts; \
 	done
 
 	echo "Your /etc/hosts file looks like:"
