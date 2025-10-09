@@ -174,27 +174,31 @@ edit_hosts_file:
 		postgres-dagster.farm.evil \
 		harbor.farm.evil \
 		pi-hole.farm.evil \
-	do;\
-		sed -i -e "\$a127.0.0.1    $fqdn" -e "/127.0.0.1    ${fqdn}/d" /etc/hosts;\
+	do; \
+		sed -i -e "\$$a127.0.0.1    $$fqdn" -e "/127.0.0.1    $${fqdn}/d" /etc/hosts;\
 	done
 
 	echo "Your /etc/hosts file looks like:"
 	cat /etc/hosts
 
+openstudiolandscapes_install:
+	cd ${REPO_DIR} \
+		&& python3.11 -m venv .venv
+
 harbor_prepare:
-	cd ${REPO_DIR}
-	source .venv/bin/activate
-	openstudiolandscapesutil-harborcli prepare download --destination-directory ./.harbor/download
-	openstudiolandscapesutil-harborcli prepare extract --extract-to ./.harbor/bin --tar-file ./.harbor/download/harbor-*.tgz
-	openstudiolandscapesutil-harborcli prepare configure --destination-directory ./.harbor/bin
-	openstudiolandscapesutil-harborcli prepare install --prepare-script ./.harbor/bin/prepare
-	deactivate
+	cd ${REPO_DIR} \
+		&& source .venv/bin/activate \
+		&& openstudiolandscapesutil-harborcli prepare download --destination-directory ./.harbor/download \
+		&& openstudiolandscapesutil-harborcli prepare extract --extract-to ./.harbor/bin --tar-file ./.harbor/download/harbor-*.tgz \
+		&& openstudiolandscapesutil-harborcli prepare configure --destination-directory ./.harbor/bin \
+		&& openstudiolandscapesutil-harborcli prepare install --prepare-script ./.harbor/bin/prepare \
+		&& deactivate
 
 harbor_up:
-	cd ${REPO_DIR}
-	source .venv/bin/activate
-	eval $(openstudiolandscapesutil-harborcli systemd install --enable --start --outfile ./.harbor/bin/harbor.service --su-method sudo)
-	deactivate
+	cd ${REPO_DIR} \
+		&& source .venv/bin/activate \
+		&& eval $$(openstudiolandscapesutil-harborcli systemd install --enable --start --outfile ./.harbor/bin/harbor.service --su-method sudo) \
+		&& deactivate
 
 harbor_init:
 	cd ${REPO_DIR}
@@ -204,7 +208,7 @@ harbor_init:
 	deactivate
 
 add_aliases:
-	sed -i -e '$asource ${REPO_DIR}/\.openstudiolandscapesrc' -e '/source $(${REPO_DIR} | tr "/" "\/")\/\.openstudiolandscapesrc/d' "~/.bashrc"
+	sed -i -e '$$asource ${REPO_DIR}/\.openstudiolandscapesrc' -e '/source $(${REPO_DIR} | tr "/" "\/")\/\.openstudiolandscapesrc/d' "~/.bashrc"
 
 reboot:
 	read -r -e -p "Reboot now? " choice_reboot
