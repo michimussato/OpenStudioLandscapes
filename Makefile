@@ -70,6 +70,9 @@ install_deps:
 	sudo systemctl enable --now ssh
 
 install_gh_cli:
+	# failed: Connection timed out.
+	# failed: Connection timed out.
+	# failed: Connection timed out.
 	# https://github.com/cli/cli/blob/trunk/docs/install_linux.md#debian
 	(type -p wget >/dev/null || (sudo apt update && sudo apt install wget -y)) \
 		&& sudo mkdir -p -m 755 /etc/apt/keyrings \
@@ -82,6 +85,28 @@ install_gh_cli:
 		&& sudo apt install gh -y
 
 	gh --version
+
+# Ref
+# (type -p wget >/dev/null || (sudo apt update && sudo apt install wget -y)) \
+#	&& sudo mkdir -p -m 755 /etc/apt/keyrings \
+#	&& out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+#	&& cat $out | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+#	&& sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+#	&& sudo mkdir -p -m 755 /etc/apt/sources.list.d \
+#	&& echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+#	&& sudo apt update \
+#	&& sudo apt install gh -y
+#
+# Actual
+# (type -p wget >/dev/null || (sudo apt update && sudo apt install wget -y)) \
+#	&& sudo mkdir -p -m 755 /etc/apt/keyrings \
+#	&& out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+#	&& cat $out | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+#	&& sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+#	&& sudo mkdir -p -m 755 /etc/apt/sources.list.d \
+#	&& echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+#	&& sudo apt update \
+#	&& sudo apt install gh -y
 
 install_python:
 	sudo apt-get install --no-install-recommends -y \
@@ -231,11 +256,11 @@ harbor_up:
 		&& eval $$(openstudiolandscapesutil-harborcli systemd install --enable --start --outfile ./.harbor/bin/harbor.service --su-method sudo) \
 		&& deactivate
 
-harbor_init:
+harbor_init_projects:
 	cd ${REPO_DIR} \
 		&& source .venv/bin/activate \
-		&& eval $$(openstudiolandscapesutil-harborcli project create --project-name openstudiolandscapes --host 127.0.0.1 --port 80) \
-		&& eval $$(openstudiolandscapesutil-harborcli project delete --project-name library --host 127.0.0.1 --port 80) \
+		&& openstudiolandscapesutil-harborcli project create --project-name openstudiolandscapes --host 127.0.0.1 --port 80 \
+		&& openstudiolandscapesutil-harborcli project delete --project-name library --host 127.0.0.1 --port 80 \
 		&& deactivate
 
 add_aliases:
