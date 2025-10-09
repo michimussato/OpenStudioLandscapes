@@ -242,7 +242,7 @@ add_aliases:
 	# sed -i -e '$asource /home/user/git/repos/OpenStudioLandscapes/\.openstudiolandscapesrc' -e '/source \/home\/user\/git\/repos\/OpenStudioLandscapes\/\.openstudiolandscapesrc/d' /home/user/.bashrc
 	# $ echo "your/string" | sed 's/\//\\\//g'
 	# your\/string
-	REPLACED := $(shell echo ${REPO_DIR} | sed 's/\//\\\//g')
+	export REPLACED := $(shell echo ${REPO_DIR} | sed 's/\//\\\//g')
 	sed -i -e '$$asource ${REPO_DIR}/\.openstudiolandscapesrc' -e '/source ${REPLACED}\/\.openstudiolandscapesrc/d' "~/.bashrc"
 
 reboot:
