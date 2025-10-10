@@ -1,6 +1,10 @@
 import pathlib
 import copy
+import shutil
+import shlex
+import json
 import operator
+import textwrap
 
 import yaml
 from typing import Generator, MutableMapping, List, Any, Dict
@@ -58,6 +62,434 @@ if bool(ins):
     @asset(
         **ASSET_HEADER_TELEPORT,
         ins={
+            "env": AssetIn(
+                AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "env"]),
+            ),
+        },
+    )
+    def compose_networks(
+        context: AssetExecutionContext,
+        env: dict,  # pylint: disable=redefined-outer-name
+    ) -> Generator[
+        Output[dict[str, dict[str, dict[str, str]]]] | AssetMaterialization, None, None
+    ]:
+
+        compose_network_mode = ComposeNetworkMode(env["COMPOSE_NETWORK_MODE"])
+
+        if compose_network_mode == ComposeNetworkMode.DEFAULT:
+            docker_dict = {
+                "networks": {
+                    "teleport": {
+                        "name": "network_teleport",
+                    },
+                    "acmesh": {
+                        "name": "network_acmesh",
+                    },
+                },
+            }
+
+        else:
+            docker_dict = {
+                "network_mode": compose_network_mode.value,
+            }
+
+        docker_yaml = yaml.dump(docker_dict)
+
+        yield Output(docker_dict)
+
+        yield AssetMaterialization(
+            asset_key=context.asset_key,
+            metadata={
+                "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
+                "compose_network_mode": MetadataValue.text(compose_network_mode.value),
+                "docker_dict": MetadataValue.md(
+                    f"```json\n{json.dumps(docker_dict, indent=2)}\n```"
+                ),
+                "docker_yaml": MetadataValue.md(f"```shell\n{docker_yaml}\n```"),
+            },
+        )
+
+    @asset(
+        **ASSET_HEADER_TELEPORT,
+        ins={
+            "env": AssetIn(
+                AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "env"]),
+            ),
+            "compose_networks": AssetIn(
+                AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "compose_networks"]),
+            ),
+            "teleport_yaml": AssetIn(
+                AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "teleport_yaml"]),
+            ),
+            "certificates": AssetIn(
+                AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "certificates"]),
+            ),
+        },
+    )
+    def compose_teleport(
+        context: AssetExecutionContext,
+        env: dict,  # pylint: disable=redefined-outer-name
+        compose_networks: dict,  # pylint: disable=redefined-outer-name
+        teleport_yaml: pathlib.Path,  # pylint: disable=redefined-outer-name
+        certificates: list[dict],  # pylint: disable=redefined-outer-name
+    ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
+        """ """
+
+        network_dict = {}
+        ports_dict = {}
+
+        docker_compose_yml = pathlib.Path(env["DOCKER_COMPOSE"])
+
+        if "networks" in compose_networks:
+            network_dict = {"networks": list(compose_networks.get("networks", {}).keys())}
+            ports_dict = {
+                "ports": [
+                    f"{env['ALL_CLIENTS_PORT_HOST']}:{env['ALL_CLIENTS_PORT_CONTAINER']}",
+                    f"{env['PROXY_SERVICE_AGENTS_PORT_HOST']}:{env['PROXY_SERVICE_AGENTS_PORT_CONTAINER']}",
+                    f"{env['WEB_UI_PORT_HOST']}:{env['WEB_UI_PORT_CONTAINER']}",
+                    f"{env['PROXY_SERVICE_TUNNEL_LISTEN_ADDRESS_PORT_HOST']}:{env['PROXY_SERVICE_TUNNEL_LISTEN_ADDRESS_PORT_CONTAINER']}",
+                ]
+            }
+        elif "network_mode" in compose_networks:
+            network_dict = {"network_mode": compose_networks.get("network_mode")}
+
+        teleport_data = pathlib.Path(env["TELEPORT_DATA"])
+        teleport_data.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+        volumes_dict = {
+            "volumes": [
+                f"{teleport_yaml.parent.as_posix()}:/etc/teleport:rw",
+                f"{teleport_data.as_posix()}:/var/lib/teleport:rw",
+            ],
+        }
+
+        for cert_dict in certificates:
+            volumes_dict["volumes"].extend(
+                [
+                    f"{cert_dict['certs_root']}/{cert_dict['certs_subdir']}/{cert_dict['fullchain']}:/{cert_dict['certs_subdir']}/{cert_dict['fullchain']}:ro",
+                    f"{cert_dict['certs_root']}/{cert_dict['certs_subdir']}/{cert_dict['key']}:/{cert_dict['certs_subdir']}/{cert_dict['key']}:ro",
+                ]
+            )
+
+        # For portability, convert absolute volume paths to relative paths
+
+        _volume_relative = []
+
+        for v in volumes_dict["volumes"]:
+
+            host, container = v.split(":", maxsplit=1)
+
+            volume_dir_host_rel_path = get_relative_path_via_common_root(
+                context=context,
+                path_src=docker_compose_yml,
+                path_dst=pathlib.Path(host),
+                path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
+            )
+
+            _volume_relative.append(
+                f"{volume_dir_host_rel_path.as_posix()}:{container}",
+            )
+
+        volumes_dict = {
+            "volumes": [
+                *_volume_relative,
+            ],
+        }
+
+        command = []
+
+        SERVICE_NAME = ASSET_HEADER_TELEPORT["group_name"].lower()
+
+        container_name = "--".join([SERVICE_NAME, env.get("LANDSCAPE", "default")])
+        host_name = ".".join([SERVICE_NAME, env["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"]])
+
+        docker_dict = {
+            "services": {
+                SERVICE_NAME: {
+                    "container_name": container_name,
+                    "hostname": host_name,
+                    "domainname": env.get("OPENSTUDIOLANDSCAPES__DOMAIN_LAN"),
+                    # "mac_address": ":".join(re.findall(r"..", env["HOST_ID"])),
+                    "restart": "always",
+                    "image": env["DOCKER_IMAGE"],
+                    # https://docs.docker.com/reference/compose-file/services/#extra_hosts
+                    # docker exec ${TELEPORT_CONTAINER_ID_OR_NAME} cat /etc/hosts
+                    # 127.0.0.1       localhost
+                    # ::1     localhost ip6-localhost ip6-loopback
+                    # fe00::  ip6-localnet
+                    # ff00::  ip6-mcastprefix
+                    # ff02::1 ip6-allnodes
+                    # ff02::2 ip6-allrouters
+                    # 172.17.0.1      teleport.cloud-ip.cc
+                    # "extra_hosts":[
+                    #     "teleport.cloud-ip.cc:host-gateway",
+                    # ],
+                    **copy.deepcopy(volumes_dict),
+                    **copy.deepcopy(network_dict),
+                    **copy.deepcopy(ports_dict),
+                    # "environment": {
+                    # },
+                    # "healthcheck": {
+                    # },
+                    # "command": command,
+                    "entrypoint": [
+                        "/usr/bin/dumb-init",
+                        *[
+                            [
+                                "--help",
+                            ],
+                            [
+                                "/usr/local/bin/teleport",
+                                "start",
+                                "-c",
+                                "/etc/teleport/teleport.yaml",
+                                # "--insecure",
+                            ],
+                        ][1],
+                    ],
+                },
+            },
+        }
+
+        docker_yaml = yaml.dump(docker_dict)
+
+        teleport_compose_link = docker_compose_yml
+        teleport_compose_history = docker_compose_yml.parent.joinpath(env["LANDSCAPE"], teleport_compose_link.name)
+        teleport_compose_history.parent.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+        with open(
+                file=teleport_compose_history,
+                mode="w",
+                encoding="utf-8",
+        ) as fo:
+            fo.write(docker_yaml)
+
+        if teleport_compose_link.exists():
+            teleport_compose_link.unlink()
+
+        teleport_compose_link.symlink_to(teleport_compose_history)
+
+        yield Output(docker_dict)
+
+        yield AssetMaterialization(
+            asset_key=context.asset_key,
+            metadata={
+                "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
+                "teleport_compose_link": MetadataValue.path(teleport_compose_link),
+                "teleport_compose": MetadataValue.path(teleport_compose_history),
+                "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
+                # Todo: "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)),
+            },
+        )
+
+    @asset(
+        **ASSET_HEADER_TELEPORT,
+        ins={
+            "compose_teleport": AssetIn(
+                AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "compose_teleport"]),
+            ),
+        },
+    )
+    def cmd_create_teleport_admin(
+        context: AssetExecutionContext,
+        compose_teleport: dict,  # pylint: disable=redefined-outer-name
+    ) -> Generator[Output[dict[str, list[Any]]] | AssetMaterialization | Any, Any, None]:
+        """
+        A fresh Teleport Docker instance comes with no admin user pre-configured.
+        This command needs to be executed one time once the container is up.
+        An invitation link will be printed which you'll have to follow.
+
+        More info here (section "User Setup"):
+
+        https://tomerklein.dev/setting-up-teleport-for-secure-server-access-d4d317c1c4ca
+        """
+
+        container_name = compose_teleport["services"]["teleport"]["container_name"]
+
+        teleport_create_admin_cmd = [
+            # i.e.: https://tomerklein.dev/setting-up-teleport-for-secure-server-access-d4d317c1c4ca
+            shutil.which("docker"),
+            "exec",
+            container_name,
+            "tctl",
+            "users",
+            "add",
+            "admin",
+            "--roles=editor,access",
+            "--logins=root,ubuntu,ec2-user",
+        ]
+
+        yield Output(teleport_create_admin_cmd)
+
+        yield AssetMaterialization(
+            asset_key=context.asset_key,
+            metadata={
+                "__".join(context.asset_key.path): MetadataValue.path(
+                    shlex.join(teleport_create_admin_cmd)
+                ),
+            },
+        )
+
+    @asset(
+        **ASSET_HEADER_TELEPORT,
+        ins={
+            "env": AssetIn(
+                AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "env"]),
+            ),
+        },
+    )
+    def setup_unit(
+        context: AssetExecutionContext,
+        env: dict,  # pylint: disable=redefined-outer-name
+    ) -> Generator[Output[dict[str, list[Any]]] | AssetMaterialization | Any, Any, None]:
+        """
+        """
+
+        docker_compose_yml = pathlib.Path(env["DOCKER_COMPOSE"])
+
+        cwd = docker_compose_yml.parent
+
+        unit_ = "teleport-server@.service"
+        unit_link = docker_compose_yml.parent.joinpath(unit_)
+        unit = docker_compose_yml.parent.joinpath(env["LANDSCAPE"], unit_)
+
+        # Todo
+        #  - [ ] Do we actually need `--config` here?
+
+        unit_str = textwrap.dedent(
+            f"""\
+            [Unit]
+            Description=OpenStudioLandscapes-Teleport Service (%i)
+            After=network.target
+            
+            [Service]
+            Type=simple
+            Restart=always
+            RestartSec=5
+            # EnvironmentFile has to be absolute, so the following
+            # will not work (hence, disabled):
+            EnvironmentFile=-{cwd.as_posix()}/.env
+            EnvironmentFile=-%h/.env
+            WorkingDirectory={cwd.as_posix()}
+            # ExecStart=$(which docker) --config $HOME/git/repos/OpenStudioLandscapes/.landscapes/2025-10-05-23-01-09-77e0ee9dc15b4b6683e6f6dc61980954/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json/2025-10-05-23-01-09-77e0ee9dc15b4b6683e6f6dc61980954/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json compose --progress plain --file $HOME/git/repos/OpenStudioLandscapes/.landscapes/.teleport/docker-compose/docker-compose.yml --project-name openstudiolandscapes-teleport up --remove-orphans
+            ExecStart={shutil.which('docker')} compose --progress plain --file {docker_compose_yml.as_posix()} --project-name openstudiolandscapes-teleport up --remove-orphans
+            # ExecReload=$(which docker) --config $HOME/git/repos/OpenStudioLandscapes/.landscapes/2025-10-05-23-01-09-77e0ee9dc15b4b6683e6f6dc61980954/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json/2025-10-05-23-01-09-77e0ee9dc15b4b6683e6f6dc61980954/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json compose --progress plain --file $HOME/git/repos/OpenStudioLandscapes/.landscapes/.teleport/docker-compose/docker-compose.yml --project-name openstudiolandscapes-teleport restart
+            ExecReload={shutil.which('docker')} compose --progress plain --file {docker_compose_yml.as_posix()} --project-name openstudiolandscapes-teleport restart
+            # ExecStop=$(which docker) --config $HOME/git/repos/OpenStudioLandscapes/.landscapes/2025-10-05-23-01-09-77e0ee9dc15b4b6683e6f6dc61980954/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json/2025-10-05-23-01-09-77e0ee9dc15b4b6683e6f6dc61980954/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json compose --progress plain --file $HOME/git/repos/OpenStudioLandscapes/.landscapes/.teleport/docker-compose/docker-compose.yml --project-name openstudiolandscapes-teleport down
+            ExecStop={shutil.which('docker')} compose --progress plain --file {docker_compose_yml.as_posix()} --project-name openstudiolandscapes-teleport down
+            
+            [Install]
+            # WantedBy=multi-user.target
+            WantedBy=default.target
+            """
+        )
+
+        with open(
+                file=unit,
+                mode="w",
+                encoding="utf-8",
+        ) as fo:
+            fo.write(unit_str)
+
+        if unit_link.exists():
+            unit_link.unlink()
+
+        unit_link.symlink_to(unit)
+
+        install_unit = [
+            "sudo",
+            shutil.which("cp"),
+            "--no-dereference",  # preserve symlink
+            unit_link.as_posix(),
+            "/usr/lib/systemd/user/",
+            "&&",
+            shutil.which("systemctl"),
+            "--user",
+            "daemon-reload",
+            "&&",
+            shutil.which("systemctl"),
+            "--user",
+            "enable",
+            "--now",
+            "@${USER}".join(unit_link.name.split("@")),
+            "&&",
+            *{
+                "journalctl": [
+                    shutil.which("journalctl"),
+                    "--user",
+                    "--follow",
+                    "--unit",
+                    "@${USER}".join(unit_link.name.split("@")),
+                ],
+                "status": [
+                    shutil.which("systemctl"),
+                    "--user",
+                    "status",
+                    "--full",
+                    "--no-pager",
+                    "@${USER}".join(unit_link.name.split("@")),
+                ],
+            }["status"],
+
+        ]
+
+        uninstall_unit = [
+            shutil.which("systemctl"),
+            "--user",
+            "disable",
+            "--now",
+            "@${USER}".join(unit_link.name.split("@")),
+            "&&",
+            "sudo",
+            shutil.which("rm"),
+            f"/usr/lib/systemd/user/{unit_link.name}",
+            "&&",
+            shutil.which("systemctl"),
+            "--user",
+            "daemon-reload",
+        ]
+
+        install_unit_str = " ".join(
+            shlex.quote(s) if not s in [
+                "&&",
+                ";",
+                "@${USER}".join(unit_link.name.split("@")),
+            ] else s
+            for s in install_unit
+        )
+
+        uninstall_unit_str = " ".join(
+            shlex.quote(s) if not s in [
+                "&&",
+                ";",
+                "@${USER}".join(unit_link.name.split("@")),
+                f"/usr/lib/systemd/user/{unit_link.name}",
+            ] else s
+            for s in uninstall_unit
+        )
+
+        yield Output(unit)
+
+        yield AssetMaterialization(
+            asset_key=context.asset_key,
+            metadata={
+                "__".join(context.asset_key.path): MetadataValue.path(unit),
+                "unit_str": MetadataValue.md(f"```yaml\n{unit_str}\n```"),
+                "unit_link": MetadataValue.path(unit_link),
+                "install_unit": MetadataValue.path(install_unit_str),
+                "uninstall_unit": MetadataValue.path(uninstall_unit_str),
+            },
+        )
+
+    @asset(
+        **ASSET_HEADER_TELEPORT,
+        ins={
             "env_base": AssetIn(
                 AssetKey(
                     [*ASSET_HEADER_TELEPORT["key_prefix"], "env_base"]
@@ -75,6 +507,14 @@ if bool(ins):
         env_in.update(
             {
                 # "DOCKER_USE_CACHE": DOCKER_USE_CACHE,
+                "DOCKER_COMPOSE": pathlib.Path(
+                    "{DOT_LANDSCAPES}",
+                    ".teleport",
+                    "docker_compose",
+                    "docker-compose.yml"
+                )
+                .expanduser()
+                .as_posix(),
                 "HOSTNAME": "teleport",
                 "TELEPORT_ENTRY_POINT_HOST": "{{HOSTNAME}}",  # Either a hardcoded str or a ref to a Variable (with double {{ }}!)
                 "TELEPORT_ENTRY_POINT_PORT": "{{WEB_UI_PORT_HOST}}",  # Either a hardcoded str or a ref to a Variable (with double {{ }}!)
@@ -907,6 +1347,10 @@ if bool(ins):
             teleport_yaml_script_link.unlink()
 
         teleport_yaml_script_link.symlink_to(teleport_yaml_script)
+
+        # Todo
+        #  - [ ] not sure yet whether we want the physical file or
+        #        the link that points to it.
 
         yield Output(teleport_yaml_script)
 
