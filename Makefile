@@ -269,11 +269,16 @@ harbor_init_projects:
 		&& openstudiolandscapesutil-harborcli project delete --project-name library --host 127.0.0.1 --port 80 \
 		&& deactivate
 
+nox_CLEAR_ALL:
+	cd ${REPO_DIR}/.nox \
+		&& pwd \
+		&& rm -r */
+		# && sudo rm -r */
+
 harbor_CLEAR_ALL:
 	cd ${REPO_DIR}/.harbor \
 		&& sudo pwd \
-		&& sudo ls -al
-		# && sudo rm -r */
+		&& sudo rm -r */
 
 openstudiolandscapes_update:
 	cd ${REPO_DIR} \
