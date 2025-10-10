@@ -269,6 +269,12 @@ harbor_init_projects:
 		&& openstudiolandscapesutil-harborcli project delete --project-name library --host 127.0.0.1 --port 80 \
 		&& deactivate
 
+openstudiolandscapes_update:
+	cd ${REPO_DIR} \
+		&& source .venv/bin/activate \
+		&& pip install -e .[dev] \
+		&& deactivate
+
 #add_aliases:
 #	# Escape dots
 #	# Working syntax:
@@ -290,6 +296,59 @@ down:
 		&& deactivate
 
 restart: down up
+
+teleport_install:
+	# https://goteleport.com/download/client-tools/
+	curl https://cdn.teleport.dev/install.sh | bash -s 18.2.6
+
+teleport_login:
+	# export TELEPORT_FQDN=teleport.openstudiolandscapes.cloud-ip.cc
+	tsh login --proxy=$${TELEPORT_FQDN} --user=admin
+
+teleport_create_token:
+	mkdir -p $${HOME}/.config/teleport
+	tctl tokens add --type=node --format=text > $${HOME}/.config/teleport/teleport_token
+
+teleport_configure_local_node:
+	teleport node configure \
+    	--data-dir=$${HOME}/.local/share/teleport \
+    	--output=file://$${HOME}/.config/teleport/teleport.yaml \
+    	--token=$${HOME}/.config/teleport/teleport_token \
+    	--proxy=$${TELEPORT_FQDN}:443
+
+define teleport_node_service
+cat <<'EOF'
+[Unit]
+Description=Teleport Service
+After=network.target
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5
+# EnvironmentFile has to be absolute, so the following
+# will not work (hence, disabled):
+# EnvironmentFile=-${HOME}/.config/teleport/teleport
+ExecStart=/usr/bin/teleport start --config ${HOME}/.config/teleport/teleport.yaml --pid-file=${HOME}/teleport/teleport.pid
+# systemd before 239 needs an absolute path
+ExecReload=/bin/sh -c "exec pkill -HUP -L -F ${HOME}/teleport/teleport.pid"
+PIDFile=${HOME}/teleport/teleport.pid
+LimitNOFILE=524288
+
+[Install]
+# Todo:
+#  ::Unit ${HOME}/.config/systemd/user/teleport.service is added as a dependency to a non-existent unit multi-user.target.
+WantedBy=multi-user.target
+EOF
+endef
+export script = $(value teleport_node_service)
+
+teleport_install_unit:
+	@ eval "$$script" > $${HOME}/.config/systemd/user/teleport.service
+
+teleport_enable_unit:
+	systemctl --user daemon-reload
+	systemctl --user enable --now teleport
 
 #reboot:
 #	read -r -e -p "Reboot now? " choice_reboot

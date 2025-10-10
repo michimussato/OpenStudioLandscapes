@@ -885,7 +885,7 @@ class HarborResource(ConfigurableResource):
 
 resources = {}
 
-if f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_ENABLE']}".format(**os.environ) == "True":
+if f"{os.environ.get('OPENSTUDIOLANDSCAPES__HARBOR_ENABLE', 'False')}".format(**os.environ) == "True":
     resources["harbor_resource"] = HarborResource(
         username=EnvVar("OPENSTUDIOLANDSCAPES__HARBOR_USERNAME"),
         password=EnvVar("OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD"),
