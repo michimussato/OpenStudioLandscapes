@@ -269,6 +269,12 @@ harbor_init_projects:
 		&& openstudiolandscapesutil-harborcli project delete --project-name library --host 127.0.0.1 --port 80 \
 		&& deactivate
 
+harbor_CLEAR_ALL:
+	cd ${REPO_DIR}/.harbor \
+		&& sudo pwd \
+		&& sudo ls -al
+		# && sudo rm -r */
+
 openstudiolandscapes_update:
 	cd ${REPO_DIR} \
 		&& source .venv/bin/activate \
@@ -297,19 +303,28 @@ down:
 
 restart: down up
 
-teleport_install:
+#teleport_prepare:
+#	cd ${REPO_DIR} \
+#		&& source .venv/bin/activate \
+#		&& openstudiolandscapesutil-teleportcli Todo \
+#		&& openstudiolandscapesutil-teleportcli Todo \
+#		&& openstudiolandscapesutil-teleportcli Todo \
+#		&& openstudiolandscapesutil-teleportcli Todo \
+#		&& deactivate
+
+teleport_local_node_install:
 	# https://goteleport.com/download/client-tools/
 	curl https://cdn.teleport.dev/install.sh | bash -s 18.2.6
 
-teleport_login:
+teleport_local_node_login:
 	# export TELEPORT_FQDN=teleport.openstudiolandscapes.cloud-ip.cc
 	tsh login --proxy=$${TELEPORT_FQDN} --user=admin
 
-teleport_create_token:
+teleport_local_node_create_token:
 	mkdir -p $${HOME}/.config/teleport
 	tctl tokens add --type=node --format=text > $${HOME}/.config/teleport/teleport_token
 
-teleport_configure_local_node:
+teleport_local_node_configure:
 	teleport node configure \
     	--data-dir=$${HOME}/.local/share/teleport \
     	--output=file://$${HOME}/.config/teleport/teleport.yaml \

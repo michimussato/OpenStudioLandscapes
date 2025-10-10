@@ -10,7 +10,6 @@ __all__ = [
     "ASSET_HEADER_TELEPORT",
     "ASSET_HEADER_COMPOSE",
     "ASSET_HEADER_COMPOSE_LICENSE_SERVER",
-    "ASSET_HEADER_COMPOSE_TELEPORT",
     "ASSET_HEADER_COMPOSE_WORKER",
     "DOCKER_PROGRESS",
 ]
@@ -64,16 +63,6 @@ GROUP_COMPOSE_LICENSE_SERVER = constants_compose_license_server.GROUP
 KEY_COMPOSE_LICENSE_SERVER = constants_compose_license_server.KEY
 ASSET_HEADER_COMPOSE_LICENSE_SERVER = constants_compose_license_server.ASSET_HEADER
 ENVIRONMENT_COMPOSE_LICENSE_SERVER = constants_compose_license_server.ENVIRONMENT
-
-
-from OpenStudioLandscapes.engine.compose_scopes.teleport import (
-    constants as constants_compose_teleport,
-)
-
-GROUP_COMPOSE_TELEPORT = constants_compose_teleport.GROUP
-KEY_COMPOSE_TELEPORT = constants_compose_teleport.KEY
-ASSET_HEADER_COMPOSE_TELEPORT = constants_compose_teleport.ASSET_HEADER
-ENVIRONMENT_COMPOSE_TELEPORT = constants_compose_teleport.ENVIRONMENT
 
 
 from OpenStudioLandscapes.engine.compose_scopes.worker import (
