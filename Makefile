@@ -338,7 +338,8 @@ LimitNOFILE=524288
 [Install]
 # Todo:
 #  ::Unit \${HOME}/.config/systemd/user/teleport.service is added as a dependency to a non-existent unit multi-user.target.
-WantedBy=multi-user.target
+# WantedBy=multi-user.target
+WantedBy=default.target
 EOF
 endef
 export script = $(value teleport_node_service)
@@ -397,3 +398,7 @@ teleport_enable_unit:
 ##			exit 1;\
 ##		fi
 ##	fi
+
+help:
+	# https://stackoverflow.com/a/26339924
+	@LC_ALL=C $(MAKE) -pRrq -f $(firstword $(MAKEFILE_LIST)) : 2>/dev/null | awk -v RS= -F: '/(^|\n)# Files(\n|$$)/,/(^|\n)# Finished Make data base/ {if ($$1 !~ "^[#.]") {print $$1}}' | sort | grep -E -v -e '^[^[:alnum:]]' -e '^$@$$'
