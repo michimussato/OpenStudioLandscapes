@@ -137,6 +137,8 @@ make openstudiolandscapes_features_install
 make harbor_prepare
 make harbor_up
 make harbor_init_projects
+# To actually execute the two returned commands, run:
+# eval $(make harbor_init_projects)
 ```
 
 ```shell
