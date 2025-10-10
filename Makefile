@@ -314,10 +314,10 @@ teleport_configure_local_node:
     	--data-dir=$${HOME}/.local/share/teleport \
     	--output=file://$${HOME}/.config/teleport/teleport.yaml \
     	--token=$${HOME}/.config/teleport/teleport_token \
-    	--proxy=$${TELEPORT_FQDN}:443
+    	--proxy=${TELEPORT_FQDN}:443
 
 define teleport_node_service
-cat <<'EOF'
+cat << EOF
 [Unit]
 Description=Teleport Service
 After=network.target
@@ -328,27 +328,31 @@ Restart=always
 RestartSec=5
 # EnvironmentFile has to be absolute, so the following
 # will not work (hence, disabled):
-# EnvironmentFile=-${HOME}/.config/teleport/teleport
-ExecStart=/usr/bin/teleport start --config ${HOME}/.config/teleport/teleport.yaml --pid-file=${HOME}/teleport/teleport.pid
+# EnvironmentFile=-\${HOME}/.config/teleport/teleport
+ExecStart=$(which teleport) start --config \${HOME}/.config/teleport/teleport.yaml --pid-file=\${HOME}/teleport/teleport.pid
 # systemd before 239 needs an absolute path
-ExecReload=/bin/sh -c "exec pkill -HUP -L -F ${HOME}/teleport/teleport.pid"
-PIDFile=${HOME}/teleport/teleport.pid
+ExecReload=/bin/sh -c "exec pkill -HUP -L -F \${HOME}/teleport/teleport.pid"
+PIDFile=\${HOME}/teleport/teleport.pid
 LimitNOFILE=524288
 
 [Install]
 # Todo:
-#  ::Unit ${HOME}/.config/systemd/user/teleport.service is added as a dependency to a non-existent unit multi-user.target.
+#  ::Unit \${HOME}/.config/systemd/user/teleport.service is added as a dependency to a non-existent unit multi-user.target.
 WantedBy=multi-user.target
 EOF
 endef
 export script = $(value teleport_node_service)
 
 teleport_install_unit:
+	# the PID file needs its directory to exist:
+	mkdir -p ${HOME}/teleport
 	@ eval "$$script" > $${HOME}/.config/systemd/user/teleport.service
 
 teleport_enable_unit:
 	systemctl --user daemon-reload
-	systemctl --user enable --now teleport
+	systemctl --user enable --now teleport.service
+
+	systemctl --user status --no-pager --full teleport.service
 
 #reboot:
 #	read -r -e -p "Reboot now? " choice_reboot
