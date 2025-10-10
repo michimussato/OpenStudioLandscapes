@@ -1419,7 +1419,7 @@ def write_dagster_postgres_compose() -> pathlib.Path:
                 #  - [x] 16 (seems fine - stay with this one for now to be safe)
                 #  - [x] This was the default before; 17 (seems fine - not really checked yet)
                 #  - [ ] 18 (not fine)
-                "image": "docker.io/postgres:17",
+                "image": "docker.io/postgres:16",
                 "volumes": [
                     f"{dagster_postgres_db_dir.as_posix()}:/var/lib/postgresql/data:rw",
                 ],
