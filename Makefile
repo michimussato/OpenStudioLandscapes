@@ -40,17 +40,16 @@ REPLACED := $(shell echo ${REPO_DIR} | sed 's/\//\\\//g')
 #OPENSTUDIOLANDSCAPES_VERSION_TAG := v1.6.0-rc1
 #endif
 
-install: \
-		disable_unattended \
-		install_deps \
-		install_gh_cli \
-		install_python \
-		install_docker \
-		edit_hosts_file \
-		harbor_prepare \
-		harbor_up \
-		harbor_init_projects \
-		add_aliases
+#install: \
+#		disable_unattended \
+#		install_deps \
+#		install_gh_cli \
+#		install_python \
+#		install_docker \
+#		edit_hosts_file \
+#		harbor_prepare \
+#		harbor_up \
+#		harbor_init_projects
 
 disable_unattended:
 	echo "Starting prep..."
@@ -383,6 +382,22 @@ teleport_local_node_uninstall_unit:
 
 teleport_local_node_journal:
 	journalctl --user --follow --unit teleport-node.service
+
+nox:
+	cd ${REPO_DIR} \
+		&& source .venv/bin/activate \
+		&& nox
+
+nox_readme:
+	cd ${REPO_DIR} \
+		&& source .venv/bin/activate \
+		&& nox --sessions readme
+
+nox_tag:
+	cd ${REPO_DIR} \
+		&& source .venv/bin/activate \
+		&& nox --sessions tag
+
 
 #reboot:
 #	read -r -e -p "Reboot now? " choice_reboot
