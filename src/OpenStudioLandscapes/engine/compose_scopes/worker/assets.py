@@ -35,7 +35,7 @@ from OpenStudioLandscapes.engine.utils import *
 
 
 ins, feature_ins = get_dynamic_ins(
-    compose_scope_filter=ComposeScope.WORKER,
+    compose_scope_filter=[ComposeScope.WORKER],
     imported_features=IMPORTED_FEATURES,
     operator=operator.eq,
 )

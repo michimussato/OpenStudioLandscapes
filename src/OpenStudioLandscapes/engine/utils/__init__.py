@@ -578,7 +578,7 @@ def get_str_env(
 
 
 def get_dynamic_ins(
-    compose_scope_filter: ComposeScope,
+    compose_scope_filter: List[ComposeScope],
     imported_features: List[
         dict[
             str,
@@ -600,17 +600,27 @@ def get_dynamic_ins(
 
     """
 
+    def _add_module(_module) -> None:
+        split = _module.split(".")
+        key = split[1]  # key = "Ayon"
+        ins[f"{split[0]}_{split[1]}"] = AssetIn(AssetKey([key, "group_out"]))
+        feature_ins[f"{split[0]}_{split[1]}"] = AssetIn(
+            AssetKey([key, "feature_out"])
+        )
+        return None
+
     ins = {}
     feature_ins = {}
     for i in imported_features:
         # ex: module = "OpenStudioLandscapes.Ayon.definitions"
         module = i["module"]
         compose_scope_ = i["compose_scope"]
-        if operator(compose_scope_, compose_scope_filter):
-            split = module.split(".")
-            key = split[1]  # key = "Ayon"
-            ins[f"{split[0]}_{split[1]}"] = AssetIn(AssetKey([key, "group_out"]))
-            feature_ins[f"{split[0]}_{split[1]}"] = AssetIn(
-                AssetKey([key, "feature_out"])
-            )
+
+        if not bool(compose_scope_filter):
+            # Empty Filter, meaning, add all
+            _add_module(_module=module)
+        else:
+            for compose_scope in compose_scope_filter:
+                if operator(compose_scope_, compose_scope):
+                    _add_module(_module=module)
     return ins, feature_ins

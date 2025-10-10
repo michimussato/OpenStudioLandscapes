@@ -29,7 +29,7 @@ from OpenStudioLandscapes.engine.utils import *
 
 
 ins, feature_ins = get_dynamic_ins(
-    compose_scope_filter=ComposeScope.TELEPORT,
+    compose_scope_filter=[ComposeScope.TELEPORT],
     imported_features=IMPORTED_FEATURES,
     operator=operator.eq,
 )

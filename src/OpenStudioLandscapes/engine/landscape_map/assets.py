@@ -2,7 +2,7 @@ import base64
 import pathlib
 import shutil
 import subprocess
-from typing import Generator, MutableMapping
+from typing import Generator, Any
 
 import pydot
 from dagster import (
@@ -14,6 +14,7 @@ from dagster import (
     Output,
     asset,
 )
+from pydot import Dot
 
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.enums import *
@@ -56,7 +57,7 @@ if bool(ins):
         context: AssetExecutionContext,
         group_out: dict,  # pylint: disable=redefined-outer-name
         **kwargs,
-    ) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
+    ) -> Generator[Output[Dot] | AssetMaterialization | Any, None, None]:
 
         context.log.debug(kwargs)
 

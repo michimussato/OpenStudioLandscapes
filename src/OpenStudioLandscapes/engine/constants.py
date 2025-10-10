@@ -7,6 +7,7 @@ __all__ = [
     "ASSET_HEADER_BASE",
     "ASSET_HEADER_LANDSCAPE_MAP",
     "ASSET_HEADER_DISTRIBUTABLE",
+    "ASSET_HEADER_TELEPORT",
     "ASSET_HEADER_COMPOSE",
     "ASSET_HEADER_COMPOSE_LICENSE_SERVER",
     "ASSET_HEADER_COMPOSE_TELEPORT",
@@ -25,7 +26,8 @@ from dagster import (
 )
 
 from OpenStudioLandscapes.engine.enums import *
-from OpenStudioLandscapes.engine.features import (  # used in OpenStudioLandscapes.engine.discovery.discovery
+# used in OpenStudioLandscapes.engine.discovery.discovery
+from OpenStudioLandscapes.engine.features import (
     FEATURES,
 )
 
@@ -108,6 +110,15 @@ KEY_LANDSCAPE_MAP = [GROUP_LANDSCAPE_MAP]
 ASSET_HEADER_LANDSCAPE_MAP = {
     "group_name": GROUP_LANDSCAPE_MAP,
     "key_prefix": KEY_LANDSCAPE_MAP,
+}
+
+
+GROUP_TELEPORT = "Teleport"
+KEY_TELEPORT = [GROUP_TELEPORT]
+
+ASSET_HEADER_TELEPORT = {
+    "group_name": GROUP_TELEPORT,
+    "key_prefix": KEY_TELEPORT,
 }
 
 

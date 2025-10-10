@@ -30,7 +30,7 @@ from OpenStudioLandscapes.engine.utils import serialize_dict
 
 
 ins, feature_ins = get_dynamic_ins(
-    compose_scope_filter=ComposeScope.DEFAULT,
+    compose_scope_filter=[ComposeScope.DEFAULT],
     imported_features=IMPORTED_FEATURES,
     operator=operator.eq,
 )
