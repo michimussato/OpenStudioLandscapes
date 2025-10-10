@@ -170,8 +170,8 @@ community_channels = {
         # },
     },
     "OpenStudioLandscapes-Teleport": {
-        "enabled": True,
-        "public": True,
+        "enabled": False,
+        "public": False,
         "github": {
             "repo_name": "OpenStudioLandscapes-Teleport",
         },

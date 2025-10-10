@@ -327,13 +327,13 @@ teleport_local_node_login:
 
 teleport_local_node_create_token:
 	mkdir -p $${HOME}/.config/teleport
-	tctl tokens add --type=node --format=text > $${HOME}/.config/teleport/teleport_token
+	tctl tokens add --type=node --format=text > $${HOME}/.config/teleport/teleport-node_token
 
 teleport_local_node_configure:
 	teleport node configure \
     	--data-dir=$${HOME}/.local/share/teleport \
-    	--output=file://$${HOME}/.config/teleport/teleport.yaml \
-    	--token=$${HOME}/.config/teleport/teleport_token \
+    	--output=file://$${HOME}/.config/teleport/teleport-node.yaml \
+    	--token=$${HOME}/.config/teleport/teleport-node_token \
     	--proxy=${TELEPORT_FQDN}:443
 
 define teleport_node_service
@@ -349,10 +349,10 @@ RestartSec=5
 # EnvironmentFile has to be absolute, so the following
 # will not work (hence, disabled):
 # EnvironmentFile=-\${HOME}/.config/teleport/teleport
-ExecStart=$(which teleport) start --config \${HOME}/.config/teleport/teleport.yaml --pid-file=\${HOME}/teleport/teleport.pid
+ExecStart=$(which teleport) start --config \${HOME}/.config/teleport/teleport-node.yaml --pid-file=\${HOME}/teleport/teleport-node.pid
 # systemd before 239 needs an absolute path
-ExecReload=/bin/sh -c "exec pkill -HUP -L -F \${HOME}/teleport/teleport.pid"
-PIDFile=\${HOME}/teleport/teleport.pid
+ExecReload=/bin/sh -c "exec pkill -HUP -L -F \${HOME}/teleport/teleport-node.pid"
+PIDFile=\${HOME}/teleport/teleport-node.pid
 LimitNOFILE=524288
 
 [Install]
@@ -364,16 +364,25 @@ EOF
 endef
 export script = $(value teleport_node_service)
 
-teleport_install_unit:
+teleport_local_node_install_unit:
 	# the PID file needs its directory to exist:
 	mkdir -p ${HOME}/teleport
-	@ eval "$$script" > $${HOME}/.config/systemd/user/teleport.service
+	@ eval "$$script" > $${HOME}/.config/systemd/user/teleport-node.service
 
-teleport_enable_unit:
+teleport_local_node_enable_unit:
 	systemctl --user daemon-reload
-	systemctl --user enable --now teleport.service
+	systemctl --user enable --now teleport-node.service
 
-	systemctl --user status --no-pager --full teleport.service
+	systemctl --user status --no-pager --full teleport-node.service
+
+teleport_local_node_uninstall_unit:
+	systemctl --user disable --now teleport-node.service
+	systemctl --user status --no-pager --full teleport-node.service
+	systemctl --user daemon-reload
+	rm $${HOME}/.config/systemd/user/teleport-node.service
+
+teleport_local_node_journal:
+	journalctl --user --follow --unit teleport-node.service
 
 #reboot:
 #	read -r -e -p "Reboot now? " choice_reboot
