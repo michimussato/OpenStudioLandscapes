@@ -36,10 +36,14 @@ from dagster import (
     AssetKey,
     MetadataValue,
     OpExecutionContext,
+    get_dagster_logger
 )
 
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.exceptions import ComposeScopeException
+
+
+LOGGER = get_dagster_logger(__name__)
 
 
 def cmd_list_to_str(
@@ -565,12 +569,21 @@ def get_str_env(
     # whereas we want:
     # os.getenv("EMPTY_VAR") or "some_value"
 
-    _env = os.getenv(env)
-
-    if not bool(_env):
-        # bool("") evaluates to False, hence, set default
-        # instead of returning empty string.
+    try:
+        _env = os.environ[env]
+        if not bool():
+            raise KeyError(f"Environment Variable {env} is set but has no value:"
+                           f"{_env = }")
+    except KeyError as e:
         _env = default
+        LOGGER.warning(e)
+
+    # _env = os.environ.get(env)
+    #
+    # if not bool(_env):
+    #     # bool("") evaluates to False, hence, set default
+    #     # instead of returning empty string.
+    #     _env = default
 
     return _env
 
