@@ -571,7 +571,7 @@ def get_str_env(
 
     try:
         _env = os.environ[env]
-        if not bool():
+        if not bool(_env):
             raise KeyError(f"Environment Variable {env} is set but has no value:"
                            f"{_env = }")
     except KeyError as e:
