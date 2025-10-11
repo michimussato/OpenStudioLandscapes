@@ -209,6 +209,18 @@ def clone_features(session):
     # Todo
     #  - [ ] create pull_features() session?
 
+    # Could be more elegant:
+    # openstudiolandscapes-engine           | Traceback (most recent call last):
+    # openstudiolandscapes-engine           |   File "/home/openstudiolandscapes/mount/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/nox/sessions.py", line 1101, in execute
+    # openstudiolandscapes-engine           |     self.func(session)
+    # openstudiolandscapes-engine           |   File "/home/openstudiolandscapes/mount/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/nox/_decorators.py", line 94, in __call__
+    # openstudiolandscapes-engine           |     return self.func(*args, **kwargs)
+    # openstudiolandscapes-engine           |            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    # openstudiolandscapes-engine           |   File "/home/openstudiolandscapes/mount/git/repos/OpenStudioLandscapes/noxfile.py", line 244, in clone_features
+    # openstudiolandscapes-engine           |     raise FileExistsError(
+    # openstudiolandscapes-engine           | FileExistsError: The repo /home/openstudiolandscapes/mount/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Ayon already exists. Please remove it before cloning.
+    # openstudiolandscapes-engine           | nox > Session clone_features failed
+
     # Ex:
     # nox --session clone_features
     # nox --tags clone_features
