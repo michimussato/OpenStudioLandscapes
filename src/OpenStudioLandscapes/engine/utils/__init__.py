@@ -567,9 +567,7 @@ def get_str_env(
 
     _env = os.getenv(env)
 
-    if bool(_env):
-        _env = env
-    else:
+    if not bool(_env):
         # bool("") evaluates to False, hence, set default
         # instead of returning empty string.
         _env = default
