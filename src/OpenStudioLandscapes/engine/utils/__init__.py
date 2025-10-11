@@ -578,13 +578,6 @@ def get_str_env(
         _env = default
         LOGGER.warning(e)
 
-    # _env = os.environ.get(env)
-    #
-    # if not bool(_env):
-    #     # bool("") evaluates to False, hence, set default
-    #     # instead of returning empty string.
-    #     _env = default
-
     return _env
 
 
