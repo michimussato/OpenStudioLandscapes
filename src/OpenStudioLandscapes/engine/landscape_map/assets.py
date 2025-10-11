@@ -2,7 +2,7 @@ import base64
 import pathlib
 import shutil
 import subprocess
-from typing import Generator, Any
+from typing import Any, Generator
 
 import pydot
 from dagster import (

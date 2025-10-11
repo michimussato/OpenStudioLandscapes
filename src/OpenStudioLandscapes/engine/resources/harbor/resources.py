@@ -9,17 +9,16 @@ import shutil
 import subprocess
 import tarfile
 from functools import partialmethod
-
-import yaml
 from typing import Dict, List, Union
 
 import requests
+import yaml
 from dagster import (
+    AssetExecutionContext,
     ConfigurableResource,
     EnvVar,
-    get_dagster_logger,
     ResourceDependency,
-    AssetExecutionContext
+    get_dagster_logger,
 )
 
 from OpenStudioLandscapes.engine.exceptions import OpenStudioLandscapesException
@@ -77,9 +76,9 @@ print(output.decode("utf-8"))
 
 
 def get_full_command(
-        command: List[str],
-        sudo: bool = False,
-        **kwargs,
+    command: List[str],
+    sudo: bool = False,
+    **kwargs,
 ) -> List[str]:
 
     if sudo:
@@ -97,8 +96,8 @@ def get_full_command(
 
 
 def run_command(
-        command: List[str],
-        **kwargs,
+    command: List[str],
+    **kwargs,
 ) -> subprocess.Popen:
 
     LOGGER.info("Starting Harbor...")
@@ -211,8 +210,8 @@ class HarborResource(ConfigurableResource):
         ]
 
     def _cmd_harbor_up(
-            self,
-            detach: bool,
+        self,
+        detach: bool,
     ) -> List[str]:
         cmd = [
             *self._cmd_harbor,
@@ -314,7 +313,7 @@ class HarborResource(ConfigurableResource):
     LOGGER.error(expanded_env())
 
     harbor_url: str = expanded_env()["OPENSTUDIOLANDSCAPES__HARBOR_URL"]
-    endpoint_api: str = expanded_env()['OPENSTUDIOLANDSCAPES__HARBOR_API_URL']
+    endpoint_api: str = expanded_env()["OPENSTUDIOLANDSCAPES__HARBOR_API_URL"]
 
     # API ACCESS BLUE PRINTS
     @property
@@ -398,8 +397,8 @@ class HarborResource(ConfigurableResource):
                 "Content-Type": "application/json",
             },
             "json": {
-            "project_name": self._project_name,
-            "public": True,
+                "project_name": self._project_name,
+                "public": True,
             },
         }
         return _projects_create_
@@ -420,7 +419,7 @@ class HarborResource(ConfigurableResource):
     # API ACCESS
     @staticmethod
     def send_request(
-            request: requests.PreparedRequest,
+        request: requests.PreparedRequest,
     ) -> Union[requests.Response, OpenStudioLandscapesException]:
         try:
             with requests.Session() as session:
@@ -431,19 +430,17 @@ class HarborResource(ConfigurableResource):
             return response
 
         except requests.exceptions.ConnectionError as e:
-            raise OpenStudioLandscapesException(
-                "Harbor seems down."
-            ) from e
+            raise OpenStudioLandscapesException("Harbor seems down.") from e
 
     def delete_project_prepared_request(
-            self,
-            project_name: str,
+        self,
+        project_name: str,
     ) -> requests.PreparedRequest:
 
         request: requests.Request = requests.Request(
             method=self._projects_delete["method"],
             url=f"{self._projects_delete['endpoint']}/{project_name}",
-            headers=self._projects_delete["headers"]
+            headers=self._projects_delete["headers"],
         )
 
         return request.prepare()
@@ -466,15 +463,13 @@ class HarborResource(ConfigurableResource):
                     return response
 
             except requests.exceptions.ConnectionError as e:
-                raise OpenStudioLandscapesException(
-                    "Harbor seems down."
-                ) from e
+                raise OpenStudioLandscapesException("Harbor seems down.") from e
 
         else:
             return project_exists
 
     def systeminfo_prepared_request(
-            self,
+        self,
     ) -> requests.PreparedRequest:
 
         request: requests.Request = requests.Request(
@@ -490,7 +485,7 @@ class HarborResource(ConfigurableResource):
         return response
 
     def systeminfo_volumes_prepared_request(
-            self,
+        self,
     ) -> requests.PreparedRequest:
 
         request: requests.Request = requests.Request(
@@ -508,7 +503,7 @@ class HarborResource(ConfigurableResource):
     delete_library = partialmethod(delete_project, project_name="library")
 
     def health_prepared_request(
-            self,
+        self,
     ) -> requests.PreparedRequest:
 
         request: requests.Request = requests.Request(
@@ -524,7 +519,7 @@ class HarborResource(ConfigurableResource):
         return response
 
     def ping_prepared_request(
-            self,
+        self,
     ) -> requests.PreparedRequest:
 
         request: requests.Request = requests.Request(
@@ -540,7 +535,7 @@ class HarborResource(ConfigurableResource):
         return response
 
     def list_projects_prepared_request(
-            self,
+        self,
     ) -> requests.PreparedRequest:
 
         request: requests.Request = requests.Request(
@@ -556,8 +551,8 @@ class HarborResource(ConfigurableResource):
         return response
 
     def query_project_exists_prepared_request(
-            self,
-            project_name: str,
+        self,
+        project_name: str,
     ) -> requests.PreparedRequest:
 
         request: requests.Request = requests.Request(
@@ -573,15 +568,13 @@ class HarborResource(ConfigurableResource):
         project_name: str,
     ) -> requests.Response:
         response = self.send_request(
-            self.query_project_exists_prepared_request(
-                project_name=project_name
-            )
+            self.query_project_exists_prepared_request(project_name=project_name)
         )
         return response
 
     def create_project_prepared_request(
-            self,
-            project_name: str,
+        self,
+        project_name: str,
     ) -> requests.PreparedRequest:
 
         request: requests.Request = requests.Request(
@@ -595,8 +588,8 @@ class HarborResource(ConfigurableResource):
         return request.prepare()
 
     def create_project(
-            self,
-            project_name: str,
+        self,
+        project_name: str,
     ) -> requests.Response:
         response = self.send_request(
             self.create_project_prepared_request(
@@ -607,16 +600,23 @@ class HarborResource(ConfigurableResource):
 
     # HARBOR EXECUTION API
     def harbor_prepare(
-            self,
-            context: AssetExecutionContext,
+        self,
+        context: AssetExecutionContext,
     ) -> List:
         sudo = False
 
-        harbor_root_dir: pathlib.Path = pathlib.Path(f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR']}".format(**os.environ))
+        harbor_root_dir: pathlib.Path = pathlib.Path(
+            f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR']}".format(
+                **os.environ
+            )
+        )
         harbor_root_dir.mkdir(parents=True, exist_ok=True)
 
         harbor_bin_dir: pathlib.Path = (
-                harbor_root_dir / f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_BIN_DIR']}".format(**os.environ)
+            harbor_root_dir
+            / f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_BIN_DIR']}".format(
+                **os.environ
+            )
         )
         harbor_bin_dir.mkdir(parents=True, exist_ok=True)
 
@@ -629,7 +629,12 @@ class HarborResource(ConfigurableResource):
             )
             return []
 
-        harbor_download_dir = harbor_root_dir / f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_DOWNLOAD_DIR']}".format(**os.environ)
+        harbor_download_dir = (
+            harbor_root_dir
+            / f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_DOWNLOAD_DIR']}".format(
+                **os.environ
+            )
+        )
         harbor_download_dir.mkdir(parents=True, exist_ok=True)
 
         def download(
@@ -641,7 +646,9 @@ class HarborResource(ConfigurableResource):
                     parents=True, exist_ok=True
                 )  # create folder if it does not exist
 
-            filename = url.split("/")[-1].replace(" ", "_")  # be careful with file names
+            filename = url.split("/")[-1].replace(
+                " ", "_"
+            )  # be careful with file names
             file_path = dest_folder / filename
 
             r = requests.get(url, stream=True)
@@ -660,7 +667,7 @@ class HarborResource(ConfigurableResource):
                 )
 
         def setup_harbor(
-                harbor_download_dir: pathlib.Path,
+            harbor_download_dir: pathlib.Path,
         ) -> pathlib.Path:
 
             file_path: pathlib.Path = download(
@@ -670,7 +677,9 @@ class HarborResource(ConfigurableResource):
                 dest_folder=harbor_download_dir,
             )
 
-            context.log.info("File successfully downloaded to %s" % file_path.as_posix())
+            context.log.info(
+                "File successfully downloaded to %s" % file_path.as_posix()
+            )
 
             return file_path
 
@@ -693,19 +702,36 @@ class HarborResource(ConfigurableResource):
         context.log.debug("All files extracted to %s" % harbor_bin_dir.as_posix())
 
         def write_harbor_yml(
-                yaml_out: pathlib.Path,
+            yaml_out: pathlib.Path,
         ) -> pathlib.Path:
 
-            harbor_root_dir: pathlib.Path = pathlib.Path(f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR']}".format(**os.environ))
+            harbor_root_dir: pathlib.Path = pathlib.Path(
+                f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR']}".format(
+                    **os.environ
+                )
+            )
             harbor_root_dir.mkdir(parents=True, exist_ok=True)
 
-            harbor_data_dir = harbor_root_dir / f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_DATA_DIR']}".format(**os.environ)
+            harbor_data_dir = (
+                harbor_root_dir
+                / f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_DATA_DIR']}".format(
+                    **os.environ
+                )
+            )
             harbor_data_dir.mkdir(parents=True, exist_ok=True)
 
             harbor_dict = {
-                "hostname": f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME']}".format(**os.environ),
-                "http": {"port": f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_PORT']}".format(**os.environ)},
-                "harbor_admin_password": EnvVar("OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD").get_value(),
+                "hostname": f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME']}".format(
+                    **os.environ
+                ),
+                "http": {
+                    "port": f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_PORT']}".format(
+                        **os.environ
+                    )
+                },
+                "harbor_admin_password": EnvVar(
+                    "OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD"
+                ).get_value(),
                 "database": {
                     "password": "root123",
                     "max_idle_conns": 100,
@@ -781,7 +807,9 @@ class HarborResource(ConfigurableResource):
         )
 
         if not harbor_yml.exists():
-            raise FileNotFoundError("`harbor.yml` file not found. Not able to continue.")
+            raise FileNotFoundError(
+                "`harbor.yml` file not found. Not able to continue."
+            )
 
         prepare: pathlib.Path = harbor_bin_dir / "prepare"
 
@@ -854,8 +882,8 @@ class HarborResource(ConfigurableResource):
     #     return ret
 
     def systemd_unit_dict(
-            self,
-            context: AssetExecutionContext,
+        self,
+        context: AssetExecutionContext,
     ) -> Dict:
 
         unit_dict = {
@@ -885,12 +913,27 @@ class HarborResource(ConfigurableResource):
 
 resources = {}
 
-if f"{os.environ.get('OPENSTUDIOLANDSCAPES__HARBOR_ENABLE', 'False')}".format(**os.environ) == "True":
+if (
+    f"{os.environ.get('OPENSTUDIOLANDSCAPES__HARBOR_ENABLE', 'False')}".format(
+        **os.environ
+    )
+    == "True"
+):
     resources["harbor_resource"] = HarborResource(
         username=EnvVar("OPENSTUDIOLANDSCAPES__HARBOR_USERNAME"),
         password=EnvVar("OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD"),
-        root_dir=pathlib.Path(f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR']}".format(**os.environ)),
-        bin_dir=f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_BIN_DIR']}".format(**os.environ),
-        download_dir=f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_DOWNLOAD_DIR']}".format(**os.environ),
-        data_dir=f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_DATA_DIR']}".format(**os.environ),
+        root_dir=pathlib.Path(
+            f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR']}".format(
+                **os.environ
+            )
+        ),
+        bin_dir=f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_BIN_DIR']}".format(
+            **os.environ
+        ),
+        download_dir=f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_DOWNLOAD_DIR']}".format(
+            **os.environ
+        ),
+        data_dir=f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_DATA_DIR']}".format(
+            **os.environ
+        ),
     )

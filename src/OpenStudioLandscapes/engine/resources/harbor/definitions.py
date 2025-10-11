@@ -4,10 +4,11 @@ from dagster import (
 )
 
 import OpenStudioLandscapes.engine.resources.harbor.assets
-
 from OpenStudioLandscapes.engine.resources.harbor.resources import resources
 
-assets_base = load_assets_from_modules([OpenStudioLandscapes.engine.resources.harbor.assets])
+assets_base = load_assets_from_modules(
+    [OpenStudioLandscapes.engine.resources.harbor.assets]
+)
 
 
 defs = Definitions(
@@ -16,5 +17,5 @@ defs = Definitions(
     ],
     resources={
         **resources,
-    }
+    },
 )

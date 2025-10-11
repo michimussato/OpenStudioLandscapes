@@ -604,9 +604,7 @@ def get_dynamic_ins(
         split = _module.split(".")
         key = split[1]  # key = "Ayon"
         ins[f"{split[0]}_{split[1]}"] = AssetIn(AssetKey([key, "group_out"]))
-        feature_ins[f"{split[0]}_{split[1]}"] = AssetIn(
-            AssetKey([key, "feature_out"])
-        )
+        feature_ins[f"{split[0]}_{split[1]}"] = AssetIn(AssetKey([key, "feature_out"]))
         return None
 
     ins = {}

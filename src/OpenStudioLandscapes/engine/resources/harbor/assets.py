@@ -6,28 +6,27 @@ import shutil
 import tarfile
 import textwrap
 from pathlib import Path
+from typing import Any, Generator, List
 
 import requests
 import yaml
-from typing import Generator, List, Any
-
 from dagster import (
     AssetExecutionContext,
     AssetIn,
     AssetKey,
     AssetMaterialization,
+    EnvVar,
     MaterializeResult,
     MetadataValue,
     Output,
-    asset, EnvVar,
+    asset,
 )
 
 from OpenStudioLandscapes.engine.constants import *
-from OpenStudioLandscapes.engine.utils import *
-from OpenStudioLandscapes.engine.resources.harbor.constants import *
 from OpenStudioLandscapes.engine.exceptions import OpenStudioLandscapesException
-
+from OpenStudioLandscapes.engine.resources.harbor.constants import *
 from OpenStudioLandscapes.engine.resources.harbor.resources import HarborResource
+from OpenStudioLandscapes.engine.utils import *
 
 
 @asset(
@@ -46,11 +45,11 @@ from OpenStudioLandscapes.engine.resources.harbor.resources import HarborResourc
         ).format(
             **os.environ
         )
-    )
+    ),
 )
 def LIBRARY_DELETED(
-        context: AssetExecutionContext,
-        harbor_resource: HarborResource,
+    context: AssetExecutionContext,
+    harbor_resource: HarborResource,
 ) -> Generator[Output[requests.PreparedRequest] | AssetMaterialization, None, None]:
 
     project_name = "library"
@@ -59,7 +58,9 @@ def LIBRARY_DELETED(
         project_name=project_name,
     )
 
-    library_exists = library_exists_response.status_code == requests.status_codes.codes.OK
+    library_exists = (
+        library_exists_response.status_code == requests.status_codes.codes.OK
+    )
 
     context.log.info(f"Library exists: {library_exists_response}")
 
@@ -78,8 +79,12 @@ def LIBRARY_DELETED(
         asset_key=context.asset_key,
         metadata={
             "__".join(context.asset_key.path): MetadataValue.bool(library_exists),
-            "library_exists_response": MetadataValue.text(f"{library_exists_response = }"),
-            "delete_libraray_request_url": MetadataValue.text(delete_libraray_request.url),
+            "library_exists_response": MetadataValue.text(
+                f"{library_exists_response = }"
+            ),
+            "delete_libraray_request_url": MetadataValue.text(
+                delete_libraray_request.url
+            ),
         },
     )
 
@@ -100,11 +105,11 @@ def LIBRARY_DELETED(
         ).format(
             **os.environ
         )
-    )
+    ),
 )
 def OPENSTUDIOLANDSCAPES_EXISTS(
-        context: AssetExecutionContext,
-        harbor_resource: HarborResource,
+    context: AssetExecutionContext,
+    harbor_resource: HarborResource,
 ) -> Generator[Output[requests.PreparedRequest] | AssetMaterialization, None, None]:
 
     project_name = "openstudiolandscapes"
@@ -113,12 +118,16 @@ def OPENSTUDIOLANDSCAPES_EXISTS(
         project_name=project_name,
     )
 
-    project_exists = project_exists_response.status_code == requests.status_codes.codes.OK
+    project_exists = (
+        project_exists_response.status_code == requests.status_codes.codes.OK
+    )
 
     context.log.info(f"Project exists: {project_exists_response}")
 
-    create_openstudiolandscapes_request = harbor_resource.delete_project_prepared_request(
-        project_name=project_name,
+    create_openstudiolandscapes_request = (
+        harbor_resource.delete_project_prepared_request(
+            project_name=project_name,
+        )
     )
 
     if not project_exists:
@@ -132,8 +141,12 @@ def OPENSTUDIOLANDSCAPES_EXISTS(
         asset_key=context.asset_key,
         metadata={
             "__".join(context.asset_key.path): MetadataValue.bool(project_exists),
-            "library_exists_response": MetadataValue.text(f"{project_exists_response = }"),
-            "delete_libraray_request_url": MetadataValue.text(create_openstudiolandscapes_request.url),
+            "library_exists_response": MetadataValue.text(
+                f"{project_exists_response = }"
+            ),
+            "delete_libraray_request_url": MetadataValue.text(
+                create_openstudiolandscapes_request.url
+            ),
         },
     )
 
@@ -150,10 +163,10 @@ def OPENSTUDIOLANDSCAPES_EXISTS(
         ).format(
             **os.environ
         )
-    )
+    ),
 )
 def su_method(
-        context: AssetExecutionContext,
+    context: AssetExecutionContext,
 ) -> Generator[Output[list[str]] | AssetMaterialization, None, None]:
 
     su_methods = {
@@ -178,7 +191,9 @@ def su_method(
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(su_methods[su_method]),
+            "__".join(context.asset_key.path): MetadataValue.json(
+                su_methods[su_method]
+            ),
             "su_methods": MetadataValue.json(su_methods),
             "su_method": MetadataValue.text(su_method),
         },
@@ -197,10 +212,10 @@ def su_method(
         ).format(
             **os.environ
         )
-    )
+    ),
 )
 def shell(
-        context: AssetExecutionContext,
+    context: AssetExecutionContext,
 ) -> Generator[Output[list[str]] | AssetMaterialization, None, None]:
 
     shell = [
@@ -221,8 +236,12 @@ def shell(
 @asset(
     **ASSET_HEADER_RESOURCE_HARBOR,
     ins={
-        "su_method": AssetIn(AssetKey([*ASSET_HEADER_RESOURCE_HARBOR["key_prefix"], "su_method"])),
-        "shell": AssetIn(AssetKey([*ASSET_HEADER_RESOURCE_HARBOR["key_prefix"], "shell"])),
+        "su_method": AssetIn(
+            AssetKey([*ASSET_HEADER_RESOURCE_HARBOR["key_prefix"], "su_method"])
+        ),
+        "shell": AssetIn(
+            AssetKey([*ASSET_HEADER_RESOURCE_HARBOR["key_prefix"], "shell"])
+        ),
     },
     deps=[
         AssetKey([*ASSET_HEADER_RESOURCE_HARBOR["key_prefix"], "HARBOR_PREPARE"]),
@@ -230,20 +249,20 @@ def shell(
     description=textwrap.dedent(
         f"""
         Harbor URL: {os.environ['OPENSTUDIOLANDSCAPES__HARBOR_URL']}
-        
+
         Dev Center: {os.environ['OPENSTUDIOLANDSCAPES__HARBOR_URL']}/devcenter-api-2.0
         """.format(
             **os.environ
         ).format(
             **os.environ
         )
-    )
+    ),
 )
 def HARBOR_COMMANDS(
-        context: AssetExecutionContext,
-        harbor_resource: HarborResource,
-        su_method: list[str],
-        shell: list[str],
+    context: AssetExecutionContext,
+    harbor_resource: HarborResource,
+    su_method: list[str],
+    shell: list[str],
 ) -> MaterializeResult:
 
     harbor_up = harbor_resource._cmd_harbor_up(detach=False)
@@ -255,11 +274,21 @@ def HARBOR_COMMANDS(
     return MaterializeResult(
         asset_key=context.asset_key,
         metadata={
-            "harbor_up": MetadataValue.path(f"{' '.join(su_method + shell)} \"{' '.join(harbor_up)}\""),
-            "harbor_up_detach": MetadataValue.path(f"{' '.join(su_method + shell)} \"{' '.join(harbor_up_detach)}\""),
-            "harbor_down": MetadataValue.path(f"{' '.join(su_method + shell)} \"{' '.join(harbor_down)}\""),
-            "harbor_restart": MetadataValue.path(f"{' '.join(su_method + shell)} \"{' '.join(harbor_restart)}\""),
-            "harbor_ps": MetadataValue.path(f"{' '.join(shell)} \"{' '.join(harbor_ps)}\""),
+            "harbor_up": MetadataValue.path(
+                f"{' '.join(su_method + shell)} \"{' '.join(harbor_up)}\""
+            ),
+            "harbor_up_detach": MetadataValue.path(
+                f"{' '.join(su_method + shell)} \"{' '.join(harbor_up_detach)}\""
+            ),
+            "harbor_down": MetadataValue.path(
+                f"{' '.join(su_method + shell)} \"{' '.join(harbor_down)}\""
+            ),
+            "harbor_restart": MetadataValue.path(
+                f"{' '.join(su_method + shell)} \"{' '.join(harbor_restart)}\""
+            ),
+            "harbor_ps": MetadataValue.path(
+                f"{' '.join(shell)} \"{' '.join(harbor_ps)}\""
+            ),
         },
     )
 
@@ -273,25 +302,27 @@ def HARBOR_COMMANDS(
     description=textwrap.dedent(
         f"""
         Harbor URL: {os.environ['OPENSTUDIOLANDSCAPES__HARBOR_URL']}
-        
+
         Dev Center: {os.environ['OPENSTUDIOLANDSCAPES__HARBOR_URL']}/devcenter-api-2.0
         """.format(
             **os.environ
         ).format(
             **os.environ
         )
-    )
+    ),
 )
 def HARBOR_HEALTH(
-        context: AssetExecutionContext,
-        harbor_resource: HarborResource,
+    context: AssetExecutionContext,
+    harbor_resource: HarborResource,
 ) -> MaterializeResult:
 
     return MaterializeResult(
         asset_key=context.asset_key,
         metadata={
             "systeminfo": MetadataValue.json(harbor_resource.systeminfo().json()),
-            "systeminfo_volumes": MetadataValue.json(harbor_resource.systeminfo_volumes().json()),
+            "systeminfo_volumes": MetadataValue.json(
+                harbor_resource.systeminfo_volumes().json()
+            ),
         },
     )
 
@@ -299,25 +330,29 @@ def HARBOR_HEALTH(
 @asset(
     **ASSET_HEADER_RESOURCE_HARBOR,
     ins={
-        "su_method": AssetIn(AssetKey([*ASSET_HEADER_RESOURCE_HARBOR["key_prefix"], "su_method"])),
-        "shell": AssetIn(AssetKey([*ASSET_HEADER_RESOURCE_HARBOR["key_prefix"], "shell"])),
+        "su_method": AssetIn(
+            AssetKey([*ASSET_HEADER_RESOURCE_HARBOR["key_prefix"], "su_method"])
+        ),
+        "shell": AssetIn(
+            AssetKey([*ASSET_HEADER_RESOURCE_HARBOR["key_prefix"], "shell"])
+        ),
     },
     description=textwrap.dedent(
         f"""
         Harbor URL: {os.environ['OPENSTUDIOLANDSCAPES__HARBOR_URL']}
-        
+
         Dev Center: {os.environ['OPENSTUDIOLANDSCAPES__HARBOR_URL']}/devcenter-api-2.0
         """.format(
             **os.environ
         ).format(
             **os.environ
         )
-    )
+    ),
 )
 def HARBOR_RESET(
-        context: AssetExecutionContext,
-        su_method: list[str],
-        shell: list[str],
+    context: AssetExecutionContext,
+    su_method: list[str],
+    shell: list[str],
 ) -> MaterializeResult:
 
     d_ = expand_dict_vars(
@@ -326,7 +361,7 @@ def HARBOR_RESET(
     )
 
     harbor_root_dir: pathlib.Path = pathlib.Path(
-        d_['OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR']
+        d_["OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR"]
     )
 
     git_clean = [
@@ -345,7 +380,9 @@ def HARBOR_RESET(
     return MaterializeResult(
         asset_key=context.asset_key,
         metadata={
-            "git_clean": MetadataValue.path(f"{' '.join(sudo_bash_c)} \"{' '.join(git_clean)}\""),
+            "git_clean": MetadataValue.path(
+                f"{' '.join(sudo_bash_c)} \"{' '.join(git_clean)}\""
+            ),
         },
     )
 
@@ -354,7 +391,9 @@ def HARBOR_RESET(
     **ASSET_HEADER_RESOURCE_HARBOR,
     ins={
         "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
-        "su_method": AssetIn(AssetKey([*ASSET_HEADER_RESOURCE_HARBOR["key_prefix"], "su_method"])),
+        "su_method": AssetIn(
+            AssetKey([*ASSET_HEADER_RESOURCE_HARBOR["key_prefix"], "su_method"])
+        ),
     },
     deps=[
         AssetKey([*ASSET_HEADER_RESOURCE_HARBOR["key_prefix"], "HARBOR_PREPARE"]),
@@ -362,20 +401,20 @@ def HARBOR_RESET(
     description=textwrap.dedent(
         f"""
         Harbor URL: {os.environ['OPENSTUDIOLANDSCAPES__HARBOR_URL']}
-        
+
         Dev Center: {os.environ['OPENSTUDIOLANDSCAPES__HARBOR_URL']}/devcenter-api-2.0
         """.format(
             **os.environ
         ).format(
             **os.environ
         )
-    )
+    ),
 )
 def HARBOR_SYSTEMD(
-        context: AssetExecutionContext,
-        harbor_resource: HarborResource,
-        env: dict,  # pylint: disable=redefined-outer-name
-        su_method: list[str],  # pylint: disable=redefined-outer-name
+    context: AssetExecutionContext,
+    harbor_resource: HarborResource,
+    env: dict,  # pylint: disable=redefined-outer-name
+    su_method: list[str],  # pylint: disable=redefined-outer-name
 ) -> MaterializeResult:
 
     unit_dict: dict = harbor_resource.systemd_unit_dict(context=context)
@@ -497,8 +536,12 @@ def HARBOR_SYSTEMD(
     return MaterializeResult(
         asset_key=context.asset_key,
         metadata={
-            "install_service": MetadataValue.path(f"{' '.join(sudo_bash_c)} \"{' '.join(install_service)}\""),
-            "remove_service": MetadataValue.path(f"{' '.join(sudo_bash_c)} \"{' '.join(remove_service)}\""),
+            "install_service": MetadataValue.path(
+                f"{' '.join(sudo_bash_c)} \"{' '.join(install_service)}\""
+            ),
+            "remove_service": MetadataValue.path(
+                f"{' '.join(sudo_bash_c)} \"{' '.join(remove_service)}\""
+            ),
             "journald": MetadataValue.path(f"{' '.join(journalctl)}"),
             "unit": MetadataValue.path(unit_file),
             "unit_dict": MetadataValue.json(unit_dict),
@@ -513,17 +556,17 @@ def HARBOR_SYSTEMD(
     description=textwrap.dedent(
         f"""
         Harbor URL: {os.environ['OPENSTUDIOLANDSCAPES__HARBOR_URL']}
-        
+
         Dev Center: {os.environ['OPENSTUDIOLANDSCAPES__HARBOR_URL']}/devcenter-api-2.0
         """.format(
             **os.environ
         ).format(
             **os.environ
         )
-    )
+    ),
 )
 def HARBOR_DOWNLOAD(
-        context: AssetExecutionContext,
+    context: AssetExecutionContext,
 ) -> Generator[Output[pathlib.Path | Any] | AssetMaterialization | Any, Any, None]:
 
     d_ = expand_dict_vars(
@@ -531,7 +574,9 @@ def HARBOR_DOWNLOAD(
         kv=os.environ,
     )
 
-    harbor_root_dir: pathlib.Path = pathlib.Path(d_["OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR"])
+    harbor_root_dir: pathlib.Path = pathlib.Path(
+        d_["OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR"]
+    )
     harbor_root_dir.mkdir(parents=True, exist_ok=True)
 
     dest_folder = harbor_root_dir / d_["OPENSTUDIOLANDSCAPES__HARBOR_DOWNLOAD_DIR"]
@@ -576,23 +621,25 @@ def HARBOR_DOWNLOAD(
 @asset(
     **ASSET_HEADER_RESOURCE_HARBOR,
     ins={
-        "HARBOR_DOWNLOAD": AssetIn(AssetKey([*ASSET_HEADER_RESOURCE_HARBOR["key_prefix"], "HARBOR_DOWNLOAD"])),
+        "HARBOR_DOWNLOAD": AssetIn(
+            AssetKey([*ASSET_HEADER_RESOURCE_HARBOR["key_prefix"], "HARBOR_DOWNLOAD"])
+        ),
     },
     description=textwrap.dedent(
         f"""
         Harbor URL: {os.environ['OPENSTUDIOLANDSCAPES__HARBOR_URL']}
-        
+
         Dev Center: {os.environ['OPENSTUDIOLANDSCAPES__HARBOR_URL']}/devcenter-api-2.0
         """.format(
             **os.environ
         ).format(
             **os.environ
         )
-    )
+    ),
 )
 def HARBOR_EXTRACT(
-        context: AssetExecutionContext,
-        HARBOR_DOWNLOAD: pathlib.Path,
+    context: AssetExecutionContext,
+    HARBOR_DOWNLOAD: pathlib.Path,
 ) -> Generator[Output[Path] | AssetMaterialization | Any, Any, None]:
 
     d_ = expand_dict_vars(
@@ -600,14 +647,16 @@ def HARBOR_EXTRACT(
         kv=os.environ,
     )
 
-    harbor_root_dir: pathlib.Path = pathlib.Path(d_["OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR"])
+    harbor_root_dir: pathlib.Path = pathlib.Path(
+        d_["OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR"]
+    )
     harbor_root_dir.mkdir(parents=True, exist_ok=True)
 
     dest_folder = harbor_root_dir / d_["OPENSTUDIOLANDSCAPES__HARBOR_DOWNLOAD_DIR"]
     dest_folder.mkdir(parents=True, exist_ok=True)
 
     harbor_bin_dir: pathlib.Path = (
-            harbor_root_dir / d_["OPENSTUDIOLANDSCAPES__HARBOR_BIN_DIR"]
+        harbor_root_dir / d_["OPENSTUDIOLANDSCAPES__HARBOR_BIN_DIR"]
     )
     harbor_bin_dir.mkdir(parents=True, exist_ok=True)
 
@@ -641,17 +690,17 @@ def HARBOR_EXTRACT(
     description=textwrap.dedent(
         f"""
         Harbor URL: {os.environ['OPENSTUDIOLANDSCAPES__HARBOR_URL']}
-        
+
         Dev Center: {os.environ['OPENSTUDIOLANDSCAPES__HARBOR_URL']}/devcenter-api-2.0
         """.format(
             **os.environ
         ).format(
             **os.environ
         )
-    )
+    ),
 )
 def HARBOR_CONSTRUCT_CONFIG(
-        context: AssetExecutionContext,
+    context: AssetExecutionContext,
 ) -> Generator[Output[Any] | AssetMaterialization | Any, Any, None]:
 
     context.log.warning(os.environ)
@@ -661,7 +710,9 @@ def HARBOR_CONSTRUCT_CONFIG(
         kv=os.environ,
     )
 
-    harbor_root_dir: pathlib.Path = pathlib.Path(d_["OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR"])
+    harbor_root_dir: pathlib.Path = pathlib.Path(
+        d_["OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR"]
+    )
     harbor_root_dir.mkdir(parents=True, exist_ok=True)
 
     harbor_data_dir = harbor_root_dir / d_["OPENSTUDIOLANDSCAPES__HARBOR_DATA_DIR"]
@@ -670,7 +721,9 @@ def HARBOR_CONSTRUCT_CONFIG(
     harbor_dict = {
         "hostname": d_["OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME"],
         "http": {"port": d_["OPENSTUDIOLANDSCAPES__HARBOR_PORT"]},
-        "harbor_admin_password": EnvVar("OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD").get_value(),
+        "harbor_admin_password": EnvVar(
+            "OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD"
+        ).get_value(),
         "database": {
             "password": "root123",
             "max_idle_conns": 100,
@@ -730,9 +783,7 @@ def HARBOR_CONSTRUCT_CONFIG(
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(
-                harbor_dict
-            ),
+            "__".join(context.asset_key.path): MetadataValue.json(harbor_dict),
             "harbor_yml": MetadataValue.md(f"```shell\n{harbor_yml}\n```"),
             "d_": MetadataValue.json(dict(d_)),
         },
@@ -742,25 +793,31 @@ def HARBOR_CONSTRUCT_CONFIG(
 @asset(
     **ASSET_HEADER_RESOURCE_HARBOR,
     ins={
-        "HARBOR_CONSTRUCT_CONFIG": AssetIn(AssetKey([*ASSET_HEADER_RESOURCE_HARBOR["key_prefix"], "HARBOR_CONSTRUCT_CONFIG"])),
-        "HARBOR_EXTRACT": AssetIn(AssetKey([*ASSET_HEADER_RESOURCE_HARBOR["key_prefix"], "HARBOR_EXTRACT"])),
+        "HARBOR_CONSTRUCT_CONFIG": AssetIn(
+            AssetKey(
+                [*ASSET_HEADER_RESOURCE_HARBOR["key_prefix"], "HARBOR_CONSTRUCT_CONFIG"]
+            )
+        ),
+        "HARBOR_EXTRACT": AssetIn(
+            AssetKey([*ASSET_HEADER_RESOURCE_HARBOR["key_prefix"], "HARBOR_EXTRACT"])
+        ),
     },
     description=textwrap.dedent(
         f"""
         Harbor URL: {os.environ['OPENSTUDIOLANDSCAPES__HARBOR_URL']}
-        
+
         Dev Center: {os.environ['OPENSTUDIOLANDSCAPES__HARBOR_URL']}/devcenter-api-2.0
         """.format(
             **os.environ
         ).format(
             **os.environ
         )
-    )
+    ),
 )
 def HARBOR_WRITE_CONFIG(
-        context: AssetExecutionContext,
-        HARBOR_CONSTRUCT_CONFIG: dict,  # pylint: disable=redefined-outer-name
-        HARBOR_EXTRACT: pathlib.Path,  # pylint: disable=redefined-outer-name
+    context: AssetExecutionContext,
+    HARBOR_CONSTRUCT_CONFIG: dict,  # pylint: disable=redefined-outer-name
+    HARBOR_EXTRACT: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[Any] | AssetMaterialization | Any, Any, None]:
 
     d_ = expand_dict_vars(
@@ -768,7 +825,9 @@ def HARBOR_WRITE_CONFIG(
         kv=os.environ,
     )
 
-    harbor_root_dir: pathlib.Path = pathlib.Path(d_["OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR"])
+    harbor_root_dir: pathlib.Path = pathlib.Path(
+        d_["OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR"]
+    )
     harbor_root_dir.mkdir(parents=True, exist_ok=True)
 
     HARBOR_EXTRACT.mkdir(parents=True, exist_ok=True)
@@ -788,9 +847,7 @@ def HARBOR_WRITE_CONFIG(
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.path(
-                yaml_out
-            ),
+            "__".join(context.asset_key.path): MetadataValue.path(yaml_out),
             "HARBOR_CONSTRUCT_CONFIG": MetadataValue.json(HARBOR_CONSTRUCT_CONFIG),
             "harbor_yml": MetadataValue.md(f"```shell\n{harbor_yml}\n```"),
             "d_": MetadataValue.json(dict(d_)),
@@ -801,27 +858,35 @@ def HARBOR_WRITE_CONFIG(
 @asset(
     **ASSET_HEADER_RESOURCE_HARBOR,
     ins={
-        "shell": AssetIn(AssetKey([*ASSET_HEADER_RESOURCE_HARBOR["key_prefix"], "shell"])),
-        "HARBOR_EXTRACT": AssetIn(AssetKey([*ASSET_HEADER_RESOURCE_HARBOR["key_prefix"], "HARBOR_EXTRACT"])),
-        "HARBOR_WRITE_CONFIG": AssetIn(AssetKey([*ASSET_HEADER_RESOURCE_HARBOR["key_prefix"], "HARBOR_WRITE_CONFIG"])),
+        "shell": AssetIn(
+            AssetKey([*ASSET_HEADER_RESOURCE_HARBOR["key_prefix"], "shell"])
+        ),
+        "HARBOR_EXTRACT": AssetIn(
+            AssetKey([*ASSET_HEADER_RESOURCE_HARBOR["key_prefix"], "HARBOR_EXTRACT"])
+        ),
+        "HARBOR_WRITE_CONFIG": AssetIn(
+            AssetKey(
+                [*ASSET_HEADER_RESOURCE_HARBOR["key_prefix"], "HARBOR_WRITE_CONFIG"]
+            )
+        ),
     },
     description=textwrap.dedent(
         f"""
         Harbor URL: {os.environ['OPENSTUDIOLANDSCAPES__HARBOR_URL']}
-        
+
         Dev Center: {os.environ['OPENSTUDIOLANDSCAPES__HARBOR_URL']}/devcenter-api-2.0
         """.format(
             **os.environ
         ).format(
             **os.environ
         )
-    )
+    ),
 )
 def HARBOR_PREPARE(
-        context: AssetExecutionContext,
-        shell: list[str],  # pylint: disable=redefined-outer-name
-        HARBOR_EXTRACT: pathlib.Path,  # pylint: disable=redefined-outer-name
-        HARBOR_WRITE_CONFIG: pathlib.Path,  # pylint: disable=redefined-outer-name
+    context: AssetExecutionContext,
+    shell: list[str],  # pylint: disable=redefined-outer-name
+    HARBOR_EXTRACT: pathlib.Path,  # pylint: disable=redefined-outer-name
+    HARBOR_WRITE_CONFIG: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[Any] | AssetMaterialization | Any, Any, None]:
 
     d_ = expand_dict_vars(
@@ -853,10 +918,10 @@ def HARBOR_PREPARE(
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.path(
-                prepare
+            "__".join(context.asset_key.path): MetadataValue.path(prepare),
+            "prepare": MetadataValue.path(
+                f"{' '.join(bash_c)} \"{' '.join(cmd_prepare)}\""
             ),
-            "prepare": MetadataValue.path(f"{' '.join(bash_c)} \"{' '.join(cmd_prepare)}\""),
             "d_": MetadataValue.json(dict(d_)),
         },
     )

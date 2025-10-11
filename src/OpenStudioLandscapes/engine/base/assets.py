@@ -312,6 +312,13 @@ def build_docker_image(
             AssetKey([*ASSET_HEADER_BASE["key_prefix"], "build_docker_image"]),
         ),
     },
+    description=textwrap.dedent(
+        """
+        This is the foundation. This assets provides all relevant environment information
+        for subsequent assets and asset groups. All downstream assets consume this data and 
+        build their environment on top of this.
+        """
+    )
 )
 def group_out_base(
     context: AssetExecutionContext,

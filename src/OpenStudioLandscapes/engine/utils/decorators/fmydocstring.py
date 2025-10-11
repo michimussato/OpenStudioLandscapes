@@ -16,10 +16,15 @@ def fmydocstring(g, l):
     def decorator(func):
         """Simple decorator to treat docstrings as f-strings"""
         # globals()["docstrings_dict"] = docstrings_dict
-        func.__doc__ = eval(f'f"""{func.__doc__}"""', g, l) if func.__doc__ is not None else None
+        func.__doc__ = (
+            eval(f'f"""{func.__doc__}"""', g, l) if func.__doc__ is not None else None
+        )
+
         # func.__doc__ = eval(f'f"""{func.__doc__}"""', globals()) if func.__doc__ is not None else None
         @functools.wraps(func)
         def func_wrapper(*args, **kwargs):
             return func(*args, **kwargs)
+
         return func_wrapper
+
     return decorator

@@ -5,9 +5,9 @@ flowchart TD
     antlr4-python3-runtime["antlr4-python3-runtime\n4.13.2"]
     argcomplete["argcomplete\n3.6.2"]
     arrow["arrow\n1.3.0"]
-    attrs["attrs\n25.3.0"]
+    attrs["attrs\n25.4.0"]
     boolean-py["boolean.py\n5.0"]
-    certifi["certifi\n2025.8.3"]
+    certifi["certifi\n2025.10.5"]
     chardet["chardet\n5.2.0"]
     charset-normalizer["charset-normalizer\n3.4.3"]
     click_0["click\n8.3.0"]
@@ -24,7 +24,7 @@ flowchart TD
     docker-compose-graph["docker-compose-graph\n1.0.0"]
     docker["docker\n7.1.0"]
     docstring-parser["docstring_parser\n0.17.0"]
-    filelock["filelock\n3.19.1"]
+    filelock["filelock\n3.20.0"]
     fqdn["fqdn\n1.5.1"]
     fsspec["fsspec\n2025.9.0"]
     gitdb["gitdb\n4.0.12"]
@@ -49,18 +49,19 @@ flowchart TD
     mdurl["mdurl\n0.1.2"]
     nox["nox\n2025.5.1"]
     openstudiolandscapes["OpenStudioLandscapes\n0.0.0"]
+    openstudiolandscapesutil-harborcli["OpenStudioLandscapesUtil-HarborCLI\n0.0.0"]
     packageurl-python["packageurl-python\n0.17.5"]
     packaging["packaging\n25.0"]
     pathlib-abc["pathlib_abc\n0.5.1"]
     pip-requirements-parser["pip-requirements-parser\n32.0.1"]
-    pip["pip\n25.1.1"]
-    pipdeptree["pipdeptree\n2.28.0"]
-    platformdirs["platformdirs\n4.4.0"]
+    pip["pip\n25.2"]
+    pipdeptree["pipdeptree\n2.29.0"]
+    platformdirs["platformdirs\n4.5.0"]
     protobuf["protobuf\n5.29.5"]
-    psycopg2-binary["psycopg2-binary\n2.9.10"]
+    psycopg2-binary["psycopg2-binary\n2.9.11"]
     py-serializable["py-serializable\n2.1.0"]
-    pydantic-core["pydantic_core\n2.33.2"]
-    pydantic["pydantic\n2.11.9"]
+    pydantic-core["pydantic_core\n2.41.1"]
+    pydantic["pydantic\n2.12.0"]
     pydot["pydot\n4.0.1"]
     pygments["Pygments\n2.19.2"]
     pyparsing["pyparsing\n3.2.5"]
@@ -73,26 +74,26 @@ flowchart TD
     rfc3339-validator["rfc3339-validator\n0.1.4"]
     rfc3986-validator["rfc3986-validator\n0.1.1"]
     rfc3987-syntax["rfc3987-syntax\n1.1.0"]
-    rich["rich\n14.1.0"]
+    rich["rich\n14.2.0"]
     rpds-py["rpds-py\n0.27.1"]
     setuptools["setuptools\n80.9.0"]
     six["six\n1.17.0"]
     smmap["smmap\n5.0.2"]
     snakemd["snakemd\n2.3.0"]
     sortedcontainers["sortedcontainers\n2.4.0"]
-    sqlalchemy["SQLAlchemy\n2.0.43"]
+    sqlalchemy["SQLAlchemy\n2.0.44"]
     structlog["structlog\n25.4.0"]
     tabulate["tabulate\n0.9.0"]
-    tomli["tomli\n2.2.1"]
+    tomli["tomli\n2.3.0"]
     toposort["toposort\n1.10"]
     tqdm["tqdm\n4.67.1"]
-    types-python-dateutil["types-python-dateutil\n2.9.0.20250822"]
+    types-python-dateutil["types-python-dateutil\n2.9.0.20251008"]
     typing-extensions["typing_extensions\n4.15.0"]
     typing-inspection["typing-inspection\n0.4.2"]
-    universal-pathlib["universal_pathlib\n0.3.0"]
+    universal-pathlib["universal_pathlib\n0.3.3"]
     uri-template["uri-template\n1.3.0"]
     urllib3["urllib3\n2.5.0"]
-    virtualenv["virtualenv\n20.34.0"]
+    virtualenv["virtualenv\n20.35.3"]
     watchdog["watchdog\n5.0.3"]
     webcolors["webcolors\n24.11.1"]
     alembic -- ">=1.4.0" --> sqlalchemy
@@ -177,19 +178,23 @@ flowchart TD
     openstudiolandscapes -- "any" --> docker-compose-graph
     openstudiolandscapes -- "any" --> gitpython
     openstudiolandscapes -- "any" --> nox
+    openstudiolandscapes -- "any" --> openstudiolandscapesutil-harborcli
     openstudiolandscapes -- "any" --> pydot
     openstudiolandscapes -- "any" --> pyyaml
     openstudiolandscapes -- "any" --> snakemd
+    openstudiolandscapesutil-harborcli -- "any" --> pyyaml
+    openstudiolandscapesutil-harborcli -- "any" --> requests
+    openstudiolandscapesutil-harborcli -- "any" --> snakemd
     pip-requirements-parser -- "any" --> packaging
     pip-requirements-parser -- "any" --> pyparsing
-    pipdeptree -- ">=24.1" --> packaging
-    pipdeptree -- ">=24.2" --> pip
+    pipdeptree -- ">=25" --> packaging
+    pipdeptree -- ">=25.2" --> pip
     py-serializable -- ">=0.7.1,<0.8.0" --> defusedxml
-    pydantic -- "==2.33.2" --> pydantic-core
-    pydantic -- ">=0.4.0" --> typing-inspection
+    pydantic -- "==2.41.1" --> pydantic-core
+    pydantic -- ">=0.4.2" --> typing-inspection
     pydantic -- ">=0.6.0" --> annotated-types
-    pydantic -- ">=4.12.2" --> typing-extensions
-    pydantic-core -- ">=4.6.0,!=4.7.0" --> typing-extensions
+    pydantic -- ">=4.14.1" --> typing-extensions
+    pydantic-core -- ">=4.14.1" --> typing-extensions
     pydot -- ">=3.1.0" --> pyparsing
     python-dateutil -- ">=1.5" --> six
     referencing -- ">=0.7.0" --> rpds-py

@@ -158,7 +158,7 @@
       "version": "0.0.0"
     },
     {
-      "bom-ref": "BomRef.7307822872337836.049861648248126444",
+      "bom-ref": "BomRef.7378584680896542.501591293078103",
       "description": "A Toolkit to create dynamic Animation and VFX studio environments for robust automation and pipelines.",
       "externalReferences": [
         {
@@ -173,6 +173,36 @@
         }
       ],
       "name": "OpenStudioLandscapes",
+      "type": "library",
+      "version": "0.0.0"
+    },
+    {
+      "bom-ref": "OpenStudioLandscapesUtil-HarborCLI==0.0.0",
+      "description": "A CLI or Harbor setup",
+      "externalReferences": [
+        {
+          "comment": "PackageSource: VCS 'git'",
+          "type": "vcs",
+          "url": "https://github.com/michimussato/OpenStudioLandscapesUtil-HarborCLI.git#19db42ef4c5d0663a0b44a1b4c3be2643017bf87"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Homepage",
+          "type": "website",
+          "url": "https://github.com/michimussato/OpenStudioLandscapesUtil-HarborCLI"
+        }
+      ],
+      "name": "OpenStudioLandscapesUtil-HarborCLI",
+      "properties": [
+        {
+          "name": "cdx:python:package:source:vcs:commit_id",
+          "value": "19db42ef4c5d0663a0b44a1b4c3be2643017bf87"
+        },
+        {
+          "name": "cdx:python:package:source:vcs:requested_revision",
+          "value": "v1.6.0-rc1"
+        }
+      ],
+      "purl": "pkg:pypi/openstudiolandscapesutil-harborcli@0.0.0?vcs_url=git%2Bhttps://github.com/michimussato/OpenStudioLandscapesUtil-HarborCLI.git%4019db42ef4c5d0663a0b44a1b4c3be2643017bf87",
       "type": "library",
       "version": "0.0.0"
     },
@@ -279,7 +309,7 @@
       "version": "2.19.2"
     },
     {
-      "bom-ref": "SQLAlchemy==2.0.43",
+      "bom-ref": "SQLAlchemy==2.0.44",
       "description": "Database Abstraction Library",
       "externalReferences": [
         {
@@ -307,9 +337,9 @@
         }
       ],
       "name": "SQLAlchemy",
-      "purl": "pkg:pypi/sqlalchemy@2.0.43",
+      "purl": "pkg:pypi/sqlalchemy@2.0.44",
       "type": "library",
-      "version": "2.0.43"
+      "version": "2.0.44"
     },
     {
       "bom-ref": "alembic==1.16.5",
@@ -479,7 +509,7 @@
       "version": "1.3.0"
     },
     {
-      "bom-ref": "attrs==25.3.0",
+      "bom-ref": "attrs==25.4.0",
       "description": "Classes Without Boilerplate",
       "externalReferences": [
         {
@@ -517,9 +547,9 @@
         }
       ],
       "name": "attrs",
-      "purl": "pkg:pypi/attrs@25.3.0",
+      "purl": "pkg:pypi/attrs@25.4.0",
       "type": "library",
-      "version": "25.3.0"
+      "version": "25.4.0"
     },
     {
       "bom-ref": "boolean.py==5.0",
@@ -545,7 +575,7 @@
       "version": "5.0"
     },
     {
-      "bom-ref": "certifi==2025.8.3",
+      "bom-ref": "certifi==2025.10.5",
       "description": "Python package for providing Mozilla's CA Bundle.",
       "externalReferences": [
         {
@@ -574,9 +604,9 @@
         }
       ],
       "name": "certifi",
-      "purl": "pkg:pypi/certifi@2025.8.3",
+      "purl": "pkg:pypi/certifi@2025.10.5",
       "type": "library",
-      "version": "2025.8.3"
+      "version": "2025.10.5"
     },
     {
       "bom-ref": "chardet==5.2.0",
@@ -1204,7 +1234,7 @@
       "version": "0.17.0"
     },
     {
-      "bom-ref": "filelock==3.19.1",
+      "bom-ref": "filelock==3.20.0",
       "description": "A platform independent file lock.",
       "externalReferences": [
         {
@@ -1237,9 +1267,9 @@
         }
       ],
       "name": "filelock",
-      "purl": "pkg:pypi/filelock@3.19.1",
+      "purl": "pkg:pypi/filelock@3.20.0",
       "type": "library",
-      "version": "3.19.1"
+      "version": "3.20.0"
     },
     {
       "bom-ref": "fqdn==1.5.1",
@@ -1983,7 +2013,7 @@
       "version": "0.5.1"
     },
     {
-      "bom-ref": "pip==25.1.1",
+      "bom-ref": "pip==25.2",
       "description": "The PyPA recommended tool for installing Python packages.",
       "externalReferences": [
         {
@@ -2016,9 +2046,9 @@
         }
       ],
       "name": "pip",
-      "purl": "pkg:pypi/pip@25.1.1",
+      "purl": "pkg:pypi/pip@25.2",
       "type": "library",
-      "version": "25.1.1"
+      "version": "25.2"
     },
     {
       "bom-ref": "pip-requirements-parser==32.0.1",
@@ -2044,7 +2074,7 @@
       "version": "32.0.1"
     },
     {
-      "bom-ref": "pipdeptree==2.28.0",
+      "bom-ref": "pipdeptree==2.29.0",
       "description": "Command line utility to show dependency tree of packages.",
       "externalReferences": [
         {
@@ -2082,12 +2112,12 @@
         }
       ],
       "name": "pipdeptree",
-      "purl": "pkg:pypi/pipdeptree@2.28.0",
+      "purl": "pkg:pypi/pipdeptree@2.29.0",
       "type": "library",
-      "version": "2.28.0"
+      "version": "2.29.0"
     },
     {
-      "bom-ref": "platformdirs==4.4.0",
+      "bom-ref": "platformdirs==4.5.0",
       "description": "A small Python package for determining appropriate platform-specific dirs, e.g. a `user data dir`.",
       "externalReferences": [
         {
@@ -2125,9 +2155,9 @@
         }
       ],
       "name": "platformdirs",
-      "purl": "pkg:pypi/platformdirs@4.4.0",
+      "purl": "pkg:pypi/platformdirs@4.5.0",
       "type": "library",
-      "version": "4.4.0"
+      "version": "4.5.0"
     },
     {
       "bom-ref": "protobuf==5.29.5",
@@ -2144,7 +2174,7 @@
       "version": "5.29.5"
     },
     {
-      "bom-ref": "psycopg2-binary==2.9.10",
+      "bom-ref": "psycopg2-binary==2.9.11",
       "description": "psycopg2 - Python-PostgreSQL Database Adapter",
       "externalReferences": [
         {
@@ -2192,9 +2222,9 @@
         }
       ],
       "name": "psycopg2-binary",
-      "purl": "pkg:pypi/psycopg2-binary@2.9.10",
+      "purl": "pkg:pypi/psycopg2-binary@2.9.11",
       "type": "library",
-      "version": "2.9.10"
+      "version": "2.9.11"
     },
     {
       "bom-ref": "py-serializable==2.1.0",
@@ -2241,7 +2271,7 @@
       "version": "2.1.0"
     },
     {
-      "bom-ref": "pydantic==2.11.9",
+      "bom-ref": "pydantic==2.12.0",
       "description": "Data validation using Python type hints",
       "externalReferences": [
         {
@@ -2279,12 +2309,12 @@
         }
       ],
       "name": "pydantic",
-      "purl": "pkg:pypi/pydantic@2.11.9",
+      "purl": "pkg:pypi/pydantic@2.12.0",
       "type": "library",
-      "version": "2.11.9"
+      "version": "2.12.0"
     },
     {
-      "bom-ref": "pydantic_core==2.33.2",
+      "bom-ref": "pydantic_core==2.41.1",
       "description": "Core functionality for Pydantic validation and serialization",
       "externalReferences": [
         {
@@ -2317,9 +2347,9 @@
         }
       ],
       "name": "pydantic_core",
-      "purl": "pkg:pypi/pydantic-core@2.33.2",
+      "purl": "pkg:pypi/pydantic-core@2.41.1",
       "type": "library",
-      "version": "2.33.2"
+      "version": "2.41.1"
     },
     {
       "bom-ref": "pydot==4.0.1",
@@ -2650,7 +2680,7 @@
       "version": "1.1.0"
     },
     {
-      "bom-ref": "rich==14.1.0",
+      "bom-ref": "rich==14.2.0",
       "description": "Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal",
       "externalReferences": [
         {
@@ -2659,7 +2689,7 @@
           "url": "https://rich.readthedocs.io/en/latest/"
         },
         {
-          "comment": "from packaging metadata: Home-page",
+          "comment": "from packaging metadata Project-URL: Homepage",
           "type": "website",
           "url": "https://github.com/Textualize/rich"
         }
@@ -2673,9 +2703,9 @@
         }
       ],
       "name": "rich",
-      "purl": "pkg:pypi/rich@14.1.0",
+      "purl": "pkg:pypi/rich@14.2.0",
       "type": "library",
-      "version": "14.1.0"
+      "version": "14.2.0"
     },
     {
       "bom-ref": "rpds-py==0.27.1",
@@ -2956,7 +2986,7 @@
       "version": "0.9.0"
     },
     {
-      "bom-ref": "tomli==2.2.1",
+      "bom-ref": "tomli==2.3.0",
       "description": "A lil' TOML parser",
       "externalReferences": [
         {
@@ -2979,9 +3009,9 @@
         }
       ],
       "name": "tomli",
-      "purl": "pkg:pypi/tomli@2.2.1",
+      "purl": "pkg:pypi/tomli@2.3.0",
       "type": "library",
-      "version": "2.2.1"
+      "version": "2.3.0"
     },
     {
       "bom-ref": "toposort==1.10",
@@ -3059,7 +3089,7 @@
       "version": "4.67.1"
     },
     {
-      "bom-ref": "types-python-dateutil==2.9.0.20250822",
+      "bom-ref": "types-python-dateutil==2.9.0.20251008",
       "description": "Typing stubs for python-dateutil",
       "externalReferences": [
         {
@@ -3097,9 +3127,9 @@
         }
       ],
       "name": "types-python-dateutil",
-      "purl": "pkg:pypi/types-python-dateutil@2.9.0.20250822",
+      "purl": "pkg:pypi/types-python-dateutil@2.9.0.20251008",
       "type": "library",
-      "version": "2.9.0.20250822"
+      "version": "2.9.0.20251008"
     },
     {
       "bom-ref": "typing-inspection==0.4.2",
@@ -3188,7 +3218,7 @@
       "version": "4.15.0"
     },
     {
-      "bom-ref": "universal_pathlib==0.3.0",
+      "bom-ref": "universal_pathlib==0.3.3",
       "description": "pathlib api extended to use fsspec backends",
       "externalReferences": [
         {
@@ -3202,10 +3232,18 @@
           "url": "https://github.com/fsspec/universal_pathlib"
         }
       ],
+      "licenses": [
+        {
+          "license": {
+            "acknowledgement": "declared",
+            "id": "MIT"
+          }
+        }
+      ],
       "name": "universal_pathlib",
-      "purl": "pkg:pypi/universal-pathlib@0.3.0",
+      "purl": "pkg:pypi/universal-pathlib@0.3.3",
       "type": "library",
-      "version": "0.3.0"
+      "version": "0.3.3"
     },
     {
       "bom-ref": "uri-template==1.3.0",
@@ -3269,7 +3307,7 @@
       "version": "2.5.0"
     },
     {
-      "bom-ref": "virtualenv==20.34.0",
+      "bom-ref": "virtualenv==20.35.3",
       "description": "Virtual Python Environment builder",
       "externalReferences": [
         {
@@ -3302,9 +3340,9 @@
         }
       ],
       "name": "virtualenv",
-      "purl": "pkg:pypi/virtualenv@20.34.0",
+      "purl": "pkg:pypi/virtualenv@20.35.3",
       "type": "library",
-      "version": "20.34.0"
+      "version": "20.35.3"
     },
     {
       "bom-ref": "watchdog==5.0.3",
@@ -3416,6 +3454,7 @@
     {
       "dependsOn": [
         "GitPython==3.1.45",
+        "OpenStudioLandscapesUtil-HarborCLI==0.0.0",
         "PyYAML==6.0.3",
         "cyclonedx-bom==7.1.0",
         "dagster-postgres==0.25.11",
@@ -3424,11 +3463,20 @@
         "docker==7.1.0",
         "graphviz==0.21",
         "nox==2025.5.1",
-        "pipdeptree==2.28.0",
+        "pipdeptree==2.29.0",
         "pydot==4.0.1",
         "snakemd==2.3.0"
       ],
       "ref": "OpenStudioLandscapes==0.0.0"
+    },
+    {
+      "dependsOn": [
+        "PyYAML==6.0.3",
+        "requests==2.32.5",
+        "setuptools==80.9.0",
+        "snakemd==2.3.0"
+      ],
+      "ref": "OpenStudioLandscapesUtil-HarborCLI==0.0.0"
     },
     {
       "ref": "PyYAML==6.0.3"
@@ -3439,16 +3487,16 @@
     {
       "dependsOn": [
         "greenlet==3.2.4",
-        "psycopg2-binary==2.9.10",
+        "psycopg2-binary==2.9.11",
         "typing_extensions==4.15.0"
       ],
-      "ref": "SQLAlchemy==2.0.43"
+      "ref": "SQLAlchemy==2.0.44"
     },
     {
       "dependsOn": [
         "Mako==1.3.10",
-        "SQLAlchemy==2.0.43",
-        "tomli==2.2.1",
+        "SQLAlchemy==2.0.44",
+        "tomli==2.3.0",
         "typing_extensions==4.15.0"
       ],
       "ref": "alembic==1.16.5"
@@ -3469,18 +3517,18 @@
       "dependsOn": [
         "python-dateutil==2.9.0.post0",
         "pytz==2025.2",
-        "types-python-dateutil==2.9.0.20250822"
+        "types-python-dateutil==2.9.0.20251008"
       ],
       "ref": "arrow==1.3.0"
     },
     {
-      "ref": "attrs==25.3.0"
+      "ref": "attrs==25.4.0"
     },
     {
       "ref": "boolean.py==5.0"
     },
     {
-      "ref": "certifi==2025.8.3"
+      "ref": "certifi==2025.10.5"
     },
     {
       "ref": "chardet==5.2.0"
@@ -3507,7 +3555,7 @@
         "packageurl-python==0.17.5",
         "packaging==25.0",
         "pip-requirements-parser==32.0.1",
-        "tomli==2.2.1"
+        "tomli==2.3.0"
       ],
       "ref": "cyclonedx-bom==7.1.0"
     },
@@ -3530,7 +3578,7 @@
     {
       "dependsOn": [
         "dagster==1.9.11",
-        "psycopg2-binary==2.9.10"
+        "psycopg2-binary==2.9.11"
       ],
       "ref": "dagster-postgres==0.25.11"
     },
@@ -3538,7 +3586,7 @@
       "dependsOn": [
         "Jinja2==3.1.6",
         "PyYAML==6.0.3",
-        "SQLAlchemy==2.0.43",
+        "SQLAlchemy==2.0.44",
         "alembic==1.16.5",
         "antlr4-python3-runtime==4.13.2",
         "click==8.3.0",
@@ -3546,27 +3594,27 @@
         "dagster-pipes==1.9.11",
         "docker==7.1.0",
         "docstring_parser==0.17.0",
-        "filelock==3.19.1",
+        "filelock==3.20.0",
         "fsspec==2025.9.0",
         "grpcio-health-checking==1.71.2",
         "grpcio==1.75.1",
         "packaging==25.0",
         "protobuf==5.29.5",
-        "pydantic==2.11.9",
+        "pydantic==2.12.0",
         "python-dotenv==1.1.1",
         "pytz==2025.2",
         "requests==2.32.5",
-        "rich==14.1.0",
+        "rich==14.2.0",
         "setuptools==80.9.0",
         "six==1.17.0",
         "structlog==25.4.0",
         "tabulate==0.9.0",
-        "tomli==2.2.1",
+        "tomli==2.3.0",
         "toposort==1.10",
         "tqdm==4.67.1",
-        "types-python-dateutil==2.9.0.20250822",
+        "types-python-dateutil==2.9.0.20251008",
         "typing_extensions==4.15.0",
-        "universal_pathlib==0.3.0",
+        "universal_pathlib==0.3.3",
         "watchdog==5.0.3"
       ],
       "ref": "dagster==1.9.11"
@@ -3577,7 +3625,7 @@
     {
       "dependsOn": [
         "packaging==25.0",
-        "tomli==2.2.1"
+        "tomli==2.3.0"
       ],
       "ref": "dependency-groups==1.3.1"
     },
@@ -3606,7 +3654,7 @@
       "ref": "docstring_parser==0.17.0"
     },
     {
-      "ref": "filelock==3.19.1"
+      "ref": "filelock==3.20.0"
     },
     {
       "ref": "fqdn==1.5.1"
@@ -3671,7 +3719,7 @@
     },
     {
       "dependsOn": [
-        "attrs==25.3.0",
+        "attrs==25.4.0",
         "fqdn==1.5.1",
         "idna==3.10",
         "isoduration==20.11.0",
@@ -3714,18 +3762,18 @@
       "dependsOn": [
         "Jinja2==3.1.6",
         "argcomplete==3.6.2",
-        "attrs==25.3.0",
+        "attrs==25.4.0",
         "colorlog==6.9.0",
         "dependency-groups==1.3.1",
         "packaging==25.0",
-        "tomli==2.2.1",
-        "virtualenv==20.34.0"
+        "tomli==2.3.0",
+        "virtualenv==20.35.3"
       ],
       "ref": "nox==2025.5.1"
     },
     {
       "dependsOn": [
-        "SQLAlchemy==2.0.43",
+        "SQLAlchemy==2.0.44",
         "setuptools==80.9.0"
       ],
       "ref": "packageurl-python==0.17.5"
@@ -3744,25 +3792,25 @@
       "ref": "pip-requirements-parser==32.0.1"
     },
     {
-      "ref": "pip==25.1.1"
+      "ref": "pip==25.2"
     },
     {
       "dependsOn": [
         "graphviz==0.21",
         "packaging==25.0",
-        "pip==25.1.1",
-        "virtualenv==20.34.0"
+        "pip==25.2",
+        "virtualenv==20.35.3"
       ],
-      "ref": "pipdeptree==2.28.0"
+      "ref": "pipdeptree==2.29.0"
     },
     {
-      "ref": "platformdirs==4.4.0"
+      "ref": "platformdirs==4.5.0"
     },
     {
       "ref": "protobuf==5.29.5"
     },
     {
-      "ref": "psycopg2-binary==2.9.10"
+      "ref": "psycopg2-binary==2.9.11"
     },
     {
       "dependsOn": [
@@ -3773,17 +3821,17 @@
     {
       "dependsOn": [
         "annotated-types==0.7.0",
-        "pydantic_core==2.33.2",
+        "pydantic_core==2.41.1",
         "typing-inspection==0.4.2",
         "typing_extensions==4.15.0"
       ],
-      "ref": "pydantic==2.11.9"
+      "ref": "pydantic==2.12.0"
     },
     {
       "dependsOn": [
         "typing_extensions==4.15.0"
       ],
-      "ref": "pydantic_core==2.33.2"
+      "ref": "pydantic_core==2.41.1"
     },
     {
       "dependsOn": [
@@ -3815,7 +3863,7 @@
     },
     {
       "dependsOn": [
-        "attrs==25.3.0",
+        "attrs==25.4.0",
         "rpds-py==0.27.1",
         "typing_extensions==4.15.0"
       ],
@@ -3823,7 +3871,7 @@
     },
     {
       "dependsOn": [
-        "certifi==2025.8.3",
+        "certifi==2025.10.5",
         "chardet==5.2.0",
         "charset-normalizer==3.4.3",
         "idna==3.10",
@@ -3851,19 +3899,19 @@
         "Pygments==2.19.2",
         "markdown-it-py==4.0.0"
       ],
-      "ref": "rich==14.1.0"
+      "ref": "rich==14.2.0"
     },
     {
       "ref": "rpds-py==0.27.1"
     },
     {
       "dependsOn": [
-        "filelock==3.19.1",
+        "filelock==3.20.0",
         "packaging==25.0",
-        "pip==25.1.1",
-        "platformdirs==4.4.0",
-        "tomli==2.2.1",
-        "virtualenv==20.34.0"
+        "pip==25.2",
+        "platformdirs==4.5.0",
+        "tomli==2.3.0",
+        "virtualenv==20.35.3"
       ],
       "ref": "setuptools==80.9.0"
     },
@@ -3889,7 +3937,7 @@
       "ref": "tabulate==0.9.0"
     },
     {
-      "ref": "tomli==2.2.1"
+      "ref": "tomli==2.3.0"
     },
     {
       "ref": "toposort==1.10"
@@ -3901,7 +3949,7 @@
       "ref": "tqdm==4.67.1"
     },
     {
-      "ref": "types-python-dateutil==2.9.0.20250822"
+      "ref": "types-python-dateutil==2.9.0.20251008"
     },
     {
       "dependsOn": [
@@ -3917,10 +3965,10 @@
         "fsspec==2025.9.0",
         "packaging==25.0",
         "pathlib_abc==0.5.1",
-        "pydantic==2.11.9",
+        "pydantic==2.12.0",
         "typing_extensions==4.15.0"
       ],
-      "ref": "universal_pathlib==0.3.0"
+      "ref": "universal_pathlib==0.3.3"
     },
     {
       "ref": "uri-template==1.3.0"
@@ -3931,13 +3979,13 @@
     {
       "dependsOn": [
         "distlib==0.4.0",
-        "filelock==3.19.1",
+        "filelock==3.20.0",
         "packaging==25.0",
-        "platformdirs==4.4.0",
+        "platformdirs==4.5.0",
         "setuptools==80.9.0",
         "typing_extensions==4.15.0"
       ],
-      "ref": "virtualenv==20.34.0"
+      "ref": "virtualenv==20.35.3"
     },
     {
       "dependsOn": [
@@ -3950,7 +3998,7 @@
     }
   ],
   "metadata": {
-    "timestamp": "2025-10-01T18:39:25.875049+00:00",
+    "timestamp": "2025-10-10T22:10:31.730606+00:00",
     "tools": {
       "components": [
         {
@@ -4054,7 +4102,7 @@
       ]
     }
   },
-  "serialNumber": "urn:uuid:bf42aedb-6aa5-4159-a701-aa3cc5ebb420",
+  "serialNumber": "urn:uuid:36f4044b-41b3-44bf-9aac-7d4b752bc236",
   "version": 1,
   "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
   "bomFormat": "CycloneDX",
