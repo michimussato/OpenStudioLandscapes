@@ -1,30 +1,29 @@
-import pathlib
 import copy
-import shutil
-import shlex
 import json
 import operator
+import pathlib
+import shlex
+import shutil
 import textwrap
+from typing import Any, Dict, Generator, List, MutableMapping
 
 import yaml
-from typing import Generator, MutableMapping, List, Any, Dict
-
 from dagster import (
     AssetExecutionContext,
     AssetIn,
     AssetKey,
-    EnvVar,
     AssetMaterialization,
+    EnvVar,
     MetadataValue,
     Output,
     asset,
 )
 
 from OpenStudioLandscapes.engine.constants import *
-from OpenStudioLandscapes.engine.enums import *
-from OpenStudioLandscapes.engine.utils import *
-from OpenStudioLandscapes.engine.features import FEATURES
 from OpenStudioLandscapes.engine.discovery.discovery import *
+from OpenStudioLandscapes.engine.enums import *
+from OpenStudioLandscapes.engine.features import FEATURES
+from OpenStudioLandscapes.engine.utils import *
 
 # Dynamic inputs based on the imported
 # third party code locations
@@ -141,7 +140,9 @@ if bool(ins):
         docker_compose_yml = pathlib.Path(env["DOCKER_COMPOSE"])
 
         if "networks" in compose_networks:
-            network_dict = {"networks": list(compose_networks.get("networks", {}).keys())}
+            network_dict = {
+                "networks": list(compose_networks.get("networks", {}).keys())
+            }
             ports_dict = {
                 "ports": [
                     f"{env['ALL_CLIENTS_PORT_HOST']}:{env['ALL_CLIENTS_PORT_CONTAINER']}",
@@ -257,16 +258,18 @@ if bool(ins):
         docker_yaml = yaml.dump(docker_dict)
 
         teleport_compose_link = docker_compose_yml
-        teleport_compose_history = docker_compose_yml.parent.joinpath(env["LANDSCAPE"], teleport_compose_link.name)
+        teleport_compose_history = docker_compose_yml.parent.joinpath(
+            env["LANDSCAPE"], teleport_compose_link.name
+        )
         teleport_compose_history.parent.mkdir(
             parents=True,
             exist_ok=True,
         )
 
         with open(
-                file=teleport_compose_history,
-                mode="w",
-                encoding="utf-8",
+            file=teleport_compose_history,
+            mode="w",
+            encoding="utf-8",
         ) as fo:
             fo.write(docker_yaml)
 
@@ -299,7 +302,9 @@ if bool(ins):
     def cmd_create_teleport_admin(
         context: AssetExecutionContext,
         compose_teleport: dict,  # pylint: disable=redefined-outer-name
-    ) -> Generator[Output[dict[str, list[Any]]] | AssetMaterialization | Any, Any, None]:
+    ) -> Generator[
+        Output[dict[str, list[Any]]] | AssetMaterialization | Any, Any, None
+    ]:
         """
         A fresh Teleport Docker instance comes with no admin user pre-configured.
         This command needs to be executed one time once the container is up.
@@ -347,9 +352,10 @@ if bool(ins):
     def setup_unit(
         context: AssetExecutionContext,
         env: dict,  # pylint: disable=redefined-outer-name
-    ) -> Generator[Output[dict[str, list[Any]]] | AssetMaterialization | Any, Any, None]:
-        """
-        """
+    ) -> Generator[
+        Output[dict[str, list[Any]]] | AssetMaterialization | Any, Any, None
+    ]:
+        """ """
 
         docker_compose_yml = pathlib.Path(env["DOCKER_COMPOSE"])
 
@@ -359,6 +365,8 @@ if bool(ins):
         unit_link = docker_compose_yml.parent.joinpath(unit_)
         unit = docker_compose_yml.parent.joinpath(env["LANDSCAPE"], unit_)
 
+        unit.parent.mkdir(parents=True, exist_ok=True)
+
         # Todo
         #  - [ ] Do we actually need `--config` here?
 
@@ -367,7 +375,7 @@ if bool(ins):
             [Unit]
             Description=OpenStudioLandscapes-Teleport Service (%i)
             After=network.target
-            
+
             [Service]
             Type=simple
             Restart=always
@@ -383,17 +391,27 @@ if bool(ins):
             ExecReload={shutil.which('docker')} compose --progress plain --file {docker_compose_yml.as_posix()} --project-name openstudiolandscapes-teleport restart
             # ExecStop=$(which docker) --config $HOME/git/repos/OpenStudioLandscapes/.landscapes/2025-10-05-23-01-09-77e0ee9dc15b4b6683e6f6dc61980954/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json/2025-10-05-23-01-09-77e0ee9dc15b4b6683e6f6dc61980954/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json compose --progress plain --file $HOME/git/repos/OpenStudioLandscapes/.landscapes/.teleport/docker-compose/docker-compose.yml --project-name openstudiolandscapes-teleport down
             ExecStop={shutil.which('docker')} compose --progress plain --file {docker_compose_yml.as_posix()} --project-name openstudiolandscapes-teleport down
-            
+
             [Install]
             # WantedBy=multi-user.target
             WantedBy=default.target
             """
         )
 
+        # FileNotFoundError: [Errno 2] No such file or directory: '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/.teleport/docker_compose/2025-10-11-01-25-03-7223c4d602104c77a7a3f0f6eed6e0b8/teleport-server@.service'
+        #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/execution/plan/utils.py", line 56, in op_execution_error_boundary
+        #     yield
+        #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_utils/__init__.py", line 480, in iterate_with_context
+        #     next_output = next(iterator)
+        #                   ^^^^^^^^^^^^^^
+        #   File "/home/michael/git/repos/OpenStudioLandscapes/src/OpenStudioLandscapes/engine/teleport/assets.py", line 399, in setup_unit
+        #     with open(
+        #          ^^^^^
+
         with open(
-                file=unit,
-                mode="w",
-                encoding="utf-8",
+            file=unit,
+            mode="w",
+            encoding="utf-8",
         ) as fo:
             fo.write(unit_str)
 
@@ -436,7 +454,6 @@ if bool(ins):
                     "@${USER}".join(unit_link.name.split("@")),
                 ],
             }["status"],
-
         ]
 
         uninstall_unit = [
@@ -456,21 +473,31 @@ if bool(ins):
         ]
 
         install_unit_str = " ".join(
-            shlex.quote(s) if not s in [
-                "&&",
-                ";",
-                "@${USER}".join(unit_link.name.split("@")),
-            ] else s
+            (
+                shlex.quote(s)
+                if not s
+                in [
+                    "&&",
+                    ";",
+                    "@${USER}".join(unit_link.name.split("@")),
+                ]
+                else s
+            )
             for s in install_unit
         )
 
         uninstall_unit_str = " ".join(
-            shlex.quote(s) if not s in [
-                "&&",
-                ";",
-                "@${USER}".join(unit_link.name.split("@")),
-                f"/usr/lib/systemd/user/{unit_link.name}",
-            ] else s
+            (
+                shlex.quote(s)
+                if not s
+                in [
+                    "&&",
+                    ";",
+                    "@${USER}".join(unit_link.name.split("@")),
+                    f"/usr/lib/systemd/user/{unit_link.name}",
+                ]
+                else s
+            )
             for s in uninstall_unit
         )
 
@@ -491,9 +518,7 @@ if bool(ins):
         **ASSET_HEADER_TELEPORT,
         ins={
             "env_base": AssetIn(
-                AssetKey(
-                    [*ASSET_HEADER_TELEPORT["key_prefix"], "env_base"]
-                )
+                AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "env_base"])
             ),
         },
     )
@@ -511,7 +536,7 @@ if bool(ins):
                     "{DOT_LANDSCAPES}",
                     ".teleport",
                     "docker_compose",
-                    "docker-compose.yml"
+                    "docker-compose.yml",
                 )
                 .expanduser()
                 .as_posix(),
@@ -622,14 +647,11 @@ if bool(ins):
             },
         )
 
-
     @asset(
         **ASSET_HEADER_TELEPORT,
         ins={
             "features_in": AssetIn(
-                AssetKey(
-                    [*ASSET_HEADER_TELEPORT["key_prefix"], "features_in"]
-                )
+                AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "features_in"])
             ),
         },
     )
@@ -637,7 +659,8 @@ if bool(ins):
         context: AssetExecutionContext,
         features_in: dict,
     ) -> Generator[
-        Output[MutableMapping[str, List[MutableMapping[str, List]]]] | AssetMaterialization,
+        Output[MutableMapping[str, List[MutableMapping[str, List]]]]
+        | AssetMaterialization,
         None,
         None,
     ]:
@@ -723,7 +746,6 @@ if bool(ins):
             },
         )
 
-
     @asset(
         **ASSET_HEADER_TELEPORT,
         description="",
@@ -765,9 +787,7 @@ if bool(ins):
         **ASSET_HEADER_TELEPORT,
         ins={
             "features_in": AssetIn(
-                AssetKey(
-                    [*ASSET_HEADER_TELEPORT["key_prefix"], "features_in"]
-                )
+                AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "features_in"])
             ),
         },
     )
@@ -788,7 +808,6 @@ if bool(ins):
                 "__".join(context.asset_key.path): MetadataValue.json(_env_base),
             },
         )
-
 
     @asset(
         **ASSET_HEADER_TELEPORT,
@@ -878,14 +897,19 @@ if bool(ins):
         description="",
     )
     def static_apps(
-            context: AssetExecutionContext,
-            app_dict_default: dict,  # pylint: disable=redefined-outer-name
+        context: AssetExecutionContext,
+        app_dict_default: dict,  # pylint: disable=redefined-outer-name
     ) -> Generator[Output[List] | AssetMaterialization, None, None]:
         """ """
 
         static_apps_ = []
 
         SERVICE_NAME = ASSET_HEADER_TELEPORT["group_name"].lower()
+
+        try:
+            from OpenStudioLandscapes.engine.teleport.custom_services import custom_services
+        except ImportError:
+            custom_services = []
 
         _static_apps: List[Dict] = [
             {
@@ -906,6 +930,7 @@ if bool(ins):
                     f"%s.{EnvVar('OPENSTUDIOLANDSCAPES__DOMAIN_LAN').get_value()}",
                 ],
             },
+            *custom_services,
         ]
 
         for _static_app in _static_apps:
@@ -938,8 +963,8 @@ if bool(ins):
         },
     )
     def certificates(
-            context: AssetExecutionContext,
-            env: dict,  # pylint: disable=redefined-outer-name
+        context: AssetExecutionContext,
+        env: dict,  # pylint: disable=redefined-outer-name
     ) -> Generator[Output[list[dict]] | AssetMaterialization, None, None]:
 
         acme_sh_dir = pathlib.Path(env["ACME_SH_DIR"])
@@ -992,12 +1017,12 @@ if bool(ins):
         description="",
     )
     def teleport_yaml(
-            context: AssetExecutionContext,
-            env: dict,  # pylint: disable=redefined-outer-name
-            certificates: list[dict],  # pylint: disable=redefined-outer-name
-            fetch_services: dict,  # pylint: disable=redefined-outer-name
-            app_dict_default: dict,  # pylint: disable=redefined-outer-name
-            static_apps: list,  # pylint: disable=redefined-outer-name
+        context: AssetExecutionContext,
+        env: dict,  # pylint: disable=redefined-outer-name
+        certificates: list[dict],  # pylint: disable=redefined-outer-name
+        fetch_services: dict,  # pylint: disable=redefined-outer-name
+        app_dict_default: dict,  # pylint: disable=redefined-outer-name
+        static_apps: list,  # pylint: disable=redefined-outer-name
     ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
         """
         [Reference Configurations](https://goteleport.com/docs/reference/deployment/config/#reference-configurations)
@@ -1013,8 +1038,12 @@ if bool(ins):
         SERVICE_NAME = ASSET_HEADER_TELEPORT["group_name"].lower()
 
         # container_name = "--".join([SERVICE_NAME, env.get("LANDSCAPE", "default")])
-        host_name_lan = ".".join([SERVICE_NAME, env["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"]])
-        host_name_wan = ".".join([SERVICE_NAME, env["OPENSTUDIOLANDSCAPES__DOMAIN_WAN"]])
+        host_name_lan = ".".join(
+            [SERVICE_NAME, env["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"]]
+        )
+        host_name_wan = ".".join(
+            [SERVICE_NAME, env["OPENSTUDIOLANDSCAPES__DOMAIN_WAN"]]
+        )
 
         host_names = [
             # Todo
@@ -1325,8 +1354,12 @@ if bool(ins):
             },
         }
 
-        teleport_yaml_script = pathlib.Path(env["TELEPORT_CONFIG"], env["LANDSCAPE"], "teleport.yaml")
-        teleport_yaml_script_link = pathlib.Path(env["TELEPORT_CONFIG"], "teleport.yaml")
+        teleport_yaml_script = pathlib.Path(
+            env["TELEPORT_CONFIG"], env["LANDSCAPE"], "teleport.yaml"
+        )
+        teleport_yaml_script_link = pathlib.Path(
+            env["TELEPORT_CONFIG"], "teleport.yaml"
+        )
         teleport_yaml_script.parent.mkdir(
             parents=True,
             exist_ok=True,
@@ -1337,9 +1370,9 @@ if bool(ins):
         teleport_yaml_ = yaml.dump(teleport_yaml_dict)
 
         with open(
-                file=teleport_yaml_script,
-                mode="w",
-                encoding="utf-8",
+            file=teleport_yaml_script,
+            mode="w",
+            encoding="utf-8",
         ) as fo:
             fo.write(teleport_yaml_)
 
@@ -1357,7 +1390,9 @@ if bool(ins):
         yield AssetMaterialization(
             asset_key=context.asset_key,
             metadata={
-                "__".join(context.asset_key.path): MetadataValue.path(teleport_yaml_script),
+                "__".join(context.asset_key.path): MetadataValue.path(
+                    teleport_yaml_script
+                ),
                 "teleport_yaml_dict": MetadataValue.md(
                     f"```shell\n{teleport_yaml_dict}\n```"
                 ),

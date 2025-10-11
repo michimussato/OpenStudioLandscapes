@@ -112,3 +112,6 @@ docker/.volumes/dagster/dagster-home/*
 
 docker/.volumes/postgres-dagster/*
 !docker/.volumes/postgres-dagster/.gitkeep
+
+# Teleport
+src/OpenStudioLandscapes/engine/teleport/custom_services.py
