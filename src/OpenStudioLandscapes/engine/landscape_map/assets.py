@@ -2,6 +2,7 @@ import base64
 import pathlib
 import shutil
 import subprocess
+import operator
 from typing import Any, Generator
 
 import pydot
@@ -18,28 +19,16 @@ from pydot import Dot
 
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.enums import *
-from OpenStudioLandscapes.engine.features import FEATURES
+from OpenStudioLandscapes.engine.utils import *
 
-# Dynamic inputs based on the imported
-# third party code locations
-ins = {}
-compose_scopes = set()
+from OpenStudioLandscapes.engine.discovery.discovery import *
 
-feature_keys = FEATURES.keys()
 
-for key in feature_keys:
-    enabled = FEATURES[key]["enabled"]
-    if not enabled:
-        continue
-    compose_scope = FEATURES[key]["compose_scope"]
-    if compose_scope in compose_scopes:
-        continue
-    compose_scopes.update(compose_scope)
-    ins[f"compose_scope_{compose_scope}"] = AssetIn(
-        AssetKey(
-            [f"{PREFIX_COMPOSE_SCOPE}_{compose_scope}", "docker_compose_graph_dot"]
-        )
-    )
+ins, feature_ins = get_dynamic_ins(
+    compose_scope_filter=[],
+    imported_features=IMPORTED_FEATURES,
+    operator=operator.eq,
+)
 
 
 if bool(ins):
