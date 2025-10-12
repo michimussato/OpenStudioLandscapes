@@ -2,7 +2,6 @@ import base64
 import pathlib
 import shutil
 import subprocess
-import operator
 from typing import Any, Generator
 
 import pydot
@@ -19,30 +18,23 @@ from pydot import Dot
 
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.enums import *
-from OpenStudioLandscapes.engine.utils import *
 
 from OpenStudioLandscapes.engine.discovery.discovery import *
-# from OpenStudioLandscapes.engine.features import FEATURES
-#
-#
-# ins, feature_ins = get_dynamic_ins(
-#     compose_scope_filter=[],
-#     imported_features=IMPORTED_FEATURES,
-#     operator=operator.eq,
-# )
+
 
 # Dynamic inputs based on the imported
 # third party code locations
+# Todo
+#  - [ ] can we leverage OpenStudioLandscapes.engine.utils.get_dynamic_ins()
+#        here somehow?
 ins = {}
 compose_scopes = set()
 
-feature_keys = IMPORTED_FEATURES.keys()
-
-for key in feature_keys:
-    enabled = IMPORTED_FEATURES[key]["enabled"]
+for feature in IMPORTABLE_FEATURES:
+    enabled = feature["enabled"]
     if not enabled:
         continue
-    compose_scope = IMPORTED_FEATURES[key]["compose_scope"]
+    compose_scope = feature["compose_scope"]
     if compose_scope in compose_scopes:
         continue
     compose_scopes.update(compose_scope)
