@@ -279,6 +279,11 @@ harbor_CLEAR_ALL:
 		&& sudo pwd \
 		&& sudo rm -r */
 
+setup_venv:
+	cd ${OPENSTUDIOLANDSCAPES__REPO_ROOT} \
+		&& python3.11 -m venv .venv
+
+
 openstudiolandscapes_update:
 	cd ${OPENSTUDIOLANDSCAPES__REPO_ROOT} \
 		&& source .venv/bin/activate \
