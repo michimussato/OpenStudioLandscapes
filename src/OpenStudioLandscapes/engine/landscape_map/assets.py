@@ -22,13 +22,35 @@ from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.utils import *
 
 from OpenStudioLandscapes.engine.discovery.discovery import *
+# from OpenStudioLandscapes.engine.features import FEATURES
+#
+#
+# ins, feature_ins = get_dynamic_ins(
+#     compose_scope_filter=[],
+#     imported_features=IMPORTED_FEATURES,
+#     operator=operator.eq,
+# )
 
+# Dynamic inputs based on the imported
+# third party code locations
+ins = {}
+compose_scopes = set()
 
-ins, feature_ins = get_dynamic_ins(
-    compose_scope_filter=[],
-    imported_features=IMPORTED_FEATURES,
-    operator=operator.eq,
-)
+feature_keys = IMPORTED_FEATURES.keys()
+
+for key in feature_keys:
+    enabled = IMPORTED_FEATURES[key]["enabled"]
+    if not enabled:
+        continue
+    compose_scope = IMPORTED_FEATURES[key]["compose_scope"]
+    if compose_scope in compose_scopes:
+        continue
+    compose_scopes.update(compose_scope)
+    ins[f"compose_scope_{compose_scope}"] = AssetIn(
+        AssetKey(
+            [f"{PREFIX_COMPOSE_SCOPE}_{compose_scope}", "docker_compose_graph_dot"]
+        )
+    )
 
 
 if bool(ins):
