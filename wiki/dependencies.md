@@ -8,8 +8,6 @@
 %% https://mermaid-js.github.io/mermaid-live-editor
 flowchart TB
     root((OpenStudioLandscapes))
-    docker((Docker))
-    python((python3.11))
     utuntu((Ubuntu))
     linux((Linux))
     
@@ -20,17 +18,35 @@ flowchart TB
         git((git))
         graphviz((GraphViz))
         sudo((sudo))
+        docker((Docker))
+        python((python3.11))
     end
     
     subgraph Sub Systems 
         direction TB
+        
+        subgraph Docker Registry
+            direction TB
+            harbor((Harbor))
+            dockerio((Docker.io))
+            
+        end
+        
+        subgraph DNS Server
+            direction TB
+            pihole((Pi-hole))
+        end
+        
+        subgraph Zero Trust MFA
+            direction TB
         teleport((Teleport))
-        harbor((Harbor))
-        pihole((Pi-hole))
+        end
+        
     end
     
     
     root -- requires --> harbor
+    harbor -. can replicate to .-> dockerio
     root -- requires --> teleport
 %%    root -- requires --> docker
 %%    root -- requires --> python
@@ -39,17 +55,18 @@ flowchart TB
 %%    root -- requires --> git
 %%    root -- requires --> sudo
     root -- requires --> linux
+    root -. recommends .-> pihole
 %%    git -- requires --> linux
 %%    sudo -- requires --> linux
 %%    make -- requires --> linux
     
-    linux -- with --> git
-    linux -- with --> systemd
-    linux -- with --> make
-    linux -- with --> graphviz
-    linux -- with --> sudo
-    linux -- with --> python
-    linux -- with --> docker
+    utuntu -- provides --> git
+    utuntu -- provides --> systemd
+    utuntu -- provides --> make
+    utuntu -- provides --> graphviz
+    utuntu -- provides --> sudo
+    utuntu -- provides --> python
+    utuntu -- provides --> docker
     linux -. recommends .-> utuntu
     
     

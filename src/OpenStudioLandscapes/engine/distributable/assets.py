@@ -56,11 +56,11 @@ def distributable(
 
     env = group_out.get("env", {})
 
-    base_landscapes = pathlib.Path(env.get("DOT_LANDSCAPES"))
+    base_landscapes = pathlib.Path(env["DOT_LANDSCAPES"])
 
     landscape_id = env.get("LANDSCAPE", "default")
 
-    shared_volumes = env.get("DOT_SHARED_VOLUMES")
+    shared_volumes = env["DOT_SHARED_VOLUMES"]
 
     landscape_path = base_landscapes / landscape_id
 

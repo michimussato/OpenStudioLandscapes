@@ -131,12 +131,13 @@ def dot_overrides_file(
                     # To pull images from your local Harbor instance instead
                     # of docker.io/openstudiolandscapes (which is the default for portability sake),
                     # set DOT_OVERRIDES_REGISTRY_NAMESPACE to something like:
-                    # DOT_OVERRIDES_REGISTRY_NAMESPACE="harbor.farm.evil:80/openstudiolandscapes"
+                    # DOT_OVERRIDES_REGISTRY_NAMESPACE="harbor.%s:80/openstudiolandscapes"
                     """
                 )
                 % (
                     shutil.which("env"),
                     "__".join(context.asset_key.path),
+                    env["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"]
                 )
             )
         # os.chmod(

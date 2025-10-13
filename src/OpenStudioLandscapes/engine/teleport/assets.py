@@ -152,7 +152,7 @@ if bool(ins):
                 ]
             }
         elif "network_mode" in compose_networks:
-            network_dict = {"network_mode": compose_networks.get("network_mode")}
+            network_dict = {"network_mode": compose_networks["network_mode"]}
 
         teleport_data = pathlib.Path(env["TELEPORT_DATA"])
         teleport_data.mkdir(
@@ -212,7 +212,7 @@ if bool(ins):
                 SERVICE_NAME: {
                     "container_name": container_name,
                     "hostname": host_name,
-                    "domainname": env.get("OPENSTUDIOLANDSCAPES__DOMAIN_LAN"),
+                    "domainname": env["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"],
                     # "mac_address": ":".join(re.findall(r"..", env["HOST_ID"])),
                     "restart": "always",
                     "image": env["DOCKER_IMAGE"],
@@ -650,6 +650,9 @@ if bool(ins):
     @asset(
         **ASSET_HEADER_TELEPORT,
         ins={
+            "env": AssetIn(
+                AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "env"]),
+            ),
             "features_in": AssetIn(
                 AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "features_in"])
             ),
@@ -657,7 +660,8 @@ if bool(ins):
     )
     def fetch_services(
         context: AssetExecutionContext,
-        features_in: dict,
+        env: dict,  # pylint: disable=redefined-outer-name
+        features_in: dict,  # pylint: disable=redefined-outer-name
     ) -> Generator[
         Output[MutableMapping[str, List[MutableMapping[str, List]]]]
         | AssetMaterialization,
@@ -719,10 +723,18 @@ if bool(ins):
                 # Todo: for now ok
                 continue
 
-            teleport_expanded = expand_dict_vars(
-                dict_to_expand=teleport,
-                kv=v["env"],
-            )
+            context.log.debug(f"{v['env'] = }")
+            context.log.debug(f"{v = }")
+            context.log.debug(f"{teleport = }")
+
+            try:
+                teleport_expanded = expand_dict_vars(
+                    dict_to_expand=teleport,
+                    kv=v["env"],
+                )
+            except KeyError as e:
+                context.log.error(f"Could not create Teleport service.")
+                raise KeyError(f"Check `constants.py` of Feature. {e} not found in dict {v}.\n") from e
 
             envs_feature[k] = copy.deepcopy(teleport_expanded)
 

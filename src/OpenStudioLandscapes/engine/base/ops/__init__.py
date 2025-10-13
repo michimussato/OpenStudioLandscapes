@@ -372,6 +372,9 @@ def factory_group_in(
         Just forwards the data we get from the upstream `group_out` asset.
         """
 
+        context.log.error(f"{ins = }")
+        context.log.error(f"{kwargs = }")
+
         kw_keys = list(kwargs.keys())
 
         context.log.debug(f"{kw_keys = }")
@@ -382,6 +385,10 @@ def factory_group_in(
             kw_key = kw_keys[0]
         else:
             raise NotImplementedError()
+
+        # parent env would be:
+        # kwargs[kw_key]["env"]
+
         # Access Enum value by key:
         # https://stackoverflow.com/a/38716384
         group_out = kwargs.pop(GroupIn(kw_key))
@@ -404,17 +411,49 @@ def factory_group_in(
 
         yield AssetMaterialization(
             asset_key=context.asset_key,
-            metadata=metadatavalues_from_dict(
-                context=context,
-                d_serialized=group_out_serialized,
-            ),
+            metadata={
+                "__".join(context.asset_key.path): MetadataValue.json(group_out_serialized),
+                **metadatavalues_from_dict(
+                    context=context,
+                    d_serialized=group_out_serialized,
+                )
+            },
         )
 
     return _op_group_in
 
 
 # Todo
-#  - [ ] convert to factory
+#  - [ ] convert to factory:
+# def factory_env(
+#     name="op_env_from_factory",
+#     ins=None,
+#     **kwargs,
+# ) -> OpDefinition:
+#     """
+#     https://docs.dagster.io/guides/build/ops#op-factory
+#
+#     Args:
+#         name (str): The name of the new op.
+#         ins (Dict[str, In]): Any Ins for the new op. Default: None.
+#
+#     Returns:
+#         function: The new op.
+#     """
+#
+#     @op(
+#         name=name,
+#         ins=ins,
+#         **kwargs,
+#     )
+#     def _op_env(
+#         context: OpExecutionContext,
+#         **kwargs,
+#     ):
+#         """ """
+#         pass
+#
+#     return _op_env
 @op(
     name="op_env",
     ins={
@@ -426,6 +465,13 @@ def factory_group_in(
     },
     out={
         "env_out": Out(dict),
+        # Todo:
+        #  - [ ] make global use of env_parent_out asset
+        #  - [ ] keep env and env_parent separated to avoid unintended side effects
+        #        problem we had: `HOSTNAME` got overridden while we still needed
+        #        the parent Kitsu `HOSTNAME` to be available in the Watchtower env
+        #  - [ ] Watchtower `dot_env_local` makes use of env_parent (as an example)
+        "env_parent_out": Out(dict),
     },
 )
 def op_env(
@@ -439,6 +485,8 @@ def op_env(
     """
     Provides a Feature with the `env` dict.
     """
+
+    env_parent_in = copy.deepcopy(group_in["env"])
 
     env_in = copy.deepcopy(group_in["env"])
 
@@ -462,18 +510,35 @@ def op_env(
         },
     )
 
-    yield Output(
-        output_name="env_out",
-        value=env_in,
-    )
+    if "env_out" in context.selected_output_names:
 
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(env_in),
-            "ENVIRONMENT": MetadataValue.json(constants[FEATURE_CONFIG]),
-        },
-    )
+        yield Output(
+            output_name="env_out",
+            value=env_in,
+        )
+
+        yield AssetMaterialization(
+            asset_key=context.asset_key_for_output("env_out"),
+            metadata={
+                "__".join(context.asset_key_for_output("env_out").path): MetadataValue.json(env_in),
+                "ENVIRONMENT": MetadataValue.json(constants[FEATURE_CONFIG]),
+            },
+        )
+
+    if "env_parent_out" in context.selected_output_names:
+
+        yield Output(
+            output_name="env_parent_out",
+            value=env_parent_in,
+        )
+
+        yield AssetMaterialization(
+            asset_key=context.asset_key_for_output("env_parent_out"),
+            metadata={
+                "__".join(context.asset_key_for_output("env_parent_out").path): MetadataValue.json(env_parent_in),
+                # "ENVIRONMENT": MetadataValue.json(constants[FEATURE_CONFIG]),
+            },
+        )
 
 
 # Todo
@@ -1065,7 +1130,8 @@ def op_docker_compose_graph(
 def op_group_out(
     context: OpExecutionContext,
     # Todo:
-    #  - [ ] remove unused compose
+    #  - [ ] remove unused compose (but need to stay here
+    #        until done so globally
     compose: dict,  # pylint: disable=redefined-outer-name
     env: dict,  # pylint: disable=redefined-outer-name
     # group_in: dict,  # pylint: disable=redefined-outer-name

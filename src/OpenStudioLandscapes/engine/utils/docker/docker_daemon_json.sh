@@ -19,6 +19,7 @@ cat > /etc/docker/daemon.json << EOF
   "max-concurrent-uploads": 1,
   "insecure-registries" : [
     "http://harbor.farm.evil:80",
+    "http://harbor.openstudiolandscapes.lan:80",
     "http://127.0.0.1:5000",
     "http://localhost:5000",
     "http://10.1.2.15:5000",

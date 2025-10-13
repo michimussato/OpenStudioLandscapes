@@ -21,10 +21,14 @@ import pty
 # python3 <(curl --header 'Cache-Control: no-cache, no-store' --silent https://raw.githubusercontent.com/michimussato/OpenStudioLandscapes/refs/heads/main/ubuntu/22.04/install_ubuntu_2204.py)
 
 
+# Todo
+#  - [ ] Switch to .env
+
+
 # OPENSTUDIOLANDSCAPES_BASE: pathlib.Path = pathlib.Path("~/git/repos")
 # OPENSTUDIOLANDSCAPES_SUFFIX: str = "OpenStudioLandscapes"
 # OPENSTUDIOLANDSCAPES_DIR: pathlib.Path = OPENSTUDIOLANDSCAPES_BASE / OPENSTUDIOLANDSCAPES_SUFFIX
-URL_HARBOR: str = "http://harbor.farm.evil:80"
+URL_HARBOR: str = "http://harbor.openstudiolandscapes.lan:80"
 ADMIN_HARBOR: str = "admin"
 PASSWORD_HARBOR: str = "Harbor12345"
 DOCKER_GID: str = "959"
@@ -588,6 +592,7 @@ def script_etc_hosts() -> pathlib.Path:
         suffix=".sh",
         mode="x",
     ) as script:
+        domain_lan = "openstudiolandscapes.lan"
         script.writelines(
             [
                 "#!/bin/env bash\n",
@@ -595,10 +600,10 @@ def script_etc_hosts() -> pathlib.Path:
                 "\n",
                 "\n",
                 "for fqdn in \\\n",
-                "    dagster.farm.evil \\\n",
-                "    postgres-dagster.farm.evil \\\n",
-                "    harbor.farm.evil \\\n",
-                "    pi-hole.farm.evil \\\n",
+                f"    dagster.{domain_lan} \\\n",
+                f"    postgres-dagster.{domain_lan} \\\n",
+                f"    harbor.{domain_lan} \\\n",
+                f"    pi-hole.{domain_lan} \\\n",
                 "; do \n",
                 '    sed -i -e "\$a127.0.0.1    $fqdn" -e "/127.0.0.1    ${fqdn}/d" /etc/hosts\n',
                 "done\n",

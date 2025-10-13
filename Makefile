@@ -30,9 +30,21 @@ else
 OPENSTUDIOLANDSCAPES__REPO_ROOT := ~/git/repos/OpenStudioLandscapes
 endif
 
+ifdef OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT
+OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT := $(OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT)
+else
+OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT := ~/git/repos/OpenStudioLandscapes
+endif
+
+ifdef OPENSTUDIOLANDSCAPES__DOMAIN_LAN
+OPENSTUDIOLANDSCAPES__DOMAIN_LAN := $(OPENSTUDIOLANDSCAPES__DOMAIN_LAN)
+else
+OPENSTUDIOLANDSCAPES__DOMAIN_LAN := openstudiolandscapes.lan
+endif
+
 export OPENSTUDIOLANDSCAPES_VERSION_TAG=v1.6.0-rc1
 
-REPLACED := $(shell echo ${OPENSTUDIOLANDSCAPES__REPO_ROOT} | sed 's/\//\\\//g')
+REPLACED := $(shell echo ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} | sed 's/\//\\\//g')
 
 #ifdef OPENSTUDIOLANDSCAPES_VERSION_TAG
 #OPENSTUDIOLANDSCAPES_VERSION_TAG := $(OPENSTUDIOLANDSCAPES_VERSION_TAG)
@@ -196,14 +208,14 @@ install_docker:
 #	sudo systemctl daemon-reload
 #	# sudo systemctl restart docker
 #
-#	sudo git config --global --add safe.directory ${OPENSTUDIOLANDSCAPES__REPO_ROOT}
+#	sudo git config --global --add safe.directory ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT}
 #	sudo git -C ${REPODIR} clean -d -x --force ${REPODIR}/.landscapes/.harbor
 #
 #	echo "Your /etc/docker/daemon.json file looks like:
 #	cat /etc/docker/daemon.json
 
 #install_openstudiolandscapes:
-#	cd ${OPENSTUDIOLANDSCAPES__REPO_ROOT}
+#	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT}
 #	source .venv/bin/activate
 #	pip install --upgrade pip setuptools setuptools_scm wheel
 #	pip install -e .[dev]
@@ -213,10 +225,10 @@ install_docker:
 
 edit_hosts_file:
 	for fqdn in \
-		dagster.farm.evil \
-		postgres-dagster.farm.evil \
-		harbor.farm.evil \
-		pi-hole.farm.evil \
+		dagster.${OPENSTUDIOLANDSCAPES__DOMAIN_LAN} \
+		postgres-dagster.${OPENSTUDIOLANDSCAPES__DOMAIN_LAN} \
+		harbor.${OPENSTUDIOLANDSCAPES__DOMAIN_LAN} \
+		pi-hole.${OPENSTUDIOLANDSCAPES__DOMAIN_LAN} \
 	; do \
 		sudo sed -i -e "\$$a127.0.0.1    $$fqdn" -e "/127.0.0.1    $${fqdn}/d" /etc/hosts; \
 	done
@@ -225,7 +237,7 @@ edit_hosts_file:
 	cat /etc/hosts
 
 openstudiolandscapes_install:
-	cd ${OPENSTUDIOLANDSCAPES__REPO_ROOT} \
+	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
 		&& python3.11 -m venv .venv \
 		&& source .venv/bin/activate \
 		&& pip install --upgrade pip setuptools setuptools_scm wheel \
@@ -233,19 +245,19 @@ openstudiolandscapes_install:
 		&& deactivate
 
 openstudiolandscapes_features_clone:
-	cd ${OPENSTUDIOLANDSCAPES__REPO_ROOT} \
+	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
 		&& source .venv/bin/activate \
 		&& nox -s clone_features \
 		&& deactivate
 
 openstudiolandscapes_features_install:
-	cd ${OPENSTUDIOLANDSCAPES__REPO_ROOT} \
+	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
 		&& source .venv/bin/activate \
 		&& nox -s install_features_into_engine \
 		&& deactivate
 
 harbor_prepare:
-	cd ${OPENSTUDIOLANDSCAPES__REPO_ROOT} \
+	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
 		&& source .venv/bin/activate \
 		&& openstudiolandscapesutil-harborcli --dot-env ./.env prepare download --destination-directory ./.harbor/download \
 		&& openstudiolandscapesutil-harborcli --dot-env ./.env prepare extract --extract-to ./.harbor/bin --tar-file ./.harbor/download/harbor-*.tgz \
@@ -254,7 +266,7 @@ harbor_prepare:
 		&& deactivate
 
 harbor_up:
-	cd ${OPENSTUDIOLANDSCAPES__REPO_ROOT} \
+	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
 		&& source .venv/bin/activate \
 		&& eval $$(openstudiolandscapesutil-harborcli --dot-env ./.env systemd install --enable --start --outfile ./.harbor/bin/harbor.service --su-method sudo) \
 		&& deactivate
@@ -262,30 +274,30 @@ harbor_up:
 	sudo systemctl status --no-pager --full harbor.service
 
 harbor_init_projects:
-	cd ${OPENSTUDIOLANDSCAPES__REPO_ROOT} \
+	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
 		&& source .venv/bin/activate \
 		&& openstudiolandscapesutil-harborcli --dot-env ./.env project create --project-name openstudiolandscapes --host 127.0.0.1 --port 80 \
 		&& openstudiolandscapesutil-harborcli --dot-env ./.env project delete --project-name library --host 127.0.0.1 --port 80 \
 		&& deactivate
 
 nox_CLEAR_ALL:
-	cd ${OPENSTUDIOLANDSCAPES__REPO_ROOT}/.nox \
+	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT}/.nox \
 		&& pwd \
 		&& rm -r */
 		# && sudo rm -r */
 
 harbor_CLEAR_ALL:
-	cd ${OPENSTUDIOLANDSCAPES__REPO_ROOT}/.harbor \
+	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT}/.harbor \
 		&& sudo pwd \
 		&& sudo rm -r */
 
 setup_venv:
-	cd ${OPENSTUDIOLANDSCAPES__REPO_ROOT} \
+	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
 		&& python3.11 -m venv .venv
 
 
 openstudiolandscapes_update:
-	cd ${OPENSTUDIOLANDSCAPES__REPO_ROOT} \
+	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
 		&& source .venv/bin/activate \
 		&& pip install -e .[dev] \
 		&& deactivate
@@ -296,16 +308,16 @@ openstudiolandscapes_update:
 #	# sed -i -e '$asource /home/user/git/repos/OpenStudioLandscapes/\.openstudiolandscapesrc' -e '/source \/home\/user\/git\/repos\/OpenStudioLandscapes\/\.openstudiolandscapesrc/d' /home/user/.bashrc
 #	# $ echo "your/string" | sed 's/\//\\\//g'
 #	# your\/string
-#	sed -i -e '$$asource ${OPENSTUDIOLANDSCAPES__REPO_ROOT}/\.openstudiolandscapesrc' -e '/source ${REPLACED}\/\.openstudiolandscapesrc/d' "$${HOME}/.bashrc"
+#	sed -i -e '$$asource ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT}/\.openstudiolandscapesrc' -e '/source ${REPLACED}\/\.openstudiolandscapesrc/d' "$${HOME}/.bashrc"
 
 up:
-	cd ${OPENSTUDIOLANDSCAPES__REPO_ROOT} \
+	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
 		&& source .venv/bin/activate \
 		&& nox --sessions dagster_postgres_up_detach dagster_postgres \
 		&& deactivate
 
 down:
-	cd ${OPENSTUDIOLANDSCAPES__REPO_ROOT} \
+	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
 		&& source .venv/bin/activate \
 		&& nox --sessions dagster_postgres_down \
 		&& deactivate
@@ -313,7 +325,7 @@ down:
 restart: down up
 
 #teleport_prepare:
-#	cd ${OPENSTUDIOLANDSCAPES__REPO_ROOT} \
+#	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
 #		&& source .venv/bin/activate \
 #		&& openstudiolandscapesutil-teleportcli Todo \
 #		&& openstudiolandscapesutil-teleportcli Todo \
@@ -389,17 +401,17 @@ teleport_local_node_journal:
 	journalctl --user --follow --unit teleport-node.service
 
 nox:
-	cd ${OPENSTUDIOLANDSCAPES__REPO_ROOT} \
+	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
 		&& source .venv/bin/activate \
 		&& nox
 
 nox_readme:
-	cd ${OPENSTUDIOLANDSCAPES__REPO_ROOT} \
+	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
 		&& source .venv/bin/activate \
 		&& nox --sessions readme
 
 nox_tag:
-	cd ${OPENSTUDIOLANDSCAPES__REPO_ROOT} \
+	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
 		&& source .venv/bin/activate \
 		&& nox --sessions tag
 
@@ -416,8 +428,8 @@ nox_tag:
 ##	#if [  -eq 0 ]; then
 ##	#/bin/sh: 1: Syntax error: end of file unexpected (expecting "fi")
 ##	#make: *** [Makefile:216: initial_checks] Error 2
-##	mkdir -p ${OPENSTUDIOLANDSCAPES__REPO_ROOT}
-##	# sudo mkdir -p ${OPENSTUDIOLANDSCAPES__REPO_ROOT}
+##	mkdir -p ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT}
+##	# sudo mkdir -p ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT}
 #
 #	UID := $(shell id -u)
 #	ifeq ($(UID),0)

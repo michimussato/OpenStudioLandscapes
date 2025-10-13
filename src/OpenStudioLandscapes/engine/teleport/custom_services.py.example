@@ -10,7 +10,7 @@
 #     {
 #         "service": "jellyfin",
 #         "app_name": "%s",
-#         "uri": "http://jellyfin.farm.evil:8096/",
+#         "uri": "http://jellyfin.{EnvVar('OPENSTUDIOLANDSCAPES__DOMAIN_LAN').get_value()}:8096/",
 #         "public_address": f"%s.teleport.{EnvVar('OPENSTUDIOLANDSCAPES__DOMAIN_WAN').get_value()}",
 #         "rewrite_redirect": [
 #             f"%s.{EnvVar('OPENSTUDIOLANDSCAPES__DOMAIN_LAN').get_value()}",

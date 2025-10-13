@@ -23,6 +23,7 @@ def get_env(
         },
         keys_by_output_name={
             "env_out": AssetKey([*ASSET_HEADER["key_prefix"], "env"]),
+            "env_parent_out": AssetKey([*ASSET_HEADER["key_prefix"], "env_parent"]),
         },
     )
 

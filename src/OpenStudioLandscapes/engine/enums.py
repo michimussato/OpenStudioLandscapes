@@ -11,6 +11,8 @@ __all__ = [
 
 import enum
 
+from dagster import EnvVar
+
 
 class GroupIn(enum.StrEnum):
     BASE_IN = "group_out_base"
@@ -67,7 +69,7 @@ class ComposeNetworkMode(enum.StrEnum):
 
 class DockerRegistry(enum.StrEnum):
     LOCAL_LOCALHOST = "localhost"
-    LOCAL_HARBOR = "harbor.farm.evil"
+    LOCAL_HARBOR = f"harbor.{EnvVar('OPENSTUDIOLANDSCAPES__DOMAIN_LAN').get_value()}"
     # LOCAL_MINIBOSS = os.environ.get("IP_MASTER", "localhost")
 
 

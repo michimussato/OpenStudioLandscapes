@@ -161,7 +161,7 @@ touch /etc/docker/daemon.json
 cat > /etc/docker/daemon.json
 {
   "insecure-registries": [
-    "http://harbor.farm.evil:80"
+    "http://harbor.openstudiolandscapes.lan:80"
   ],
   "max-concurrent-uploads": 1
 }
