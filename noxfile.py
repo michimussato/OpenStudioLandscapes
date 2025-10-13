@@ -2573,9 +2573,7 @@ ENVIRONMENT_ACME_SH = {
 }
 
 
-compose_acme_sh: pathlib.Path = (
-    ENVIRONMENT_ACME_SH["ACME_ROOT_DIR"] / "docker-compose.yml"
-)
+compose_acme_sh: pathlib.Path = None
 tld: str = ""
 acme_docker_service_name: str = ""
 
@@ -2692,7 +2690,7 @@ def get_cmd_acme_sh() -> list:
         "--file",
         compose_acme_sh.as_posix(),
         "--project-name",
-        "openstudiolandscapes-acme-sh",
+        f"openstudiolandscapes-acme-sh--{clean_tld(tld)}",
     ]
     return cmd_acme_sh
 
@@ -2833,6 +2831,24 @@ def acme_sh_up_detach(session):
     # nox --tags acme_sh_up_detach
 
     global compose_acme_sh
+    global tld
+
+    input_message = "Available Top Level Domain:\n"
+
+    acme_sh_root_dir_: pathlib.Path = ENVIRONMENT_ACME_SH["ACME_ROOT_DIR"]
+
+    tlds = [i.name for i in acme_sh_root_dir_.iterdir()]
+
+    tld = menu_from_choices(
+        input_message=input_message,
+        choices=tlds,
+        description="",
+        manual_value=False,
+    )
+
+    session.debug(f"{tld = }")
+
+    compose_acme_sh = acme_sh_root_dir_.joinpath(tld, "docker-compose.yml")
 
     if not compose_acme_sh.exists():
         raise FileNotFoundError(
@@ -2902,6 +2918,24 @@ def acme_sh_down(session):
     # nox --tags acme_sh_down
 
     global compose_acme_sh
+    global tld
+
+    input_message = "Available Top Level Domain:\n"
+
+    acme_sh_root_dir_: pathlib.Path = ENVIRONMENT_ACME_SH["ACME_ROOT_DIR"]
+
+    tlds = [i.name for i in acme_sh_root_dir_.iterdir()]
+
+    tld = menu_from_choices(
+        input_message=input_message,
+        choices=tlds,
+        description="",
+        manual_value=False,
+    )
+
+    session.debug(f"{tld = }")
+
+    compose_acme_sh = acme_sh_root_dir_.joinpath(tld, "docker-compose.yml")
 
     if not compose_acme_sh.exists():
         raise FileNotFoundError(
@@ -2940,6 +2974,26 @@ def acme_sh_register_account(session):
 
     global compose_acme_sh
     global acme_docker_service_name
+    global tld
+
+    input_message = "Available Top Level Domain:\n"
+
+    acme_sh_root_dir_: pathlib.Path = ENVIRONMENT_ACME_SH["ACME_ROOT_DIR"]
+
+    tlds = [i.name for i in acme_sh_root_dir_.iterdir()]
+
+    tld = menu_from_choices(
+        input_message=input_message,
+        choices=tlds,
+        description="",
+        manual_value=False,
+    )
+
+    session.debug(f"{tld = }")
+
+    acme_docker_service_name = (
+        f"{ENVIRONMENT_ACME_SH['ACME_DOCKER_SERVICE_NAME']}-{clean_tld(tld)}"
+    )
 
     container_env = get_container_vars()
     session.log(f"{container_env = }")
@@ -2982,6 +3036,25 @@ def acme_sh_create_certificate(session):
     global tld
     global acme_docker_service_name
 
+    input_message = "Available Top Level Domain:\n"
+
+    acme_sh_root_dir_: pathlib.Path = ENVIRONMENT_ACME_SH["ACME_ROOT_DIR"]
+
+    tlds = [i.name for i in acme_sh_root_dir_.iterdir()]
+
+    tld = menu_from_choices(
+        input_message=input_message,
+        choices=tlds,
+        description="",
+        manual_value=False,
+    )
+
+    session.debug(f"{tld = }")
+
+    acme_docker_service_name = (
+        f"{ENVIRONMENT_ACME_SH['ACME_DOCKER_SERVICE_NAME']}-{clean_tld(tld)}"
+    )
+
     container_env = get_container_vars()
     session.log(f"{container_env = }")
 
@@ -3000,12 +3073,15 @@ def acme_sh_create_certificate(session):
         #  - [ ] Regex for valid email structure
         # while not RE_SEMVER.match(user_input):
         user_input = input(input_message)
+        # user_input should look like: `teleport.,*.teleport.`
 
         sub_domains = list(
             chain.from_iterable(
                 (j, f"{i}{tld}")
                 for i, j in zip_longest(
                     user_input.split(sep=","), [], fillvalue="--domain"
+                    # ? if not i.endswith("."):
+                    # ?     i = f"{i}."
                 )
             )
         )
