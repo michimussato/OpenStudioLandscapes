@@ -372,8 +372,8 @@ def factory_group_in(
         Just forwards the data we get from the upstream `group_out` asset.
         """
 
-        context.log.error(f"{ins = }")
-        context.log.error(f"{kwargs = }")
+        context.log.debug(f"{ins = }")
+        context.log.debug(f"{kwargs = }")
 
         kw_keys = list(kwargs.keys())
 

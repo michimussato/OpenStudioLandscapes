@@ -40,8 +40,7 @@ from dagster import (
 )
 
 from OpenStudioLandscapes.engine.enums import *
-from OpenStudioLandscapes.engine.exceptions import ComposeScopeException
-
+from OpenStudioLandscapes.engine.exceptions import ComposeScopeException, OpenStudioLandscapesException
 
 LOGGER = get_dagster_logger(__name__)
 
@@ -376,7 +375,12 @@ def expand_dict_vars(
 
     for k, v in dict_to_expand.items():
         if isinstance(v, str):
-            dict_to_expand[k] = v.format(**kv)
+            try:
+                dict_to_expand[k] = v.format(**kv)
+            except KeyError as e:
+                raise OpenStudioLandscapesException(
+                    f"Could not expand {dict_to_expand[k] = } in {dict_to_expand = }"
+                ) from e
 
     return dict_to_expand
 
