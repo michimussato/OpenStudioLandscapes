@@ -273,6 +273,9 @@ harbor_up:
 
 	sudo systemctl status --no-pager --full harbor.service
 
+harbor_log:
+	journalctl --follow --unit harbor.service
+
 harbor_init_projects:
 	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
 		&& source .venv/bin/activate \

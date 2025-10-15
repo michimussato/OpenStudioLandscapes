@@ -2,6 +2,7 @@ import shlex
 import shutil
 import os
 import subprocess
+from dotenv import load_dotenv
 
 import git
 import nox
@@ -16,6 +17,12 @@ from typing import Tuple
 import yaml
 
 logging.basicConfig(level=logging.DEBUG)
+
+
+try:
+    load_dotenv(dotenv_path=".env")
+except Exception as e:
+    logging.error(f"Unable to load .env file: {e}")
 
 
 DOCKER_PROGRESS = [
@@ -1280,7 +1287,7 @@ def fix_hardlinks_in_features(session):
 ENVIRONMENT_DAGSTER = {
     # Todo:
     #  - [ ] maybe better to source .env instead of hardcoding these values
-    "OPENSTUDIOLANDSCAPES__DOMAIN_LAN": "farm.evil",
+    "OPENSTUDIOLANDSCAPES__DOMAIN_LAN": os.environ.get("OPENSTUDIOLANDSCAPES__DOMAIN_LAN", "openstudiolandscapes.lan"),
     # Todo:
     #  - [ ] move these two into `.landscapes`
     "DAGSTER_POSTGRES_ROOT_DIR": pathlib.Path.cwd() / ".dagster-postgres",
@@ -2563,10 +2570,10 @@ def tag_delete(session, working_directory):
 
 # # ENVIRONMENT
 ENVIRONMENT_ACME_SH = {
-    "OPENSTUDIOLANDSCAPES__DOMAIN_LAN": "farm.evil",
+    "OPENSTUDIOLANDSCAPES__DOMAIN_LAN": os.environ.get("OPENSTUDIOLANDSCAPES__DOMAIN_LAN", "openstudiolandscapes.lan"),
     "OPENSTUDIOLANDSCAPES__DOMAIN_WAN": [
-        "evil-farmer.cloud-ip.cc",
-        "openstudiolandscapes.cloud-ip.cc",
+        os.environ.get("OPENSTUDIOLANDSCAPES__DOMAIN_WAN1", None),
+        os.environ.get("OPENSTUDIOLANDSCAPES__DOMAIN_WAN2", None),
     ],
     "ACME_ROOT_DIR": landscapes_dir / ".acme.sh",
     "ACME_DOCKER_SERVICE_NAME": "acme-sh",
@@ -2729,6 +2736,9 @@ def acme_sh_prepare(session):
 
     global compose_acme_sh
     global tld
+
+    if not all(ENVIRONMENT_ACME_SH["OPENSTUDIOLANDSCAPES__DOMAIN_WAN"]):
+        raise Exception("No WAN domains defined.")
 
     # ACME_SH_CA
     acme_sh_ca = os.environ.get("ACME_SH_CA", None)

@@ -109,9 +109,16 @@ select tag_ in $(git tag) main; do
    GIT_TAG="${tag_}"
    break
 done
+```
 
-# find a way to not only checkout tags
+Checkout branch:
+```shell
+# Todo: find a way to not only checkout tags
 # but also branches
+export REPO_DIR=~/git/repos/OpenStudioLandscapes
+mkdir -p ${REPO_DIR}
+cd ${REPO_DIR}
+
 
 if [ ${GIT_TAG} == "main" ]; then
     git checkout main
@@ -119,11 +126,21 @@ else
     export OPENSTUDIOLANDSCAPES_VERSION_TAG=${GIT_TAG}
     git checkout tags/"${OPENSTUDIOLANDSCAPES_VERSION_TAG}" -B "${OPENSTUDIOLANDSCAPES_VERSION_TAG}"
 fi
+```
+
+
+```shell
+export REPO_DIR=~/git/repos/OpenStudioLandscapes
+mkdir -p ${REPO_DIR}
+cd ${REPO_DIR}
+
 
 make disable_unattended
 make install_deps
 make install_gh_cli
 make install_python
+# Requires
+# OPENSTUDIOLANDSCAPES__DOMAIN_LAN
 make edit_hosts_file
 make install_docker
 make openstudiolandscapes_install
