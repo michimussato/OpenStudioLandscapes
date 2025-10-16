@@ -139,23 +139,28 @@ make disable_unattended
 make install_deps
 make install_gh_cli
 make install_python
-# Requires
-# OPENSTUDIOLANDSCAPES__DOMAIN_LAN
+# Requires:
+# - `export OPENSTUDIOLANDSCAPES__DOMAIN_LAN=`
 make edit_hosts_file
 make install_docker
 make openstudiolandscapes_install
 # Requires
-# OPENSTUDIOLANDSCAPES_VERSION_TAG
+# - `export OPENSTUDIOLANDSCAPES_VERSION_TAG=`
 make openstudiolandscapes_features_clone
 make openstudiolandscapes_features_install
 
-# sudo systemctl reboot
-
+# Requires
+# - `export OPENSTUDIOLANDSCAPES__DOT_ENV=`
+# - `export OPENSTUDIOLANDSCAPES__HARBOR_ADMIN=`
+# - `export OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD=`
+# - `export OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME=`
+# - `export OPENSTUDIOLANDSCAPES__HARBOR_PORT=`
+# - `export OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR=`
 make harbor_prepare
 make harbor_up
 make harbor_init_projects
 # To actually execute the two returned commands, run:
-# eval $(make harbor_init_projects)
+# (does not work) eval $(make harbor_init_projects)
 ```
 
 ```shell
