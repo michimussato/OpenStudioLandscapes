@@ -70,20 +70,46 @@ of previous installations if there were any.
 | Desktop | ![Install_UbuntuDesktop2204.png](../../media/images/Install_UbuntuDesktop2204.png) |
 | Server  | ![Install_UbuntuServer2204.png](../../media/images/Install_UbuntuServer2204.png)   |
 
-Install requirements:
+> [!IMPORTANT]
+> Reboot after the following step!
+
+#### Add `${USER}` to Group `docker`
 
 ```shell
-sudo apt-get update
-sudo apt-get upgrade -y
-sudo apt-get install -y git make
-
 sudo groupadd --force --gid 959 docker
 sudo usermod --append --groups docker ${USER}
 
 sudo systemctl reboot
 ```
 
-Run installer (reboot if being asked for)
+#### Create `/etc/docker/daemon.json`
+
+```bash
+export OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME=harbor.openstudiolandscapes.lan
+export OPENSTUDIOLANDSCAPES__HARBOR_PORT=80
+
+sudo --preserve-env=OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME,OPENSTUDIOLANDSCAPES__HARBOR_PORT bash -c 'cat << EOF > /etc/docker/daemon.json
+{
+  "features": {
+    "buildkit": true
+  },
+  "max-concurrent-uploads": 1,
+  "insecure-registries": [
+    "http://${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME}:{OPENSTUDIOLANDSCAPES__HARBOR_PORT}"
+  ]
+}
+EOF'
+```
+
+#### Install basic Requirements
+
+```shell
+sudo apt-get update
+sudo apt-get upgrade -y
+sudo apt-get install -y git make
+```
+
+#### Setup Process
 
 ```shell
 export REPO_DIR=~/git/repos/OpenStudioLandscapes
@@ -159,8 +185,10 @@ make openstudiolandscapes_features_install
 make harbor_prepare
 make harbor_up
 make harbor_init_projects
-# To actually execute the two returned commands, run:
-# (does not work) eval $(make harbor_init_projects)
+# To actually execute the two returned commands
+# (Todo: which does not work yet), 
+# we could theoretically run:
+# eval $(make -s harbor_init_projects)
 ```
 
 ```shell

@@ -273,16 +273,18 @@ openstudiolandscapes_features_install:
 harbor_prepare:
 	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
 		&& source .venv/bin/activate \
-		&& openstudiolandscapesutil-harborcli --dot-env ./.env --user $${OPENSTUDIOLANDSCAPES__HARBOR_USERNAME} --password $${OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD} --host $${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME} --port $${OPENSTUDIOLANDSCAPES__HARBOR_PORT} --harbor-root-dir $${OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR} prepare download --destination-directory ./.harbor/download \
-		&& openstudiolandscapesutil-harborcli --dot-env ./.env --user $${OPENSTUDIOLANDSCAPES__HARBOR_USERNAME} --password $${OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD} --host $${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME} --port $${OPENSTUDIOLANDSCAPES__HARBOR_PORT} --harbor-root-dir $${OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR} prepare extract --extract-to ./.harbor/bin --tar-file ./.harbor/download/harbor-*.tgz \
-		&& openstudiolandscapesutil-harborcli --dot-env ./.env --user $${OPENSTUDIOLANDSCAPES__HARBOR_USERNAME} --password $${OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD} --host $${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME} --port $${OPENSTUDIOLANDSCAPES__HARBOR_PORT} --harbor-root-dir $${OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR} prepare configure --destination-directory ./.harbor/bin \
-		&& openstudiolandscapesutil-harborcli --dot-env ./.env --user $${OPENSTUDIOLANDSCAPES__HARBOR_USERNAME} --password $${OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD} --host $${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME} --port $${OPENSTUDIOLANDSCAPES__HARBOR_PORT} --harbor-root-dir $${OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR} prepare install --prepare-script ./.harbor/bin/prepare \
+		&& source ./.env \
+		&& openstudiolandscapesutil-harborcli --user $${OPENSTUDIOLANDSCAPES__HARBOR_USERNAME} --password $${OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD} --host $${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME} --port $${OPENSTUDIOLANDSCAPES__HARBOR_PORT} --harbor-root-dir $${OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR} prepare download --destination-directory ./.harbor/download \
+		&& openstudiolandscapesutil-harborcli --user $${OPENSTUDIOLANDSCAPES__HARBOR_USERNAME} --password $${OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD} --host $${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME} --port $${OPENSTUDIOLANDSCAPES__HARBOR_PORT} --harbor-root-dir $${OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR} prepare extract --extract-to ./.harbor/bin --tar-file ./.harbor/download/harbor-*.tgz \
+		&& openstudiolandscapesutil-harborcli --user $${OPENSTUDIOLANDSCAPES__HARBOR_USERNAME} --password $${OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD} --host $${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME} --port $${OPENSTUDIOLANDSCAPES__HARBOR_PORT} --harbor-root-dir $${OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR} prepare configure --destination-directory ./.harbor/bin \
+		&& openstudiolandscapesutil-harborcli --user $${OPENSTUDIOLANDSCAPES__HARBOR_USERNAME} --password $${OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD} --host $${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME} --port $${OPENSTUDIOLANDSCAPES__HARBOR_PORT} --harbor-root-dir $${OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR} prepare install --prepare-script ./.harbor/bin/prepare \
 		&& deactivate
 
 harbor_up:
 	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
 		&& source .venv/bin/activate \
-		&& eval $$(openstudiolandscapesutil-harborcli --dot-env ./.env --user $${OPENSTUDIOLANDSCAPES__HARBOR_USERNAME} --password $${OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD} --host $${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME} --port $${OPENSTUDIOLANDSCAPES__HARBOR_PORT} --harbor-root-dir $${OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR} systemd install --enable --start --outfile ./.harbor/bin/harbor.service --su-method sudo) \
+		&& source ./.env \
+		&& eval $$(openstudiolandscapesutil-harborcli --user $${OPENSTUDIOLANDSCAPES__HARBOR_USERNAME} --password $${OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD} --host $${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME} --port $${OPENSTUDIOLANDSCAPES__HARBOR_PORT} --harbor-root-dir $${OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR} systemd install --enable --start --outfile ./.harbor/bin/harbor.service --su-method sudo) \
 		&& deactivate
 
 	sudo systemctl status --no-pager --full harbor.service
@@ -293,8 +295,9 @@ harbor_log:
 harbor_init_projects:
 	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
 		&& source .venv/bin/activate \
-		&& openstudiolandscapesutil-harborcli --dot-env ./.env --user $${OPENSTUDIOLANDSCAPES__HARBOR_USERNAME} --password $${OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD} --host $${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME} --port $${OPENSTUDIOLANDSCAPES__HARBOR_PORT} --harbor-root-dir $${OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR} project create --project-name openstudiolandscapes \
-		&& openstudiolandscapesutil-harborcli --dot-env ./.env --user $${OPENSTUDIOLANDSCAPES__HARBOR_USERNAME} --password $${OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD} --host $${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME} --port $${OPENSTUDIOLANDSCAPES__HARBOR_PORT} --harbor-root-dir $${OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR} project delete --project-name library \
+		&& source ./.env \
+		&& openstudiolandscapesutil-harborcli --user $${OPENSTUDIOLANDSCAPES__HARBOR_USERNAME} --password $${OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD} --host $${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME} --port $${OPENSTUDIOLANDSCAPES__HARBOR_PORT} --harbor-root-dir $${OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR} project create --project-name openstudiolandscapes \
+		&& openstudiolandscapesutil-harborcli --user $${OPENSTUDIOLANDSCAPES__HARBOR_USERNAME} --password $${OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD} --host $${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME} --port $${OPENSTUDIOLANDSCAPES__HARBOR_PORT} --harbor-root-dir $${OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR} project delete --project-name library \
 		&& deactivate
 
 nox_CLEAR_ALL:
