@@ -61,6 +61,7 @@ docker/.volumes/.landscapes/*/
 
 # Teleport
 src/OpenStudioLandscapes/engine/teleport/custom_services.py
+src/OpenStudioLandscapes/engine/teleport/custom_services.yml
 
 # Features
 .features/*

@@ -1,0 +1,37 @@
+# from dagster import EnvVar
+#
+#
+# custom_services = [
+#     {
+#         "service": "pi-jellyfin",
+#         "app_name": "%s",
+#         "uri": f"http://jellyfin.{EnvVar('OPENSTUDIOLANDSCAPES__DOMAIN_LAN').get_value()}:8096/",
+#         "public_address": f"%s.teleport.{EnvVar('OPENSTUDIOLANDSCAPES__DOMAIN_WAN').get_value()}",
+#         "rewrite_redirect": [
+#             f"%s.{EnvVar('OPENSTUDIOLANDSCAPES__DOMAIN_LAN').get_value()}",
+#         ],
+#     },
+#     {
+#         "service": "pi-filebrowser",
+#         "app_name": "%s",
+#         "uri": f"http://filebrower.{EnvVar('OPENSTUDIOLANDSCAPES__DOMAIN_LAN').get_value()}:8080/",
+#         "public_address": f"%s.teleport.{EnvVar('OPENSTUDIOLANDSCAPES__DOMAIN_WAN').get_value()}",
+#         "rewrite_redirect": [
+#             f"%s.{EnvVar('OPENSTUDIOLANDSCAPES__DOMAIN_LAN').get_value()}",
+#         ],
+#     },
+# ]
+
+# custom_services:
+#   - service: "pi-jellyfin"
+#     app_name: "pi-jellyfin"
+#     uri: "http://jellyfin.${OPENSTUDIOLANDSCAPES__DOMAIN_LAN}:8096/"
+#     public_address: "pi-jellyfin.${OPENSTUDIOLANDSCAPES__DOMAIN_WAN}"
+#     rewrite_redirect:
+#       - "pi-jellyfin.${OPENSTUDIOLANDSCAPES__DOMAIN_LAN}"
+#   - service: "pi-filebrowser"
+#     app_name: "pi-filebrowser"
+#     uri: "http://filebrowser.${OPENSTUDIOLANDSCAPES__DOMAIN_LAN}:8080/"
+#     public_address: "pi-filebrowser.${OPENSTUDIOLANDSCAPES__DOMAIN_WAN}"
+#     rewrite_redirect:
+#       - "pi-filebrowser.${OPENSTUDIOLANDSCAPES__DOMAIN_LAN}"
