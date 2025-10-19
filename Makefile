@@ -376,9 +376,9 @@ teleport_local_node_configure:
     	--proxy=${TELEPORT_FQDN}:443
 
 define teleport_node_service
-cat << EOF
+sudo bash -c 'cat << EOF > /usr/lib/systemd/user/teleport-node@.service
 [Unit]
-Description=Teleport Service
+Description=Teleport Node Service (%i)
 After=network.target
 
 [Service]
@@ -388,10 +388,10 @@ RestartSec=5
 # EnvironmentFile has to be absolute, so the following
 # will not work (hence, disabled):
 # EnvironmentFile=-\${HOME}/.config/teleport/teleport
-ExecStart=$(which teleport) start --config \${HOME}/.config/teleport/teleport-node.yaml --pid-file=\${HOME}/teleport/teleport-node.pid
+ExecStart=$(which teleport) start --config %h/.config/teleport/teleport-node.yaml --pid-file=\${HOME}/teleport/teleport-node.pid
 # systemd before 239 needs an absolute path
-ExecReload=/bin/sh -c "exec pkill -HUP -L -F \${HOME}/teleport/teleport-node.pid"
-PIDFile=\${HOME}/teleport/teleport-node.pid
+ExecReload=/bin/sh -c "exec pkill -HUP -L -F %h/teleport/teleport-node.pid"
+PIDFile=%h/teleport/teleport-node.pid
 LimitNOFILE=524288
 
 [Install]
@@ -399,29 +399,30 @@ LimitNOFILE=524288
 #  ::Unit \${HOME}/.config/systemd/user/teleport.service is added as a dependency to a non-existent unit multi-user.target.
 # WantedBy=multi-user.target
 WantedBy=default.target
-EOF
+EOF' && echo "Install successful"
 endef
 export script = $(value teleport_node_service)
 
 teleport_local_node_install_unit:
 	# the PID file needs its directory to exist:
-	mkdir -p ${HOME}/teleport
-	@ eval "$$script" > $${HOME}/.config/systemd/user/teleport-node.service
+	mkdir -p $${HOME}/teleport
+	@ eval "$$script"
 
 teleport_local_node_enable_unit:
 	systemctl --user daemon-reload
-	systemctl --user enable --now teleport-node.service
+	systemctl --user enable --now teleport-node@$${USER}.service
 
-	systemctl --user status --no-pager --full teleport-node.service
+	systemctl --user status --no-pager --full teleport-node@$${USER}.service
 
 teleport_local_node_uninstall_unit:
-	systemctl --user disable --now teleport-node.service
-	systemctl --user status --no-pager --full teleport-node.service
-	systemctl --user daemon-reload
-	rm $${HOME}/.config/systemd/user/teleport-node.service
+	systemctl --user disable --now teleport-node@$${USER}.service
+	systemctl --user status --no-pager --full teleport-node@$${USER}.service
+	#systemctl --user daemon-reload
+	sudo rm /usr/lib/systemd/user/teleport-node@.service
+	sudo systemctl daemon-reload
 
 teleport_local_node_journal:
-	journalctl --user --follow --unit teleport-node.service
+	journalctl --user --follow --unit teleport-node@$${USER}.service
 
 nox:
 	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \

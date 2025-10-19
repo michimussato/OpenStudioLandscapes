@@ -1,5 +1,6 @@
 <!-- TOC -->
 * [Docker](#docker)
+  * [Create Docker `config.json`](#create-docker-configjson)
   * [Cleanup](#cleanup)
     * [Prune All](#prune-all)
     * [`hosts` file in Container](#hosts-file-in-container)
@@ -8,6 +9,27 @@
 ---
 
 # Docker
+
+## Create Docker `config.json`
+
+```shell
+export OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME=
+export OPENSTUDIOLANDSCAPES__HARBOR_PORT=
+```
+
+```shell
+sudo --preserve-env=OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME,OPENSTUDIOLANDSCAPES__HARBOR_PORT bash -c 'cat << EOF > /etc/docker/daemon.json
+{
+  "features": {
+    "buildkit": true
+  },
+  "max-concurrent-uploads": 1,
+  "insecure-registries": [
+    "http://${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME}:{OPENSTUDIOLANDSCAPES__HARBOR_PORT}"
+  ]
+}
+EOF'
+```
 
 ## Cleanup
 

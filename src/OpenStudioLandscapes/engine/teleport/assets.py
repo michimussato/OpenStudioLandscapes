@@ -202,7 +202,7 @@ if bool(ins):
 
         command = []
 
-        SERVICE_NAME = ASSET_HEADER_TELEPORT["group_name"].lower()
+        SERVICE_NAME = f"openstudiolandscapes-{ASSET_HEADER_TELEPORT['group_name'].lower()}"
 
         container_name = "--".join([SERVICE_NAME, env.get("LANDSCAPE", "default")])
         host_name = ".".join([SERVICE_NAME, env["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"]])
@@ -315,7 +315,7 @@ if bool(ins):
         https://tomerklein.dev/setting-up-teleport-for-secure-server-access-d4d317c1c4ca
         """
 
-        container_name = compose_teleport["services"]["teleport"]["container_name"]
+        container_name = compose_teleport["services"][f"openstudiolandscapes-{ASSET_HEADER_TELEPORT['group_name'].lower()}"]["container_name"]
 
         teleport_create_admin_cmd = [
             # i.e.: https://tomerklein.dev/setting-up-teleport-for-secure-server-access-d4d317c1c4ca
@@ -361,7 +361,7 @@ if bool(ins):
 
         cwd = docker_compose_yml.parent
 
-        unit_ = "teleport-server@.service"
+        unit_ = "openstudiolandscapes-teleport@.service"
         unit_link = docker_compose_yml.parent.joinpath(unit_)
         unit = docker_compose_yml.parent.joinpath(env["LANDSCAPE"], unit_)
 
@@ -373,7 +373,7 @@ if bool(ins):
         unit_str = textwrap.dedent(
             f"""\
             [Unit]
-            Description=OpenStudioLandscapes-Teleport Service (%i)
+            Description=OpenStudioLandscapes-Teleport Server Service (%i)
             After=network.target
 
             [Service]
@@ -650,9 +650,6 @@ if bool(ins):
     @asset(
         **ASSET_HEADER_TELEPORT,
         ins={
-            "env": AssetIn(
-                AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "env"]),
-            ),
             "features_in": AssetIn(
                 AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "features_in"])
             ),
@@ -660,7 +657,7 @@ if bool(ins):
     )
     def fetch_services(
         context: AssetExecutionContext,
-        env: dict,  # pylint: disable=redefined-outer-name
+        # env: dict,  # pylint: disable=redefined-outer-name
         features_in: dict,  # pylint: disable=redefined-outer-name
     ) -> Generator[
         Output[MutableMapping[str, List[MutableMapping[str, List]]]]
@@ -905,12 +902,16 @@ if bool(ins):
             "app_dict_default": AssetIn(
                 AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "app_dict_default"]),
             ),
+            # "env": AssetIn(
+            #     AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "env"]),
+            # ),
         },
         description="",
     )
     def static_apps(
         context: AssetExecutionContext,
         app_dict_default: dict,  # pylint: disable=redefined-outer-name
+        # env: dict,  # pylint: disable=redefined-outer-name
     ) -> Generator[Output[List] | AssetMaterialization, None, None]:
         """ """
 
@@ -919,9 +920,11 @@ if bool(ins):
         SERVICE_NAME = ASSET_HEADER_TELEPORT["group_name"].lower()
 
         try:
-            from OpenStudioLandscapes.engine.teleport.custom_services import custom_services
-        except ImportError:
+            from OpenStudioLandscapes.engine.teleport.custom_services import custom_services  # as custom_services_
+        except ImportError as e:
             custom_services = []
+            context.log.warning("Could not load `custom_services.py`: "
+                                f"{e}")
 
         _static_apps: List[Dict] = [
             {
