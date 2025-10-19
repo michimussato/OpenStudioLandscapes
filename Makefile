@@ -390,7 +390,7 @@ RestartSec=5
 # EnvironmentFile=-\${HOME}/.config/teleport/teleport
 ExecStart=$(which teleport) start --config %h/.config/teleport/teleport-node.yaml --pid-file=\${HOME}/teleport/teleport-node.pid
 # systemd before 239 needs an absolute path
-ExecReload=/bin/sh -c "exec pkill -HUP -L -F %h/teleport/teleport-node.pid"
+ExecReload=/bin/sh -c "exec pkill -HUP -L -F %h/.local/share/teleport/teleport-node.pid"
 PIDFile=%h/teleport/teleport-node.pid
 LimitNOFILE=524288
 
@@ -405,13 +405,12 @@ export script = $(value teleport_node_service)
 
 teleport_local_node_install_unit:
 	# the PID file needs its directory to exist:
-	mkdir -p $${HOME}/teleport
+	#mkdir -p $${HOME}/teleport
 	@ eval "$$script"
 
 teleport_local_node_enable_unit:
 	systemctl --user daemon-reload
 	systemctl --user enable --now teleport-node@$${USER}.service
-
 	systemctl --user status --no-pager --full teleport-node@$${USER}.service
 
 teleport_local_node_uninstall_unit:

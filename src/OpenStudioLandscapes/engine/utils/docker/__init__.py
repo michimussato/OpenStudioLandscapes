@@ -5,9 +5,12 @@ __all__ = [
 ]
 
 import pathlib
+import queue
+import threading
+import shlex
 import shutil
 import subprocess
-from typing import Generator, List, MutableMapping
+from typing import Generator, List, MutableMapping, Any
 
 from dagster import AssetExecutionContext
 
@@ -86,53 +89,75 @@ def docker_push_cmd(
     return push_cmds
 
 
+class OutputReader(threading.Thread):
+    def __init__(self, stream, output_queue):
+        threading.Thread.__init__(self)
+        self.stream = stream
+        self.output_queue = output_queue
+
+    def run(self):
+        for line in iter(self.stream.readline, b''):
+            self.output_queue.put(line.decode().strip())
+
+
+def execute_in_threads(
+        context: AssetExecutionContext,
+        command: str,
+) -> Generator[int | Any, None, None]:
+
+    process = subprocess.Popen(
+        command,
+        shell=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+
+    stdout_queue = queue.Queue()
+    stderr_queue = queue.Queue()
+
+    stdout_reader = OutputReader(process.stdout, stdout_queue)
+    stderr_reader = OutputReader(process.stderr, stderr_queue)
+
+    stdout_reader.start()
+    stderr_reader.start()
+
+    while True:
+        try:
+            while not stdout_queue.empty():
+                stdout = stdout_queue.get()
+                context.log.debug(f"{stdout = }")
+                yield stdout
+                stdout = None
+                # print('STDOUT:', stdout_queue.get())
+            while not stderr_queue.empty():
+                stderr = stderr_queue.get()
+                context.log.debug(f"{stderr = }")
+                yield stderr
+                stderr = None
+                # print('STDERR:', stderr_queue.get())
+
+            returncode = process.poll()
+            if returncode is not None:
+                context.log.debug(f"{returncode = }")
+                yield f"{returncode = }"
+                break
+        except KeyboardInterrupt as e:
+            context.log.error(e)
+            break
+
+
 def docker_process_cmds(
     context: AssetExecutionContext,
-    cmds: list[str],
-) -> Generator[MutableMapping[str, List[str]], None, None]:
+    cmds: list[list[str]],
+) -> Generator[int | Any, Any, None]:
 
     for cmd in cmds:
 
         context.log.info(f"Processing command: \"{' '.join(cmd)}\"")
 
-        proc = subprocess.Popen(
-            cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-        )
-
-        handles = (proc.stdout, proc.stderr)
-        labels = ("stdout", "stderr")
-        functions = (context.log.debug, context.log.debug)
-        logs = iterate_fds(
-            handles=handles,
-            labels=labels,
-            functions=functions,
-            live_print=True,
-        )
-
-        for _label, _function in zip(labels, functions):
-            if bool(logs[_label]):
-                _function(logs[_label])
-
-        logs_ = {
-            "cmd": cmd,
-            "stdout": logs["stdout"],
-            "stderr": logs["stderr"],
-        }
-
-        returncode = proc.poll()
-        context.log.debug(f"{returncode = }")
-
-        if bool(returncode):
-            err_ = "\n".join(logs_["stderr"])
-            context.log.error(err_)
-            str_ = ""
-            str_ += f"Command failed {returncode = }: {cmd = }\n"
-            str_ += "Is Harbor running? Try `nox --session harbor_up` or `nox --session harbor_up_detach`.\n"
-            str_ += "\n"
-            str_ += "Full trace:\n"
-            str_ += err_
-            raise OpenStudioLandscapesDockerException(str_)
-
-        yield logs_
+        for s in execute_in_threads(
+            context=context,
+            command=shlex.join(cmd),
+        ):
+            # context.log.info(s)
+            yield s
