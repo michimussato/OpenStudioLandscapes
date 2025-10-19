@@ -1287,7 +1287,7 @@ def fix_hardlinks_in_features(session):
 ENVIRONMENT_DAGSTER = {
     # Todo:
     #  - [ ] maybe better to source .env instead of hardcoding these values
-    "OPENSTUDIOLANDSCAPES__DOMAIN_LAN": os.environ.get("OPENSTUDIOLANDSCAPES__DOMAIN_LAN", "openstudiolandscapes.lan"),
+    "OPENSTUDIOLANDSCAPES__DOMAIN_LAN": os.environ["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"],
     # Todo:
     #  - [ ] move these two into `.landscapes`
     "DAGSTER_POSTGRES_ROOT_DIR": pathlib.Path.cwd() / ".dagster-postgres",
@@ -1317,6 +1317,19 @@ compose_dagster_postgres = (
     ENVIRONMENT_DAGSTER["DAGSTER_POSTGRES_ROOT_DIR"] / "docker-compose.yml"
 )
 
+SERVICE_NAME_DAGSTER = "openstudiolandscapes-dagster"
+SERVICE_NAME_DAGSTER_POSTGRES = "openstudiolandscapes-dagster-postgres"
+
+HOSTNAME_DAGSTER_DEV = f"{SERVICE_NAME_DAGSTER}.{ENVIRONMENT_DAGSTER['OPENSTUDIOLANDSCAPES__DOMAIN_LAN']}"
+HOSTNAME_DAGSTER_POSTGRES = f"{SERVICE_NAME_DAGSTER_POSTGRES}.{ENVIRONMENT_DAGSTER['OPENSTUDIOLANDSCAPES__DOMAIN_LAN']}"
+
+cmd_dagster_dev = [
+        shutil.which("dagster"),
+        "dev",
+        "--host",
+        HOSTNAME_DAGSTER_DEV,
+    ]
+
 cmd_dagster_postgres = [
     shutil.which("docker"),
     "compose",
@@ -1341,7 +1354,7 @@ def write_dagster_postgres_yml(
     ]
     dagster_postgres_root_dir.mkdir(parents=True, exist_ok=True)
 
-    service_name = "postgres-dagster"
+    service_name = "openstudiolandscapes-dagster-postgres"
     # network_name = service_name
     # container_name = service_name
     host_name = ".".join(
@@ -1411,12 +1424,10 @@ def write_dagster_postgres_compose() -> pathlib.Path:
     )
     dagster_postgres_db_dir.mkdir(parents=True, exist_ok=True)
 
-    service_name = "postgres-dagster"
+    service_name = SERVICE_NAME_DAGSTER_POSTGRES
     network_name = service_name
     container_name = service_name
-    host_name = ".".join(
-        [service_name, ENVIRONMENT_DAGSTER["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"]]
-    )
+    host_name = HOSTNAME_DAGSTER_POSTGRES
 
     dagster_postgres_dict = {
         "networks": {
@@ -1676,12 +1687,7 @@ def dagster_postgres(session):
 
     sudo = False
 
-    cmd = [
-        shutil.which("dagster"),
-        "dev",
-        "--host",
-        "0.0.0.0",
-    ]
+    cmd = cmd_dagster_dev
 
     if sudo:
         cmd.insert(0, shutil.which("sudo"))
@@ -1773,12 +1779,7 @@ def dagster_mysql(session):
 
     sudo = False
 
-    cmd = [
-        shutil.which("dagster"),
-        "dev",
-        "--host",
-        "0.0.0.0",
-    ]
+    cmd = cmd_dagster_dev
 
     if sudo:
         cmd.insert(0, shutil.which("sudo"))
