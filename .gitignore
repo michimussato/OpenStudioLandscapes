@@ -59,6 +59,9 @@ MANIFEST
 docker/.volumes/.landscapes/*/
 !docker/.volumes/.landscapes/.gitkeep
 
+# Teleport
+src/OpenStudioLandscapes/engine/teleport/custom_services.py
+
 # Features
 .features/*
 !.features/.gitkeep
