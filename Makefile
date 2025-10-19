@@ -274,17 +274,17 @@ harbor_prepare:
 	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
 		&& source .venv/bin/activate \
 		&& source ./.env \
-		&& openstudiolandscapesutil-harborcli --user $${OPENSTUDIOLANDSCAPES__HARBOR_USERNAME} --password $${OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD} --host $${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME} --port $${OPENSTUDIOLANDSCAPES__HARBOR_PORT} --harbor-root-dir $${OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR} prepare download --destination-directory ./.harbor/download \
-		&& openstudiolandscapesutil-harborcli --user $${OPENSTUDIOLANDSCAPES__HARBOR_USERNAME} --password $${OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD} --host $${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME} --port $${OPENSTUDIOLANDSCAPES__HARBOR_PORT} --harbor-root-dir $${OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR} prepare extract --extract-to ./.harbor/bin --tar-file ./.harbor/download/harbor-*.tgz \
-		&& openstudiolandscapesutil-harborcli --user $${OPENSTUDIOLANDSCAPES__HARBOR_USERNAME} --password $${OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD} --host $${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME} --port $${OPENSTUDIOLANDSCAPES__HARBOR_PORT} --harbor-root-dir $${OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR} prepare configure --destination-directory ./.harbor/bin \
-		&& openstudiolandscapesutil-harborcli --user $${OPENSTUDIOLANDSCAPES__HARBOR_USERNAME} --password $${OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD} --host $${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME} --port $${OPENSTUDIOLANDSCAPES__HARBOR_PORT} --harbor-root-dir $${OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR} prepare install --prepare-script ./.harbor/bin/prepare \
+		&& openstudiolandscapesutil-harborcli --user $${OPENSTUDIOLANDSCAPES__HARBOR_USERNAME} --password $${OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD} --host $${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME} --port $${OPENSTUDIOLANDSCAPES__HARBOR_PORT} --harbor-root-dir $${OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR} prepare download \
+		&& openstudiolandscapesutil-harborcli --user $${OPENSTUDIOLANDSCAPES__HARBOR_USERNAME} --password $${OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD} --host $${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME} --port $${OPENSTUDIOLANDSCAPES__HARBOR_PORT} --harbor-root-dir $${OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR} prepare extract --tar-file ./.harbor/download/harbor-*.tgz \
+		&& openstudiolandscapesutil-harborcli --user $${OPENSTUDIOLANDSCAPES__HARBOR_USERNAME} --password $${OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD} --host $${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME} --port $${OPENSTUDIOLANDSCAPES__HARBOR_PORT} --harbor-root-dir $${OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR} prepare configure \
+		&& openstudiolandscapesutil-harborcli --user $${OPENSTUDIOLANDSCAPES__HARBOR_USERNAME} --password $${OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD} --host $${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME} --port $${OPENSTUDIOLANDSCAPES__HARBOR_PORT} --harbor-root-dir $${OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR} prepare install \
 		&& deactivate
 
 harbor_up:
 	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
 		&& source .venv/bin/activate \
 		&& source ./.env \
-		&& eval $$(openstudiolandscapesutil-harborcli --user $${OPENSTUDIOLANDSCAPES__HARBOR_USERNAME} --password $${OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD} --host $${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME} --port $${OPENSTUDIOLANDSCAPES__HARBOR_PORT} --harbor-root-dir $${OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR} systemd install --enable --start --outfile ./.harbor/bin/harbor.service --su-method sudo) \
+		&& eval $$(openstudiolandscapesutil-harborcli --user $${OPENSTUDIOLANDSCAPES__HARBOR_USERNAME} --password $${OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD} --host $${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME} --port $${OPENSTUDIOLANDSCAPES__HARBOR_PORT} --harbor-root-dir $${OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR} systemd install --enable --start --su-method sudo) \
 		&& deactivate
 
 	sudo systemctl status --no-pager --full harbor.service
@@ -302,9 +302,12 @@ harbor_init_projects:
 
 nox_CLEAR_ALL:
 	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT}/.nox \
-		&& pwd \
 		&& rm -r */
 		# && sudo rm -r */
+
+harbor_git_clean:
+	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT}/.harbor \
+		&& sudo git clean -x --force ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT}/.harbor
 
 harbor_CLEAR_ALL:
 	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT}/.harbor \

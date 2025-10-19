@@ -6,6 +6,10 @@
   * [Run the Installer Script](#run-the-installer-script)
     * [Ubuntu](#ubuntu)
       * [22.04](#2204)
+      * [Add `${USER}` to Group `docker`](#add-user-to-group-docker)
+      * [Create `/etc/docker/daemon.json`](#create-etcdockerdaemonjson)
+      * [Install basic Requirements](#install-basic-requirements)
+      * [Setup Process](#setup-process)
 <!-- TOC -->
 
 ---
@@ -85,8 +89,10 @@ sudo systemctl reboot
 #### Create `/etc/docker/daemon.json`
 
 ```bash
-export OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME=harbor.openstudiolandscapes.lan
-export OPENSTUDIOLANDSCAPES__HARBOR_PORT=80
+# export OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME=harbor.openstudiolandscapes.lan
+# export OPENSTUDIOLANDSCAPES__HARBOR_PORT=80
+
+source .env
 
 sudo --preserve-env=OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME,OPENSTUDIOLANDSCAPES__HARBOR_PORT bash -c 'cat << EOF > /etc/docker/daemon.json
 {
