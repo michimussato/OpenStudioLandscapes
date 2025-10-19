@@ -777,9 +777,7 @@ if bool(ins):
             "public_addr": "",
             "use_any_proxy_public_addr": False,
             "rewrite": {
-                "redirect": [
-                    "localhost",
-                ],
+                "redirect": [],
             },
         }
 
@@ -929,33 +927,50 @@ if bool(ins):
         _static_apps: List[Dict] = [
             {
                 "service": "openstudiolandscapes-dagster",
-                "app_name": "%s",
-                "uri": "http://localhost:3000/",
-                "public_address": f"%s.{SERVICE_NAME}.{EnvVar('OPENSTUDIOLANDSCAPES__DOMAIN_WAN').get_value()}",
+                "app_name": "{service}",
+                # "uri": f"http://%s.{EnvVar('OPENSTUDIOLANDSCAPES__DOMAIN_LAN').get_value()}:3000/",
+                "uri": "http://{service}.{domain_lan}:3000/",
+                "public_address": "{service}.teleport.{domain_wan}",
                 "rewrite_redirect": [
-                    f"%s.{EnvVar('OPENSTUDIOLANDSCAPES__DOMAIN_LAN').get_value()}",
+                    # "localhost",
+                    "{service}.{domain_lan}",
                 ],
             },
             {
                 "service": "openstudiolandscapes-harbor",
-                "app_name": "%s",
-                "uri": "http://localhost:80/",
-                "public_address": f"%s.{SERVICE_NAME}.{EnvVar('OPENSTUDIOLANDSCAPES__DOMAIN_WAN').get_value()}",
+                "app_name": "{service}",
+                # "uri": f"http://%s.{EnvVar('OPENSTUDIOLANDSCAPES__DOMAIN_LAN').get_value()}:80/",
+                "uri": "http://{service}.{domain_lan}:80/",
+                "public_address": "{service}.teleport.{domain_wan}",
                 "rewrite_redirect": [
-                    f"%s.{EnvVar('OPENSTUDIOLANDSCAPES__DOMAIN_LAN').get_value()}",
+                    # "localhost",
+                    "{service}.{domain_lan}",
                 ],
             },
             *custom_services,
         ]
 
         for _static_app in _static_apps:
+            context.log.debug(_static_app)
             service = _static_app["service"]
             app_ = copy.deepcopy(app_dict_default)
-            app_["name"] = _static_app["app_name"] % service
-            app_["uri"] = _static_app["uri"]
-            app_["public_addr"] = _static_app["public_address"] % service
+            app_["name"] = _static_app["app_name"].format(
+                service=service,
+            )
+            app_["uri"] = _static_app["uri"].format(
+                service=service,
+                domain_lan=EnvVar('OPENSTUDIOLANDSCAPES__DOMAIN_LAN').get_value(),
+            )
+            # app_["public_addr"] = _static_app["public_address"] % service
+            app_["public_addr"] = _static_app["public_address"].format(
+                service=service,
+                domain_wan=EnvVar('OPENSTUDIOLANDSCAPES__DOMAIN_WAN').get_value(),
+            )
             app_["rewrite"]["redirect"].extend(
-                [i % service for i in _static_app["rewrite_redirect"]]
+                [i.format(
+                    service=service,
+                    domain_lan=EnvVar('OPENSTUDIOLANDSCAPES__DOMAIN_LAN').get_value(),
+                ) for i in _static_app["rewrite_redirect"]]
             )
 
             static_apps_.append(app_)
