@@ -900,22 +900,16 @@ if bool(ins):
             "app_dict_default": AssetIn(
                 AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "app_dict_default"]),
             ),
-            # "env": AssetIn(
-            #     AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "env"]),
-            # ),
         },
         description="",
     )
     def static_apps(
         context: AssetExecutionContext,
         app_dict_default: dict,  # pylint: disable=redefined-outer-name
-        # env: dict,  # pylint: disable=redefined-outer-name
     ) -> Generator[Output[List] | AssetMaterialization, None, None]:
         """ """
 
         static_apps_ = []
-
-        SERVICE_NAME = ASSET_HEADER_TELEPORT["group_name"].lower()
 
         try:
             from OpenStudioLandscapes.engine.teleport.custom_services import custom_services  # as custom_services_
@@ -928,7 +922,6 @@ if bool(ins):
             {
                 "service": "openstudiolandscapes-dagster",
                 "app_name": "{service}",
-                # "uri": f"http://%s.{EnvVar('OPENSTUDIOLANDSCAPES__DOMAIN_LAN').get_value()}:3000/",
                 "uri": "http://{service}.{domain_lan}:3000/",
                 "public_address": "{service}.teleport.{domain_wan}",
                 "rewrite_redirect": [
@@ -939,7 +932,6 @@ if bool(ins):
             {
                 "service": "openstudiolandscapes-harbor",
                 "app_name": "{service}",
-                # "uri": f"http://%s.{EnvVar('OPENSTUDIOLANDSCAPES__DOMAIN_LAN').get_value()}:80/",
                 "uri": "http://{service}.{domain_lan}:80/",
                 "public_address": "{service}.teleport.{domain_wan}",
                 "rewrite_redirect": [
@@ -961,7 +953,6 @@ if bool(ins):
                 service=service,
                 domain_lan=EnvVar('OPENSTUDIOLANDSCAPES__DOMAIN_LAN').get_value(),
             )
-            # app_["public_addr"] = _static_app["public_address"] % service
             app_["public_addr"] = _static_app["public_address"].format(
                 service=service,
                 domain_wan=EnvVar('OPENSTUDIOLANDSCAPES__DOMAIN_WAN').get_value(),
