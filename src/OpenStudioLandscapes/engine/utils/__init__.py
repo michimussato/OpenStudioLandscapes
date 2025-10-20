@@ -10,7 +10,6 @@ __all__ = [
     "get_bin_root",
     "get_image_name",
     "parse_docker_image_path",
-    "iterate_fds",
     "get_compose_scope",
     "get_feature_config",
     "expand_dict_vars",
@@ -25,9 +24,8 @@ __all__ = [
 import operator as operator_
 import os
 import pathlib
-import select
 import shlex
-from typing import IO, Any, List, MutableMapping, Optional, Union
+from typing import Any, List, MutableMapping, Union
 
 import git
 from dagster import (
@@ -199,102 +197,6 @@ def parse_docker_image_path(
         image_path.append("/")
 
     return str().join(image_path)
-
-
-def iterate_fds(
-    *,
-    handles: tuple[
-        Optional[IO[bytes]],
-        Optional[IO[bytes]],
-    ],
-    labels: tuple[str, str],
-    functions: tuple[
-        callable,
-        callable,
-    ],
-    live_print=False,
-) -> MutableMapping[str, list[str]]:
-    """
-    Can be used to live-feed stdout and stderr of a
-    subprocess.Popen.stdout/stderr stream to an
-    appropriate logging stream like info and warning.
-    stdout -> logging.info
-    stderr -> logging.warning
-
-    Usage:
-
-    ```
-    proc = subprocess.Popen(
-        cmd,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE
-    )
-
-    stream_logs = True
-
-    handles = (proc.stdout, proc.stderr)
-    labels = ("stdout", "stderr")
-    functions = (context.log.info, context.log.warning)
-    logs = helpers.iterate_fds(
-        handles=handles,
-        labels=labels,
-        functions=functions,
-        live_print=stream_logs
-    )
-
-    for _label, _function in zip(labels, functions):
-        if bool(logs[_label]):
-            _function(logs[_label])
-    ```
-
-    Reference:
-
-    https://alexandre.deverteuil.net/post/monitor-python-subprocess-output-streams-real-time/
-
-    Args:
-        handles (tuple[
-                typing.Optional[typing.IO[bytes]],
-                typing.Optional[typing.IO[bytes]],
-            ]): io.BufferedReader
-        labels (tuple[str, str]):
-        functions (tuple[
-                callable, callable,
-            ]): bound method (Logger.info, Logger.warning)
-        live_print (bool): Do you want to live_print? (False is equivalent to "summarize")
-
-    Returns: MutableMapping[str, list[str]]
-
-    """
-
-    ret = {}
-
-    for label in labels:
-        ret[label] = []
-
-    methods = dict(zip(handles, zip(labels, functions)))
-
-    while methods:
-        for handle in select.select(methods.keys(), tuple(), tuple())[0]:
-
-            label = methods[handle][0]
-            function = methods[handle][1]
-            line = handle.readline()
-
-            if line:
-                line_ = line.decode("utf-8").rstrip()
-                if live_print:
-                    function(line_)
-                ret[label].append(line_)
-
-                # This is from the reference, but can't
-                # tell the difference so far other than
-                # not cutting off the last character in
-                # a line without \n
-                # methods[handle](line[:-1].decode("utf-8"))
-            else:
-                methods.pop(handle)
-
-    return ret
 
 
 def get_compose_scope(

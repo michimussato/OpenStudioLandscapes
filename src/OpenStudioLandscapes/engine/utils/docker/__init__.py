@@ -1,7 +1,7 @@
 __all__ = [
     "docker_build_cmd",
     "docker_push_cmd",
-    "docker_process_cmds",
+    "docker_do",
 ]
 
 import pathlib
@@ -10,11 +10,9 @@ import threading
 import shlex
 import shutil
 import subprocess
-from typing import Generator, List, MutableMapping, Any
+from typing import Generator, Any, List
 
 from dagster import AssetExecutionContext
-
-from OpenStudioLandscapes.engine.utils import iterate_fds
 
 
 class OpenStudioLandscapesDockerException(Exception):
@@ -124,22 +122,16 @@ def execute_in_threads(
     while True:
         try:
             while not stdout_queue.empty():
-                stdout = stdout_queue.get()
-                context.log.debug(f"{stdout = }")
+                stdout = "stdout: %s" % stdout_queue.get()
                 yield stdout
-                stdout = None
-                # print('STDOUT:', stdout_queue.get())
             while not stderr_queue.empty():
-                stderr = stderr_queue.get()
-                context.log.debug(f"{stderr = }")
+                stderr = "stderr: %s" % stderr_queue.get()
                 yield stderr
-                stderr = None
-                # print('STDERR:', stderr_queue.get())
 
-            returncode = process.poll()
-            if returncode is not None:
-                context.log.debug(f"{returncode = }")
-                yield f"{returncode = }"
+            returncode_ = process.poll()
+            if returncode_ is not None:
+                returncode = "return code: %i" % returncode_
+                yield returncode
                 break
         except KeyboardInterrupt as e:
             context.log.error(e)
@@ -159,5 +151,29 @@ def docker_process_cmds(
             context=context,
             command=shlex.join(cmd),
         ):
-            # context.log.info(s)
             yield s
+
+
+def docker_do(
+        context: AssetExecutionContext,
+        cmds: list[list[str]],
+) -> List[str]:
+    """
+    Args:
+        context: AssetExecutionContext
+        cmds: list of commands to execute
+
+    Returns:
+        list[str]: all collected records (stdout, stderr, return code)
+    """
+
+    records = []
+
+    for record in docker_process_cmds(
+        context=context,
+        cmds=cmds,
+    ):
+        context.log.info(record)
+        records.append(record)
+
+    return records
