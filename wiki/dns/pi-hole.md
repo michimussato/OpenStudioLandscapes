@@ -200,3 +200,5 @@ Maybe keep an eye on this:
 Other issues:
 
 `WARNING in dnsmasq core: Maximum number of concurrent DNS queries reached (max: 150)`
+
+![pihole_hostname_error.png](../../media/images/pihole_hostname_error.png)
