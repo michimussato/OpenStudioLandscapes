@@ -2052,15 +2052,17 @@ def lint(session, working_directory):
             silent=SESSION_RUN_SILENT,
         )
 
-        if pathlib.PosixPath(".pre-commit-config.yaml").absolute().exists():
-            session.run(
-                "pre-commit",
-                "run",
-                "--all-files",
-                *session.posargs,
-                # external=True,
-                silent=SESSION_RUN_SILENT,
-            )
+        # # pre-commit maybe not as part of lint?
+        # # Seems like black and pre-commit hook black are competing with each other
+        # if pathlib.PosixPath(".pre-commit-config.yaml").absolute().exists():
+        #     session.run(
+        #         "pre-commit",
+        #         "run",
+        #         "--all-files",
+        #         *session.posargs,
+        #         # external=True,
+        #         silent=SESSION_RUN_SILENT,
+        #     )
 
         # # nox > Command pylint src failed with exit code 30
         # # nox > Session lint-3.12 failed.
