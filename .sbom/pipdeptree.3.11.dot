@@ -130,7 +130,7 @@ digraph {
 	graphviz [label="graphviz\n0.21"]
 	greenlet [label="greenlet\n3.2.4"]
 	grpcio -> "typing-extensions" [label="~=4.12"]
-	grpcio [label="grpcio\n1.75.1"]
+	grpcio [label="grpcio\n1.76.0"]
 	humanfriendly [label="humanfriendly\n10.0"]
 	humanize [label="humanize\n4.14.0"]
 	idna [label="idna\n3.11"]

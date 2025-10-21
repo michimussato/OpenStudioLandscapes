@@ -158,7 +158,7 @@
       "version": "0.0.0"
     },
     {
-      "bom-ref": "BomRef.612285455455107.6026444900056068",
+      "bom-ref": "BomRef.6575396244028445.3504915191922311",
       "description": "A Toolkit to create dynamic Animation and VFX studio environments for robust automation and pipelines.",
       "externalReferences": [
         {
@@ -1495,7 +1495,7 @@
       "version": "3.2.4"
     },
     {
-      "bom-ref": "grpcio==1.75.1",
+      "bom-ref": "grpcio==1.76.0",
       "description": "HTTP/2-based RPC framework",
       "externalReferences": [
         {
@@ -1528,9 +1528,9 @@
         }
       ],
       "name": "grpcio",
-      "purl": "pkg:pypi/grpcio@1.75.1",
+      "purl": "pkg:pypi/grpcio@1.76.0",
       "type": "library",
-      "version": "1.75.1"
+      "version": "1.76.0"
     },
     {
       "bom-ref": "grpcio-health-checking==1.71.2",
@@ -3673,7 +3673,7 @@
         "filelock==3.20.0",
         "fsspec==2025.9.0",
         "grpcio-health-checking==1.71.2",
-        "grpcio==1.75.1",
+        "grpcio==1.76.0",
         "packaging==25.0",
         "protobuf==5.29.5",
         "pydantic==2.12.3",
@@ -3767,7 +3767,7 @@
     },
     {
       "dependsOn": [
-        "grpcio==1.75.1",
+        "grpcio==1.76.0",
         "protobuf==5.29.5"
       ],
       "ref": "grpcio-health-checking==1.71.2"
@@ -3776,7 +3776,7 @@
       "dependsOn": [
         "typing_extensions==4.15.0"
       ],
-      "ref": "grpcio==1.75.1"
+      "ref": "grpcio==1.76.0"
     },
     {
       "ref": "humanfriendly==10.0"
@@ -4085,7 +4085,7 @@
     }
   ],
   "metadata": {
-    "timestamp": "2025-10-21T12:12:11.078718+00:00",
+    "timestamp": "2025-10-21T21:55:53.278666+00:00",
     "tools": {
       "components": [
         {
@@ -4189,7 +4189,7 @@
       ]
     }
   },
-  "serialNumber": "urn:uuid:4e829016-4a39-4ae6-a8ae-c7e5fca74c9e",
+  "serialNumber": "urn:uuid:602f12d7-752b-4b10-ae1e-7eb1ef2fc0bc",
   "version": 1,
   "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
   "bomFormat": "CycloneDX",
