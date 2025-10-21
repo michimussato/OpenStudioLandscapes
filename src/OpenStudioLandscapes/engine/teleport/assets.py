@@ -1096,9 +1096,9 @@ if bool(ins):
             app_ = copy.deepcopy(app_dict_default)
             app_["name"] = settings_teleport["teleport_host"]
             app_["uri"] = f"http://localhost:{settings_teleport['teleport_port']}/"
-            app_[
-                "public_addr"
-            ] = f"{settings_teleport['teleport_host']}.{SERVICE_NAME}.{settings_teleport['teleport_domain_wan']}"
+            app_["public_addr"] = (
+                f"{settings_teleport['teleport_host']}.{SERVICE_NAME}.{settings_teleport['teleport_domain_wan']}"
+            )
             app_["rewrite"]["redirect"].append(
                 f"{settings_teleport['teleport_host']}.{settings_teleport['teleport_domain_lan']}"
             )
