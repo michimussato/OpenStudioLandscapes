@@ -99,7 +99,6 @@ class OutputReader(threading.Thread):
 
 
 def execute_in_threads(
-        context: AssetExecutionContext,
         command: str,
 ) -> Generator[int | Any, None, None]:
 
@@ -120,21 +119,17 @@ def execute_in_threads(
     stderr_reader.start()
 
     while True:
-        try:
-            while not stdout_queue.empty():
-                stdout = "stdout: %s" % stdout_queue.get()
-                yield stdout
-            while not stderr_queue.empty():
-                stderr = "stderr: %s" % stderr_queue.get()
-                yield stderr
+        while not stdout_queue.empty():
+            stdout = "stdout: %s" % stdout_queue.get()
+            yield stdout
+        while not stderr_queue.empty():
+            stderr = "stderr: %s" % stderr_queue.get()
+            yield stderr
 
-            returncode_ = process.poll()
-            if returncode_ is not None:
-                returncode = "return code: %i" % returncode_
-                yield returncode
-                break
-        except KeyboardInterrupt as e:
-            context.log.error(e)
+        returncode_ = process.poll()
+        if returncode_ is not None:
+            returncode = "return code: %i" % returncode_
+            yield returncode
             break
 
 
@@ -148,7 +143,6 @@ def docker_process_cmds(
         context.log.info(f"Processing command: \"{' '.join(cmd)}\"")
 
         for s in execute_in_threads(
-            context=context,
             command=shlex.join(cmd),
         ):
             yield s
