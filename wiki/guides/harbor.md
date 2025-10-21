@@ -54,7 +54,7 @@ sequenceDiagram
 Here's the
 full list of [Harbor Replication Endpoints](https://goharbor.io/docs/1.10/administration/configuring-replication/create-replication-endpoints/)
 
-## Setup
+## Registry Replication Setup
 
 Go to the web UI of your Harbor instance:
 
@@ -62,7 +62,7 @@ Go to the web UI of your Harbor instance:
 - `admin`
 - `Harbor12345`
 
-### Registry (Replication Endpoint)
+### Remote Registry (Replication Endpoint)
 
 Go to _Administration/Registries_ and set up
 your ([hub.docker.com](https://hub.docker.com/) in this example)
@@ -80,11 +80,15 @@ your replication:
 
 ([Online Manual](https://goharbor.io/docs/1.10/administration/configuring-replication/create-replication-rules/))
 
-Event based example:
+#### Manual
+
+![openstudio_landscapes_dockerhub_manual.png](../../openstudio_landscapes_dockerhub_manual.png)
+
+#### Event based
 
 ![2025-07-27_11-14_event.png](../../media/images/2025-07-27_11-14_event.png)
 
-Schedule example:
+#### Scheduled
 
 ![2025-07-27_11-13_daily.png](../../media/images/2025-07-27_11-13_daily.png)
 
