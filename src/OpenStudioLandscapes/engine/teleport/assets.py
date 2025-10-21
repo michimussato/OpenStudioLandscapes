@@ -202,7 +202,9 @@ if bool(ins):
 
         command = []
 
-        SERVICE_NAME = f"openstudiolandscapes-{ASSET_HEADER_TELEPORT['group_name'].lower()}"
+        SERVICE_NAME = (
+            f"openstudiolandscapes-{ASSET_HEADER_TELEPORT['group_name'].lower()}"
+        )
 
         container_name = "--".join([SERVICE_NAME, env.get("LANDSCAPE", "default")])
         host_name = ".".join([SERVICE_NAME, env["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"]])
@@ -315,7 +317,9 @@ if bool(ins):
         https://tomerklein.dev/setting-up-teleport-for-secure-server-access-d4d317c1c4ca
         """
 
-        container_name = compose_teleport["services"][f"openstudiolandscapes-{ASSET_HEADER_TELEPORT['group_name'].lower()}"]["container_name"]
+        container_name = compose_teleport["services"][
+            f"openstudiolandscapes-{ASSET_HEADER_TELEPORT['group_name'].lower()}"
+        ]["container_name"]
 
         teleport_create_admin_cmd = [
             # i.e.: https://tomerklein.dev/setting-up-teleport-for-secure-server-access-d4d317c1c4ca
@@ -731,7 +735,9 @@ if bool(ins):
                 )
             except KeyError as e:
                 context.log.error(f"Could not create Teleport service.")
-                raise KeyError(f"Check `constants.py` of Feature. {e} not found in dict {v}.\n") from e
+                raise KeyError(
+                    f"Check `constants.py` of Feature. {e} not found in dict {v}.\n"
+                ) from e
 
             envs_feature[k] = copy.deepcopy(teleport_expanded)
 
@@ -912,11 +918,12 @@ if bool(ins):
         static_apps_ = []
 
         try:
-            from OpenStudioLandscapes.engine.teleport.custom_services import custom_services  # as custom_services_
+            from OpenStudioLandscapes.engine.teleport.custom_services import (  # as custom_services_
+                custom_services,
+            )
         except ImportError as e:
             custom_services = []
-            context.log.warning("Could not load `custom_services.py`: "
-                                f"{e}")
+            context.log.warning("Could not load `custom_services.py`: " f"{e}")
 
         _static_apps: List[Dict] = [
             {
@@ -951,17 +958,22 @@ if bool(ins):
             )
             app_["uri"] = _static_app["uri"].format(
                 service=service,
-                domain_lan=EnvVar('OPENSTUDIOLANDSCAPES__DOMAIN_LAN').get_value(),
+                domain_lan=EnvVar("OPENSTUDIOLANDSCAPES__DOMAIN_LAN").get_value(),
             )
             app_["public_addr"] = _static_app["public_address"].format(
                 service=service,
-                domain_wan=EnvVar('OPENSTUDIOLANDSCAPES__DOMAIN_WAN').get_value(),
+                domain_wan=EnvVar("OPENSTUDIOLANDSCAPES__DOMAIN_WAN").get_value(),
             )
             app_["rewrite"]["redirect"].extend(
-                [i.format(
-                    service=service,
-                    domain_lan=EnvVar('OPENSTUDIOLANDSCAPES__DOMAIN_LAN').get_value(),
-                ) for i in _static_app["rewrite_redirect"]]
+                [
+                    i.format(
+                        service=service,
+                        domain_lan=EnvVar(
+                            "OPENSTUDIOLANDSCAPES__DOMAIN_LAN"
+                        ).get_value(),
+                    )
+                    for i in _static_app["rewrite_redirect"]
+                ]
             )
 
             static_apps_.append(app_)

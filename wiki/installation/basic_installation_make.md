@@ -192,7 +192,7 @@ make harbor_prepare
 make harbor_up
 make harbor_init_projects
 # To actually execute the two returned commands
-# (Todo: which does not work yet), 
+# (Todo: which does not work yet),
 # we could theoretically run:
 # eval $(make -s harbor_init_projects)
 ```

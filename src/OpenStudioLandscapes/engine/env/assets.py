@@ -137,7 +137,7 @@ def dot_overrides_file(
                 % (
                     shutil.which("env"),
                     "__".join(context.asset_key.path),
-                    env["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"]
+                    env["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"],
                 )
             )
         # os.chmod(

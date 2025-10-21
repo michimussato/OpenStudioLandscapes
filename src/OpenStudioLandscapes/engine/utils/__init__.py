@@ -34,11 +34,14 @@ from dagster import (
     AssetKey,
     MetadataValue,
     OpExecutionContext,
-    get_dagster_logger
+    get_dagster_logger,
 )
 
 from OpenStudioLandscapes.engine.enums import *
-from OpenStudioLandscapes.engine.exceptions import ComposeScopeException, OpenStudioLandscapesException
+from OpenStudioLandscapes.engine.exceptions import (
+    ComposeScopeException,
+    OpenStudioLandscapesException,
+)
 
 LOGGER = get_dagster_logger(__name__)
 
@@ -478,8 +481,9 @@ def get_str_env(
     try:
         _env = os.environ[env]
         if not bool(_env):
-            raise KeyError(f"Environment Variable {env} is set but has no value:"
-                           f"{_env = }")
+            raise KeyError(
+                f"Environment Variable {env} is set but has no value:" f"{_env = }"
+            )
     except KeyError as e:
         _env = default
         LOGGER.warning(e)

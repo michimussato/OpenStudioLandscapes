@@ -6,11 +6,11 @@ __all__ = [
 
 import pathlib
 import queue
-import threading
 import shlex
 import shutil
 import subprocess
-from typing import Generator, Any, List
+import threading
+from typing import Any, Generator, List
 
 from dagster import AssetExecutionContext
 
@@ -94,12 +94,12 @@ class OutputReader(threading.Thread):
         self.output_queue = output_queue
 
     def run(self):
-        for line in iter(self.stream.readline, b''):
+        for line in iter(self.stream.readline, b""):
             self.output_queue.put(line.decode().strip())
 
 
 def execute_in_threads(
-        command: str,
+    command: str,
 ) -> Generator[int | Any, None, None]:
 
     process = subprocess.Popen(
@@ -149,8 +149,8 @@ def docker_process_cmds(
 
 
 def docker_do(
-        context: AssetExecutionContext,
-        cmds: list[list[str]],
+    context: AssetExecutionContext,
+    cmds: list[list[str]],
 ) -> List[str]:
     """
     Args:

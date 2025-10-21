@@ -158,7 +158,7 @@
       "version": "0.0.0"
     },
     {
-      "bom-ref": "BomRef.7378584680896542.501591293078103",
+      "bom-ref": "BomRef.612285455455107.6026444900056068",
       "description": "A Toolkit to create dynamic Animation and VFX studio environments for robust automation and pipelines.",
       "externalReferences": [
         {
@@ -183,7 +183,7 @@
         {
           "comment": "PackageSource: VCS 'git'",
           "type": "vcs",
-          "url": "https://github.com/michimussato/OpenStudioLandscapesUtil-HarborCLI.git#19db42ef4c5d0663a0b44a1b4c3be2643017bf87"
+          "url": "https://github.com/michimussato/OpenStudioLandscapesUtil-HarborCLI.git#4fe997fc68265a71f874cf652f52bfcece9311df"
         },
         {
           "comment": "from packaging metadata Project-URL: Homepage",
@@ -195,14 +195,14 @@
       "properties": [
         {
           "name": "cdx:python:package:source:vcs:commit_id",
-          "value": "19db42ef4c5d0663a0b44a1b4c3be2643017bf87"
+          "value": "4fe997fc68265a71f874cf652f52bfcece9311df"
         },
         {
           "name": "cdx:python:package:source:vcs:requested_revision",
           "value": "v1.6.0-rc1"
         }
       ],
-      "purl": "pkg:pypi/openstudiolandscapesutil-harborcli@0.0.0?vcs_url=git%2Bhttps://github.com/michimussato/OpenStudioLandscapesUtil-HarborCLI.git%4019db42ef4c5d0663a0b44a1b4c3be2643017bf87",
+      "purl": "pkg:pypi/openstudiolandscapesutil-harborcli@0.0.0?vcs_url=git%2Bhttps://github.com/michimussato/OpenStudioLandscapesUtil-HarborCLI.git%404fe997fc68265a71f874cf652f52bfcece9311df",
       "type": "library",
       "version": "0.0.0"
     },
@@ -342,7 +342,7 @@
       "version": "2.0.44"
     },
     {
-      "bom-ref": "alembic==1.16.5",
+      "bom-ref": "alembic==1.17.0",
       "description": "A database migration tool for SQLAlchemy.",
       "externalReferences": [
         {
@@ -380,9 +380,9 @@
         }
       ],
       "name": "alembic",
-      "purl": "pkg:pypi/alembic@1.16.5",
+      "purl": "pkg:pypi/alembic@1.17.0",
       "type": "library",
-      "version": "1.16.5"
+      "version": "1.17.0"
     },
     {
       "bom-ref": "annotated-types==0.7.0",
@@ -433,7 +433,7 @@
       "version": "4.13.2"
     },
     {
-      "bom-ref": "argcomplete==3.6.2",
+      "bom-ref": "argcomplete==3.6.3",
       "description": "Bash tab completion for argparse",
       "externalReferences": [
         {
@@ -471,12 +471,12 @@
         }
       ],
       "name": "argcomplete",
-      "purl": "pkg:pypi/argcomplete@3.6.2",
+      "purl": "pkg:pypi/argcomplete@3.6.3",
       "type": "library",
-      "version": "3.6.2"
+      "version": "3.6.3"
     },
     {
-      "bom-ref": "arrow==1.3.0",
+      "bom-ref": "arrow==1.4.0",
       "description": "Better dates & times for Python",
       "externalReferences": [
         {
@@ -504,9 +504,9 @@
         }
       ],
       "name": "arrow",
-      "purl": "pkg:pypi/arrow@1.3.0",
+      "purl": "pkg:pypi/arrow@1.4.0",
       "type": "library",
-      "version": "1.3.0"
+      "version": "1.4.0"
     },
     {
       "bom-ref": "attrs==25.4.0",
@@ -647,7 +647,7 @@
       "version": "5.2.0"
     },
     {
-      "bom-ref": "charset-normalizer==3.4.3",
+      "bom-ref": "charset-normalizer==3.4.4",
       "description": "The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet.",
       "externalReferences": [
         {
@@ -680,9 +680,9 @@
         }
       ],
       "name": "charset-normalizer",
-      "purl": "pkg:pypi/charset-normalizer@3.4.3",
+      "purl": "pkg:pypi/charset-normalizer@3.4.4",
       "type": "library",
-      "version": "3.4.3"
+      "version": "3.4.4"
     },
     {
       "bom-ref": "click==8.3.0",
@@ -751,7 +751,7 @@
       "version": "14.0"
     },
     {
-      "bom-ref": "colorlog==6.9.0",
+      "bom-ref": "colorlog==6.10.1",
       "description": "Add colours to the output of Python's logging module.",
       "externalReferences": [
         {
@@ -769,12 +769,12 @@
         }
       ],
       "name": "colorlog",
-      "purl": "pkg:pypi/colorlog@6.9.0",
+      "purl": "pkg:pypi/colorlog@6.10.1",
       "type": "library",
-      "version": "6.9.0"
+      "version": "6.10.1"
     },
     {
-      "bom-ref": "cyclonedx-bom==7.1.0",
+      "bom-ref": "cyclonedx-bom==7.2.0",
       "description": "CycloneDX Software Bill of Materials (SBOM) generator for Python projects and environments",
       "externalReferences": [
         {
@@ -791,6 +791,11 @@
           "comment": "from packaging metadata Project-URL: Funding",
           "type": "other",
           "url": "https://owasp.org/donate/?reponame=www-project-cyclonedx&title=OWASP+CycloneDX"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Changelog",
+          "type": "release-notes",
+          "url": "https://github.com/CycloneDX/cyclonedx-python/releases"
         },
         {
           "comment": "from packaging metadata Project-URL: Repository",
@@ -818,12 +823,12 @@
         }
       ],
       "name": "cyclonedx-bom",
-      "purl": "pkg:pypi/cyclonedx-bom@7.1.0",
+      "purl": "pkg:pypi/cyclonedx-bom@7.2.0",
       "type": "library",
-      "version": "7.1.0"
+      "version": "7.2.0"
     },
     {
-      "bom-ref": "cyclonedx-python-lib==11.1.0",
+      "bom-ref": "cyclonedx-python-lib==11.2.0",
       "description": "Python library for CycloneDX",
       "externalReferences": [
         {
@@ -840,6 +845,11 @@
           "comment": "from packaging metadata Project-URL: Funding",
           "type": "other",
           "url": "https://owasp.org/donate/?reponame=www-project-cyclonedx&title=OWASP+CycloneDX"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Changelog",
+          "type": "release-notes",
+          "url": "https://github.com/CycloneDX/cyclonedx-python-lib/releases"
         },
         {
           "comment": "from packaging metadata Project-URL: Repository",
@@ -873,9 +883,9 @@
           "value": "validation"
         }
       ],
-      "purl": "pkg:pypi/cyclonedx-python-lib@11.1.0",
+      "purl": "pkg:pypi/cyclonedx-python-lib@11.2.0",
       "type": "library",
-      "version": "11.1.0"
+      "version": "11.2.0"
     },
     {
       "bom-ref": "dagster==1.9.11",
@@ -1234,6 +1244,21 @@
       "version": "0.17.0"
     },
     {
+      "bom-ref": "dotenv==0.9.9",
+      "description": "Deprecated package",
+      "externalReferences": [
+        {
+          "comment": "from packaging metadata: Home-page",
+          "type": "website",
+          "url": "https://github.com/pedroburon/dotenv"
+        }
+      ],
+      "name": "dotenv",
+      "purl": "pkg:pypi/dotenv@0.9.9",
+      "type": "library",
+      "version": "0.9.9"
+    },
+    {
       "bom-ref": "filelock==3.20.0",
       "description": "A platform independent file lock.",
       "externalReferences": [
@@ -1554,7 +1579,55 @@
       "version": "10.0"
     },
     {
-      "bom-ref": "idna==3.10",
+      "bom-ref": "humanize==4.14.0",
+      "description": "Python humanize utilities",
+      "externalReferences": [
+        {
+          "comment": "from packaging metadata Project-URL: Documentation",
+          "type": "documentation",
+          "url": "https://humanize.readthedocs.io/"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Issue tracker",
+          "type": "issue-tracker",
+          "url": "https://github.com/python-humanize/humanize/issues"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Source",
+          "type": "other",
+          "url": "https://github.com/python-humanize/humanize"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Release notes",
+          "type": "other",
+          "url": "https://github.com/python-humanize/humanize/releases"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Funding",
+          "type": "other",
+          "url": "https://tidelift.com/subscription/pkg/pypi-humanize?utm_source=pypi-humanize&utm_medium=pypi"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Homepage",
+          "type": "website",
+          "url": "https://github.com/python-humanize/humanize"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "acknowledgement": "declared",
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "humanize",
+      "purl": "pkg:pypi/humanize@4.14.0",
+      "type": "library",
+      "version": "4.14.0"
+    },
+    {
+      "bom-ref": "idna==3.11",
       "description": "Internationalized Domain Names in Applications (IDNA)",
       "externalReferences": [
         {
@@ -1577,14 +1650,14 @@
         {
           "license": {
             "acknowledgement": "declared",
-            "name": "License :: OSI Approved :: BSD License"
+            "id": "BSD-3-Clause"
           }
         }
       ],
       "name": "idna",
-      "purl": "pkg:pypi/idna@3.10",
+      "purl": "pkg:pypi/idna@3.11",
       "type": "library",
-      "version": "3.10"
+      "version": "3.11"
     },
     {
       "bom-ref": "isoduration==20.11.0",
@@ -1890,7 +1963,7 @@
       "version": "0.1.2"
     },
     {
-      "bom-ref": "nox==2025.5.1",
+      "bom-ref": "nox==2025.10.16",
       "description": "Flexible test automation.",
       "externalReferences": [
         {
@@ -1923,9 +1996,9 @@
         }
       ],
       "name": "nox",
-      "purl": "pkg:pypi/nox@2025.5.1",
+      "purl": "pkg:pypi/nox@2025.10.16",
       "type": "library",
-      "version": "2025.5.1"
+      "version": "2025.10.16"
     },
     {
       "bom-ref": "packageurl-python==0.17.5",
@@ -1985,7 +2058,7 @@
       "version": "25.0"
     },
     {
-      "bom-ref": "pathlib_abc==0.5.1",
+      "bom-ref": "pathlib_abc==0.5.2",
       "description": "Backport of pathlib ABCs",
       "externalReferences": [
         {
@@ -2008,9 +2081,9 @@
         }
       ],
       "name": "pathlib_abc",
-      "purl": "pkg:pypi/pathlib-abc@0.5.1",
+      "purl": "pkg:pypi/pathlib-abc@0.5.2",
       "type": "library",
-      "version": "0.5.1"
+      "version": "0.5.2"
     },
     {
       "bom-ref": "pip==25.2",
@@ -2271,7 +2344,7 @@
       "version": "2.1.0"
     },
     {
-      "bom-ref": "pydantic==2.12.0",
+      "bom-ref": "pydantic==2.12.3",
       "description": "Data validation using Python type hints",
       "externalReferences": [
         {
@@ -2309,12 +2382,12 @@
         }
       ],
       "name": "pydantic",
-      "purl": "pkg:pypi/pydantic@2.12.0",
+      "purl": "pkg:pypi/pydantic@2.12.3",
       "type": "library",
-      "version": "2.12.0"
+      "version": "2.12.3"
     },
     {
-      "bom-ref": "pydantic_core==2.41.1",
+      "bom-ref": "pydantic_core==2.41.4",
       "description": "Core functionality for Pydantic validation and serialization",
       "externalReferences": [
         {
@@ -2347,9 +2420,9 @@
         }
       ],
       "name": "pydantic_core",
-      "purl": "pkg:pypi/pydantic-core@2.41.1",
+      "purl": "pkg:pypi/pydantic-core@2.41.4",
       "type": "library",
-      "version": "2.41.1"
+      "version": "2.41.4"
     },
     {
       "bom-ref": "pydot==4.0.1",
@@ -2504,7 +2577,7 @@
       "version": "2025.2"
     },
     {
-      "bom-ref": "referencing==0.36.2",
+      "bom-ref": "referencing==0.37.0",
       "description": "JSON Referencing + Python",
       "externalReferences": [
         {
@@ -2552,9 +2625,9 @@
         }
       ],
       "name": "referencing",
-      "purl": "pkg:pypi/referencing@0.36.2",
+      "purl": "pkg:pypi/referencing@0.37.0",
       "type": "library",
-      "version": "0.36.2"
+      "version": "0.37.0"
     },
     {
       "bom-ref": "requests==2.32.5",
@@ -3089,49 +3162,6 @@
       "version": "4.67.1"
     },
     {
-      "bom-ref": "types-python-dateutil==2.9.0.20251008",
-      "description": "Typing stubs for python-dateutil",
-      "externalReferences": [
-        {
-          "comment": "from packaging metadata Project-URL: Chat",
-          "type": "chat",
-          "url": "https://gitter.im/python/typing"
-        },
-        {
-          "comment": "from packaging metadata Project-URL: Issue tracker",
-          "type": "issue-tracker",
-          "url": "https://github.com/python/typeshed/issues"
-        },
-        {
-          "comment": "from packaging metadata Project-URL: Changes",
-          "type": "release-notes",
-          "url": "https://github.com/typeshed-internal/stub_uploader/blob/main/data/changelogs/python-dateutil.md"
-        },
-        {
-          "comment": "from packaging metadata Project-URL: GitHub",
-          "type": "vcs",
-          "url": "https://github.com/python/typeshed"
-        },
-        {
-          "comment": "from packaging metadata Project-URL: Homepage",
-          "type": "website",
-          "url": "https://github.com/python/typeshed"
-        }
-      ],
-      "licenses": [
-        {
-          "license": {
-            "acknowledgement": "declared",
-            "id": "Apache-2.0"
-          }
-        }
-      ],
-      "name": "types-python-dateutil",
-      "purl": "pkg:pypi/types-python-dateutil@2.9.0.20251008",
-      "type": "library",
-      "version": "2.9.0.20251008"
-    },
-    {
       "bom-ref": "typing-inspection==0.4.2",
       "description": "Runtime typing introspection tools",
       "externalReferences": [
@@ -3218,7 +3248,51 @@
       "version": "4.15.0"
     },
     {
-      "bom-ref": "universal_pathlib==0.3.3",
+      "bom-ref": "tzdata==2025.2",
+      "description": "Provider of IANA time zone data",
+      "externalReferences": [
+        {
+          "comment": "from packaging metadata Project-URL: Documentation",
+          "type": "documentation",
+          "url": "https://tzdata.readthedocs.io"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Bug Reports",
+          "type": "issue-tracker",
+          "url": "https://github.com/python/tzdata/issues"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Source",
+          "type": "other",
+          "url": "https://github.com/python/tzdata"
+        },
+        {
+          "comment": "from packaging metadata: Home-page",
+          "type": "website",
+          "url": "https://github.com/python/tzdata"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "acknowledgement": "declared",
+            "id": "Apache-2.0"
+          }
+        },
+        {
+          "license": {
+            "acknowledgement": "declared",
+            "name": "License :: OSI Approved :: Apache Software License"
+          }
+        }
+      ],
+      "name": "tzdata",
+      "purl": "pkg:pypi/tzdata@2025.2",
+      "type": "library",
+      "version": "2025.2"
+    },
+    {
+      "bom-ref": "universal_pathlib==0.3.4",
       "description": "pathlib api extended to use fsspec backends",
       "externalReferences": [
         {
@@ -3241,9 +3315,9 @@
         }
       ],
       "name": "universal_pathlib",
-      "purl": "pkg:pypi/universal-pathlib@0.3.3",
+      "purl": "pkg:pypi/universal-pathlib@0.3.4",
       "type": "library",
-      "version": "0.3.3"
+      "version": "0.3.4"
     },
     {
       "bom-ref": "uri-template==1.3.0",
@@ -3456,13 +3530,13 @@
         "GitPython==3.1.45",
         "OpenStudioLandscapesUtil-HarborCLI==0.0.0",
         "PyYAML==6.0.3",
-        "cyclonedx-bom==7.1.0",
+        "cyclonedx-bom==7.2.0",
         "dagster-postgres==0.25.11",
         "dagster==1.9.11",
         "docker-compose-graph==1.0.0",
         "docker==7.1.0",
         "graphviz==0.21",
-        "nox==2025.5.1",
+        "nox==2025.10.16",
         "pipdeptree==2.29.0",
         "pydot==4.0.1",
         "snakemd==2.3.0"
@@ -3472,6 +3546,7 @@
     {
       "dependsOn": [
         "PyYAML==6.0.3",
+        "dotenv==0.9.9",
         "requests==2.32.5",
         "setuptools==80.9.0",
         "snakemd==2.3.0"
@@ -3497,9 +3572,10 @@
         "Mako==1.3.10",
         "SQLAlchemy==2.0.44",
         "tomli==2.3.0",
-        "typing_extensions==4.15.0"
+        "typing_extensions==4.15.0",
+        "tzdata==2025.2"
       ],
-      "ref": "alembic==1.16.5"
+      "ref": "alembic==1.17.0"
     },
     {
       "dependsOn": [
@@ -3511,15 +3587,15 @@
       "ref": "antlr4-python3-runtime==4.13.2"
     },
     {
-      "ref": "argcomplete==3.6.2"
+      "ref": "argcomplete==3.6.3"
     },
     {
       "dependsOn": [
         "python-dateutil==2.9.0.post0",
         "pytz==2025.2",
-        "types-python-dateutil==2.9.0.20251008"
+        "tzdata==2025.2"
       ],
-      "ref": "arrow==1.3.0"
+      "ref": "arrow==1.4.0"
     },
     {
       "ref": "attrs==25.4.0"
@@ -3534,7 +3610,7 @@
       "ref": "chardet==5.2.0"
     },
     {
-      "ref": "charset-normalizer==3.4.3"
+      "ref": "charset-normalizer==3.4.4"
     },
     {
       "ref": "click==8.3.0"
@@ -3546,18 +3622,18 @@
       "ref": "coloredlogs==14.0"
     },
     {
-      "ref": "colorlog==6.9.0"
+      "ref": "colorlog==6.10.1"
     },
     {
       "dependsOn": [
         "chardet==5.2.0",
-        "cyclonedx-python-lib==11.1.0",
+        "cyclonedx-python-lib==11.2.0",
         "packageurl-python==0.17.5",
         "packaging==25.0",
         "pip-requirements-parser==32.0.1",
         "tomli==2.3.0"
       ],
-      "ref": "cyclonedx-bom==7.1.0"
+      "ref": "cyclonedx-bom==7.2.0"
     },
     {
       "dependsOn": [
@@ -3566,11 +3642,11 @@
         "lxml==6.0.2",
         "packageurl-python==0.17.5",
         "py-serializable==2.1.0",
-        "referencing==0.36.2",
+        "referencing==0.37.0",
         "sortedcontainers==2.4.0",
         "typing_extensions==4.15.0"
       ],
-      "ref": "cyclonedx-python-lib==11.1.0"
+      "ref": "cyclonedx-python-lib==11.2.0"
     },
     {
       "ref": "dagster-pipes==1.9.11"
@@ -3587,7 +3663,7 @@
         "Jinja2==3.1.6",
         "PyYAML==6.0.3",
         "SQLAlchemy==2.0.44",
-        "alembic==1.16.5",
+        "alembic==1.17.0",
         "antlr4-python3-runtime==4.13.2",
         "click==8.3.0",
         "coloredlogs==14.0",
@@ -3600,7 +3676,7 @@
         "grpcio==1.75.1",
         "packaging==25.0",
         "protobuf==5.29.5",
-        "pydantic==2.12.0",
+        "pydantic==2.12.3",
         "python-dotenv==1.1.1",
         "pytz==2025.2",
         "requests==2.32.5",
@@ -3612,9 +3688,9 @@
         "tomli==2.3.0",
         "toposort==1.10",
         "tqdm==4.67.1",
-        "types-python-dateutil==2.9.0.20251008",
         "typing_extensions==4.15.0",
-        "universal_pathlib==0.3.3",
+        "tzdata==2025.2",
+        "universal_pathlib==0.3.4",
         "watchdog==5.0.3"
       ],
       "ref": "dagster==1.9.11"
@@ -3652,6 +3728,12 @@
     },
     {
       "ref": "docstring_parser==0.17.0"
+    },
+    {
+      "dependsOn": [
+        "python-dotenv==1.1.1"
+      ],
+      "ref": "dotenv==0.9.9"
     },
     {
       "ref": "filelock==3.20.0"
@@ -3700,11 +3782,14 @@
       "ref": "humanfriendly==10.0"
     },
     {
-      "ref": "idna==3.10"
+      "ref": "humanize==4.14.0"
+    },
+    {
+      "ref": "idna==3.11"
     },
     {
       "dependsOn": [
-        "arrow==1.3.0"
+        "arrow==1.4.0"
       ],
       "ref": "isoduration==20.11.0"
     },
@@ -3713,7 +3798,7 @@
     },
     {
       "dependsOn": [
-        "referencing==0.36.2"
+        "referencing==0.37.0"
       ],
       "ref": "jsonschema-specifications==2025.9.1"
     },
@@ -3721,11 +3806,11 @@
       "dependsOn": [
         "attrs==25.4.0",
         "fqdn==1.5.1",
-        "idna==3.10",
+        "idna==3.11",
         "isoduration==20.11.0",
         "jsonpointer==3.0.0",
         "jsonschema-specifications==2025.9.1",
-        "referencing==0.36.2",
+        "referencing==0.37.0",
         "rfc3339-validator==0.1.4",
         "rfc3986-validator==0.1.1",
         "rfc3987-syntax==1.1.0",
@@ -3761,15 +3846,16 @@
     {
       "dependsOn": [
         "Jinja2==3.1.6",
-        "argcomplete==3.6.2",
+        "argcomplete==3.6.3",
         "attrs==25.4.0",
-        "colorlog==6.9.0",
+        "colorlog==6.10.1",
         "dependency-groups==1.3.1",
+        "humanize==4.14.0",
         "packaging==25.0",
         "tomli==2.3.0",
         "virtualenv==20.35.3"
       ],
-      "ref": "nox==2025.5.1"
+      "ref": "nox==2025.10.16"
     },
     {
       "dependsOn": [
@@ -3782,7 +3868,7 @@
       "ref": "packaging==25.0"
     },
     {
-      "ref": "pathlib_abc==0.5.1"
+      "ref": "pathlib_abc==0.5.2"
     },
     {
       "dependsOn": [
@@ -3821,17 +3907,18 @@
     {
       "dependsOn": [
         "annotated-types==0.7.0",
-        "pydantic_core==2.41.1",
+        "pydantic_core==2.41.4",
         "typing-inspection==0.4.2",
-        "typing_extensions==4.15.0"
+        "typing_extensions==4.15.0",
+        "tzdata==2025.2"
       ],
-      "ref": "pydantic==2.12.0"
+      "ref": "pydantic==2.12.3"
     },
     {
       "dependsOn": [
         "typing_extensions==4.15.0"
       ],
-      "ref": "pydantic_core==2.41.1"
+      "ref": "pydantic_core==2.41.4"
     },
     {
       "dependsOn": [
@@ -3867,14 +3954,14 @@
         "rpds-py==0.27.1",
         "typing_extensions==4.15.0"
       ],
-      "ref": "referencing==0.36.2"
+      "ref": "referencing==0.37.0"
     },
     {
       "dependsOn": [
         "certifi==2025.10.5",
         "chardet==5.2.0",
-        "charset-normalizer==3.4.3",
-        "idna==3.10",
+        "charset-normalizer==3.4.4",
+        "idna==3.11",
         "urllib3==2.5.0"
       ],
       "ref": "requests==2.32.5"
@@ -3949,9 +4036,6 @@
       "ref": "tqdm==4.67.1"
     },
     {
-      "ref": "types-python-dateutil==2.9.0.20251008"
-    },
-    {
       "dependsOn": [
         "typing_extensions==4.15.0"
       ],
@@ -3961,14 +4045,17 @@
       "ref": "typing_extensions==4.15.0"
     },
     {
+      "ref": "tzdata==2025.2"
+    },
+    {
       "dependsOn": [
         "fsspec==2025.9.0",
         "packaging==25.0",
-        "pathlib_abc==0.5.1",
-        "pydantic==2.12.0",
+        "pathlib_abc==0.5.2",
+        "pydantic==2.12.3",
         "typing_extensions==4.15.0"
       ],
-      "ref": "universal_pathlib==0.3.3"
+      "ref": "universal_pathlib==0.3.4"
     },
     {
       "ref": "uri-template==1.3.0"
@@ -3998,7 +4085,7 @@
     }
   ],
   "metadata": {
-    "timestamp": "2025-10-10T22:10:31.730606+00:00",
+    "timestamp": "2025-10-21T12:12:11.078718+00:00",
     "tools": {
       "components": [
         {
@@ -4048,7 +4135,7 @@
           ],
           "name": "cyclonedx-py",
           "type": "application",
-          "version": "7.1.0"
+          "version": "7.2.0"
         },
         {
           "description": "Python library for CycloneDX",
@@ -4097,12 +4184,12 @@
           ],
           "name": "cyclonedx-python-lib",
           "type": "library",
-          "version": "11.1.0"
+          "version": "11.2.0"
         }
       ]
     }
   },
-  "serialNumber": "urn:uuid:36f4044b-41b3-44bf-9aac-7d4b752bc236",
+  "serialNumber": "urn:uuid:4e829016-4a39-4ae6-a8ae-c7e5fca74c9e",
   "version": 1,
   "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
   "bomFormat": "CycloneDX",

@@ -12,54 +12,54 @@ flowchart TB
 %%    OpenStudioLandscapes((OpenStudioLandscapes))
     ubuntu((Ubuntu))
 %%    linux((Linux))
-    
+
     subgraph osl[OpenStudioLandscapes]
         direction TB
-        
-        subgraph Core 
+
+        subgraph Core
             direction TB
-    
+
             subgraph dagstersubgraph[Dagster]
                 direction TB
                 dagster((Dagster))
                 dagster-postgres((Postgres))
             end
-            
+
         end
-        
-        subgraph Sub Systems 
+
+        subgraph Sub Systems
             direction TB
-        
+
             subgraph zerotrustmfa[Zero Trust MFA]
                 direction TB
                     teleport((Teleport))
             end
-        
+
             subgraph local-registry[Container Registry]
                 direction TB
                     harbor((Harbor))
             end
-            
+
 %%            subgraph Docker Registry
 %%                direction TB
 %%                dockerio((Docker.io))
-%%                
+%%
 %%            end
-            
+
 %%            subgraph DNS Server
 %%                direction TB
 %%                pihole((Pi-hole))
 %%            end
-            
+
         end
-        
+
     end
-    
+
     dagster -- requires --> dagster-postgres
-    
+
     subgraph linux[Linux]
         direction TB
-    
+
         subgraph linuxpkgs[Linux Packages]
             direction LR
             systemd(systemd)
@@ -78,7 +78,7 @@ flowchart TB
 %%        docker(Docker)
 %%        python(python3.11)
     end
-    
+
     subgraph external-registry[External Registries]
         direction LR
         alibaba(Alibaba Cloud ACR)
@@ -97,15 +97,15 @@ flowchart TB
         tencent(Tencent TCR)
         volcengine(VolcEngine CR)
     end
-    
+
     subgraph dns[DNS Server]
         direction TB
         pihole((Pi-hole))
     end
-        
+
     subgraph features[OpenStudioLandscapes Features]
         direction TB
-    
+
         subgraph public[Released]
             direction LR
             osl-ayon(OpenStudioLandscapes-Ayon)
@@ -113,10 +113,10 @@ flowchart TB
             osl-kitsu(OpenStudioLandscapes-Kitsu)
             osl-rustdeskserver(OpenStudioLandscapes-RustDeskServer)
         end
-    
+
         subgraph private[Not Released]
             direction LR
-    
+
             subgraph template[Template]
                 direction LR
                 osl-template(OpenStudioLandscapes-Template)
@@ -137,8 +137,8 @@ flowchart TB
 %%            osl-watchtower -- requires --> osl-kitsu
         end
     end
-        
-    
+
+
     harbor -. can replicate to .-> external-registry
 %%    OpenStudioLandscapes -. recommends .-> teleport
 %%    root -- requires --> docker
@@ -153,7 +153,7 @@ flowchart TB
 %%    git -- requires --> linux
 %%    sudo -- requires --> linux
 %%    make -- requires --> linux
-    
+
 %%    ubuntu -- provides --> git
 %%    ubuntu -- provides --> systemd
 %%    ubuntu -- provides --> make
@@ -162,9 +162,9 @@ flowchart TB
 %%    ubuntu -- provides --> python
 %%    ubuntu -- provides --> docker
     linux -. recommends .-> ubuntu
-    
-    
-    
+
+
+
 %%    root -. recommends .-> utuntu
 %%    root -. recommends .-> pihole
 ```

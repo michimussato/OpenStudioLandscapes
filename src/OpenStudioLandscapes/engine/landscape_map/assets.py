@@ -17,10 +17,8 @@ from dagster import (
 from pydot import Dot
 
 from OpenStudioLandscapes.engine.constants import *
-from OpenStudioLandscapes.engine.enums import *
-
 from OpenStudioLandscapes.engine.discovery.discovery import *
-
+from OpenStudioLandscapes.engine.enums import *
 
 # Dynamic inputs based on the imported
 # third party code locations

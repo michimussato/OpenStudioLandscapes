@@ -122,11 +122,11 @@ This problem is yet to be solved.
 
 What we know is that the problem seems related to processing
 Docker build commands (`OpenStudioLandscapes.engine.utils.docker.docker_process_cmds`)
-with `context.log` events. 
+with `context.log` events.
 
 A workaround could be to `/etc/hosts` handle the resolution locally.
 
-It seems to be related with `shm_size` if the container - 
+It seems to be related with `shm_size` if the container -
 the default (if not explicitly specified) `shm_size` is `64mb`:
 
 ```
@@ -146,12 +146,12 @@ pihole-unbound  | 2025-10-20 11:54:27.416 CEST [58M] WARNING: Shared memory shor
 pihole-unbound  | 2025-10-20 11:54:27.417 CEST [58M] WARNING: Shared memory shortage (/dev/shm) ahead: 98% is used (66.0MB used, 67.1MB total, FTL uses 65.9MB)
 pihole-unbound  | 2025-10-20 11:54:27.418 CEST [58M] WARNING: Could not fallocate() in realloc_shm() (/app/src/shmem.c:838): No space left on device
 pihole-unbound  | 2025-10-20 11:54:27.418 CEST [58M] CRIT: realloc_shm(): Failed to resize "/FTL-58-queries" (10) to 63700992: No space left on device (28)
-pihole-unbound  | 
+pihole-unbound  |
 pihole-unbound  |   [i] pihole-FTL exited with status 1
-pihole-unbound  | 
+pihole-unbound  |
 pihole-unbound  |   [i] Container will now stop or restart depending on your restart policy
 pihole-unbound  |       https://docs.docker.com/engine/containers/start-containers-automatically/#use-a-restart-policy
-pihole-unbound  | 
+pihole-unbound  |
 pihole-unbound exited with code 0
 ```
 

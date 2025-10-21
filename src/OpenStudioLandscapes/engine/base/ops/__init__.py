@@ -412,11 +412,13 @@ def factory_group_in(
         yield AssetMaterialization(
             asset_key=context.asset_key,
             metadata={
-                "__".join(context.asset_key.path): MetadataValue.json(group_out_serialized),
+                "__".join(context.asset_key.path): MetadataValue.json(
+                    group_out_serialized
+                ),
                 **metadatavalues_from_dict(
                     context=context,
                     d_serialized=group_out_serialized,
-                )
+                ),
             },
         )
 
@@ -520,7 +522,9 @@ def op_env(
         yield AssetMaterialization(
             asset_key=context.asset_key_for_output("env_out"),
             metadata={
-                "__".join(context.asset_key_for_output("env_out").path): MetadataValue.json(env_in),
+                "__".join(
+                    context.asset_key_for_output("env_out").path
+                ): MetadataValue.json(env_in),
                 "ENVIRONMENT": MetadataValue.json(constants[FEATURE_CONFIG]),
             },
         )
@@ -535,7 +539,9 @@ def op_env(
         yield AssetMaterialization(
             asset_key=context.asset_key_for_output("env_parent_out"),
             metadata={
-                "__".join(context.asset_key_for_output("env_parent_out").path): MetadataValue.json(env_parent_in),
+                "__".join(
+                    context.asset_key_for_output("env_parent_out").path
+                ): MetadataValue.json(env_parent_in),
                 # "ENVIRONMENT": MetadataValue.json(constants[FEATURE_CONFIG]),
             },
         )

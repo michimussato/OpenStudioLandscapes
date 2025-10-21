@@ -1320,15 +1320,17 @@ compose_dagster_postgres = (
 SERVICE_NAME_DAGSTER = "openstudiolandscapes-dagster"
 SERVICE_NAME_DAGSTER_POSTGRES = "openstudiolandscapes-dagster-postgres"
 
-HOSTNAME_DAGSTER_DEV = f"{SERVICE_NAME_DAGSTER}.{ENVIRONMENT_DAGSTER['OPENSTUDIOLANDSCAPES__DOMAIN_LAN']}"
+HOSTNAME_DAGSTER_DEV = (
+    f"{SERVICE_NAME_DAGSTER}.{ENVIRONMENT_DAGSTER['OPENSTUDIOLANDSCAPES__DOMAIN_LAN']}"
+)
 HOSTNAME_DAGSTER_POSTGRES = f"{SERVICE_NAME_DAGSTER_POSTGRES}.{ENVIRONMENT_DAGSTER['OPENSTUDIOLANDSCAPES__DOMAIN_LAN']}"
 
 cmd_dagster_dev = [
-        shutil.which("dagster"),
-        "dev",
-        "--host",
-        HOSTNAME_DAGSTER_DEV,
-    ]
+    shutil.which("dagster"),
+    "dev",
+    "--host",
+    HOSTNAME_DAGSTER_DEV,
+]
 
 cmd_dagster_postgres = [
     shutil.which("docker"),
@@ -2571,7 +2573,9 @@ def tag_delete(session, working_directory):
 
 # # ENVIRONMENT
 ENVIRONMENT_ACME_SH = {
-    "OPENSTUDIOLANDSCAPES__DOMAIN_LAN": os.environ.get("OPENSTUDIOLANDSCAPES__DOMAIN_LAN", "openstudiolandscapes.lan"),
+    "OPENSTUDIOLANDSCAPES__DOMAIN_LAN": os.environ.get(
+        "OPENSTUDIOLANDSCAPES__DOMAIN_LAN", "openstudiolandscapes.lan"
+    ),
     "OPENSTUDIOLANDSCAPES__DOMAIN_WAN": [
         os.environ.get("OPENSTUDIOLANDSCAPES__DOMAIN_WAN1", None),
         os.environ.get("OPENSTUDIOLANDSCAPES__DOMAIN_WAN2", None),
@@ -3090,7 +3094,9 @@ def acme_sh_create_certificate(session):
             chain.from_iterable(
                 (j, f"{i}{tld}")
                 for i, j in zip_longest(
-                    user_input.split(sep=","), [], fillvalue="--domain"
+                    user_input.split(sep=","),
+                    [],
+                    fillvalue="--domain"
                     # ? if not i.endswith("."):
                     # ?     i = f"{i}."
                 )

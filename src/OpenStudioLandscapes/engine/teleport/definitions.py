@@ -7,7 +7,6 @@ from dagster import (
 
 import OpenStudioLandscapes.engine.teleport.assets
 
-
 if os.environ["OPENSTUDIOLANDSCAPES__TELEPORT_ENABLE"].lower() == "true":
     assets = load_assets_from_modules(
         modules=[OpenStudioLandscapes.engine.teleport.assets],

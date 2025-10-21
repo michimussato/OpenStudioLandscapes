@@ -1,20 +1,20 @@
 flowchart TD
     classDef missing stroke-dasharray: 5
-    alembic["alembic\n1.16.5"]
+    alembic["alembic\n1.17.0"]
     annotated-types["annotated-types\n0.7.0"]
     antlr4-python3-runtime["antlr4-python3-runtime\n4.13.2"]
-    argcomplete["argcomplete\n3.6.2"]
-    arrow["arrow\n1.3.0"]
+    argcomplete["argcomplete\n3.6.3"]
+    arrow["arrow\n1.4.0"]
     attrs["attrs\n25.4.0"]
     boolean-py["boolean.py\n5.0"]
     certifi["certifi\n2025.10.5"]
     chardet["chardet\n5.2.0"]
-    charset-normalizer["charset-normalizer\n3.4.3"]
+    charset-normalizer["charset-normalizer\n3.4.4"]
     click_0["click\n8.3.0"]
     coloredlogs["coloredlogs\n14.0"]
-    colorlog["colorlog\n6.9.0"]
-    cyclonedx-bom["cyclonedx-bom\n7.1.0"]
-    cyclonedx-python-lib["cyclonedx-python-lib\n11.1.0"]
+    colorlog["colorlog\n6.10.1"]
+    cyclonedx-bom["cyclonedx-bom\n7.2.0"]
+    cyclonedx-python-lib["cyclonedx-python-lib\n11.2.0"]
     dagster-pipes["dagster-pipes\n1.9.11"]
     dagster-postgres["dagster-postgres\n0.25.11"]
     dagster["dagster\n1.9.11"]
@@ -24,6 +24,7 @@ flowchart TD
     docker-compose-graph["docker-compose-graph\n1.0.0"]
     docker["docker\n7.1.0"]
     docstring-parser["docstring_parser\n0.17.0"]
+    dotenv["dotenv\n0.9.9"]
     filelock["filelock\n3.20.0"]
     fqdn["fqdn\n1.5.1"]
     fsspec["fsspec\n2025.9.0"]
@@ -34,7 +35,8 @@ flowchart TD
     grpcio-health-checking["grpcio-health-checking\n1.71.2"]
     grpcio["grpcio\n1.75.1"]
     humanfriendly["humanfriendly\n10.0"]
-    idna["idna\n3.10"]
+    humanize["humanize\n4.14.0"]
+    idna["idna\n3.11"]
     isoduration["isoduration\n20.11.0"]
     jinja2["Jinja2\n3.1.6"]
     jsonpointer["jsonpointer\n3.0.0"]
@@ -47,12 +49,12 @@ flowchart TD
     markdown-it-py["markdown-it-py\n4.0.0"]
     markupsafe["MarkupSafe\n3.0.3"]
     mdurl["mdurl\n0.1.2"]
-    nox["nox\n2025.5.1"]
+    nox["nox\n2025.10.16"]
     openstudiolandscapes["OpenStudioLandscapes\n0.0.0"]
     openstudiolandscapesutil-harborcli["OpenStudioLandscapesUtil-HarborCLI\n0.0.0"]
     packageurl-python["packageurl-python\n0.17.5"]
     packaging["packaging\n25.0"]
-    pathlib-abc["pathlib_abc\n0.5.1"]
+    pathlib-abc["pathlib_abc\n0.5.2"]
     pip-requirements-parser["pip-requirements-parser\n32.0.1"]
     pip["pip\n25.2"]
     pipdeptree["pipdeptree\n2.29.0"]
@@ -60,8 +62,8 @@ flowchart TD
     protobuf["protobuf\n5.29.5"]
     psycopg2-binary["psycopg2-binary\n2.9.11"]
     py-serializable["py-serializable\n2.1.0"]
-    pydantic-core["pydantic_core\n2.41.1"]
-    pydantic["pydantic\n2.12.0"]
+    pydantic-core["pydantic_core\n2.41.4"]
+    pydantic["pydantic\n2.12.3"]
     pydot["pydot\n4.0.1"]
     pygments["Pygments\n2.19.2"]
     pyparsing["pyparsing\n3.2.5"]
@@ -69,7 +71,7 @@ flowchart TD
     python-dotenv["python-dotenv\n1.1.1"]
     pytz["pytz\n2025.2"]
     pyyaml["PyYAML\n6.0.3"]
-    referencing["referencing\n0.36.2"]
+    referencing["referencing\n0.37.0"]
     requests["requests\n2.32.5"]
     rfc3339-validator["rfc3339-validator\n0.1.4"]
     rfc3986-validator["rfc3986-validator\n0.1.1"]
@@ -87,10 +89,10 @@ flowchart TD
     tomli["tomli\n2.3.0"]
     toposort["toposort\n1.10"]
     tqdm["tqdm\n4.67.1"]
-    types-python-dateutil["types-python-dateutil\n2.9.0.20251008"]
     typing-extensions["typing_extensions\n4.15.0"]
     typing-inspection["typing-inspection\n0.4.2"]
-    universal-pathlib["universal_pathlib\n0.3.3"]
+    tzdata["tzdata\n2025.2"]
+    universal-pathlib["universal_pathlib\n0.3.4"]
     uri-template["uri-template\n1.3.0"]
     urllib3["urllib3\n2.5.0"]
     virtualenv["virtualenv\n20.35.3"]
@@ -100,7 +102,7 @@ flowchart TD
     alembic -- ">=4.12" --> typing-extensions
     alembic -- "any" --> mako
     arrow -- ">=2.7.0" --> python-dateutil
-    arrow -- ">=2.8.10" --> types-python-dateutil
+    arrow -- "any" --> tzdata
     coloredlogs -- ">=7.1" --> humanfriendly
     cyclonedx-bom -- ">=0.11,<2" --> packageurl-python
     cyclonedx-bom -- ">=22,<26" --> packaging
@@ -151,6 +153,7 @@ flowchart TD
     docker-compose-graph -- "any" --> pydot
     docker-compose-graph -- "any" --> python-dotenv
     docker-compose-graph -- "any" --> pyyaml
+    dotenv -- "any" --> python-dotenv
     gitdb -- ">=3.0.1,<6" --> smmap
     gitpython -- ">=4.0.1,<5" --> gitdb
     grpcio -- "~=4.12" --> typing-extensions
@@ -169,9 +172,10 @@ flowchart TD
     nox -- ">=1.1" --> dependency-groups
     nox -- ">=1.9.4,<4" --> argcomplete
     nox -- ">=2.6.1,<7" --> colorlog
-    nox -- ">=20.14.1" --> virtualenv
-    nox -- ">=20.9" --> packaging
-    nox -- ">=23.1" --> attrs
+    nox -- ">=20.15" --> virtualenv
+    nox -- ">=21" --> packaging
+    nox -- ">=24.1" --> attrs
+    nox -- ">=4" --> humanize
     openstudiolandscapes -- "==1.9.11" --> dagster
     openstudiolandscapes -- "any" --> dagster-postgres
     openstudiolandscapes -- "any" --> docker
@@ -182,6 +186,7 @@ flowchart TD
     openstudiolandscapes -- "any" --> pydot
     openstudiolandscapes -- "any" --> pyyaml
     openstudiolandscapes -- "any" --> snakemd
+    openstudiolandscapesutil-harborcli -- "any" --> dotenv
     openstudiolandscapesutil-harborcli -- "any" --> pyyaml
     openstudiolandscapesutil-harborcli -- "any" --> requests
     openstudiolandscapesutil-harborcli -- "any" --> snakemd
@@ -190,7 +195,7 @@ flowchart TD
     pipdeptree -- ">=25" --> packaging
     pipdeptree -- ">=25.2" --> pip
     py-serializable -- ">=0.7.1,<0.8.0" --> defusedxml
-    pydantic -- "==2.41.1" --> pydantic-core
+    pydantic -- "==2.41.4" --> pydantic-core
     pydantic -- ">=0.4.2" --> typing-inspection
     pydantic -- ">=0.6.0" --> annotated-types
     pydantic -- ">=4.14.1" --> typing-extensions
@@ -211,7 +216,7 @@ flowchart TD
     sqlalchemy -- ">=1" --> greenlet
     sqlalchemy -- ">=4.6.0" --> typing-extensions
     typing-inspection -- ">=4.12.0" --> typing-extensions
-    universal-pathlib -- "==0.5.1" --> pathlib-abc
+    universal-pathlib -- ">=0.5.1,<0.6.0" --> pathlib-abc
     universal-pathlib -- ">=2024.5.0" --> fsspec
     virtualenv -- ">=0.3.7,<1" --> distlib
     virtualenv -- ">=3.12.2,<4" --> filelock
