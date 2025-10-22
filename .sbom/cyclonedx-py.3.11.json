@@ -158,7 +158,7 @@
       "version": "0.0.0"
     },
     {
-      "bom-ref": "BomRef.6575396244028445.3504915191922311",
+      "bom-ref": "BomRef.09898769563455612.9823494921729089",
       "description": "A Toolkit to create dynamic Animation and VFX studio environments for robust automation and pipelines.",
       "externalReferences": [
         {
@@ -828,7 +828,7 @@
       "version": "7.2.0"
     },
     {
-      "bom-ref": "cyclonedx-python-lib==11.2.0",
+      "bom-ref": "cyclonedx-python-lib==11.3.0",
       "description": "Python library for CycloneDX",
       "externalReferences": [
         {
@@ -883,9 +883,9 @@
           "value": "validation"
         }
       ],
-      "purl": "pkg:pypi/cyclonedx-python-lib@11.2.0",
+      "purl": "pkg:pypi/cyclonedx-python-lib@11.3.0",
       "type": "library",
-      "version": "11.2.0"
+      "version": "11.3.0"
     },
     {
       "bom-ref": "dagster==1.9.11",
@@ -3627,7 +3627,7 @@
     {
       "dependsOn": [
         "chardet==5.2.0",
-        "cyclonedx-python-lib==11.2.0",
+        "cyclonedx-python-lib==11.3.0",
         "packageurl-python==0.17.5",
         "packaging==25.0",
         "pip-requirements-parser==32.0.1",
@@ -3646,7 +3646,7 @@
         "sortedcontainers==2.4.0",
         "typing_extensions==4.15.0"
       ],
-      "ref": "cyclonedx-python-lib==11.2.0"
+      "ref": "cyclonedx-python-lib==11.3.0"
     },
     {
       "ref": "dagster-pipes==1.9.11"
@@ -4085,7 +4085,7 @@
     }
   ],
   "metadata": {
-    "timestamp": "2025-10-21T21:55:53.278666+00:00",
+    "timestamp": "2025-10-22T12:56:00.974999+00:00",
     "tools": {
       "components": [
         {
@@ -4184,12 +4184,12 @@
           ],
           "name": "cyclonedx-python-lib",
           "type": "library",
-          "version": "11.2.0"
+          "version": "11.3.0"
         }
       ]
     }
   },
-  "serialNumber": "urn:uuid:602f12d7-752b-4b10-ae1e-7eb1ef2fc0bc",
+  "serialNumber": "urn:uuid:94409ee7-08da-4501-b563-07c8b27cb791",
   "version": 1,
   "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
   "bomFormat": "CycloneDX",

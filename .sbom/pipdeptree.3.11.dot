@@ -14,7 +14,7 @@ digraph {
 	"cyclonedx-python-lib" -> "py-serializable" [label=">=2.1.0,<3.0.0"]
 	"cyclonedx-python-lib" -> "typing-extensions" [label=">=4.6,<5.0"]
 	"cyclonedx-python-lib" -> sortedcontainers [label=">=2.4.0,<3.0.0"]
-	"cyclonedx-python-lib" [label="cyclonedx-python-lib\n11.2.0"]
+	"cyclonedx-python-lib" [label="cyclonedx-python-lib\n11.3.0"]
 	"dagster-pipes" [label="dagster-pipes\n1.9.11"]
 	"dagster-postgres" -> "psycopg2-binary" [label=any]
 	"dagster-postgres" -> dagster [label="==1.9.11"]
