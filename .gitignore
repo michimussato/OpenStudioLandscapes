@@ -92,6 +92,10 @@ tmp*/
 .pi-hole/*
 !.pi-hole/.gitkeep
 
+# Teleport
+.teleport/*
+!.teleport/.gitkeep
+
 # Payloads
 .payload/bin/*
 !.payload/bin/.gitkeep
