@@ -59,10 +59,6 @@ MANIFEST
 docker/.volumes/.landscapes/*/
 !docker/.volumes/.landscapes/.gitkeep
 
-# Teleport
-src/OpenStudioLandscapes/engine/teleport/custom_services.py
-src/OpenStudioLandscapes/engine/teleport/custom_services.yml
-
 # Features
 .features/*
 !.features/.gitkeep
@@ -92,9 +88,10 @@ tmp*/
 .pi-hole/*
 !.pi-hole/.gitkeep
 
-# Teleport
-.teleport/*
-!.teleport/.gitkeep
+# Portainer
+.portainer/*
+!.portainer/.gitkeep
+!.portainer/docker-compose.yml
 
 # Payloads
 .payload/bin/*
@@ -122,4 +119,7 @@ docker/.volumes/postgres-dagster/*
 !docker/.volumes/postgres-dagster/.gitkeep
 
 # Teleport
+.teleport/*
+!.teleport/.gitkeep
 src/OpenStudioLandscapes/engine/teleport/custom_services.py
+src/OpenStudioLandscapes/engine/teleport/custom_services.yml
