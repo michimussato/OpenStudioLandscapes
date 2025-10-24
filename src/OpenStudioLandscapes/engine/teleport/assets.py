@@ -1,6 +1,7 @@
 import copy
 import json
 import operator
+import os
 import pathlib
 import shlex
 import shutil
@@ -139,6 +140,23 @@ if bool(ins):
 
         docker_compose_yml = pathlib.Path(env["DOCKER_COMPOSE"])
 
+        docker_compose_yml.parent.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+        teleport_compose_link = pathlib.Path(
+            env["TELEPORT_CONFIG"],
+            ".teleport",
+            docker_compose_yml.parent.name,
+            docker_compose_yml.name,
+        )
+
+        teleport_compose_link.parent.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
         if "networks" in compose_networks:
             network_dict = {
                 "networks": list(compose_networks.get("networks", {}).keys())
@@ -162,7 +180,7 @@ if bool(ins):
 
         volumes_dict = {
             "volumes": [
-                f"{teleport_yaml.parent.as_posix()}:/etc/teleport:rw",
+                # f"{teleport_yaml.parent.as_posix()}:/etc/teleport:rw",
                 f"{teleport_data.as_posix()}:/var/lib/teleport:rw",
             ],
         }
@@ -185,9 +203,9 @@ if bool(ins):
 
             volume_dir_host_rel_path = get_relative_path_via_common_root(
                 context=context,
-                path_src=docker_compose_yml,
+                path_src=teleport_compose_link,
                 path_dst=pathlib.Path(host),
-                path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
+                path_common_root=pathlib.Path(env["GIT_ROOT"]),
             )
 
             _volume_relative.append(
@@ -196,6 +214,7 @@ if bool(ins):
 
         volumes_dict = {
             "volumes": [
+                f"../{teleport_yaml.parent.name}:/etc/teleport:rw",
                 *_volume_relative,
             ],
         }
@@ -259,26 +278,44 @@ if bool(ins):
 
         docker_yaml = yaml.dump(docker_dict)
 
-        teleport_compose_link = docker_compose_yml
-        teleport_compose_history = docker_compose_yml.parent.joinpath(
-            env["LANDSCAPE"], teleport_compose_link.name
-        )
-        teleport_compose_history.parent.mkdir(
-            parents=True,
-            exist_ok=True,
-        )
-
         with open(
-            file=teleport_compose_history,
+            file=docker_compose_yml,
             mode="w",
             encoding="utf-8",
         ) as fo:
             fo.write(docker_yaml)
 
-        if teleport_compose_link.exists():
-            teleport_compose_link.unlink()
-
-        teleport_compose_link.symlink_to(teleport_compose_history)
+        # teleport_compose_link_ = get_relative_path_via_common_root(
+        #     context=context,
+        #     path_src=teleport_compose_link,
+        #     path_dst=docker_compose_yml,
+        #     path_common_root=pathlib.Path(env["GIT_ROOT"]),
+        # )
+        #
+        # # in `ln -s` terms:
+        # target = teleport_compose_link_
+        # link_name = teleport_compose_link
+        #
+        # if link_name.exists():
+        #     link_name.unlink()
+        #
+        # os.symlink(
+        #     src=target,
+        #     dst=link_name,
+        #     target_is_directory=False,
+        # )
+        #
+        #
+        # # # Todo
+        # # #  - [ ] ln -s target link_name equivalent
+        # # context.log.error(teleport_compose_link_)
+        # # context.log.error(teleport_compose_link)
+        # # context.log.error(docker_compose_yml)
+        # # context.log.error(str(docker_compose_yml.relative_to(pathlib.Path(env["GIT_ROOT"]))))
+        # # context.log.error(str(teleport_compose_link.relative_to(pathlib.Path(env["GIT_ROOT"]))))
+        # #
+        # # teleport_compose_link.symlink_to(teleport_compose_link_)
+        # # # os.symlink(teleport_compose_link, teleport_compose_link_)
 
         yield Output(docker_dict)
 
@@ -287,7 +324,7 @@ if bool(ins):
             metadata={
                 "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
                 "teleport_compose_link": MetadataValue.path(teleport_compose_link),
-                "teleport_compose": MetadataValue.path(teleport_compose_history),
+                # "teleport_compose": MetadataValue.path(teleport_compose_history),
                 "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
                 # Todo: "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)),
             },
@@ -361,13 +398,26 @@ if bool(ins):
     ]:
         """ """
 
-        docker_compose_yml = pathlib.Path(env["DOCKER_COMPOSE"])
+        docker_compose_yml_ = pathlib.Path(env["DOCKER_COMPOSE"])
+
+        teleport_compose_link = pathlib.Path(
+            env["TELEPORT_CONFIG"],
+            "docker_compose",
+            docker_compose_yml_.name,
+        )
+
+        docker_compose_yml = teleport_compose_link
+
 
         cwd = docker_compose_yml.parent
 
-        unit_ = "openstudiolandscapes-teleport@.service"
-        unit_link = docker_compose_yml.parent.joinpath(unit_)
-        unit = docker_compose_yml.parent.joinpath(env["LANDSCAPE"], unit_)
+        unit = pathlib.Path(env["TELEPORT_SYSTEMD_UNIT"])
+
+        unit_link = pathlib.Path(
+            env["TELEPORT_CONFIG"],
+            "systemd",
+            unit.name,
+        )
 
         unit.parent.mkdir(parents=True, exist_ok=True)
 
@@ -390,11 +440,11 @@ if bool(ins):
             EnvironmentFile=-%h/.env
             WorkingDirectory={cwd.as_posix()}
             # ExecStart=$(which docker) --config $HOME/git/repos/OpenStudioLandscapes/.landscapes/2025-10-05-23-01-09-77e0ee9dc15b4b6683e6f6dc61980954/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json/2025-10-05-23-01-09-77e0ee9dc15b4b6683e6f6dc61980954/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json compose --progress plain --file $HOME/git/repos/OpenStudioLandscapes/.landscapes/.teleport/docker-compose/docker-compose.yml --project-name openstudiolandscapes-teleport up --remove-orphans
-            ExecStart={shutil.which('docker')} compose --progress plain --file {docker_compose_yml.as_posix()} --project-name openstudiolandscapes-teleport up --remove-orphans
+            ExecStart={shutil.which('docker')} compose --progress plain --file {docker_compose_yml.name} --project-name openstudiolandscapes-teleport up --remove-orphans
             # ExecReload=$(which docker) --config $HOME/git/repos/OpenStudioLandscapes/.landscapes/2025-10-05-23-01-09-77e0ee9dc15b4b6683e6f6dc61980954/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json/2025-10-05-23-01-09-77e0ee9dc15b4b6683e6f6dc61980954/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json compose --progress plain --file $HOME/git/repos/OpenStudioLandscapes/.landscapes/.teleport/docker-compose/docker-compose.yml --project-name openstudiolandscapes-teleport restart
-            ExecReload={shutil.which('docker')} compose --progress plain --file {docker_compose_yml.as_posix()} --project-name openstudiolandscapes-teleport restart
+            ExecReload={shutil.which('docker')} compose --progress plain --file {docker_compose_yml.name} --project-name openstudiolandscapes-teleport restart
             # ExecStop=$(which docker) --config $HOME/git/repos/OpenStudioLandscapes/.landscapes/2025-10-05-23-01-09-77e0ee9dc15b4b6683e6f6dc61980954/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json/2025-10-05-23-01-09-77e0ee9dc15b4b6683e6f6dc61980954/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json compose --progress plain --file $HOME/git/repos/OpenStudioLandscapes/.landscapes/.teleport/docker-compose/docker-compose.yml --project-name openstudiolandscapes-teleport down
-            ExecStop={shutil.which('docker')} compose --progress plain --file {docker_compose_yml.as_posix()} --project-name openstudiolandscapes-teleport down
+            ExecStop={shutil.which('docker')} compose --progress plain --file {docker_compose_yml.name} --project-name openstudiolandscapes-teleport down
 
             [Install]
             # WantedBy=multi-user.target
@@ -419,10 +469,10 @@ if bool(ins):
         ) as fo:
             fo.write(unit_str)
 
-        if unit_link.exists():
-            unit_link.unlink()
-
-        unit_link.symlink_to(unit)
+        # if unit_link.exists():
+        #     unit_link.unlink()
+        #
+        # unit_link.symlink_to(unit)
 
         install_unit = [
             "sudo",
@@ -524,6 +574,7 @@ if bool(ins):
             "env_base": AssetIn(
                 AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "env_base"])
             ),
+            # "DOCKER_COMPOSE": AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "DOCKER_COMPOSE"]),
         },
     )
     def env(
@@ -531,123 +582,158 @@ if bool(ins):
         env_base: dict,
     ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
 
-        env_in = copy.deepcopy(env_base)
+        env_out = copy.deepcopy(env_base)
 
-        env_in.update(
-            {
-                # "DOCKER_USE_CACHE": DOCKER_USE_CACHE,
-                "DOCKER_COMPOSE": pathlib.Path(
+        env_update = {
+            "DOCKER_COMPOSE": pathlib.Path(
+                "{DOT_LANDSCAPES}",
+                "{LANDSCAPE}",
+                f"{ASSET_HEADER_TELEPORT['group_name']}__{'_'.join(ASSET_HEADER_TELEPORT['key_prefix'])}",
+                # "__".join(context.asset_key.path),
+                "docker_compose",
+                "docker-compose.yml",
+            )
+            .expanduser()
+            .as_posix(),
+            "TELEPORT_SYSTEMD_UNIT": pathlib.Path(
+                "{DOT_LANDSCAPES}",
+                "{LANDSCAPE}",
+                f"{ASSET_HEADER_TELEPORT['group_name']}__{'_'.join(ASSET_HEADER_TELEPORT['key_prefix'])}",
+                # "__".join(context.asset_key.path),
+                "systemd",
+                "openstudiolandscapes-teleport@.service",
+            )
+            .expanduser()
+            .as_posix(),
+            "HOSTNAME": "teleport",
+            "TELEPORT_ENTRY_POINT_HOST": "{{HOSTNAME}}",  # Either a hardcoded str or a ref to a Variable (with double {{ }}!)
+            "TELEPORT_ENTRY_POINT_PORT": "{{WEB_UI_PORT_HOST}}",  # Either a hardcoded str or a ref to a Variable (with double {{ }}!)
+            "COMPOSE_NETWORK_MODE": ComposeNetworkMode.HOST,
+            # Repository: https://gallery.ecr.aws/gravitational
+            # "latest" tag does not exist
+            "DOCKER_IMAGE": "public.ecr.aws/gravitational/teleport-distroless-debug:18",
+            # https://goteleport.com/docs/reference/networking/#auth-service-ports
+            # auth Service:
+            "PROXY_SERVICE_TUNNEL_LISTEN_ADDRESS_PORT_HOST": "3024",
+            "PROXY_SERVICE_TUNNEL_LISTEN_ADDRESS_PORT_CONTAINER": "3024",
+            "PROXY_SERVICE_AGENTS_PORT_HOST": "3025",
+            "PROXY_SERVICE_AGENTS_PORT_CONTAINER": "3025",
+            # https://goteleport.com/docs/reference/networking/#ports-without-tls-routing
+            "WEB_UI_PORT_HOST": [
+                "443",
+                "3080",
+            ][0],
+            "WEB_UI_PORT_CONTAINER": [
+                "443",
+                "3080",
+            ][0],
+            # proxy Service:
+            "ALL_CLIENTS_PORT_HOST": "3023",
+            "ALL_CLIENTS_PORT_CONTAINER": "3023",
+            # ssh_service
+            "LISTEN_ADDRESS_HOST": "3022",
+            "LISTEN_ADDRESS_CONTAINER": "3022",
+            "TELEPORT_YAML": pathlib.Path(
+                "{DOT_LANDSCAPES}",
+                "{LANDSCAPE}",
+                f"{ASSET_HEADER_TELEPORT['group_name']}__{'_'.join(ASSET_HEADER_TELEPORT['key_prefix'])}",
+                # "__".join(context.asset_key.path),
+                "yaml",
+                "teleport.yaml",
+            )
+            .expanduser()
+            .as_posix(),
+            "TELEPORT_CONFIG": {
+                FeatureVolumeType.CONTAINED: pathlib.Path(
                     "{DOT_LANDSCAPES}",
-                    ".teleport",
-                    "docker_compose",
-                    "docker-compose.yml",
+                    "{LANDSCAPE}",
+                    f"{ASSET_HEADER_TELEPORT['group_name']}__{'__'.join(ASSET_HEADER_TELEPORT['key_prefix'])}",
+                    "volumes",
+                    "config",
                 )
                 .expanduser()
                 .as_posix(),
-                "HOSTNAME": "teleport",
-                "TELEPORT_ENTRY_POINT_HOST": "{{HOSTNAME}}",  # Either a hardcoded str or a ref to a Variable (with double {{ }}!)
-                "TELEPORT_ENTRY_POINT_PORT": "{{WEB_UI_PORT_HOST}}",  # Either a hardcoded str or a ref to a Variable (with double {{ }}!)
-                "COMPOSE_NETWORK_MODE": ComposeNetworkMode.HOST,
-                # Repository: https://gallery.ecr.aws/gravitational
-                # "latest" tag does not exist
-                "DOCKER_IMAGE": "public.ecr.aws/gravitational/teleport-distroless-debug:18",
-                # https://goteleport.com/docs/reference/networking/#auth-service-ports
-                # auth Service:
-                "PROXY_SERVICE_TUNNEL_LISTEN_ADDRESS_PORT_HOST": "3024",
-                "PROXY_SERVICE_TUNNEL_LISTEN_ADDRESS_PORT_CONTAINER": "3024",
-                "PROXY_SERVICE_AGENTS_PORT_HOST": "3025",
-                "PROXY_SERVICE_AGENTS_PORT_CONTAINER": "3025",
-                # https://goteleport.com/docs/reference/networking/#ports-without-tls-routing
-                "WEB_UI_PORT_HOST": [
-                    "443",
-                    "3080",
-                ][0],
-                "WEB_UI_PORT_CONTAINER": [
-                    "443",
-                    "3080",
-                ][0],
-                # proxy Service:
-                "ALL_CLIENTS_PORT_HOST": "3023",
-                "ALL_CLIENTS_PORT_CONTAINER": "3023",
-                # ssh_service
-                "LISTEN_ADDRESS_HOST": "3022",
-                "LISTEN_ADDRESS_CONTAINER": "3022",
-                "TELEPORT_CONFIG": {
-                    FeatureVolumeType.CONTAINED: pathlib.Path(
-                        "{DOT_LANDSCAPES}",
-                        "{LANDSCAPE}",
-                        f"{ASSET_HEADER_TELEPORT['group_name']}__{'__'.join(ASSET_HEADER_TELEPORT['key_prefix'])}",
-                        "volumes",
-                        "config",
-                    )
-                    .expanduser()
-                    .as_posix(),
-                    FeatureVolumeType.SHARED: pathlib.Path(
-                        "{DOT_LANDSCAPES}",
-                        "{DOT_SHARED_VOLUMES}",
-                        f"{ASSET_HEADER_TELEPORT['group_name']}__{'__'.join(ASSET_HEADER_TELEPORT['key_prefix'])}",
-                        "volumes",
-                        "config",
-                    )
-                    .expanduser()
-                    .as_posix(),
-                }[FeatureVolumeType.SHARED],
-                "TELEPORT_DATA": {
-                    FeatureVolumeType.CONTAINED: pathlib.Path(
-                        "{DOT_LANDSCAPES}",
-                        "{LANDSCAPE}",
-                        f"{ASSET_HEADER_TELEPORT['group_name']}__{'__'.join(ASSET_HEADER_TELEPORT['key_prefix'])}",
-                        "volumes",
-                        "data",
-                    )
-                    .expanduser()
-                    .as_posix(),
-                    FeatureVolumeType.SHARED: pathlib.Path(
-                        "{DOT_LANDSCAPES}",
-                        "{DOT_SHARED_VOLUMES}",
-                        f"{ASSET_HEADER_TELEPORT['group_name']}__{'__'.join(ASSET_HEADER_TELEPORT['key_prefix'])}",
-                        "volumes",
-                        "data",
-                    )
-                    .expanduser()
-                    .as_posix(),
-                }[FeatureVolumeType.SHARED],
-                "ACME_SH_DIR": {
-                    FeatureVolumeType.CONTAINED: None,
-                    FeatureVolumeType.SHARED: pathlib.Path(
-                        "{DOT_LANDSCAPES}",
-                        ".acme.sh",
-                    )
-                    .expanduser()
-                    .as_posix(),
-                }[FeatureVolumeType.SHARED],
-                "TELEPORT_CERT": {
-                    #################################################################
-                    # Certificates directory
-                    #################################################################
-                    FeatureVolumeType.CONTAINED: None,
-                    FeatureVolumeType.SHARED: pathlib.Path(
-                        "{DOT_LANDSCAPES}",
-                        ".acme.sh",
-                        "certs",
-                    )
-                    .expanduser()
-                    .as_posix(),
-                }[FeatureVolumeType.SHARED],
-            }
+                FeatureVolumeType.SHARED: pathlib.Path(
+                    "{GIT_ROOT}",
+                    ".teleport",
+                    "config",
+                    # "{DOT_LANDSCAPES}",
+                    # "{DOT_SHARED_VOLUMES}",
+                    # f"{ASSET_HEADER_TELEPORT['group_name']}__{'__'.join(ASSET_HEADER_TELEPORT['key_prefix'])}",
+                    # "volumes",
+                    # "config",
+                )
+                .expanduser()
+                .as_posix(),
+            }[FeatureVolumeType.SHARED],
+            "TELEPORT_DATA": {
+                FeatureVolumeType.CONTAINED: pathlib.Path(
+                    "{DOT_LANDSCAPES}",
+                    "{LANDSCAPE}",
+                    f"{ASSET_HEADER_TELEPORT['group_name']}__{'__'.join(ASSET_HEADER_TELEPORT['key_prefix'])}",
+                    "volumes",
+                    "data",
+                )
+                .expanduser()
+                .as_posix(),
+                FeatureVolumeType.SHARED: pathlib.Path(
+                    "{DOT_LANDSCAPES}",
+                    "{DOT_SHARED_VOLUMES}",
+                    f"{ASSET_HEADER_TELEPORT['group_name']}__{'__'.join(ASSET_HEADER_TELEPORT['key_prefix'])}",
+                    "volumes",
+                    "data",
+                )
+                .expanduser()
+                .as_posix(),
+            }[FeatureVolumeType.SHARED],
+            "ACME_SH_DIR": {
+                FeatureVolumeType.CONTAINED: None,
+                FeatureVolumeType.SHARED: pathlib.Path(
+                    "{DOT_LANDSCAPES}",
+                    ".acme.sh",
+                )
+                .expanduser()
+                .as_posix(),
+            }[FeatureVolumeType.SHARED],
+            "TELEPORT_CERT": {
+                #################################################################
+                # Certificates directory
+                #################################################################
+                FeatureVolumeType.CONTAINED: None,
+                FeatureVolumeType.SHARED: pathlib.Path(
+                    "{DOT_LANDSCAPES}",
+                    ".acme.sh",
+                    "certs",
+                )
+                .expanduser()
+                .as_posix(),
+            }[FeatureVolumeType.SHARED],
+        }
+
+        env_update_ = expand_dict_vars(
+            dict_to_expand=copy.deepcopy(env_update),
+            kv=env_out,
         )
 
-        expand_dict_vars(
-            dict_to_expand=env_in,
-            kv=env_base,
+        env_out.update(env_update_)
+
+        yield Output(env_out)
+
+        serialize_dict(
+            context=context,
+            d=env_out,
         )
 
-        yield Output(env_in)
+        serialize_dict(
+            context=context,
+            d=env_update_,
+        )
 
         yield AssetMaterialization(
             asset_key=context.asset_key,
             metadata={
-                "__".join(context.asset_key.path): MetadataValue.json(env_in),
+                "__".join(context.asset_key.path): MetadataValue.json(env_out),
+                "env": MetadataValue.json(env_update_),
             },
         )
 
@@ -1049,14 +1135,14 @@ if bool(ins):
         },
         description="",
     )
-    def teleport_yaml(
+    def teleport_config(
         context: AssetExecutionContext,
         env: dict,  # pylint: disable=redefined-outer-name
         certificates: list[dict],  # pylint: disable=redefined-outer-name
         fetch_services: dict,  # pylint: disable=redefined-outer-name
         app_dict_default: dict,  # pylint: disable=redefined-outer-name
         static_apps: list,  # pylint: disable=redefined-outer-name
-    ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
+    ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
         """
         [Reference Configurations](https://goteleport.com/docs/reference/deployment/config/#reference-configurations)
 
@@ -1387,48 +1473,219 @@ if bool(ins):
             },
         }
 
-        teleport_yaml_script = pathlib.Path(
-            env["TELEPORT_CONFIG"], env["LANDSCAPE"], "teleport.yaml"
+        # teleport_yaml_script = pathlib.Path(
+        #     env["TELEPORT_CONFIG"], env["LANDSCAPE"], "teleport.yaml"
+        # )
+        # teleport_yaml_script_link = pathlib.Path(
+        #     env["TELEPORT_CONFIG"], "teleport.yaml"
+        # )
+        # teleport_yaml_script.parent.mkdir(
+        #     parents=True,
+        #     exist_ok=True,
+        # )
+        #
+        # teleport_yaml_script.parent.mkdir(parents=True, exist_ok=True)
+        #
+        # teleport_yaml_ = yaml.dump(teleport_yaml_dict)
+        #
+        # with open(
+        #     file=teleport_yaml_script,
+        #     mode="w",
+        #     encoding="utf-8",
+        # ) as fo:
+        #     fo.write(teleport_yaml_)
+        #
+        # if teleport_yaml_script_link.exists():
+        #     teleport_yaml_script_link.unlink()
+        #
+        # teleport_yaml_script_link.symlink_to(teleport_yaml_script)
+        #
+        # # Todo
+        # #  - [ ] not sure yet whether we want the physical file or
+        # #        the link that points to it.
+
+        teleport_yaml_ = yaml.dump(teleport_yaml_dict)
+
+        yield Output(teleport_yaml_dict)
+
+        yield AssetMaterialization(
+            asset_key=context.asset_key,
+            metadata={
+                "__".join(context.asset_key.path): MetadataValue.json(
+                    teleport_yaml_dict
+                ),
+                "teleport_yaml": MetadataValue.md(
+                    f"```yaml\n{teleport_yaml_}\n```"
+                ),
+            },
         )
-        teleport_yaml_script_link = pathlib.Path(
-            env["TELEPORT_CONFIG"], "teleport.yaml"
-        )
-        teleport_yaml_script.parent.mkdir(
+
+    @asset(
+        **ASSET_HEADER_TELEPORT,
+        ins={
+            "env": AssetIn(
+                AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "env"]),
+            ),
+            "teleport_config": AssetIn(
+                AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "teleport_config"]),
+            ),
+        },
+        description="",
+    )
+    def teleport_yaml(
+        context: AssetExecutionContext,
+        env: dict,  # pylint: disable=redefined-outer-name
+        teleport_config: dict,  # pylint: disable=redefined-outer-name
+    ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
+
+        teleport_yaml_file = pathlib.Path(env["TELEPORT_YAML"])
+
+        teleport_yaml_file.parent.mkdir(
             parents=True,
             exist_ok=True,
         )
 
-        teleport_yaml_script.parent.mkdir(parents=True, exist_ok=True)
+        # teleport_yaml_script_link = pathlib.Path(
+        #     env["TELEPORT_CONFIG"],
+        #     pathlib.Path(env["TELEPORT_YAML"]).name,
+        # )
 
-        teleport_yaml_ = yaml.dump(teleport_yaml_dict)
+        teleport_yaml_file.parent.mkdir(parents=True, exist_ok=True)
+
+        teleport_yaml_ = yaml.dump(teleport_config)
 
         with open(
-            file=teleport_yaml_script,
+            file=teleport_yaml_file,
             mode="w",
             encoding="utf-8",
         ) as fo:
             fo.write(teleport_yaml_)
 
-        if teleport_yaml_script_link.exists():
-            teleport_yaml_script_link.unlink()
-
-        teleport_yaml_script_link.symlink_to(teleport_yaml_script)
+        # teleport_yaml_link_ = get_relative_path_via_common_root(
+        #     context=context,
+        #     path_src=teleport_yaml_script_link.parent,
+        #     path_dst=teleport_yaml_file,
+        #     path_common_root=pathlib.Path(env["GIT_ROOT"]),
+        # )
+        #
+        # # `ln -s` terms:
+        # target = teleport_yaml_link_.parent
+        # link_name = teleport_yaml_script_link.parent
+        #
+        # if link_name.exists():
+        #     link_name.unlink()
+        #
+        # os.symlink(
+        #     src=target,
+        #     dst=link_name,
+        #     target_is_directory=True,
+        # )
 
         # Todo
         #  - [ ] not sure yet whether we want the physical file or
         #        the link that points to it.
 
-        yield Output(teleport_yaml_script)
+        yield Output(teleport_yaml_file)
 
         yield AssetMaterialization(
             asset_key=context.asset_key,
             metadata={
                 "__".join(context.asset_key.path): MetadataValue.path(
-                    teleport_yaml_script
+                    teleport_yaml_file
                 ),
-                "teleport_yaml_dict": MetadataValue.md(
-                    f"```shell\n{teleport_yaml_dict}\n```"
+            },
+        )
+
+    @asset(
+        **ASSET_HEADER_TELEPORT,
+        ins={
+            "env_base": AssetIn(
+                AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "env_base"]),
+            ),
+            "env": AssetIn(
+                AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "env"]),
+            ),
+            # "teleport_config": AssetIn(
+            #     AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "teleport_config"]),
+            # ),
+        },
+        description="",
+    )
+    def symlink(
+        context: AssetExecutionContext,
+        env_base: dict,  # pylint: disable=redefined-outer-name
+        env: dict,  # pylint: disable=redefined-outer-name
+        # teleport_config: dict,  # pylint: disable=redefined-outer-name
+    ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
+
+        assetgroup_root = pathlib.Path(
+            env_base["DOT_LANDSCAPES"],
+            env_base["LANDSCAPE"],
+            f"{ASSET_HEADER_TELEPORT['group_name']}__{'_'.join(ASSET_HEADER_TELEPORT['key_prefix'])}",
+            # "__".join(context.asset_key.path),
+            # "systemd",
+            # "openstudiolandscapes-teleport@.service",
+        )
+            # .expanduser()
+            # .as_posix(),
+
+        target = assetgroup_root
+        link_name = pathlib.Path(env["TELEPORT_CONFIG"])
+
+        # teleport_yaml_file = pathlib.Path(env["TELEPORT_YAML"])
+        #
+        # teleport_yaml_file.parent.mkdir(
+        #     parents=True,
+        #     exist_ok=True,
+        # )
+        #
+        # teleport_yaml_script_link = pathlib.Path(
+        #     env["TELEPORT_CONFIG"],
+        #     pathlib.Path(env["TELEPORT_YAML"]).name,
+        # )
+        #
+        # teleport_yaml_file.parent.mkdir(parents=True, exist_ok=True)
+        #
+        # teleport_yaml_ = yaml.dump(teleport_config)
+        #
+        # with open(
+        #     file=teleport_yaml_file,
+        #     mode="w",
+        #     encoding="utf-8",
+        # ) as fo:
+        #     fo.write(teleport_yaml_)
+        #
+        # teleport_yaml_link_ = get_relative_path_via_common_root(
+        #     context=context,
+        #     path_src=teleport_yaml_script_link.parent,
+        #     path_dst=teleport_yaml_file,
+        #     path_common_root=pathlib.Path(env["GIT_ROOT"]),
+        # )
+        #
+        # # `ln -s` terms:
+        # target = teleport_yaml_link_.parent
+        # link_name = teleport_yaml_script_link.parent
+
+        if link_name.exists():
+            link_name.unlink()
+
+        os.symlink(
+            src=target,
+            dst=link_name,
+            target_is_directory=True,
+        )
+
+        # Todo
+        #  - [ ] not sure yet whether we want the physical file or
+        #        the link that points to it.
+
+        yield Output(link_name)
+
+        yield AssetMaterialization(
+            asset_key=context.asset_key,
+            metadata={
+                "__".join(context.asset_key.path): MetadataValue.path(
+                    link_name
                 ),
-                "teleport_yaml_": MetadataValue.md(f"```yaml\n{teleport_yaml_}\n```"),
             },
         )
