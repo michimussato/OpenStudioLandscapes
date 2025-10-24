@@ -439,93 +439,115 @@ src/OpenStudioLandscapes/engine/compose_scopes/license_server/constants.py:16:0:
 ************* Module OpenStudioLandscapes.engine.teleport.custom_services
 src/OpenStudioLandscapes/engine/teleport/custom_services.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 ************* Module OpenStudioLandscapes.engine.teleport.assets
-src/OpenStudioLandscapes/engine/teleport/assets.py:149:0: C0301: Line too long (108/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:151:0: C0301: Line too long (138/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:173:0: C0301: Line too long (159/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:174:0: C0301: Line too long (147/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:392:0: C0301: Line too long (591/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:393:0: C0301: Line too long (175/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:394:0: C0301: Line too long (580/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:395:0: C0301: Line too long (164/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:396:0: C0301: Line too long (575/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:397:0: C0301: Line too long (159/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:405:0: C0301: Line too long (227/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:406:0: C0301: Line too long (177/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:408:0: C0301: Line too long (160/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:411:0: C0301: Line too long (139/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:548:0: C0301: Line too long (130/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:549:0: C0301: Line too long (138/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:579:0: C0301: Line too long (115/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:588:0: C0301: Line too long (115/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:599:0: C0301: Line too long (115/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:608:0: C0301: Line too long (115/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:921:0: C0301: Line too long (101/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1061:0: C0301: Line too long (117/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1064:0: C0301: Line too long (115/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1068:0: C0301: Line too long (109/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1100:0: C0301: Line too long (113/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1151:0: C0301: Line too long (106/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1152:0: C0301: Line too long (127/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1170:0: C0301: Line too long (260/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1186:0: C0301: Line too long (254/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1190:0: C0301: Line too long (121/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1225:0: C0301: Line too long (223/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1226:0: C0301: Line too long (226/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1230:0: C0301: Line too long (248/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1239:0: C0301: Line too long (246/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1240:0: C0301: Line too long (250/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1247:0: C0301: Line too long (270/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1331:0: C0301: Line too long (120/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1334:0: C0301: Line too long (130/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1335:0: C0301: Line too long (106/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1374:0: C0301: Line too long (109/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1:0: C0302: Too many lines in module (1434/1000) (too-many-lines)
-src/OpenStudioLandscapes/engine/teleport/assets.py:52:5: W0511: Todo: (fixme)
-src/OpenStudioLandscapes/engine/teleport/assets.py:292:17: W0511: Todo: "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)), (fixme)
-src/OpenStudioLandscapes/engine/teleport/assets.py:374:9: W0511: Todo (fixme)
-src/OpenStudioLandscapes/engine/teleport/assets.py:724:17: W0511: Todo: for now ok (fixme)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1082:13: W0511: Todo (fixme)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1172:9: W0511: Todo: (fixme)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1219:9: W0511: Todo: (fixme)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1417:9: W0511: Todo (fixme)
+src/OpenStudioLandscapes/engine/teleport/assets.py:167:0: C0301: Line too long (108/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:169:0: C0301: Line too long (138/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:191:0: C0301: Line too long (159/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:192:0: C0301: Line too long (147/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:412:0: C0301: Line too long (591/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:413:0: C0301: Line too long (169/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:414:0: C0301: Line too long (580/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:415:0: C0301: Line too long (158/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:416:0: C0301: Line too long (575/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:417:0: C0301: Line too long (153/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:546:0: C0301: Line too long (106/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:556:0: C0301: Line too long (106/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:564:0: C0301: Line too long (126/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:565:0: C0301: Line too long (134/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:594:0: C0301: Line too long (106/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:605:0: C0301: Line too long (111/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:617:0: C0301: Line too long (113/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:628:0: C0301: Line too long (111/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:637:0: C0301: Line too long (111/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:962:0: C0301: Line too long (101/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:1102:0: C0301: Line too long (117/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:1105:0: C0301: Line too long (115/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:1109:0: C0301: Line too long (109/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:1141:0: C0301: Line too long (113/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:1192:0: C0301: Line too long (106/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:1193:0: C0301: Line too long (127/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:1211:0: C0301: Line too long (260/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:1227:0: C0301: Line too long (254/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:1231:0: C0301: Line too long (121/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:1266:0: C0301: Line too long (223/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:1267:0: C0301: Line too long (226/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:1271:0: C0301: Line too long (248/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:1280:0: C0301: Line too long (246/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:1281:0: C0301: Line too long (250/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:1288:0: C0301: Line too long (270/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:1372:0: C0301: Line too long (120/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:1375:0: C0301: Line too long (130/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:1376:0: C0301: Line too long (106/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:1415:0: C0301: Line too long (109/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:1517:0: C0301: Line too long (102/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/assets.py:1:0: C0302: Too many lines in module (1543/1000) (too-many-lines)
+src/OpenStudioLandscapes/engine/teleport/assets.py:53:5: W0511: Todo: (fixme)
+src/OpenStudioLandscapes/engine/teleport/assets.py:296:17: W0511: Todo: "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)), (fixme)
+src/OpenStudioLandscapes/engine/teleport/assets.py:368:9: W0511: Todo: (fixme)
+src/OpenStudioLandscapes/engine/teleport/assets.py:394:9: W0511: Todo (fixme)
+src/OpenStudioLandscapes/engine/teleport/assets.py:765:17: W0511: Todo: for now ok (fixme)
+src/OpenStudioLandscapes/engine/teleport/assets.py:1123:13: W0511: Todo (fixme)
+src/OpenStudioLandscapes/engine/teleport/assets.py:1213:9: W0511: Todo: (fixme)
+src/OpenStudioLandscapes/engine/teleport/assets.py:1260:9: W0511: Todo: (fixme)
+src/OpenStudioLandscapes/engine/teleport/assets.py:1481:9: W0511: Todo (fixme)
+src/OpenStudioLandscapes/engine/teleport/assets.py:1532:9: W0511: Todo (fixme)
 src/OpenStudioLandscapes/engine/teleport/assets.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-src/OpenStudioLandscapes/engine/teleport/assets.py:22:0: W0401: Wildcard import OpenStudioLandscapes.engine.constants (wildcard-import)
-src/OpenStudioLandscapes/engine/teleport/assets.py:23:0: W0401: Wildcard import OpenStudioLandscapes.engine.discovery.discovery (wildcard-import)
-src/OpenStudioLandscapes/engine/teleport/assets.py:24:0: W0401: Wildcard import OpenStudioLandscapes.engine.enums (wildcard-import)
-src/OpenStudioLandscapes/engine/teleport/assets.py:26:0: W0401: Wildcard import OpenStudioLandscapes.engine.utils (wildcard-import)
-src/OpenStudioLandscapes/engine/teleport/assets.py:69:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/teleport/assets.py:128:4: C0112: Empty function docstring (empty-docstring)
-src/OpenStudioLandscapes/engine/teleport/assets.py:128:4: R0914: Too many local variables (25/15) (too-many-locals)
-src/OpenStudioLandscapes/engine/teleport/assets.py:205:8: C0103: Variable name "SERVICE_NAME" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/teleport/assets.py:203:8: W0612: Unused variable 'command' (unused-variable)
-src/OpenStudioLandscapes/engine/teleport/assets.py:356:4: C0112: Empty function docstring (empty-docstring)
-src/OpenStudioLandscapes/engine/teleport/assets.py:496:19: C0117: Consider changing "not s in ['&&', ';', '@${USER}'.join(unit_link.name.split('@')), f'/usr/lib/systemd/user/{unit_link.name}']" to "s not in ['&&', ';', '@${USER}'.join(unit_link.name.split('@')), f'/usr/lib/systemd/user/{unit_link.name}']" (unnecessary-negation)
-src/OpenStudioLandscapes/engine/teleport/assets.py:529:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/teleport/assets.py:531:8: W0621: Redefining name 'env_base' from outer scope (line 807) (redefined-outer-name)
-src/OpenStudioLandscapes/engine/teleport/assets.py:662:4: C0112: Empty function docstring (empty-docstring)
-src/OpenStudioLandscapes/engine/teleport/assets.py:737:34: W1309: Using an f-string that does not have any interpolated variables (f-string-without-interpolation)
-src/OpenStudioLandscapes/engine/teleport/assets.py:807:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/teleport/assets.py:809:8: W0621: Redefining name 'features_in' from outer scope (line 834) (redefined-outer-name)
-src/OpenStudioLandscapes/engine/teleport/assets.py:834:4: C0112: Empty function docstring (empty-docstring)
-src/OpenStudioLandscapes/engine/teleport/assets.py:848:8: W0621: Redefining name 'env_base' from outer scope (line 807) (redefined-outer-name)
-src/OpenStudioLandscapes/engine/teleport/assets.py:849:8: W0621: Redefining name 'docker_config' from outer scope (line 22) (redefined-outer-name)
-src/OpenStudioLandscapes/engine/teleport/assets.py:855:15: W0612: Unused variable 'v' (unused-variable)
-src/OpenStudioLandscapes/engine/teleport/assets.py:912:4: C0112: Empty function docstring (empty-docstring)
-src/OpenStudioLandscapes/engine/teleport/assets.py:924:8: W0621: Redefining name 'e' from outer scope (line 23) (redefined-outer-name)
-src/OpenStudioLandscapes/engine/teleport/assets.py:921:12: C0415: Import outside toplevel (OpenStudioLandscapes.engine.teleport.custom_services.custom_services) (import-outside-toplevel)
-src/OpenStudioLandscapes/engine/teleport/assets.py:998:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1011:12: W0621: Redefining name 'key' from outer scope (line 23) (redefined-outer-name)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1052:4: R0913: Too many arguments (6/5) (too-many-arguments)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1052:4: R0917: Too many positional arguments (6/5) (too-many-positional-arguments)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1052:4: R0914: Too many local variables (22/15) (too-many-locals)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1095:12: W0621: Redefining name 'feature' from outer scope (line 23) (redefined-outer-name)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1071:8: C0103: Variable name "SERVICE_NAME" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1095:12: W0612: Unused variable 'feature' (unused-variable)
-src/OpenStudioLandscapes/engine/teleport/assets.py:22:0: W0614: Unused import(s) DOCKER_PROGRESS, DOCKER_CONFIG, DOCKER_USE_CACHE_GLOBAL, DOCKER_USE_CACHE_BASE, GROUP_COMPOSE, KEY_COMPOSE, ASSET_HEADER_COMPOSE, ENVIRONMENT_COMPOSE, GROUP_COMPOSE_LICENSE_SERVER, KEY_COMPOSE_LICENSE_SERVER, ASSET_HEADER_COMPOSE_LICENSE_SERVER, ENVIRONMENT_COMPOSE_LICENSE_SERVER, GROUP_COMPOSE_WORKER, KEY_COMPOSE_WORKER, ASSET_HEADER_COMPOSE_WORKER, ENVIRONMENT_COMPOSE_WORKER, GROUP_BASE_ENV, KEY_BASE_ENV, ASSET_HEADER_BASE_ENV, GROUP_BASE, KEY_BASE, GROUP_LANDSCAPE_MAP, KEY_LANDSCAPE_MAP, ASSET_HEADER_LANDSCAPE_MAP, GROUP_TELEPORT, KEY_TELEPORT, GROUP_DISTRIBUTABLE, KEY_DISTRIBUTABLE, ASSET_HEADER_DISTRIBUTABLE, constants_base, features, docker_config, enum, OpenStudioLandscapesConfig, ComposeScope, ComposeCmdExclusion, DockerRegistry, DockerRepositoryType, constants_compose, constants_compose_license_server and constants_compose_worker from wildcard import of OpenStudioLandscapes.engine.constants (unused-wildcard-import)
-src/OpenStudioLandscapes/engine/teleport/assets.py:23:0: W0614: Unused import(s) importlib, LOGGER, namespace_packages, DISCOVERED_MODULE, IMPORTABLE_FEATURES, IMPORTS, feature, module_object, e, get_dagster_logger and find_namespace_packages from wildcard import of OpenStudioLandscapes.engine.discovery.discovery (unused-wildcard-import)
-src/OpenStudioLandscapes/engine/teleport/assets.py:26:0: W0614: Unused import(s) operator_, os, git, cmd_list_to_str, get_pip_install_str, get_apt_install_str, get_copy_str, get_wget_str, get_git_root, get_configs_root, get_data_root, get_bin_root, get_image_name, parse_docker_image_path, get_compose_scope, get_feature_config, get_bool_env, get_str_env, Union, OpExecutionContext, ComposeScopeException and OpenStudioLandscapesException from wildcard import of OpenStudioLandscapes.engine.utils (unused-wildcard-import)
+src/OpenStudioLandscapes/engine/teleport/assets.py:23:0: W0401: Wildcard import OpenStudioLandscapes.engine.constants (wildcard-import)
+src/OpenStudioLandscapes/engine/teleport/assets.py:24:0: W0401: Wildcard import OpenStudioLandscapes.engine.discovery.discovery (wildcard-import)
+src/OpenStudioLandscapes/engine/teleport/assets.py:25:0: W0401: Wildcard import OpenStudioLandscapes.engine.enums (wildcard-import)
+src/OpenStudioLandscapes/engine/teleport/assets.py:27:0: W0401: Wildcard import OpenStudioLandscapes.engine.utils (wildcard-import)
+src/OpenStudioLandscapes/engine/teleport/assets.py:70:4: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/teleport/assets.py:129:4: C0112: Empty function docstring (empty-docstring)
+src/OpenStudioLandscapes/engine/teleport/assets.py:129:4: R0914: Too many local variables (24/15) (too-many-locals)
+src/OpenStudioLandscapes/engine/teleport/assets.py:224:8: C0103: Variable name "SERVICE_NAME" doesn't conform to snake_case naming style (invalid-name)
+src/OpenStudioLandscapes/engine/teleport/assets.py:222:8: W0612: Unused variable 'command' (unused-variable)
+src/OpenStudioLandscapes/engine/teleport/assets.py:360:4: C0112: Empty function docstring (empty-docstring)
+src/OpenStudioLandscapes/engine/teleport/assets.py:501:19: C0117: Consider changing "not s in ['&&', ';', '@${USER}'.join(unit_link.name.split('@')), f'/usr/lib/systemd/user/{unit_link.name}']" to "s not in ['&&', ';', '@${USER}'.join(unit_link.name.split('@')), f'/usr/lib/systemd/user/{unit_link.name}']" (unnecessary-negation)
+src/OpenStudioLandscapes/engine/teleport/assets.py:535:4: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/teleport/assets.py:537:8: W0621: Redefining name 'env_base' from outer scope (line 848) (redefined-outer-name)
+src/OpenStudioLandscapes/engine/teleport/assets.py:703:4: C0112: Empty function docstring (empty-docstring)
+src/OpenStudioLandscapes/engine/teleport/assets.py:778:34: W1309: Using an f-string that does not have any interpolated variables (f-string-without-interpolation)
+src/OpenStudioLandscapes/engine/teleport/assets.py:848:4: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/teleport/assets.py:850:8: W0621: Redefining name 'features_in' from outer scope (line 875) (redefined-outer-name)
+src/OpenStudioLandscapes/engine/teleport/assets.py:875:4: C0112: Empty function docstring (empty-docstring)
+src/OpenStudioLandscapes/engine/teleport/assets.py:889:8: W0621: Redefining name 'env_base' from outer scope (line 848) (redefined-outer-name)
+src/OpenStudioLandscapes/engine/teleport/assets.py:890:8: W0621: Redefining name 'docker_config' from outer scope (line 23) (redefined-outer-name)
+src/OpenStudioLandscapes/engine/teleport/assets.py:896:15: W0612: Unused variable 'v' (unused-variable)
+src/OpenStudioLandscapes/engine/teleport/assets.py:953:4: C0112: Empty function docstring (empty-docstring)
+src/OpenStudioLandscapes/engine/teleport/assets.py:965:8: W0621: Redefining name 'e' from outer scope (line 24) (redefined-outer-name)
+src/OpenStudioLandscapes/engine/teleport/assets.py:962:12: C0415: Import outside toplevel (OpenStudioLandscapes.engine.teleport.custom_services.custom_services) (import-outside-toplevel)
+src/OpenStudioLandscapes/engine/teleport/assets.py:1039:4: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/teleport/assets.py:1052:12: W0621: Redefining name 'key' from outer scope (line 24) (redefined-outer-name)
+src/OpenStudioLandscapes/engine/teleport/assets.py:1093:4: R0913: Too many arguments (6/5) (too-many-arguments)
+src/OpenStudioLandscapes/engine/teleport/assets.py:1093:4: R0917: Too many positional arguments (6/5) (too-many-positional-arguments)
+src/OpenStudioLandscapes/engine/teleport/assets.py:1093:4: R0914: Too many local variables (19/15) (too-many-locals)
+src/OpenStudioLandscapes/engine/teleport/assets.py:1136:12: W0621: Redefining name 'feature' from outer scope (line 24) (redefined-outer-name)
+src/OpenStudioLandscapes/engine/teleport/assets.py:1112:8: C0103: Variable name "SERVICE_NAME" doesn't conform to snake_case naming style (invalid-name)
+src/OpenStudioLandscapes/engine/teleport/assets.py:1136:12: W0612: Unused variable 'feature' (unused-variable)
+src/OpenStudioLandscapes/engine/teleport/assets.py:1457:4: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/teleport/assets.py:1508:4: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/teleport/assets.py:23:0: W0614: Unused import(s) DOCKER_PROGRESS, DOCKER_CONFIG, DOCKER_USE_CACHE_GLOBAL, DOCKER_USE_CACHE_BASE, GROUP_COMPOSE, KEY_COMPOSE, ASSET_HEADER_COMPOSE, ENVIRONMENT_COMPOSE, GROUP_COMPOSE_LICENSE_SERVER, KEY_COMPOSE_LICENSE_SERVER, ASSET_HEADER_COMPOSE_LICENSE_SERVER, ENVIRONMENT_COMPOSE_LICENSE_SERVER, GROUP_COMPOSE_WORKER, KEY_COMPOSE_WORKER, ASSET_HEADER_COMPOSE_WORKER, ENVIRONMENT_COMPOSE_WORKER, GROUP_BASE_ENV, KEY_BASE_ENV, ASSET_HEADER_BASE_ENV, GROUP_BASE, KEY_BASE, GROUP_LANDSCAPE_MAP, KEY_LANDSCAPE_MAP, ASSET_HEADER_LANDSCAPE_MAP, GROUP_TELEPORT, KEY_TELEPORT, GROUP_DISTRIBUTABLE, KEY_DISTRIBUTABLE, ASSET_HEADER_DISTRIBUTABLE, constants_base, features, docker_config, enum, OpenStudioLandscapesConfig, ComposeScope, ComposeCmdExclusion, DockerRegistry, DockerRepositoryType, constants_compose, constants_compose_license_server and constants_compose_worker from wildcard import of OpenStudioLandscapes.engine.constants (unused-wildcard-import)
+src/OpenStudioLandscapes/engine/teleport/assets.py:24:0: W0614: Unused import(s) importlib, LOGGER, namespace_packages, DISCOVERED_MODULE, IMPORTABLE_FEATURES, IMPORTS, feature, module_object, e, get_dagster_logger and find_namespace_packages from wildcard import of OpenStudioLandscapes.engine.discovery.discovery (unused-wildcard-import)
+src/OpenStudioLandscapes/engine/teleport/assets.py:27:0: W0614: Unused import(s) operator_, git, cmd_list_to_str, get_pip_install_str, get_apt_install_str, get_copy_str, get_wget_str, get_git_root, get_configs_root, get_data_root, get_bin_root, get_image_name, parse_docker_image_path, get_compose_scope, get_feature_config, get_bool_env, get_str_env, Union, OpExecutionContext, ComposeScopeException and OpenStudioLandscapesException from wildcard import of OpenStudioLandscapes.engine.utils (unused-wildcard-import)
 ************* Module OpenStudioLandscapes.engine.teleport.definitions
 src/OpenStudioLandscapes/engine/teleport/definitions.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+************* Module OpenStudioLandscapes.engine.teleport.constants
+src/OpenStudioLandscapes/engine/teleport/constants.py:42:0: C0301: Line too long (122/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/constants.py:43:0: C0301: Line too long (130/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/constants.py:73:0: C0301: Line too long (107/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/constants.py:82:0: C0301: Line too long (107/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/constants.py:93:0: C0301: Line too long (107/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/constants.py:102:0: C0301: Line too long (107/100) (line-too-long)
+src/OpenStudioLandscapes/engine/teleport/constants.py:136:1: W0511: Todo: (fixme)
+src/OpenStudioLandscapes/engine/teleport/constants.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+src/OpenStudioLandscapes/engine/teleport/constants.py:22:0: W0401: Wildcard import OpenStudioLandscapes.engine.constants (wildcard-import)
+src/OpenStudioLandscapes/engine/teleport/constants.py:23:0: W0401: Wildcard import OpenStudioLandscapes.engine.enums (wildcard-import)
+src/OpenStudioLandscapes/engine/teleport/constants.py:158:0: C0112: Empty function docstring (empty-docstring)
+src/OpenStudioLandscapes/engine/teleport/constants.py:22:0: W0614: Unused import(s) DOCKER_PROGRESS, DOCKER_CONFIG, DOCKER_USE_CACHE_BASE, PREFIX_COMPOSE_SCOPE, GROUP_COMPOSE, KEY_COMPOSE, ASSET_HEADER_COMPOSE, ENVIRONMENT_COMPOSE, GROUP_COMPOSE_LICENSE_SERVER, KEY_COMPOSE_LICENSE_SERVER, ASSET_HEADER_COMPOSE_LICENSE_SERVER, ENVIRONMENT_COMPOSE_LICENSE_SERVER, GROUP_COMPOSE_WORKER, KEY_COMPOSE_WORKER, ASSET_HEADER_COMPOSE_WORKER, ENVIRONMENT_COMPOSE_WORKER, GROUP_BASE_ENV, KEY_BASE_ENV, ASSET_HEADER_BASE_ENV, GROUP_BASE, KEY_BASE, ASSET_HEADER_BASE, GROUP_LANDSCAPE_MAP, KEY_LANDSCAPE_MAP, ASSET_HEADER_LANDSCAPE_MAP, GROUP_TELEPORT, KEY_TELEPORT, GROUP_DISTRIBUTABLE, KEY_DISTRIBUTABLE, ASSET_HEADER_DISTRIBUTABLE, constants_base, features, docker_config, asset, enum, GroupIn, ComposeScope, ComposeCmdExclusion, DockerRegistry, DockerRepositoryType, DockerConfig, EnvVar, FEATURES, constants_compose, constants_compose_license_server and constants_compose_worker from wildcard import of OpenStudioLandscapes.engine.constants (unused-wildcard-import)
+************* Module OpenStudioLandscapes.engine.teleport.__init__
+src/OpenStudioLandscapes/engine/teleport/__init__.py:4:5: W0511: TODO: Import directly (no need for conditional) when `python_requires = >= 3.8` (fixme)
+************* Module OpenStudioLandscapes.engine.teleport
+src/OpenStudioLandscapes/engine/teleport/__init__.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+src/OpenStudioLandscapes/engine/teleport/__init__.py:11:4: C0103: Constant name "dist_name" doesn't conform to UPPER_CASE naming style (invalid-name)
 ************* Module OpenStudioLandscapes.engine.exceptions
 src/OpenStudioLandscapes/engine/exceptions/__init__.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 ************* Module OpenStudioLandscapes.engine.resources.harbor.resources
@@ -990,7 +1012,7 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
             { (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.compose_scopes.license_server.assets:[94:116]
-==OpenStudioLandscapes.engine.teleport.assets:[803:825]
+==OpenStudioLandscapes.engine.teleport.assets:[844:866]
             ),
         },
     )
@@ -1095,7 +1117,7 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
     @asset( (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.compose_scopes.license_server.assets:[317:394]
-==OpenStudioLandscapes.engine.teleport.assets:[826:903]
+==OpenStudioLandscapes.engine.teleport.assets:[867:944]
         ins={
             "group_out_base": AssetIn(
                 AssetKey([*ASSET_HEADER_BASE["key_prefix"], str(GroupIn.BASE_IN)])
@@ -1235,7 +1257,7 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
     @asset( (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.landscape_map.assets:[35:47]
-==OpenStudioLandscapes.engine.teleport.assets:[39:54]
+==OpenStudioLandscapes.engine.teleport.assets:[40:55]
     if compose_scope in compose_scopes:
         continue
     compose_scopes.update(compose_scope)
@@ -1247,6 +1269,9 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
 
 
 if bool(ins):
+
+    # Todo:
+    #  - [ ] get assets from common_assets
  (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.compose_scopes.default.assets:[57:68]
@@ -1342,14 +1367,14 @@ def DOCKER_COMPOSE(
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[494:502]
 ==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[64:72]
-    env_in.update(
-        expand_dict_vars(
-            dict_to_expand={"DOCKER_COMPOSE": DOCKER_COMPOSE.as_posix()},
-            kv=env_in,
+        env_in.update(
+            expand_dict_vars(
+                dict_to_expand={"DOCKER_COMPOSE": DOCKER_COMPOSE.as_posix()},
+                kv=env_in,
+            )
         )
-    )
 
-    env_in.update( (duplicate-code)
+        env_in.update( (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.compose_scopes.default.assets:[349:358]
 ==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[367:376]
@@ -1376,7 +1401,7 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
  (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[337:345]
-==OpenStudioLandscapes.engine.teleport.assets:[747:755]
+==OpenStudioLandscapes.engine.teleport.assets:[788:796]
         serialize_dict(
             context=context,
             d=kwargs_serialized,
@@ -1395,7 +1420,18 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
         metadata={
             "__".join(context.asset_key.path): MetadataValue.json(_constants),
         },
-    ) (duplicate-code)
+    )
+
+
+@asset(
+    **ASSET_HEADER,
+    description="",
+)
+def DOCKER_COMPOSE(
+    context: AssetExecutionContext,
+) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
+    """ """
+ (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[98:106]
 ==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[335:343]
@@ -1442,7 +1478,7 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
  (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.compose_scopes.license_server.assets:[252:260]
-==OpenStudioLandscapes.engine.teleport.assets:[837:845]
+==OpenStudioLandscapes.engine.teleport.assets:[878:886]
     ) -> Generator[
         Output[MutableMapping[str, List[MutableMapping[str, List]]]]
         | AssetMaterialization,
@@ -1459,10 +1495,18 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
             "plain",
             "tty",
             "rawjson", (duplicate-code)
+src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
+==OpenStudioLandscapes.engine.__init__:[10:15]
+==OpenStudioLandscapes.engine.teleport.__init__:[11:16]
+    __version__ = version(dist_name)
+except PackageNotFoundError:  # pragma: no cover
+    __version__ = "unknown"
+finally:
+    del version, PackageNotFoundError (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.worker.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.license_server.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.default.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
 
 ------------------------------------------------------------------
-Your code has been rated at 6.49/10 (previous run: 7.06/10, -0.57)
+Your code has been rated at 6.45/10 (previous run: 7.06/10, -0.61)
 

@@ -379,7 +379,6 @@ if bool(ins):
 
         docker_compose_yml = teleport_compose_link
 
-
         cwd = docker_compose_yml.parent
 
         unit = pathlib.Path(env["TELEPORT_SYSTEMD_UNIT"])
@@ -1439,9 +1438,7 @@ if bool(ins):
                 "__".join(context.asset_key.path): MetadataValue.json(
                     teleport_yaml_dict
                 ),
-                "teleport_yaml": MetadataValue.md(
-                    f"```yaml\n{teleport_yaml_}\n```"
-                ),
+                "teleport_yaml": MetadataValue.md(f"```yaml\n{teleport_yaml_}\n```"),
             },
         )
 
@@ -1541,8 +1538,6 @@ if bool(ins):
         yield AssetMaterialization(
             asset_key=context.asset_key,
             metadata={
-                "__".join(context.asset_key.path): MetadataValue.path(
-                    link_name
-                ),
+                "__".join(context.asset_key.path): MetadataValue.path(link_name),
             },
         )

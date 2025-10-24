@@ -158,7 +158,7 @@
       "version": "0.0.0"
     },
     {
-      "bom-ref": "BomRef.09898769563455612.9823494921729089",
+      "bom-ref": "BomRef.511286725932058.09603339007473355",
       "description": "A Toolkit to create dynamic Animation and VFX studio environments for robust automation and pipelines.",
       "externalReferences": [
         {
@@ -828,7 +828,7 @@
       "version": "7.2.0"
     },
     {
-      "bom-ref": "cyclonedx-python-lib==11.3.0",
+      "bom-ref": "cyclonedx-python-lib==11.4.0",
       "description": "Python library for CycloneDX",
       "externalReferences": [
         {
@@ -883,9 +883,9 @@
           "value": "validation"
         }
       ],
-      "purl": "pkg:pypi/cyclonedx-python-lib@11.3.0",
+      "purl": "pkg:pypi/cyclonedx-python-lib@11.4.0",
       "type": "library",
-      "version": "11.3.0"
+      "version": "11.4.0"
     },
     {
       "bom-ref": "dagster==1.9.11",
@@ -2781,7 +2781,7 @@
       "version": "14.2.0"
     },
     {
-      "bom-ref": "rpds-py==0.27.1",
+      "bom-ref": "rpds-py==0.28.0",
       "description": "Python bindings to Rust's persistent data structures (rpds)",
       "externalReferences": [
         {
@@ -2829,9 +2829,9 @@
         }
       ],
       "name": "rpds-py",
-      "purl": "pkg:pypi/rpds-py@0.27.1",
+      "purl": "pkg:pypi/rpds-py@0.28.0",
       "type": "library",
-      "version": "0.27.1"
+      "version": "0.28.0"
     },
     {
       "bom-ref": "setuptools==80.9.0",
@@ -3627,7 +3627,7 @@
     {
       "dependsOn": [
         "chardet==5.2.0",
-        "cyclonedx-python-lib==11.3.0",
+        "cyclonedx-python-lib==11.4.0",
         "packageurl-python==0.17.5",
         "packaging==25.0",
         "pip-requirements-parser==32.0.1",
@@ -3646,7 +3646,7 @@
         "sortedcontainers==2.4.0",
         "typing_extensions==4.15.0"
       ],
-      "ref": "cyclonedx-python-lib==11.3.0"
+      "ref": "cyclonedx-python-lib==11.4.0"
     },
     {
       "ref": "dagster-pipes==1.9.11"
@@ -3814,7 +3814,7 @@
         "rfc3339-validator==0.1.4",
         "rfc3986-validator==0.1.1",
         "rfc3987-syntax==1.1.0",
-        "rpds-py==0.27.1",
+        "rpds-py==0.28.0",
         "uri-template==1.3.0",
         "webcolors==24.11.1"
       ],
@@ -3951,7 +3951,7 @@
     {
       "dependsOn": [
         "attrs==25.4.0",
-        "rpds-py==0.27.1",
+        "rpds-py==0.28.0",
         "typing_extensions==4.15.0"
       ],
       "ref": "referencing==0.37.0"
@@ -3989,7 +3989,7 @@
       "ref": "rich==14.2.0"
     },
     {
-      "ref": "rpds-py==0.27.1"
+      "ref": "rpds-py==0.28.0"
     },
     {
       "dependsOn": [
@@ -4085,7 +4085,7 @@
     }
   ],
   "metadata": {
-    "timestamp": "2025-10-22T12:56:00.974999+00:00",
+    "timestamp": "2025-10-24T18:47:22.108921+00:00",
     "tools": {
       "components": [
         {
@@ -4184,12 +4184,12 @@
           ],
           "name": "cyclonedx-python-lib",
           "type": "library",
-          "version": "11.3.0"
+          "version": "11.4.0"
         }
       ]
     }
   },
-  "serialNumber": "urn:uuid:94409ee7-08da-4501-b563-07c8b27cb791",
+  "serialNumber": "urn:uuid:965bc6ae-f500-42d5-a2c2-9bf23d017af3",
   "version": 1,
   "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
   "bomFormat": "CycloneDX",
