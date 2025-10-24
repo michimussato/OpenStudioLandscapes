@@ -285,38 +285,6 @@ if bool(ins):
         ) as fo:
             fo.write(docker_yaml)
 
-        # teleport_compose_link_ = get_relative_path_via_common_root(
-        #     context=context,
-        #     path_src=teleport_compose_link,
-        #     path_dst=docker_compose_yml,
-        #     path_common_root=pathlib.Path(env["GIT_ROOT"]),
-        # )
-        #
-        # # in `ln -s` terms:
-        # target = teleport_compose_link_
-        # link_name = teleport_compose_link
-        #
-        # if link_name.exists():
-        #     link_name.unlink()
-        #
-        # os.symlink(
-        #     src=target,
-        #     dst=link_name,
-        #     target_is_directory=False,
-        # )
-        #
-        #
-        # # # Todo
-        # # #  - [ ] ln -s target link_name equivalent
-        # # context.log.error(teleport_compose_link_)
-        # # context.log.error(teleport_compose_link)
-        # # context.log.error(docker_compose_yml)
-        # # context.log.error(str(docker_compose_yml.relative_to(pathlib.Path(env["GIT_ROOT"]))))
-        # # context.log.error(str(teleport_compose_link.relative_to(pathlib.Path(env["GIT_ROOT"]))))
-        # #
-        # # teleport_compose_link.symlink_to(teleport_compose_link_)
-        # # # os.symlink(teleport_compose_link, teleport_compose_link_)
-
         yield Output(docker_dict)
 
         yield AssetMaterialization(
@@ -324,7 +292,6 @@ if bool(ins):
             metadata={
                 "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
                 "teleport_compose_link": MetadataValue.path(teleport_compose_link),
-                # "teleport_compose": MetadataValue.path(teleport_compose_history),
                 "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
                 # Todo: "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)),
             },
@@ -452,27 +419,12 @@ if bool(ins):
             """
         )
 
-        # FileNotFoundError: [Errno 2] No such file or directory: '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/.teleport/docker_compose/2025-10-11-01-25-03-7223c4d602104c77a7a3f0f6eed6e0b8/teleport-server@.service'
-        #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/execution/plan/utils.py", line 56, in op_execution_error_boundary
-        #     yield
-        #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_utils/__init__.py", line 480, in iterate_with_context
-        #     next_output = next(iterator)
-        #                   ^^^^^^^^^^^^^^
-        #   File "/home/michael/git/repos/OpenStudioLandscapes/src/OpenStudioLandscapes/engine/teleport/assets.py", line 399, in setup_unit
-        #     with open(
-        #          ^^^^^
-
         with open(
             file=unit,
             mode="w",
             encoding="utf-8",
         ) as fo:
             fo.write(unit_str)
-
-        # if unit_link.exists():
-        #     unit_link.unlink()
-        #
-        # unit_link.symlink_to(unit)
 
         install_unit = [
             "sudo",
@@ -1473,37 +1425,6 @@ if bool(ins):
             },
         }
 
-        # teleport_yaml_script = pathlib.Path(
-        #     env["TELEPORT_CONFIG"], env["LANDSCAPE"], "teleport.yaml"
-        # )
-        # teleport_yaml_script_link = pathlib.Path(
-        #     env["TELEPORT_CONFIG"], "teleport.yaml"
-        # )
-        # teleport_yaml_script.parent.mkdir(
-        #     parents=True,
-        #     exist_ok=True,
-        # )
-        #
-        # teleport_yaml_script.parent.mkdir(parents=True, exist_ok=True)
-        #
-        # teleport_yaml_ = yaml.dump(teleport_yaml_dict)
-        #
-        # with open(
-        #     file=teleport_yaml_script,
-        #     mode="w",
-        #     encoding="utf-8",
-        # ) as fo:
-        #     fo.write(teleport_yaml_)
-        #
-        # if teleport_yaml_script_link.exists():
-        #     teleport_yaml_script_link.unlink()
-        #
-        # teleport_yaml_script_link.symlink_to(teleport_yaml_script)
-        #
-        # # Todo
-        # #  - [ ] not sure yet whether we want the physical file or
-        # #        the link that points to it.
-
         teleport_yaml_ = yaml.dump(teleport_yaml_dict)
 
         yield Output(teleport_yaml_dict)
@@ -1545,11 +1466,6 @@ if bool(ins):
             exist_ok=True,
         )
 
-        # teleport_yaml_script_link = pathlib.Path(
-        #     env["TELEPORT_CONFIG"],
-        #     pathlib.Path(env["TELEPORT_YAML"]).name,
-        # )
-
         teleport_yaml_file.parent.mkdir(parents=True, exist_ok=True)
 
         teleport_yaml_ = yaml.dump(teleport_config)
@@ -1560,26 +1476,6 @@ if bool(ins):
             encoding="utf-8",
         ) as fo:
             fo.write(teleport_yaml_)
-
-        # teleport_yaml_link_ = get_relative_path_via_common_root(
-        #     context=context,
-        #     path_src=teleport_yaml_script_link.parent,
-        #     path_dst=teleport_yaml_file,
-        #     path_common_root=pathlib.Path(env["GIT_ROOT"]),
-        # )
-        #
-        # # `ln -s` terms:
-        # target = teleport_yaml_link_.parent
-        # link_name = teleport_yaml_script_link.parent
-        #
-        # if link_name.exists():
-        #     link_name.unlink()
-        #
-        # os.symlink(
-        #     src=target,
-        #     dst=link_name,
-        #     target_is_directory=True,
-        # )
 
         # Todo
         #  - [ ] not sure yet whether we want the physical file or
@@ -1605,9 +1501,6 @@ if bool(ins):
             "env": AssetIn(
                 AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "env"]),
             ),
-            # "teleport_config": AssetIn(
-            #     AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "teleport_config"]),
-            # ),
         },
         description="",
     )
@@ -1615,56 +1508,16 @@ if bool(ins):
         context: AssetExecutionContext,
         env_base: dict,  # pylint: disable=redefined-outer-name
         env: dict,  # pylint: disable=redefined-outer-name
-        # teleport_config: dict,  # pylint: disable=redefined-outer-name
     ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
 
         assetgroup_root = pathlib.Path(
             env_base["DOT_LANDSCAPES"],
             env_base["LANDSCAPE"],
             f"{ASSET_HEADER_TELEPORT['group_name']}__{'_'.join(ASSET_HEADER_TELEPORT['key_prefix'])}",
-            # "__".join(context.asset_key.path),
-            # "systemd",
-            # "openstudiolandscapes-teleport@.service",
         )
-            # .expanduser()
-            # .as_posix(),
 
         target = assetgroup_root
         link_name = pathlib.Path(env["TELEPORT_CONFIG"])
-
-        # teleport_yaml_file = pathlib.Path(env["TELEPORT_YAML"])
-        #
-        # teleport_yaml_file.parent.mkdir(
-        #     parents=True,
-        #     exist_ok=True,
-        # )
-        #
-        # teleport_yaml_script_link = pathlib.Path(
-        #     env["TELEPORT_CONFIG"],
-        #     pathlib.Path(env["TELEPORT_YAML"]).name,
-        # )
-        #
-        # teleport_yaml_file.parent.mkdir(parents=True, exist_ok=True)
-        #
-        # teleport_yaml_ = yaml.dump(teleport_config)
-        #
-        # with open(
-        #     file=teleport_yaml_file,
-        #     mode="w",
-        #     encoding="utf-8",
-        # ) as fo:
-        #     fo.write(teleport_yaml_)
-        #
-        # teleport_yaml_link_ = get_relative_path_via_common_root(
-        #     context=context,
-        #     path_src=teleport_yaml_script_link.parent,
-        #     path_dst=teleport_yaml_file,
-        #     path_common_root=pathlib.Path(env["GIT_ROOT"]),
-        # )
-        #
-        # # `ln -s` terms:
-        # target = teleport_yaml_link_.parent
-        # link_name = teleport_yaml_script_link.parent
 
         if link_name.exists():
             link_name.unlink()
