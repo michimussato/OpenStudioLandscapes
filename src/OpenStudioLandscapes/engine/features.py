@@ -150,6 +150,15 @@ FEATURES: dict[
         "compose_scope": ComposeScope.DEFAULT,
         "feature_config": OpenStudioLandscapesConfig.DEFAULT,
     },
+    "OpenStudioLandscapes-VERT": {
+        "enabled": False
+        or get_bool_env(
+            "OPENSTUDIOLANDSCAPES__ENABLE_FEATURE_OPENSTUDIOLANDSCAPES_VERT"
+        ),
+        "module": "OpenStudioLandscapes.VERT.definitions",
+        "compose_scope": ComposeScope.DEFAULT,
+        "feature_config": OpenStudioLandscapesConfig.DEFAULT,
+    },
     # OpenStudioLandscapes-Template
     "OpenStudioLandscapes-Template": {
         "enabled": False
