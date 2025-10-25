@@ -1,22 +1,16 @@
 services:
   portainer:
     container_name: portainer
+    hostname: openstudiolandscapes-portainer.openstudiolandscapes.lan
+    domainname: openstudiolandscapes.lan
     image: docker.io/portainer/portainer-ce:lts
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-#      - portainer_data:/data
-#      -
-#    volumes:
-#      - /etc/localtime:/etc/localtime:ro
       - ./portainer_data:/data:rw
     ports:
       - 9443:9443
 #      - 8000:8000  # Remove if you do not intend to use Edge Agents
-
-#volumes:
-#  portainer_data:
-#    name: portainer_data
 
 networks:
   default:
