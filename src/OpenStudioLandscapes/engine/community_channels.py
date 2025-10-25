@@ -257,6 +257,22 @@ community_channels = {
     #     #     "channel_name": "",
     #     # },
     # },
+    "OpenStudioLandscapes-VERT": {
+        "enabled": True,
+        "public": True,
+        "github": {
+            "repo_name": "OpenStudioLandscapes-VERT",
+        },
+        "discord": {
+            "channel_id": "1431597155973468321",
+            "channel_name": "# openstudiolandscapes-twingate",
+            "invite": "https://discord.gg/FYaFRUwbYr",
+        },
+        # "slack": {
+        #     "channel_id": "C09E6HA0ZPW",
+        #     "channel_name": "# openstudiolandscapes-rustdeskserver",
+        # },
+    },
     # Template
     "OpenStudioLandscapes-Template": {
         "enabled": True,
