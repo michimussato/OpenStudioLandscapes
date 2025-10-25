@@ -12,8 +12,8 @@ src/OpenStudioLandscapes/engine/enums.py:76:0: C0115: Missing class docstring (m
 src/OpenStudioLandscapes/engine/enums.py:81:0: C0115: Missing class docstring (missing-class-docstring)
 ************* Module OpenStudioLandscapes.engine.features
 src/OpenStudioLandscapes/engine/features.py:121:0: C0301: Line too long (145/100) (line-too-long)
-src/OpenStudioLandscapes/engine/features.py:167:0: C0301: Line too long (127/100) (line-too-long)
-src/OpenStudioLandscapes/engine/features.py:166:1: W0511: Todo: (fixme)
+src/OpenStudioLandscapes/engine/features.py:176:0: C0301: Line too long (127/100) (line-too-long)
+src/OpenStudioLandscapes/engine/features.py:175:1: W0511: Todo: (fixme)
 src/OpenStudioLandscapes/engine/features.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 src/OpenStudioLandscapes/engine/features.py:1:0: W0401: Wildcard import OpenStudioLandscapes.engine.enums (wildcard-import)
 src/OpenStudioLandscapes/engine/features.py:2:0: W0401: Wildcard import OpenStudioLandscapes.engine.utils (wildcard-import)
@@ -1269,9 +1269,6 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
 
 
 if bool(ins):
-
-    # Todo:
-    #  - [ ] get assets from common_assets
  (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.compose_scopes.default.assets:[57:68]
@@ -1490,11 +1487,11 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.constants:[34:39]
 ==OpenStudioLandscapes.engine.resources.harbor.resources:[174:179]
-            "auto",
-            "quiet",
-            "plain",
-            "tty",
-            "rawjson", (duplicate-code)
+    "auto",
+    "quiet",
+    "plain",
+    "tty",
+    "rawjson", (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.__init__:[10:15]
 ==OpenStudioLandscapes.engine.teleport.__init__:[11:16]
@@ -1503,10 +1500,10 @@ except PackageNotFoundError:  # pragma: no cover
     __version__ = "unknown"
 finally:
     del version, PackageNotFoundError (duplicate-code)
-src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.worker.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.license_server.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
+src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.worker.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.default.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
 
 ------------------------------------------------------------------
-Your code has been rated at 6.45/10 (previous run: 7.06/10, -0.61)
+Your code has been rated at 6.45/10 (previous run: 7.17/10, -0.72)
 

@@ -170,7 +170,7 @@ digraph {
 	openstudiolandscapes -> snakemd [label=any]
 	openstudiolandscapes [label="OpenStudioLandscapes\n0.0.0"]
 	packaging [label="packaging\n25.0"]
-	pip [label="pip\n25.2"]
+	pip [label="pip\n25.3"]
 	pipdeptree -> packaging [label=">=25"]
 	pipdeptree -> pip [label=">=25.2"]
 	pipdeptree [label="pipdeptree\n2.29.0"]

@@ -159,7 +159,7 @@
         "type": "convention",
         "module": "OpenStudioLandscapes.engine.features",
         "obj": "",
-        "line": 167,
+        "line": 176,
         "column": 0,
         "endLine": null,
         "endColumn": null,
@@ -172,7 +172,7 @@
         "type": "warning",
         "module": "OpenStudioLandscapes.engine.features",
         "obj": "",
-        "line": 166,
+        "line": 175,
         "column": 1,
         "endLine": null,
         "endColumn": null,
@@ -8797,7 +8797,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/__init__.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.landscape_map.assets:[35:47]\n==OpenStudioLandscapes.engine.teleport.assets:[40:55]\n    if compose_scope in compose_scopes:\n        continue\n    compose_scopes.update(compose_scope)\n    ins[f\"compose_scope_{compose_scope}\"] = AssetIn(\n        AssetKey(\n            [f\"{PREFIX_COMPOSE_SCOPE}_{compose_scope}\", \"docker_compose_graph_dot\"]\n        )\n    )\n\n\nif bool(ins):\n\n    # Todo:\n    #  - [ ] get assets from common_assets\n",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.landscape_map.assets:[35:47]\n==OpenStudioLandscapes.engine.teleport.assets:[40:55]\n    if compose_scope in compose_scopes:\n        continue\n    compose_scopes.update(compose_scope)\n    ins[f\"compose_scope_{compose_scope}\"] = AssetIn(\n        AssetKey(\n            [f\"{PREFIX_COMPOSE_SCOPE}_{compose_scope}\", \"docker_compose_graph_dot\"]\n        )\n    )\n\n\nif bool(ins):\n",
         "message-id": "R0801"
     },
     {
@@ -9018,7 +9018,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/__init__.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.constants:[34:39]\n==OpenStudioLandscapes.engine.resources.harbor.resources:[174:179]\n            \"auto\",\n            \"quiet\",\n            \"plain\",\n            \"tty\",\n            \"rawjson\",",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.constants:[34:39]\n==OpenStudioLandscapes.engine.resources.harbor.resources:[174:179]\n    \"auto\",\n    \"quiet\",\n    \"plain\",\n    \"tty\",\n    \"rawjson\",",
         "message-id": "R0801"
     },
     {
@@ -9044,7 +9044,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/__init__.py",
         "symbol": "cyclic-import",
-        "message": "Cyclic import (OpenStudioLandscapes.engine.compose_scopes.worker.constants -> OpenStudioLandscapes.engine.constants)",
+        "message": "Cyclic import (OpenStudioLandscapes.engine.compose_scopes.license_server.constants -> OpenStudioLandscapes.engine.constants)",
         "message-id": "R0401"
     },
     {
@@ -9057,7 +9057,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/__init__.py",
         "symbol": "cyclic-import",
-        "message": "Cyclic import (OpenStudioLandscapes.engine.compose_scopes.license_server.constants -> OpenStudioLandscapes.engine.constants)",
+        "message": "Cyclic import (OpenStudioLandscapes.engine.compose_scopes.worker.constants -> OpenStudioLandscapes.engine.constants)",
         "message-id": "R0401"
     },
     {
