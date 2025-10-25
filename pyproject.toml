@@ -33,7 +33,7 @@ dependencies = [
     "docker",
     "nox",
     "docker-compose-graph @ git+https://github.com/michimussato/docker-compose-graph.git@v1.0.0",
-    "OpenStudioLandscapesUtil-HarborCLI @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-HarborCLI.git@v1.7.0-rc1",
+    "OpenStudioLandscapesUtil-HarborCLI @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-HarborCLI.git@v1.7.0",
 ]
 dynamic = ["version"]
 
@@ -80,7 +80,7 @@ nox = [
     "nox",
 ]
 readme = [
-    "OpenStudioLandscapesUtil-ReadmeGenerator @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-ReadmeGenerator.git@v1.7.0-rc1"
+    "OpenStudioLandscapesUtil-ReadmeGenerator @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-ReadmeGenerator.git@v1.7.0"
 ]
 dagster_mysql = [
     "OpenStudioLandscapes[nox]",
