@@ -53,6 +53,38 @@ community_channels = {
         #     "channel_name": "# openstudiolandscapes-dagster",
         # },
     },
+    "OpenStudioLandscapes-Flamenco": {
+        "enabled": True,
+        "public": True,
+        "github": {
+            "repo_name": "OpenStudioLandscapes-Flamenco",
+        },
+        "discord": {
+            "channel_name": "# openstudiolandscapes-flamenco",
+            "channel_id": "1431746023293718549",
+            "invite": "https://discord.gg/EPrX5fzBCf",
+        },
+        # "slack": {
+        #     "channel_id": "C08LZR5JFA6",
+        #     "channel_name": "# openstudiolandscapes-dagster",
+        # },
+    },
+    "OpenStudioLandscapes-Flamenco-Worker": {
+        "enabled": True,
+        "public": True,
+        "github": {
+            "repo_name": "OpenStudioLandscapes-Flamenco-Worker",
+        },
+        "discord": {
+            "channel_name": "# openstudiolandscapes-flamenco-worker",
+            "channel_id": "1431746326634430484",
+            "invite": "https://discord.gg/Sa2zFqSc4p",
+        },
+        # "slack": {
+        #     "channel_id": "C08LZR5JFA6",
+        #     "channel_name": "# openstudiolandscapes-dagster",
+        # },
+    },
     "OpenStudioLandscapes-Kitsu": {
         "enabled": True,
         "public": True,
