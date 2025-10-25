@@ -203,7 +203,7 @@ def parse_docker_image_path(
 
 
 def get_compose_scope(
-    context: AssetExecutionContext,
+    context: AssetExecutionContext,  # Todo: necessary?
     features: MutableMapping,
     name: str,
 ) -> ComposeScope:
