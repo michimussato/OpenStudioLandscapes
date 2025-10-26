@@ -3,7 +3,7 @@
 # THIS IS A CONCEPT
 
 # Example
-# ISSUE="https://github.com/michimussato/OpenStudioLandscapes/issues/34" bash ./media/git/create_batch_pr.sh
+# ISSUE="https://github.com/michimussato/OpenStudioLandscapes/issues/34" bash ./utils/create_batch_pr.sh
 
 
 if [ -z ${ISSUE+x} ];
