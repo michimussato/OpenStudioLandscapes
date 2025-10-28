@@ -2215,6 +2215,106 @@ def readme(session, working_directory):
 
 
 #######################################################################################################################
+# pyproject.toml
+
+# Todo:
+#  - [ ] Test this for a while and try to merge `pyproject_engine`
+#        and `pyproject_features` eventually
+
+@nox.session(python=PYTHON_VERSION_MAIN, tags=["pyproject_engine"])
+def pyproject_engine(session):
+    """
+    Generate dynamic pyproject.toml file for OpenStudioLandscapes engine and modules.
+
+    Scope:
+    - [x] Engine
+    - [ ] Features
+    """
+    # Ex:
+    # nox --session pyproject_engine
+    # nox --tags pyproject_engine
+
+    sudo = False
+
+    session.log(
+        f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
+    )
+
+    session.install(
+        "--no-cache-dir",
+        "-e",
+        ".[pyproject]",
+        silent=SESSION_INSTALL_SILENT,
+    )
+
+    session.run(
+        "openstudiolandscapesutil-versionbumper",
+        "yamls-to-toml",
+        "--root-yaml",
+        pathlib.Path(__file__).parent / "pyproject_layers" / "pyproject_layer_0_root.yaml",
+        "--override-yaml",
+        pathlib.Path(__file__).parent / "pyproject_layers" / "pyproject_layer_engine.yaml",
+        pathlib.Path(__file__).parent / "pyproject_layer.yaml",
+        "--toml-out",
+        pathlib.Path(__file__).parent / "pyproject.toml",
+        silent=SESSION_RUN_SILENT,
+    )
+
+
+@nox.session(python=PYTHON_VERSION_MAIN, tags=["pyproject_features"])
+@nox.parametrize(
+    "working_directory",
+    # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
+    [
+        # nox.param(engine_dir.name, id=engine_dir.name)
+        *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED]
+    ],
+)
+def pyproject_features(session, working_directory):
+    """
+    Generate dynamic pyproject.toml file for OpenStudioLandscapes engine and modules.
+
+    Scope:
+    - [ ] Engine
+    - [x] Features
+    """
+    # Ex:
+    # nox --session pyproject_features
+    # nox --tags pyproject_features
+
+    sudo = False
+
+    session.install(
+        "--no-cache-dir",
+        "-e",
+        ".[pyproject]",
+        silent=SESSION_INSTALL_SILENT,
+    )
+
+    with session.chdir(engine_dir.parent / working_directory):
+
+        session.log(
+            f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
+        )
+
+        session.run(
+            "openstudiolandscapesutil-versionbumper",
+            "yamls-to-toml",
+            "--root-yaml",
+            pathlib.Path(__file__).parent / "pyproject_layers" / "pyproject_layer_0_root.yaml",
+            "--override-yaml",
+            pathlib.Path(__file__).parent / "pyproject_layers" / "pyproject_layer_features.yaml",
+            pathlib.Path.cwd() / "pyproject_layer.yaml",
+            "--toml-out",
+            pathlib.Path.cwd() / "pyproject.toml",
+            silent=SESSION_RUN_SILENT,
+        )
+
+
+#######################################################################################################################
+
+
+#######################################################################################################################
 # Release
 # Todo
 @nox.session(python=PYTHON_TEST_VERSIONS, tags=["release"])
