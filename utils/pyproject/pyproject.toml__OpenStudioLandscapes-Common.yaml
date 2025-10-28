@@ -1,0 +1,165 @@
+# pyproject.toml
+# - https://packaging.python.org/en/latest/specifications/pyproject-toml/
+# - https://xebia.com/blog/an-updated-guide-to-setuptools-and-pyproject-toml/
+# - https://devsjc.github.io/blog/20240627-the-complete-guide-to-pyproject-toml/
+
+build-system:
+  build-backend: setuptools.build_meta
+  requires:
+  - setuptools>=80
+  - setuptools-scm>=9
+project:
+  authors:
+  - email: michimussato@gmail.com
+    name: Michael Mussato
+  classifiers:
+  - 'Development Status :: 4 - Beta'
+  - 'Programming Language :: Python'
+  - 'Framework :: OpenStudioLandscapes'
+  dependencies:
+  - importlib-metadata; python_version<"3.8"
+  - dagster==1.9.11
+  - gitpython
+  - PyYAML
+  - snakemd
+  - docker-compose-graph @ git+https://github.com/michimussato/docker-compose-graph.git@v1.0.0
+  dynamic:
+  - version
+  entry-points: {}
+  # Add here console scripts like:
+  # console_scripts =
+  # script_name = OpenStudioLandscapes.engine.module:function
+  # For example:
+  # console_scripts =
+  # fibonacci = OpenStudioLandscapes.engine.skeleton:run
+  # And any other entry points, for example:
+  # pyscaffold.cli =
+  # awesome = pyscaffoldext.awesome.extension:AwesomeExtension
+  # [tool:pytest]
+  # # Specify command line options as you would do when invoking pytest directly.
+  # # e.g. --cov-report html (or xml) for html/xml output or --junitxml junit.xml
+  # # in order to write a coverage file that can be read by Jenkins.
+  # # CAUTION: --cov flags may prohibit setting breakpoints while debugging.
+  # #          Comment those flags to avoid this pytest issue.
+  # addopts =
+  # --cov OpenStudioLandscapes.engine --cov-report term-missing
+  # --verbose
+  # norecursedirs =
+  # dist
+  # build
+  # .nox
+  # testpaths = tests
+  # # Use pytest markers to select/deselect specific tests
+  # # markers =
+  # #     slow: mark tests as slow (deselect with '-m "not slow"')
+  # #     system: mark end-to-end system tests
+  license-files:
+  - LICENSE.txt
+  maintainers:
+  - email: michimussato@gmail.com
+    name: Michael Mussato
+  optional-dependencies:
+    # Add here additional requirements for extra features, to install with:
+    # `pip install OpenStudioLandscapes[PDF]` like:
+    # PDF = ReportLab; RXP
+    # Add here test requirements (semicolon/line-separated)
+    coverage:
+    - coverage
+    - pytest
+    dev:
+    - dagster-webserver==1.9.11
+    graphviz:
+    - graphviz
+    - pipdeptree
+    lint:
+    - black
+    - isort
+    - pre-commit
+    - pylint
+    nox:
+    - nox
+    readme:
+    - OpenStudioLandscapesUtil-ReadmeGenerator @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-ReadmeGenerator.git@v1.8.0-rc1
+    sbom:
+    - cyclonedx-bom
+    testing:
+    - setuptools
+    - pytest
+    - pytest-cov
+  readme:
+    # Change if running only on Windows, Mac or Linux (comma-separated)
+    # Add here all kinds of additional classifiers as defined under
+    # https://pypi.org/classifiers/
+    content-type: text/markdown; charset=UTF-8
+    file: README.md
+  requires-python: '>=3.11'
+  urls: {}
+tool:
+  # https://setuptools.pypa.io/en/latest/userguide/pyproject_config.html#setuptools-specific-configuration
+  setuptools:
+    include-package-data: true
+    #package-dir = {"" = "src"}
+    # Require a min/specific Python version (comma-separated conditions)
+    # Add here dependencies of your project (line-separated), e.g. requests>=2.2,<3.0.
+    # Version specifiers like >=2.2,<3.0 avoid problems due to API changes in
+    # new major versions. This works if the required packages follow Semantic Versioning.
+    # For more information, check out https://semver.org/.
+    packages:
+      find:
+        exclude:
+        # [options.package_data]
+        # # * = *.txt, *.rst
+        # hello = *.msg
+        - tests
+        namespaces: true
+        where:
+        - src
+    platforms:
+    - Linux
+    # Use `packages` for explicit
+    # packabe definition because
+    # `readme_generator` will look
+    # for this section.
+    # ONLY ONE IS ALLOWED HERE!
+    # In theory, we could also define a custom
+    # metadata section like for example:
+    #
+    # [tool.openstudiolandscapes.ayon]
+    # namespace = "OpenStudioLandscapes"
+    # package = "Ayon"
+    # constants = "constants.py"
+    # ...
+    #
+    # and so on. For now, there is no obvious
+    # additional value in doing so as
+    # long as the structure of all Features
+    # stays consistent
+    #packages = [
+    #    "OpenStudioLandscapes.engine"
+    #]
+    # for OpenStudioLandscapes.engine, we leave
+    # autodiscovery enabled for now. Otherwise,
+    # packages like OpenStudioLandscapes.engine.utils
+    # would have to be specified explicitly
+  # [tool.pytest.ini_options]
+  # # Specify command line options as you would do when invoking pytest directly.
+  # # e.g. --cov-report html (or xml) for html/xml output or --junitxml junit.xml
+  # # in order to write a coverage file that can be read by Jenkins.
+  # # CAUTION: --cov flags may prohibit setting breakpoints while debugging.
+  # # Comment those flags to avoid this pytest issue.
+  # addopts = """
+  # --cov OpenStudioLandscapes.engine --cov-report term-missing
+  # --verbose"""
+  # norecursedirs = [
+  #     "dist",
+  #     "build",
+  #     ".nox",
+  # ]
+  # testpaths = ["tests"]
+  # # Use pytest markers to select/deselect specific tests
+  # # markers =
+  # # slow: mark tests as slow (deselect with '-m "not slow"')
+  # # system: mark end-to-end system tests
+
+  # [tool.setuptools_scm]
+  # version_file = "src/OpenStudioLandscapes/engine/_version.py"
