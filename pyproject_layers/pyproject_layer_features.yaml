@@ -4,3 +4,11 @@ project:
   optional-dependencies:
     pyproject:
     - OpenStudioLandscapesUtil-VersionBumper @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-VersionBumper.git
+tool:
+  setuptools:
+    include-package-data: true
+    # This translates to:
+    # package-dir = {"" = "src"}
+    package-dir:
+      ? ''
+      : src
