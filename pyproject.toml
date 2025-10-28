@@ -101,7 +101,7 @@ dev = [
     "OpenStudioLandscapes[coverage]",
     "OpenStudioLandscapes[readme]",
     "dagster-webserver==1.9.11",
-#    "OpenStudioLandscapesUtil-VersionBumper @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-VersionBumper.git"
+    "OpenStudioLandscapesUtil-VersionBumper @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-VersionBumper.git"
 ]
 
 [project.entry-points]
