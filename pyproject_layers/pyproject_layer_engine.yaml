@@ -9,6 +9,8 @@ project:
     robust automation and pipelines.
   name: OpenStudioLandscapes
   optional-dependencies:
+    pyproject:
+    - OpenStudioLandscapesUtil-VersionBumper @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-VersionBumper.git
     dagster_mysql:
     - OpenStudioLandscapes[nox]
     - dagster==1.9.11
@@ -25,6 +27,7 @@ project:
     - OpenStudioLandscapes[sbom]
     - OpenStudioLandscapes[coverage]
     - OpenStudioLandscapes[readme]
+    - OpenStudioLandscapesUtil-VersionBumper @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-VersionBumper.git
     nox:
     - OpenStudioLandscapes[testing]
     sbom:
