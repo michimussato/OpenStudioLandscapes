@@ -35,6 +35,24 @@ project:
   urls:
     Homepage: https://github.com/michimussato/OpenStudioLandscapes
 tool:
+  setuptools:
+    include-package-data: true
+    #package-dir = {"" = "src"}
+    # Require a min/specific Python version (comma-separated conditions)
+    # Add here dependencies of your project (line-separated), e.g. requests>=2.2,<3.0.
+    # Version specifiers like >=2.2,<3.0 avoid problems due to API changes in
+    # new major versions. This works if the required packages follow Semantic Versioning.
+    # For more information, check out https://semver.org/.
+    packages:
+      find:
+        exclude:
+        # [options.package_data]
+        # # * = *.txt, *.rst
+        # hello = *.msg
+        - tests
+        namespaces: true
+        where:
+        - src
   dagster:
     # We can define ONE SINGLE TOP-LEVEL code location
     # here in this pyproject.toml.
