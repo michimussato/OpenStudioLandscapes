@@ -11,9 +11,7 @@ src/OpenStudioLandscapes/engine/enums.py:70:0: C0115: Missing class docstring (m
 src/OpenStudioLandscapes/engine/enums.py:76:0: C0115: Missing class docstring (missing-class-docstring)
 src/OpenStudioLandscapes/engine/enums.py:81:0: C0115: Missing class docstring (missing-class-docstring)
 ************* Module OpenStudioLandscapes.engine.features
-src/OpenStudioLandscapes/engine/features.py:121:0: C0301: Line too long (145/100) (line-too-long)
-src/OpenStudioLandscapes/engine/features.py:176:0: C0301: Line too long (127/100) (line-too-long)
-src/OpenStudioLandscapes/engine/features.py:175:1: W0511: Todo: (fixme)
+src/OpenStudioLandscapes/engine/features.py:131:0: C0301: Line too long (145/100) (line-too-long)
 src/OpenStudioLandscapes/engine/features.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 src/OpenStudioLandscapes/engine/features.py:1:0: W0401: Wildcard import OpenStudioLandscapes.engine.enums (wildcard-import)
 src/OpenStudioLandscapes/engine/features.py:2:0: W0401: Wildcard import OpenStudioLandscapes.engine.utils (wildcard-import)
@@ -54,6 +52,7 @@ src/OpenStudioLandscapes/engine/utils/__init__.py:119:1: W0511: Todo: (fixme)
 src/OpenStudioLandscapes/engine/utils/__init__.py:130:1: W0511: Todo: (fixme)
 src/OpenStudioLandscapes/engine/utils/__init__.py:141:1: W0511: Todo: (fixme)
 src/OpenStudioLandscapes/engine/utils/__init__.py:152:1: W0511: Todo: (fixme)
+src/OpenStudioLandscapes/engine/utils/__init__.py:206:38: W0511: Todo: necessary? (fixme)
 src/OpenStudioLandscapes/engine/utils/__init__.py:311:9: W0511: Todo: (fixme)
 src/OpenStudioLandscapes/engine/utils/__init__.py:315:9: W0511: Todo: (fixme)
 src/OpenStudioLandscapes/engine/utils/__init__.py:417:5: W0511: Todo (fixme)
@@ -1364,14 +1363,14 @@ def DOCKER_COMPOSE(
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[494:502]
 ==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[64:72]
-        env_in.update(
-            expand_dict_vars(
-                dict_to_expand={"DOCKER_COMPOSE": DOCKER_COMPOSE.as_posix()},
-                kv=env_in,
-            )
+    env_in.update(
+        expand_dict_vars(
+            dict_to_expand={"DOCKER_COMPOSE": DOCKER_COMPOSE.as_posix()},
+            kv=env_in,
         )
+    )
 
-        env_in.update( (duplicate-code)
+    env_in.update( (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.compose_scopes.default.assets:[349:358]
 ==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[367:376]
@@ -1417,18 +1416,7 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
         metadata={
             "__".join(context.asset_key.path): MetadataValue.json(_constants),
         },
-    )
-
-
-@asset(
-    **ASSET_HEADER,
-    description="",
-)
-def DOCKER_COMPOSE(
-    context: AssetExecutionContext,
-) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
-    """ """
- (duplicate-code)
+    ) (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[98:106]
 ==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[335:343]
@@ -1500,10 +1488,10 @@ except PackageNotFoundError:  # pragma: no cover
     __version__ = "unknown"
 finally:
     del version, PackageNotFoundError (duplicate-code)
-src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.license_server.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.worker.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
+src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.license_server.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.default.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
 
 ------------------------------------------------------------------
-Your code has been rated at 6.45/10 (previous run: 7.17/10, -0.72)
+Your code has been rated at 6.45/10 (previous run: 6.45/10, +0.00)
 

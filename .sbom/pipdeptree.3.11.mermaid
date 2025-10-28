@@ -42,7 +42,7 @@ flowchart TD
     jsonpointer["jsonpointer\n3.0.0"]
     jsonschema-specifications["jsonschema-specifications\n2025.9.1"]
     jsonschema["jsonschema\n4.25.1"]
-    lark["lark\n1.3.0"]
+    lark["lark\n1.3.1"]
     license-expression["license-expression\n30.4.4"]
     lxml["lxml\n6.0.2"]
     mako["Mako\n1.3.10"]
@@ -50,6 +50,9 @@ flowchart TD
     markupsafe["MarkupSafe\n3.0.3"]
     mdurl["mdurl\n0.1.2"]
     nox["nox\n2025.10.16"]
+    openstudiolandscapes-nukerlm-8["OpenStudioLandscapes-NukeRLM-8\n0.0.0"]
+    openstudiolandscapes-sesi-gcc-9-3-houdini-20["OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20\n0.0.0"]
+    openstudiolandscapes-template["OpenStudioLandscapes-Template\n0.0.0"]
     openstudiolandscapes["OpenStudioLandscapes\n0.0.0"]
     openstudiolandscapesutil-harborcli["OpenStudioLandscapesUtil-HarborCLI\n0.0.0"]
     packageurl-python["packageurl-python\n0.17.5"]
@@ -68,7 +71,7 @@ flowchart TD
     pygments["Pygments\n2.19.2"]
     pyparsing["pyparsing\n3.2.5"]
     python-dateutil["python-dateutil\n2.9.0.post0"]
-    python-dotenv["python-dotenv\n1.1.1"]
+    python-dotenv["python-dotenv\n1.2.1"]
     pytz["pytz\n2025.2"]
     pyyaml["PyYAML\n6.0.3"]
     referencing["referencing\n0.37.0"]
@@ -81,10 +84,10 @@ flowchart TD
     setuptools["setuptools\n80.9.0"]
     six["six\n1.17.0"]
     smmap["smmap\n5.0.2"]
-    snakemd["snakemd\n2.3.0"]
+    snakemd["SnakeMD\n2.4.0"]
     sortedcontainers["sortedcontainers\n2.4.0"]
     sqlalchemy["SQLAlchemy\n2.0.44"]
-    structlog["structlog\n25.4.0"]
+    structlog["structlog\n25.5.0"]
     tabulate["tabulate\n0.9.0"]
     tomli["tomli\n2.3.0"]
     toposort["toposort\n1.10"]
@@ -186,6 +189,24 @@ flowchart TD
     openstudiolandscapes -- "any" --> pydot
     openstudiolandscapes -- "any" --> pyyaml
     openstudiolandscapes -- "any" --> snakemd
+    openstudiolandscapes-nukerlm-8 -- "==1.9.11" --> dagster
+    openstudiolandscapes-nukerlm-8 -- "any" --> docker-compose-graph
+    openstudiolandscapes-nukerlm-8 -- "any" --> gitpython
+    openstudiolandscapes-nukerlm-8 -- "any" --> openstudiolandscapes
+    openstudiolandscapes-nukerlm-8 -- "any" --> pyyaml
+    openstudiolandscapes-nukerlm-8 -- "any" --> snakemd
+    openstudiolandscapes-sesi-gcc-9-3-houdini-20 -- "==1.9.11" --> dagster
+    openstudiolandscapes-sesi-gcc-9-3-houdini-20 -- "any" --> docker-compose-graph
+    openstudiolandscapes-sesi-gcc-9-3-houdini-20 -- "any" --> gitpython
+    openstudiolandscapes-sesi-gcc-9-3-houdini-20 -- "any" --> openstudiolandscapes
+    openstudiolandscapes-sesi-gcc-9-3-houdini-20 -- "any" --> pyyaml
+    openstudiolandscapes-sesi-gcc-9-3-houdini-20 -- "any" --> snakemd
+    openstudiolandscapes-template -- "==1.9.11" --> dagster
+    openstudiolandscapes-template -- "any" --> docker-compose-graph
+    openstudiolandscapes-template -- "any" --> gitpython
+    openstudiolandscapes-template -- "any" --> openstudiolandscapes
+    openstudiolandscapes-template -- "any" --> pyyaml
+    openstudiolandscapes-template -- "any" --> snakemd
     openstudiolandscapesutil-harborcli -- "any" --> dotenv
     openstudiolandscapesutil-harborcli -- "any" --> pyyaml
     openstudiolandscapesutil-harborcli -- "any" --> requests
