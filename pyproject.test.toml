@@ -1,110 +1,106 @@
 [build-system]
-build-backend = "setuptools.build_meta"
 requires = [
-    "setuptools-scm>=9",
     "setuptools>=80",
+    "setuptools-scm>=9",
 ]
+build-backend = "setuptools.build_meta"
 
 [project]
-authors = [
-    { email = "michimussato@gmail.com", name = "Michael Mussato" },
+requires-python = ">=3.11"
+description = "A Toolkit to create dynamic Animation and VFX studio environments for robust automation and pipelines."
+name = "OpenStudioLandscapes"
+license-files = [
+    "LICENSE.txt",
 ]
 classifiers = [
-    "Development Status :: 4 - Beta",
-    "Framework :: OpenStudioLandscapes",
     "Programming Language :: Python",
+    "Framework :: OpenStudioLandscapes",
+    "Development Status :: 4 - Beta",
 ]
 dependencies = [
-    "OpenStudioLandscapesUtil-HarborCLI @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-HarborCLI.git@v1.8.0-rc1",
-    "PyYAML",
-    "dagster-postgres",
-    "dagster==1.9.11",
-    "docker",
-    "docker-compose-graph @ git+https://github.com/michimussato/docker-compose-graph.git@v1.0.0",
-    "gitpython",
-    "importlib-metadata; python_version<\"3.8\"",
-    "nox",
-    "pydot",
     "snakemd",
+    "pydot",
+    "nox",
+    "importlib-metadata; python_version<\"3.8\"",
+    "gitpython",
+    "docker-compose-graph @ git+https://github.com/michimussato/docker-compose-graph.git@v1.0.0",
+    "docker",
+    "dagster==1.9.11",
+    "dagster-postgres",
+    "PyYAML",
+    "OpenStudioLandscapesUtil-HarborCLI @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-HarborCLI.git@v1.8.0-rc1",
 ]
-description = "A Toolkit to create dynamic Animation and VFX studio environments for robust automation and pipelines."
 dynamic = [
     "version",
 ]
-license-files = [
-    "LICENSE.txt",
+authors = [
+    { email = "michimussato@gmail.com", name = "Michael Mussato" },
 ]
 maintainers = [
     { email = "michimussato@gmail.com", name = "Michael Mussato" },
 ]
-name = "OpenStudioLandscapes"
-requires-python = ">=3.11"
-
-[project.entry-points]
-
-[project.optional-dependencies]
-coverage = [
-    "coverage",
-    "pytest",
-]
-dagster_mysql = [
-    "OpenStudioLandscapes[nox]",
-    "dagster-webserver==1.9.11",
-    "dagster==1.9.11",
-]
-dagster_postgres = [
-    "OpenStudioLandscapes[nox]",
-    "dagster-postgres",
-    "dagster-webserver==1.9.11",
-    "dagster==1.9.11",
-]
-dev = [
-    "OpenStudioLandscapesUtil-VersionBumper @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-VersionBumper.git",
-    "OpenStudioLandscapes[coverage]",
-    "OpenStudioLandscapes[lint]",
-    "OpenStudioLandscapes[nox]",
-    "OpenStudioLandscapes[readme]",
-    "OpenStudioLandscapes[sbom]",
-    "OpenStudioLandscapes[testing]",
-    "dagster-webserver==1.9.11",
-]
-graphviz = [
-    "graphviz",
-    "pipdeptree",
-]
-lint = [
-    "black",
-    "isort",
-    "pre-commit",
-    "pylint",
-]
-nox = [
-    "OpenStudioLandscapes[testing]",
-    "nox",
-]
-readme = [
-    "OpenStudioLandscapesUtil-ReadmeGenerator @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-ReadmeGenerator.git@v1.8.0-rc1",
-]
-sbom = [
-    "OpenStudioLandscapes[graphviz]",
-    "cyclonedx-bom",
-]
-testing = [
-    "pytest",
-    "pytest-cov",
-    "setuptools",
-]
-
-[project.readme]
-content-type = "text/markdown; charset=UTF-8"
-file = "README.md"
 
 [project.urls]
 Homepage = "https://github.com/michimussato/OpenStudioLandscapes"
 
-[tool.dagster]
-module_name = "OpenStudioLandscapes.engine.definitions"
-project_name = "OpenStudioLandscapes"
+[project.readme]
+file = "README.md"
+content-type = "text/markdown; charset=UTF-8"
+
+[project.optional-dependencies]
+readme = [
+    "OpenStudioLandscapesUtil-ReadmeGenerator @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-ReadmeGenerator.git@v1.8.0-rc1",
+]
+sbom = [
+    "cyclonedx-bom",
+    "OpenStudioLandscapes[graphviz]",
+]
+dev = [
+    "dagster-webserver==1.9.11",
+    "OpenStudioLandscapes[testing]",
+    "OpenStudioLandscapes[sbom]",
+    "OpenStudioLandscapes[readme]",
+    "OpenStudioLandscapes[nox]",
+    "OpenStudioLandscapes[lint]",
+    "OpenStudioLandscapes[coverage]",
+    "OpenStudioLandscapesUtil-VersionBumper @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-VersionBumper.git",
+]
+dagster_mysql = [
+    "dagster==1.9.11",
+    "dagster-webserver==1.9.11",
+    "OpenStudioLandscapes[nox]",
+]
+dagster_postgres = [
+    "dagster==1.9.11",
+    "dagster-webserver==1.9.11",
+    "dagster-postgres",
+    "OpenStudioLandscapes[nox]",
+]
+nox = [
+    "nox",
+    "OpenStudioLandscapes[testing]",
+]
+graphviz = [
+    "pipdeptree",
+    "graphviz",
+]
+lint = [
+    "pylint",
+    "pre-commit",
+    "isort",
+    "black",
+]
+coverage = [
+    "pytest",
+    "coverage",
+]
+testing = [
+    "setuptools",
+    "pytest-cov",
+    "pytest",
+]
+
+[project.entry-points]
 
 [tool.setuptools]
 include-package-data = true
@@ -113,10 +109,14 @@ platforms = [
 ]
 
 [tool.setuptools.packages.find]
-exclude = [
-    "tests",
-]
 namespaces = true
 where = [
     "src",
 ]
+exclude = [
+    "tests",
+]
+
+[tool.dagster]
+project_name = "OpenStudioLandscapes"
+module_name = "OpenStudioLandscapes.engine.definitions"
