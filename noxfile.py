@@ -93,6 +93,8 @@ SESSION_RUN_SILENT = False
 # nox --tag [TAG] [TAG] [...]
 nox.options.sessions = [
     "coverage",  # Todo
+    "pyproject_engine",
+    "pyproject_features",
     "sbom",
     "lint",
     "readme",
