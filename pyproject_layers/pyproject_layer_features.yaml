@@ -1,3 +1,4 @@
+---
 project:
   dependencies:
   - OpenStudioLandscapes @ git+https://github.com/michimussato/OpenStudioLandscapes@v1.8.0-rc1
