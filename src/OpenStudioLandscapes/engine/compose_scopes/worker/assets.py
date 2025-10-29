@@ -427,8 +427,9 @@ if bool(ins):
             # - $(hostname)-deadline-10-2-pulse-worker-001...nnn
             for service_name in compose_services:
 
-                target_worker = "$(docker inspect -f '{{ .State.Pid }}' %s)" % "--".join(
-                    [service_name, env.get("LANDSCAPE", "default")]
+                target_worker = (
+                    "$(docker inspect -f '{{ .State.Pid }}' %s)"
+                    % "--".join([service_name, env.get("LANDSCAPE", "default")])
                 )
                 hostname_worker = f"$(hostname)-{service_name}"
 

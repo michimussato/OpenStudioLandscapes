@@ -3591,52 +3591,13 @@
         "type": "convention",
         "module": "OpenStudioLandscapes.engine.compose_scopes.worker.assets",
         "obj": "",
-        "line": 405,
+        "line": 409,
         "column": 0,
         "endLine": null,
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py",
         "symbol": "line-too-long",
-        "message": "Line too long (495/100)",
-        "message-id": "C0301"
-    },
-    {
-        "type": "convention",
-        "module": "OpenStudioLandscapes.engine.compose_scopes.worker.assets",
-        "obj": "",
-        "line": 449,
-        "column": 0,
-        "endLine": null,
-        "endColumn": null,
-        "path": "src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py",
-        "symbol": "line-too-long",
-        "message": "Line too long (1049/100)",
-        "message-id": "C0301"
-    },
-    {
-        "type": "convention",
-        "module": "OpenStudioLandscapes.engine.compose_scopes.worker.assets",
-        "obj": "",
-        "line": 450,
-        "column": 0,
-        "endLine": null,
-        "endColumn": null,
-        "path": "src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py",
-        "symbol": "line-too-long",
-        "message": "Line too long (1047/100)",
-        "message-id": "C0301"
-    },
-    {
-        "type": "convention",
-        "module": "OpenStudioLandscapes.engine.compose_scopes.worker.assets",
-        "obj": "",
-        "line": 451,
-        "column": 0,
-        "endLine": null,
-        "endColumn": null,
-        "path": "src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py",
-        "symbol": "line-too-long",
-        "message": "Line too long (599/100)",
+        "message": "Line too long (499/100)",
         "message-id": "C0301"
     },
     {
@@ -3649,7 +3610,20 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py",
         "symbol": "line-too-long",
-        "message": "Line too long (1071/100)",
+        "message": "Line too long (1053/100)",
+        "message-id": "C0301"
+    },
+    {
+        "type": "convention",
+        "module": "OpenStudioLandscapes.engine.compose_scopes.worker.assets",
+        "obj": "",
+        "line": 455,
+        "column": 0,
+        "endLine": null,
+        "endColumn": null,
+        "path": "src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py",
+        "symbol": "line-too-long",
+        "message": "Line too long (1051/100)",
         "message-id": "C0301"
     },
     {
@@ -3662,20 +3636,46 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py",
         "symbol": "line-too-long",
-        "message": "Line too long (1047/100)",
+        "message": "Line too long (603/100)",
         "message-id": "C0301"
     },
     {
         "type": "convention",
         "module": "OpenStudioLandscapes.engine.compose_scopes.worker.assets",
         "obj": "",
-        "line": 457,
+        "line": 459,
         "column": 0,
         "endLine": null,
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py",
         "symbol": "line-too-long",
-        "message": "Line too long (1044/100)",
+        "message": "Line too long (1075/100)",
+        "message-id": "C0301"
+    },
+    {
+        "type": "convention",
+        "module": "OpenStudioLandscapes.engine.compose_scopes.worker.assets",
+        "obj": "",
+        "line": 461,
+        "column": 0,
+        "endLine": null,
+        "endColumn": null,
+        "path": "src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py",
+        "symbol": "line-too-long",
+        "message": "Line too long (1051/100)",
+        "message-id": "C0301"
+    },
+    {
+        "type": "convention",
+        "module": "OpenStudioLandscapes.engine.compose_scopes.worker.assets",
+        "obj": "",
+        "line": 462,
+        "column": 0,
+        "endLine": null,
+        "endColumn": null,
+        "path": "src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py",
+        "symbol": "line-too-long",
+        "message": "Line too long (1048/100)",
         "message-id": "C0301"
     },
     {
@@ -3689,6 +3689,19 @@
         "path": "src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py",
         "symbol": "fixme",
         "message": "Todo:",
+        "message-id": "W0511"
+    },
+    {
+        "type": "warning",
+        "module": "OpenStudioLandscapes.engine.compose_scopes.worker.assets",
+        "obj": "",
+        "line": 400,
+        "column": 9,
+        "endLine": null,
+        "endColumn": null,
+        "path": "src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py",
+        "symbol": "fixme",
+        "message": "Todo",
         "message-id": "W0511"
     },
     {
@@ -8628,7 +8641,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/__init__.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.compose_scopes.license_server.constants:[21:81]\n==OpenStudioLandscapes.engine.compose_scopes.worker.constants:[21:83]\nKEY = [GROUP]\n\nASSET_HEADER = {\n    \"group_name\": GROUP,\n    \"key_prefix\": KEY,\n    \"compute_kind\": \"python\",\n}\n\nENVIRONMENT = {}\n\n\n# Todo:\n#  - [ ] This asset is not currently connected to the tree\n@asset(\n    **ASSET_HEADER,\n    description=\"\",\n)\ndef constants_compose_worker(\n    context: AssetExecutionContext,\n) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:\n    \"\"\" \"\"\"\n\n    _constants = ENVIRONMENT\n\n    yield Output(_constants)\n\n    yield AssetMaterialization(\n        asset_key=context.asset_key,\n        metadata={\n            \"__\".join(context.asset_key.path): MetadataValue.json(_constants),\n        },\n    )\n\n\n@asset(\n    **ASSET_HEADER,\n    description=\"\",\n)\ndef DOCKER_COMPOSE(\n    context: AssetExecutionContext,\n) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:\n    \"\"\" \"\"\"\n\n    docker_compose = pathlib.Path(\n        \"{DOT_LANDSCAPES}\",\n        \"{LANDSCAPE}\",\n        f\"{ASSET_HEADER['group_name']}__{'_'.join(ASSET_HEADER['key_prefix'])}\",\n        \"__\".join(context.asset_key.path),\n        \"docker_compose\",\n        \"docker-compose.yml\",\n    )\n\n    yield Output(\n        value=docker_compose,\n    )\n\n    yield AssetMaterialization(\n        asset_key=context.asset_key,\n        metadata={\n            \"__\".join(context.asset_key.path): MetadataValue.path(docker_compose),\n        },\n    )",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.compose_scopes.license_server.constants:[21:81]\n==OpenStudioLandscapes.engine.compose_scopes.worker.constants:[21:83]\nKEY = [GROUP]\n\nASSET_HEADER = {\n    \"group_name\": GROUP,\n    \"key_prefix\": KEY,\n    \"compute_kind\": \"python\",\n}\n\nENVIRONMENT = {}\n\n\n@asset(\n    **ASSET_HEADER,\n    description=\"\",\n)\ndef constants_compose_license_server(\n    context: AssetExecutionContext,\n) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:\n    \"\"\" \"\"\"\n\n    _constants = ENVIRONMENT\n\n    yield Output(_constants)\n\n    yield AssetMaterialization(\n        asset_key=context.asset_key,\n        metadata={\n            \"__\".join(context.asset_key.path): MetadataValue.json(_constants),\n        },\n    )\n\n\n@asset(\n    **ASSET_HEADER,\n    description=\"\",\n)\ndef DOCKER_COMPOSE(\n    context: AssetExecutionContext,\n) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:\n    \"\"\" \"\"\"\n\n    docker_compose = pathlib.Path(\n        \"{DOT_LANDSCAPES}\",\n        \"{LANDSCAPE}\",\n        f\"{ASSET_HEADER['group_name']}__{'_'.join(ASSET_HEADER['key_prefix'])}\",\n        \"__\".join(context.asset_key.path),\n        \"docker_compose\",\n        \"docker-compose.yml\",\n    )\n\n    yield Output(\n        value=docker_compose,\n    )\n\n    yield AssetMaterialization(\n        asset_key=context.asset_key,\n        metadata={\n            \"__\".join(context.asset_key.path): MetadataValue.path(docker_compose),\n        },\n    )",
         "message-id": "R0801"
     },
     {
@@ -8823,7 +8836,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/__init__.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.constants:[136:158]\n==OpenStudioLandscapes.engine.resources.harbor.constants:[128:138]\n    }\n\n    yield Output(_constants)\n\n    yield AssetMaterialization(\n        asset_key=context.asset_key,\n        metadata={\n            \"__\".join(context.asset_key.path): MetadataValue.json(_constants),\n        },\n    )",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.constants:[136:158]\n==OpenStudioLandscapes.engine.resources.harbor.constants:[128:138]\n    }\n\n    yield Output(_constants)\n\n    yield AssetMaterialization(\n        asset_key=context.asset_key,\n        metadata={\n            \"__\".join(context.asset_key.path): MetadataValue.json(_constants),\n        },\n    )\n\n\n@asset(\n    **ASSET_HEADER_BASE_ENV,\n    description=\"\",\n    name=\"FEATURES\",\n)\ndef features(\n    context: AssetExecutionContext,\n) -> Generator[Output[dict] | AssetMaterialization | Any, None, None]:\n    \"\"\" \"\"\"\n",
         "message-id": "R0801"
     },
     {
@@ -8849,7 +8862,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/__init__.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.compose_scopes.default.assets:[349:359]\n==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[468:478]\n        yield Output(ret)\n\n        yield AssetMaterialization(\n            asset_key=context.asset_key,\n            metadata={\n                \"__\".join(context.asset_key.path): MetadataValue.json(ret),\n            },\n        )\n\n    group_out = get_group_out(",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.compose_scopes.default.assets:[349:359]\n==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[473:483]\n        yield Output(ret)\n\n        yield AssetMaterialization(\n            asset_key=context.asset_key,\n            metadata={\n                \"__\".join(context.asset_key.path): MetadataValue.json(ret),\n            },\n        )\n\n    group_out = get_group_out(",
         "message-id": "R0801"
     },
     {
@@ -8901,7 +8914,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/__init__.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.compose_scopes.default.assets:[328:337]\n==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[468:477]\n        yield Output(ret)\n\n        yield AssetMaterialization(\n            asset_key=context.asset_key,\n            metadata={\n                \"__\".join(context.asset_key.path): MetadataValue.json(ret),\n            },\n        )\n",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.compose_scopes.default.assets:[328:337]\n==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[473:482]\n        yield Output(ret)\n\n        yield AssetMaterialization(\n            asset_key=context.asset_key,\n            metadata={\n                \"__\".join(context.asset_key.path): MetadataValue.json(ret),\n            },\n        )\n",
         "message-id": "R0801"
     },
     {
@@ -9005,7 +9018,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/__init__.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.constants:[34:39]\n==OpenStudioLandscapes.engine.resources.harbor.resources:[174:179]\n    \"auto\",\n    \"quiet\",\n    \"plain\",\n    \"tty\",\n    \"rawjson\",",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.constants:[34:39]\n==OpenStudioLandscapes.engine.resources.harbor.resources:[174:179]\n            \"auto\",\n            \"quiet\",\n            \"plain\",\n            \"tty\",\n            \"rawjson\",",
         "message-id": "R0801"
     },
     {
@@ -9031,6 +9044,19 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/__init__.py",
         "symbol": "cyclic-import",
+        "message": "Cyclic import (OpenStudioLandscapes.engine.compose_scopes.default.constants -> OpenStudioLandscapes.engine.constants)",
+        "message-id": "R0401"
+    },
+    {
+        "type": "refactor",
+        "module": "OpenStudioLandscapes.engine.env.__init__",
+        "obj": "",
+        "line": 1,
+        "column": 0,
+        "endLine": null,
+        "endColumn": null,
+        "path": "src/OpenStudioLandscapes/engine/env/__init__.py",
+        "symbol": "cyclic-import",
         "message": "Cyclic import (OpenStudioLandscapes.engine.compose_scopes.worker.constants -> OpenStudioLandscapes.engine.constants)",
         "message-id": "R0401"
     },
@@ -9045,19 +9071,6 @@
         "path": "src/OpenStudioLandscapes/engine/env/__init__.py",
         "symbol": "cyclic-import",
         "message": "Cyclic import (OpenStudioLandscapes.engine.compose_scopes.license_server.constants -> OpenStudioLandscapes.engine.constants)",
-        "message-id": "R0401"
-    },
-    {
-        "type": "refactor",
-        "module": "OpenStudioLandscapes.engine.env.__init__",
-        "obj": "",
-        "line": 1,
-        "column": 0,
-        "endLine": null,
-        "endColumn": null,
-        "path": "src/OpenStudioLandscapes/engine/env/__init__.py",
-        "symbol": "cyclic-import",
-        "message": "Cyclic import (OpenStudioLandscapes.engine.compose_scopes.default.constants -> OpenStudioLandscapes.engine.constants)",
         "message-id": "R0401"
     }
 ]

@@ -304,14 +304,15 @@ src/OpenStudioLandscapes/engine/discovery/discovery.py:43:12: C0209: Formatting 
 src/OpenStudioLandscapes/engine/discovery/discovery.py:48:20: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
 ************* Module OpenStudioLandscapes.engine.compose_scopes.worker.assets
 src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:30:0: C0301: Line too long (101/100) (line-too-long)
-src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:405:0: C0301: Line too long (495/100) (line-too-long)
-src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:449:0: C0301: Line too long (1049/100) (line-too-long)
-src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:450:0: C0301: Line too long (1047/100) (line-too-long)
-src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:451:0: C0301: Line too long (599/100) (line-too-long)
-src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:454:0: C0301: Line too long (1071/100) (line-too-long)
-src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:456:0: C0301: Line too long (1047/100) (line-too-long)
-src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:457:0: C0301: Line too long (1044/100) (line-too-long)
+src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:409:0: C0301: Line too long (499/100) (line-too-long)
+src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:454:0: C0301: Line too long (1053/100) (line-too-long)
+src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:455:0: C0301: Line too long (1051/100) (line-too-long)
+src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:456:0: C0301: Line too long (603/100) (line-too-long)
+src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:459:0: C0301: Line too long (1075/100) (line-too-long)
+src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:461:0: C0301: Line too long (1051/100) (line-too-long)
+src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:462:0: C0301: Line too long (1048/100) (line-too-long)
 src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:33:1: W0511: Todo: (fixme)
+src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:400:9: W0511: Todo (fixme)
 src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:23:0: W0401: Wildcard import OpenStudioLandscapes.engine.constants (wildcard-import)
 src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:24:0: W0401: Wildcard import OpenStudioLandscapes.engine.discovery.discovery (wildcard-import)
@@ -800,13 +801,11 @@ ASSET_HEADER = {
 ENVIRONMENT = {}
 
 
-# Todo:
-#  - [ ] This asset is not currently connected to the tree
 @asset(
     **ASSET_HEADER,
     description="",
 )
-def constants_compose_worker(
+def constants_compose_license_server(
     context: AssetExecutionContext,
 ) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
     """ """
@@ -1311,7 +1310,19 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
         metadata={
             "__".join(context.asset_key.path): MetadataValue.json(_constants),
         },
-    ) (duplicate-code)
+    )
+
+
+@asset(
+    **ASSET_HEADER_BASE_ENV,
+    description="",
+    name="FEATURES",
+)
+def features(
+    context: AssetExecutionContext,
+) -> Generator[Output[dict] | AssetMaterialization | Any, None, None]:
+    """ """
+ (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.compose_scopes.default.assets:[328:338]
 ==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[367:377]
@@ -1327,7 +1338,7 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
     @asset( (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.compose_scopes.default.assets:[349:359]
-==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[468:478]
+==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[473:483]
         yield Output(ret)
 
         yield AssetMaterialization(
@@ -1385,7 +1396,7 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
  (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.compose_scopes.default.assets:[328:337]
-==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[468:477]
+==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[473:482]
         yield Output(ret)
 
         yield AssetMaterialization(
@@ -1475,11 +1486,11 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.constants:[34:39]
 ==OpenStudioLandscapes.engine.resources.harbor.resources:[174:179]
-    "auto",
-    "quiet",
-    "plain",
-    "tty",
-    "rawjson", (duplicate-code)
+            "auto",
+            "quiet",
+            "plain",
+            "tty",
+            "rawjson", (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.__init__:[10:15]
 ==OpenStudioLandscapes.engine.teleport.__init__:[11:16]
@@ -1488,10 +1499,10 @@ except PackageNotFoundError:  # pragma: no cover
     __version__ = "unknown"
 finally:
     del version, PackageNotFoundError (duplicate-code)
+src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.default.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.worker.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.license_server.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
-src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.default.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
 
 ------------------------------------------------------------------
-Your code has been rated at 6.45/10 (previous run: 6.45/10, +0.00)
+Your code has been rated at 6.45/10 (previous run: 5.81/10, +0.63)
 
