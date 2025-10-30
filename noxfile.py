@@ -2,6 +2,7 @@ import shlex
 import shutil
 import os
 import subprocess
+import tempfile
 from dotenv import load_dotenv
 
 import git
@@ -32,6 +33,8 @@ DOCKER_PROGRESS = [
     "tty",
     "rawjson",
 ][2]
+
+USE_TEMP_DIR = True
 
 
 def _get_terminal_size() -> Tuple[int, int]:
@@ -83,6 +86,10 @@ def download(
 # global: nox.options.reuse_existing_virtualenvs = True
 nox.options.reuse_existing_virtualenvs = False
 # per session: @nox.session(reuse_venv=True)
+if USE_TEMP_DIR:
+    temp_dir = tempfile.mkdtemp()
+    print("Using temporary directory: %s" % temp_dir)
+    nox.options.envdir = temp_dir
 
 SESSION_INSTALL_SILENT = False
 SESSION_RUN_SILENT = False
@@ -238,6 +245,9 @@ def clone_features(session):
 
     # Todo
     #  - [ ] sync OPENSTUDIOLANDSCAPES_VERSION_TAG with make
+
+    repo = git.Repo(engine_dir.parent / working_directory)
+    branches = repo.branches
 
     OPENSTUDIOLANDSCAPES_VERSION_TAG: str = os.environ.get(
         "OPENSTUDIOLANDSCAPES_VERSION_TAG", None
@@ -2070,7 +2080,7 @@ def lint(session, working_directory):
         # # nox > Session lint-3.12 failed.
         # session.run("pylint", "src")
         # # https://github.com/actions/starter-workflows/issues/2303#issuecomment-1973743119
-        pylint_report_dir = pathlib.Path.cwd() / ".nox"
+        pylint_report_dir = pathlib.Path(__file__).parent / ".nox"
         pylint_report_dir.mkdir(parents=True, exist_ok=True)
         session.run(
             "pylint",
@@ -3583,6 +3593,13 @@ def gh_pr_set_mode(session, working_directory):
 
 #######################################################################################################################
 # stow (switch .env)
+
+# Todo
+#######################################################################################################################
+
+
+#######################################################################################################################
+# nox_clean
 
 # Todo
 #######################################################################################################################
