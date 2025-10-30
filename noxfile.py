@@ -251,57 +251,57 @@ def clone_features(session):
     # git fetch --tags --all
     repo.git.fetch(tags=True, all=True, force=True)
 
-    # input_message = "Checkout branch:\n"
-    #
-    # tag_or_branch = menu_from_choices(
-    #     input_message=input_message,
-    #     choices=[
-    #         "Tag",
-    #         "Branch",
-    #     ],
-    #     description="",
-    #     manual_value=True,
-    # )
-    #
-    # checkout = None
+    input_message = "Checkout branch:\n"
 
-    # if tag_or_branch == "Tag":
+    tag_or_branch = menu_from_choices(
+        input_message=input_message,
+        choices=[
+            "Tag",
+            "Branch",
+        ],
+        description="",
+        manual_value=True,
+    )
 
-    references = repo.references
+    checkout = None
 
-    reference_ = os.environ.get("TAG", None)
-    if reference_ is None:
-        input_message = "Checkout tag:\n"
+    if tag_or_branch == "Tag":
 
-        reference_ = menu_from_choices(
-            input_message=input_message,
-            choices=references,
-            description="",
-            manual_value=True,
-        )
+        tags = repo.tags
 
-        os.environ["REFERENCE"] = reference_
+        tag_ = os.environ.get("TAG", None)
+        if tag_ is None:
+            input_message = "Checkout tag:\n"
 
-    # checkout = tag_
+            tag_ = menu_from_choices(
+                input_message=input_message,
+                choices=tags,
+                description="",
+                manual_value=True,
+            )
 
-    # elif tag_or_branch == "Branch":
-    #
-    #     branches = repo.branches
-    #
-    #     branch_ = os.environ.get("BRANCH", None)
-    #     if branch_ is None:
-    #         input_message = "Checkout branch:\n"
-    #
-    #         branch_ = menu_from_choices(
-    #             input_message=input_message,
-    #             choices=branches,
-    #             description="",
-    #             manual_value=True,
-    #         )
-    #
-    #         os.environ["BRANCH"] = branch_
-    #
-    #     checkout = branch_
+            os.environ["TAG"] = tag_
+
+        checkout = tag_
+
+    elif tag_or_branch == "Branch":
+
+        branches = repo.branches
+
+        branch_ = os.environ.get("BRANCH", None)
+        if branch_ is None:
+            input_message = "Checkout branch:\n"
+
+            branch_ = menu_from_choices(
+                input_message=input_message,
+                choices=branches,
+                description="",
+                manual_value=True,
+            )
+
+            os.environ["BRANCH"] = branch_
+
+        checkout = branch_
 
     # OPENSTUDIOLANDSCAPES_VERSION_TAG: str = os.environ.get(
     #     "OPENSTUDIOLANDSCAPES_VERSION_TAG", None
@@ -358,13 +358,12 @@ def clone_features(session):
             repo_dest.as_posix(),
             "checkout",
             "--force",
-            reference_,
-            # {
-            #     "Tag": f"tags/{checkout}",
-            #     "Branch": f"remotes/origin/{checkout}",
-            # }[tag_or_branch],
+            {
+                "Tag": f"tags/{checkout}",
+                "Branch": f"remotes/origin/{checkout}",
+            }[tag_or_branch],
             "-B",
-            reference_,
+            checkout,
         ]
 
         if sudo:
