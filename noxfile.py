@@ -2588,13 +2588,13 @@ def tag(session, working_directory):
 
     cmds = []
 
-    cmd_fetch = [
-        shutil.which("git"),
-        "fetch",
-        "--tags",
-        "--force",
-    ]
-    cmds.append(cmd_fetch)
+    # cmd_fetch = [
+    #     shutil.which("git"),
+    #     "fetch",
+    #     "--tags",
+    #     "--force",
+    # ]
+    # cmds.append(cmd_fetch)
 
     if release_type == "rc":
         msg = f"Release Candidate Version {tag_}"
@@ -2679,6 +2679,7 @@ def tag_delete(session, working_directory):
 
     # TAG
     repo = git.Repo(engine_dir.parent / working_directory)
+    repo.git.fetch(tags=True, all=True, force=True)
     tags = repo.tags
 
     tag_ = os.environ.get("TAG", None)
@@ -2697,13 +2698,13 @@ def tag_delete(session, working_directory):
 
     cmds = []
 
-    cmd_fetch = [
-        shutil.which("git"),
-        "fetch",
-        "--tags",
-        "--force",
-    ]
-    cmds.append(cmd_fetch)
+    # cmd_fetch = [
+    #     shutil.which("git"),
+    #     "fetch",
+    #     "--tags",
+    #     "--force",
+    # ]
+    # cmds.append(cmd_fetch)
 
     cmd_delete_tag = [
         shutil.which("git"),
