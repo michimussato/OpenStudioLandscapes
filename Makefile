@@ -56,16 +56,6 @@ OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT := $(shell pwd)
 #OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD := Harbor12345
 #endif
 
-export OPENSTUDIOLANDSCAPES_VERSION_TAG=v1.6.0-rc1
-
-# REPLACED := $(shell echo ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} | sed 's/\//\\\//g')
-
-#ifdef OPENSTUDIOLANDSCAPES_VERSION_TAG
-#OPENSTUDIOLANDSCAPES_VERSION_TAG := $(OPENSTUDIOLANDSCAPES_VERSION_TAG)
-#else
-#OPENSTUDIOLANDSCAPES_VERSION_TAG := v1.6.0-rc1
-#endif
-
 #install: \
 #		disable_unattended \
 #		install_deps \
@@ -252,6 +242,8 @@ edit_hosts_file:
 
 # git clone --tags https://github.com/michimussato/OpenStudioLandscapes.git
 # git checkout -B <branch> origin/<branch>
+# or
+# git clone --tags --branch <branch> https://github.com/michimussato/OpenStudioLandscapes.git
 openstudiolandscapes_install:
 	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
 		&& python3.11 -m venv .venv \
