@@ -246,17 +246,71 @@ def clone_features(session):
     # Todo
     #  - [ ] sync OPENSTUDIOLANDSCAPES_VERSION_TAG with make
 
-    repo = git.Repo(engine_dir.parent / working_directory)
-    branches = repo.branches
+    repo = git.Repo(engine_dir)
 
-    OPENSTUDIOLANDSCAPES_VERSION_TAG: str = os.environ.get(
-        "OPENSTUDIOLANDSCAPES_VERSION_TAG", None
+    # git fetch --tags --all
+    repo.git.fetch(tags=True, all=True)
+
+    input_message = "Checkout branch:\n"
+
+    tag_or_branch = menu_from_choices(
+        input_message=input_message,
+        choices=[
+            "Tag",
+            "Branch",
+        ],
+        description="",
+        manual_value=True,
     )
 
-    if OPENSTUDIOLANDSCAPES_VERSION_TAG is None:
-        print(
-            f"OPENSTUDIOLANDSCAPES_VERSION_TAG is not set, checking out {MAIN_BRANCH} branch."
-        )
+    checkout = None
+
+    if tag_or_branch == "Tag":
+
+        tags = repo.tags
+
+        tag_ = os.environ.get("TAG", None)
+        if tag_ is None:
+            input_message = "Checkout tag:\n"
+
+            tag_ = menu_from_choices(
+                input_message=input_message,
+                choices=tags,
+                description="",
+                manual_value=True,
+            )
+
+            os.environ["TAG"] = tag_
+
+        checkout = tag_
+
+    elif tag_or_branch == "Branch":
+
+        branches = repo.branches
+
+        branch_ = os.environ.get("BRANCH", None)
+        if branch_ is None:
+            input_message = "Checkout branch:\n"
+
+            branch_ = menu_from_choices(
+                input_message=input_message,
+                choices=branches,
+                description="",
+                manual_value=True,
+            )
+
+            os.environ["BRANCH"] = branch_
+
+        checkout = branch_
+
+    # OPENSTUDIOLANDSCAPES_VERSION_TAG: str = os.environ.get(
+    #     "OPENSTUDIOLANDSCAPES_VERSION_TAG", None
+    # )
+    #
+    # if OPENSTUDIOLANDSCAPES_VERSION_TAG is None:
+    #     print(
+    #         f"OPENSTUDIOLANDSCAPES_VERSION_TAG is not set, checking out {MAIN_BRANCH} branch."
+    #     )
 
     sudo = False
 
@@ -272,10 +326,16 @@ def clone_features(session):
         repo_dest = pathlib.Path.cwd() / ".features" / name
 
         if repo_dest.exists():
-            raise FileExistsError(
-                "The repo %s already exists. Please remove it before cloning."
-                % repo_dest.as_posix()
-            )
+            # Update the repository
+            cmd_clone = [
+                shutil.which("git"),
+                "-C",
+                repo_dest.parent.as_posix(),
+                "pull",
+                "--tags",
+                "--force",
+                repo,
+            ]
 
         else:
             logging.info("Cloning %s" % name)
@@ -290,25 +350,29 @@ def clone_features(session):
                 repo,
             ]
 
-            if OPENSTUDIOLANDSCAPES_VERSION_TAG is not None:
-                # Checkout a specifig Git tag
-                cmd_checkout = [
-                    shutil.which("git"),
-                    "-C",
-                    repo_dest.as_posix(),
-                    "checkout",
-                    f"tags/{OPENSTUDIOLANDSCAPES_VERSION_TAG}",
-                    "-B",
-                    OPENSTUDIOLANDSCAPES_VERSION_TAG,
-                ]
+        # if OPENSTUDIOLANDSCAPES_VERSION_TAG is not None:
+        # Checkout a specific Git tag or branch
+        cmd_checkout = [
+            shutil.which("git"),
+            "-C",
+            repo_dest.as_posix(),
+            "checkout",
+            "--force",
+            {
+                "Tag": f"tags/{checkout}",
+                "Branch": f"remotes/origin/{checkout}",
+            }[tag_or_branch],
+            "-B",
+            checkout,
+        ]
 
         if sudo:
             cmd_clone.insert(0, shutil.which("sudo"))
             cmd_clone.insert(1, "--reset-timestamp")
 
-            if OPENSTUDIOLANDSCAPES_VERSION_TAG is not None:
-                cmd_checkout.insert(0, shutil.which("sudo"))
-                cmd_checkout.insert(1, "--reset-timestamp")
+            # if OPENSTUDIOLANDSCAPES_VERSION_TAG is not None:
+            #     cmd_checkout.insert(0, shutil.which("sudo"))
+            #     cmd_checkout.insert(1, "--reset-timestamp")
 
         logging.info(f"{cmd_clone = }")
 
@@ -318,15 +382,15 @@ def clone_features(session):
             silent=SESSION_RUN_SILENT,
         )
 
-        if OPENSTUDIOLANDSCAPES_VERSION_TAG is not None:
+        # if OPENSTUDIOLANDSCAPES_VERSION_TAG is not None:
 
-            logging.info(f"{cmd_checkout = }")
+        logging.info(f"{cmd_checkout = }")
 
-            session.run(
-                *cmd_checkout,
-                external=True,
-                silent=SESSION_RUN_SILENT,
-            )
+        session.run(
+            *cmd_checkout,
+            external=True,
+            silent=SESSION_RUN_SILENT,
+        )
 
 
 # # # pull_features
@@ -361,204 +425,204 @@ def clone_features(session):
 #         )
 
 
-# # stash_features
-@nox.session(python=None, tags=["stash_features"])
-def stash_features(session):
-    """
-    `git stash` all listed (REPOS_FEATURE) Features.
-
-    Scope:
-    - [x] Engine
-    - [ ] Features
-    """
-    # Ex:
-    # nox --session stash_features
-    # nox --tags stash_features
-
-    sudo = False
-
-    for name, repo in REPOS_FEATURE.items():
-
-        logging.info("Stashing %s" % name)
-
-        cmd = [
-            shutil.which("git"),
-            "-C",
-            pathlib.Path.cwd() / ".features" / name,
-            "stash",
-        ]
-
-        if sudo:
-            cmd.insert(0, shutil.which("sudo"))
-            cmd.insert(1, "--reset-timestamp")
-            # cmd.insert(2, "--stdin")
-
-        logging.info(f"{cmd = }")
-
-        session.run(
-            *cmd,
-            external=True,
-            silent=SESSION_RUN_SILENT,
-        )
-
-
-# # stash_apply_features
-@nox.session(python=None, tags=["stash_apply_features"])
-def stash_apply_features(session):
-    """
-    `git stash apply` all listed (REPOS_FEATURE) Features.
-
-    Scope:
-    - [x] Engine
-    - [ ] Features
-    """
-    # Ex:
-    # nox --session stash_apply_features
-    # nox --tags stash_apply_features
-
-    sudo = False
-
-    for name, repo in REPOS_FEATURE.items():
-
-        logging.info("Stashing %s" % name)
-
-        cmd = [
-            shutil.which("git"),
-            "-C",
-            pathlib.Path.cwd() / ".features" / name,
-            "stash",
-            "apply",
-        ]
-
-        if sudo:
-            cmd.insert(0, shutil.which("sudo"))
-            cmd.insert(1, "--reset-timestamp")
-            # cmd.insert(2, "--stdin")
-
-        logging.info(f"{cmd = }")
-
-        session.run(
-            *cmd,
-            external=True,
-            silent=SESSION_RUN_SILENT,
-        )
+# # # stash_features
+# @nox.session(python=None, tags=["stash_features"])
+# def stash_features(session):
+#     """
+#     `git stash` all listed (REPOS_FEATURE) Features.
+#
+#     Scope:
+#     - [x] Engine
+#     - [ ] Features
+#     """
+#     # Ex:
+#     # nox --session stash_features
+#     # nox --tags stash_features
+#
+#     sudo = False
+#
+#     for name, repo in REPOS_FEATURE.items():
+#
+#         logging.info("Stashing %s" % name)
+#
+#         cmd = [
+#             shutil.which("git"),
+#             "-C",
+#             pathlib.Path.cwd() / ".features" / name,
+#             "stash",
+#         ]
+#
+#         if sudo:
+#             cmd.insert(0, shutil.which("sudo"))
+#             cmd.insert(1, "--reset-timestamp")
+#             # cmd.insert(2, "--stdin")
+#
+#         logging.info(f"{cmd = }")
+#
+#         session.run(
+#             *cmd,
+#             external=True,
+#             silent=SESSION_RUN_SILENT,
+#         )
 
 
-# # pull_engine
-@nox.session(python=None, tags=["pull_engine"])
-def pull_engine(session):
-    """
-    `git pull` engine.
-
-    Scope:
-    - [x] Engine
-    - [ ] Features
-    """
-    # Ex:
-    # nox --session pull_engine
-    # nox --tags pull_engine
-
-    sudo = False
-
-    logging.info("Pulling %s" % REPO_ENGINE)
-
-    cmd = [
-        shutil.which("git"),
-        "pull",
-        "--verbose",
-        "origin",
-        MAIN_BRANCH,
-        "--rebase=true",
-        "--tags",
-    ]
-
-    if sudo:
-        cmd.insert(0, shutil.which("sudo"))
-        cmd.insert(1, "--reset-timestamp")
-        # cmd.insert(2, "--stdin")
-
-    logging.info(f"{cmd = }")
-
-    session.run(
-        *cmd,
-        external=True,
-        silent=SESSION_RUN_SILENT,
-    )
-
-
-# # stash_engine
-@nox.session(python=None, tags=["stash_engine"])
-def stash_engine(session):
-    """
-    `git stash` engine.
-
-    Scope:
-    - [x] Engine
-    - [ ] Features
-    """
-    # Ex:
-    # nox --session stash_engine
-    # nox --tags stash_engine
-
-    sudo = False
-
-    logging.info("Stashing %s" % REPO_ENGINE)
-
-    cmd = [
-        shutil.which("git"),
-        "stash",
-    ]
-
-    if sudo:
-        cmd.insert(0, shutil.which("sudo"))
-        cmd.insert(1, "--reset-timestamp")
-        # cmd.insert(2, "--stdin")
-
-    logging.info(f"{cmd = }")
-
-    session.run(
-        *cmd,
-        external=True,
-        silent=SESSION_RUN_SILENT,
-    )
+# # # stash_apply_features
+# @nox.session(python=None, tags=["stash_apply_features"])
+# def stash_apply_features(session):
+#     """
+#     `git stash apply` all listed (REPOS_FEATURE) Features.
+#
+#     Scope:
+#     - [x] Engine
+#     - [ ] Features
+#     """
+#     # Ex:
+#     # nox --session stash_apply_features
+#     # nox --tags stash_apply_features
+#
+#     sudo = False
+#
+#     for name, repo in REPOS_FEATURE.items():
+#
+#         logging.info("Stashing %s" % name)
+#
+#         cmd = [
+#             shutil.which("git"),
+#             "-C",
+#             pathlib.Path.cwd() / ".features" / name,
+#             "stash",
+#             "apply",
+#         ]
+#
+#         if sudo:
+#             cmd.insert(0, shutil.which("sudo"))
+#             cmd.insert(1, "--reset-timestamp")
+#             # cmd.insert(2, "--stdin")
+#
+#         logging.info(f"{cmd = }")
+#
+#         session.run(
+#             *cmd,
+#             external=True,
+#             silent=SESSION_RUN_SILENT,
+#         )
 
 
-# # stash_apply_engine
-@nox.session(python=None, tags=["stash_apply_engine"])
-def stash_apply_engine(session):
-    """
-    `git stash apply` engine.
+# # # pull_engine
+# @nox.session(python=None, tags=["pull_engine"])
+# def pull_engine(session):
+#     """
+#     `git pull` engine.
+#
+#     Scope:
+#     - [x] Engine
+#     - [ ] Features
+#     """
+#     # Ex:
+#     # nox --session pull_engine
+#     # nox --tags pull_engine
+#
+#     sudo = False
+#
+#     logging.info("Pulling %s" % REPO_ENGINE)
+#
+#     cmd = [
+#         shutil.which("git"),
+#         "pull",
+#         "--verbose",
+#         "origin",
+#         MAIN_BRANCH,
+#         "--rebase=true",
+#         "--tags",
+#     ]
+#
+#     if sudo:
+#         cmd.insert(0, shutil.which("sudo"))
+#         cmd.insert(1, "--reset-timestamp")
+#         # cmd.insert(2, "--stdin")
+#
+#     logging.info(f"{cmd = }")
+#
+#     session.run(
+#         *cmd,
+#         external=True,
+#         silent=SESSION_RUN_SILENT,
+#     )
 
-    Scope:
-    - [x] Engine
-    - [ ] Features
-    """
-    # Ex:
-    # nox --session stash_apply_engine
-    # nox --tags stash_apply_engine
 
-    sudo = False
+# # # stash_engine
+# @nox.session(python=None, tags=["stash_engine"])
+# def stash_engine(session):
+#     """
+#     `git stash` engine.
+#
+#     Scope:
+#     - [x] Engine
+#     - [ ] Features
+#     """
+#     # Ex:
+#     # nox --session stash_engine
+#     # nox --tags stash_engine
+#
+#     sudo = False
+#
+#     logging.info("Stashing %s" % REPO_ENGINE)
+#
+#     cmd = [
+#         shutil.which("git"),
+#         "stash",
+#     ]
+#
+#     if sudo:
+#         cmd.insert(0, shutil.which("sudo"))
+#         cmd.insert(1, "--reset-timestamp")
+#         # cmd.insert(2, "--stdin")
+#
+#     logging.info(f"{cmd = }")
+#
+#     session.run(
+#         *cmd,
+#         external=True,
+#         silent=SESSION_RUN_SILENT,
+#     )
 
-    logging.info("Stashing %s" % REPO_ENGINE)
 
-    cmd = [
-        shutil.which("git"),
-        "stash",
-        "apply",
-    ]
-
-    if sudo:
-        cmd.insert(0, shutil.which("sudo"))
-        cmd.insert(1, "--reset-timestamp")
-        # cmd.insert(2, "--stdin")
-
-    logging.info(f"{cmd = }")
-
-    session.run(
-        *cmd,
-        external=True,
-        silent=SESSION_RUN_SILENT,
-    )
+# # # stash_apply_engine
+# @nox.session(python=None, tags=["stash_apply_engine"])
+# def stash_apply_engine(session):
+#     """
+#     `git stash apply` engine.
+#
+#     Scope:
+#     - [x] Engine
+#     - [ ] Features
+#     """
+#     # Ex:
+#     # nox --session stash_apply_engine
+#     # nox --tags stash_apply_engine
+#
+#     sudo = False
+#
+#     logging.info("Stashing %s" % REPO_ENGINE)
+#
+#     cmd = [
+#         shutil.which("git"),
+#         "stash",
+#         "apply",
+#     ]
+#
+#     if sudo:
+#         cmd.insert(0, shutil.which("sudo"))
+#         cmd.insert(1, "--reset-timestamp")
+#         # cmd.insert(2, "--stdin")
+#
+#     logging.info(f"{cmd = }")
+#
+#     session.run(
+#         *cmd,
+#         external=True,
+#         silent=SESSION_RUN_SILENT,
+#     )
 
 
 #######################################################################################################################
@@ -2080,7 +2144,7 @@ def lint(session, working_directory):
         # # nox > Session lint-3.12 failed.
         # session.run("pylint", "src")
         # # https://github.com/actions/starter-workflows/issues/2303#issuecomment-1973743119
-        pylint_report_dir = pathlib.Path(__file__).parent / ".nox"
+        pylint_report_dir = pathlib.Path.cwd() / ".nox"
         pylint_report_dir.mkdir(parents=True, exist_ok=True)
         session.run(
             "pylint",
@@ -2467,6 +2531,7 @@ def tag(session, working_directory):
 
     # TAG
     repo = git.Repo(engine_dir.parent / working_directory)
+    repo.git.fetch(tags=True, all=True)
     tags = repo.tags
 
     tag_ = os.environ.get("TAG", None)
