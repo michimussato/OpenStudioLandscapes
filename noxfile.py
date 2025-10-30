@@ -360,7 +360,7 @@ def clone_features(session):
             "--force",
             {
                 "Tag": f"tags/{checkout}",
-                "Branch": f"remotes/origin/{checkout}",
+                "Branch": f"origin/{checkout}",
             }[tag_or_branch],
             "-B",
             checkout,
