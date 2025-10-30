@@ -249,7 +249,7 @@ def clone_features(session):
     repo = git.Repo(engine_dir)
 
     # git fetch --tags --all
-    repo.git.fetch(tags=True, all=True)
+    repo.git.fetch(tags=True, all=True, force=True)
 
     input_message = "Checkout branch:\n"
 
@@ -2531,7 +2531,7 @@ def tag(session, working_directory):
 
     # TAG
     repo = git.Repo(engine_dir.parent / working_directory)
-    repo.git.fetch(tags=True, all=True)
+    repo.git.fetch(tags=True, all=True, force=True)
     tags = repo.tags
 
     tag_ = os.environ.get("TAG", None)
