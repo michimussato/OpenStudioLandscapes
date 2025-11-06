@@ -464,8 +464,8 @@ if bool(ins):
                     **copy.deepcopy(network_dict),
                     **copy.deepcopy(ports_dict),
                     "environment": {
-                        "CLOUDNS_AUTH_ID": "44124",
-                        "CLOUDNS_AUTH_PASSWORD": "helloworld",
+                        "CLOUDNS_AUTH_ID": EnvVar("OPENSTUDIOLANDSCAPES__CLOUDNS_AUTH_ID").get_value(),
+                        "CLOUDNS_AUTH_PASSWORD": EnvVar("OPENSTUDIOLANDSCAPES__CLOUDNS_AUTH_PASSWORD").get_value(),
                         "LEGO_DISABLE_CNAME_SUPPORT": True,
                     },
                     # "healthcheck": {
@@ -770,7 +770,7 @@ if bool(ins):
             # "PROXY_SERVICE_AGENTS_PORT_HOST": "3025",
             "TRAEFIK_PORT_WEB": "80",
             "TRAEFIK_PORT_WEBSECURE": "443",
-            "TRAEFIK_PORT_DASHBOARD": "443",
+            "TRAEFIK_PORT_DASHBOARD": "8080",
             "PROXY_SERVICE_AGENTS_PORT_CONTAINER": "3025",
             # https://goteleport.com/docs/reference/networking/#ports-without-tls-routing
             "WEB_UI_PORT_HOST": [
@@ -1628,9 +1628,9 @@ if bool(ins):
             # "compose_networks": AssetIn(
             #     AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "compose_networks"]),
             # ),
-            # "env": AssetIn(
-            #     AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "env"]),
-            # ),
+            "env": AssetIn(
+                AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "env"]),
+            ),
             # "fetch_services": AssetIn(
             #     AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "fetch_services"]),
             # ),
@@ -1653,7 +1653,7 @@ if bool(ins):
     )
     def traefik_config(
         context: AssetExecutionContext,
-        # env: dict,  # pylint: disable=redefined-outer-name
+        env: dict,  # pylint: disable=redefined-outer-name
         # compose_networks: dict,  # pylint: disable=redefined-outer-name
         # fetch_services: dict,  # pylint: disable=redefined-outer-name
         # app_dict_default: dict,  # pylint: disable=redefined-outer-name
@@ -1681,7 +1681,7 @@ if bool(ins):
             },
             "entryPoints": {
                 "web": {
-                    "address": ":80",
+                    "address": f":{env['TRAEFIK_PORT_WEB']}",
                     # "http": {
                     #     "redirections": {
                     #         "entryPoint": {
@@ -1692,7 +1692,7 @@ if bool(ins):
                     # },
                 },
                 "websecure": {
-                    "address": ":443",
+                    "address": f":{env['TRAEFIK_PORT_WEBSECURE']}",
                 },
             },
             "certificatesResolvers": {
