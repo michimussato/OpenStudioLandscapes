@@ -41,7 +41,7 @@ FEATURE_CONFIGS = {
         "HOSTNAME": "teleport",
         "TELEPORT_ENTRY_POINT_HOST": "{{HOSTNAME}}",  # Either a hardcoded str or a ref to a Variable (with double {{ }}!)
         "TELEPORT_ENTRY_POINT_PORT": "{{WEB_UI_PORT_HOST}}",  # Either a hardcoded str or a ref to a Variable (with double {{ }}!)
-        "COMPOSE_NETWORK_MODE": ComposeNetworkMode.HOST,
+        "COMPOSE_NETWORK_MODE": ComposeNetworkMode.DEFAULT,
         # Repository: https://gallery.ecr.aws/gravitational
         # "latest" tag does not exist
         "DOCKER_IMAGE": "public.ecr.aws/gravitational/teleport-distroless-debug:18",

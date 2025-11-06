@@ -20,6 +20,14 @@ from dagster import (
     asset,
 )
 
+from OpenStudioLandscapes.engine.common_assets.compose import get_compose
+# from OpenStudioLandscapes.engine.common_assets.constants import get_constants
+from OpenStudioLandscapes.engine.common_assets.group_out import get_group_out
+from OpenStudioLandscapes.engine.common_assets.group_in import get_group_in
+from OpenStudioLandscapes.engine.common_assets.docker_config import get_docker_config
+from OpenStudioLandscapes.engine.common_assets.docker_config_json import (
+    get_docker_config_json,
+)
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.discovery.discovery import *
 from OpenStudioLandscapes.engine.enums import *
@@ -59,6 +67,36 @@ if bool(ins):
         operator=operator.eq,
     )
 
+    # constants = get_constants(
+    #     ASSET_HEADER=ASSET_HEADER_TELEPORT,
+    # )
+
+
+    group_in = get_group_in(
+        ASSET_HEADER=ASSET_HEADER_TELEPORT,
+        ASSET_HEADER_PARENT=ASSET_HEADER_BASE,
+        input_name=str(GroupIn.BASE_IN),
+    )
+
+
+    docker_config = get_docker_config(
+        ASSET_HEADER=ASSET_HEADER_TELEPORT,
+    )
+
+
+    docker_config_json = get_docker_config_json(
+        ASSET_HEADER=ASSET_HEADER_TELEPORT,
+    )
+
+    # docker compose --project-name openstudiolandscapes-traefik up --remove-orphans && docker compose --project-name openstudiolandscapes-traefik down
+    group_out = get_group_out(
+        ASSET_HEADER=ASSET_HEADER_TELEPORT,
+    )
+
+    compose = get_compose(
+        ASSET_HEADER=ASSET_HEADER_TELEPORT,
+    )
+
     @asset(
         **ASSET_HEADER_TELEPORT,
         ins={
@@ -82,8 +120,8 @@ if bool(ins):
                     "teleport": {
                         "name": "network_teleport",
                     },
-                    "acmesh": {
-                        "name": "network_acmesh",
+                    "traefik": {
+                        "name": "network_traefik",
                     },
                 },
             }
@@ -118,44 +156,48 @@ if bool(ins):
             "compose_networks": AssetIn(
                 AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "compose_networks"]),
             ),
+            # "compose_traefik": AssetIn(
+            #     AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "compose_traefik"]),
+            # ),
             "teleport_yaml": AssetIn(
                 AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "teleport_yaml"]),
             ),
-            "certificates": AssetIn(
-                AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "certificates"]),
-            ),
+            # "certificates": AssetIn(
+            #     AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "certificates"]),
+            # ),
         },
     )
     def compose_teleport(
         context: AssetExecutionContext,
         env: dict,  # pylint: disable=redefined-outer-name
         compose_networks: dict,  # pylint: disable=redefined-outer-name
+        # compose_traefik: dict,  # pylint: disable=redefined-outer-name
         teleport_yaml: pathlib.Path,  # pylint: disable=redefined-outer-name
-        certificates: list[dict],  # pylint: disable=redefined-outer-name
+        # certificates: list[dict],  # pylint: disable=redefined-outer-name
     ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
         """ """
 
         network_dict = {}
         ports_dict = {}
 
-        docker_compose_yml = pathlib.Path(env["DOCKER_COMPOSE"])
-
-        docker_compose_yml.parent.mkdir(
-            parents=True,
-            exist_ok=True,
-        )
-
-        teleport_compose_link = pathlib.Path(
-            env["TELEPORT_CONFIG"],
-            ".teleport",
-            docker_compose_yml.parent.name,
-            docker_compose_yml.name,
-        )
-
-        teleport_compose_link.parent.mkdir(
-            parents=True,
-            exist_ok=True,
-        )
+        # docker_compose_yml = pathlib.Path(env["DOCKER_COMPOSE"])
+        #
+        # docker_compose_yml.parent.mkdir(
+        #     parents=True,
+        #     exist_ok=True,
+        # )
+        #
+        # teleport_compose_link = pathlib.Path(
+        #     env["TELEPORT_CONFIG"],
+        #     ".teleport",
+        #     docker_compose_yml.parent.name,
+        #     docker_compose_yml.name,
+        # )
+        #
+        # teleport_compose_link.parent.mkdir(
+        #     parents=True,
+        #     exist_ok=True,
+        # )
 
         if "networks" in compose_networks:
             network_dict = {
@@ -163,10 +205,10 @@ if bool(ins):
             }
             ports_dict = {
                 "ports": [
-                    f"{env['ALL_CLIENTS_PORT_HOST']}:{env['ALL_CLIENTS_PORT_CONTAINER']}",
-                    f"{env['PROXY_SERVICE_AGENTS_PORT_HOST']}:{env['PROXY_SERVICE_AGENTS_PORT_CONTAINER']}",
-                    f"{env['WEB_UI_PORT_HOST']}:{env['WEB_UI_PORT_CONTAINER']}",
-                    f"{env['PROXY_SERVICE_TUNNEL_LISTEN_ADDRESS_PORT_HOST']}:{env['PROXY_SERVICE_TUNNEL_LISTEN_ADDRESS_PORT_CONTAINER']}",
+                    # f"{env['ALL_CLIENTS_PORT_HOST']}:{env['ALL_CLIENTS_PORT_CONTAINER']}",
+                    # f"{env['PROXY_SERVICE_AGENTS_PORT_HOST']}:{env['PROXY_SERVICE_AGENTS_PORT_CONTAINER']}",
+                    # f"{env['WEB_UI_PORT_HOST']}:{env['WEB_UI_PORT_CONTAINER']}",
+                    # f"{env['PROXY_SERVICE_TUNNEL_LISTEN_ADDRESS_PORT_HOST']}:{env['PROXY_SERVICE_TUNNEL_LISTEN_ADDRESS_PORT_CONTAINER']}",
                 ]
             }
         elif "network_mode" in compose_networks:
@@ -180,18 +222,18 @@ if bool(ins):
 
         volumes_dict = {
             "volumes": [
-                # f"{teleport_yaml.parent.as_posix()}:/etc/teleport:rw",
+                f"{teleport_yaml.parent.as_posix()}:/etc/teleport:rw",
                 f"{teleport_data.as_posix()}:/var/lib/teleport:rw",
             ],
         }
 
-        for cert_dict in certificates:
-            volumes_dict["volumes"].extend(
-                [
-                    f"{cert_dict['certs_root']}/{cert_dict['certs_subdir']}/{cert_dict['fullchain']}:/{cert_dict['certs_subdir']}/{cert_dict['fullchain']}:ro",
-                    f"{cert_dict['certs_root']}/{cert_dict['certs_subdir']}/{cert_dict['key']}:/{cert_dict['certs_subdir']}/{cert_dict['key']}:ro",
-                ]
-            )
+        # for cert_dict in certificates:
+        #     volumes_dict["volumes"].extend(
+        #         [
+        #             f"{cert_dict['certs_root']}/{cert_dict['certs_subdir']}/{cert_dict['fullchain']}:/{cert_dict['certs_subdir']}/{cert_dict['fullchain']}:ro",
+        #             f"{cert_dict['certs_root']}/{cert_dict['certs_subdir']}/{cert_dict['key']}:/{cert_dict['certs_subdir']}/{cert_dict['key']}:ro",
+        #         ]
+        #     )
 
         # For portability, convert absolute volume paths to relative paths
 
@@ -203,7 +245,8 @@ if bool(ins):
 
             volume_dir_host_rel_path = get_relative_path_via_common_root(
                 context=context,
-                path_src=teleport_compose_link,
+                path_src=pathlib.Path(env["DOCKER_COMPOSE"]),
+                # path_src=teleport_compose_link,
                 path_dst=pathlib.Path(host),
                 path_common_root=pathlib.Path(env["GIT_ROOT"]),
             )
@@ -214,7 +257,7 @@ if bool(ins):
 
         volumes_dict = {
             "volumes": [
-                f"../{teleport_yaml.parent.name}:/etc/teleport:rw",
+                # f"../{teleport_yaml.parent.name}:/etc/teleport:rw",
                 *_volume_relative,
             ],
         }
@@ -226,17 +269,22 @@ if bool(ins):
         )
 
         container_name = "--".join([SERVICE_NAME, env.get("LANDSCAPE", "default")])
-        host_name = ".".join([SERVICE_NAME, env["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"]])
+        # host_name = ".".join([SERVICE_NAME, env["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"]])
 
         docker_dict = {
             "services": {
                 SERVICE_NAME: {
                     "container_name": container_name,
-                    "hostname": host_name,
-                    "domainname": env["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"],
+                    # "hostname": host_name,
+                    # "domainname": env["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"],
                     # "mac_address": ":".join(re.findall(r"..", env["HOST_ID"])),
                     "restart": "always",
-                    "image": env["DOCKER_IMAGE"],
+                    "image": env["DOCKER_IMAGE_TELEPORT"],
+                    "depends_on": {
+                        f"openstudiolandscapes-{ASSET_HEADER_TRAEFIK['group_name'].lower()}": {
+                            "condition": "service_started"
+                        },
+                    },
                     # https://docs.docker.com/reference/compose-file/services/#extra_hosts
                     # docker exec ${TELEPORT_CONTAINER_ID_OR_NAME} cat /etc/hosts
                     # 127.0.0.1       localhost
@@ -252,6 +300,19 @@ if bool(ins):
                     **copy.deepcopy(volumes_dict),
                     **copy.deepcopy(network_dict),
                     **copy.deepcopy(ports_dict),
+                    "labels": [
+                        "traefik.enable=true",
+                        "traefik.http.services.teleport.loadbalancer.server.port=3080",
+                        "traefik.http.services.teleport.loadbalancer.server.scheme=https",
+                        "traefik.http.routers.teleport-http.entrypoints=web",
+                        "traefik.http.routers.teleport-http.rule=HostRegexp(`^(?i)(?:[[:alnum:]]+(?:-+[[:alnum:]]+)*\\.)?teleport.openstudiolandscapes.cloud-ip.cc(?::\\d+)?$`)",
+                        "traefik.http.routers.teleport-https.entrypoints=websecure",
+                        "traefik.http.routers.teleport-https.rule=HostRegexp(`^(?i)(?:[[:alnum:]]+(?:-+[[:alnum:]]+)*\\.)?teleport.openstudiolandscapes.cloud-ip.cc(?::\\d+)?$`)",
+                        "traefik.http.routers.teleport-https.tls=true",
+                        "traefik.http.routers.teleport-https.tls.certresolver=cloudns_production",
+                        "traefik.http.routers.teleport-https.tls.domains[0].main=teleport.openstudiolandscapes.cloud-ip.cc",
+                        "traefik.http.routers.teleport-https.tls.domains[0].sans=*.teleport.openstudiolandscapes.cloud-ip.cc",
+                    ],
                     # "environment": {
                     # },
                     # "healthcheck": {
@@ -278,12 +339,143 @@ if bool(ins):
 
         docker_yaml = yaml.dump(docker_dict)
 
-        with open(
-            file=docker_compose_yml,
-            mode="w",
-            encoding="utf-8",
-        ) as fo:
-            fo.write(docker_yaml)
+        yield Output(docker_dict)
+
+        yield AssetMaterialization(
+            asset_key=context.asset_key,
+            metadata={
+                "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
+                "docker_dict": MetadataValue.md(
+                    f"```json\n{json.dumps(docker_dict, indent=2)}\n```"
+                ),
+                # "teleport_compose_link": MetadataValue.path(teleport_compose_link),
+                "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
+                # Todo: "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)),
+            },
+        )
+
+    @asset(
+        **ASSET_HEADER_TELEPORT,
+        ins={
+            "env": AssetIn(
+                AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "env"]),
+            ),
+            "compose_networks": AssetIn(
+                AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "compose_networks"]),
+            ),
+            "traefik_yaml": AssetIn(
+                AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "traefik_yaml"]),
+            ),
+        },
+    )
+    def compose_traefik(
+        context: AssetExecutionContext,
+        env: dict,  # pylint: disable=redefined-outer-name
+        compose_networks: dict,  # pylint: disable=redefined-outer-name
+        traefik_yaml: pathlib.Path,  # pylint: disable=redefined-outer-name
+    ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
+        """ """
+
+        network_dict = {}
+        ports_dict = {}
+
+        if "networks" in compose_networks:
+            network_dict = {
+                "networks": list(compose_networks.get("networks", {}).keys())
+            }
+            ports_dict = {
+                "ports": [
+                    f"{env['TRAEFIK_PORT_WEB']}:{env['TRAEFIK_PORT_WEB']}",
+                    f"{env['TRAEFIK_PORT_WEBSECURE']}:{env['TRAEFIK_PORT_WEBSECURE']}",
+                    f"{env['TRAEFIK_PORT_DASHBOARD']}:{env['TRAEFIK_PORT_DASHBOARD']}",
+                ]
+            }
+        elif "network_mode" in compose_networks:
+            network_dict = {"network_mode": compose_networks["network_mode"]}
+
+        traefik_certs = pathlib.Path(env["TRAEFIK_CERTS"])
+        traefik_certs.mkdir(parents=True, exist_ok=True)
+
+        volumes_dict = {
+            "volumes": [
+                f"{traefik_yaml.parent.as_posix()}:/etc/traefik/:ro",
+                f"{traefik_certs.as_posix()}:/var/traefik/certs/:rw",
+            ],
+        }
+
+        # For portability, convert absolute volume paths to relative paths
+
+        _volume_relative = []
+
+        for v in volumes_dict["volumes"]:
+
+            host, container = v.split(":", maxsplit=1)
+
+            volume_dir_host_rel_path = get_relative_path_via_common_root(
+                context=context,
+                path_src=pathlib.Path(env["DOCKER_COMPOSE"]),
+                # path_src=teleport_compose_link,
+                path_dst=pathlib.Path(host),
+                path_common_root=pathlib.Path(env["GIT_ROOT"]),
+            )
+
+            _volume_relative.append(
+                f"{volume_dir_host_rel_path.as_posix()}:{container}",
+            )
+
+        volumes_dict = {
+            "volumes": [
+                "/run/docker.sock:/run/docker.sock:ro",
+                *_volume_relative,
+            ],
+        }
+
+        command = []
+
+        SERVICE_NAME = (
+            f"openstudiolandscapes-{ASSET_HEADER_TRAEFIK['group_name'].lower()}"
+        )
+
+        container_name = "--".join([SERVICE_NAME, env.get("LANDSCAPE", "default")])
+        host_name = ".".join([SERVICE_NAME, env["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"]])
+
+        docker_dict = {
+            "services": {
+                SERVICE_NAME: {
+                    "container_name": container_name,
+                    "hostname": host_name,
+                    # "domainname": env["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"],
+                    # "mac_address": ":".join(re.findall(r"..", env["HOST_ID"])),
+                    "restart": "always",
+                    "image": env["DOCKER_IMAGE_TRAEFIK"],
+                    # https://docs.docker.com/reference/compose-file/services/#extra_hosts
+                    # docker exec ${TELEPORT_CONTAINER_ID_OR_NAME} cat /etc/hosts
+                    # 127.0.0.1       localhost
+                    # ::1     localhost ip6-localhost ip6-loopback
+                    # fe00::  ip6-localnet
+                    # ff00::  ip6-mcastprefix
+                    # ff02::1 ip6-allnodes
+                    # ff02::2 ip6-allrouters
+                    # 172.17.0.1      teleport.cloud-ip.cc
+                    # "extra_hosts":[
+                    #     "teleport.cloud-ip.cc:host-gateway",
+                    # ],
+                    **copy.deepcopy(volumes_dict),
+                    **copy.deepcopy(network_dict),
+                    **copy.deepcopy(ports_dict),
+                    "environment": {
+                        "CLOUDNS_AUTH_ID": "44124",
+                        "CLOUDNS_AUTH_PASSWORD": "helloworld",
+                        "LEGO_DISABLE_CNAME_SUPPORT": True,
+                    },
+                    # "healthcheck": {
+                    # },
+                    # "command": command,
+                },
+            },
+        }
+
+        docker_yaml = yaml.dump(docker_dict)
 
         yield Output(docker_dict)
 
@@ -291,7 +483,10 @@ if bool(ins):
             asset_key=context.asset_key,
             metadata={
                 "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
-                "teleport_compose_link": MetadataValue.path(teleport_compose_link),
+                "docker_dict": MetadataValue.md(
+                    f"```json\n{json.dumps(docker_dict, indent=2)}\n```"
+                ),
+                # "teleport_compose_link": MetadataValue.path(teleport_compose_link),
                 "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
                 # Todo: "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)),
             },
@@ -563,15 +758,19 @@ if bool(ins):
             "HOSTNAME": "teleport",
             "TELEPORT_ENTRY_POINT_HOST": "{{HOSTNAME}}",  # Either a hardcoded str or a ref to a Variable (with double {{ }}!)
             "TELEPORT_ENTRY_POINT_PORT": "{{WEB_UI_PORT_HOST}}",  # Either a hardcoded str or a ref to a Variable (with double {{ }}!)
-            "COMPOSE_NETWORK_MODE": ComposeNetworkMode.HOST,
+            "COMPOSE_NETWORK_MODE": ComposeNetworkMode.DEFAULT,
             # Repository: https://gallery.ecr.aws/gravitational
             # "latest" tag does not exist
-            "DOCKER_IMAGE": "public.ecr.aws/gravitational/teleport-distroless-debug:18",
+            "DOCKER_IMAGE_TELEPORT": "public.ecr.aws/gravitational/teleport-distroless-debug:18",
+            "DOCKER_IMAGE_TRAEFIK": "docker.io/library/traefik:v3.5.3",
             # https://goteleport.com/docs/reference/networking/#auth-service-ports
             # auth Service:
-            "PROXY_SERVICE_TUNNEL_LISTEN_ADDRESS_PORT_HOST": "3024",
-            "PROXY_SERVICE_TUNNEL_LISTEN_ADDRESS_PORT_CONTAINER": "3024",
-            "PROXY_SERVICE_AGENTS_PORT_HOST": "3025",
+            # "PROXY_SERVICE_TUNNEL_LISTEN_ADDRESS_PORT_HOST": "3024",
+            # "PROXY_SERVICE_TUNNEL_LISTEN_ADDRESS_PORT_CONTAINER": "3024",
+            # "PROXY_SERVICE_AGENTS_PORT_HOST": "3025",
+            "TRAEFIK_PORT_WEB": "80",
+            "TRAEFIK_PORT_WEBSECURE": "443",
+            "TRAEFIK_PORT_DASHBOARD": "443",
             "PROXY_SERVICE_AGENTS_PORT_CONTAINER": "3025",
             # https://goteleport.com/docs/reference/networking/#ports-without-tls-routing
             "WEB_UI_PORT_HOST": [
@@ -581,7 +780,7 @@ if bool(ins):
             "WEB_UI_PORT_CONTAINER": [
                 "443",
                 "3080",
-            ][0],
+            ][1],
             # proxy Service:
             "ALL_CLIENTS_PORT_HOST": "3023",
             "ALL_CLIENTS_PORT_CONTAINER": "3023",
@@ -593,6 +792,7 @@ if bool(ins):
                 "{LANDSCAPE}",
                 f"{ASSET_HEADER_TELEPORT['group_name']}__{'_'.join(ASSET_HEADER_TELEPORT['key_prefix'])}",
                 # "__".join(context.asset_key.path),
+                "teleport",
                 "yaml",
                 "teleport.yaml",
             )
@@ -604,6 +804,7 @@ if bool(ins):
                     "{LANDSCAPE}",
                     f"{ASSET_HEADER_TELEPORT['group_name']}__{'__'.join(ASSET_HEADER_TELEPORT['key_prefix'])}",
                     "volumes",
+                    "teleport",
                     "config",
                 )
                 .expanduser()
@@ -627,6 +828,7 @@ if bool(ins):
                     "{LANDSCAPE}",
                     f"{ASSET_HEADER_TELEPORT['group_name']}__{'__'.join(ASSET_HEADER_TELEPORT['key_prefix'])}",
                     "volumes",
+                    "teleport",
                     "data",
                 )
                 .expanduser()
@@ -636,33 +838,56 @@ if bool(ins):
                     "{DOT_SHARED_VOLUMES}",
                     f"{ASSET_HEADER_TELEPORT['group_name']}__{'__'.join(ASSET_HEADER_TELEPORT['key_prefix'])}",
                     "volumes",
+                    "teleport",
                     "data",
                 )
                 .expanduser()
                 .as_posix(),
             }[FeatureVolumeType.SHARED],
-            "ACME_SH_DIR": {
-                FeatureVolumeType.CONTAINED: None,
-                FeatureVolumeType.SHARED: pathlib.Path(
+            "TRAEFIK_YAML": pathlib.Path(
+                "{DOT_LANDSCAPES}",
+                "{LANDSCAPE}",
+                f"{ASSET_HEADER_TELEPORT['group_name']}__{'_'.join(ASSET_HEADER_TELEPORT['key_prefix'])}",
+                # "__".join(context.asset_key.path),
+                "traefik",
+                "yaml",
+                "traefik.yaml",
+            )
+            .expanduser()
+            .as_posix(),
+
+            "TRAEFIK_CERTS": {
+                FeatureVolumeType.CONTAINED: pathlib.Path(
                     "{DOT_LANDSCAPES}",
-                    ".acme.sh",
+                    "{LANDSCAPE}",
+                    f"{ASSET_HEADER_TELEPORT['group_name']}__{'_'.join(ASSET_HEADER_TELEPORT['key_prefix'])}",
+                    # "__".join(context.asset_key.path),
+                    "traefik",
+                    "certs",
                 )
                 .expanduser()
                 .as_posix(),
-            }[FeatureVolumeType.SHARED],
-            "TELEPORT_CERT": {
-                #################################################################
-                # Certificates directory
-                #################################################################
-                FeatureVolumeType.CONTAINED: None,
                 FeatureVolumeType.SHARED: pathlib.Path(
                     "{DOT_LANDSCAPES}",
-                    ".acme.sh",
+                    "{DOT_SHARED_VOLUMES}",
+                    f"{ASSET_HEADER_TELEPORT['group_name']}__{'__'.join(ASSET_HEADER_TELEPORT['key_prefix'])}",
+                    "volumes",
+                    "traefik",
                     "certs",
                 )
                 .expanduser()
                 .as_posix(),
             }[FeatureVolumeType.SHARED],
+            # "TRAEFIK_CERTS": pathlib.Path(
+            #     "{DOT_LANDSCAPES}",
+            #     "{LANDSCAPE}",
+            #     f"{ASSET_HEADER_TELEPORT['group_name']}__{'_'.join(ASSET_HEADER_TELEPORT['key_prefix'])}",
+            #     # "__".join(context.asset_key.path),
+            #     "traefik",
+            #     "certs",
+            # )
+            # .expanduser()
+            # .as_posix(),
         }
 
         env_update_ = expand_dict_vars(
@@ -1028,56 +1253,56 @@ if bool(ins):
             },
         )
 
+    # @asset(
+    #     **ASSET_HEADER_TELEPORT,
+    #     ins={
+    #         "env": AssetIn(
+    #             AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "env"]),
+    #         ),
+    #     },
+    # )
+    # def certificates(
+    #     context: AssetExecutionContext,
+    #     env: dict,  # pylint: disable=redefined-outer-name
+    # ) -> Generator[Output[list[dict]] | AssetMaterialization, None, None]:
+    #
+    #     acme_sh_dir = pathlib.Path(env["ACME_SH_DIR"])
+    #     cert_dirs = []
+    #
+    #     for cert_dir in acme_sh_dir.iterdir():
+    #         tld = cert_dir.name
+    #         context.log.warning(tld)
+    #         dir_ = pathlib.Path("certs", f"{tld}_ecc")
+    #         fullchain = "fullchain.cer"
+    #         key = f"{tld}.key"
+    #         cert_dir_dict = {
+    #             "certs_root": cert_dir.as_posix(),
+    #             "tld": tld,
+    #             "certs_subdir": dir_.as_posix(),
+    #             "fullchain": fullchain,  # aka cert_file
+    #             "key": key,  # aka key_file
+    #         }
+    #         context.log.warning(cert_dir)
+    #         cert_dirs.append(cert_dir_dict)
+    #
+    #     yield Output(cert_dirs)
+    #
+    #     yield AssetMaterialization(
+    #         asset_key=context.asset_key,
+    #         metadata={
+    #             "__".join(context.asset_key.path): MetadataValue.json(cert_dirs),
+    #         },
+    #     )
+
     @asset(
         **ASSET_HEADER_TELEPORT,
         ins={
             "env": AssetIn(
                 AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "env"]),
             ),
-        },
-    )
-    def certificates(
-        context: AssetExecutionContext,
-        env: dict,  # pylint: disable=redefined-outer-name
-    ) -> Generator[Output[list[dict]] | AssetMaterialization, None, None]:
-
-        acme_sh_dir = pathlib.Path(env["ACME_SH_DIR"])
-        cert_dirs = []
-
-        for cert_dir in acme_sh_dir.iterdir():
-            tld = cert_dir.name
-            context.log.warning(tld)
-            dir_ = pathlib.Path("certs", f"{tld}_ecc")
-            fullchain = "fullchain.cer"
-            key = f"{tld}.key"
-            cert_dir_dict = {
-                "certs_root": cert_dir.as_posix(),
-                "tld": tld,
-                "certs_subdir": dir_.as_posix(),
-                "fullchain": fullchain,  # aka cert_file
-                "key": key,  # aka key_file
-            }
-            context.log.warning(cert_dir)
-            cert_dirs.append(cert_dir_dict)
-
-        yield Output(cert_dirs)
-
-        yield AssetMaterialization(
-            asset_key=context.asset_key,
-            metadata={
-                "__".join(context.asset_key.path): MetadataValue.json(cert_dirs),
-            },
-        )
-
-    @asset(
-        **ASSET_HEADER_TELEPORT,
-        ins={
-            "env": AssetIn(
-                AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "env"]),
-            ),
-            "certificates": AssetIn(
-                AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "certificates"]),
-            ),
+            # "certificates": AssetIn(
+            #     AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "certificates"]),
+            # ),
             "fetch_services": AssetIn(
                 AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "fetch_services"]),
             ),
@@ -1093,7 +1318,7 @@ if bool(ins):
     def teleport_config(
         context: AssetExecutionContext,
         env: dict,  # pylint: disable=redefined-outer-name
-        certificates: list[dict],  # pylint: disable=redefined-outer-name
+        # certificates: list[dict],  # pylint: disable=redefined-outer-name
         fetch_services: dict,  # pylint: disable=redefined-outer-name
         app_dict_default: dict,  # pylint: disable=redefined-outer-name
         static_apps: list,  # pylint: disable=redefined-outer-name
@@ -1324,21 +1549,11 @@ if bool(ins):
         #
         # teleport start --config="/root/.config/teleport/app_config.yaml" --insecure
 
-        https_keypairs = []
-
-        for cert_dict in certificates:
-            https_keypairs.append(
-                {
-                    "cert_file": f"/{cert_dict['certs_subdir']}/{cert_dict['fullchain']}",
-                    "key_file": f"/{cert_dict['certs_subdir']}/{cert_dict['key']}",
-                }
-            )
-
         teleport_yaml_dict = {
             "version": "v3",
             "teleport": {
                 # https://goteleport.com/docs/reference/deployment/config/#instance-wide-settings
-                "nodename": host_name,
+                "nodename": "openstudiolandscapes-teleport",
                 "data_dir": "/var/lib/teleport",
                 "join_params": {
                     "token_name": "",
@@ -1358,74 +1573,39 @@ if bool(ins):
             "auth_service": {
                 # https://goteleport.com/docs/reference/deployment/config/#auth-service
                 "enabled": "yes",
-                "listen_addr": f"0.0.0.0:{env['PROXY_SERVICE_AGENTS_PORT_CONTAINER']}",
+                "listen_addr": f"0.0.0.0:{env['PROXY_SERVICE_AGENTS_PORT_CONTAINER']}",  # 3025
                 "proxy_listener_mode": "multiplex",
+                "cluster_name": host_name,
             },
             # Server Access
             # https://goteleport.com/docs/enroll-resources/server-access/getting-started/
             "ssh_service": {
                 # https://goteleport.com/docs/reference/deployment/config/#ssh-service
                 "enabled": False,  # Run locally?
-                # "listen_addr": f"0.0.0.0:{env['LISTEN_ADDRESS_HOST']}",
-                # # "listen_addr": f"192.168.178.195:22",
-                # "public_addr": [
-                #     # https://goteleport.com/docs/zero-trust-access/deploy-a-cluster/separate-proxy-service-endpoints/
-                #     # External FQDN(s)
-                #     *[f"{i}:{env['LISTEN_ADDRESS_HOST']}" for i in host_names]
-                #     # f"{SERVICE_NAME}.{EnvVar('OPENSTUDIOLANDSCAPES__DOMAIN_WAN').get_value()}:{env['WEB_UI_PORT_CONTAINER']}",
-                #     # f"{SERVICE_NAME}.openstudiolandscapes.cloud-ip.cc:{env['WEB_UI_PORT_CONTAINER']}",
-                #     # Internal FQDN
-                #     # f"{host_name}:{env['WEB_UI_PORT_CONTAINER']}",
-                # ],
-                # "ssh_file_copy": True,
             },
             "proxy_service": {
                 # https://goteleport.com/docs/reference/deployment/config/#proxy-service
                 "enabled": True,
-                # Basic structure of https_keypairs:
-                # [{
-                #     "key_file": "/certs/evil-farmer.cloud-ip.cc_ecc/evil-farmer.cloud-ip.cc.key",
-                #     "cert_file": "/certs/evil-farmer.cloud-ip.cc_ecc/fullchain.cer",
-                # }],
-                "https_keypairs": https_keypairs,
                 "https_keypairs_reload_interval": "120s",
                 "acme": {
-                    # acme in Teleport:
-                    # acme uses TLS_ALPN-01 challenge and does not seem to be able to handle
-                    # DNS-01 challenges nor can we specify custom domains manually so this
-                    # is a bit crippled.
-                    # https://letsencrypt.org/docs/challenge-types/
-                    # We use nox for now and specify the mounted https_keypairs.
-                    #
-                    # Get an automatic certificate from Letsencrypt.org using ACME via
-                    # TLS_ALPN-01 challenge.
-                    # When using ACME, the 'proxy_service' must be publicly accessible over
-                    # port 443.
-                    # Also set using the CLI command:
-                    # 'teleport configure --acme --acme-email=email@example.com \
-                    # --cluster-name=tele.example.com -o file'
-                    # This should NOT be enabled in a highly available Teleport deployment
-                    # Using in HA can lead to too many failed authorizations and a lock-up
-                    # of the ACME process (https://letsencrypt.org/docs/failed-validation-limit/)
                     "enabled": False,
-                    "email": EnvVar("OPENSTUDIOLANDSCAPES__DOMAIN_EMAIL").get_value(),
                 },
-                "listen_addr": f"0.0.0.0:{env['ALL_CLIENTS_PORT_CONTAINER']}",
-                "web_listen_addr": f"0.0.0.0:{env['WEB_UI_PORT_CONTAINER']}",
-                "tunnel_listen_addr": f"0.0.0.0:{env['PROXY_SERVICE_TUNNEL_LISTEN_ADDRESS_PORT_CONTAINER']}",
+                "listen_addr": f"0.0.0.0:{env['ALL_CLIENTS_PORT_CONTAINER']}",  # 3023
+                "web_listen_addr": f"0.0.0.0:{env['WEB_UI_PORT_CONTAINER']}",  # 3080
+                # "tunnel_listen_addr": f"0.0.0.0:{env['PROXY_SERVICE_TUNNEL_LISTEN_ADDRESS_PORT_CONTAINER']}",
                 "public_addr": [
                     # https://goteleport.com/docs/zero-trust-access/deploy-a-cluster/separate-proxy-service-endpoints/
                     # External FQDN(s) first, Internal FQDN(s) last
-                    *[f"{i}:{env['WEB_UI_PORT_CONTAINER']}" for i in host_names]
+                    *[f"{i}:{env['WEB_UI_PORT_HOST']}" for i in host_names]
                 ],
             },
-            "app_service": {
-                # https://goteleport.com/docs/reference/deployment/config/#application-service
-                "enabled": bool(apps),
-                "debug_app": False,
-                "mcp_demo_server": False,
-                "apps": apps,
-            },
+            # "app_service": {
+            #     # https://goteleport.com/docs/reference/deployment/config/#application-service
+            #     "enabled": bool(apps),
+            #     "debug_app": False,
+            #     "mcp_demo_server": False,
+            #     "apps": apps,
+            # },
         }
 
         teleport_yaml_ = yaml.dump(teleport_yaml_dict)
@@ -1439,6 +1619,139 @@ if bool(ins):
                     teleport_yaml_dict
                 ),
                 "teleport_yaml": MetadataValue.md(f"```yaml\n{teleport_yaml_}\n```"),
+            },
+        )
+
+    @asset(
+        **ASSET_HEADER_TELEPORT,
+        ins={
+            # "compose_networks": AssetIn(
+            #     AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "compose_networks"]),
+            # ),
+            # "env": AssetIn(
+            #     AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "env"]),
+            # ),
+            # "fetch_services": AssetIn(
+            #     AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "fetch_services"]),
+            # ),
+            # "app_dict_default": AssetIn(
+            #     AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "app_dict_default"]),
+            # ),
+            # "static_apps": AssetIn(
+            #     AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "static_apps"]),
+            # ),
+        },
+        description=textwrap.dedent(
+            """\
+            Configuration Introduction:
+            - [The Install Configuration](https://doc.traefik.io/traefik/getting-started/configuration-overview/#the-install-configuration)
+            
+            Config boilderplate from:
+            - [config/traefik.yaml](https://github.com/ChristianLempa/boilerplates/blob/backup/boilerplates-v1/docker-compose/traefik/config/traefik.yaml)\
+            """
+        ),
+    )
+    def traefik_config(
+        context: AssetExecutionContext,
+        # env: dict,  # pylint: disable=redefined-outer-name
+        # compose_networks: dict,  # pylint: disable=redefined-outer-name
+        # fetch_services: dict,  # pylint: disable=redefined-outer-name
+        # app_dict_default: dict,  # pylint: disable=redefined-outer-name
+        # static_apps: list,  # pylint: disable=redefined-outer-name
+    ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
+
+        traefik_yaml_dict = {
+            "global": {
+                "checkNewVersion": False,
+                "sendAnonymousUsage": False,
+            },
+            "log": {
+                "level": {
+                    "TRACE": "TRACE",
+                    "DEBUG": "DEBUG",
+                    "INFO": "INFO",
+                    "WARN": "WARN",
+                    "ERROR": "ERROR",
+                    "FATAL": "FATAL",
+                }["DEBUG"]
+            },
+            "api": {
+                "dashboard": True,
+                "insecure": True,
+            },
+            "entryPoints": {
+                "web": {
+                    "address": ":80",
+                    # "http": {
+                    #     "redirections": {
+                    #         "entryPoint": {
+                    #             "to": "websecure",
+                    #             "scheme": "https",
+                    #         },
+                    #     },
+                    # },
+                },
+                "websecure": {
+                    "address": ":443",
+                },
+            },
+            "certificatesResolvers": {
+                "cloudns_staging": {
+                    "acme": {
+                        "email": EnvVar("OPENSTUDIOLANDSCAPES__DOMAIN_EMAIL").get_value(),
+                        "storage": "/var/traefik/certs/cloudns-staging-acme.json",
+                        "caServer": "https://acme-staging-v02.api.letsencrypt.org/directory",
+                        "dnsChallenge": {
+                            "provider": "cloudns",
+                            "resolvers": [
+                                "8.8.4.4:53",
+                                "8.8.8.8:53",
+                            ],
+                        },
+                    },
+                },
+                "cloudns_production": {
+                    "acme": {
+                        "email": EnvVar("OPENSTUDIOLANDSCAPES__DOMAIN_EMAIL").get_value(),
+                        "storage": "/var/traefik/certs/cloudns-production-acme.json",
+                        "caServer": "https://acme-v02.api.letsencrypt.org/directory",
+                        "dnsChallenge": {
+                            "provider": "cloudns",
+                            "resolvers": [
+                                "8.8.4.4:53",
+                                "8.8.8.8:53",
+                            ],
+                        },
+                    },
+                },
+            },
+            "serversTransport": {
+                "insecureSkipVerify": True,
+            },
+            "providers": {
+                "docker": {
+                    "exposedByDefault": False,
+                    # "network": compose_networks
+                    "network": "traefik",
+                },
+                "file": {
+                    "directory": "/etc/traefik",
+                    "watch": True,
+                },
+            },
+        }
+
+        traefik_yaml_ = yaml.dump(traefik_yaml_dict)
+
+        yield Output(traefik_yaml_dict)
+
+        yield AssetMaterialization(
+            asset_key=context.asset_key,
+            metadata={
+                "__".join(context.asset_key.path): MetadataValue.json(
+                    traefik_yaml_dict
+                ),
+                "traefik_yaml": MetadataValue.md(f"```yaml\n{traefik_yaml_}\n```"),
             },
         )
 
@@ -1496,6 +1809,57 @@ if bool(ins):
     @asset(
         **ASSET_HEADER_TELEPORT,
         ins={
+            "env": AssetIn(
+                AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "env"]),
+            ),
+            "traefik_config": AssetIn(
+                AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "traefik_config"]),
+            ),
+        },
+        description="",
+    )
+    def traefik_yaml(
+        context: AssetExecutionContext,
+        env: dict,  # pylint: disable=redefined-outer-name
+        traefik_config: dict,  # pylint: disable=redefined-outer-name
+    ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
+
+        traefik_yaml_file = pathlib.Path(env["TRAEFIK_YAML"])
+
+        traefik_yaml_file.parent.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+        traefik_yaml_file.parent.mkdir(parents=True, exist_ok=True)
+
+        traefik_yaml_ = yaml.dump(traefik_config)
+
+        with open(
+            file=traefik_yaml_file,
+            mode="w",
+            encoding="utf-8",
+        ) as fo:
+            fo.write(traefik_yaml_)
+
+        # Todo
+        #  - [ ] not sure yet whether we want the physical file or
+        #        the link that points to it.
+
+        yield Output(traefik_yaml_file)
+
+        yield AssetMaterialization(
+            asset_key=context.asset_key,
+            metadata={
+                "__".join(context.asset_key.path): MetadataValue.path(
+                    traefik_yaml_file
+                ),
+            },
+        )
+
+    @asset(
+        **ASSET_HEADER_TELEPORT,
+        ins={
             "env_base": AssetIn(
                 AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "env_base"]),
             ),
@@ -1539,5 +1903,73 @@ if bool(ins):
             asset_key=context.asset_key,
             metadata={
                 "__".join(context.asset_key.path): MetadataValue.path(link_name),
+            },
+        )
+
+    @asset(
+        **ASSET_HEADER_TELEPORT,
+        ins={
+            "compose_teleport": AssetIn(
+                AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "compose_teleport"]),
+            ),
+            "compose_traefik": AssetIn(
+                AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "compose_traefik"]),
+            ),
+        },
+    )
+    def compose_maps(
+            context: AssetExecutionContext,
+            **kwargs,  # pylint: disable=redefined-outer-name
+    ) -> Generator[Output[List[MutableMapping]] | AssetMaterialization, None, None]:
+        ret = list(kwargs.values())
+
+        context.log.info(ret)
+
+        yield Output(ret)
+
+        yield AssetMaterialization(
+            asset_key=context.asset_key,
+            metadata={
+                "__".join(context.asset_key.path): MetadataValue.json(ret),
+            },
+        )
+
+
+    @asset(
+        **ASSET_HEADER_TELEPORT,
+        ins={},
+    )
+    def cmd_extend(
+            context: AssetExecutionContext,
+    ) -> Generator[Output[list[Any]] | AssetMaterialization | Any, Any, None]:
+
+        ret = []
+
+        yield Output(ret)
+
+        yield AssetMaterialization(
+            asset_key=context.asset_key,
+            metadata={
+                "__".join(context.asset_key.path): MetadataValue.json(ret),
+            },
+        )
+
+
+    @asset(
+        **ASSET_HEADER_TELEPORT,
+        ins={},
+    )
+    def cmd_append(
+            context: AssetExecutionContext,
+    ) -> Generator[Output[dict[str, list[Any]]] | AssetMaterialization | Any, Any, None]:
+
+        ret = {"cmd": [], "exclude_from_quote": []}
+
+        yield Output(ret)
+
+        yield AssetMaterialization(
+            asset_key=context.asset_key,
+            metadata={
+                "__".join(context.asset_key.path): MetadataValue.json(ret),
             },
         )
