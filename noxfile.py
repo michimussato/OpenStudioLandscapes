@@ -2757,8 +2757,7 @@ ENVIRONMENT_ACME_SH = {
         "OPENSTUDIOLANDSCAPES__DOMAIN_LAN", "openstudiolandscapes.lan"
     ),
     "OPENSTUDIOLANDSCAPES__DOMAIN_WAN": [
-        os.environ.get("OPENSTUDIOLANDSCAPES__DOMAIN_WAN1", None),
-        os.environ.get("OPENSTUDIOLANDSCAPES__DOMAIN_WAN2", None),
+        *os.environ.get("OPENSTUDIOLANDSCAPES__DOMAIN_WAN", None).split(","),
     ],
     "ACME_ROOT_DIR": landscapes_dir / ".acme.sh",
     "ACME_DOCKER_SERVICE_NAME": "acme-sh",
@@ -2810,6 +2809,14 @@ def write_acme_sh_yml(
 
     compose_acme_sh = acme_sh_root_dir_ / tld / "docker-compose.yml"
 
+    if compose_acme_sh.exists():
+        msg = ("`docker-compose.yml` already present in. Use that or start fresh by "
+               "issuing `nox --session acme_sh_clear` first.")
+        logging.info(
+            msg
+        )
+        raise FileExistsError(msg)
+
     acme_sh_certs_dir: pathlib.Path = acme_sh_root_dir / "certs"
     acme_sh_certs_dir.mkdir(parents=True, exist_ok=True)
 
@@ -2819,14 +2826,15 @@ def write_acme_sh_yml(
 
     service_name = acme_docker_service_name
     container_name = service_name
-    host_name = ".".join(
-        [service_name, ENVIRONMENT_ACME_SH["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"]]
-    )
+    host_name = service_name
 
     acme_sh_dict = {
         "services": {
             service_name: {
                 "container_name": container_name,
+                # valid: acme-sh-openstudiolandscapes-cloud-ip-cc
+                # valid: acme-sh-openstudiolandscapes-cloud-ip-cc.farm.evil
+                # invalid: acme-sh-openstudiolandscapes-cloud-ip-cc.openstudiolandscapes.lan
                 "hostname": host_name,
                 "domainname": ENVIRONMENT_ACME_SH["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"],
                 "restart": "always",
@@ -2974,13 +2982,6 @@ def acme_sh_prepare(session):
         input_message = "ClouDNS Auth Password: "
 
         cloudns_auth_password = input(input_message)
-
-    if compose_acme_sh.exists():
-        logging.info(
-            "`docker-compose.yml` already present in. Use that or start fresh by "
-            "issuing `nox --session acme_sh_clear` first."
-        )
-        return 1
 
     docker_compose: pathlib.Path = write_acme_sh_yml(
         tld=tld,
