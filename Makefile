@@ -264,6 +264,48 @@ openstudiolandscapes_features_install:
 		&& nox -s install_features_into_engine \
 		&& deactivate
 
+###############################################################################
+
+
+###############################################################################
+# HARBOR
+
+# Todo:
+#  - [ ] use self signed certificate
+#        https://goharbor.io/docs/2.1.0/install-config/configure-https/
+
+#$ make harbor_prepare
+ #cd /home/michael/git/repos/OpenStudioLandscapes \
+ #        && source .venv/bin/activate \
+ #        && source ./.env \
+ #        && openstudiolandscapesutil-harborcli --user ${OPENSTUDIOLANDSCAPES__HARBOR_USERNAME} --password ${OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD} --host ${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME} --port ${OPENSTUDIOLANDSCAPES__HARBOR_PORT} --harbor-root-dir ${OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR} prepare download \
+ #        && openstudiolandscapesutil-harborcli --user ${OPENSTUDIOLANDSCAPES__HARBOR_USERNAME} --password ${OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD} --host ${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME} --port ${OPENSTUDIOLANDSCAPES__HARBOR_PORT} --harbor-root-dir ${OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR} prepare extract --tar-file ./.harbor/download/harbor-*.tgz \
+ #        && openstudiolandscapesutil-harborcli --user ${OPENSTUDIOLANDSCAPES__HARBOR_USERNAME} --password ${OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD} --host ${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME} --port ${OPENSTUDIOLANDSCAPES__HARBOR_PORT} --harbor-root-dir ${OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR} prepare configure \
+ #        && openstudiolandscapesutil-harborcli --user ${OPENSTUDIOLANDSCAPES__HARBOR_USERNAME} --password ${OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD} --host ${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME} --port ${OPENSTUDIOLANDSCAPES__HARBOR_PORT} --harbor-root-dir ${OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR} prepare install \
+ #        && deactivate
+ #Traceback (most recent call last):
+ #  File "/home/michael/git/repos/OpenStudioLandscapes/.venv/bin/openstudiolandscapesutil-harborcli", line 7, in <module>
+ #    sys.exit(run())
+ #             ^^^^^
+ #  File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/OpenStudioLandscapesUtil/Harbor_CLI/harbor_cli.py", line 1614, in run
+ #    main(sys.argv[1:])
+ #  File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/OpenStudioLandscapesUtil/Harbor_CLI/harbor_cli.py", line 1606, in main
+ #    eval_(args)
+ #  File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/OpenStudioLandscapesUtil/Harbor_CLI/harbor_cli.py", line 921, in eval_
+ #    result = _cli_configure(args)
+ #             ^^^^^^^^^^^^^^^^^^^^
+ #  File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/OpenStudioLandscapesUtil/Harbor_CLI/harbor_cli.py", line 995, in _cli_configure
+ #    harbor_yml_data: str = _configure(args=args)
+ #                           ^^^^^^^^^^^^^^^^^^^^^
+ #  File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/OpenStudioLandscapesUtil/Harbor_CLI/harbor_cli.py", line 294, in _configure
+ #    "_version": os.environ["OPENSTUDIOLANDSCAPES__HARBOR_RELEASE"],
+ #                ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ #  File "<frozen os>", line 679, in __getitem__
+ #KeyError: 'OPENSTUDIOLANDSCAPES__HARBOR_RELEASE'
+ #make: *** [Makefile:268: harbor_prepare] Error 1
+
+ # export OPENSTUDIOLANDSCAPES__HARBOR_RELEASE=2.12.2
+
 harbor_prepare:
 	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
 		&& source .venv/bin/activate \
@@ -274,17 +316,50 @@ harbor_prepare:
 		&& openstudiolandscapesutil-harborcli --user $${OPENSTUDIOLANDSCAPES__HARBOR_USERNAME} --password $${OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD} --host $${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME} --port $${OPENSTUDIOLANDSCAPES__HARBOR_PORT} --harbor-root-dir $${OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR} prepare install \
 		&& deactivate
 
-harbor_up:
+harbor_unit_install:
 	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
 		&& source .venv/bin/activate \
 		&& source ./.env \
-		&& eval $$(openstudiolandscapesutil-harborcli --user $${OPENSTUDIOLANDSCAPES__HARBOR_USERNAME} --password $${OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD} --host $${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME} --port $${OPENSTUDIOLANDSCAPES__HARBOR_PORT} --harbor-root-dir $${OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR} systemd install --enable --start --su-method sudo) \
+		&& eval $$(openstudiolandscapesutil-harborcli --user $${OPENSTUDIOLANDSCAPES__HARBOR_USERNAME} --password $${OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD} --host $${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME} --port $${OPENSTUDIOLANDSCAPES__HARBOR_PORT} --harbor-root-dir $${OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR} systemd install --su-method sudo) \
 		&& deactivate
 
-	sudo systemctl status --no-pager --full harbor.service
+	sudo systemctl status --no-pager --full openstudiolandscapes-harbor.service
+
+harbor_unit_uninstall:
+	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
+		&& source .venv/bin/activate \
+		&& source ./.env \
+		&& eval $$(openstudiolandscapesutil-harborcli --user $${OPENSTUDIOLANDSCAPES__HARBOR_USERNAME} --password $${OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD} --host $${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME} --port $${OPENSTUDIOLANDSCAPES__HARBOR_PORT} --harbor-root-dir $${OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR} systemd uninstall --su-method sudo) \
+		&& deactivate
+
+harbor_unit_enable:
+	sudo systemctl enable --now openstudiolandscapes-harbor.service \
+        && systemctl status --no-pager --full openstudiolandscapes-harbor.service
+
+harbor_unit_disable:
+	sudo systemctl disable --now openstudiolandscapes-harbor.service \
+        && systemctl status --no-pager --full openstudiolandscapes-harbor.service
+
+#harbor_up:
+#	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
+#		&& source .venv/bin/activate \
+#		&& source ./.env \
+#		&& eval $$(openstudiolandscapesutil-harborcli --user $${OPENSTUDIOLANDSCAPES__HARBOR_USERNAME} --password $${OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD} --host $${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME} --port $${OPENSTUDIOLANDSCAPES__HARBOR_PORT} --harbor-root-dir $${OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR} systemd install --enable --start --su-method sudo) \
+#		&& deactivate
+#
+#	sudo systemctl status --no-pager --full openstudiolandscapes-harbor.service
+
+#harbor_enable:
+#	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
+#		&& source .venv/bin/activate \
+#		&& source ./.env \
+#		&& eval $$(openstudiolandscapesutil-harborcli --user $${OPENSTUDIOLANDSCAPES__HARBOR_USERNAME} --password $${OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD} --host $${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME} --port $${OPENSTUDIOLANDSCAPES__HARBOR_PORT} --harbor-root-dir $${OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR} systemd install --enable --start --su-method sudo) \
+#		&& deactivate
+#
+#	sudo systemctl status --no-pager --full openstudiolandscapes-harbor.service
 
 harbor_log:
-	journalctl --follow --unit harbor.service
+	journalctl --follow --unit openstudiolandscapes-harbor.service
 
 harbor_init_projects:
 	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
@@ -293,6 +368,11 @@ harbor_init_projects:
 		&& openstudiolandscapesutil-harborcli --user $${OPENSTUDIOLANDSCAPES__HARBOR_USERNAME} --password $${OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD} --host $${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME} --port $${OPENSTUDIOLANDSCAPES__HARBOR_PORT} --harbor-root-dir $${OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR} project create --project-name openstudiolandscapes \
 		&& openstudiolandscapesutil-harborcli --user $${OPENSTUDIOLANDSCAPES__HARBOR_USERNAME} --password $${OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD} --host $${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME} --port $${OPENSTUDIOLANDSCAPES__HARBOR_PORT} --harbor-root-dir $${OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR} project delete --project-name library \
 		&& deactivate
+
+###############################################################################
+
+###############################################################################
+# CLEAN UP
 
 nox_CLEAR_ALL:
 	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT}/.nox \
@@ -349,6 +429,11 @@ restart: down up
 #		&& openstudiolandscapesutil-teleportcli Todo \
 #		&& openstudiolandscapesutil-teleportcli Todo \
 #		&& deactivate
+
+###############################################################################
+
+###############################################################################
+# TELEPORT
 
 teleport_local_node_install:
 	# https://goteleport.com/download/client-tools/
@@ -417,6 +502,11 @@ teleport_local_node_uninstall_unit:
 teleport_local_node_journal:
 	journalctl --user --follow --unit teleport-node@$${USER}.service
 
+###############################################################################
+
+###############################################################################
+# NOX
+
 nox:
 	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
 		&& source .venv/bin/activate \
@@ -432,6 +522,7 @@ nox_tag:
 		&& source .venv/bin/activate \
 		&& nox --sessions tag
 
+###############################################################################
 
 #reboot:
 #	read -r -e -p "Reboot now? " choice_reboot
