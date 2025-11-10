@@ -70,7 +70,8 @@ class ComposeNetworkMode(enum.StrEnum):
 
 class DockerRegistry(enum.StrEnum):
     LOCAL_LOCALHOST = "localhost"
-    LOCAL_HARBOR = EnvVar("OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME").get_value()
+    LOCAL_REGISTRY = EnvVar("OPENSTUDIOLANDSCAPES__REGISTRY_HOSTNAME").get_value()
+    # LOCAL_HARBOR = EnvVar("OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME").get_value()
     # LOCAL_MINIBOSS = os.environ.get("IP_MASTER", "localhost")
 
 
@@ -97,21 +98,35 @@ class DockerConfig(enum.Enum):
     #     "docker_repository": _REPOSITORY_NAME,
     #     "docker_repository_type": DockerRepositoryType.PUBLIC,
     # }
-    LOCAL_HARBOR = {
-        # https://github.com/goharbor/harbor
-        # https://medium.com/@Shamimw/setting-up-harbor-docker-registry-installation-and-pushing-docker-images-a8b3db6fca6a
-        # Todo
-        #  - [ ] HTTP is deprecated
+    LOCAL_REGISTRY = {
         "docker_push": True,
         "docker_use_local": False,
-        "docker_registry_url": DockerRegistry.LOCAL_HARBOR,
-        "docker_registry_port": EnvVar("OPENSTUDIOLANDSCAPES__HARBOR_PORT").get_value(),
+        "docker_registry_url": DockerRegistry.LOCAL_REGISTRY,
+        "docker_registry_port": EnvVar("OPENSTUDIOLANDSCAPES__REGISTRY_PORT").get_value(),
         "docker_registry_username": EnvVar(
-            "OPENSTUDIOLANDSCAPES__HARBOR_USERNAME"
+            "OPENSTUDIOLANDSCAPES__REGISTRY_USERNAME"
         ).get_value(),
         "docker_registry_password": EnvVar(
-            "OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD"
+            "OPENSTUDIOLANDSCAPES__REGISTRY_PASSWORD"
         ).get_value(),
         "docker_repository": _REPOSITORY_NAME,
         "docker_repository_type": DockerRepositoryType.PRIVATE,
     }
+    # LOCAL_HARBOR = {
+    #     # https://github.com/goharbor/harbor
+    #     # https://medium.com/@Shamimw/setting-up-harbor-docker-registry-installation-and-pushing-docker-images-a8b3db6fca6a
+    #     # Todo
+    #     #  - [ ] HTTP is deprecated
+    #     "docker_push": True,
+    #     "docker_use_local": False,
+    #     "docker_registry_url": DockerRegistry.LOCAL_HARBOR,
+    #     "docker_registry_port": EnvVar("OPENSTUDIOLANDSCAPES__HARBOR_PORT").get_value(),
+    #     "docker_registry_username": EnvVar(
+    #         "OPENSTUDIOLANDSCAPES__HARBOR_USERNAME"
+    #     ).get_value(),
+    #     "docker_registry_password": EnvVar(
+    #         "OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD"
+    #     ).get_value(),
+    #     "docker_repository": _REPOSITORY_NAME,
+    #     "docker_repository_type": DockerRepositoryType.PRIVATE,
+    # }
