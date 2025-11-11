@@ -1253,56 +1253,12 @@ if bool(ins):
             },
         )
 
-    # @asset(
-    #     **ASSET_HEADER_TELEPORT,
-    #     ins={
-    #         "env": AssetIn(
-    #             AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "env"]),
-    #         ),
-    #     },
-    # )
-    # def certificates(
-    #     context: AssetExecutionContext,
-    #     env: dict,  # pylint: disable=redefined-outer-name
-    # ) -> Generator[Output[list[dict]] | AssetMaterialization, None, None]:
-    #
-    #     acme_sh_dir = pathlib.Path(env["ACME_SH_DIR"])
-    #     cert_dirs = []
-    #
-    #     for cert_dir in acme_sh_dir.iterdir():
-    #         tld = cert_dir.name
-    #         context.log.warning(tld)
-    #         dir_ = pathlib.Path("certs", f"{tld}_ecc")
-    #         fullchain = "fullchain.cer"
-    #         key = f"{tld}.key"
-    #         cert_dir_dict = {
-    #             "certs_root": cert_dir.as_posix(),
-    #             "tld": tld,
-    #             "certs_subdir": dir_.as_posix(),
-    #             "fullchain": fullchain,  # aka cert_file
-    #             "key": key,  # aka key_file
-    #         }
-    #         context.log.warning(cert_dir)
-    #         cert_dirs.append(cert_dir_dict)
-    #
-    #     yield Output(cert_dirs)
-    #
-    #     yield AssetMaterialization(
-    #         asset_key=context.asset_key,
-    #         metadata={
-    #             "__".join(context.asset_key.path): MetadataValue.json(cert_dirs),
-    #         },
-    #     )
-
     @asset(
         **ASSET_HEADER_TELEPORT,
         ins={
             "env": AssetIn(
                 AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "env"]),
             ),
-            # "certificates": AssetIn(
-            #     AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "certificates"]),
-            # ),
             "fetch_services": AssetIn(
                 AssetKey([*ASSET_HEADER_TELEPORT["key_prefix"], "fetch_services"]),
             ),
@@ -1318,7 +1274,6 @@ if bool(ins):
     def teleport_config(
         context: AssetExecutionContext,
         env: dict,  # pylint: disable=redefined-outer-name
-        # certificates: list[dict],  # pylint: disable=redefined-outer-name
         fetch_services: dict,  # pylint: disable=redefined-outer-name
         app_dict_default: dict,  # pylint: disable=redefined-outer-name
         static_apps: list,  # pylint: disable=redefined-outer-name

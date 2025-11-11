@@ -916,7 +916,7 @@ def op_docker_compose_graph(
 def op_teleport_apps_yaml(
     context: OpExecutionContext,
     features_in: dict,  # pylint: disable=redefined-outer-name
-) -> AssetMaterialization:
+) -> Generator[Output[list[MutableMapping]] | AssetMaterialization | Any, Any, None]:
     """ """
 
     # I want
@@ -954,12 +954,12 @@ def op_teleport_apps_yaml(
 
     # if "docker_compose_graph" in context.selected_output_names:
 
-    # yield Output(
-    #     output_name="teleport_apps",
-    #     value=teleport_apps_,
-    # )
+    yield Output(
+        output_name="teleport_apps_yaml",
+        value=teleport_apps_,
+    )
 
-    return AssetMaterialization(
+    yield AssetMaterialization(
         asset_key=context.asset_key_for_output("teleport_apps_yaml"),
         metadata={
             # "__".join(
