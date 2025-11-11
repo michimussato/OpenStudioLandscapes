@@ -19,6 +19,7 @@ __all__ = [
     "get_bool_env",
     "get_str_env",
     "get_dynamic_ins",
+    "get_teleport_app_dict",
 ]
 
 import operator as operator_
@@ -300,6 +301,10 @@ def serialize_dict(
     d: MutableMapping,
 ) -> None:
 
+    # Todo
+    #  - [ ] Maybe just use something like `json.dumps(obj, default=str)`?
+    #        ex: https://github.com/wntrblm/nox/pull/1026/commits/3027be774c97fafc40426347cf011e0e299f9d6a (from https://github.com/wntrblm/nox/issues/1022)
+
     for k_, v_ in d.items():
         if isinstance(v_, MutableMapping):
             serialize_dict(
@@ -536,3 +541,50 @@ def get_dynamic_ins(
                 if operator(compose_scope_, compose_scope):
                     _add_module(_module=module)
     return ins, feature_ins
+
+
+def get_teleport_app_dict(
+        name: str,
+        description: str,
+        uri: str,
+        public_addr: str,
+        rewrite_redirect: list,
+) -> dict:
+
+    """
+
+    context.log.warning(feature)
+    context.log.warning(settings_teleport)
+    app_ = copy.deepcopy(app_dict_default)
+    app_["name"] = settings_teleport["teleport_host"]
+    app_["uri"] = f"http://localhost:{settings_teleport['teleport_port']}/"
+    app_["public_addr"] = (
+        f"{settings_teleport['teleport_host']}.{SERVICE_NAME}.{settings_teleport['teleport_domain_wan']}"
+    )
+    app_["rewrite"]["redirect"].append(
+        f"{settings_teleport['teleport_host']}.{settings_teleport['teleport_domain_lan']}"
+    )
+
+    apps.append(app_)
+
+
+    Result:
+    - insecure_skip_verify: false
+      name: kitsu
+      public_addr: kitsu.teleport.openstudiolandscapes.cloud-ip.cc
+      rewrite:
+        redirect:
+        - kitsu.openstudiolandscapes.lan
+      uri: http://localhost:4545/
+      use_any_proxy_public_addr: false
+    """
+
+    ret: dict = DefaultDicts.TELEPORT_DEFAULT_APP.value
+
+    ret["name"] = name
+    ret["description"] = description
+    ret["uri"] = uri
+    ret["public_addr"] = public_addr
+    ret["rewrite"]["redirect"].extend(rewrite_redirect)
+
+    return ret

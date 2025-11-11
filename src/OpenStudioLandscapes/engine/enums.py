@@ -7,6 +7,7 @@ __all__ = [
     "ComposeNetworkMode",
     "DockerRepositoryType",
     "DockerConfig",
+    "DefaultDicts",
 ]
 
 import enum
@@ -130,3 +131,27 @@ class DockerConfig(enum.Enum):
     #     "docker_repository": _REPOSITORY_NAME,
     #     "docker_repository_type": DockerRepositoryType.PRIVATE,
     # }
+
+
+class DefaultDicts(enum.Enum):
+
+    """
+    This is just a dict blueprint for an individual
+    teleport app as documented here:
+    https://goteleport.com/docs/reference/deployment/config/#application-service
+    """
+    TELEPORT_DEFAULT_APP = {
+        "name": "",
+        "description": "",
+        # for ayon specifically, uri could be:
+        # "uri": "http://localhost:5005/",
+        # "uri": "http://server.farm.evil:5005/",
+        # "uri": "192.168.178.195:5005/",
+        "uri": "",
+        "insecure_skip_verify": False,
+        "public_addr": "",
+        "use_any_proxy_public_addr": False,
+        "rewrite": {
+            "redirect": [],
+        },
+    }

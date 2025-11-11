@@ -18,6 +18,7 @@ from dagster import (
 
 from OpenStudioLandscapes.engine.base.ops import (
     op_docker_compose_graph,
+    op_teleport_apps_yaml,
 )
 from OpenStudioLandscapes.engine.common_assets.group_out import get_group_out
 from OpenStudioLandscapes.engine.constants import *
@@ -495,5 +496,14 @@ if bool(ins):
             "compose_project_name": AssetKey(
                 [*ASSET_HEADER_COMPOSE_WORKER["key_prefix"], "compose_project_name"]
             ),
+        },
+    )
+
+    teleport_apps_yaml = AssetsDefinition.from_op(
+        op_teleport_apps_yaml,
+        group_name=ASSET_HEADER_COMPOSE_WORKER["group_name"],
+        key_prefix=ASSET_HEADER_COMPOSE_WORKER["key_prefix"],
+        keys_by_input_name={
+            "features_in": AssetKey([*ASSET_HEADER_COMPOSE_WORKER["key_prefix"], "features_in"]),
         },
     )

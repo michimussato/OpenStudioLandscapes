@@ -1359,6 +1359,8 @@ if bool(ins):
         apps: list[dict] = []
 
         for feature, settings_teleport in fetch_services.items():
+            context.log.warning(feature)
+            context.log.warning(settings_teleport)
             app_ = copy.deepcopy(app_dict_default)
             app_["name"] = settings_teleport["teleport_host"]
             app_["uri"] = f"http://localhost:{settings_teleport['teleport_port']}/"
@@ -1599,14 +1601,176 @@ if bool(ins):
                     *[f"{i}:{env['WEB_UI_PORT_HOST']}" for i in host_names]
                 ],
             },
-            # "app_service": {
-            #     # https://goteleport.com/docs/reference/deployment/config/#application-service
-            #     "enabled": bool(apps),
-            #     "debug_app": False,
-            #     "mcp_demo_server": False,
-            #     "apps": apps,
-            # },
+            "app_service": {
+                # https://goteleport.com/docs/reference/deployment/config/#application-service
+                "enabled": bool(apps),
+                "debug_app": False,
+                "mcp_demo_server": False,
+                "apps": apps,
+            },
         }
+
+        """
+        Reference teleport.yaml:
+        
+        app_service:
+          apps:
+          - insecure_skip_verify: false
+            name: ayon
+            public_addr: ayon.teleport.openstudiolandscapes.cloud-ip.cc
+            rewrite:
+              redirect:
+              - ayon.openstudiolandscapes.lan
+            uri: http://localhost:5005/
+            use_any_proxy_public_addr: false
+          - insecure_skip_verify: false
+            name: dagster
+            public_addr: dagster.teleport.openstudiolandscapes.cloud-ip.cc
+            rewrite:
+              redirect:
+              - dagster.openstudiolandscapes.lan
+            uri: http://localhost:3003/
+            use_any_proxy_public_addr: false
+          - insecure_skip_verify: false
+            name: flamenco-manager
+            public_addr: flamenco-manager.teleport.openstudiolandscapes.cloud-ip.cc
+            rewrite:
+              redirect:
+              - flamenco-manager.openstudiolandscapes.lan
+            uri: http://localhost:8484/
+            use_any_proxy_public_addr: false
+          - insecure_skip_verify: false
+            name: grafana
+            public_addr: grafana.teleport.openstudiolandscapes.cloud-ip.cc
+            rewrite:
+              redirect:
+              - grafana.openstudiolandscapes.lan
+            uri: http://localhost:3030/
+            use_any_proxy_public_addr: false
+          - insecure_skip_verify: false
+            name: kitsu
+            public_addr: kitsu.teleport.openstudiolandscapes.cloud-ip.cc
+            rewrite:
+              redirect:
+              - kitsu.openstudiolandscapes.lan
+            uri: http://localhost:4545/
+            use_any_proxy_public_addr: false
+          - insecure_skip_verify: false
+            name: syncthing
+            public_addr: syncthing.teleport.openstudiolandscapes.cloud-ip.cc
+            rewrite:
+              redirect:
+              - syncthing.openstudiolandscapes.lan
+            uri: http://localhost:8787/
+            use_any_proxy_public_addr: false
+          - insecure_skip_verify: false
+            name: vert
+            public_addr: vert.teleport.openstudiolandscapes.cloud-ip.cc
+            rewrite:
+              redirect:
+              - vert.openstudiolandscapes.lan
+            uri: http://localhost:3344/
+            use_any_proxy_public_addr: false
+          - insecure_skip_verify: false
+            name: filebrowser
+            public_addr: filebrowser.teleport.openstudiolandscapes.cloud-ip.cc
+            rewrite:
+              redirect:
+              - filebrowser.openstudiolandscapes.lan
+            uri: http://localhost:8080/
+            use_any_proxy_public_addr: false
+          - insecure_skip_verify: false
+            name: openstudiolandscapes-dagster
+            public_addr: openstudiolandscapes-dagster.teleport.openstudiolandscapes.cloud-ip.cc
+            rewrite:
+              redirect:
+              - openstudiolandscapes-dagster.openstudiolandscapes.lan
+            uri: http://openstudiolandscapes-dagster.openstudiolandscapes.lan:3000/
+            use_any_proxy_public_addr: false
+          - insecure_skip_verify: false
+            name: openstudiolandscapes-harbor
+            public_addr: openstudiolandscapes-harbor.teleport.openstudiolandscapes.cloud-ip.cc
+            rewrite:
+              redirect:
+              - openstudiolandscapes-harbor.openstudiolandscapes.lan
+            uri: http://openstudiolandscapes-harbor.openstudiolandscapes.lan:80/
+            use_any_proxy_public_addr: false
+          - insecure_skip_verify: false
+            name: pi-jellyfin
+            public_addr: pi-jellyfin.teleport.openstudiolandscapes.cloud-ip.cc
+            rewrite:
+              redirect:
+              - pi-jellyfin.openstudiolandscapes.lan
+            uri: http://pi-jellyfin.openstudiolandscapes.lan:8096/
+            use_any_proxy_public_addr: false
+          - insecure_skip_verify: false
+            name: pi-filebrowser
+            public_addr: pi-filebrowser.teleport.openstudiolandscapes.cloud-ip.cc
+            rewrite:
+              redirect:
+              - pi-filebrowser.openstudiolandscapes.lan
+            uri: http://pi-filebrowser.openstudiolandscapes.lan:8080/
+            use_any_proxy_public_addr: false
+          - insecure_skip_verify: false
+            name: pi-moode
+            public_addr: pi-moode.teleport.openstudiolandscapes.cloud-ip.cc
+            rewrite:
+              redirect:
+              - pi-moode.openstudiolandscapes.lan
+            uri: http://moode.farm.evil:80/
+            use_any_proxy_public_addr: false
+          - insecure_skip_verify: false
+            name: pi-hole
+            public_addr: pi-hole.teleport.openstudiolandscapes.cloud-ip.cc
+            rewrite:
+              redirect:
+              - pi-hole.openstudiolandscapes.lan
+            uri: http://pi-hole.farm.evil:80/admin/
+            use_any_proxy_public_addr: false
+          - insecure_skip_verify: false
+            name: pi-transmission
+            public_addr: pi-transmission.teleport.openstudiolandscapes.cloud-ip.cc
+            rewrite:
+              redirect:
+              - pi-transmission.openstudiolandscapes.lan
+            uri: http://transmission.farm.evil:9091/admin/
+            use_any_proxy_public_addr: false
+          debug_app: false
+          enabled: true
+          mcp_demo_server: false
+        auth_service:
+          cluster_name: teleport.openstudiolandscapes.cloud-ip.cc
+          enabled: 'yes'
+          listen_addr: 0.0.0.0:3025
+          proxy_listener_mode: multiplex
+        proxy_service:
+          acme:
+            enabled: false
+          enabled: true
+          https_keypairs_reload_interval: 120s
+          listen_addr: 0.0.0.0:3023
+          public_addr:
+          - teleport.openstudiolandscapes.cloud-ip.cc:443
+          - teleport.openstudiolandscapes.lan:443
+          web_listen_addr: 0.0.0.0:3080
+        ssh_service:
+          enabled: false
+        teleport:
+          ca_pin: ''
+          data_dir: /var/lib/teleport
+          diag_addr: ''
+          join_params:
+            method: github
+            token_name: ''
+          log:
+            format:
+              output: text
+            output: stderr
+            severity: INFO
+          nodename: openstudiolandscapes-teleport
+        version: v3
+        
+        """
 
         teleport_yaml_ = yaml.dump(teleport_yaml_dict)
 
