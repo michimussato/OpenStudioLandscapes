@@ -14,7 +14,6 @@ imports_engine = [
     "OpenStudioLandscapes.engine.base.definitions",
     "OpenStudioLandscapes.engine.env.definitions",
     "OpenStudioLandscapes.engine.landscape_map.definitions",
-    # "OpenStudioLandscapes.engine.teleport.definitions",
     "OpenStudioLandscapes.engine.distributable.definitions",
 ]
 
@@ -22,11 +21,6 @@ e_ = expand_dict_vars(
     dict_to_expand=copy.deepcopy(os.environ),
     kv=os.environ,
 )
-
-# Todo
-#  - [x] if get_bool_env(f"{os.environ['OPENSTUDIOLANDSCAPES__HARBOR_ENABLE']}".format(**os.environ)):
-if e_.get("OPENSTUDIOLANDSCAPES__HARBOR_ENABLE", "False") == "True":
-    imports_engine.append("OpenStudioLandscapes.engine.resources.harbor.definitions")
 
 
 # ComposeScope Definitions
