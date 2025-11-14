@@ -1,7 +1,6 @@
----
 project:
   dependencies:
-  - OpenStudioLandscapes @ git+https://github.com/michimussato/OpenStudioLandscapes@v1.8.0-rc1
+  - OpenStudioLandscapes @ git+https://github.com/michimussato/OpenStudioLandscapes@v1.9.0-rc1
   optional-dependencies:
     pyproject:
     - OpenStudioLandscapesUtil-VersionBumper @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-VersionBumper.git

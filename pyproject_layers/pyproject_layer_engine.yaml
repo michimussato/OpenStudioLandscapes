@@ -1,11 +1,9 @@
----
 project:
   dependencies:
   - pydot
   - dagster-postgres
   - docker
   - nox
-  - OpenStudioLandscapesUtil-HarborCLI @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-HarborCLI.git@v1.8.0-rc1
   description: A Toolkit to create dynamic Animation and VFX studio environments for
     robust automation and pipelines.
   name: OpenStudioLandscapes
