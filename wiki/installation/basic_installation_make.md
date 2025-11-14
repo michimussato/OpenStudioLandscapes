@@ -7,7 +7,6 @@
     * [Ubuntu](#ubuntu)
       * [22.04](#2204)
       * [Add `${USER}` to Group `docker`](#add-user-to-group-docker)
-      * [Create `/etc/docker/daemon.json`](#create-etcdockerdaemonjson)
       * [Install basic Requirements](#install-basic-requirements)
       * [Setup Process](#setup-process)
 <!-- TOC -->
@@ -86,27 +85,6 @@ sudo usermod --append --groups docker ${USER}
 sudo systemctl reboot
 ```
 
-#### Create `/etc/docker/daemon.json`
-
-```bash
-# export OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME=harbor.openstudiolandscapes.lan
-# export OPENSTUDIOLANDSCAPES__HARBOR_PORT=80
-
-source .env
-
-sudo --preserve-env=OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME,OPENSTUDIOLANDSCAPES__HARBOR_PORT bash -c 'cat << EOF > /etc/docker/daemon.json
-{
-  "features": {
-    "buildkit": true
-  },
-  "max-concurrent-uploads": 1,
-  "insecure-registries": [
-    "http://${OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME}:{OPENSTUDIOLANDSCAPES__HARBOR_PORT}"
-  ]
-}
-EOF'
-```
-
 #### Install basic Requirements
 
 ```shell
@@ -180,21 +158,6 @@ make openstudiolandscapes_install
 # - `export OPENSTUDIOLANDSCAPES_VERSION_TAG=`
 make openstudiolandscapes_features_clone
 make openstudiolandscapes_features_install
-
-# Requires
-# - `export OPENSTUDIOLANDSCAPES__DOT_ENV=`
-# - `export OPENSTUDIOLANDSCAPES__HARBOR_ADMIN=`
-# - `export OPENSTUDIOLANDSCAPES__HARBOR_PASSWORD=`
-# - `export OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME=`
-# - `export OPENSTUDIOLANDSCAPES__HARBOR_PORT=`
-# - `export OPENSTUDIOLANDSCAPES__HARBOR_ROOT_DIR=`
-make harbor_prepare
-make harbor_up
-make harbor_init_projects
-# To actually execute the two returned commands
-# (Todo: which does not work yet),
-# we could theoretically run:
-# eval $(make -s harbor_init_projects)
 ```
 
 ```shell

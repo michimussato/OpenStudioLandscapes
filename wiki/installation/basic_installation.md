@@ -15,12 +15,6 @@
   * [OpenStudioLandscapes](#openstudiolandscapes)
     * [Clone Repository](#clone-repository)
     * [Create Landscapes Root Directory](#create-landscapes-root-directory)
-  * [Harbor](#harbor)
-    * [Setup](#setup)
-      * [Create Project](#create-project)
-        * [Manual](#manual)
-        * [With `curl`](#with-curl)
-    * [Reset](#reset)
 <!-- TOC -->
 
 ---
@@ -31,7 +25,6 @@
 
 - [`python3.11`](#install-python311)
 - [`docker`](#install-docker)
-- [Harbor](https://goharbor.io/)
 
 > [!NOTE]
 > Additional requirements may vary based on the flavor of
@@ -155,17 +148,18 @@ sudo install -m 0755 -d /etc/apt/keyrings
 sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
 sudo chmod a+r /etc/apt/keyrings/docker.asc
 
-sudo -s << EOF
-mkdir -p /etc/docker
-touch /etc/docker/daemon.json
-cat > /etc/docker/daemon.json
-{
-  "insecure-registries": [
-    "http://harbor.openstudiolandscapes.lan:80"
-  ],
-  "max-concurrent-uploads": 1
-}
-EOF
+# Todo
+#  - [ ] This is probably not necessary anymore because
+#        there is a process in the pipeline to create self
+#        signed certificates for `registry`
+# sudo -s << EOF
+# mkdir -p /etc/docker
+# touch /etc/docker/daemon.json
+# cat > /etc/docker/daemon.json
+# {
+#   "max-concurrent-uploads": 1
+# }
+# EOF
 
 echo \
   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
@@ -183,11 +177,8 @@ sudo usermod --append --groups docker "user"
 sudo systemctl daemon-reload
 sudo systemctl restart docker
 
-sudo rm -rf /home/user/git/repos/OpenStudioLandscapes/.landscapes/.harbor/bin/*
-sudo rm -rf /home/user/git/repos/OpenStudioLandscapes/.landscapes/.harbor/data/*
-
-echo "Your /etc/docker/daemon.json file looks like:"
-cat /etc/docker/daemon.json
+# echo "Your /etc/docker/daemon.json file looks like:"
+# cat /etc/docker/daemon.json
 
 exit 0
 ```
@@ -282,85 +273,4 @@ sudo mkdir -p ${LANDSCAPES_DIR}/.landscapes && sudo chmod -R a+rw ${LANDSCAPES_D
 # for easy access from within the repository, run:
 #
 # ln -sfn ${LANDSCAPES_DIR}/.landscapes docker/.landscapes
-```
-
-## Harbor
-
-> [!IMPORTANT]
-> These commands will only work with the activated `.venv`
-> from the [previous step](#openstudiolandscapes):
-> ```shell
-> source .venv/bin/activate
-> ```
-
-### Setup
-
-```shell
-nox --session harbor_prepare
-```
-
-#### Create Project
-
-> [!IMPORTANT]
-> Harbor must be [running](../run/run_harbor.md#up) in order to perform these steps.
-
-##### Manual
-
-Go to the [Harbor Web UI](../run/run_harbor.md#web-interface) and
-create project `openstudiolandscapes` (default project `library`
-can be deleted):
-
-![harbor_create_project.png](../../media/images/harbor_create_project.png)
-![harbor_new_project.png](../../media/images/harbor_new_project.png)
-
-##### With `curl`
-
-Create project `openstudiolandscapes`:
-
-> [!NOTE]
-> Assuming that the Harbor admin credentials are as follows:
-> - URL: `http://localhost:80`
-> - Username: `admin`
-> - Password: `Harbor12345`
-> Change the next block according to your credentials.
-
-```shell
-HARBOR_URL="http://localhost:80"
-HARBOR_ADMIN="admin"
-HARBOR_ADMIN_PASSWORD="Harbor12345"
-```
-
-```shell
-curl -v -X 'POST' \
-  "$HARBOR_URL/api/v2.0/projects" \
-  -H "accept: application/json" \
-  -H "X-Resource-Name-In-Location: false" \
-  -H "authorization: Basic $(echo -n $HARBOR_ADMIN:$HARBOR_ADMIN_PASSWORD | base64)" \
-  -H "Content-Type: application/json" \
-  -d \
-  '{
-    "project_name": "openstudiolandscapes",
-    "public": true
-  }'
-```
-
-Delete default project `library`:
-
-```shell
-curl -v -X 'DELETE' \
-  "$HARBOR_URL/api/v2.0/projects/library" \
-  -H "accept: application/json" \
-  -H "X-Is-Resource-Name: false" \
-  -H "authorization: Basic $(echo -n $HARBOR_ADMIN:$HARBOR_ADMIN_PASSWORD | base64)"
-```
-
-### Reset
-
-Clear (prune) the Harbor installation with all its configurations.
-
-> [!WARNING]
-> This is a destructive, non-recoverable action (data loss).
-
-```shell
-nox --session harbor_clear
 ```
