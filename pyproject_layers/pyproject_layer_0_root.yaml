@@ -80,7 +80,7 @@ project:
     nox:
     - nox
     readme:
-    - OpenStudioLandscapesUtil-ReadmeGenerator @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-ReadmeGenerator.git@v1.9.0-rc1
+    - OpenStudioLandscapesUtil-ReadmeGenerator @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-ReadmeGenerator.git@v1.9.0
     sbom:
     - cyclonedx-bom
     testing:
