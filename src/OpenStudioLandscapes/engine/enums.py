@@ -34,6 +34,7 @@ class FeatureVolumeType(enum.StrEnum):
         inside a volume that is mounted to directory that lives OUTSIDE
         a Landscape. New Landscape -> EXISTING DATA.
     """
+
     CONTAINED = "contained"
     SHARED = "shared"
 
