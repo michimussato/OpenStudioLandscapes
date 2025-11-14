@@ -201,22 +201,22 @@ community_channels = {
         #     "channel_name": "# openstudiolandscapes-rustdeskserver",
         # },
     },
-    "OpenStudioLandscapes-Teleport": {
-        "enabled": False,
-        "public": False,
-        "github": {
-            "repo_name": "OpenStudioLandscapes-Teleport",
-        },
-        "discord": {
-            "channel_id": "1420385295026884659",
-            "channel_name": "# openstudiolandscapes-teleport",
-            "invite": "https://discord.gg/SNMCw5aDfm",
-        },
-        # "slack": {
-        #     "channel_id": "C09E6HA0ZPW",
-        #     "channel_name": "# openstudiolandscapes-rustdeskserver",
-        # },
-    },
+    # "OpenStudioLandscapes-Teleport": {
+    #     "enabled": False,
+    #     "public": True,
+    #     "github": {
+    #         "repo_name": "OpenStudioLandscapes-Teleport",
+    #     },
+    #     "discord": {
+    #         "channel_id": "1420385295026884659",
+    #         "channel_name": "# openstudiolandscapes-teleport",
+    #         "invite": "https://discord.gg/SNMCw5aDfm",
+    #     },
+    #     # "slack": {
+    #     #     "channel_id": "C09E6HA0ZPW",
+    #     #     "channel_name": "# openstudiolandscapes-rustdeskserver",
+    #     # },
+    # },
     "OpenStudioLandscapes-Twingate": {
         "enabled": True,
         "public": True,
