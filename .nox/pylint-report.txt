@@ -1,91 +1,93 @@
 ************* Module OpenStudioLandscapes.engine.enums
-src/OpenStudioLandscapes/engine/enums.py:86:5: W0511: Todo: (fixme)
-src/OpenStudioLandscapes/engine/enums.py:102:9: W0511: Todo (fixme)
+src/OpenStudioLandscapes/engine/enums.py:120:0: C0301: Line too long (125/100) (line-too-long)
+src/OpenStudioLandscapes/engine/enums.py:44:5: W0511: Todo: (fixme)
+src/OpenStudioLandscapes/engine/enums.py:89:5: W0511: Todo: (fixme)
 src/OpenStudioLandscapes/engine/enums.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-src/OpenStudioLandscapes/engine/enums.py:17:0: C0115: Missing class docstring (missing-class-docstring)
-src/OpenStudioLandscapes/engine/enums.py:22:0: C0115: Missing class docstring (missing-class-docstring)
-src/OpenStudioLandscapes/engine/enums.py:42:0: C0115: Missing class docstring (missing-class-docstring)
-src/OpenStudioLandscapes/engine/enums.py:50:0: C0115: Missing class docstring (missing-class-docstring)
-src/OpenStudioLandscapes/engine/enums.py:57:0: C0115: Missing class docstring (missing-class-docstring)
-src/OpenStudioLandscapes/engine/enums.py:70:0: C0115: Missing class docstring (missing-class-docstring)
-src/OpenStudioLandscapes/engine/enums.py:76:0: C0115: Missing class docstring (missing-class-docstring)
-src/OpenStudioLandscapes/engine/enums.py:81:0: C0115: Missing class docstring (missing-class-docstring)
+src/OpenStudioLandscapes/engine/enums.py:18:0: C0115: Missing class docstring (missing-class-docstring)
+src/OpenStudioLandscapes/engine/enums.py:23:0: C0115: Missing class docstring (missing-class-docstring)
+src/OpenStudioLandscapes/engine/enums.py:43:0: C0115: Missing class docstring (missing-class-docstring)
+src/OpenStudioLandscapes/engine/enums.py:52:0: C0115: Missing class docstring (missing-class-docstring)
+src/OpenStudioLandscapes/engine/enums.py:59:0: C0115: Missing class docstring (missing-class-docstring)
+src/OpenStudioLandscapes/engine/enums.py:72:0: C0115: Missing class docstring (missing-class-docstring)
+src/OpenStudioLandscapes/engine/enums.py:79:0: C0115: Missing class docstring (missing-class-docstring)
+src/OpenStudioLandscapes/engine/enums.py:84:0: C0115: Missing class docstring (missing-class-docstring)
 ************* Module OpenStudioLandscapes.engine.features
 src/OpenStudioLandscapes/engine/features.py:131:0: C0301: Line too long (145/100) (line-too-long)
 src/OpenStudioLandscapes/engine/features.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 src/OpenStudioLandscapes/engine/features.py:1:0: W0401: Wildcard import OpenStudioLandscapes.engine.enums (wildcard-import)
 src/OpenStudioLandscapes/engine/features.py:2:0: W0401: Wildcard import OpenStudioLandscapes.engine.utils (wildcard-import)
-src/OpenStudioLandscapes/engine/features.py:1:0: W0614: Unused import(s) enum, GroupIn, FeatureVolumeType, ComposeCmdExclusion, ComposeNetworkMode, DockerRegistry, DockerRepositoryType, DockerConfig and EnvVar from wildcard import of OpenStudioLandscapes.engine.enums (unused-wildcard-import)
-src/OpenStudioLandscapes/engine/features.py:2:0: W0614: Unused import(s) operator_, os, pathlib, shlex, git, LOGGER, cmd_list_to_str, get_pip_install_str, get_apt_install_str, get_copy_str, get_wget_str, get_git_root, get_configs_root, get_data_root, get_bin_root, get_image_name, parse_docker_image_path, get_compose_scope, get_feature_config, expand_dict_vars, serialize_dict, metadatavalues_from_dict, get_relative_path_via_common_root, get_str_env, get_dynamic_ins, Any, List, MutableMapping, Union, AssetExecutionContext, AssetIn, AssetKey, MetadataValue, OpExecutionContext, get_dagster_logger, ComposeScopeException and OpenStudioLandscapesException from wildcard import of OpenStudioLandscapes.engine.utils (unused-wildcard-import)
+src/OpenStudioLandscapes/engine/features.py:1:0: W0614: Unused import(s) enum, GroupIn, FeatureVolumeType, ComposeCmdExclusion, ComposeNetworkMode, DockerRegistry, DockerRepositoryType, DockerConfig, DefaultDicts and EnvVar from wildcard import of OpenStudioLandscapes.engine.enums (unused-wildcard-import)
+src/OpenStudioLandscapes/engine/features.py:2:0: W0614: Unused import(s) operator_, os, pathlib, shlex, git, LOGGER, cmd_list_to_str, get_pip_install_str, get_apt_install_str, get_copy_str, get_wget_str, get_git_root, get_configs_root, get_data_root, get_bin_root, get_image_name, parse_docker_image_path, get_compose_scope, get_feature_config, expand_dict_vars, serialize_dict, metadatavalues_from_dict, get_relative_path_via_common_root, get_str_env, get_dynamic_ins, get_teleport_app_dict, Any, List, MutableMapping, Union, AssetExecutionContext, AssetIn, AssetKey, MetadataValue, OpExecutionContext, get_dagster_logger, ComposeScopeException and OpenStudioLandscapesException from wildcard import of OpenStudioLandscapes.engine.utils (unused-wildcard-import)
 ************* Module OpenStudioLandscapes.engine.definitions
-src/OpenStudioLandscapes/engine/definitions.py:27:0: C0301: Line too long (102/100) (line-too-long)
-src/OpenStudioLandscapes/engine/definitions.py:26:1: W0511: Todo (fixme)
 src/OpenStudioLandscapes/engine/definitions.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 src/OpenStudioLandscapes/engine/definitions.py:8:0: W0401: Wildcard import OpenStudioLandscapes.engine.utils (wildcard-import)
-src/OpenStudioLandscapes/engine/definitions.py:8:0: W0614: Unused import(s) operator_, pathlib, shlex, git, cmd_list_to_str, get_pip_install_str, get_apt_install_str, get_copy_str, get_wget_str, get_git_root, get_configs_root, get_data_root, get_bin_root, get_image_name, parse_docker_image_path, get_compose_scope, get_feature_config, serialize_dict, metadatavalues_from_dict, get_relative_path_via_common_root, get_bool_env, get_str_env, get_dynamic_ins, Any, List, MutableMapping, Union, AssetExecutionContext, AssetIn, AssetKey, MetadataValue, OpExecutionContext, enum, GroupIn, OpenStudioLandscapesConfig, FeatureVolumeType, ComposeScope, ComposeCmdExclusion, ComposeNetworkMode, DockerRegistry, DockerRepositoryType, DockerConfig, EnvVar, ComposeScopeException and OpenStudioLandscapesException from wildcard import of OpenStudioLandscapes.engine.utils (unused-wildcard-import)
+src/OpenStudioLandscapes/engine/definitions.py:8:0: W0614: Unused import(s) operator_, pathlib, shlex, git, cmd_list_to_str, get_pip_install_str, get_apt_install_str, get_copy_str, get_wget_str, get_git_root, get_configs_root, get_data_root, get_bin_root, get_image_name, parse_docker_image_path, get_compose_scope, get_feature_config, serialize_dict, metadatavalues_from_dict, get_relative_path_via_common_root, get_bool_env, get_str_env, get_dynamic_ins, get_teleport_app_dict, Any, List, MutableMapping, Union, AssetExecutionContext, AssetIn, AssetKey, MetadataValue, OpExecutionContext, enum, GroupIn, OpenStudioLandscapesConfig, FeatureVolumeType, ComposeScope, ComposeCmdExclusion, ComposeNetworkMode, DockerRegistry, DockerRepositoryType, DockerConfig, DefaultDicts, EnvVar, ComposeScopeException and OpenStudioLandscapesException from wildcard import of OpenStudioLandscapes.engine.utils (unused-wildcard-import)
 ************* Module OpenStudioLandscapes.engine.constants
 src/OpenStudioLandscapes/engine/constants.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-src/OpenStudioLandscapes/engine/constants.py:27:0: W0401: Wildcard import OpenStudioLandscapes.engine.enums (wildcard-import)
-src/OpenStudioLandscapes/engine/constants.py:49:0: C0413: Import "from OpenStudioLandscapes.engine.compose_scopes.default import constants as constants_compose" should be placed at the top of the module (wrong-import-position)
-src/OpenStudioLandscapes/engine/constants.py:59:0: C0413: Import "from OpenStudioLandscapes.engine.compose_scopes.license_server import constants as constants_compose_license_server" should be placed at the top of the module (wrong-import-position)
-src/OpenStudioLandscapes/engine/constants.py:69:0: C0413: Import "from OpenStudioLandscapes.engine.compose_scopes.worker import constants as constants_compose_worker" should be placed at the top of the module (wrong-import-position)
-src/OpenStudioLandscapes/engine/constants.py:128:0: C0112: Empty function docstring (empty-docstring)
-src/OpenStudioLandscapes/engine/constants.py:154:0: C0112: Empty function docstring (empty-docstring)
-src/OpenStudioLandscapes/engine/constants.py:159:4: W0603: Using the global statement (global-statement)
-src/OpenStudioLandscapes/engine/constants.py:176:0: C0112: Empty function docstring (empty-docstring)
-src/OpenStudioLandscapes/engine/constants.py:181:4: W0602: Using global for 'DOCKER_CONFIG' but no assignment is done (global-variable-not-assigned)
-src/OpenStudioLandscapes/engine/constants.py:27:0: W0614: Unused import(s) enum, GroupIn, OpenStudioLandscapesConfig, FeatureVolumeType, ComposeScope, ComposeCmdExclusion, ComposeNetworkMode, DockerRegistry, DockerRepositoryType and EnvVar from wildcard import of OpenStudioLandscapes.engine.enums (unused-wildcard-import)
+src/OpenStudioLandscapes/engine/constants.py:28:0: W0401: Wildcard import OpenStudioLandscapes.engine.enums (wildcard-import)
+src/OpenStudioLandscapes/engine/constants.py:50:0: C0413: Import "from OpenStudioLandscapes.engine.compose_scopes.default import constants as constants_compose" should be placed at the top of the module (wrong-import-position)
+src/OpenStudioLandscapes/engine/constants.py:60:0: C0413: Import "from OpenStudioLandscapes.engine.compose_scopes.license_server import constants as constants_compose_license_server" should be placed at the top of the module (wrong-import-position)
+src/OpenStudioLandscapes/engine/constants.py:70:0: C0413: Import "from OpenStudioLandscapes.engine.compose_scopes.worker import constants as constants_compose_worker" should be placed at the top of the module (wrong-import-position)
+src/OpenStudioLandscapes/engine/constants.py:138:0: C0112: Empty function docstring (empty-docstring)
+src/OpenStudioLandscapes/engine/constants.py:164:0: C0112: Empty function docstring (empty-docstring)
+src/OpenStudioLandscapes/engine/constants.py:169:4: W0603: Using the global statement (global-statement)
+src/OpenStudioLandscapes/engine/constants.py:186:0: C0112: Empty function docstring (empty-docstring)
+src/OpenStudioLandscapes/engine/constants.py:191:4: W0602: Using global for 'DOCKER_CONFIG' but no assignment is done (global-variable-not-assigned)
+src/OpenStudioLandscapes/engine/constants.py:28:0: W0614: Unused import(s) enum, GroupIn, OpenStudioLandscapesConfig, FeatureVolumeType, ComposeScope, ComposeCmdExclusion, ComposeNetworkMode, DockerRegistry, DockerRepositoryType, DefaultDicts and EnvVar from wildcard import of OpenStudioLandscapes.engine.enums (unused-wildcard-import)
 ************* Module OpenStudioLandscapes.engine.community_channels
 src/OpenStudioLandscapes/engine/community_channels.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 ************* Module OpenStudioLandscapes.engine
 src/OpenStudioLandscapes/engine/__init__.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 src/OpenStudioLandscapes/engine/__init__.py:10:4: C0103: Constant name "dist_name" doesn't conform to UPPER_CASE naming style (invalid-name)
 ************* Module OpenStudioLandscapes.engine.utils.__init__
-src/OpenStudioLandscapes/engine/utils/__init__.py:270:0: C0301: Line too long (139/100) (line-too-long)
-src/OpenStudioLandscapes/engine/utils/__init__.py:398:0: C0301: Line too long (237/100) (line-too-long)
-src/OpenStudioLandscapes/engine/utils/__init__.py:401:0: C0301: Line too long (198/100) (line-too-long)
-src/OpenStudioLandscapes/engine/utils/__init__.py:428:0: C0301: Line too long (169/100) (line-too-long)
-src/OpenStudioLandscapes/engine/utils/__init__.py:432:0: C0301: Line too long (152/100) (line-too-long)
-src/OpenStudioLandscapes/engine/utils/__init__.py:440:0: C0301: Line too long (161/100) (line-too-long)
-src/OpenStudioLandscapes/engine/utils/__init__.py:88:5: W0511: Todo: (fixme)
-src/OpenStudioLandscapes/engine/utils/__init__.py:119:1: W0511: Todo: (fixme)
-src/OpenStudioLandscapes/engine/utils/__init__.py:130:1: W0511: Todo: (fixme)
-src/OpenStudioLandscapes/engine/utils/__init__.py:141:1: W0511: Todo: (fixme)
-src/OpenStudioLandscapes/engine/utils/__init__.py:152:1: W0511: Todo: (fixme)
-src/OpenStudioLandscapes/engine/utils/__init__.py:206:38: W0511: Todo: necessary? (fixme)
-src/OpenStudioLandscapes/engine/utils/__init__.py:311:9: W0511: Todo: (fixme)
-src/OpenStudioLandscapes/engine/utils/__init__.py:315:9: W0511: Todo: (fixme)
-src/OpenStudioLandscapes/engine/utils/__init__.py:417:5: W0511: Todo (fixme)
+src/OpenStudioLandscapes/engine/utils/__init__.py:271:0: C0301: Line too long (139/100) (line-too-long)
+src/OpenStudioLandscapes/engine/utils/__init__.py:306:0: C0301: Line too long (156/100) (line-too-long)
+src/OpenStudioLandscapes/engine/utils/__init__.py:403:0: C0301: Line too long (237/100) (line-too-long)
+src/OpenStudioLandscapes/engine/utils/__init__.py:406:0: C0301: Line too long (198/100) (line-too-long)
+src/OpenStudioLandscapes/engine/utils/__init__.py:433:0: C0301: Line too long (169/100) (line-too-long)
+src/OpenStudioLandscapes/engine/utils/__init__.py:437:0: C0301: Line too long (152/100) (line-too-long)
+src/OpenStudioLandscapes/engine/utils/__init__.py:445:0: C0301: Line too long (161/100) (line-too-long)
+src/OpenStudioLandscapes/engine/utils/__init__.py:561:0: C0301: Line too long (105/100) (line-too-long)
+src/OpenStudioLandscapes/engine/utils/__init__.py:89:5: W0511: Todo: (fixme)
+src/OpenStudioLandscapes/engine/utils/__init__.py:120:1: W0511: Todo: (fixme)
+src/OpenStudioLandscapes/engine/utils/__init__.py:131:1: W0511: Todo: (fixme)
+src/OpenStudioLandscapes/engine/utils/__init__.py:142:1: W0511: Todo: (fixme)
+src/OpenStudioLandscapes/engine/utils/__init__.py:153:1: W0511: Todo: (fixme)
+src/OpenStudioLandscapes/engine/utils/__init__.py:207:38: W0511: Todo: necessary? (fixme)
+src/OpenStudioLandscapes/engine/utils/__init__.py:304:5: W0511: Todo (fixme)
+src/OpenStudioLandscapes/engine/utils/__init__.py:316:9: W0511: Todo: (fixme)
+src/OpenStudioLandscapes/engine/utils/__init__.py:320:9: W0511: Todo: (fixme)
+src/OpenStudioLandscapes/engine/utils/__init__.py:422:5: W0511: Todo (fixme)
 ************* Module OpenStudioLandscapes.engine.utils
 src/OpenStudioLandscapes/engine/utils/__init__.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-src/OpenStudioLandscapes/engine/utils/__init__.py:49:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/utils/__init__.py:56:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/utils/__init__.py:62:27: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/engine/utils/__init__.py:70:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/utils/__init__.py:83:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/utils/__init__.py:104:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/utils/__init__.py:132:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/utils/__init__.py:143:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/utils/__init__.py:154:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/utils/__init__.py:163:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/utils/__init__.py:169:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/utils/__init__.py:205:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/utils/__init__.py:217:4: C0103: Variable name "COMPOSE_SCOPE" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/utils/__init__.py:220:12: C0103: Variable name "COMPOSE_SCOPE" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/utils/__init__.py:225:12: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/engine/utils/__init__.py:206:4: W0613: Unused argument 'context' (unused-argument)
-src/OpenStudioLandscapes/engine/utils/__init__.py:232:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/utils/__init__.py:244:4: C0103: Variable name "FEATURE_CONFIG" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/utils/__init__.py:247:12: C0103: Variable name "FEATURE_CONFIG" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/utils/__init__.py:251:16: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/engine/utils/__init__.py:298:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/utils/__init__.py:298:0: R1711: Useless return at end of function or method (useless-return)
-src/OpenStudioLandscapes/engine/utils/__init__.py:362:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/utils/__init__.py:410:8: W0719: Raising too general exception: Exception (broad-exception-raised)
-src/OpenStudioLandscapes/engine/utils/__init__.py:420:8: W0719: Raising too general exception: Exception (broad-exception-raised)
-src/OpenStudioLandscapes/engine/utils/__init__.py:446:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/utils/__init__.py:471:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/utils/__init__.py:517:4: R1711: Useless return at end of function or method (useless-return)
+src/OpenStudioLandscapes/engine/utils/__init__.py:50:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/utils/__init__.py:57:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/utils/__init__.py:63:27: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
+src/OpenStudioLandscapes/engine/utils/__init__.py:71:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/utils/__init__.py:84:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/utils/__init__.py:105:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/utils/__init__.py:133:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/utils/__init__.py:144:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/utils/__init__.py:155:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/utils/__init__.py:164:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/utils/__init__.py:170:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/utils/__init__.py:206:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/utils/__init__.py:218:4: C0103: Variable name "COMPOSE_SCOPE" doesn't conform to snake_case naming style (invalid-name)
+src/OpenStudioLandscapes/engine/utils/__init__.py:221:12: C0103: Variable name "COMPOSE_SCOPE" doesn't conform to snake_case naming style (invalid-name)
+src/OpenStudioLandscapes/engine/utils/__init__.py:226:12: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
+src/OpenStudioLandscapes/engine/utils/__init__.py:207:4: W0613: Unused argument 'context' (unused-argument)
+src/OpenStudioLandscapes/engine/utils/__init__.py:233:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/utils/__init__.py:245:4: C0103: Variable name "FEATURE_CONFIG" doesn't conform to snake_case naming style (invalid-name)
+src/OpenStudioLandscapes/engine/utils/__init__.py:248:12: C0103: Variable name "FEATURE_CONFIG" doesn't conform to snake_case naming style (invalid-name)
+src/OpenStudioLandscapes/engine/utils/__init__.py:252:16: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
+src/OpenStudioLandscapes/engine/utils/__init__.py:299:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/utils/__init__.py:299:0: R1711: Useless return at end of function or method (useless-return)
+src/OpenStudioLandscapes/engine/utils/__init__.py:367:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/utils/__init__.py:415:8: W0719: Raising too general exception: Exception (broad-exception-raised)
+src/OpenStudioLandscapes/engine/utils/__init__.py:425:8: W0719: Raising too general exception: Exception (broad-exception-raised)
+src/OpenStudioLandscapes/engine/utils/__init__.py:451:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/utils/__init__.py:476:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/utils/__init__.py:522:4: R1711: Useless return at end of function or method (useless-return)
 ************* Module OpenStudioLandscapes.engine.utils.decorators.fmydocstring
 src/OpenStudioLandscapes/engine/utils/decorators/fmydocstring.py:23:0: C0301: Line too long (104/100) (line-too-long)
 src/OpenStudioLandscapes/engine/utils/decorators/fmydocstring.py:14:0: C0116: Missing function or method docstring (missing-function-docstring)
@@ -120,7 +122,7 @@ src/OpenStudioLandscapes/engine/landscape_map/assets.py:21:0: W0401: Wildcard im
 src/OpenStudioLandscapes/engine/landscape_map/assets.py:57:4: C0116: Missing function or method docstring (missing-function-docstring)
 src/OpenStudioLandscapes/engine/landscape_map/assets.py:57:4: R0914: Too many local variables (18/15) (too-many-locals)
 src/OpenStudioLandscapes/engine/landscape_map/assets.py:86:15: R1732: Consider using 'with' for resource-allocating operations (consider-using-with)
-src/OpenStudioLandscapes/engine/landscape_map/assets.py:19:0: W0614: Unused import(s) DOCKER_PROGRESS, DOCKER_CONFIG, DOCKER_USE_CACHE_GLOBAL, DOCKER_USE_CACHE_BASE, GROUP_COMPOSE, KEY_COMPOSE, ASSET_HEADER_COMPOSE, ENVIRONMENT_COMPOSE, GROUP_COMPOSE_LICENSE_SERVER, KEY_COMPOSE_LICENSE_SERVER, ASSET_HEADER_COMPOSE_LICENSE_SERVER, ENVIRONMENT_COMPOSE_LICENSE_SERVER, GROUP_COMPOSE_WORKER, KEY_COMPOSE_WORKER, ASSET_HEADER_COMPOSE_WORKER, ENVIRONMENT_COMPOSE_WORKER, GROUP_BASE_ENV, KEY_BASE_ENV, ASSET_HEADER_BASE_ENV, GROUP_BASE, KEY_BASE, GROUP_LANDSCAPE_MAP, KEY_LANDSCAPE_MAP, GROUP_TELEPORT, KEY_TELEPORT, ASSET_HEADER_TELEPORT, GROUP_DISTRIBUTABLE, KEY_DISTRIBUTABLE, ASSET_HEADER_DISTRIBUTABLE, constants_base, features, docker_config, MutableMapping, enum, OpenStudioLandscapesConfig, FeatureVolumeType, ComposeScope, ComposeCmdExclusion, ComposeNetworkMode, DockerRegistry, DockerRepositoryType, DockerConfig, EnvVar, FEATURES, constants_compose, constants_compose_license_server and constants_compose_worker from wildcard import of OpenStudioLandscapes.engine.constants (unused-wildcard-import)
+src/OpenStudioLandscapes/engine/landscape_map/assets.py:19:0: W0614: Unused import(s) DOCKER_PROGRESS, DOCKER_CONFIG, DOCKER_USE_CACHE_GLOBAL, DOCKER_USE_CACHE_BASE, GROUP_COMPOSE, KEY_COMPOSE, ASSET_HEADER_COMPOSE, ENVIRONMENT_COMPOSE, GROUP_COMPOSE_LICENSE_SERVER, KEY_COMPOSE_LICENSE_SERVER, ASSET_HEADER_COMPOSE_LICENSE_SERVER, ENVIRONMENT_COMPOSE_LICENSE_SERVER, GROUP_COMPOSE_WORKER, KEY_COMPOSE_WORKER, ASSET_HEADER_COMPOSE_WORKER, ENVIRONMENT_COMPOSE_WORKER, GROUP_BASE_ENV, KEY_BASE_ENV, ASSET_HEADER_BASE_ENV, GROUP_BASE, KEY_BASE, GROUP_LANDSCAPE_MAP, KEY_LANDSCAPE_MAP, GROUP_TELEPORT, KEY_TELEPORT, ASSET_HEADER_TELEPORT, GROUP_TRAEFIK, KEY_TRAEFIK, ASSET_HEADER_TRAEFIK, GROUP_DISTRIBUTABLE, KEY_DISTRIBUTABLE, ASSET_HEADER_DISTRIBUTABLE, constants_base, features, docker_config, MutableMapping, enum, OpenStudioLandscapesConfig, FeatureVolumeType, ComposeScope, ComposeCmdExclusion, ComposeNetworkMode, DockerRegistry, DockerRepositoryType, DockerConfig, DefaultDicts, EnvVar, FEATURES, constants_compose, constants_compose_license_server and constants_compose_worker from wildcard import of OpenStudioLandscapes.engine.constants (unused-wildcard-import)
 src/OpenStudioLandscapes/engine/landscape_map/assets.py:20:0: W0614: Unused import(s) importlib, LOGGER, namespace_packages, DISCOVERED_MODULE, feature_keys, key, IMPORTS, IMPORTED_FEATURES, module_object, e, get_dagster_logger and find_namespace_packages from wildcard import of OpenStudioLandscapes.engine.discovery.discovery (unused-wildcard-import)
 ************* Module OpenStudioLandscapes.engine.landscape_map.definitions
 src/OpenStudioLandscapes/engine/landscape_map/definitions.py:1:0: C0114: Missing module docstring (missing-module-docstring)
@@ -154,94 +156,104 @@ src/OpenStudioLandscapes/engine/base/assets.py:320:0: R0913: Too many arguments 
 src/OpenStudioLandscapes/engine/base/assets.py:320:0: R0917: Too many positional arguments (7/5) (too-many-positional-arguments)
 src/OpenStudioLandscapes/engine/base/assets.py:373:0: C0116: Missing function or method docstring (missing-function-docstring)
 src/OpenStudioLandscapes/engine/base/assets.py:415:9: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
-src/OpenStudioLandscapes/engine/base/assets.py:20:0: W0614: Unused import(s) DOCKER_PROGRESS, DOCKER_CONFIG, DOCKER_USE_CACHE_GLOBAL, DOCKER_USE_CACHE_BASE, PREFIX_COMPOSE_SCOPE, GROUP_COMPOSE, KEY_COMPOSE, ASSET_HEADER_COMPOSE, ENVIRONMENT_COMPOSE, GROUP_COMPOSE_LICENSE_SERVER, KEY_COMPOSE_LICENSE_SERVER, ASSET_HEADER_COMPOSE_LICENSE_SERVER, ENVIRONMENT_COMPOSE_LICENSE_SERVER, GROUP_COMPOSE_WORKER, KEY_COMPOSE_WORKER, ASSET_HEADER_COMPOSE_WORKER, ENVIRONMENT_COMPOSE_WORKER, GROUP_BASE_ENV, KEY_BASE_ENV, GROUP_BASE, KEY_BASE, GROUP_LANDSCAPE_MAP, KEY_LANDSCAPE_MAP, ASSET_HEADER_LANDSCAPE_MAP, GROUP_TELEPORT, KEY_TELEPORT, ASSET_HEADER_TELEPORT, GROUP_DISTRIBUTABLE, KEY_DISTRIBUTABLE, ASSET_HEADER_DISTRIBUTABLE, constants_base, features, docker_config, Any, enum, GroupIn, OpenStudioLandscapesConfig, FeatureVolumeType, ComposeScope, ComposeCmdExclusion, ComposeNetworkMode, DockerRegistry, EnvVar, FEATURES, constants_compose, constants_compose_license_server and constants_compose_worker from wildcard import of OpenStudioLandscapes.engine.constants (unused-wildcard-import)
-src/OpenStudioLandscapes/engine/base/assets.py:22:0: W0614: Unused import(s) operator_, os, shlex, git, LOGGER, cmd_list_to_str, get_copy_str, get_wget_str, get_git_root, get_configs_root, get_data_root, get_bin_root, get_compose_scope, get_feature_config, expand_dict_vars, serialize_dict, metadatavalues_from_dict, get_relative_path_via_common_root, get_bool_env, get_str_env, get_dynamic_ins, Union, OpExecutionContext, get_dagster_logger, ComposeScopeException and OpenStudioLandscapesException from wildcard import of OpenStudioLandscapes.engine.utils (unused-wildcard-import)
+src/OpenStudioLandscapes/engine/base/assets.py:20:0: W0614: Unused import(s) DOCKER_PROGRESS, DOCKER_CONFIG, DOCKER_USE_CACHE_GLOBAL, DOCKER_USE_CACHE_BASE, PREFIX_COMPOSE_SCOPE, GROUP_COMPOSE, KEY_COMPOSE, ASSET_HEADER_COMPOSE, ENVIRONMENT_COMPOSE, GROUP_COMPOSE_LICENSE_SERVER, KEY_COMPOSE_LICENSE_SERVER, ASSET_HEADER_COMPOSE_LICENSE_SERVER, ENVIRONMENT_COMPOSE_LICENSE_SERVER, GROUP_COMPOSE_WORKER, KEY_COMPOSE_WORKER, ASSET_HEADER_COMPOSE_WORKER, ENVIRONMENT_COMPOSE_WORKER, GROUP_BASE_ENV, KEY_BASE_ENV, GROUP_BASE, KEY_BASE, GROUP_LANDSCAPE_MAP, KEY_LANDSCAPE_MAP, ASSET_HEADER_LANDSCAPE_MAP, GROUP_TELEPORT, KEY_TELEPORT, ASSET_HEADER_TELEPORT, GROUP_TRAEFIK, KEY_TRAEFIK, ASSET_HEADER_TRAEFIK, GROUP_DISTRIBUTABLE, KEY_DISTRIBUTABLE, ASSET_HEADER_DISTRIBUTABLE, constants_base, features, docker_config, Any, enum, GroupIn, OpenStudioLandscapesConfig, FeatureVolumeType, ComposeScope, ComposeCmdExclusion, ComposeNetworkMode, DockerRegistry, DefaultDicts, EnvVar, FEATURES, constants_compose, constants_compose_license_server and constants_compose_worker from wildcard import of OpenStudioLandscapes.engine.constants (unused-wildcard-import)
+src/OpenStudioLandscapes/engine/base/assets.py:22:0: W0614: Unused import(s) operator_, os, shlex, git, LOGGER, cmd_list_to_str, get_copy_str, get_wget_str, get_git_root, get_configs_root, get_data_root, get_bin_root, get_compose_scope, get_feature_config, expand_dict_vars, serialize_dict, metadatavalues_from_dict, get_relative_path_via_common_root, get_bool_env, get_str_env, get_dynamic_ins, get_teleport_app_dict, Union, OpExecutionContext, get_dagster_logger, ComposeScopeException and OpenStudioLandscapesException from wildcard import of OpenStudioLandscapes.engine.utils (unused-wildcard-import)
 src/OpenStudioLandscapes/engine/base/assets.py:23:0: W0614: Unused import(s) queue, subprocess, threading, OpenStudioLandscapesDockerException, OutputReader, execute_in_threads and docker_process_cmds from wildcard import of OpenStudioLandscapes.engine.utils.docker (unused-wildcard-import)
 ************* Module OpenStudioLandscapes.engine.base.definitions
 src/OpenStudioLandscapes/engine/base/definitions.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 ************* Module OpenStudioLandscapes.engine.base.ops.__init__
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:842:0: C0301: Line too long (110/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:851:0: C0301: Line too long (149/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:917:0: C0301: Line too long (106/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:962:0: C0301: Line too long (135/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:964:0: C0301: Line too long (124/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:973:0: C0301: Line too long (125/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:988:0: C0301: Line too long (130/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1003:0: C0301: Line too long (127/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1018:0: C0301: Line too long (127/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1043:0: C0301: Line too long (116/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1064:0: C0301: Line too long (133/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1087:0: C0301: Line too long (112/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1088:0: C0301: Line too long (103/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1183:0: C0301: Line too long (143/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1313:0: C0301: Line too long (107/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1343:0: C0301: Line too long (116/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1344:0: C0301: Line too long (119/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1345:0: C0301: Line too long (193/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1347:0: C0301: Line too long (198/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1349:0: C0301: Line too long (208/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1351:0: C0301: Line too long (193/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1353:0: C0301: Line too long (177/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1354:0: C0301: Line too long (111/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1355:0: C0301: Line too long (179/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1357:0: C0301: Line too long (164/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1361:0: C0301: Line too long (181/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1364:0: C0301: Line too long (118/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1365:0: C0301: Line too long (181/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1367:0: C0301: Line too long (164/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1370:0: C0301: Line too long (148/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1372:0: C0301: Line too long (149/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1375:0: C0301: Line too long (193/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1377:0: C0301: Line too long (152/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1406:0: C0301: Line too long (101/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1409:0: C0301: Line too long (101/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1425:0: C0301: Line too long (103/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1427:0: C0301: Line too long (129/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1428:0: C0301: Line too long (151/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1448:0: C0301: Line too long (123/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1:0: C0302: Too many lines in module (1617/1000) (too-many-lines)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:88:9: W0511: Todo (fixme)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:338:17: W0511: Todo: "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)), (fixme)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:428:1: W0511: Todo (fixme)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:470:9: W0511: Todo: (fixme)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:550:1: W0511: Todo (fixme)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:588:1: W0511: Todo (fixme)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:668:1: W0511: Todo (fixme)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:804:1: W0511: Todo (fixme)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1138:5: W0511: Todo: (fixme)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1163:5: W0511: Todo: (fixme)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1215:9: W0511: Todo (fixme)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1242:9: W0511: Todo (fixme)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1294:5: W0511: Todo (fixme)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1327:13: W0511: Todo: (fixme)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1342:13: W0511: Todo (fixme)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1530:9: W0511: Todo (fixme)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:110:0: C0301: Line too long (213/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:114:0: C0301: Line too long (154/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:119:0: C0301: Line too long (188/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:124:0: C0301: Line too long (176/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:159:0: C0301: Line too long (174/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:160:0: C0301: Line too long (122/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:192:0: C0301: Line too long (120/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:905:0: C0301: Line too long (113/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:909:0: C0301: Line too long (126/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:976:0: C0301: Line too long (105/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1021:0: C0301: Line too long (110/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1030:0: C0301: Line too long (149/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1096:0: C0301: Line too long (106/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1141:0: C0301: Line too long (135/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1143:0: C0301: Line too long (124/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1152:0: C0301: Line too long (125/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1167:0: C0301: Line too long (130/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1182:0: C0301: Line too long (127/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1197:0: C0301: Line too long (127/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1222:0: C0301: Line too long (116/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1243:0: C0301: Line too long (133/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1266:0: C0301: Line too long (112/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1267:0: C0301: Line too long (103/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1363:0: C0301: Line too long (143/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1493:0: C0301: Line too long (107/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1523:0: C0301: Line too long (116/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1524:0: C0301: Line too long (119/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1525:0: C0301: Line too long (193/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1527:0: C0301: Line too long (198/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1529:0: C0301: Line too long (208/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1531:0: C0301: Line too long (193/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1533:0: C0301: Line too long (177/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1534:0: C0301: Line too long (111/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1535:0: C0301: Line too long (179/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1537:0: C0301: Line too long (164/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1541:0: C0301: Line too long (181/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1544:0: C0301: Line too long (118/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1545:0: C0301: Line too long (181/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1547:0: C0301: Line too long (164/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1550:0: C0301: Line too long (148/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1552:0: C0301: Line too long (149/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1555:0: C0301: Line too long (193/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1557:0: C0301: Line too long (152/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1586:0: C0301: Line too long (101/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1589:0: C0301: Line too long (101/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1605:0: C0301: Line too long (103/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1607:0: C0301: Line too long (129/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1608:0: C0301: Line too long (151/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1628:0: C0301: Line too long (123/100) (line-too-long)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1:0: C0302: Too many lines in module (1797/1000) (too-many-lines)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:93:9: W0511: Todo (fixme)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:415:17: W0511: Todo: "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)), (fixme)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:505:1: W0511: Todo (fixme)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:547:9: W0511: Todo: (fixme)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:627:1: W0511: Todo (fixme)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:665:1: W0511: Todo (fixme)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:745:1: W0511: Todo (fixme)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:983:1: W0511: Todo (fixme)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1318:5: W0511: Todo: (fixme)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1343:5: W0511: Todo: (fixme)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1395:9: W0511: Todo (fixme)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1422:9: W0511: Todo (fixme)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1474:5: W0511: Todo (fixme)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1507:13: W0511: Todo: (fixme)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1522:13: W0511: Todo (fixme)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1710:9: W0511: Todo (fixme)
 ************* Module OpenStudioLandscapes.engine.base.ops
 src/OpenStudioLandscapes/engine/base/ops/__init__.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:79:8: W0621: Redefining name 'constants_base' from outer scope (line 38) (redefined-outer-name)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:81:8: W0621: Redefining name 'features' from outer scope (line 38) (redefined-outer-name)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:83:8: W0621: Redefining name 'docker_config' from outer scope (line 38) (redefined-outer-name)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:207:8: W0621: Redefining name 'docker_config' from outer scope (line 38) (redefined-outer-name)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:307:8: C0103: Variable name "DOCKER_COMPOSE" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:483:4: C0103: Argument name "FEATURE_CONFIG" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:484:4: C0103: Argument name "COMPOSE_SCOPE" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:485:4: C0103: Argument name "DOCKER_COMPOSE" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:479:0: R0913: Too many arguments (6/5) (too-many-arguments)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:479:0: R0917: Too many positional arguments (6/5) (too-many-positional-arguments)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:604:4: C0103: Argument name "NAME" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:623:4: W0621: Redefining name 'features' from outer scope (line 38) (redefined-outer-name)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:626:4: C0103: Variable name "COMPOSE_SCOPE" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:633:4: C0103: Variable name "FEATURE_CONFIG" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:681:0: C0112: Empty function docstring (empty-docstring)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1136:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1136:0: R0913: Too many arguments (7/5) (too-many-arguments)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1136:0: R0917: Too many positional arguments (7/5) (too-many-positional-arguments)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1136:0: R0914: Too many local variables (27/15) (too-many-locals)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1162:4: C0103: Variable name "DOCKER_COMPOSE" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1304:20: R1735: Consider using '{}' instead of a call to 'dict'. (use-dict-literal)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1136:0: R0915: Too many statements (76/50) (too-many-statements)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1141:4: W0613: Unused argument 'compose' (unused-argument)
-src/OpenStudioLandscapes/engine/base/ops/__init__.py:1172:4: W0612: Unused variable 'build_base_docker_config_value' (unused-variable)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:82:8: W0621: Redefining name 'constants_base' from outer scope (line 41) (redefined-outer-name)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:84:8: W0621: Redefining name 'features' from outer scope (line 41) (redefined-outer-name)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:86:8: W0621: Redefining name 'docker_config' from outer scope (line 41) (redefined-outer-name)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:284:8: W0621: Redefining name 'docker_config' from outer scope (line 41) (redefined-outer-name)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:384:8: C0103: Variable name "DOCKER_COMPOSE" doesn't conform to snake_case naming style (invalid-name)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:560:4: C0103: Argument name "FEATURE_CONFIG" doesn't conform to snake_case naming style (invalid-name)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:561:4: C0103: Argument name "COMPOSE_SCOPE" doesn't conform to snake_case naming style (invalid-name)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:562:4: C0103: Argument name "DOCKER_COMPOSE" doesn't conform to snake_case naming style (invalid-name)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:556:0: R0913: Too many arguments (6/5) (too-many-arguments)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:556:0: R0917: Too many positional arguments (6/5) (too-many-positional-arguments)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:681:4: C0103: Argument name "NAME" doesn't conform to snake_case naming style (invalid-name)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:700:4: W0621: Redefining name 'features' from outer scope (line 41) (redefined-outer-name)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:703:4: C0103: Variable name "COMPOSE_SCOPE" doesn't conform to snake_case naming style (invalid-name)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:710:4: C0103: Variable name "FEATURE_CONFIG" doesn't conform to snake_case naming style (invalid-name)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:758:0: C0112: Empty function docstring (empty-docstring)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1316:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1316:0: R0913: Too many arguments (7/5) (too-many-arguments)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1316:0: R0917: Too many positional arguments (7/5) (too-many-positional-arguments)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1316:0: R0914: Too many local variables (27/15) (too-many-locals)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1342:4: C0103: Variable name "DOCKER_COMPOSE" doesn't conform to snake_case naming style (invalid-name)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1484:20: R1735: Consider using '{}' instead of a call to 'dict'. (use-dict-literal)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1316:0: R0915: Too many statements (76/50) (too-many-statements)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1321:4: W0613: Unused argument 'compose' (unused-argument)
+src/OpenStudioLandscapes/engine/base/ops/__init__.py:1352:4: W0612: Unused variable 'build_base_docker_config_value' (unused-variable)
 ************* Module OpenStudioLandscapes.engine.distributable.assets
 src/OpenStudioLandscapes/engine/distributable/assets.py:88:13: W0511: Todo (fixme)
 src/OpenStudioLandscapes/engine/distributable/assets.py:1:0: C0114: Missing module docstring (missing-module-docstring)
@@ -253,7 +265,7 @@ src/OpenStudioLandscapes/engine/distributable/assets.py:72:4: R1720: Unnecessary
 src/OpenStudioLandscapes/engine/distributable/assets.py:84:29: W1309: Using an f-string that does not have any interpolated variables (f-string-without-interpolation)
 src/OpenStudioLandscapes/engine/distributable/assets.py:52:0: R0912: Too many branches (19/12) (too-many-branches)
 src/OpenStudioLandscapes/engine/distributable/assets.py:52:0: R0915: Too many statements (54/50) (too-many-statements)
-src/OpenStudioLandscapes/engine/distributable/assets.py:16:0: W0614: Unused import(s) DOCKER_PROGRESS, DOCKER_CONFIG, DOCKER_USE_CACHE_GLOBAL, DOCKER_USE_CACHE_BASE, PREFIX_COMPOSE_SCOPE, GROUP_COMPOSE, KEY_COMPOSE, ASSET_HEADER_COMPOSE, ENVIRONMENT_COMPOSE, GROUP_COMPOSE_LICENSE_SERVER, KEY_COMPOSE_LICENSE_SERVER, ASSET_HEADER_COMPOSE_LICENSE_SERVER, ENVIRONMENT_COMPOSE_LICENSE_SERVER, GROUP_COMPOSE_WORKER, KEY_COMPOSE_WORKER, ASSET_HEADER_COMPOSE_WORKER, ENVIRONMENT_COMPOSE_WORKER, GROUP_BASE_ENV, KEY_BASE_ENV, ASSET_HEADER_BASE_ENV, GROUP_BASE, KEY_BASE, GROUP_LANDSCAPE_MAP, KEY_LANDSCAPE_MAP, GROUP_TELEPORT, KEY_TELEPORT, ASSET_HEADER_TELEPORT, GROUP_DISTRIBUTABLE, KEY_DISTRIBUTABLE, constants_base, features, docker_config, MutableMapping, enum, OpenStudioLandscapesConfig, FeatureVolumeType, ComposeScope, ComposeCmdExclusion, ComposeNetworkMode, DockerRegistry, DockerRepositoryType, DockerConfig, EnvVar, FEATURES, constants_compose, constants_compose_license_server and constants_compose_worker from wildcard import of OpenStudioLandscapes.engine.constants (unused-wildcard-import)
+src/OpenStudioLandscapes/engine/distributable/assets.py:16:0: W0614: Unused import(s) DOCKER_PROGRESS, DOCKER_CONFIG, DOCKER_USE_CACHE_GLOBAL, DOCKER_USE_CACHE_BASE, PREFIX_COMPOSE_SCOPE, GROUP_COMPOSE, KEY_COMPOSE, ASSET_HEADER_COMPOSE, ENVIRONMENT_COMPOSE, GROUP_COMPOSE_LICENSE_SERVER, KEY_COMPOSE_LICENSE_SERVER, ASSET_HEADER_COMPOSE_LICENSE_SERVER, ENVIRONMENT_COMPOSE_LICENSE_SERVER, GROUP_COMPOSE_WORKER, KEY_COMPOSE_WORKER, ASSET_HEADER_COMPOSE_WORKER, ENVIRONMENT_COMPOSE_WORKER, GROUP_BASE_ENV, KEY_BASE_ENV, ASSET_HEADER_BASE_ENV, GROUP_BASE, KEY_BASE, GROUP_LANDSCAPE_MAP, KEY_LANDSCAPE_MAP, GROUP_TELEPORT, KEY_TELEPORT, ASSET_HEADER_TELEPORT, GROUP_TRAEFIK, KEY_TRAEFIK, ASSET_HEADER_TRAEFIK, GROUP_DISTRIBUTABLE, KEY_DISTRIBUTABLE, constants_base, features, docker_config, MutableMapping, enum, OpenStudioLandscapesConfig, FeatureVolumeType, ComposeScope, ComposeCmdExclusion, ComposeNetworkMode, DockerRegistry, DockerRepositoryType, DockerConfig, DefaultDicts, EnvVar, FEATURES, constants_compose, constants_compose_license_server and constants_compose_worker from wildcard import of OpenStudioLandscapes.engine.constants (unused-wildcard-import)
 ************* Module OpenStudioLandscapes.engine.distributable.definitions
 src/OpenStudioLandscapes/engine/distributable/definitions.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 ************* Module OpenStudioLandscapes.engine.common_assets.docker_config_json
@@ -343,9 +355,9 @@ src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:305:8: W0621: Re
 src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:310:15: W0612: Unused variable 'v' (unused-variable)
 src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:362:4: C0116: Missing function or method docstring (missing-function-docstring)
 src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:390:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:23:0: W0614: Unused import(s) docker_config, DOCKER_PROGRESS, DOCKER_CONFIG, DOCKER_USE_CACHE_GLOBAL, DOCKER_USE_CACHE_BASE, PREFIX_COMPOSE_SCOPE, GROUP_COMPOSE, KEY_COMPOSE, ASSET_HEADER_COMPOSE, ENVIRONMENT_COMPOSE, GROUP_COMPOSE_LICENSE_SERVER, KEY_COMPOSE_LICENSE_SERVER, ASSET_HEADER_COMPOSE_LICENSE_SERVER, ENVIRONMENT_COMPOSE_LICENSE_SERVER, GROUP_COMPOSE_WORKER, KEY_COMPOSE_WORKER, ENVIRONMENT_COMPOSE_WORKER, GROUP_BASE_ENV, KEY_BASE_ENV, ASSET_HEADER_BASE_ENV, GROUP_BASE, KEY_BASE, GROUP_LANDSCAPE_MAP, KEY_LANDSCAPE_MAP, ASSET_HEADER_LANDSCAPE_MAP, GROUP_TELEPORT, KEY_TELEPORT, ASSET_HEADER_TELEPORT, GROUP_DISTRIBUTABLE, KEY_DISTRIBUTABLE, ASSET_HEADER_DISTRIBUTABLE, constants_base, features, enum, OpenStudioLandscapesConfig, FeatureVolumeType, ComposeCmdExclusion, ComposeNetworkMode, DockerRegistry, DockerRepositoryType, EnvVar, FEATURES, constants_compose, constants_compose_license_server and constants_compose_worker from wildcard import of OpenStudioLandscapes.engine.constants (unused-wildcard-import)
+src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:23:0: W0614: Unused import(s) docker_config, DOCKER_PROGRESS, DOCKER_CONFIG, DOCKER_USE_CACHE_GLOBAL, DOCKER_USE_CACHE_BASE, PREFIX_COMPOSE_SCOPE, GROUP_COMPOSE, KEY_COMPOSE, ASSET_HEADER_COMPOSE, ENVIRONMENT_COMPOSE, GROUP_COMPOSE_LICENSE_SERVER, KEY_COMPOSE_LICENSE_SERVER, ASSET_HEADER_COMPOSE_LICENSE_SERVER, ENVIRONMENT_COMPOSE_LICENSE_SERVER, GROUP_COMPOSE_WORKER, KEY_COMPOSE_WORKER, ENVIRONMENT_COMPOSE_WORKER, GROUP_BASE_ENV, KEY_BASE_ENV, ASSET_HEADER_BASE_ENV, GROUP_BASE, KEY_BASE, GROUP_LANDSCAPE_MAP, KEY_LANDSCAPE_MAP, ASSET_HEADER_LANDSCAPE_MAP, GROUP_TELEPORT, KEY_TELEPORT, ASSET_HEADER_TELEPORT, GROUP_TRAEFIK, KEY_TRAEFIK, ASSET_HEADER_TRAEFIK, GROUP_DISTRIBUTABLE, KEY_DISTRIBUTABLE, ASSET_HEADER_DISTRIBUTABLE, constants_base, features, enum, OpenStudioLandscapesConfig, FeatureVolumeType, ComposeCmdExclusion, ComposeNetworkMode, DockerRegistry, DockerRepositoryType, DefaultDicts, EnvVar, FEATURES, constants_compose, constants_compose_license_server and constants_compose_worker from wildcard import of OpenStudioLandscapes.engine.constants (unused-wildcard-import)
 src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:24:0: W0614: Unused import(s) importlib, LOGGER, namespace_packages, DISCOVERED_MODULE, IMPORTABLE_FEATURES, feature_keys, key, IMPORTS, feature, module_object, e, get_dagster_logger and find_namespace_packages from wildcard import of OpenStudioLandscapes.engine.discovery.discovery (unused-wildcard-import)
-src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:26:0: W0614: Unused import(s) operator_, os, shlex, git, cmd_list_to_str, get_pip_install_str, get_apt_install_str, get_copy_str, get_wget_str, get_git_root, get_configs_root, get_data_root, get_bin_root, get_image_name, parse_docker_image_path, get_compose_scope, get_feature_config, get_bool_env, get_str_env, Union, OpExecutionContext, ComposeScopeException and OpenStudioLandscapesException from wildcard import of OpenStudioLandscapes.engine.utils (unused-wildcard-import)
+src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:26:0: W0614: Unused import(s) operator_, os, shlex, git, cmd_list_to_str, get_pip_install_str, get_apt_install_str, get_copy_str, get_wget_str, get_git_root, get_configs_root, get_data_root, get_bin_root, get_image_name, parse_docker_image_path, get_compose_scope, get_feature_config, get_bool_env, get_str_env, get_teleport_app_dict, Union, OpExecutionContext, ComposeScopeException and OpenStudioLandscapesException from wildcard import of OpenStudioLandscapes.engine.utils (unused-wildcard-import)
 ************* Module OpenStudioLandscapes.engine.compose_scopes.worker.definitions
 src/OpenStudioLandscapes/engine/compose_scopes/worker/definitions.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 ************* Module OpenStudioLandscapes.engine.compose_scopes.worker.constants
@@ -355,7 +367,7 @@ src/OpenStudioLandscapes/engine/compose_scopes/worker/constants.py:16:0: W0401: 
 src/OpenStudioLandscapes/engine/compose_scopes/worker/constants.py:39:0: C0112: Empty function docstring (empty-docstring)
 src/OpenStudioLandscapes/engine/compose_scopes/worker/constants.py:60:0: C0112: Empty function docstring (empty-docstring)
 src/OpenStudioLandscapes/engine/compose_scopes/worker/constants.py:60:0: C0103: Function name "DOCKER_COMPOSE" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/compose_scopes/worker/constants.py:16:0: W0614: Unused import(s) enum, GroupIn, OpenStudioLandscapesConfig, FeatureVolumeType, ComposeCmdExclusion, ComposeNetworkMode, DockerRegistry, DockerRepositoryType, DockerConfig and EnvVar from wildcard import of OpenStudioLandscapes.engine.enums (unused-wildcard-import)
+src/OpenStudioLandscapes/engine/compose_scopes/worker/constants.py:16:0: W0614: Unused import(s) enum, GroupIn, OpenStudioLandscapesConfig, FeatureVolumeType, ComposeCmdExclusion, ComposeNetworkMode, DockerRegistry, DockerRepositoryType, DockerConfig, DefaultDicts and EnvVar from wildcard import of OpenStudioLandscapes.engine.enums (unused-wildcard-import)
 ************* Module OpenStudioLandscapes.engine.compose_scopes.default.assets
 src/OpenStudioLandscapes/engine/compose_scopes/default/assets.py:28:1: W0511: Todo: (fixme)
 src/OpenStudioLandscapes/engine/compose_scopes/default/assets.py:1:0: C0114: Missing module docstring (missing-module-docstring)
@@ -385,9 +397,9 @@ src/OpenStudioLandscapes/engine/compose_scopes/default/assets.py:266:8: W0621: R
 src/OpenStudioLandscapes/engine/compose_scopes/default/assets.py:271:15: W0612: Unused variable 'v' (unused-variable)
 src/OpenStudioLandscapes/engine/compose_scopes/default/assets.py:323:4: C0116: Missing function or method docstring (missing-function-docstring)
 src/OpenStudioLandscapes/engine/compose_scopes/default/assets.py:342:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/compose_scopes/default/assets.py:22:0: W0614: Unused import(s) docker_config, DOCKER_PROGRESS, DOCKER_CONFIG, DOCKER_USE_CACHE_GLOBAL, DOCKER_USE_CACHE_BASE, PREFIX_COMPOSE_SCOPE, GROUP_COMPOSE, KEY_COMPOSE, ENVIRONMENT_COMPOSE, GROUP_COMPOSE_LICENSE_SERVER, KEY_COMPOSE_LICENSE_SERVER, ASSET_HEADER_COMPOSE_LICENSE_SERVER, ENVIRONMENT_COMPOSE_LICENSE_SERVER, GROUP_COMPOSE_WORKER, KEY_COMPOSE_WORKER, ASSET_HEADER_COMPOSE_WORKER, ENVIRONMENT_COMPOSE_WORKER, GROUP_BASE_ENV, KEY_BASE_ENV, ASSET_HEADER_BASE_ENV, GROUP_BASE, KEY_BASE, GROUP_LANDSCAPE_MAP, KEY_LANDSCAPE_MAP, ASSET_HEADER_LANDSCAPE_MAP, GROUP_TELEPORT, KEY_TELEPORT, ASSET_HEADER_TELEPORT, GROUP_DISTRIBUTABLE, KEY_DISTRIBUTABLE, ASSET_HEADER_DISTRIBUTABLE, constants_base, features, enum, OpenStudioLandscapesConfig, FeatureVolumeType, ComposeCmdExclusion, ComposeNetworkMode, DockerRegistry, DockerRepositoryType, EnvVar, FEATURES, constants_compose, constants_compose_license_server and constants_compose_worker from wildcard import of OpenStudioLandscapes.engine.constants (unused-wildcard-import)
+src/OpenStudioLandscapes/engine/compose_scopes/default/assets.py:22:0: W0614: Unused import(s) docker_config, DOCKER_PROGRESS, DOCKER_CONFIG, DOCKER_USE_CACHE_GLOBAL, DOCKER_USE_CACHE_BASE, PREFIX_COMPOSE_SCOPE, GROUP_COMPOSE, KEY_COMPOSE, ENVIRONMENT_COMPOSE, GROUP_COMPOSE_LICENSE_SERVER, KEY_COMPOSE_LICENSE_SERVER, ASSET_HEADER_COMPOSE_LICENSE_SERVER, ENVIRONMENT_COMPOSE_LICENSE_SERVER, GROUP_COMPOSE_WORKER, KEY_COMPOSE_WORKER, ASSET_HEADER_COMPOSE_WORKER, ENVIRONMENT_COMPOSE_WORKER, GROUP_BASE_ENV, KEY_BASE_ENV, ASSET_HEADER_BASE_ENV, GROUP_BASE, KEY_BASE, GROUP_LANDSCAPE_MAP, KEY_LANDSCAPE_MAP, ASSET_HEADER_LANDSCAPE_MAP, GROUP_TELEPORT, KEY_TELEPORT, ASSET_HEADER_TELEPORT, GROUP_TRAEFIK, KEY_TRAEFIK, ASSET_HEADER_TRAEFIK, GROUP_DISTRIBUTABLE, KEY_DISTRIBUTABLE, ASSET_HEADER_DISTRIBUTABLE, constants_base, features, enum, OpenStudioLandscapesConfig, FeatureVolumeType, ComposeCmdExclusion, ComposeNetworkMode, DockerRegistry, DockerRepositoryType, DefaultDicts, EnvVar, FEATURES, constants_compose, constants_compose_license_server and constants_compose_worker from wildcard import of OpenStudioLandscapes.engine.constants (unused-wildcard-import)
 src/OpenStudioLandscapes/engine/compose_scopes/default/assets.py:23:0: W0614: Unused import(s) importlib, LOGGER, namespace_packages, DISCOVERED_MODULE, IMPORTABLE_FEATURES, feature_keys, key, IMPORTS, feature, module_object, e, get_dagster_logger and find_namespace_packages from wildcard import of OpenStudioLandscapes.engine.discovery.discovery (unused-wildcard-import)
-src/OpenStudioLandscapes/engine/compose_scopes/default/assets.py:25:0: W0614: Unused import(s) operator_, os, shlex, git, cmd_list_to_str, get_pip_install_str, get_apt_install_str, get_copy_str, get_wget_str, get_git_root, get_configs_root, get_data_root, get_bin_root, get_image_name, parse_docker_image_path, get_compose_scope, get_feature_config, get_bool_env, get_str_env, Union, OpExecutionContext, ComposeScopeException and OpenStudioLandscapesException from wildcard import of OpenStudioLandscapes.engine.utils (unused-wildcard-import)
+src/OpenStudioLandscapes/engine/compose_scopes/default/assets.py:25:0: W0614: Unused import(s) operator_, os, shlex, git, cmd_list_to_str, get_pip_install_str, get_apt_install_str, get_copy_str, get_wget_str, get_git_root, get_configs_root, get_data_root, get_bin_root, get_image_name, parse_docker_image_path, get_compose_scope, get_feature_config, get_bool_env, get_str_env, get_teleport_app_dict, Union, OpExecutionContext, ComposeScopeException and OpenStudioLandscapesException from wildcard import of OpenStudioLandscapes.engine.utils (unused-wildcard-import)
 ************* Module OpenStudioLandscapes.engine.compose_scopes.default.definitions
 src/OpenStudioLandscapes/engine/compose_scopes/default/definitions.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 ************* Module OpenStudioLandscapes.engine.compose_scopes.default.constants
@@ -396,9 +408,10 @@ src/OpenStudioLandscapes/engine/compose_scopes/default/constants.py:16:0: W0401:
 src/OpenStudioLandscapes/engine/compose_scopes/default/constants.py:37:0: C0112: Empty function docstring (empty-docstring)
 src/OpenStudioLandscapes/engine/compose_scopes/default/constants.py:58:0: C0112: Empty function docstring (empty-docstring)
 src/OpenStudioLandscapes/engine/compose_scopes/default/constants.py:58:0: C0103: Function name "DOCKER_COMPOSE" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/compose_scopes/default/constants.py:16:0: W0614: Unused import(s) enum, GroupIn, OpenStudioLandscapesConfig, FeatureVolumeType, ComposeCmdExclusion, ComposeNetworkMode, DockerRegistry, DockerRepositoryType, DockerConfig and EnvVar from wildcard import of OpenStudioLandscapes.engine.enums (unused-wildcard-import)
+src/OpenStudioLandscapes/engine/compose_scopes/default/constants.py:16:0: W0614: Unused import(s) enum, GroupIn, OpenStudioLandscapesConfig, FeatureVolumeType, ComposeCmdExclusion, ComposeNetworkMode, DockerRegistry, DockerRepositoryType, DockerConfig, DefaultDicts and EnvVar from wildcard import of OpenStudioLandscapes.engine.enums (unused-wildcard-import)
 ************* Module OpenStudioLandscapes.engine.compose_scopes.license_server.assets
 src/OpenStudioLandscapes/engine/compose_scopes/license_server/assets.py:202:0: C0301: Line too long (133/100) (line-too-long)
+src/OpenStudioLandscapes/engine/compose_scopes/license_server/assets.py:460:0: C0301: Line too long (107/100) (line-too-long)
 src/OpenStudioLandscapes/engine/compose_scopes/license_server/assets.py:27:1: W0511: Todo: (fixme)
 src/OpenStudioLandscapes/engine/compose_scopes/license_server/assets.py:175:5: W0511: Todo: (fixme)
 src/OpenStudioLandscapes/engine/compose_scopes/license_server/assets.py:1:0: C0114: Missing module docstring (missing-module-docstring)
@@ -424,9 +437,9 @@ src/OpenStudioLandscapes/engine/compose_scopes/license_server/assets.py:325:4: C
 src/OpenStudioLandscapes/engine/compose_scopes/license_server/assets.py:346:15: W0612: Unused variable 'v' (unused-variable)
 src/OpenStudioLandscapes/engine/compose_scopes/license_server/assets.py:398:4: C0116: Missing function or method docstring (missing-function-docstring)
 src/OpenStudioLandscapes/engine/compose_scopes/license_server/assets.py:417:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/compose_scopes/license_server/assets.py:22:0: W0614: Unused import(s) docker_config, DOCKER_PROGRESS, DOCKER_CONFIG, DOCKER_USE_CACHE_GLOBAL, DOCKER_USE_CACHE_BASE, PREFIX_COMPOSE_SCOPE, GROUP_COMPOSE, KEY_COMPOSE, ASSET_HEADER_COMPOSE, ENVIRONMENT_COMPOSE, GROUP_COMPOSE_LICENSE_SERVER, KEY_COMPOSE_LICENSE_SERVER, ENVIRONMENT_COMPOSE_LICENSE_SERVER, GROUP_COMPOSE_WORKER, KEY_COMPOSE_WORKER, ASSET_HEADER_COMPOSE_WORKER, ENVIRONMENT_COMPOSE_WORKER, GROUP_BASE_ENV, KEY_BASE_ENV, ASSET_HEADER_BASE_ENV, GROUP_BASE, KEY_BASE, GROUP_LANDSCAPE_MAP, KEY_LANDSCAPE_MAP, ASSET_HEADER_LANDSCAPE_MAP, GROUP_TELEPORT, KEY_TELEPORT, ASSET_HEADER_TELEPORT, GROUP_DISTRIBUTABLE, KEY_DISTRIBUTABLE, ASSET_HEADER_DISTRIBUTABLE, constants_base, features, enum, OpenStudioLandscapesConfig, FeatureVolumeType, ComposeCmdExclusion, ComposeNetworkMode, DockerRegistry, DockerRepositoryType, EnvVar, FEATURES, constants_compose, constants_compose_license_server and constants_compose_worker from wildcard import of OpenStudioLandscapes.engine.constants (unused-wildcard-import)
+src/OpenStudioLandscapes/engine/compose_scopes/license_server/assets.py:22:0: W0614: Unused import(s) docker_config, DOCKER_PROGRESS, DOCKER_CONFIG, DOCKER_USE_CACHE_GLOBAL, DOCKER_USE_CACHE_BASE, PREFIX_COMPOSE_SCOPE, GROUP_COMPOSE, KEY_COMPOSE, ASSET_HEADER_COMPOSE, ENVIRONMENT_COMPOSE, GROUP_COMPOSE_LICENSE_SERVER, KEY_COMPOSE_LICENSE_SERVER, ENVIRONMENT_COMPOSE_LICENSE_SERVER, GROUP_COMPOSE_WORKER, KEY_COMPOSE_WORKER, ASSET_HEADER_COMPOSE_WORKER, ENVIRONMENT_COMPOSE_WORKER, GROUP_BASE_ENV, KEY_BASE_ENV, ASSET_HEADER_BASE_ENV, GROUP_BASE, KEY_BASE, GROUP_LANDSCAPE_MAP, KEY_LANDSCAPE_MAP, ASSET_HEADER_LANDSCAPE_MAP, GROUP_TELEPORT, KEY_TELEPORT, ASSET_HEADER_TELEPORT, GROUP_TRAEFIK, KEY_TRAEFIK, ASSET_HEADER_TRAEFIK, GROUP_DISTRIBUTABLE, KEY_DISTRIBUTABLE, ASSET_HEADER_DISTRIBUTABLE, constants_base, features, enum, OpenStudioLandscapesConfig, FeatureVolumeType, ComposeCmdExclusion, ComposeNetworkMode, DockerRegistry, DockerRepositoryType, DefaultDicts, EnvVar, FEATURES, constants_compose, constants_compose_license_server and constants_compose_worker from wildcard import of OpenStudioLandscapes.engine.constants (unused-wildcard-import)
 src/OpenStudioLandscapes/engine/compose_scopes/license_server/assets.py:23:0: W0614: Unused import(s) importlib, LOGGER, namespace_packages, DISCOVERED_MODULE, IMPORTABLE_FEATURES, feature_keys, key, IMPORTS, feature, module_object, e, get_dagster_logger and find_namespace_packages from wildcard import of OpenStudioLandscapes.engine.discovery.discovery (unused-wildcard-import)
-src/OpenStudioLandscapes/engine/compose_scopes/license_server/assets.py:25:0: W0614: Unused import(s) operator_, os, shlex, git, cmd_list_to_str, get_pip_install_str, get_apt_install_str, get_copy_str, get_wget_str, get_git_root, get_configs_root, get_data_root, get_bin_root, get_image_name, parse_docker_image_path, get_compose_scope, get_feature_config, get_bool_env, get_str_env, Union, OpExecutionContext, ComposeScopeException and OpenStudioLandscapesException from wildcard import of OpenStudioLandscapes.engine.utils (unused-wildcard-import)
+src/OpenStudioLandscapes/engine/compose_scopes/license_server/assets.py:25:0: W0614: Unused import(s) operator_, os, shlex, git, cmd_list_to_str, get_pip_install_str, get_apt_install_str, get_copy_str, get_wget_str, get_git_root, get_configs_root, get_data_root, get_bin_root, get_image_name, parse_docker_image_path, get_compose_scope, get_feature_config, get_bool_env, get_str_env, get_teleport_app_dict, Union, OpExecutionContext, ComposeScopeException and OpenStudioLandscapesException from wildcard import of OpenStudioLandscapes.engine.utils (unused-wildcard-import)
 ************* Module OpenStudioLandscapes.engine.compose_scopes.license_server.definitions
 src/OpenStudioLandscapes/engine/compose_scopes/license_server/definitions.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 ************* Module OpenStudioLandscapes.engine.compose_scopes.license_server.constants
@@ -435,260 +448,9 @@ src/OpenStudioLandscapes/engine/compose_scopes/license_server/constants.py:16:0:
 src/OpenStudioLandscapes/engine/compose_scopes/license_server/constants.py:37:0: C0112: Empty function docstring (empty-docstring)
 src/OpenStudioLandscapes/engine/compose_scopes/license_server/constants.py:58:0: C0112: Empty function docstring (empty-docstring)
 src/OpenStudioLandscapes/engine/compose_scopes/license_server/constants.py:58:0: C0103: Function name "DOCKER_COMPOSE" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/compose_scopes/license_server/constants.py:16:0: W0614: Unused import(s) enum, GroupIn, OpenStudioLandscapesConfig, FeatureVolumeType, ComposeCmdExclusion, ComposeNetworkMode, DockerRegistry, DockerRepositoryType, DockerConfig and EnvVar from wildcard import of OpenStudioLandscapes.engine.enums (unused-wildcard-import)
-************* Module OpenStudioLandscapes.engine.teleport.custom_services
-src/OpenStudioLandscapes/engine/teleport/custom_services.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-************* Module OpenStudioLandscapes.engine.teleport.assets
-src/OpenStudioLandscapes/engine/teleport/assets.py:167:0: C0301: Line too long (108/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:169:0: C0301: Line too long (138/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:191:0: C0301: Line too long (159/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:192:0: C0301: Line too long (147/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:412:0: C0301: Line too long (591/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:413:0: C0301: Line too long (169/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:414:0: C0301: Line too long (580/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:415:0: C0301: Line too long (158/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:416:0: C0301: Line too long (575/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:417:0: C0301: Line too long (153/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:546:0: C0301: Line too long (106/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:556:0: C0301: Line too long (106/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:564:0: C0301: Line too long (126/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:565:0: C0301: Line too long (134/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:594:0: C0301: Line too long (106/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:605:0: C0301: Line too long (111/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:617:0: C0301: Line too long (113/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:628:0: C0301: Line too long (111/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:637:0: C0301: Line too long (111/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:962:0: C0301: Line too long (101/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1102:0: C0301: Line too long (117/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1105:0: C0301: Line too long (115/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1109:0: C0301: Line too long (109/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1141:0: C0301: Line too long (113/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1192:0: C0301: Line too long (106/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1193:0: C0301: Line too long (127/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1211:0: C0301: Line too long (260/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1227:0: C0301: Line too long (254/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1231:0: C0301: Line too long (121/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1266:0: C0301: Line too long (223/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1267:0: C0301: Line too long (226/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1271:0: C0301: Line too long (248/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1280:0: C0301: Line too long (246/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1281:0: C0301: Line too long (250/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1288:0: C0301: Line too long (270/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1372:0: C0301: Line too long (120/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1375:0: C0301: Line too long (130/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1376:0: C0301: Line too long (106/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1415:0: C0301: Line too long (109/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1517:0: C0301: Line too long (102/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1:0: C0302: Too many lines in module (1543/1000) (too-many-lines)
-src/OpenStudioLandscapes/engine/teleport/assets.py:53:5: W0511: Todo: (fixme)
-src/OpenStudioLandscapes/engine/teleport/assets.py:296:17: W0511: Todo: "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)), (fixme)
-src/OpenStudioLandscapes/engine/teleport/assets.py:368:9: W0511: Todo: (fixme)
-src/OpenStudioLandscapes/engine/teleport/assets.py:394:9: W0511: Todo (fixme)
-src/OpenStudioLandscapes/engine/teleport/assets.py:765:17: W0511: Todo: for now ok (fixme)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1123:13: W0511: Todo (fixme)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1213:9: W0511: Todo: (fixme)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1260:9: W0511: Todo: (fixme)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1481:9: W0511: Todo (fixme)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1532:9: W0511: Todo (fixme)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-src/OpenStudioLandscapes/engine/teleport/assets.py:23:0: W0401: Wildcard import OpenStudioLandscapes.engine.constants (wildcard-import)
-src/OpenStudioLandscapes/engine/teleport/assets.py:24:0: W0401: Wildcard import OpenStudioLandscapes.engine.discovery.discovery (wildcard-import)
-src/OpenStudioLandscapes/engine/teleport/assets.py:25:0: W0401: Wildcard import OpenStudioLandscapes.engine.enums (wildcard-import)
-src/OpenStudioLandscapes/engine/teleport/assets.py:27:0: W0401: Wildcard import OpenStudioLandscapes.engine.utils (wildcard-import)
-src/OpenStudioLandscapes/engine/teleport/assets.py:70:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/teleport/assets.py:129:4: C0112: Empty function docstring (empty-docstring)
-src/OpenStudioLandscapes/engine/teleport/assets.py:129:4: R0914: Too many local variables (24/15) (too-many-locals)
-src/OpenStudioLandscapes/engine/teleport/assets.py:224:8: C0103: Variable name "SERVICE_NAME" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/teleport/assets.py:222:8: W0612: Unused variable 'command' (unused-variable)
-src/OpenStudioLandscapes/engine/teleport/assets.py:360:4: C0112: Empty function docstring (empty-docstring)
-src/OpenStudioLandscapes/engine/teleport/assets.py:501:19: C0117: Consider changing "not s in ['&&', ';', '@${USER}'.join(unit_link.name.split('@')), f'/usr/lib/systemd/user/{unit_link.name}']" to "s not in ['&&', ';', '@${USER}'.join(unit_link.name.split('@')), f'/usr/lib/systemd/user/{unit_link.name}']" (unnecessary-negation)
-src/OpenStudioLandscapes/engine/teleport/assets.py:535:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/teleport/assets.py:537:8: W0621: Redefining name 'env_base' from outer scope (line 848) (redefined-outer-name)
-src/OpenStudioLandscapes/engine/teleport/assets.py:703:4: C0112: Empty function docstring (empty-docstring)
-src/OpenStudioLandscapes/engine/teleport/assets.py:778:34: W1309: Using an f-string that does not have any interpolated variables (f-string-without-interpolation)
-src/OpenStudioLandscapes/engine/teleport/assets.py:848:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/teleport/assets.py:850:8: W0621: Redefining name 'features_in' from outer scope (line 875) (redefined-outer-name)
-src/OpenStudioLandscapes/engine/teleport/assets.py:875:4: C0112: Empty function docstring (empty-docstring)
-src/OpenStudioLandscapes/engine/teleport/assets.py:889:8: W0621: Redefining name 'env_base' from outer scope (line 848) (redefined-outer-name)
-src/OpenStudioLandscapes/engine/teleport/assets.py:890:8: W0621: Redefining name 'docker_config' from outer scope (line 23) (redefined-outer-name)
-src/OpenStudioLandscapes/engine/teleport/assets.py:896:15: W0612: Unused variable 'v' (unused-variable)
-src/OpenStudioLandscapes/engine/teleport/assets.py:953:4: C0112: Empty function docstring (empty-docstring)
-src/OpenStudioLandscapes/engine/teleport/assets.py:965:8: W0621: Redefining name 'e' from outer scope (line 24) (redefined-outer-name)
-src/OpenStudioLandscapes/engine/teleport/assets.py:962:12: C0415: Import outside toplevel (OpenStudioLandscapes.engine.teleport.custom_services.custom_services) (import-outside-toplevel)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1039:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1052:12: W0621: Redefining name 'key' from outer scope (line 24) (redefined-outer-name)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1093:4: R0913: Too many arguments (6/5) (too-many-arguments)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1093:4: R0917: Too many positional arguments (6/5) (too-many-positional-arguments)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1093:4: R0914: Too many local variables (19/15) (too-many-locals)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1136:12: W0621: Redefining name 'feature' from outer scope (line 24) (redefined-outer-name)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1112:8: C0103: Variable name "SERVICE_NAME" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1136:12: W0612: Unused variable 'feature' (unused-variable)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1457:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/teleport/assets.py:1508:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/teleport/assets.py:23:0: W0614: Unused import(s) DOCKER_PROGRESS, DOCKER_CONFIG, DOCKER_USE_CACHE_GLOBAL, DOCKER_USE_CACHE_BASE, GROUP_COMPOSE, KEY_COMPOSE, ASSET_HEADER_COMPOSE, ENVIRONMENT_COMPOSE, GROUP_COMPOSE_LICENSE_SERVER, KEY_COMPOSE_LICENSE_SERVER, ASSET_HEADER_COMPOSE_LICENSE_SERVER, ENVIRONMENT_COMPOSE_LICENSE_SERVER, GROUP_COMPOSE_WORKER, KEY_COMPOSE_WORKER, ASSET_HEADER_COMPOSE_WORKER, ENVIRONMENT_COMPOSE_WORKER, GROUP_BASE_ENV, KEY_BASE_ENV, ASSET_HEADER_BASE_ENV, GROUP_BASE, KEY_BASE, GROUP_LANDSCAPE_MAP, KEY_LANDSCAPE_MAP, ASSET_HEADER_LANDSCAPE_MAP, GROUP_TELEPORT, KEY_TELEPORT, GROUP_DISTRIBUTABLE, KEY_DISTRIBUTABLE, ASSET_HEADER_DISTRIBUTABLE, constants_base, features, docker_config, enum, OpenStudioLandscapesConfig, ComposeScope, ComposeCmdExclusion, DockerRegistry, DockerRepositoryType, constants_compose, constants_compose_license_server and constants_compose_worker from wildcard import of OpenStudioLandscapes.engine.constants (unused-wildcard-import)
-src/OpenStudioLandscapes/engine/teleport/assets.py:24:0: W0614: Unused import(s) importlib, LOGGER, namespace_packages, DISCOVERED_MODULE, IMPORTABLE_FEATURES, IMPORTS, feature, module_object, e, get_dagster_logger and find_namespace_packages from wildcard import of OpenStudioLandscapes.engine.discovery.discovery (unused-wildcard-import)
-src/OpenStudioLandscapes/engine/teleport/assets.py:27:0: W0614: Unused import(s) operator_, git, cmd_list_to_str, get_pip_install_str, get_apt_install_str, get_copy_str, get_wget_str, get_git_root, get_configs_root, get_data_root, get_bin_root, get_image_name, parse_docker_image_path, get_compose_scope, get_feature_config, get_bool_env, get_str_env, Union, OpExecutionContext, ComposeScopeException and OpenStudioLandscapesException from wildcard import of OpenStudioLandscapes.engine.utils (unused-wildcard-import)
-************* Module OpenStudioLandscapes.engine.teleport.definitions
-src/OpenStudioLandscapes/engine/teleport/definitions.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-************* Module OpenStudioLandscapes.engine.teleport.constants
-src/OpenStudioLandscapes/engine/teleport/constants.py:42:0: C0301: Line too long (122/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/constants.py:43:0: C0301: Line too long (130/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/constants.py:73:0: C0301: Line too long (107/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/constants.py:82:0: C0301: Line too long (107/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/constants.py:93:0: C0301: Line too long (107/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/constants.py:102:0: C0301: Line too long (107/100) (line-too-long)
-src/OpenStudioLandscapes/engine/teleport/constants.py:136:1: W0511: Todo: (fixme)
-src/OpenStudioLandscapes/engine/teleport/constants.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-src/OpenStudioLandscapes/engine/teleport/constants.py:22:0: W0401: Wildcard import OpenStudioLandscapes.engine.constants (wildcard-import)
-src/OpenStudioLandscapes/engine/teleport/constants.py:23:0: W0401: Wildcard import OpenStudioLandscapes.engine.enums (wildcard-import)
-src/OpenStudioLandscapes/engine/teleport/constants.py:158:0: C0112: Empty function docstring (empty-docstring)
-src/OpenStudioLandscapes/engine/teleport/constants.py:22:0: W0614: Unused import(s) DOCKER_PROGRESS, DOCKER_CONFIG, DOCKER_USE_CACHE_BASE, PREFIX_COMPOSE_SCOPE, GROUP_COMPOSE, KEY_COMPOSE, ASSET_HEADER_COMPOSE, ENVIRONMENT_COMPOSE, GROUP_COMPOSE_LICENSE_SERVER, KEY_COMPOSE_LICENSE_SERVER, ASSET_HEADER_COMPOSE_LICENSE_SERVER, ENVIRONMENT_COMPOSE_LICENSE_SERVER, GROUP_COMPOSE_WORKER, KEY_COMPOSE_WORKER, ASSET_HEADER_COMPOSE_WORKER, ENVIRONMENT_COMPOSE_WORKER, GROUP_BASE_ENV, KEY_BASE_ENV, ASSET_HEADER_BASE_ENV, GROUP_BASE, KEY_BASE, ASSET_HEADER_BASE, GROUP_LANDSCAPE_MAP, KEY_LANDSCAPE_MAP, ASSET_HEADER_LANDSCAPE_MAP, GROUP_TELEPORT, KEY_TELEPORT, GROUP_DISTRIBUTABLE, KEY_DISTRIBUTABLE, ASSET_HEADER_DISTRIBUTABLE, constants_base, features, docker_config, asset, enum, GroupIn, ComposeScope, ComposeCmdExclusion, DockerRegistry, DockerRepositoryType, DockerConfig, EnvVar, FEATURES, constants_compose, constants_compose_license_server and constants_compose_worker from wildcard import of OpenStudioLandscapes.engine.constants (unused-wildcard-import)
-************* Module OpenStudioLandscapes.engine.teleport.__init__
-src/OpenStudioLandscapes/engine/teleport/__init__.py:4:5: W0511: TODO: Import directly (no need for conditional) when `python_requires = >= 3.8` (fixme)
-************* Module OpenStudioLandscapes.engine.teleport
-src/OpenStudioLandscapes/engine/teleport/__init__.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-src/OpenStudioLandscapes/engine/teleport/__init__.py:11:4: C0103: Constant name "dist_name" doesn't conform to UPPER_CASE naming style (invalid-name)
+src/OpenStudioLandscapes/engine/compose_scopes/license_server/constants.py:16:0: W0614: Unused import(s) enum, GroupIn, OpenStudioLandscapesConfig, FeatureVolumeType, ComposeCmdExclusion, ComposeNetworkMode, DockerRegistry, DockerRepositoryType, DockerConfig, DefaultDicts and EnvVar from wildcard import of OpenStudioLandscapes.engine.enums (unused-wildcard-import)
 ************* Module OpenStudioLandscapes.engine.exceptions
 src/OpenStudioLandscapes/engine/exceptions/__init__.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-************* Module OpenStudioLandscapes.engine.resources.harbor.resources
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:302:0: C0301: Line too long (115/100) (line-too-long)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:627:0: C0301: Line too long (104/100) (line-too-long)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:584:13: W0511: Todo (fixme)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:30:0: C0115: Missing class docstring (missing-class-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:51:0: W0105: String statement has no effect (pointless-string-statement)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:70:0: W0105: String statement has no effect (pointless-string-statement)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:78:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:79:0: W0613: Unused argument 'kwargs' (unused-argument)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:98:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:109:14: R1732: Consider using 'with' for resource-allocating operations (consider-using-with)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:128:0: C0115: Missing class docstring (missing-class-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:128:0: R0903: Too few public methods (1/2) (too-few-public-methods)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:132:0: C0115: Missing class docstring (missing-class-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:132:0: R0903: Too few public methods (1/2) (too-few-public-methods)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:141:0: C0115: Missing class docstring (missing-class-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:141:0: R0903: Too few public methods (0/2) (too-few-public-methods)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:146:0: C0115: Missing class docstring (missing-class-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:161:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:169:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:173:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:195:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:254:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:261:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:268:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:305:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:421:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:435:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:448:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:454:41: E1101: Instance of 'LookupDict' has no 'ok' member (no-member)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:471:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:483:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:487:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:499:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:505:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:517:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:521:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:533:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:537:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:549:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:553:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:566:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:575:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:577:8: W0613: Unused argument 'project_name' (unused-argument)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:590:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:602:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:654:16: W3101: Missing timeout argument for method 'requests.get' can cause your program to hang indefinitely (missing-timeout)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:655:12: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:656:33: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:665:16: W0719: Raising too general exception: Exception (broad-exception-raised)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:666:20: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:681:16: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:692:17: C3001: Lambda expression assigned to a variable. Define a function using the "def" keyword instead. (unnecessary-lambda-assignment)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:702:26: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:785:16: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:798:17: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:801:30: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:602:4: R0915: Too many statements (55/50) (too-many-statements)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:835:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:848:12: W0719: Raising too general exception: Exception (broad-exception-raised)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:848:28: W1309: Using an f-string that does not have any interpolated variables (f-string-without-interpolation)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:862:15: E0606: Possibly using variable 'ret' before assignment (possibly-used-before-assignment)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:864:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:884:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/resources.py:146:0: R0904: Too many public methods (30/20) (too-many-public-methods)
-************* Module OpenStudioLandscapes.engine.resources.harbor.assets
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:25:0: W0401: Wildcard import OpenStudioLandscapes.engine.constants (wildcard-import)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:27:0: W0401: Wildcard import OpenStudioLandscapes.engine.resources.harbor.constants (wildcard-import)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:29:0: W0401: Wildcard import OpenStudioLandscapes.engine.utils (wildcard-import)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:50:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:50:0: C0103: Function name "LIBRARY_DELETED" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:62:47: E1101: Instance of 'LookupDict' has no 'OK' member (no-member)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:110:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:110:0: C0103: Function name "OPENSTUDIOLANDSCAPES_EXISTS" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:122:47: E1101: Instance of 'LookupDict' has no 'OK' member (no-member)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:168:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:187:4: W0621: Redefining name 'su_method' from outer scope (line 168) (redefined-outer-name)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:217:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:221:4: W0621: Redefining name 'shell' from outer scope (line 217) (redefined-outer-name)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:261:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:261:0: C0103: Function name "HARBOR_COMMANDS" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:264:4: W0621: Redefining name 'su_method' from outer scope (line 168) (redefined-outer-name)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:265:4: W0621: Redefining name 'shell' from outer scope (line 217) (redefined-outer-name)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:268:16: W0212: Access to a protected member _cmd_harbor_up of a client class (protected-access)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:269:23: W0212: Access to a protected member _cmd_harbor_up of a client class (protected-access)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:270:18: W0212: Access to a protected member _cmd_harbor_down of a client class (protected-access)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:271:21: W0212: Access to a protected member _cmd_harbor_restart of a client class (protected-access)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:272:16: W0212: Access to a protected member _cmd_harbor_ps of a client class (protected-access)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:314:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:314:0: C0103: Function name "HARBOR_HEALTH" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:352:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:352:0: C0103: Function name "HARBOR_RESET" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:354:4: W0621: Redefining name 'su_method' from outer scope (line 168) (redefined-outer-name)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:355:4: W0621: Redefining name 'shell' from outer scope (line 217) (redefined-outer-name)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:413:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:413:0: C0103: Function name "HARBOR_SYSTEMD" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:413:0: R0914: Too many local variables (23/15) (too-many-locals)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:442:9: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:445:9: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:568:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:568:0: C0103: Function name "HARBOR_DOWNLOAD" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:595:8: W3101: Missing timeout argument for method 'requests.get' can cause your program to hang indefinitely (missing-timeout)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:597:25: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:616:8: W0719: Raising too general exception: Exception (broad-exception-raised)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:617:12: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:640:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:640:0: C0103: Function name "HARBOR_EXTRACT" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:642:4: C0103: Argument name "HARBOR_DOWNLOAD" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:642:4: W0621: Redefining name 'HARBOR_DOWNLOAD' from outer scope (line 568) (redefined-outer-name)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:665:13: C3001: Lambda expression assigned to a variable. Define a function using the "def" keyword instead. (unnecessary-lambda-assignment)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:675:22: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:702:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:702:0: C0103: Function name "HARBOR_CONSTRUCT_CONFIG" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:817:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:817:0: C0103: Function name "HARBOR_WRITE_CONFIG" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:819:4: C0103: Argument name "HARBOR_CONSTRUCT_CONFIG" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:820:4: C0103: Argument name "HARBOR_EXTRACT" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:842:9: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:885:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:885:0: C0103: Function name "HARBOR_PREPARE" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:888:4: C0103: Argument name "HARBOR_EXTRACT" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:889:4: C0103: Argument name "HARBOR_WRITE_CONFIG" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:898:0: W1404: Implicit string concatenation found in call (implicit-str-concat)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:903:0: W1404: Implicit string concatenation found in call (implicit-str-concat)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:9:0: W0611: Unused List imported from typing (unused-import)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:25:0: W0614: Unused import(s) DOCKER_PROGRESS, DOCKER_CONFIG, DOCKER_USE_CACHE_GLOBAL, DOCKER_USE_CACHE_BASE, PREFIX_COMPOSE_SCOPE, GROUP_COMPOSE, KEY_COMPOSE, ASSET_HEADER_COMPOSE, ENVIRONMENT_COMPOSE, GROUP_COMPOSE_LICENSE_SERVER, KEY_COMPOSE_LICENSE_SERVER, ASSET_HEADER_COMPOSE_LICENSE_SERVER, ENVIRONMENT_COMPOSE_LICENSE_SERVER, GROUP_COMPOSE_WORKER, KEY_COMPOSE_WORKER, ASSET_HEADER_COMPOSE_WORKER, ENVIRONMENT_COMPOSE_WORKER, GROUP_BASE_ENV, KEY_BASE_ENV, GROUP_BASE, KEY_BASE, GROUP_LANDSCAPE_MAP, KEY_LANDSCAPE_MAP, ASSET_HEADER_LANDSCAPE_MAP, GROUP_TELEPORT, KEY_TELEPORT, ASSET_HEADER_TELEPORT, GROUP_DISTRIBUTABLE, KEY_DISTRIBUTABLE, ASSET_HEADER_DISTRIBUTABLE, constants_base, features, docker_config, MutableMapping, enum, GroupIn, OpenStudioLandscapesConfig, FeatureVolumeType, ComposeScope, ComposeCmdExclusion, ComposeNetworkMode, DockerRegistry, DockerRepositoryType, DockerConfig, FEATURES, constants_compose, constants_compose_license_server and constants_compose_worker from wildcard import of OpenStudioLandscapes.engine.constants (unused-wildcard-import)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:27:0: W0614: Unused import(s) GROUP_RESOURCE_HARBOR, KEY_RESOURCE_HARBOR and constants_resource_harbor from wildcard import of OpenStudioLandscapes.engine.resources.harbor.constants (unused-wildcard-import)
-src/OpenStudioLandscapes/engine/resources/harbor/assets.py:29:0: W0614: Unused import(s) operator_, shlex, git, LOGGER, cmd_list_to_str, get_pip_install_str, get_apt_install_str, get_copy_str, get_wget_str, get_git_root, get_configs_root, get_data_root, get_bin_root, get_image_name, parse_docker_image_path, get_compose_scope, get_feature_config, serialize_dict, metadatavalues_from_dict, get_relative_path_via_common_root, get_bool_env, get_str_env, get_dynamic_ins, Union, OpExecutionContext, get_dagster_logger and ComposeScopeException from wildcard import of OpenStudioLandscapes.engine.utils (unused-wildcard-import)
-************* Module OpenStudioLandscapes.engine.resources.harbor.definitions
-src/OpenStudioLandscapes/engine/resources/harbor/definitions.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-************* Module OpenStudioLandscapes.engine.resources.harbor.constants
-src/OpenStudioLandscapes/engine/resources/harbor/constants.py:21:0: C0301: Line too long (109/100) (line-too-long)
-src/OpenStudioLandscapes/engine/resources/harbor/constants.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/constants.py:20:0: W0401: Wildcard import OpenStudioLandscapes.engine.enums (wildcard-import)
-src/OpenStudioLandscapes/engine/resources/harbor/constants.py:120:0: C0112: Empty function docstring (empty-docstring)
-src/OpenStudioLandscapes/engine/resources/harbor/constants.py:21:0: W0611: Unused FEATURES imported from OpenStudioLandscapes.engine.features (unused-import)
-src/OpenStudioLandscapes/engine/resources/harbor/constants.py:20:0: W0614: Unused import(s) enum, GroupIn, OpenStudioLandscapesConfig, FeatureVolumeType, ComposeScope, ComposeCmdExclusion, ComposeNetworkMode, DockerRegistry, DockerRepositoryType, DockerConfig and EnvVar from wildcard import of OpenStudioLandscapes.engine.enums (unused-wildcard-import)
 ************* Module OpenStudioLandscapes.engine.env.assets
 src/OpenStudioLandscapes/engine/env/assets.py:338:0: C0301: Line too long (111/100) (line-too-long)
 src/OpenStudioLandscapes/engine/env/assets.py:316:5: W0511: Todo (fixme)
@@ -708,8 +470,8 @@ src/OpenStudioLandscapes/engine/env/assets.py:306:0: R0913: Too many arguments (
 src/OpenStudioLandscapes/engine/env/assets.py:306:0: R0917: Too many positional arguments (6/5) (too-many-positional-arguments)
 src/OpenStudioLandscapes/engine/env/assets.py:324:8: W0719: Raising too general exception: Exception (broad-exception-raised)
 src/OpenStudioLandscapes/engine/env/assets.py:341:4: C0103: Variable name "ENVIRONMENT_BASE" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/env/assets.py:26:0: W0614: Unused import(s) DOCKER_PROGRESS, DOCKER_CONFIG, DOCKER_USE_CACHE_GLOBAL, DOCKER_USE_CACHE_BASE, PREFIX_COMPOSE_SCOPE, GROUP_COMPOSE, KEY_COMPOSE, ASSET_HEADER_COMPOSE, ENVIRONMENT_COMPOSE, GROUP_COMPOSE_LICENSE_SERVER, KEY_COMPOSE_LICENSE_SERVER, ASSET_HEADER_COMPOSE_LICENSE_SERVER, ENVIRONMENT_COMPOSE_LICENSE_SERVER, GROUP_COMPOSE_WORKER, KEY_COMPOSE_WORKER, ASSET_HEADER_COMPOSE_WORKER, ENVIRONMENT_COMPOSE_WORKER, GROUP_BASE_ENV, KEY_BASE_ENV, GROUP_BASE, KEY_BASE, ASSET_HEADER_BASE, GROUP_LANDSCAPE_MAP, KEY_LANDSCAPE_MAP, ASSET_HEADER_LANDSCAPE_MAP, GROUP_TELEPORT, KEY_TELEPORT, ASSET_HEADER_TELEPORT, GROUP_DISTRIBUTABLE, KEY_DISTRIBUTABLE, ASSET_HEADER_DISTRIBUTABLE, constants_base, features, docker_config, Any, enum, GroupIn, OpenStudioLandscapesConfig, FeatureVolumeType, ComposeScope, ComposeCmdExclusion, ComposeNetworkMode, DockerRegistry, DockerRepositoryType, DockerConfig, FEATURES, constants_compose, constants_compose_license_server and constants_compose_worker from wildcard import of OpenStudioLandscapes.engine.constants (unused-wildcard-import)
-src/OpenStudioLandscapes/engine/env/assets.py:27:0: W0614: Unused import(s) operator_, os, shlex, git, LOGGER, cmd_list_to_str, get_pip_install_str, get_apt_install_str, get_copy_str, get_wget_str, get_configs_root, get_data_root, get_bin_root, get_image_name, parse_docker_image_path, get_compose_scope, get_feature_config, expand_dict_vars, serialize_dict, metadatavalues_from_dict, get_relative_path_via_common_root, get_bool_env, get_dynamic_ins, List, Union, OpExecutionContext, get_dagster_logger, ComposeScopeException and OpenStudioLandscapesException from wildcard import of OpenStudioLandscapes.engine.utils (unused-wildcard-import)
+src/OpenStudioLandscapes/engine/env/assets.py:26:0: W0614: Unused import(s) DOCKER_PROGRESS, DOCKER_CONFIG, DOCKER_USE_CACHE_GLOBAL, DOCKER_USE_CACHE_BASE, PREFIX_COMPOSE_SCOPE, GROUP_COMPOSE, KEY_COMPOSE, ASSET_HEADER_COMPOSE, ENVIRONMENT_COMPOSE, GROUP_COMPOSE_LICENSE_SERVER, KEY_COMPOSE_LICENSE_SERVER, ASSET_HEADER_COMPOSE_LICENSE_SERVER, ENVIRONMENT_COMPOSE_LICENSE_SERVER, GROUP_COMPOSE_WORKER, KEY_COMPOSE_WORKER, ASSET_HEADER_COMPOSE_WORKER, ENVIRONMENT_COMPOSE_WORKER, GROUP_BASE_ENV, KEY_BASE_ENV, GROUP_BASE, KEY_BASE, ASSET_HEADER_BASE, GROUP_LANDSCAPE_MAP, KEY_LANDSCAPE_MAP, ASSET_HEADER_LANDSCAPE_MAP, GROUP_TELEPORT, KEY_TELEPORT, ASSET_HEADER_TELEPORT, GROUP_TRAEFIK, KEY_TRAEFIK, ASSET_HEADER_TRAEFIK, GROUP_DISTRIBUTABLE, KEY_DISTRIBUTABLE, ASSET_HEADER_DISTRIBUTABLE, constants_base, features, docker_config, Any, enum, GroupIn, OpenStudioLandscapesConfig, FeatureVolumeType, ComposeScope, ComposeCmdExclusion, ComposeNetworkMode, DockerRegistry, DockerRepositoryType, DockerConfig, DefaultDicts, FEATURES, constants_compose, constants_compose_license_server and constants_compose_worker from wildcard import of OpenStudioLandscapes.engine.constants (unused-wildcard-import)
+src/OpenStudioLandscapes/engine/env/assets.py:27:0: W0614: Unused import(s) operator_, os, shlex, git, LOGGER, cmd_list_to_str, get_pip_install_str, get_apt_install_str, get_copy_str, get_wget_str, get_configs_root, get_data_root, get_bin_root, get_image_name, parse_docker_image_path, get_compose_scope, get_feature_config, expand_dict_vars, serialize_dict, metadatavalues_from_dict, get_relative_path_via_common_root, get_bool_env, get_dynamic_ins, get_teleport_app_dict, List, Union, OpExecutionContext, get_dagster_logger, ComposeScopeException and OpenStudioLandscapesException from wildcard import of OpenStudioLandscapes.engine.utils (unused-wildcard-import)
 ************* Module OpenStudioLandscapes.engine.env.definitions
 src/OpenStudioLandscapes/engine/env/definitions.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 ************* Module OpenStudioLandscapes.engine.env.__init__
@@ -801,11 +563,13 @@ ASSET_HEADER = {
 ENVIRONMENT = {}
 
 
+# Todo:
+#  - [ ] This asset is not currently connected to the tree
 @asset(
     **ASSET_HEADER,
     description="",
 )
-def constants_compose_license_server(
+def constants_compose_worker(
     context: AssetExecutionContext,
 ) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
     """ """
@@ -1011,113 +775,8 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
         env_in.update(
             { (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
-==OpenStudioLandscapes.engine.compose_scopes.license_server.assets:[94:116]
-==OpenStudioLandscapes.engine.teleport.assets:[844:866]
-            ),
-        },
-    )
-    def env_base(
-        context: AssetExecutionContext,
-        features_in: dict,
-    ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
-
-        context.log.info(features_in)
-
-        _env_base = features_in.pop("env_base", {})
-
-        yield Output(_env_base)
-
-        yield AssetMaterialization(
-            asset_key=context.asset_key,
-            metadata={
-                "__".join(context.asset_key.path): MetadataValue.json(_env_base),
-            },
-        )
-
-    @asset( (duplicate-code)
-src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.compose_scopes.default.assets:[242:319]
 ==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[281:358]
-        ins={
-            "group_out_base": AssetIn(
-                AssetKey([*ASSET_HEADER_BASE["key_prefix"], str(GroupIn.BASE_IN)])
-            ),
-            **feature_ins,
-        },
-    )
-    def features_in(
-        context: AssetExecutionContext,
-        group_out_base: dict,  # pylint: disable=redefined-outer-name
-        **kwargs,
-    ) -> Generator[
-        Output[MutableMapping[str, List[MutableMapping[str, List]]]]
-        | AssetMaterialization,
-        None,
-        None,
-    ]:
-        """ """
-
-        context.log.info(kwargs)
-
-        env_base = group_out_base["env_base"]
-        docker_config: DockerConfig = group_out_base["docker_config"]
-        docker_config_json: pathlib.Path = group_out_base["docker_config_json"]
-
-        docker_compose_yaml: MutableMapping[str, str] = {}
-        docker_compose: MutableMapping[str, Any] = {}
-
-        for k, v in kwargs.items():
-            # remove
-            # - env_base
-            # - constants_base
-            # - features
-            # - docker_config
-            # - docker_config_json
-            # from kwargs dicts
-            for d in [
-                "env_base",
-                "constants_base",
-                "features",
-                "docker_config",
-                "docker_config_json",
-            ]:
-                kwargs[k].pop(d)
-
-            docker_compose_yaml[k] = str(kwargs[k]["compose_yaml"])
-            docker_compose[k] = str(kwargs[k]["compose"])
-
-        kwargs["env_base"] = env_base
-        kwargs["docker_config"] = docker_config
-        kwargs["docker_config_json"] = docker_config_json
-
-        yield Output(kwargs)
-
-        kwargs_serialized = copy.deepcopy(kwargs)
-
-        serialize_dict(
-            context=context,
-            d=kwargs_serialized,
-        )
-
-        yield AssetMaterialization(
-            asset_key=context.asset_key,
-            metadata={
-                "__".join(context.asset_key.path): MetadataValue.json(
-                    kwargs_serialized
-                ),
-                "docker_compose_yaml": MetadataValue.json(docker_compose_yaml),
-                "docker_compose": MetadataValue.json(docker_compose),
-                **metadatavalues_from_dict(
-                    context=context,
-                    d_serialized=kwargs_serialized,
-                ),
-            },
-        )
-
-    @asset( (duplicate-code)
-src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
-==OpenStudioLandscapes.engine.compose_scopes.license_server.assets:[317:394]
-==OpenStudioLandscapes.engine.teleport.assets:[867:944]
         ins={
             "group_out_base": AssetIn(
                 AssetKey([*ASSET_HEADER_BASE["key_prefix"], str(GroupIn.BASE_IN)])
@@ -1256,21 +915,6 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
 
     @asset( (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
-==OpenStudioLandscapes.engine.landscape_map.assets:[35:47]
-==OpenStudioLandscapes.engine.teleport.assets:[40:55]
-    if compose_scope in compose_scopes:
-        continue
-    compose_scopes.update(compose_scope)
-    ins[f"compose_scope_{compose_scope}"] = AssetIn(
-        AssetKey(
-            [f"{PREFIX_COMPOSE_SCOPE}_{compose_scope}", "docker_compose_graph_dot"]
-        )
-    )
-
-
-if bool(ins):
- (duplicate-code)
-src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.compose_scopes.default.assets:[57:68]
 ==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[62:73]
         env_in = copy.deepcopy(env_base)
@@ -1301,31 +945,6 @@ defs = Definitions(
     ],
 ) (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
-==OpenStudioLandscapes.engine.constants:[136:158]
-==OpenStudioLandscapes.engine.resources.harbor.constants:[128:138]
-    }
-
-    yield Output(_constants)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(_constants),
-        },
-    )
-
-
-@asset(
-    **ASSET_HEADER_BASE_ENV,
-    description="",
-    name="FEATURES",
-)
-def features(
-    context: AssetExecutionContext,
-) -> Generator[Output[dict] | AssetMaterialization | Any, None, None]:
-    """ """
- (duplicate-code)
-src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.compose_scopes.default.assets:[328:338]
 ==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[367:377]
         yield Output(ret)
@@ -1353,7 +972,7 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
     group_out = get_group_out( (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.compose_scopes.worker.constants:[45:64]
-==OpenStudioLandscapes.engine.constants:[138:158]
+==OpenStudioLandscapes.engine.constants:[148:168]
     yield Output(_constants)
 
     yield AssetMaterialization(
@@ -1365,25 +984,26 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
 
 
 @asset(
-    **ASSET_HEADER,
+    **ASSET_HEADER_BASE_ENV,
     description="",
+    name="FEATURES",
 )
-def DOCKER_COMPOSE(
+def features(
     context: AssetExecutionContext,
-) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
+) -> Generator[Output[dict] | AssetMaterialization | Any, None, None]:
     """ """
  (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
-==OpenStudioLandscapes.engine.base.ops.__init__:[494:502]
+==OpenStudioLandscapes.engine.base.ops.__init__:[571:579]
 ==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[64:72]
-    env_in.update(
-        expand_dict_vars(
-            dict_to_expand={"DOCKER_COMPOSE": DOCKER_COMPOSE.as_posix()},
-            kv=env_in,
+        env_in.update(
+            expand_dict_vars(
+                dict_to_expand={"DOCKER_COMPOSE": DOCKER_COMPOSE.as_posix()},
+                kv=env_in,
+            )
         )
-    )
 
-    env_in.update( (duplicate-code)
+        env_in.update( (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.compose_scopes.default.assets:[349:358]
 ==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[367:376]
@@ -1409,29 +1029,7 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
         )
  (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
-==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[337:345]
-==OpenStudioLandscapes.engine.teleport.assets:[788:796]
-        serialize_dict(
-            context=context,
-            d=kwargs_serialized,
-        )
-
-        yield AssetMaterialization(
-            asset_key=context.asset_key,
-            metadata={ (duplicate-code)
-src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
-==OpenStudioLandscapes.engine.compose_scopes.default.constants:[43:62]
-==OpenStudioLandscapes.engine.resources.harbor.constants:[130:138]
-    yield Output(_constants)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(_constants),
-        },
-    ) (duplicate-code)
-src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
-==OpenStudioLandscapes.engine.base.ops.__init__:[98:106]
+==OpenStudioLandscapes.engine.base.ops.__init__:[174:182]
 ==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[335:343]
         kwargs_serialized = copy.deepcopy(kwargs)
 
@@ -1442,7 +1040,7 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
 
         yield AssetMaterialization( (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
-==OpenStudioLandscapes.engine.base.ops.__init__:[154:162]
+==OpenStudioLandscapes.engine.base.ops.__init__:[231:239]
 ==OpenStudioLandscapes.engine.compose_scopes.default.assets:[296:304]
         kwargs_serialized = copy.deepcopy(kwargs)
 
@@ -1474,37 +1072,10 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
     ]:
         """ """
  (duplicate-code)
-src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
-==OpenStudioLandscapes.engine.compose_scopes.license_server.assets:[252:260]
-==OpenStudioLandscapes.engine.teleport.assets:[878:886]
-    ) -> Generator[
-        Output[MutableMapping[str, List[MutableMapping[str, List]]]]
-        | AssetMaterialization,
-        None,
-        None,
-    ]:
-        """ """
- (duplicate-code)
-src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
-==OpenStudioLandscapes.engine.constants:[34:39]
-==OpenStudioLandscapes.engine.resources.harbor.resources:[174:179]
-            "auto",
-            "quiet",
-            "plain",
-            "tty",
-            "rawjson", (duplicate-code)
-src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
-==OpenStudioLandscapes.engine.__init__:[10:15]
-==OpenStudioLandscapes.engine.teleport.__init__:[11:16]
-    __version__ = version(dist_name)
-except PackageNotFoundError:  # pragma: no cover
-    __version__ = "unknown"
-finally:
-    del version, PackageNotFoundError (duplicate-code)
+src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.default.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.worker.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.license_server.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
-src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.default.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
 
 ------------------------------------------------------------------
-Your code has been rated at 6.45/10 (previous run: 7.23/10, -0.78)
+Your code has been rated at 6.50/10 (previous run: 7.23/10, -0.73)
 

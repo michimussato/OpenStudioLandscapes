@@ -8,7 +8,6 @@ __all__ = [
     "op_env",
     "op_constants",
     "op_docker_compose_graph",
-    # "op_teleport_apps_yaml",
 ]
 
 import base64
@@ -17,7 +16,6 @@ import os
 import pathlib
 import shlex
 import shutil
-# import textwrap
 from collections import ChainMap
 from functools import reduce
 from typing import Any, Generator, List, MutableMapping, Union
@@ -87,82 +85,9 @@ def factory_feature_out(
         docker_config_json = kwargs["group_in"].pop("docker_config_json")
         kwargs["docker_config_json"] = docker_config_json
 
-        # kwargs["group_in"].pop("teleport_app_dict", None)
-
         # Todo
         #  - [ ] replace "group_out" (i.e. with "compose_yaml" or "feature_out")
-        #  - [ ] good idea to kwargs["group_in"].pop("teleport_app_dict", None) here?
         kwargs["compose_yaml"] = kwargs["env"]["DOCKER_COMPOSE"]
-
-        # """
-        # Reference:
-        # {
-        #   [...],
-        #   "env": {
-        #     "AUTHOR": "michimussato@gmail.com",
-        #     "COMPOSE_SCOPE": "default",
-        #     "CONFIGS_ROOT": "/home/michael/git/repos/OpenStudioLandscapes/configs",
-        #     "CREATED_AT": "2025-11-10_13-41-09",
-        #     "CREATED_BY": "michael",
-        #     "CREATED_ON": "lenovo",
-        #     "DEFAULT_CONFIG_DBPATH": "/data/configdb",
-        #     "DOCKER_COMPOSE": "/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-11-10-13-40-56-8c8924abef9544d59155641136b24934/Kitsu__Kitsu/Kitsu__DOCKER_COMPOSE/docker_compose/docker-compose.yml",
-        #     "DOCKER_USE_CACHE": "False",
-        #     "DOT_FEATURES": "/home/michael/git/repos/OpenStudioLandscapes/.features",
-        #     "DOT_LANDSCAPES": "/home/michael/git/repos/OpenStudioLandscapes/.landscapes",
-        #     "DOT_OVERRIDES": "/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-11-10-13-40-56-8c8924abef9544d59155641136b24934/.overrides",
-        #     "DOT_SHARED_VOLUMES": ".shared_volumes",
-        #     "GIT_ROOT": "/home/michael/git/repos/OpenStudioLandscapes",
-        #     "HOSTNAME": "kitsu",
-        #     "KITSU_ADMIN_USER": "admin@example.com",
-        #     "KITSU_DATABASE_INSTALL_DESTINATION": "/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-11-10-13-40-56-8c8924abef9544d59155641136b24934/Kitsu__Kitsu/data/kitsu",
-        #     "KITSU_DB_PASSWORD": "mysecretpassword",
-        #     "KITSU_ENABLE_JOB_QUEUE": "True",
-        #     "KITSU_PORT_CONTAINER": "80",
-        #     "KITSU_PORT_HOST": "4545",
-        #     "KITSU_POSTGRES_CONF": "/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Kitsu/.payload/config/etc/postgresql/14/main/postgresql.conf",
-        #     "KITSU_PREVIEW_FOLDER": "/opt/zou/previews",
-        #     "KITSU_SECRET_KEY": "yourrandomsecretkey",
-        #     "KITSU_TMP_DIR": "/opt/zou/tmp",
-        #     "LANDSCAPE": "2025-11-10-13-40-56-8c8924abef9544d59155641136b24934",
-        #     "OPENSTUDIOLANDSCAPES__DOMAIN_LAN": "openstudiolandscapes.lan",
-        #     "OPENSTUDIOLANDSCAPES__DOMAIN_WAN": "openstudiolandscapes.cloud-ip.cc",
-        #     "PYTHON_MAJ": "3",
-        #     "PYTHON_MIN": "11",
-        #     "PYTHON_PAT": "11",
-        #     "TELEPORT_ENTRY_POINT_HOST": "{HOSTNAME}",
-        #     "TELEPORT_ENTRY_POINT_PORT": "{KITSU_PORT_HOST}",
-        #     "TIMEZONE": "Europe/Zurich"
-        #   },
-        #   [...]
-        # }
-        # """
-        #
-        # env_ = kwargs['env']
-        #
-        # # expand dict from itself
-        # env_expanded_ = expand_dict_vars(
-        #     dict_to_expand=copy.deepcopy(env_),
-        #     kv=env_,
-        # )
-        #
-        # # Todo
-        # #  - [ ] `public_addr` .teleport. part is hardcoded for now
-        #
-        # try:
-        #     # Todo
-        #     #  - [ ] Maybe `HOSTNAME` must be defined at all times?
-        #     kwargs["teleport_app_dict"] = get_teleport_app_dict(
-        #         name=env_expanded_["TELEPORT_ENTRY_POINT_HOST"],
-        #         description="",
-        #         uri=f"http://{env_expanded_['TELEPORT_ENTRY_POINT_HOST']}.{env_expanded_['OPENSTUDIOLANDSCAPES__DOMAIN_LAN']}:{env_expanded_['TELEPORT_ENTRY_POINT_PORT']}",
-        #         public_addr=f"{env_expanded_['HOSTNAME']}.teleport.{env_expanded_['OPENSTUDIOLANDSCAPES__DOMAIN_WAN']}",
-        #         rewrite_redirect=[],
-        #     )
-        #
-        # except KeyError as e:
-        #     kwargs["teleport_app_dict"] = {}
-        #     context.log.error(e)
 
         output_name = "feature_out"
 
@@ -188,7 +113,6 @@ def factory_feature_out(
                     context=context,
                     d_serialized=kwargs_serialized,
                 ),
-                # "teleport_app_yaml": MetadataValue.md(f"```yaml\n{yaml.safe_dump(kwargs['teleport_app_dict'])}\n```"),
             },
         )
 
@@ -877,108 +801,6 @@ def op_docker_compose_graph(
     )
 
 
-# # Todo
-# #  - [ ] convert to factory
-# @op(
-#     name="teleport_apps",
-#     ins={
-#         "features_in": In(dict),
-#     },
-#     out={
-#         "teleport_apps_yaml": Out(list),
-#     },
-#     # Todo
-#     #  - [ ] Set up OpenStudioLandscapesInfrastructure repo
-#     description=textwrap.dedent(
-#         """
-#         # Usage
-#
-#         ## YAML Snippet
-#
-#         Add the `teleport_yaml__apps` YAML snippet to
-#         the `apps` list in the `app_service` section of
-#         the `teleport.yaml` file **manually**.
-#
-#         This is a manual step because Teleport is not a mandatory
-#         dependency. If you are using Teleport (for example as part
-#         of the [OpenStudioLandscapesInfrastructure](https://github.com/michimussato/OpenStudioLandscapes-Infra)
-#         repository),
-#         feel free to add the apps there.
-#
-#         See [Teleport Configuration Reference](https://goteleport.com/docs/reference/deployment/config/#application-service)
-#
-#         ## DNS
-#
-#         ### WAN
-#
-#         Make sure, the `public_addr` is correctly set up and reachable.
-#
-#         ### LAN
-#
-#         Make sure, the `uri` will resolve correctly within
-#         the local network (LAN) - see Pihole.
-#         """
-#     )
-# )
-# def op_teleport_apps_yaml(
-#     context: OpExecutionContext,
-#     features_in: dict,  # pylint: disable=redefined-outer-name
-# ) -> Generator[Output[list[MutableMapping]] | AssetMaterialization | Any, Any, None]:
-#     """ """
-#
-#     # I want
-#     # - env_base
-#     # - constants_base
-#     # - features
-#     # - docker_config
-#     # - docker_config_json
-#     # to stay in the root level
-#     # of the dict
-#
-#     teleport_apps_ = []
-#
-#     pops = [
-#         "env_base",
-#         "docker_config",
-#         "docker_config_json",
-#     ]
-#
-#     for pop in pops:
-#         features_in.pop(pop)
-#
-#     for k, v in features_in.items():
-#         context.log.info(f"Processing Teleport app for {v}:")
-#
-#         teleport_app_dict = v.pop("teleport_app_dict", {})
-#         if not bool(teleport_app_dict):
-#             continue
-#         context.log.debug(f"Appending Teleport app: {teleport_app_dict = }")
-#         teleport_apps_.append(teleport_app_dict)
-#
-#     ########################
-#     # TELEPORT_APPS #
-#     ########################
-#
-#     # if "docker_compose_graph" in context.selected_output_names:
-#
-#     yield Output(
-#         output_name="teleport_apps_yaml",
-#         value=teleport_apps_,
-#     )
-#
-#     yield AssetMaterialization(
-#         asset_key=context.asset_key_for_output("teleport_apps_yaml"),
-#         metadata={
-#             # "__".join(
-#             #     context.asset_key_for_output("teleport_apps").path
-#             # ): MetadataValue.json(teleport_apps_),
-#             "teleport_yaml__apps": MetadataValue.md(f"```yaml\n{yaml.safe_dump(teleport_apps_)}\n```"),
-#             # "svg_path": MetadataValue.path(svg),
-#             # "png_path": MetadataValue.path(png),
-#         },
-#     )
-
-
 # Todo
 #  - [ ] What is not needed anymore?
 #  - [ ] convert to factory
@@ -1309,7 +1131,6 @@ def op_docker_compose_graph(
         "group_out": Out(pathlib.Path),
         "compose_project_name": Out(str),
         "docker_compose_commands": Out(dict[str, list]),
-        # "teleport_apps": Out(list[dict]),
     },
 )
 def op_group_out(

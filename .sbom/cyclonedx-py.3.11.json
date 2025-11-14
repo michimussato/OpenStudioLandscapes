@@ -158,7 +158,7 @@
       "version": "0.0.0"
     },
     {
-      "bom-ref": "BomRef.5636718192697069.6497183515662838",
+      "bom-ref": "BomRef.5114274008199143.2613935939673",
       "description": "A Toolkit to create dynamic Animation and VFX studio environments for robust automation and pipelines.",
       "externalReferences": [
         {
@@ -173,81 +173,6 @@
         }
       ],
       "name": "OpenStudioLandscapes",
-      "type": "library",
-      "version": "0.0.0"
-    },
-    {
-      "bom-ref": "OpenStudioLandscapes-NukeRLM-8==0.0.0",
-      "description": "Nuke RLM 8 Feature for OpenStudioLandscapes",
-      "externalReferences": [
-        {
-          "comment": "from packaging metadata Project-URL: Homepage",
-          "type": "website",
-          "url": "https://github.com/michimussato/OpenStudioLandscapes-NukeRLM-8"
-        }
-      ],
-      "name": "OpenStudioLandscapes-NukeRLM-8",
-      "purl": "pkg:pypi/openstudiolandscapes-nukerlm-8@0.0.0",
-      "type": "library",
-      "version": "0.0.0"
-    },
-    {
-      "bom-ref": "OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20==0.0.0",
-      "description": "Houdini 20 SESI Feature for OpenStudioLandscapes",
-      "externalReferences": [
-        {
-          "comment": "from packaging metadata Project-URL: Homepage",
-          "type": "website",
-          "url": "https://github.com/michimussato/OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20"
-        }
-      ],
-      "name": "OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20",
-      "purl": "pkg:pypi/openstudiolandscapes-sesi-gcc-9-3-houdini-20@0.0.0",
-      "type": "library",
-      "version": "0.0.0"
-    },
-    {
-      "bom-ref": "OpenStudioLandscapes-Template==0.0.0",
-      "description": "Template Feature for OpenStudioLandscapes",
-      "externalReferences": [
-        {
-          "comment": "from packaging metadata Project-URL: Homepage",
-          "type": "website",
-          "url": "https://github.com/michimussato/OpenStudioLandscapes-Template"
-        }
-      ],
-      "name": "OpenStudioLandscapes-Template",
-      "purl": "pkg:pypi/openstudiolandscapes-template@0.0.0",
-      "type": "library",
-      "version": "0.0.0"
-    },
-    {
-      "bom-ref": "OpenStudioLandscapesUtil-HarborCLI==0.0.0",
-      "description": "A CLI or Harbor setup",
-      "externalReferences": [
-        {
-          "comment": "PackageSource: VCS 'git'",
-          "type": "vcs",
-          "url": "https://github.com/michimussato/OpenStudioLandscapesUtil-HarborCLI.git#acbde99e8ad525ace4843993ac08005e50ac333e"
-        },
-        {
-          "comment": "from packaging metadata Project-URL: Homepage",
-          "type": "website",
-          "url": "https://github.com/michimussato/OpenStudioLandscapesUtil-HarborCLI"
-        }
-      ],
-      "name": "OpenStudioLandscapesUtil-HarborCLI",
-      "properties": [
-        {
-          "name": "cdx:python:package:source:vcs:commit_id",
-          "value": "acbde99e8ad525ace4843993ac08005e50ac333e"
-        },
-        {
-          "name": "cdx:python:package:source:vcs:requested_revision",
-          "value": "v1.8.0-rc1"
-        }
-      ],
-      "purl": "pkg:pypi/openstudiolandscapesutil-harborcli@0.0.0?vcs_url=git%2Bhttps://github.com/michimussato/OpenStudioLandscapesUtil-HarborCLI.git%40acbde99e8ad525ace4843993ac08005e50ac333e",
       "type": "library",
       "version": "0.0.0"
     },
@@ -658,7 +583,7 @@
       "version": "5.0"
     },
     {
-      "bom-ref": "certifi==2025.10.5",
+      "bom-ref": "certifi==2025.11.12",
       "description": "Python package for providing Mozilla's CA Bundle.",
       "externalReferences": [
         {
@@ -687,9 +612,9 @@
         }
       ],
       "name": "certifi",
-      "purl": "pkg:pypi/certifi@2025.10.5",
+      "purl": "pkg:pypi/certifi@2025.11.12",
       "type": "library",
-      "version": "2025.10.5"
+      "version": "2025.11.12"
     },
     {
       "bom-ref": "chardet==5.2.0",
@@ -911,7 +836,7 @@
       "version": "7.2.1"
     },
     {
-      "bom-ref": "cyclonedx-python-lib==11.4.0",
+      "bom-ref": "cyclonedx-python-lib==11.5.0",
       "description": "Python library for CycloneDX",
       "externalReferences": [
         {
@@ -966,9 +891,9 @@
           "value": "validation"
         }
       ],
-      "purl": "pkg:pypi/cyclonedx-python-lib@11.4.0",
+      "purl": "pkg:pypi/cyclonedx-python-lib@11.5.0",
       "type": "library",
-      "version": "11.4.0"
+      "version": "11.5.0"
     },
     {
       "bom-ref": "dagster==1.9.11",
@@ -1327,21 +1252,6 @@
       "version": "0.17.0"
     },
     {
-      "bom-ref": "dotenv==0.9.9",
-      "description": "Deprecated package",
-      "externalReferences": [
-        {
-          "comment": "from packaging metadata: Home-page",
-          "type": "website",
-          "url": "https://github.com/pedroburon/dotenv"
-        }
-      ],
-      "name": "dotenv",
-      "purl": "pkg:pypi/dotenv@0.9.9",
-      "type": "library",
-      "version": "0.9.9"
-    },
-    {
       "bom-ref": "filelock==3.20.0",
       "description": "A platform independent file lock.",
       "externalReferences": [
@@ -1403,7 +1313,7 @@
       "version": "1.5.1"
     },
     {
-      "bom-ref": "fsspec==2025.9.0",
+      "bom-ref": "fsspec==2025.10.0",
       "description": "File-system specification",
       "externalReferences": [
         {
@@ -1461,9 +1371,9 @@
           "value": "ssh"
         }
       ],
-      "purl": "pkg:pypi/fsspec@2025.9.0",
+      "purl": "pkg:pypi/fsspec@2025.10.0",
       "type": "library",
-      "version": "2025.9.0"
+      "version": "2025.10.0"
     },
     {
       "bom-ref": "gitdb==4.0.12",
@@ -2046,7 +1956,7 @@
       "version": "0.1.2"
     },
     {
-      "bom-ref": "nox==2025.10.16",
+      "bom-ref": "nox==2025.11.12",
       "description": "Flexible test automation.",
       "externalReferences": [
         {
@@ -2079,9 +1989,9 @@
         }
       ],
       "name": "nox",
-      "purl": "pkg:pypi/nox@2025.10.16",
+      "purl": "pkg:pypi/nox@2025.11.12",
       "type": "library",
-      "version": "2025.10.16"
+      "version": "2025.11.12"
     },
     {
       "bom-ref": "packageurl-python==0.17.5",
@@ -2230,7 +2140,7 @@
       "version": "32.0.1"
     },
     {
-      "bom-ref": "pipdeptree==2.29.0",
+      "bom-ref": "pipdeptree==2.30.0",
       "description": "Command line utility to show dependency tree of packages.",
       "externalReferences": [
         {
@@ -2268,9 +2178,9 @@
         }
       ],
       "name": "pipdeptree",
-      "purl": "pkg:pypi/pipdeptree@2.29.0",
+      "purl": "pkg:pypi/pipdeptree@2.30.0",
       "type": "library",
-      "version": "2.29.0"
+      "version": "2.30.0"
     },
     {
       "bom-ref": "platformdirs==4.5.0",
@@ -2427,7 +2337,7 @@
       "version": "2.1.0"
     },
     {
-      "bom-ref": "pydantic==2.12.3",
+      "bom-ref": "pydantic==2.12.4",
       "description": "Data validation using Python type hints",
       "externalReferences": [
         {
@@ -2465,12 +2375,12 @@
         }
       ],
       "name": "pydantic",
-      "purl": "pkg:pypi/pydantic@2.12.3",
+      "purl": "pkg:pypi/pydantic@2.12.4",
       "type": "library",
-      "version": "2.12.3"
+      "version": "2.12.4"
     },
     {
-      "bom-ref": "pydantic_core==2.41.4",
+      "bom-ref": "pydantic_core==2.41.5",
       "description": "Core functionality for Pydantic validation and serialization",
       "externalReferences": [
         {
@@ -2503,9 +2413,9 @@
         }
       ],
       "name": "pydantic_core",
-      "purl": "pkg:pypi/pydantic-core@2.41.4",
+      "purl": "pkg:pypi/pydantic-core@2.41.5",
       "type": "library",
-      "version": "2.41.4"
+      "version": "2.41.5"
     },
     {
       "bom-ref": "pydot==4.0.1",
@@ -3331,7 +3241,7 @@
       "version": "2025.2"
     },
     {
-      "bom-ref": "universal_pathlib==0.3.4",
+      "bom-ref": "universal_pathlib==0.3.6",
       "description": "pathlib api extended to use fsspec backends",
       "externalReferences": [
         {
@@ -3354,9 +3264,9 @@
         }
       ],
       "name": "universal_pathlib",
-      "purl": "pkg:pypi/universal-pathlib@0.3.4",
+      "purl": "pkg:pypi/universal-pathlib@0.3.6",
       "type": "library",
-      "version": "0.3.4"
+      "version": "0.3.6"
     },
     {
       "bom-ref": "uri-template==1.3.0",
@@ -3507,7 +3417,7 @@
       "version": "5.0.3"
     },
     {
-      "bom-ref": "webcolors==24.11.1",
+      "bom-ref": "webcolors==25.10.0",
       "description": "A library for working with the color formats defined by HTML and CSS.",
       "externalReferences": [
         {
@@ -3536,9 +3446,9 @@
         }
       ],
       "name": "webcolors",
-      "purl": "pkg:pypi/webcolors@24.11.1",
+      "purl": "pkg:pypi/webcolors@25.10.0",
       "type": "library",
-      "version": "24.11.1"
+      "version": "25.10.0"
     }
   ],
   "dependencies": [
@@ -3567,55 +3477,6 @@
     {
       "dependsOn": [
         "GitPython==3.1.45",
-        "OpenStudioLandscapes==0.0.0",
-        "PyYAML==6.0.3",
-        "SnakeMD==2.4.0",
-        "cyclonedx-bom==7.2.1",
-        "dagster==1.9.11",
-        "docker-compose-graph==1.0.0",
-        "graphviz==0.21",
-        "nox==2025.10.16",
-        "pipdeptree==2.29.0",
-        "setuptools==80.9.0"
-      ],
-      "ref": "OpenStudioLandscapes-NukeRLM-8==0.0.0"
-    },
-    {
-      "dependsOn": [
-        "GitPython==3.1.45",
-        "OpenStudioLandscapes==0.0.0",
-        "PyYAML==6.0.3",
-        "SnakeMD==2.4.0",
-        "cyclonedx-bom==7.2.1",
-        "dagster==1.9.11",
-        "docker-compose-graph==1.0.0",
-        "graphviz==0.21",
-        "nox==2025.10.16",
-        "pipdeptree==2.29.0",
-        "setuptools==80.9.0"
-      ],
-      "ref": "OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20==0.0.0"
-    },
-    {
-      "dependsOn": [
-        "GitPython==3.1.45",
-        "OpenStudioLandscapes==0.0.0",
-        "PyYAML==6.0.3",
-        "SnakeMD==2.4.0",
-        "cyclonedx-bom==7.2.1",
-        "dagster==1.9.11",
-        "docker-compose-graph==1.0.0",
-        "graphviz==0.21",
-        "nox==2025.10.16",
-        "pipdeptree==2.29.0",
-        "setuptools==80.9.0"
-      ],
-      "ref": "OpenStudioLandscapes-Template==0.0.0"
-    },
-    {
-      "dependsOn": [
-        "GitPython==3.1.45",
-        "OpenStudioLandscapesUtil-HarborCLI==0.0.0",
         "PyYAML==6.0.3",
         "SnakeMD==2.4.0",
         "cyclonedx-bom==7.2.1",
@@ -3624,22 +3485,12 @@
         "docker-compose-graph==1.0.0",
         "docker==7.1.0",
         "graphviz==0.21",
-        "nox==2025.10.16",
-        "pipdeptree==2.29.0",
+        "nox==2025.11.12",
+        "pipdeptree==2.30.0",
         "pydot==4.0.1",
         "setuptools==80.9.0"
       ],
       "ref": "OpenStudioLandscapes==0.0.0"
-    },
-    {
-      "dependsOn": [
-        "PyYAML==6.0.3",
-        "SnakeMD==2.4.0",
-        "dotenv==0.9.9",
-        "requests==2.32.5",
-        "setuptools==80.9.0"
-      ],
-      "ref": "OpenStudioLandscapesUtil-HarborCLI==0.0.0"
     },
     {
       "ref": "PyYAML==6.0.3"
@@ -3695,7 +3546,7 @@
       "ref": "boolean.py==5.0"
     },
     {
-      "ref": "certifi==2025.10.5"
+      "ref": "certifi==2025.11.12"
     },
     {
       "ref": "chardet==5.2.0"
@@ -3718,7 +3569,7 @@
     {
       "dependsOn": [
         "chardet==5.2.0",
-        "cyclonedx-python-lib==11.4.0",
+        "cyclonedx-python-lib==11.5.0",
         "packageurl-python==0.17.5",
         "packaging==25.0",
         "pip-requirements-parser==32.0.1",
@@ -3737,7 +3588,7 @@
         "sortedcontainers==2.4.0",
         "typing_extensions==4.15.0"
       ],
-      "ref": "cyclonedx-python-lib==11.4.0"
+      "ref": "cyclonedx-python-lib==11.5.0"
     },
     {
       "ref": "dagster-pipes==1.9.11"
@@ -3762,12 +3613,12 @@
         "docker==7.1.0",
         "docstring_parser==0.17.0",
         "filelock==3.20.0",
-        "fsspec==2025.9.0",
+        "fsspec==2025.10.0",
         "grpcio-health-checking==1.71.2",
         "grpcio==1.76.0",
         "packaging==25.0",
         "protobuf==5.29.5",
-        "pydantic==2.12.3",
+        "pydantic==2.12.4",
         "python-dotenv==1.2.1",
         "pytz==2025.2",
         "requests==2.32.5",
@@ -3781,7 +3632,7 @@
         "tqdm==4.67.1",
         "typing_extensions==4.15.0",
         "tzdata==2025.2",
-        "universal_pathlib==0.3.4",
+        "universal_pathlib==0.3.6",
         "watchdog==5.0.3"
       ],
       "ref": "dagster==1.9.11"
@@ -3821,12 +3672,6 @@
       "ref": "docstring_parser==0.17.0"
     },
     {
-      "dependsOn": [
-        "python-dotenv==1.2.1"
-      ],
-      "ref": "dotenv==0.9.9"
-    },
-    {
       "ref": "filelock==3.20.0"
     },
     {
@@ -3839,7 +3684,7 @@
         "tqdm==4.67.1",
         "urllib3==2.5.0"
       ],
-      "ref": "fsspec==2025.9.0"
+      "ref": "fsspec==2025.10.0"
     },
     {
       "dependsOn": [
@@ -3907,7 +3752,7 @@
         "rfc3987-syntax==1.1.0",
         "rpds-py==0.28.0",
         "uri-template==1.3.0",
-        "webcolors==24.11.1"
+        "webcolors==25.10.0"
       ],
       "ref": "jsonschema==4.25.1"
     },
@@ -3946,7 +3791,7 @@
         "tomli==2.3.0",
         "virtualenv==20.35.4"
       ],
-      "ref": "nox==2025.10.16"
+      "ref": "nox==2025.11.12"
     },
     {
       "dependsOn": [
@@ -3978,7 +3823,7 @@
         "pip==25.3",
         "virtualenv==20.35.4"
       ],
-      "ref": "pipdeptree==2.29.0"
+      "ref": "pipdeptree==2.30.0"
     },
     {
       "ref": "platformdirs==4.5.0"
@@ -3998,18 +3843,18 @@
     {
       "dependsOn": [
         "annotated-types==0.7.0",
-        "pydantic_core==2.41.4",
+        "pydantic_core==2.41.5",
         "typing-inspection==0.4.2",
         "typing_extensions==4.15.0",
         "tzdata==2025.2"
       ],
-      "ref": "pydantic==2.12.3"
+      "ref": "pydantic==2.12.4"
     },
     {
       "dependsOn": [
         "typing_extensions==4.15.0"
       ],
-      "ref": "pydantic_core==2.41.4"
+      "ref": "pydantic_core==2.41.5"
     },
     {
       "dependsOn": [
@@ -4049,7 +3894,7 @@
     },
     {
       "dependsOn": [
-        "certifi==2025.10.5",
+        "certifi==2025.11.12",
         "chardet==5.2.0",
         "charset-normalizer==3.4.4",
         "idna==3.11",
@@ -4137,13 +3982,13 @@
     },
     {
       "dependsOn": [
-        "fsspec==2025.9.0",
+        "fsspec==2025.10.0",
         "packaging==25.0",
         "pathlib_abc==0.5.2",
-        "pydantic==2.12.3",
+        "pydantic==2.12.4",
         "typing_extensions==4.15.0"
       ],
-      "ref": "universal_pathlib==0.3.4"
+      "ref": "universal_pathlib==0.3.6"
     },
     {
       "ref": "uri-template==1.3.0"
@@ -4169,11 +4014,11 @@
       "ref": "watchdog==5.0.3"
     },
     {
-      "ref": "webcolors==24.11.1"
+      "ref": "webcolors==25.10.0"
     }
   ],
   "metadata": {
-    "timestamp": "2025-10-29T22:25:07.046351+00:00",
+    "timestamp": "2025-11-14T12:13:21.851382+00:00",
     "tools": {
       "components": [
         {
@@ -4272,12 +4117,12 @@
           ],
           "name": "cyclonedx-python-lib",
           "type": "library",
-          "version": "11.4.0"
+          "version": "11.5.0"
         }
       ]
     }
   },
-  "serialNumber": "urn:uuid:9db8fc08-8be9-44ba-9596-916ae5401020",
+  "serialNumber": "urn:uuid:9e226915-bbc5-4c3d-a5e4-efdc8c42e2cc",
   "version": 1,
   "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
   "bomFormat": "CycloneDX",

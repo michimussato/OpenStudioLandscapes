@@ -544,13 +544,12 @@ def get_dynamic_ins(
 
 
 def get_teleport_app_dict(
-        name: str,
-        description: str,
-        uri: str,
-        public_addr: str,
-        rewrite_redirect: list,
+    name: str,
+    description: str,
+    uri: str,
+    public_addr: str,
+    rewrite_redirect: list,
 ) -> dict:
-
     """
 
     context.log.warning(feature)

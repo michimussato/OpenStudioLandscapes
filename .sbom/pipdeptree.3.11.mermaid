@@ -7,14 +7,14 @@ flowchart TD
     arrow["arrow\n1.4.0"]
     attrs["attrs\n25.4.0"]
     boolean-py["boolean.py\n5.0"]
-    certifi["certifi\n2025.10.5"]
+    certifi["certifi\n2025.11.12"]
     chardet["chardet\n5.2.0"]
     charset-normalizer["charset-normalizer\n3.4.4"]
     click_0["click\n8.3.0"]
     coloredlogs["coloredlogs\n14.0"]
     colorlog["colorlog\n6.10.1"]
     cyclonedx-bom["cyclonedx-bom\n7.2.1"]
-    cyclonedx-python-lib["cyclonedx-python-lib\n11.4.0"]
+    cyclonedx-python-lib["cyclonedx-python-lib\n11.5.0"]
     dagster-pipes["dagster-pipes\n1.9.11"]
     dagster-postgres["dagster-postgres\n0.25.11"]
     dagster["dagster\n1.9.11"]
@@ -24,10 +24,9 @@ flowchart TD
     docker-compose-graph["docker-compose-graph\n1.0.0"]
     docker["docker\n7.1.0"]
     docstring-parser["docstring_parser\n0.17.0"]
-    dotenv["dotenv\n0.9.9"]
     filelock["filelock\n3.20.0"]
     fqdn["fqdn\n1.5.1"]
-    fsspec["fsspec\n2025.9.0"]
+    fsspec["fsspec\n2025.10.0"]
     gitdb["gitdb\n4.0.12"]
     gitpython["GitPython\n3.1.45"]
     graphviz["graphviz\n0.21"]
@@ -49,24 +48,20 @@ flowchart TD
     markdown-it-py["markdown-it-py\n4.0.0"]
     markupsafe["MarkupSafe\n3.0.3"]
     mdurl["mdurl\n0.1.2"]
-    nox["nox\n2025.10.16"]
-    openstudiolandscapes-nukerlm-8["OpenStudioLandscapes-NukeRLM-8\n0.0.0"]
-    openstudiolandscapes-sesi-gcc-9-3-houdini-20["OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20\n0.0.0"]
-    openstudiolandscapes-template["OpenStudioLandscapes-Template\n0.0.0"]
+    nox["nox\n2025.11.12"]
     openstudiolandscapes["OpenStudioLandscapes\n0.0.0"]
-    openstudiolandscapesutil-harborcli["OpenStudioLandscapesUtil-HarborCLI\n0.0.0"]
     packageurl-python["packageurl-python\n0.17.5"]
     packaging["packaging\n25.0"]
     pathlib-abc["pathlib_abc\n0.5.2"]
     pip-requirements-parser["pip-requirements-parser\n32.0.1"]
     pip["pip\n25.3"]
-    pipdeptree["pipdeptree\n2.29.0"]
+    pipdeptree["pipdeptree\n2.30.0"]
     platformdirs["platformdirs\n4.5.0"]
     protobuf["protobuf\n5.29.5"]
     psycopg2-binary["psycopg2-binary\n2.9.11"]
     py-serializable["py-serializable\n2.1.0"]
-    pydantic-core["pydantic_core\n2.41.4"]
-    pydantic["pydantic\n2.12.3"]
+    pydantic-core["pydantic_core\n2.41.5"]
+    pydantic["pydantic\n2.12.4"]
     pydot["pydot\n4.0.1"]
     pygments["Pygments\n2.19.2"]
     pyparsing["pyparsing\n3.2.5"]
@@ -95,12 +90,12 @@ flowchart TD
     typing-extensions["typing_extensions\n4.15.0"]
     typing-inspection["typing-inspection\n0.4.2"]
     tzdata["tzdata\n2025.2"]
-    universal-pathlib["universal_pathlib\n0.3.4"]
+    universal-pathlib["universal_pathlib\n0.3.6"]
     uri-template["uri-template\n1.3.0"]
     urllib3["urllib3\n2.5.0"]
     virtualenv["virtualenv\n20.35.4"]
     watchdog["watchdog\n5.0.3"]
-    webcolors["webcolors\n24.11.1"]
+    webcolors["webcolors\n25.10.0"]
     alembic -- ">=1.4.0" --> sqlalchemy
     alembic -- ">=4.12" --> typing-extensions
     alembic -- "any" --> mako
@@ -156,7 +151,6 @@ flowchart TD
     docker-compose-graph -- "any" --> pydot
     docker-compose-graph -- "any" --> python-dotenv
     docker-compose-graph -- "any" --> pyyaml
-    dotenv -- "any" --> python-dotenv
     gitdb -- ">=3.0.1,<6" --> smmap
     gitpython -- ">=4.0.1,<5" --> gitdb
     grpcio -- "~=4.12" --> typing-extensions
@@ -185,38 +179,15 @@ flowchart TD
     openstudiolandscapes -- "any" --> docker-compose-graph
     openstudiolandscapes -- "any" --> gitpython
     openstudiolandscapes -- "any" --> nox
-    openstudiolandscapes -- "any" --> openstudiolandscapesutil-harborcli
     openstudiolandscapes -- "any" --> pydot
     openstudiolandscapes -- "any" --> pyyaml
     openstudiolandscapes -- "any" --> snakemd
-    openstudiolandscapes-nukerlm-8 -- "==1.9.11" --> dagster
-    openstudiolandscapes-nukerlm-8 -- "any" --> docker-compose-graph
-    openstudiolandscapes-nukerlm-8 -- "any" --> gitpython
-    openstudiolandscapes-nukerlm-8 -- "any" --> openstudiolandscapes
-    openstudiolandscapes-nukerlm-8 -- "any" --> pyyaml
-    openstudiolandscapes-nukerlm-8 -- "any" --> snakemd
-    openstudiolandscapes-sesi-gcc-9-3-houdini-20 -- "==1.9.11" --> dagster
-    openstudiolandscapes-sesi-gcc-9-3-houdini-20 -- "any" --> docker-compose-graph
-    openstudiolandscapes-sesi-gcc-9-3-houdini-20 -- "any" --> gitpython
-    openstudiolandscapes-sesi-gcc-9-3-houdini-20 -- "any" --> openstudiolandscapes
-    openstudiolandscapes-sesi-gcc-9-3-houdini-20 -- "any" --> pyyaml
-    openstudiolandscapes-sesi-gcc-9-3-houdini-20 -- "any" --> snakemd
-    openstudiolandscapes-template -- "==1.9.11" --> dagster
-    openstudiolandscapes-template -- "any" --> docker-compose-graph
-    openstudiolandscapes-template -- "any" --> gitpython
-    openstudiolandscapes-template -- "any" --> openstudiolandscapes
-    openstudiolandscapes-template -- "any" --> pyyaml
-    openstudiolandscapes-template -- "any" --> snakemd
-    openstudiolandscapesutil-harborcli -- "any" --> dotenv
-    openstudiolandscapesutil-harborcli -- "any" --> pyyaml
-    openstudiolandscapesutil-harborcli -- "any" --> requests
-    openstudiolandscapesutil-harborcli -- "any" --> snakemd
     pip-requirements-parser -- "any" --> packaging
     pip-requirements-parser -- "any" --> pyparsing
     pipdeptree -- ">=25" --> packaging
     pipdeptree -- ">=25.2" --> pip
     py-serializable -- ">=0.7.1,<0.8.0" --> defusedxml
-    pydantic -- "==2.41.4" --> pydantic-core
+    pydantic -- "==2.41.5" --> pydantic-core
     pydantic -- ">=0.4.2" --> typing-inspection
     pydantic -- ">=0.6.0" --> annotated-types
     pydantic -- ">=4.14.1" --> typing-extensions
