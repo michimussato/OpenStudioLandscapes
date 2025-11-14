@@ -2,6 +2,7 @@
 
 # THIS IS A CONCEPT
 
+# Be sure to be on the feature branch (not main)
 # Example
 # ISSUE="https://github.com/michimussato/OpenStudioLandscapes/issues/34" bash ./utils/create_batch_pr.sh
 
