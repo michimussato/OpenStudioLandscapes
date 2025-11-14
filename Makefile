@@ -269,6 +269,11 @@ nox_tag:
 		&& source .venv/bin/activate \
 		&& nox --sessions tag
 
+nox_checkout:
+	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
+		&& source .venv/bin/activate \
+		&& nox --sessions checkout_branch
+
 ###############################################################################
 
 #reboot:

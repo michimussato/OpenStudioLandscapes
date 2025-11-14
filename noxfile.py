@@ -1,8 +1,9 @@
 import shlex
 import shutil
 import os
-import subprocess
 import tempfile
+
+from coverage.bytecode import branch_trails
 from dotenv import load_dotenv
 
 import git
@@ -12,7 +13,6 @@ import pathlib
 import requests
 import logging
 import platform
-from itertools import zip_longest, chain
 from typing import Tuple
 
 import yaml
@@ -2328,6 +2328,76 @@ def tag_delete(session, working_directory):
         f":refs/tags/{tag_}",
     ]
     cmds.append(cmd_push)
+
+    with session.chdir(engine_dir.parent / working_directory):
+
+        session.log(
+            f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
+        )
+
+        for cmd in cmds:
+
+            session.log(f"Running Command:\n\t{shlex.join(cmd)}")
+
+            session.run(
+                *cmd,
+                env=ENV,
+                external=True,
+                silent=SESSION_RUN_SILENT,
+            )
+
+# Checkout
+@nox.session(python=None, tags=["checkout_branch"])
+@nox.parametrize(
+    "working_directory",
+    # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
+    [
+        nox.param(engine_dir.name, id=engine_dir.name),
+        *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED],
+    ],
+)
+def checkout_branch(session, working_directory):
+    """
+    Git checkout OpenStudioLandscapes modules.
+    See wiki/guides/release_strategy.md#main-release
+
+    Scope:
+    - [x] Engine
+    - [x] Features
+    """
+    # Ex:
+    # nox --session checkout_branch
+    # nox --tags checkout_branch
+
+    # BRANCHES
+    repo = git.Repo(engine_dir.parent / working_directory)
+    repo.git.fetch(tags=True, all=True, force=True)
+    branches = repo.branches
+
+    branch_ = os.environ.get("BRANCH", None)
+    if branch_ is None:
+        input_message = "Branch:\n"
+
+        branch_ = menu_from_choices(
+            input_message=input_message,
+            choices=branches,
+            description="",
+            manual_value=True,
+        )
+
+        os.environ["BRANCH"] = branch_
+
+    session.log(f"{branch_ = }")
+
+    cmds = []
+
+    cmd_checkout = [
+        shutil.which("git"),
+        "checkout",
+        branch_,
+    ]
+
+    cmds.append(cmd_checkout)
 
     with session.chdir(engine_dir.parent / working_directory):
 
