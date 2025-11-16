@@ -155,7 +155,7 @@ deactivate
 > Again, for `make` commands, see [important note](#base-setup---install-openstudiolandscapes-engine)
 
 ```
-make up
+make up && make down
 ```
 
 If you are getting errors here, make sure your user is member or the `docker` groupt

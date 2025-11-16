@@ -55,7 +55,7 @@ except KeyError as e:
 
 DOCKER_CONFIG = {
     "localhost": DockerConfig.LOCALHOST,
-    "local_registry": DockerConfig.LOCAL_REGISTRY
+    # "local_registry": DockerConfig.LOCAL_REGISTRY
 }[docker_config_]
 
 DOCKER_USE_CACHE_GLOBAL = False
