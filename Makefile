@@ -32,17 +32,17 @@ endif
 OPENSTUDIOLANDSCAPES__REPO_ROOT := $(shell pwd)
 #endif
 
-#ifdef OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT
-#OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT := $(OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT)
-#else
+ifdef OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT
+OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT := $(OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT)
+else
 OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT := $(shell pwd)
-#endif
+endif
 
-#ifdef OPENSTUDIOLANDSCAPES__DOMAIN_LAN
-#OPENSTUDIOLANDSCAPES__DOMAIN_LAN := $(OPENSTUDIOLANDSCAPES__DOMAIN_LAN)
-#else
-#OPENSTUDIOLANDSCAPES__DOMAIN_LAN := openstudiolandscapes.lan
-#endif
+ifdef OPENSTUDIOLANDSCAPES__DOMAIN_LAN
+OPENSTUDIOLANDSCAPES__DOMAIN_LAN := $(OPENSTUDIOLANDSCAPES__DOMAIN_LAN)
+else
+OPENSTUDIOLANDSCAPES__DOMAIN_LAN := openstudiolandscapes.lan
+endif
 
 #install: \
 #		disable_unattended \
@@ -70,9 +70,6 @@ install_deps:
 	sudo systemctl enable --now ssh
 
 install_gh_cli:
-	# failed: Connection timed out.
-	# failed: Connection timed out.
-	# failed: Connection timed out.
 	# https://github.com/cli/cli/blob/trunk/docs/install_linux.md#debian
 	(type -p wget >/dev/null || (sudo apt update && sudo apt install wget -y)) \
 		&& sudo mkdir -p -m 755 /etc/apt/keyrings \
@@ -173,8 +170,8 @@ install_docker:
 
 edit_hosts_file:
 	for fqdn in \
-		dagster.${OPENSTUDIOLANDSCAPES__DOMAIN_LAN} \
-		postgres-dagster.${OPENSTUDIOLANDSCAPES__DOMAIN_LAN} \
+		openstudiolandscapes-dagster.${OPENSTUDIOLANDSCAPES__DOMAIN_LAN} \
+		openstudiolandscapes-dagster-postgres.${OPENSTUDIOLANDSCAPES__DOMAIN_LAN} \
 	; do \
 		sudo sed -i -e "\$$a127.0.0.1    $$fqdn" -e "/127.0.0.1    $${fqdn}/d" /etc/hosts; \
 	done

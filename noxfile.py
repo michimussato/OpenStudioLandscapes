@@ -171,43 +171,10 @@ REPO_ENGINE = "OpenStudioLandscapes"
 
 # # REPOSITORIES FEATURES
 REPOS_FEATURE = {
-    "https": {
-        # Testing a few Features in public
-        "OpenStudioLandscapes-Ayon": "https://github.com/michimussato/OpenStudioLandscapes-Ayon.git",
-        "OpenStudioLandscapes-Dagster": "https://github.com/michimussato/OpenStudioLandscapes-Dagster.git",
-        # "OpenStudioLandscapes-Deadline-10-2": "https://github.com/michimussato/OpenStudioLandscapes-Deadline-10-2.git",
-        # "OpenStudioLandscapes-Deadline-10-2-Worker": "https://github.com/michimussato/OpenStudioLandscapes-Deadline-10-2-Worker.git",
-        # "OpenStudioLandscapes-filebrowser": "https://github.com/michimussato/OpenStudioLandscapes-filebrowser.git",
-        # "OpenStudioLandscapes-Grafana": "https://github.com/michimussato/OpenStudioLandscapes-Grafana.git",
-        "OpenStudioLandscapes-Kitsu": "https://github.com/michimussato/OpenStudioLandscapes-Kitsu.git",
-        # "OpenStudioLandscapes-LikeC4": "https://github.com/michimussato/OpenStudioLandscapes-LikeC4.git",
-        # "OpenStudioLandscapes-NukeRLM-8": "https://github.com/michimussato/OpenStudioLandscapes-NukeRLM-8.git",
-        # "OpenStudioLandscapes-OpenCue": "https://github.com/michimussato/OpenStudioLandscapes-OpenCue.git",
-        "OpenStudioLandscapes-RustDeskServer": "https://github.com/michimussato/OpenStudioLandscapes-RustDeskServer.git",
-        # "OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20": "https://github.com/michimussato/OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20.git",
-        # "OpenStudioLandscapes-Syncthing": "https://github.com/michimussato/OpenStudioLandscapes-Syncthing.git",
-        # "OpenStudioLandscapes-Twingate": "https://github.com/michimussato/OpenStudioLandscapes-Twingate.git",
-        # "OpenStudioLandscapes-Watchtower": "https://github.com/michimussato/OpenStudioLandscapes-Watchtower.git",
-    },
-    "ssh": {
-        # This is for testing while repository is private
-        "OpenStudioLandscapes-Ayon": "git@github.com:michimussato/OpenStudioLandscapes-Ayon.git",
-        "OpenStudioLandscapes-Dagster": "git@github.com:michimussato/OpenStudioLandscapes-Dagster.git",
-        "OpenStudioLandscapes-Deadline-10-2": "git@github.com:michimussato/OpenStudioLandscapes-Deadline-10-2.git",
-        "OpenStudioLandscapes-Deadline-10-2-Worker": "git@github.com:michimussato/OpenStudioLandscapes-Deadline-10-2-Worker.git",
-        "OpenStudioLandscapes-filebrowser": "git@github.com:michimussato/OpenStudioLandscapes-filebrowser.git",
-        "OpenStudioLandscapes-Grafana": "git@github.com:michimussato/OpenStudioLandscapes-Grafana.git",
-        "OpenStudioLandscapes-Kitsu": "git@github.com:michimussato/OpenStudioLandscapes-Kitsu.git",
-        "OpenStudioLandscapes-LikeC4": "git@github.com:michimussato/OpenStudioLandscapes-LikeC4.git",
-        "OpenStudioLandscapes-NukeRLM-8": "git@github.com:michimussato/OpenStudioLandscapes-NukeRLM-8.git",
-        "OpenStudioLandscapes-OpenCue": "git@github.com:michimussato/OpenStudioLandscapes-OpenCue.git",
-        "OpenStudioLandscapes-RustDeskServer": "git@github.com:michimussato/OpenStudioLandscapes-RustDeskServer.git",
-        "OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20": "git@github.com:michimussato/OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20.git",
-        "OpenStudioLandscapes-Syncthing": "git@github.com:michimussato/OpenStudioLandscapes-Syncthing.git",
-        "OpenStudioLandscapes-Twingate": "git@github.com:michimussato/OpenStudioLandscapes-Twingate.git",
-        "OpenStudioLandscapes-Watchtower": "git@github.com:michimussato/OpenStudioLandscapes-Watchtower.git",
-    },
-}["https"]
+    "OpenStudioLandscapes-Ayon": "https://github.com/michimussato/OpenStudioLandscapes-Ayon.git",
+    "OpenStudioLandscapes-Dagster": "https://github.com/michimussato/OpenStudioLandscapes-Dagster.git",
+    "OpenStudioLandscapes-Kitsu": "https://github.com/michimussato/OpenStudioLandscapes-Kitsu.git",
+}
 
 # # MAIN BRANCH
 MAIN_BRANCH = "main"

@@ -15,6 +15,7 @@ __all__ = [
     "DOCKER_PROGRESS",
 ]
 
+import os
 from typing import Any, Generator, MutableMapping
 
 from dagster import (
@@ -23,6 +24,7 @@ from dagster import (
     MetadataValue,
     Output,
     asset,
+    get_dagster_logger,
 )
 
 from OpenStudioLandscapes.engine.enums import *
@@ -31,6 +33,8 @@ from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.features import (
     FEATURES,
 )
+
+LOGGER = get_dagster_logger(__name__)
 
 DOCKER_PROGRESS = [
     "auto",
@@ -41,7 +45,19 @@ DOCKER_PROGRESS = [
 ][2]
 
 
-DOCKER_CONFIG = DockerConfig.LOCAL_REGISTRY
+try:
+    docker_config_ = os.environ["DOCKER_CONFIG"]
+except KeyError as e:
+    docker_config_ = "localhost"
+    msg = f"DOCKER_CONFIG environment variable not set; using default value `{docker_config_}`."
+    LOGGER.warning(msg)
+
+
+DOCKER_CONFIG = {
+    "localhost": DockerConfig.LOCALHOST,
+    "local_registry": DockerConfig.LOCAL_REGISTRY
+}[docker_config_]
+
 DOCKER_USE_CACHE_GLOBAL = False
 DOCKER_USE_CACHE_BASE = DOCKER_USE_CACHE_GLOBAL or False
 PREFIX_COMPOSE_SCOPE = "ComposeScope"
