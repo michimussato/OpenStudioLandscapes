@@ -99,7 +99,7 @@ class DockerConfig(enum.Enum):
         "docker_repository_type": DockerRepositoryType.PUBLIC,
     }
     # LOCAL_REGISTRY = {
-    #     "docker_push": True,
+    #     "docker_push": True,  # auto_push ?
     #     "docker_use_local": False,
     #     "docker_registry_url": DockerRegistry.LOCAL_REGISTRY,
     #     "docker_registry_port": EnvVar(

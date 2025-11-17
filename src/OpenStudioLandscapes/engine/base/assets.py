@@ -148,6 +148,7 @@ def build_docker_image(
 
     image_prefixes = parse_docker_image_path(
         docker_config=docker_config,
+        context=context,
     )
     context.log.debug(f"{image_prefixes = }")
 

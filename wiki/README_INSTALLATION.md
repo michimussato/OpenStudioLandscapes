@@ -136,11 +136,11 @@ git -C $(dirname ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT}) clone https://github.
 > source ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT}/.venv/bin/activate
 > ```
 
-| Feature                                                                                      | Command                                                                                                     |
-|----------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------|
-| [OpenStudioLandscapes-Ayon](https://github.com/michimussato/OpenStudioLandscapes-Ayon)       | `pip install OpenStudioLandscapes-Ayon@git+https://github.com/michimussato/OpenStudioLandscapes-Ayon`       |
-| [OpenStudioLandscapes-Dagster](https://github.com/michimussato/OpenStudioLandscapes-Dagster) | `pip install OpenStudioLandscapes-Dagster@git+https://github.com/michimussato/OpenStudioLandscapes-Dagster` |
-| [OpenStudioLandscapes-Kitsu](https://github.com/michimussato/OpenStudioLandscapes-Kitsu)     | `pip install OpenStudioLandscapes-Kitsu@git+https://github.com/michimussato/OpenStudioLandscapes-Kitsu`     |
+| Feature                                                                                      | Command                                                                                                                                                                                                                                   |
+|----------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [OpenStudioLandscapes-Ayon](https://github.com/michimussato/OpenStudioLandscapes-Ayon)       | `git -C ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT}/.features clone https://github.com/michimussato/OpenStudioLandscapes-Ayon.git && pip install -e ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT}/.features/OpenStudioLandscapes-Ayon[dev]`       |
+| [OpenStudioLandscapes-Dagster](https://github.com/michimussato/OpenStudioLandscapes-Dagster) | `git -C ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT}/.features clone https://github.com/michimussato/OpenStudioLandscapes-Dagster.git && pip install -e ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT}/.features/OpenStudioLandscapes-Dagster[dev]` |
+| [OpenStudioLandscapes-Kitsu](https://github.com/michimussato/OpenStudioLandscapes-Kitsu)     | `git -C ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT}/.features clone https://github.com/michimussato/OpenStudioLandscapes-Kitsu.git && pip install -e ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT}/.features/OpenStudioLandscapes-Kitsu[dev]`     |
 
 After the installation, the `venv` can be deactivated
 
@@ -158,4 +158,14 @@ deactivate
 make up && make down
 ```
 
-If you are getting errors here, make sure your user is member or the `docker` groupt
+> [!TIP]
+> 
+> If you are getting errors here, make sure your user is member or the `docker` group.
+
+The Dagster Web UI - following the terminal 
+output - will be accessible here:
+
+```
+[...]
+2025-11-16 13:06:28 +0100 - dagster-webserver - INFO - Serving dagster-webserver on http://openstudiolandscapes-dagster.openstudiolandscapes.lan:3000 in process 18442
+```

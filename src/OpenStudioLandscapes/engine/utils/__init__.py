@@ -173,10 +173,13 @@ def get_image_name(
 
 def parse_docker_image_path(
     *,
+    context: AssetExecutionContext,
     docker_config: Union[DockerConfig, MutableMapping],
 ) -> str:
 
     image_path = []
+    context.log.debug(f"{docker_config = }")
+    # docker_config = <dagster._core.definitions.assets.AssetsDefinition object at 0x7fe8eca06010>
 
     if isinstance(docker_config, DockerConfig):
         _docker_config: MutableMapping = docker_config.value
@@ -584,32 +587,41 @@ def get_image_metadata(
 ):
 
     build_base_image_data: dict = docker_image
-    build_base_docker_config: DockerConfig = docker_config
+    context.log.debug(f"{build_base_image_data = }")
+    # build_base_image_data = {'image_name': 'openstudiolandscapes_base_build_docker_image', 'image_prefixes': '', 'image_tags': ['2025-11-17-01-26-31-05a9b85aa33b47ffa7dfb21a28ca24ab'], 'image_parent': {}}
 
-    # context.log.debug(f"{build_base_image_data = }")
-    # context.log.debug(f"{build_base_docker_config = }")
+    build_base_docker_config: DockerConfig = docker_config
+    context.log.debug(f"{build_base_docker_config = }")
+    # build_base_docker_config = build_base_docker_config = <DockerConfig.LOCALHOST: {'docker_registry_url': <DockerRegistry.LOCAL_LOCALHOST: 'localhost'>, 'docker_registry_port': None, 'docker_registry_username': None, 'docker_registry_password': None, 'docker_repository_type': <DockerRepositoryType.PUBLIC: 'public'>}>
 
     build_base_parent_image_prefix: str = build_base_image_data["image_prefixes"]
-    # context.log.debug(f"{build_base_parent_image_prefix = }")
+    context.log.debug(f"{build_base_parent_image_prefix = }")
+    # build_base_parent_image_prefix = ''
 
     build_base_parent_image_name: str = build_base_image_data["image_name"]
-    # context.log.debug(f"{build_base_parent_image_name = }")
+    context.log.debug(f"{build_base_parent_image_name = }")
+    # build_base_parent_image_name = 'openstudiolandscapes_base_build_docker_image'
 
     build_base_parent_image_tags: list = build_base_image_data["image_tags"]
-    # context.log.debug(f"{build_base_parent_image_tags = }")
+    context.log.debug(f"{build_base_parent_image_tags = }")
+    # build_base_parent_image_tags = ['2025-11-17-01-26-31-05a9b85aa33b47ffa7dfb21a28ca24ab']
 
     image_name = get_image_name(context=context)
-    # context.log.debug(f"{image_name = }")
+    context.log.debug(f"{image_name = }")
+    # image_name = 'nukerlm_8_build_docker_image'
 
     image_prefixes = parse_docker_image_path(
+        context=context,
         docker_config=build_base_docker_config,
     )
     context.log.debug(f"{image_prefixes = }")
+    # image_prefixes = ''
 
     tags = [
         env.get("LANDSCAPE", str(time.time())),
     ]
     context.log.debug(f"{tags = }")
+    # tags = ['2025-11-17-01-26-31-05a9b85aa33b47ffa7dfb21a28ca24ab']
 
     return image_name, image_prefixes, tags, build_base_parent_image_prefix, build_base_parent_image_name, build_base_parent_image_tags
 
