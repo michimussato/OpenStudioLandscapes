@@ -256,7 +256,7 @@ def build_docker_image(
         docker_config_json=docker_config_json,
         docker_file=docker_file,
         tags=tags_full_str,
-        pull=not docker_config == DockerConfig.LOCALHOST
+        pull=not docker_config == DockerConfig.LOCALHOST,
     )
 
     cmds.append(cmd_build)

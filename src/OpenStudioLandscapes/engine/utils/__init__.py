@@ -23,12 +23,12 @@ __all__ = [
     "create_image",
 ]
 
-import operator as operator_
-import time
 import copy
+import operator as operator_
 import os
 import pathlib
 import shlex
+import time
 from typing import Any, List, MutableMapping, Union
 
 import git
@@ -580,10 +580,10 @@ def get_dynamic_ins(
 
 
 def get_image_metadata(
-        context: AssetExecutionContext,
-        docker_image,
-        docker_config,
-        env,
+    context: AssetExecutionContext,
+    docker_image,
+    docker_config,
+    env,
 ):
 
     build_base_image_data: dict = docker_image
@@ -635,14 +635,14 @@ def get_image_metadata(
 
 
 def create_image(
-        context: AssetExecutionContext,
-        image_name,
-        image_prefixes,
-        tags,
-        docker_image,
-        docker_config,
-        docker_config_json,
-        docker_file,
+    context: AssetExecutionContext,
+    image_name,
+    image_prefixes,
+    tags,
+    docker_image,
+    docker_config,
+    docker_config_json,
+    docker_file,
 ):
 
     image_data = {
@@ -665,7 +665,7 @@ def create_image(
         docker_config_json=docker_config_json,
         docker_file=docker_file,
         tags=tags_full_str,
-        pull=not localhost_only
+        pull=not localhost_only,
     )
 
     cmds.append(cmd_build)

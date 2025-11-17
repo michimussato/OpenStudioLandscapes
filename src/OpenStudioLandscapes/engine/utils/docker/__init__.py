@@ -132,7 +132,9 @@ def execute_in_threads(
         if returncode is not None:
             returncode_msg = "return code: %i" % returncode
             if returncode != 0:
-                raise OpenStudioLandscapesDockerException(f"Image not built successfully. {returncode = }")
+                raise OpenStudioLandscapesDockerException(
+                    f"Image not built successfully. {returncode = }"
+                )
             yield returncode_msg
             break
 
