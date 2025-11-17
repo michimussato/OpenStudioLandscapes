@@ -120,6 +120,16 @@ def execute_in_threads(
     stdout_reader.start()
     stderr_reader.start()
 
+    # Todo
+    #  - [ ] Implement a re-try/back-off logic here?
+    #        I've seen it many times that (mostly push) operations
+    #        fail due to temporary network issues. Mostly because
+    #        DNS resolution fails. Is Pihole the bottle neck here?
+    #        Can we make it become more responsive?
+    #        Investigate:
+    #        - tail --follow=name -n +63 /var/log/pihole/FTL.log
+    #        - /usr/bin/pihole-FTL no-daemon
+
     while True:
         while not stdout_queue.empty():
             stdout = "stdout: %s" % stdout_queue.get()
