@@ -70,7 +70,7 @@ class ComposeNetworkMode(enum.StrEnum):
 
 class DockerRegistry(enum.StrEnum):
     LOCAL_LOCALHOST = "localhost"
-    # LOCAL_REGISTRY = EnvVar("OPENSTUDIOLANDSCAPES__REGISTRY_HOSTNAME").get_value()
+    LOCAL_REGISTRY = EnvVar("OPENSTUDIOLANDSCAPES__REGISTRY_HOSTNAME").get_value()
     # LOCAL_MINIBOSS = os.environ.get("IP_MASTER", "localhost")
 
 
@@ -98,19 +98,19 @@ class DockerConfig(enum.Enum):
         # "docker_repository": _REPOSITORY_NAME,
         "docker_repository_type": DockerRepositoryType.PUBLIC,
     }
-    # LOCAL_REGISTRY = {
-    #     "docker_push": True,  # auto_push ?
-    #     "docker_use_local": False,
-    #     "docker_registry_url": DockerRegistry.LOCAL_REGISTRY,
-    #     "docker_registry_port": EnvVar(
-    #         "OPENSTUDIOLANDSCAPES__REGISTRY_PORT"
-    #     ).get_value(),
-    #     "docker_registry_username": EnvVar(
-    #         "OPENSTUDIOLANDSCAPES__REGISTRY_USERNAME"
-    #     ).get_value(),
-    #     "docker_registry_password": EnvVar(
-    #         "OPENSTUDIOLANDSCAPES__REGISTRY_PASSWORD"
-    #     ).get_value(),
-    #     "docker_repository": _REPOSITORY_NAME,
-    #     "docker_repository_type": DockerRepositoryType.PRIVATE,
-    # }
+    LOCAL_REGISTRY = {
+        "docker_push": True,  # auto_push ?
+        "docker_use_local": False,
+        "docker_registry_url": DockerRegistry.LOCAL_REGISTRY,
+        "docker_registry_port": EnvVar(
+            "OPENSTUDIOLANDSCAPES__REGISTRY_PORT"
+        ).get_value(),
+        "docker_registry_username": EnvVar(
+            "OPENSTUDIOLANDSCAPES__REGISTRY_USERNAME"
+        ).get_value(),
+        "docker_registry_password": EnvVar(
+            "OPENSTUDIOLANDSCAPES__REGISTRY_PASSWORD"
+        ).get_value(),
+        "docker_repository": _REPOSITORY_NAME,
+        "docker_repository_type": DockerRepositoryType.PRIVATE,
+    }

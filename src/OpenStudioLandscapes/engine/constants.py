@@ -46,16 +46,25 @@ DOCKER_PROGRESS = [
 
 
 try:
-    docker_config_ = os.environ["DOCKER_CONFIG"]
+    docker_config_ = os.environ["OPENSTUDIOLANDSCAPES__DOCKER_CONFIG"]
+    msg = (f"OPENSTUDIOLANDSCAPES__DOCKER_CONFIG environment "
+           f"variable set to value `{docker_config_}`.")
+    LOGGER.info(msg)
 except KeyError as e:
     docker_config_ = "localhost"
-    msg = f"DOCKER_CONFIG environment variable not set; using default value `{docker_config_}`."
+    msg = (f"OPENSTUDIOLANDSCAPES__DOCKER_CONFIG environment "
+           f"variable not set; using default value "
+           f"`{docker_config_}`.")
     LOGGER.warning(msg)
 
 
+# Todo
+#  - [ ] Find better config entry point
+#        - Pydantic: https://medium.com/@jonathan_b/a-simple-guide-to-configure-your-python-project-with-pydantic-and-a-yaml-file-bef76888f366
+#        - TypedDict:
 DOCKER_CONFIG = {
     "localhost": DockerConfig.LOCALHOST,
-    # "local_registry": DockerConfig.LOCAL_REGISTRY
+    "local_registry": DockerConfig.LOCAL_REGISTRY
 }[docker_config_]
 
 DOCKER_USE_CACHE_GLOBAL = False
