@@ -128,6 +128,8 @@ def build_docker_image(
 ) -> Generator[Output[dict[str, str | list[str]]] | AssetMaterialization, None, None]:
     """ """
 
+    context.log.debug(f"{docker_config = }")
+
     docker_file = pathlib.Path(
         env["DOT_LANDSCAPES"],
         env.get("LANDSCAPE", "default"),
@@ -142,18 +144,17 @@ def build_docker_image(
     docker_file.parent.mkdir(parents=True, exist_ok=True)
 
     image_name = get_image_name(context=context)
-    image_prefix_local = parse_docker_image_path(
+    context.log.debug(f"{image_name = }")
+
+    image_prefixes = parse_docker_image_path(
         docker_config=docker_config,
-        prepend_registry=False,
     )
-    image_prefix_full = parse_docker_image_path(
-        docker_config=docker_config,
-        prepend_registry=True,
-    )
+    context.log.debug(f"{image_prefixes = }")
 
     tags = [
         env.get("LANDSCAPE", str(time.time())),
     ]
+    context.log.debug(f"{tags = }")
 
     apt_install_str_base: str = get_apt_install_str(
         apt_install_packages=apt_packages["base"],
@@ -229,13 +230,13 @@ def build_docker_image(
 
     image_data = {
         "image_name": image_name,
-        "image_prefix_local": image_prefix_local,
-        "image_prefix_full": image_prefix_full,
+        "image_prefixes": image_prefixes,
         "image_tags": tags,
         "image_parent": {},
     }
 
-    context.log.info(f"{image_data = }")
+    # just highlight the message
+    context.log.warning(f"{image_data = }")
 
     # Full command as per python-on-whales
     # Build command (public) (OK: [x]):  /usr/bin/docker --config /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json build --quiet --pull --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles/Dockerfile --no-cache --tag openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9 --tag harbor.farm.evil:80/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9 /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles
@@ -245,28 +246,33 @@ def build_docker_image(
 
     cmds = []
 
-    tags_local = [f"{image_prefix_local}{image_name}:{tag}" for tag in tags]
-    tags_full = [f"{image_prefix_full}{image_name}:{tag}" for tag in tags]
+    # tags_local = [f"{image_prefix_local}{image_name}:{tag}" for tag in tags]
+    tags_full_str = [f"{image_prefixes}{image_name}:{tag}" for tag in tags]
+    context.log.debug(f"{tags_full_str = }")
 
     cmd_build = docker_build_cmd(
         context=context,
         docker_config_json=docker_config_json,
         docker_file=docker_file,
-        tags_local=tags_local,
-        tags_full=tags_full,
+        tags=tags_full_str,
+        pull=not docker_config == DockerConfig.LOCALHOST
     )
 
     cmds.append(cmd_build)
 
-    cmds_push = docker_push_cmd(
-        context=context,
-        docker_config_json=docker_config_json,
-        tags_full=tags_full,
-    )
+    if docker_config == DockerConfig.LOCALHOST:  # or not_push
+        pass
+    else:
+        cmds_push = docker_push_cmd(
+            context=context,
+            docker_config_json=docker_config_json,
+            tags_full=tags_full_str,
+        )
 
-    cmds.extend(cmds_push)
+        cmds.extend(cmds_push)
 
     context.log.info(f"{cmds = }")
+    # cmds = [['/usr/local/bin/docker', '--debug', '--config', '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json', 'build', '--progress', 'plain', '--pull', '--file', '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles/Dockerfile', '--no-cache', '--tag', 'openstudiolandscapes_base_build_docker_image:2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f', '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles'], ['/usr/local/bin/docker', '--config', '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json', 'push', 'openstudiolandscapes_base_build_docker_image:2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f']]
 
     logs = docker_do(
         context=context,

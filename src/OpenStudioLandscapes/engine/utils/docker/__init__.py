@@ -23,8 +23,8 @@ def docker_build_cmd(
     context: AssetExecutionContext,
     docker_config_json: pathlib.Path,
     docker_file: pathlib.Path,
-    tags_local: list[str],
-    tags_full: list[str],
+    tags: list[str],
+    pull: bool,
 ) -> list:
 
     # with buildx, the target command could look like:
@@ -37,7 +37,7 @@ def docker_build_cmd(
     #     --file /full/path/to/context/Dockerfile \
     #     /full/path/to/context
 
-    cmd_build = [
+    cmd_build_ = [
         shutil.which("docker"),
         "--debug",
         "--config",
@@ -45,15 +45,17 @@ def docker_build_cmd(
         "build",
         "--progress",
         "plain",
-        "--pull",
+        "--pull" if pull else None,
         "--file",
         docker_file.as_posix(),
         "--no-cache",
         # https://stackoverflow.com/a/11869360
-        *[i(tag) for tag in tags_local for i in (lambda x: "--tag", lambda x: tag)],
-        *[i(tag) for tag in tags_full for i in (lambda x: "--tag", lambda x: tag)],
+        *[i(tag) for tag in tags for i in (lambda x: "--tag", lambda x: tag)],
         docker_file.parent.as_posix(),
     ]
+
+    # As cmd_build_ can have falsy values, we filter them out
+    cmd_build = list(filter(None, cmd_build_))
 
     context.log.info(f"{cmd_build = }")
     context.log.info(f"{' '.join(cmd_build) = }")
@@ -126,10 +128,12 @@ def execute_in_threads(
             stderr = "stderr: %s" % stderr_queue.get()
             yield stderr
 
-        returncode_ = process.poll()
-        if returncode_ is not None:
-            returncode = "return code: %i" % returncode_
-            yield returncode
+        returncode = process.poll()
+        if returncode is not None:
+            returncode_msg = "return code: %i" % returncode
+            if returncode != 0:
+                raise OpenStudioLandscapesDockerException(f"Image not built successfully. {returncode = }")
+            yield returncode_msg
             break
 
 

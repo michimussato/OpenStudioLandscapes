@@ -17,6 +17,12 @@ from OpenStudioLandscapes.engine.constants import FEATURES
 
 LOGGER = get_dagster_logger(__name__)
 
+# Important
+# The Feature Git repositories have to physically exist locally.
+# It's not enough to just pip install them from the repo directly, like:
+# `pip install OpenStudioLandscapes-Ayon@git+https://github.com/michimussato/OpenStudioLandscapes-Ayon`
+# Maybe one day...
+
 namespace_packages = find_namespace_packages(
     where=".features", include=["*src.OpenStudioLandscapes.*"]
 )

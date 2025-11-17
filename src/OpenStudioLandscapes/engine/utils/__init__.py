@@ -19,10 +19,13 @@ __all__ = [
     "get_bool_env",
     "get_str_env",
     "get_dynamic_ins",
-    "get_teleport_app_dict",
+    "get_image_metadata",
+    "create_image",
 ]
 
 import operator as operator_
+import time
+import copy
 import os
 import pathlib
 import shlex
@@ -43,6 +46,7 @@ from OpenStudioLandscapes.engine.exceptions import (
     ComposeScopeException,
     OpenStudioLandscapesException,
 )
+from OpenStudioLandscapes.engine.utils.docker import *
 
 LOGGER = get_dagster_logger(__name__)
 
@@ -169,8 +173,7 @@ def get_image_name(
 
 def parse_docker_image_path(
     *,
-    docker_config: [DockerConfig, MutableMapping],
-    prepend_registry: bool = True,
+    docker_config: Union[DockerConfig, MutableMapping],
 ) -> str:
 
     image_path = []
@@ -182,25 +185,55 @@ def parse_docker_image_path(
     else:
         raise TypeError
 
-    _repository_name = _docker_config["docker_repository"]
-    _docker_registry_url = _docker_config["docker_registry_url"]
-    _repository_port = _docker_config["docker_registry_port"]
+    # if the images stay local, we don't want
+    # have to prepend anything and we don't push the
+    # image anywhere
+    image_on_localhost_only = docker_config == DockerConfig.LOCALHOST
 
-    if bool(prepend_registry):
-        if bool(_docker_registry_url):
-            image_path.append(_docker_registry_url)
+    # The idea is: explicit is better than implicit
+    # In reality, we have to deal with 3 cases IF
+    # images are named/tagged implicitly:
+    # - local: <image_name>:<tag>
+    # - registry:
+    #   - docker.io: <repository>/<image_name>:<tag>
+    #     (which is implicit for docker.io/<repository>/<image_name>:<tag>
+    #   - arbitrary: <registry>/<repository>/<image_name>:<tag>
+    # Let's just name/tag everything explicitly so that we only
+    # have to deal with 3 cases:
+    # - local
+    # - registry
+    # by ALWAYS prepending the <registry> part
 
-            if bool(_repository_port):
-                image_path.append(":")
-                image_path.append(_repository_port)
+    if image_on_localhost_only:
+        # Never
+        # - prefix a <registry>/<repository>
+        # return empty string
+        return str("")
+    else:
+        # Do
+        # - prefix a <registry>/<repository>
 
+        prepend_registry = not image_on_localhost_only
+
+        _repository_name = _docker_config["docker_repository"]
+        _docker_registry_url = _docker_config["docker_registry_url"]
+        _repository_port = _docker_config["docker_registry_port"]
+
+        if bool(prepend_registry):
+            if bool(_docker_registry_url):
+                image_path.append(_docker_registry_url)
+
+                if bool(_repository_port):
+                    image_path.append(":")
+                    image_path.append(_repository_port)
+
+                image_path.append("/")
+
+        if bool(_repository_name):
+            image_path.append(_repository_name)
             image_path.append("/")
 
-    if bool(_repository_name):
-        image_path.append(_repository_name)
-        image_path.append("/")
-
-    return str().join(image_path)
+        return str().join(image_path)
 
 
 def get_compose_scope(
@@ -543,47 +576,99 @@ def get_dynamic_ins(
     return ins, feature_ins
 
 
-def get_teleport_app_dict(
-    name: str,
-    description: str,
-    uri: str,
-    public_addr: str,
-    rewrite_redirect: list,
-) -> dict:
-    """
+def get_image_metadata(
+        context: AssetExecutionContext,
+        docker_image,
+        docker_config,
+        env,
+):
 
-    context.log.warning(feature)
-    context.log.warning(settings_teleport)
-    app_ = copy.deepcopy(app_dict_default)
-    app_["name"] = settings_teleport["teleport_host"]
-    app_["uri"] = f"http://localhost:{settings_teleport['teleport_port']}/"
-    app_["public_addr"] = (
-        f"{settings_teleport['teleport_host']}.{SERVICE_NAME}.{settings_teleport['teleport_domain_wan']}"
+    build_base_image_data: dict = docker_image
+    build_base_docker_config: DockerConfig = docker_config
+
+    # context.log.debug(f"{build_base_image_data = }")
+    # context.log.debug(f"{build_base_docker_config = }")
+
+    build_base_parent_image_prefix: str = build_base_image_data["image_prefixes"]
+    # context.log.debug(f"{build_base_parent_image_prefix = }")
+
+    build_base_parent_image_name: str = build_base_image_data["image_name"]
+    # context.log.debug(f"{build_base_parent_image_name = }")
+
+    build_base_parent_image_tags: list = build_base_image_data["image_tags"]
+    # context.log.debug(f"{build_base_parent_image_tags = }")
+
+    image_name = get_image_name(context=context)
+    # context.log.debug(f"{image_name = }")
+
+    image_prefixes = parse_docker_image_path(
+        docker_config=build_base_docker_config,
     )
-    app_["rewrite"]["redirect"].append(
-        f"{settings_teleport['teleport_host']}.{settings_teleport['teleport_domain_lan']}"
+    context.log.debug(f"{image_prefixes = }")
+
+    tags = [
+        env.get("LANDSCAPE", str(time.time())),
+    ]
+    context.log.debug(f"{tags = }")
+
+    return image_name, image_prefixes, tags, build_base_parent_image_prefix, build_base_parent_image_name, build_base_parent_image_tags
+
+
+def create_image(
+        context: AssetExecutionContext,
+        image_name,
+        image_prefixes,
+        tags,
+        docker_image,
+        docker_config,
+        docker_config_json,
+        docker_file,
+):
+
+    image_data = {
+        "image_name": image_name,
+        "image_prefixes": image_prefixes,
+        "image_tags": tags,
+        "image_parent": copy.deepcopy(docker_image),
+    }
+
+    # just highlight the message
+    context.log.warning(f"{image_data = }")
+
+    cmds = []
+
+    tags_full_str = [f"{image_prefixes}{image_name}:{tag}" for tag in tags]
+    context.log.debug(f"{tags_full_str = }")
+
+    localhost_only = docker_config == DockerConfig.LOCALHOST
+    context.log.debug(f"{localhost_only = }")
+
+    cmd_build = docker_build_cmd(
+        context=context,
+        docker_config_json=docker_config_json,
+        docker_file=docker_file,
+        tags=tags_full_str,
+        pull=not localhost_only
     )
 
-    apps.append(app_)
+    cmds.append(cmd_build)
 
+    if localhost_only:  # or not_push
+        pass
+    else:
+        cmds_push = docker_push_cmd(
+            context=context,
+            docker_config_json=docker_config_json,
+            tags_full=tags_full_str,
+        )
 
-    Result:
-    - insecure_skip_verify: false
-      name: kitsu
-      public_addr: kitsu.teleport.openstudiolandscapes.cloud-ip.cc
-      rewrite:
-        redirect:
-        - kitsu.openstudiolandscapes.lan
-      uri: http://localhost:4545/
-      use_any_proxy_public_addr: false
-    """
+        cmds.extend(cmds_push)
 
-    ret: dict = DefaultDicts.TELEPORT_DEFAULT_APP.value
+    context.log.info(f"{cmds = }")
 
-    ret["name"] = name
-    ret["description"] = description
-    ret["uri"] = uri
-    ret["public_addr"] = public_addr
-    ret["rewrite"]["redirect"].extend(rewrite_redirect)
+    logs = docker_do(
+        context=context,
+        cmds=cmds,
+    )
 
-    return ret
+    return image_data, logs

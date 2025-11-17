@@ -88,13 +88,14 @@ class DockerConfig(enum.Enum):
     #  - [ ] LOCAL_NO_PUSH is NOT SUPPORTED YET. Should it be?
     #  - [ ] Whether to use http or https
     LOCALHOST = {
-        "docker_push": False,
-        "docker_use_local": True,
+        # Not used:
+        # "docker_push": False,
+        # "docker_use_local": True,
         "docker_registry_url": DockerRegistry.LOCAL_LOCALHOST,
         "docker_registry_port": None,
         "docker_registry_username": None,
         "docker_registry_password": None,
-        "docker_repository": _REPOSITORY_NAME,
+        # "docker_repository": _REPOSITORY_NAME,
         "docker_repository_type": DockerRepositoryType.PUBLIC,
     }
     # LOCAL_REGISTRY = {
