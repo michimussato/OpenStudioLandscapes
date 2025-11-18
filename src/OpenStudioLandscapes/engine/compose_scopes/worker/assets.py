@@ -1,5 +1,6 @@
 import copy
 import operator
+import os
 import pathlib
 import shutil
 from typing import Any, Generator, List, MutableMapping
@@ -224,6 +225,31 @@ if bool(ins):
                 },
             ],
         }
+
+        if bool(int(os.environ.get("OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE", 0))):
+
+            compose_scope = ComposeScope.WORKER
+
+            context.log.warning(compose_scope)
+
+            docker_dict_include.update(
+                {
+                    "services": {
+                        "newt": {
+                            "image": "docker.io/fosrl/newt",
+                            "container_name": "newt",
+                            "environment": {
+                                "PANGOLIN_ENDPOINT": "${OPENSTUDIOLANDSCAPES__PANGOLIN_SITE_%s__PANGOLIN_ENDPOINT}" % compose_scope.upper(),
+                                "NEWT_ID": "${OPENSTUDIOLANDSCAPES__PANGOLIN_SITE_%s__NEWT_ID}" % compose_scope.upper(),
+                                "NEWT_SECRET": "${OPENSTUDIOLANDSCAPES__PANGOLIN_SITE_%s__NEWT_SECRET}" % compose_scope.upper(),
+                                # "ACCEPT_CLIENTS": "${OPENSTUDIOLANDSCAPES__PANGOLIN_SITE_%s__ACCEPT_CLIENTS}" % compose_scope.upper(),
+                                "ACCEPT_CLIENTS": True,
+                                "DOCKER_SOCKET": "/var/run/docker.sock",
+                            }
+                        }
+                    },
+                }
+            )
 
         docker_yaml_include = yaml.dump(docker_dict_include)
 

@@ -42,7 +42,6 @@ class FeatureVolumeType(enum.StrEnum):
 class ComposeScope(enum.StrEnum):
     # Todo:
     #  - [ ] Check if new Compose Scopes need `pip install -e .[dev]`
-    INFRASTRUCTURE = "infrastructure"
     DEFAULT = "default"
     LICENSE_SERVER = "license_server"
     WORKER = "worker"
