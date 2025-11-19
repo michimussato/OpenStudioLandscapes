@@ -190,7 +190,6 @@ if bool(ins):
         for feature, data in features_in.items():
             context.log.info(f"{features_in[feature] = }")
             compose_file = features_in[feature]["compose_yaml"]
-            # compose_files.append(compose_file)
 
             network_dict = get_networks_dict(
                 context=context,
