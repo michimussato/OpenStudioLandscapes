@@ -1,4 +1,5 @@
 import copy
+import json
 import operator
 import os
 import pathlib
@@ -424,24 +425,19 @@ if bool(ins):
 
         yield Output(kwargs)
 
-        kwargs_serialized = copy.deepcopy(kwargs)
-
-        serialize_dict(
-            context=context,
-            d=kwargs_serialized,
-        )
+        kwargs_json = json.dumps(kwargs, default=str)
 
         yield AssetMaterialization(
             asset_key=context.asset_key,
             metadata={
                 "__".join(context.asset_key.path): MetadataValue.json(
-                    kwargs_serialized
+                    kwargs_json
                 ),
                 "docker_compose_yaml": MetadataValue.json(docker_compose_yaml),
                 "docker_compose": MetadataValue.json(docker_compose),
                 **metadatavalues_from_dict(
                     context=context,
-                    d_serialized=kwargs_serialized,
+                    d_serialized=kwargs_json,
                 ),
             },
         )

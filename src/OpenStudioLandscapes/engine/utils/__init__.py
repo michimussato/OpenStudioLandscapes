@@ -13,7 +13,6 @@ __all__ = [
     "get_compose_scope",
     "get_feature_config",
     "expand_dict_vars",
-    "serialize_dict",
     "metadatavalues_from_dict",
     "get_relative_path_via_common_root",
     "get_bool_env",
@@ -25,6 +24,7 @@ __all__ = [
 ]
 
 import copy
+import json
 import operator as operator_
 import os
 import yaml
@@ -329,83 +329,13 @@ def expand_dict_vars(
     return dict_to_expand
 
 
-# JSON cannot serialize certain types
-# out of the box. This makes sure that
-# MetadataValue.json receives only
-# serializable input.
-# Serializes in place.
-def serialize_dict(
-    context: Union[AssetExecutionContext, OpExecutionContext],
-    d: MutableMapping,
-) -> None:
-
-    # Todo
-    #  - [ ] Maybe just use something like `json.dumps(obj, default=str)`?
-    #        ex: https://github.com/wntrblm/nox/pull/1026/commits/3027be774c97fafc40426347cf011e0e299f9d6a (from https://github.com/wntrblm/nox/issues/1022)
-
-    for k_, v_ in d.items():
-        if isinstance(v_, MutableMapping):
-            serialize_dict(
-                context=context,
-                d=v_,
-            )
-        elif isinstance(v_, pathlib.PosixPath):
-            d[k_] = v_.as_posix()
-        # Todo:
-        # elif isinstance(v_, enum.Enum):
-        #     # RuntimeError: dictionary changed size during iteration
-        #     d[v_.name] = v_.value
-        # Todo:
-        # elif isinstance(v_, List):
-        #     pass
-        else:
-            d[k_] = str(v_)
-
-    return None
-
-
-# Just an idea, but was not successful so far:
-# def serialize_dict(
-#         context: AssetExecutionContext,
-#         unserializable_dict: MutableMapping = None,
-#         _serialized_dict: MutableMapping = None,
-#         # _use_dict = None,
-# ) -> MutableMapping:
-#
-#     # d_ = copy.deepcopy(d)
-#     if _serialized_dict is None:
-#         _serialized_dict = {}
-#         dict_to_serialize = copy.deepcopy(unserializable_dict)
-#     else:
-#         dict_to_serialize = _serialized_dict
-#     # else:
-#     #     d_ = _use_dict
-#
-#     for k_, v_ in dict_to_serialize.items():
-#         if isinstance(v_, MutableMapping):
-#             serialize_dict(
-#                 context=context,
-#                 unserializable_dict=None,
-#                 _serialized_dict=_serialized_dict,
-#             )
-#         elif isinstance(v_, pathlib.PosixPath):
-#             _serialized_dict[k_] = v_.as_posix()
-#         # Todo:
-#         elif isinstance(v_, enum.Enum):
-#             _serialized_dict[v_.name] = v_.value
-#         # Todo:
-#         # elif isinstance(v_, List):
-#         #     pass
-#         else:
-#             _serialized_dict[k_] = v_
-#
-#     return _serialized_dict
-
-
 def metadatavalues_from_dict(
     context: Union[AssetExecutionContext, OpExecutionContext],
-    d_serialized: MutableMapping,
+    d_serialized: Union[str, MutableMapping],
 ) -> MutableMapping[str, MetadataValue]:
+
+    if isinstance(d_serialized, str):
+        d_serialized = json.loads(d_serialized)
 
     metadata = {}
 

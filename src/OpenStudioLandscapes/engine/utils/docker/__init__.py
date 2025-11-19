@@ -10,9 +10,13 @@ import shlex
 import shutil
 import subprocess
 import threading
+import backoff
 from typing import Any, Generator, List
 
-from dagster import AssetExecutionContext
+from dagster import AssetExecutionContext, get_dagster_logger
+
+
+LOGGER = get_dagster_logger(__name__)
 
 
 class OpenStudioLandscapesDockerException(Exception):
@@ -100,6 +104,13 @@ class OutputReader(threading.Thread):
             self.output_queue.put(line.decode().strip())
 
 
+@backoff.on_exception(
+    wait_gen=backoff.constant,
+    exception=OpenStudioLandscapesDockerException,
+    max_time=60,
+    max_tries=3,
+    logger=LOGGER,
+)
 def execute_in_threads(
     command: str,
 ) -> Generator[int | Any, None, None]:

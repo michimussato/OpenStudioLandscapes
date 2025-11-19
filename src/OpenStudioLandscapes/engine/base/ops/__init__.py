@@ -12,6 +12,7 @@ __all__ = [
 
 import base64
 import copy
+import json
 import os
 import pathlib
 import shlex
@@ -96,22 +97,17 @@ def factory_feature_out(
             value=kwargs,
         )
 
-        kwargs_serialized = copy.deepcopy(kwargs)
-
-        serialize_dict(
-            context=context,
-            d=kwargs_serialized,
-        )
+        kwargs_json = json.dumps(kwargs, default=str)
 
         yield AssetMaterialization(
             asset_key=context.asset_key_for_output(output_name),
             metadata={
                 "__".join(context.asset_key.path): MetadataValue.json(
-                    kwargs_serialized
+                    kwargs_json
                 ),
                 **metadatavalues_from_dict(
                     context=context,
-                    d_serialized=kwargs_serialized,
+                    d_serialized=kwargs_json,
                 ),
             },
         )
@@ -152,22 +148,17 @@ def factory_feature_in(
             value=kwargs,
         )
 
-        kwargs_serialized = copy.deepcopy(kwargs)
-
-        serialize_dict(
-            context=context,
-            d=kwargs_serialized,
-        )
+        kwargs_json = json.dumps(kwargs, default=str)
 
         yield AssetMaterialization(
             asset_key=context.asset_key_for_output(output_name),
             metadata={
                 "__".join(context.asset_key.path): MetadataValue.json(
-                    kwargs_serialized
+                    kwargs_json
                 ),
                 **metadatavalues_from_dict(
                     context=context,
-                    d_serialized=kwargs_serialized,
+                    d_serialized=kwargs_json,
                 ),
             },
         )
@@ -400,24 +391,17 @@ def factory_group_in(
             value=group_out,
         )
 
-        group_out_serialized = copy.deepcopy(group_out)
-
-        serialize_dict(
-            context=context,
-            d=group_out_serialized,
-        )
-
-        context.log.debug(f"{group_out_serialized = }")
+        kwargs_json = json.dumps(kwargs, default=str)
 
         yield AssetMaterialization(
             asset_key=context.asset_key,
             metadata={
                 "__".join(context.asset_key.path): MetadataValue.json(
-                    group_out_serialized
+                    kwargs_json
                 ),
                 **metadatavalues_from_dict(
                     context=context,
-                    d_serialized=group_out_serialized,
+                    d_serialized=kwargs_json,
                 ),
             },
         )
