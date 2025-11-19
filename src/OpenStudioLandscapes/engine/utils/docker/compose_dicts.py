@@ -3,9 +3,9 @@ from typing import TypedDict, Any, Dict, List, LiteralString, Required
 from OpenStudioLandscapes.engine.enums import ComposeNetworkMode, ComposeScope
 
 __all__ = [
+    "DockerComposeRestartPolicy",
     "get_pangolin_newt_service_skeleton",
 ]
-
 
 
 class DockerComposeRestartPolicy(enum.StrEnum):
@@ -42,7 +42,7 @@ class DockerComposeServiceDefinition(TypedDict, total=False):
     networks: List[LiteralString]
     ports: List[LiteralString]
     network_mode: ComposeNetworkMode
-    # restart: DockerComposeRestartPolicy
+    restart: DockerComposeRestartPolicy
 
 
 # class DockerComposeService(TypedDict, total=False):
@@ -90,6 +90,27 @@ class DockerComposeNetworkDefinition(TypedDict, total=False):
 #     },
 # }
 
+
+
+# # YAML StrEnum representer
+# # ------------------------
+# # Using yaml.dump on StrEnums results in the following object representation:
+# #     restart: !!python/object/apply:OpenStudioLandscapes.engine.utils.docker.compose_dicts.DockerComposeRestartPolicy
+# #     - always
+# #
+# # Which will result in the following error:
+# # yaml.constructor.ConstructorError: could not determine a constructor for the tag 'tag:yaml.org,2002:python/object/apply:OpenStudioLandscapes.engine.utils.docker.compose_dicts.DockerComposeRestartPolicy'
+# #   in "/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-11-19-02-46-18-512b89c22d304baf9ba32f281b1fbe36/ComposeScope_worker__ComposeScope_worker/ComposeScope_worker__DOCKER_COMPOSE/docker_compose/docker-compose.yml", line 20, column 14
+# #
+# # yaml.safe_dump requires for an object to be represented in a proper way
+# # Reference: https://techoverflow.net/2024/01/07/how-to-fix-python-yaml-namedtuple-error-yaml-representer-representererror-cannot-represent-an-object/
+# def represent_strenum(
+#         dumper,
+#         data: DockerComposeRestartPolicy,
+# ):
+#     return dumper.represent_dict(data.value)
+
+
 # Services
 
 
@@ -99,7 +120,7 @@ def get_pangolin_newt_service_skeleton(
     _service: DockerComposeServiceDefinition = {
         "image": "docker.io/fosrl/newt",
         "container_name": "newt",
-        # "restart": DockerComposeRestartPolicy.ALWAYS,
+        "restart": DockerComposeRestartPolicy.ALWAYS,
         # Results in:
         #     restart: !!python/object/apply:OpenStudioLandscapes.engine.utils.docker.compose_dicts.DockerComposeRestartPolicy
         #     - always

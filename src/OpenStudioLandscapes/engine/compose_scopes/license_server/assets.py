@@ -30,6 +30,13 @@ from OpenStudioLandscapes.engine.utils.docker.compose_dicts import *
 #  - [ ] get assets from common_assets
 
 
+# https://github.com/yaml/pyyaml/issues/722#issuecomment-1969292770
+yaml.SafeDumper.add_multi_representer(
+    DockerComposeRestartPolicy,
+    yaml.representer.SafeRepresenter.represent_str,
+)
+
+
 ins, feature_ins = get_dynamic_ins(
     compose_scope_filter=[ComposeScope.LICENSE_SERVER],
     imported_features=IMPORTED_FEATURES,
@@ -205,7 +212,7 @@ if bool(ins):
 
             networks_dict.update(network_dict)
 
-        networks_dict_yaml = yaml.dump(networks_dict)
+        networks_dict_yaml = yaml.safe_dump(networks_dict)
 
         yield Output(networks_dict)
 
@@ -315,7 +322,7 @@ if bool(ins):
             docker_dict_include.update(services)
             docker_dict_include.update(networks)
 
-        docker_yaml_include = yaml.dump(docker_dict_include)
+        docker_yaml_include = yaml.safe_dump(docker_dict_include)
 
         # Write docker-compose.yaml
         with open(DOCKER_COMPOSE, mode="w", encoding="utf-8") as fw:
