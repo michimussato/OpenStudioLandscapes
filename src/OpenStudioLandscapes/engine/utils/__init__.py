@@ -21,15 +21,17 @@ __all__ = [
     "get_dynamic_ins",
     "get_image_metadata",
     "create_image",
+    "get_networks_dict",
 ]
 
 import copy
 import operator as operator_
 import os
+import yaml
 import pathlib
 import shlex
 import time
-from typing import Any, List, MutableMapping, Union
+from typing import Any, List, MutableMapping, Union, Dict
 
 import git
 from dagster import (
@@ -692,3 +694,27 @@ def create_image(
     context.log.debug(f"{logs = }")
 
     return image_data, logs
+
+
+def get_networks_dict(
+    context: AssetExecutionContext,
+    compose_file: pathlib.Path,
+) -> Dict:
+    """
+    Analyze compose_file for `networks` and return a nested dict of networks
+    if networks exist, otherwise return empty dict.
+
+    Args:
+        context: AssetExecutionContext
+        compose_file: pathlib.Path
+
+    Returns:
+        networks: dict
+    """
+    with open(compose_file, "r") as fr:
+        compose_dict = yaml.load(fr, Loader=yaml.FullLoader)
+        context.log.debug(f"{compose_dict = }")
+        networks = compose_dict.get("networks", {})
+        context.log.debug(f"{networks = }")
+
+    return networks

@@ -2,7 +2,7 @@ import copy
 import operator
 import os
 import pathlib
-from typing import Any, Generator, List, MutableMapping
+from typing import Any, Generator, List, MutableMapping, Dict
 
 import yaml
 from dagster import (
@@ -11,7 +11,6 @@ from dagster import (
     AssetKey,
     AssetMaterialization,
     AssetsDefinition,
-    EnvVar,
     MetadataValue,
     Output,
     asset,
@@ -25,6 +24,7 @@ from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.discovery.discovery import *
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.utils import *
+from OpenStudioLandscapes.engine.utils.docker.compose_dicts import *
 
 # Todo:
 #  - [ ] get assets from common_assets
@@ -174,66 +174,51 @@ if bool(ins):
             },
         )
 
-    # Todo:
-    #  - [ ] Why was this here? Duplicate compose()
-    # @asset(
-    #     **ASSET_HEADER_COMPOSE_LICENSE_SERVER,
-    #     ins={
-    #         "env": AssetIn(
-    #             AssetKey([*ASSET_HEADER_COMPOSE_LICENSE_SERVER["key_prefix"], "env"]),
-    #         ),
-    #         **ins,
-    #     },
-    # )
-    # def compose(
-    #     context: AssetExecutionContext,
-    #     env: dict,  # pylint: disable=redefined-outer-name
-    #     **kwargs,
-    # ) -> Generator[
-    #     Output[dict[str, list[dict[str, list]]]] | AssetMaterialization, None, None
-    # ]:
-    #     """ """
-    #
-    #     context.log.info(kwargs)
-    #
-    #     _group_in = []
-    #
-    #     docker_compose = pathlib.PurePosixPath(
-    #         env["DOT_LANDSCAPES"],
-    #         env.get("LANDSCAPE", "default"),
-    #         f"{ASSET_HEADER_COMPOSE_LICENSE_SERVER['group_name']}__{'__'.join(ASSET_HEADER_COMPOSE_LICENSE_SERVER['key_prefix'])}",
-    #         "__".join(context.asset_key.path),
-    #         "docker_compose",
-    #         "docker-compose.yml",
-    #     )
-    #
-    #     context.log.info(docker_compose)
-    #     context.log.info(type(docker_compose))
-    #
-    #     for v in kwargs.values():
-    #         _rel_path = os.path.relpath(
-    #             path=v.as_posix(),
-    #             start=docker_compose.parent.as_posix(),
-    #         )
-    #         rel_path = pathlib.Path(_rel_path)
-    #
-    #         _group_in.append(rel_path)
-    #
-    #     docker_dict = {
-    #         "include": [{"path": [i.as_posix()]} for i in _group_in],
-    #     }
-    #
-    #     docker_yaml = yaml.dump(docker_dict)
-    #
-    #     yield Output(docker_dict)
-    #
-    #     yield AssetMaterialization(
-    #         asset_key=context.asset_key,
-    #         metadata={
-    #             "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
-    #             "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
-    #         },
-    #     )
+    @asset(
+        **ASSET_HEADER_COMPOSE_LICENSE_SERVER,
+        ins={
+            "features_in": AssetIn(
+                AssetKey([*ASSET_HEADER_COMPOSE_LICENSE_SERVER["key_prefix"], "features_in"])
+            ),
+        },
+    )
+    def scrape_networks(
+        context: AssetExecutionContext,
+        features_in: dict,
+    ) -> Generator[Output[dict] | AssetMaterialization | Any, None, None]:
+
+        features_in.pop("env_base", {})
+        features_in.pop("docker_config", {})
+        features_in.pop("docker_image", {})
+        features_in.pop("docker_config_json", {})
+
+        networks_dict: Dict = {}
+
+        for feature, data in features_in.items():
+            context.log.info(f"{features_in[feature] = }")
+            compose_file = features_in[feature]["compose_yaml"]
+            # compose_files.append(compose_file)
+
+            network_dict = get_networks_dict(
+                context=context,
+                compose_file=compose_file,
+            )
+
+            networks_dict.update(network_dict)
+
+        networks_dict_yaml = yaml.dump(networks_dict)
+
+        yield Output(networks_dict)
+
+        yield AssetMaterialization(
+            asset_key=context.asset_key,
+            metadata={
+                "__".join(context.asset_key.path): MetadataValue.json(
+                    networks_dict
+                ),
+                "networks_dict_yaml": MetadataValue.md(f"```yaml\n{networks_dict_yaml}\n```"),
+            },
+        )
 
     @asset(
         **ASSET_HEADER_COMPOSE_LICENSE_SERVER,
@@ -246,12 +231,16 @@ if bool(ins):
                     [*ASSET_HEADER_COMPOSE_LICENSE_SERVER["key_prefix"], "features_in"]
                 ),
             ),
+            "scrape_networks": AssetIn(
+                AssetKey([*ASSET_HEADER_COMPOSE["key_prefix"], "scrape_networks"]),
+            ),
         },
     )
     def compose(
         context: AssetExecutionContext,
         env: dict,  # pylint: disable=redefined-outer-name
         features_in: dict,  # pylint: disable=redefined-outer-name
+        scrape_networks: dict,  # pylint: disable=redefined-outer-name
     ) -> Generator[
         Output[MutableMapping[str, List[MutableMapping[str, List]]]]
         | AssetMaterialization,
@@ -269,10 +258,12 @@ if bool(ins):
         DOCKER_COMPOSE.parent.mkdir(parents=True, exist_ok=True)
 
         compose_files = []
+        _compose_networks = set()
 
         for feature, data in features_in.items():
             context.log.info(f"{features_in[feature] = }")
-            compose_files.append(features_in[feature]["compose_yaml"])
+            compose_file = features_in[feature]["compose_yaml"]
+            compose_files.append(compose_file)
 
         rel_paths = []
         dot_landscapes = pathlib.Path(env["DOT_LANDSCAPES"])
@@ -289,7 +280,7 @@ if bool(ins):
 
             rel_paths.append(rel_path.as_posix())
 
-        docker_dict_include = {
+        docker_dict_include: Dict = {
             "include": [
                 {
                     "path": rel_paths,
@@ -299,28 +290,31 @@ if bool(ins):
 
         if bool(int(os.environ.get("OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE", 0))):
 
-            compose_scope = ComposeScope.LICENSE_SERVER
-
-            context.log.warning(compose_scope)
-
-            docker_dict_include.update(
-                {
-                    "services": {
-                        "newt": {
-                            "image": "docker.io/fosrl/newt",
-                            "container_name": "newt",
-                            "environment": {
-                                "PANGOLIN_ENDPOINT": "${OPENSTUDIOLANDSCAPES__PANGOLIN_SITE_%s__PANGOLIN_ENDPOINT}" % compose_scope.upper(),
-                                "NEWT_ID": "${OPENSTUDIOLANDSCAPES__PANGOLIN_SITE_%s__NEWT_ID}" % compose_scope.upper(),
-                                "NEWT_SECRET": "${OPENSTUDIOLANDSCAPES__PANGOLIN_SITE_%s__NEWT_SECRET}" % compose_scope.upper(),
-                                # "ACCEPT_CLIENTS": "${OPENSTUDIOLANDSCAPES__PANGOLIN_SITE_%s__ACCEPT_CLIENTS}" % compose_scope.upper(),
-                                "ACCEPT_CLIENTS": True,
-                                "DOCKER_SOCKET": "/var/run/docker.sock",
-                            }
-                        }
-                    },
-                }
+            service_dict = get_pangolin_newt_service_skeleton(
+                compose_scope=ComposeScope.LICENSE_SERVER,
             )
+
+            services = {
+                "services": {
+                    "newt": service_dict
+                },
+            }
+
+            networks = {
+                "networks": {
+                    "default": {
+                        "name": "pangolin_default"
+                    }
+                }
+            }
+
+            service_dict["networks"] = [
+                *networks["networks"].keys(),
+                *scrape_networks.keys(),
+            ]
+
+            docker_dict_include.update(services)
+            docker_dict_include.update(networks)
 
         docker_yaml_include = yaml.dump(docker_dict_include)
 
@@ -337,6 +331,9 @@ if bool(ins):
                     docker_dict_include
                 ),
                 "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml_include}\n```"),
+                "OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE": MetadataValue.bool(
+                    bool(int(os.environ.get("OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE", 0)))
+                ),
             },
         )
 
