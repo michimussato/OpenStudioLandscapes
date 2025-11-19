@@ -223,7 +223,7 @@ if bool(ins):
                 AssetKey([*ASSET_HEADER_COMPOSE_WORKER["key_prefix"], "features_in"]),
             ),
             "scrape_networks": AssetIn(
-                AssetKey([*ASSET_HEADER_COMPOSE["key_prefix"], "scrape_networks"]),
+                AssetKey([*ASSET_HEADER_COMPOSE_WORKER["key_prefix"], "scrape_networks"]),
             ),
         },
     )

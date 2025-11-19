@@ -232,7 +232,7 @@ if bool(ins):
                 ),
             ),
             "scrape_networks": AssetIn(
-                AssetKey([*ASSET_HEADER_COMPOSE["key_prefix"], "scrape_networks"]),
+                AssetKey([*ASSET_HEADER_COMPOSE_LICENSE_SERVER["key_prefix"], "scrape_networks"]),
             ),
         },
     )
