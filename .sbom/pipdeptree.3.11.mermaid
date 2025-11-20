@@ -6,6 +6,7 @@ flowchart TD
     argcomplete["argcomplete\n3.6.3"]
     arrow["arrow\n1.4.0"]
     attrs["attrs\n25.4.0"]
+    backoff["backoff\n2.2.1"]
     boolean-py["boolean.py\n5.0"]
     certifi["certifi\n2025.11.12"]
     chardet["chardet\n5.2.0"]
@@ -174,6 +175,7 @@ flowchart TD
     nox -- ">=24.1" --> attrs
     nox -- ">=4" --> humanize
     openstudiolandscapes -- "==1.9.11" --> dagster
+    openstudiolandscapes -- "any" --> backoff
     openstudiolandscapes -- "any" --> dagster-postgres
     openstudiolandscapes -- "any" --> docker
     openstudiolandscapes -- "any" --> docker-compose-graph

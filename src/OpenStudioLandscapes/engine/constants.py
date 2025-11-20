@@ -47,14 +47,18 @@ DOCKER_PROGRESS = [
 
 try:
     docker_config_ = os.environ["OPENSTUDIOLANDSCAPES__DOCKER_CONFIG"]
-    msg = (f"OPENSTUDIOLANDSCAPES__DOCKER_CONFIG environment "
-           f"variable set to value `{docker_config_}`.")
+    msg = (
+        f"OPENSTUDIOLANDSCAPES__DOCKER_CONFIG environment "
+        f"variable set to value `{docker_config_}`."
+    )
     LOGGER.info(msg)
 except KeyError as e:
     docker_config_ = "localhost"
-    msg = (f"OPENSTUDIOLANDSCAPES__DOCKER_CONFIG environment "
-           f"variable not set; using default value "
-           f"`{docker_config_}`.")
+    msg = (
+        f"OPENSTUDIOLANDSCAPES__DOCKER_CONFIG environment "
+        f"variable not set; using default value "
+        f"`{docker_config_}`."
+    )
     LOGGER.warning(msg)
 
 
@@ -64,7 +68,7 @@ except KeyError as e:
 #        - TypedDict:
 DOCKER_CONFIG = {
     "localhost": DockerConfig.LOCALHOST,
-    "local_registry": DockerConfig.LOCAL_REGISTRY
+    "local_registry": DockerConfig.LOCAL_REGISTRY,
 }[docker_config_]
 
 DOCKER_USE_CACHE_GLOBAL = False

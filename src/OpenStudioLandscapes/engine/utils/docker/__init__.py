@@ -10,11 +10,10 @@ import shlex
 import shutil
 import subprocess
 import threading
-import backoff
 from typing import Any, Generator, List
 
+import backoff
 from dagster import AssetExecutionContext, get_dagster_logger
-
 
 LOGGER = get_dagster_logger(__name__)
 

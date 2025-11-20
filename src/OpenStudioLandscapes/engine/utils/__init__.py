@@ -27,13 +27,13 @@ import copy
 import json
 import operator as operator_
 import os
-import yaml
 import pathlib
 import shlex
 import time
-from typing import Any, List, MutableMapping, Union, Dict
+from typing import Any, Dict, List, MutableMapping, Union
 
 import git
+import yaml
 from dagster import (
     AssetExecutionContext,
     AssetIn,

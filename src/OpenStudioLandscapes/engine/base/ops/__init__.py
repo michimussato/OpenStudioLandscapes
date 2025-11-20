@@ -102,9 +102,7 @@ def factory_feature_out(
         yield AssetMaterialization(
             asset_key=context.asset_key_for_output(output_name),
             metadata={
-                "__".join(context.asset_key.path): MetadataValue.json(
-                    kwargs_json
-                ),
+                "__".join(context.asset_key.path): MetadataValue.json(kwargs_json),
                 **metadatavalues_from_dict(
                     context=context,
                     d_serialized=kwargs_json,
@@ -153,9 +151,7 @@ def factory_feature_in(
         yield AssetMaterialization(
             asset_key=context.asset_key_for_output(output_name),
             metadata={
-                "__".join(context.asset_key.path): MetadataValue.json(
-                    kwargs_json
-                ),
+                "__".join(context.asset_key.path): MetadataValue.json(kwargs_json),
                 **metadatavalues_from_dict(
                     context=context,
                     d_serialized=kwargs_json,
@@ -396,9 +392,7 @@ def factory_group_in(
         yield AssetMaterialization(
             asset_key=context.asset_key,
             metadata={
-                "__".join(context.asset_key.path): MetadataValue.json(
-                    kwargs_json
-                ),
+                "__".join(context.asset_key.path): MetadataValue.json(kwargs_json),
                 **metadatavalues_from_dict(
                     context=context,
                     d_serialized=kwargs_json,

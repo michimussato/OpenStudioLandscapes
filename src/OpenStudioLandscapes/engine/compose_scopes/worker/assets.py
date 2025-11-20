@@ -4,7 +4,7 @@ import operator
 import os
 import pathlib
 import shutil
-from typing import Any, Generator, List, MutableMapping, Dict
+from typing import Any, Dict, Generator, List, MutableMapping
 
 import yaml
 from dagster import (
@@ -213,10 +213,10 @@ if bool(ins):
         yield AssetMaterialization(
             asset_key=context.asset_key,
             metadata={
-                "__".join(context.asset_key.path): MetadataValue.json(
-                    networks_dict
+                "__".join(context.asset_key.path): MetadataValue.json(networks_dict),
+                "networks_dict_yaml": MetadataValue.md(
+                    f"```yaml\n{networks_dict_yaml}\n```"
                 ),
-                "networks_dict_yaml": MetadataValue.md(f"```yaml\n{networks_dict_yaml}\n```"),
             },
         )
 
@@ -230,7 +230,9 @@ if bool(ins):
                 AssetKey([*ASSET_HEADER_COMPOSE_WORKER["key_prefix"], "features_in"]),
             ),
             "scrape_networks": AssetIn(
-                AssetKey([*ASSET_HEADER_COMPOSE_WORKER["key_prefix"], "scrape_networks"]),
+                AssetKey(
+                    [*ASSET_HEADER_COMPOSE_WORKER["key_prefix"], "scrape_networks"]
+                ),
             ),
         },
     )
@@ -286,25 +288,19 @@ if bool(ins):
             ],
         }
 
-        if bool(int(os.environ.get("OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE", 0))):
+        if bool(
+            int(os.environ.get("OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE", 0))
+        ):
 
             service_dict = get_pangolin_newt_service_skeleton(
                 compose_scope=ComposeScope.WORKER,
             )
 
             services = {
-                "services": {
-                    "newt": service_dict
-                },
+                "services": {"newt": service_dict},
             }
 
-            networks = {
-                "networks": {
-                    "default": {
-                        "name": "pangolin_default"
-                    }
-                }
-            }
+            networks = {"networks": {"default": {"name": "pangolin_default"}}}
 
             service_dict["networks"] = [
                 *networks["networks"].keys(),
@@ -330,7 +326,13 @@ if bool(ins):
                 ),
                 "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml_include}\n```"),
                 "OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE": MetadataValue.bool(
-                    bool(int(os.environ.get("OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE", 0)))
+                    bool(
+                        int(
+                            os.environ.get(
+                                "OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE", 0
+                            )
+                        )
+                    )
                 ),
             },
         )
@@ -430,9 +432,7 @@ if bool(ins):
         yield AssetMaterialization(
             asset_key=context.asset_key,
             metadata={
-                "__".join(context.asset_key.path): MetadataValue.json(
-                    kwargs_json
-                ),
+                "__".join(context.asset_key.path): MetadataValue.json(kwargs_json),
                 "docker_compose_yaml": MetadataValue.json(docker_compose_yaml),
                 "docker_compose": MetadataValue.json(docker_compose),
                 **metadatavalues_from_dict(
