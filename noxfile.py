@@ -3,7 +3,6 @@ import shutil
 import os
 import tempfile
 
-from coverage.bytecode import branch_trails
 from dotenv import load_dotenv
 
 import git
