@@ -4,7 +4,10 @@ __all__ = [
     "FeatureVolumeType",
     "ComposeScope",
     "ComposeCmdExclusion",
-    "ComposeNetworkMode",
+    "DockerComposeRestartPolicy",
+    "DockerComposeDependsOnPolicy",
+    "DockerComposePolicies",
+    "DockerComposeNetworkMode",
     "DockerRepositoryType",
     "DockerConfig",
 ]
@@ -54,7 +57,11 @@ class ComposeCmdExclusion(enum.Enum):
     ]
 
 
-class ComposeNetworkMode(enum.StrEnum):
+##################################################################
+# Docker Compose Enums
+
+
+class DockerComposeNetworkMode(enum.StrEnum):
     # https://docs.docker.com/engine/network/
     # Docker Compose Ports settings
     # will be ignored if other than "default"
@@ -65,6 +72,32 @@ class ComposeNetworkMode(enum.StrEnum):
     OVERLAY = "overlay"
     IPVLAN = "ipvlan"
     MACVLAN = "macvlan"
+
+
+class DockerComposeRestartPolicy(enum.StrEnum):
+    # https://docs.docker.com/engine/containers/start-containers-automatically/#use-a-restart-policy
+    ALWAYS = "always"
+    NO = "no"
+    ON_FAILURE = "on-failure"  # no `max_retries` option yet
+    UNLESS_STOPPED = "unless-stopped"
+
+
+class DockerComposeDependsOnPolicy(enum.StrEnum):
+    # https://docs.docker.com/compose/how-tos/startup-order/
+    SERVICE_STARTED = "service_started"
+    SERVICE_HEALTHY = "service_healthy"
+    SERVICE_COMPLETED_SUCCESSFULLY = "service_completed_successfully"
+
+
+class DockerComposePolicies:
+    # https://stackoverflow.com/a/75574517/2207196
+    NETWORK_MODE = DockerComposeNetworkMode
+    RESTART_POLICY = DockerComposeRestartPolicy
+    DEPENDENCY_ON_POLICY = DockerComposeDependsOnPolicy
+
+
+# Docker Compose Enums
+##################################################################
 
 
 class DockerRegistry(enum.StrEnum):
