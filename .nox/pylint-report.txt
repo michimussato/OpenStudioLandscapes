@@ -1225,13 +1225,12 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
 
 
 @asset(
-    **ASSET_HEADER_BASE_ENV,
+    **ASSET_HEADER,
     description="",
-    name="FEATURES",
 )
-def features(
+def DOCKER_COMPOSE(
     context: AssetExecutionContext,
-) -> Generator[Output[dict] | AssetMaterialization | Any, None, None]:
+) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
     """ """
  (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
@@ -1308,10 +1307,10 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
             asset_key=context.asset_key,
             metadata={
                 "__".join(context.asset_key.path): MetadataValue.json(kwargs_json), (duplicate-code)
-src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.worker.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.default.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
+src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.worker.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.license_server.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
 
 ------------------------------------------------------------------
-Your code has been rated at 6.60/10 (previous run: 6.30/10, +0.29)
+Your code has been rated at 6.60/10 (previous run: 6.60/10, -0.01)
 

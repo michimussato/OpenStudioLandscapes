@@ -6418,7 +6418,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/__init__.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.compose_scopes.worker.constants:[45:64]\n==OpenStudioLandscapes.engine.constants:[177:197]\n    yield Output(_constants)\n\n    yield AssetMaterialization(\n        asset_key=context.asset_key,\n        metadata={\n            \"__\".join(context.asset_key.path): MetadataValue.json(_constants),\n        },\n    )\n\n\n@asset(\n    **ASSET_HEADER_BASE_ENV,\n    description=\"\",\n    name=\"FEATURES\",\n)\ndef features(\n    context: AssetExecutionContext,\n) -> Generator[Output[dict] | AssetMaterialization | Any, None, None]:\n    \"\"\" \"\"\"\n",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.compose_scopes.worker.constants:[45:64]\n==OpenStudioLandscapes.engine.constants:[177:197]\n    yield Output(_constants)\n\n    yield AssetMaterialization(\n        asset_key=context.asset_key,\n        metadata={\n            \"__\".join(context.asset_key.path): MetadataValue.json(_constants),\n        },\n    )\n\n\n@asset(\n    **ASSET_HEADER,\n    description=\"\",\n)\ndef DOCKER_COMPOSE(\n    context: AssetExecutionContext,\n) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:\n    \"\"\" \"\"\"\n",
         "message-id": "R0801"
     },
     {
@@ -6522,7 +6522,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/__init__.py",
         "symbol": "cyclic-import",
-        "message": "Cyclic import (OpenStudioLandscapes.engine.compose_scopes.worker.constants -> OpenStudioLandscapes.engine.constants)",
+        "message": "Cyclic import (OpenStudioLandscapes.engine.compose_scopes.default.constants -> OpenStudioLandscapes.engine.constants)",
         "message-id": "R0401"
     },
     {
@@ -6535,7 +6535,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/__init__.py",
         "symbol": "cyclic-import",
-        "message": "Cyclic import (OpenStudioLandscapes.engine.compose_scopes.default.constants -> OpenStudioLandscapes.engine.constants)",
+        "message": "Cyclic import (OpenStudioLandscapes.engine.compose_scopes.worker.constants -> OpenStudioLandscapes.engine.constants)",
         "message-id": "R0401"
     },
     {

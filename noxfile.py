@@ -33,7 +33,7 @@ DOCKER_PROGRESS = [
     "rawjson",
 ][2]
 
-USE_TEMP_DIR = True
+USE_TEMP_DIR = False
 
 
 def _get_terminal_size() -> Tuple[int, int]:
