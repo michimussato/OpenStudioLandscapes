@@ -22,6 +22,7 @@ project:
   - gitpython
   - PyYAML
   - snakemd
+  - backoff
   # docker-compose-graph is needed because of yaml_tags.overrides
   - docker-compose-graph @ git+https://github.com/michimussato/docker-compose-graph.git@v1.0.0
   dynamic:

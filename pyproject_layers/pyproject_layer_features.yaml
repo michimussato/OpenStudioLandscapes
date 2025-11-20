@@ -3,8 +3,16 @@ project:
   # # - OpenStudioLandscapes @ git+https://github.com/michimussato/OpenStudioLandscapes@v1.9.0
   # - OpenStudioLandscapes @ git+https://github.com/michimussato/OpenStudioLandscapes
   optional-dependencies:
+    lint:
+    - OpenStudioLandscapes @ git+https://github.com/michimussato/OpenStudioLandscapes.git
+    nox:
+    - OpenStudioLandscapes @ git+https://github.com/michimussato/OpenStudioLandscapes.git
     pyproject:
     - OpenStudioLandscapesUtil-VersionBumper @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-VersionBumper.git
+    readme:
+    - OpenStudioLandscapes @ git+https://github.com/michimussato/OpenStudioLandscapes.git
+    sbom:
+    - OpenStudioLandscapes @ git+https://github.com/michimussato/OpenStudioLandscapes.git
 tool:
   setuptools:
     include-package-data: true
