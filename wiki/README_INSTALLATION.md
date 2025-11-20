@@ -144,6 +144,13 @@ git -C $(dirname ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT}) clone https://github.
 
 After the installation, the `venv` can be deactivated
 
+Re-install
+
+```shell
+make openstudiolandscapes_features_install \
+    && pip install -e .[dev]
+```
+
 ```shell
 deactivate
 ```
@@ -155,7 +162,7 @@ deactivate
 > Again, for `make` commands, see [important note](#base-setup---install-openstudiolandscapes-engine)
 
 ```
-make up && make down
+make up
 ```
 
 > [!TIP]
