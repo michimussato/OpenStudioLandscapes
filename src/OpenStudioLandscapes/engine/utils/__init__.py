@@ -627,7 +627,7 @@ def create_image(
 
 
 def get_networks_dict(
-    context: AssetExecutionContext,
+    context: Union[AssetExecutionContext, OpExecutionContext],
     compose_file: pathlib.Path,
 ) -> Dict:
     """
