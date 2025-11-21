@@ -20,12 +20,13 @@ from dagster import (
 from OpenStudioLandscapes.engine.base.ops import (
     op_docker_compose_graph,
 )
+from OpenStudioLandscapes.engine.common_assets.scrape_networks import get_scrape_networks
 from OpenStudioLandscapes.engine.common_assets.group_out import get_group_out
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.discovery.discovery import *
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.utils import *
-from OpenStudioLandscapes.engine.utils.docker.compose_dicts import *
+from OpenStudioLandscapes.engine.utils.pangolin import *
 
 # Todo:
 #  - [ ] get assets from common_assets
@@ -185,53 +186,6 @@ if bool(ins):
     @asset(
         **ASSET_HEADER_COMPOSE_LICENSE_SERVER,
         ins={
-            "features_in": AssetIn(
-                AssetKey(
-                    [*ASSET_HEADER_COMPOSE_LICENSE_SERVER["key_prefix"], "features_in"]
-                )
-            ),
-        },
-    )
-    def scrape_networks(
-        context: AssetExecutionContext,
-        features_in: dict,
-    ) -> Generator[Output[dict] | AssetMaterialization | Any, None, None]:
-
-        features_in.pop("env_base", {})
-        features_in.pop("docker_config", {})
-        features_in.pop("docker_image", {})
-        features_in.pop("docker_config_json", {})
-
-        networks_dict: Dict = {}
-
-        for feature, data in features_in.items():
-            context.log.info(f"{features_in[feature] = }")
-            compose_file = features_in[feature]["compose_yaml"]
-
-            network_dict = get_networks_dict(
-                context=context,
-                compose_file=compose_file,
-            )
-
-            networks_dict.update(network_dict)
-
-        networks_dict_yaml = yaml.safe_dump(networks_dict)
-
-        yield Output(networks_dict)
-
-        yield AssetMaterialization(
-            asset_key=context.asset_key,
-            metadata={
-                "__".join(context.asset_key.path): MetadataValue.json(networks_dict),
-                "networks_dict_yaml": MetadataValue.md(
-                    f"```yaml\n{networks_dict_yaml}\n```"
-                ),
-            },
-        )
-
-    @asset(
-        **ASSET_HEADER_COMPOSE_LICENSE_SERVER,
-        ins={
             "env": AssetIn(
                 AssetKey([*ASSET_HEADER_COMPOSE_LICENSE_SERVER["key_prefix"], "env"]),
             ),
@@ -302,27 +256,15 @@ if bool(ins):
             ],
         }
 
-        if bool(
-            int(os.environ.get("OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE", 0))
-        ):
+        attach_pangolin_site = bool(int(os.environ.get("OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE", 0)))
 
-            service_dict = get_pangolin_newt_service_skeleton(
+        if attach_pangolin_site:
+
+            add_newt_service_to_compose_scope(
+                scrape_networks=scrape_networks,
+                docker_dict_include=docker_dict_include,
                 compose_scope=ComposeScope.LICENSE_SERVER,
             )
-
-            services = {
-                "services": {"newt": service_dict},
-            }
-
-            networks = {"networks": {"default": {"name": "pangolin_default"}}}
-
-            service_dict["networks"] = [
-                *networks["networks"].keys(),
-                *scrape_networks.keys(),
-            ]
-
-            docker_dict_include.update(services)
-            docker_dict_include.update(networks)
 
         docker_yaml_include = yaml.safe_dump(docker_dict_include)
 
@@ -340,13 +282,7 @@ if bool(ins):
                 ),
                 "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml_include}\n```"),
                 "OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE": MetadataValue.bool(
-                    bool(
-                        int(
-                            os.environ.get(
-                                "OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE", 0
-                            )
-                        )
-                    )
+                    attach_pangolin_site,
                 ),
             },
         )
@@ -464,6 +400,11 @@ if bool(ins):
 
     group_out = get_group_out(
         ASSET_HEADER=ASSET_HEADER_COMPOSE_LICENSE_SERVER,
+    )
+
+    scrape_networks = get_scrape_networks(
+        ASSET_HEADER=ASSET_HEADER_COMPOSE_LICENSE_SERVER,
+
     )
 
     docker_compose_graph = AssetsDefinition.from_op(
