@@ -362,7 +362,8 @@ if bool(ins):
 
         yield Output(kwargs)
 
-        kwargs_json = json.dumps(kwargs, default=str)
+        kwargs_json_: str = json.dumps(kwargs, default=str)
+        kwargs_json: dict = json.loads(kwargs_json_)
 
         yield AssetMaterialization(
             asset_key=context.asset_key,
