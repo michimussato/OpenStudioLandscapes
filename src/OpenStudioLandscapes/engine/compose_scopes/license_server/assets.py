@@ -1,8 +1,8 @@
 import copy
 import json
 import operator
-import os
 import pathlib
+import textwrap
 from typing import Any, Dict, Generator, List, MutableMapping
 
 import yaml
@@ -27,6 +27,7 @@ from OpenStudioLandscapes.engine.discovery.discovery import *
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.utils import *
 from OpenStudioLandscapes.engine.utils.pangolin import *
+from OpenStudioLandscapes.engine.compose_scopes.license_server.constants import COMPOSE_SCOPE, ATTACH_SITE_TO_COMPOSE_SCOPE
 
 # Todo:
 #  - [ ] get assets from common_assets
@@ -40,7 +41,7 @@ yaml.SafeDumper.add_multi_representer(
 
 
 ins, feature_ins = get_dynamic_ins(
-    compose_scope_filter=[ComposeScope.LICENSE_SERVER],
+    compose_scope_filter=[COMPOSE_SCOPE],
     imported_features=IMPORTED_FEATURES,
     operator=operator.eq,
 )
@@ -83,7 +84,7 @@ if bool(ins):
 
         env_in.update(
             {
-                "COMPOSE_SCOPE": ComposeScope.LICENSE_SERVER,
+                "COMPOSE_SCOPE": COMPOSE_SCOPE,
             }
         )
 
@@ -203,6 +204,21 @@ if bool(ins):
                 ),
             ),
         },
+        description=textwrap.dedent(
+            f"""
+            Environment variable `OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE` 
+            is set to `{ATTACH_SITE_TO_COMPOSE_SCOPE}`.
+            
+            If `OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE` is `True`,
+            set the following environment variables before launching the Landscape:
+            
+            ```shell
+            OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_{COMPOSE_SCOPE.upper()}__NEWT_ID
+            OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_{COMPOSE_SCOPE.upper()}__NEWT_SECRET
+            OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_{COMPOSE_SCOPE.upper()}__PANGOLIN_ENDPOINT
+            ```
+            """
+        ),
     )
     def compose(
         context: AssetExecutionContext,
@@ -256,14 +272,12 @@ if bool(ins):
             ],
         }
 
-        attach_pangolin_site = bool(int(os.environ.get("OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE", 0)))
-
-        if attach_pangolin_site:
+        if ATTACH_SITE_TO_COMPOSE_SCOPE:
 
             add_newt_service_to_compose_scope(
                 scrape_networks=scrape_networks,
                 docker_dict_include=docker_dict_include,
-                compose_scope=ComposeScope.LICENSE_SERVER,
+                compose_scope=COMPOSE_SCOPE,
             )
 
         docker_yaml_include = yaml.safe_dump(docker_dict_include)
@@ -282,7 +296,7 @@ if bool(ins):
                 ),
                 "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml_include}\n```"),
                 "OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE": MetadataValue.bool(
-                    attach_pangolin_site,
+                    ATTACH_SITE_TO_COMPOSE_SCOPE,
                 ),
             },
         )
