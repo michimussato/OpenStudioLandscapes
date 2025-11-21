@@ -5,7 +5,7 @@ from dagster import (
     Out,
 )
 
-from OpenStudioLandscapes.engine.base.ops import factory_group_in
+from OpenStudioLandscapes.engine.base.ops.factories import factory_group_in
 
 
 # get_base_in ?

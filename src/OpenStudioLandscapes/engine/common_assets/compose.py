@@ -5,7 +5,7 @@ from dagster import (
     Out,
 )
 
-from OpenStudioLandscapes.engine.base.ops import factory_compose
+from OpenStudioLandscapes.engine.base.ops.factories import factory_compose
 
 
 def get_compose(
