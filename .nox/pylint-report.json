@@ -6197,7 +6197,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/__init__.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.compose_scopes.license_server.constants:[21:81]\n==OpenStudioLandscapes.engine.compose_scopes.worker.constants:[21:83]\nKEY = [GROUP]\n\nASSET_HEADER = {\n    \"group_name\": GROUP,\n    \"key_prefix\": KEY,\n    \"compute_kind\": \"python\",\n}\n\nENVIRONMENT = {}\n\n\n# Todo:\n#  - [ ] This asset is not currently connected to the tree\n@asset(\n    **ASSET_HEADER,\n    description=\"\",\n)\ndef constants_compose_worker(\n    context: AssetExecutionContext,\n) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:\n    \"\"\" \"\"\"\n\n    _constants = ENVIRONMENT\n\n    yield Output(_constants)\n\n    yield AssetMaterialization(\n        asset_key=context.asset_key,\n        metadata={\n            \"__\".join(context.asset_key.path): MetadataValue.json(_constants),\n        },\n    )\n\n\n@asset(\n    **ASSET_HEADER,\n    description=\"\",\n)\ndef DOCKER_COMPOSE(\n    context: AssetExecutionContext,\n) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:\n    \"\"\" \"\"\"\n\n    docker_compose = pathlib.Path(\n        \"{DOT_LANDSCAPES}\",\n        \"{LANDSCAPE}\",\n        f\"{ASSET_HEADER['group_name']}__{'_'.join(ASSET_HEADER['key_prefix'])}\",\n        \"__\".join(context.asset_key.path),\n        \"docker_compose\",\n        \"docker-compose.yml\",\n    )\n\n    yield Output(\n        value=docker_compose,\n    )\n\n    yield AssetMaterialization(\n        asset_key=context.asset_key,\n        metadata={\n            \"__\".join(context.asset_key.path): MetadataValue.path(docker_compose),\n        },\n    )",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.compose_scopes.license_server.constants:[21:81]\n==OpenStudioLandscapes.engine.compose_scopes.worker.constants:[21:83]\nKEY = [GROUP]\n\nASSET_HEADER = {\n    \"group_name\": GROUP,\n    \"key_prefix\": KEY,\n    \"compute_kind\": \"python\",\n}\n\nENVIRONMENT = {}\n\n\n@asset(\n    **ASSET_HEADER,\n    description=\"\",\n)\ndef constants_compose_license_server(\n    context: AssetExecutionContext,\n) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:\n    \"\"\" \"\"\"\n\n    _constants = ENVIRONMENT\n\n    yield Output(_constants)\n\n    yield AssetMaterialization(\n        asset_key=context.asset_key,\n        metadata={\n            \"__\".join(context.asset_key.path): MetadataValue.json(_constants),\n        },\n    )\n\n\n@asset(\n    **ASSET_HEADER,\n    description=\"\",\n)\ndef DOCKER_COMPOSE(\n    context: AssetExecutionContext,\n) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:\n    \"\"\" \"\"\"\n\n    docker_compose = pathlib.Path(\n        \"{DOT_LANDSCAPES}\",\n        \"{LANDSCAPE}\",\n        f\"{ASSET_HEADER['group_name']}__{'_'.join(ASSET_HEADER['key_prefix'])}\",\n        \"__\".join(context.asset_key.path),\n        \"docker_compose\",\n        \"docker-compose.yml\",\n    )\n\n    yield Output(\n        value=docker_compose,\n    )\n\n    yield AssetMaterialization(\n        asset_key=context.asset_key,\n        metadata={\n            \"__\".join(context.asset_key.path): MetadataValue.path(docker_compose),\n        },\n    )",
         "message-id": "R0801"
     },
     {
@@ -6210,7 +6210,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/__init__.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.compose_scopes.default.constants:[27:81]\n==OpenStudioLandscapes.engine.compose_scopes.worker.constants:[27:83]\n}\n\nENVIRONMENT = {}\n\n\n@asset(\n    **ASSET_HEADER,\n    description=\"\",\n)\ndef constants_compose(\n    context: AssetExecutionContext,\n) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:\n    \"\"\" \"\"\"\n\n    _constants = ENVIRONMENT\n\n    yield Output(_constants)\n\n    yield AssetMaterialization(\n        asset_key=context.asset_key,\n        metadata={\n            \"__\".join(context.asset_key.path): MetadataValue.json(_constants),\n        },\n    )\n\n\n@asset(\n    **ASSET_HEADER,\n    description=\"\",\n)\ndef DOCKER_COMPOSE(\n    context: AssetExecutionContext,\n) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:\n    \"\"\" \"\"\"\n\n    docker_compose = pathlib.Path(\n        \"{DOT_LANDSCAPES}\",\n        \"{LANDSCAPE}\",\n        f\"{ASSET_HEADER['group_name']}__{'_'.join(ASSET_HEADER['key_prefix'])}\",\n        \"__\".join(context.asset_key.path),\n        \"docker_compose\",\n        \"docker-compose.yml\",\n    )\n\n    yield Output(\n        value=docker_compose,\n    )\n\n    yield AssetMaterialization(\n        asset_key=context.asset_key,\n        metadata={\n            \"__\".join(context.asset_key.path): MetadataValue.path(docker_compose),\n        },\n    )",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.compose_scopes.default.constants:[27:81]\n==OpenStudioLandscapes.engine.compose_scopes.worker.constants:[27:83]\n}\n\nENVIRONMENT = {}\n\n\n# Todo:\n#  - [ ] This asset is not currently connected to the tree\n@asset(\n    **ASSET_HEADER,\n    description=\"\",\n)\ndef constants_compose_worker(\n    context: AssetExecutionContext,\n) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:\n    \"\"\" \"\"\"\n\n    _constants = ENVIRONMENT\n\n    yield Output(_constants)\n\n    yield AssetMaterialization(\n        asset_key=context.asset_key,\n        metadata={\n            \"__\".join(context.asset_key.path): MetadataValue.json(_constants),\n        },\n    )\n\n\n@asset(\n    **ASSET_HEADER,\n    description=\"\",\n)\ndef DOCKER_COMPOSE(\n    context: AssetExecutionContext,\n) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:\n    \"\"\" \"\"\"\n\n    docker_compose = pathlib.Path(\n        \"{DOT_LANDSCAPES}\",\n        \"{LANDSCAPE}\",\n        f\"{ASSET_HEADER['group_name']}__{'_'.join(ASSET_HEADER['key_prefix'])}\",\n        \"__\".join(context.asset_key.path),\n        \"docker_compose\",\n        \"docker-compose.yml\",\n    )\n\n    yield Output(\n        value=docker_compose,\n    )\n\n    yield AssetMaterialization(\n        asset_key=context.asset_key,\n        metadata={\n            \"__\".join(context.asset_key.path): MetadataValue.path(docker_compose),\n        },\n    )",
         "message-id": "R0801"
     },
     {
@@ -6418,7 +6418,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/__init__.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.compose_scopes.worker.constants:[45:64]\n==OpenStudioLandscapes.engine.constants:[177:197]\n    yield Output(_constants)\n\n    yield AssetMaterialization(\n        asset_key=context.asset_key,\n        metadata={\n            \"__\".join(context.asset_key.path): MetadataValue.json(_constants),\n        },\n    )\n\n\n@asset(\n    **ASSET_HEADER_BASE_ENV,\n    description=\"\",\n    name=\"FEATURES\",\n)\ndef features(\n    context: AssetExecutionContext,\n) -> Generator[Output[dict] | AssetMaterialization | Any, None, None]:\n    \"\"\" \"\"\"\n",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.compose_scopes.worker.constants:[45:64]\n==OpenStudioLandscapes.engine.constants:[177:197]\n    yield Output(_constants)\n\n    yield AssetMaterialization(\n        asset_key=context.asset_key,\n        metadata={\n            \"__\".join(context.asset_key.path): MetadataValue.json(_constants),\n        },\n    )\n\n\n@asset(\n    **ASSET_HEADER,\n    description=\"\",\n)\ndef DOCKER_COMPOSE(\n    context: AssetExecutionContext,\n) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:\n    \"\"\" \"\"\"\n",
         "message-id": "R0801"
     },
     {
@@ -6431,7 +6431,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/__init__.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[472:480]\n==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[74:82]\n    env_in.update(\n        expand_dict_vars(\n            dict_to_expand={\"DOCKER_COMPOSE\": DOCKER_COMPOSE.as_posix()},\n            kv=env_in,\n        )\n    )\n\n    env_in.update(",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[472:480]\n==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[74:82]\n        env_in.update(\n            expand_dict_vars(\n                dict_to_expand={\"DOCKER_COMPOSE\": DOCKER_COMPOSE.as_posix()},\n                kv=env_in,\n            )\n        )\n\n        env_in.update(",
         "message-id": "R0801"
     },
     {
@@ -6522,7 +6522,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/__init__.py",
         "symbol": "cyclic-import",
-        "message": "Cyclic import (OpenStudioLandscapes.engine.compose_scopes.license_server.constants -> OpenStudioLandscapes.engine.constants)",
+        "message": "Cyclic import (OpenStudioLandscapes.engine.compose_scopes.default.constants -> OpenStudioLandscapes.engine.constants)",
         "message-id": "R0401"
     },
     {
@@ -6548,7 +6548,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/__init__.py",
         "symbol": "cyclic-import",
-        "message": "Cyclic import (OpenStudioLandscapes.engine.compose_scopes.default.constants -> OpenStudioLandscapes.engine.constants)",
+        "message": "Cyclic import (OpenStudioLandscapes.engine.compose_scopes.license_server.constants -> OpenStudioLandscapes.engine.constants)",
         "message-id": "R0401"
     }
 ]
