@@ -4,8 +4,8 @@ __all__ = [
 
 from typing import Dict
 
-from OpenStudioLandscapes.engine.utils.docker.compose_dicts import *
 from OpenStudioLandscapes.engine.enums import *
+from OpenStudioLandscapes.engine.utils.docker.compose_dicts import *
 
 
 def add_newt_service_to_compose_scope(

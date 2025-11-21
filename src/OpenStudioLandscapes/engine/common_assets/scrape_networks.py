@@ -27,7 +27,9 @@ def get_scrape_networks(
         can_subset=False,
         group_name=ASSET_HEADER["group_name"],
         keys_by_output_name={
-            "scrape_networks": AssetKey([*ASSET_HEADER["key_prefix"], "scrape_networks"]),
+            "scrape_networks": AssetKey(
+                [*ASSET_HEADER["key_prefix"], "scrape_networks"]
+            ),
         },
         keys_by_input_name={
             "features_in": AssetKey([*ASSET_HEADER["key_prefix"], "features_in"]),

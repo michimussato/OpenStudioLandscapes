@@ -20,14 +20,19 @@ from dagster import (
 from OpenStudioLandscapes.engine.base.ops import (
     op_docker_compose_graph,
 )
-from OpenStudioLandscapes.engine.common_assets.scrape_networks import get_scrape_networks
 from OpenStudioLandscapes.engine.common_assets.group_out import get_group_out
+from OpenStudioLandscapes.engine.common_assets.scrape_networks import (
+    get_scrape_networks,
+)
+from OpenStudioLandscapes.engine.compose_scopes.default.constants import (
+    ATTACH_SITE_TO_COMPOSE_SCOPE,
+    COMPOSE_SCOPE,
+)
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.discovery.discovery import *
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.utils import *
 from OpenStudioLandscapes.engine.utils.pangolin import *
-from OpenStudioLandscapes.engine.compose_scopes.default.constants import COMPOSE_SCOPE, ATTACH_SITE_TO_COMPOSE_SCOPE
 
 # Todo:
 #  - [ ] get assets from common_assets
@@ -398,7 +403,6 @@ if bool(ins):
 
     scrape_networks = get_scrape_networks(
         ASSET_HEADER=ASSET_HEADER_COMPOSE,
-
     )
 
     docker_compose_graph = AssetsDefinition.from_op(

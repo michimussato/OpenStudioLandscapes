@@ -7,25 +7,25 @@ __all__ = [
     "factory_group_in",
 ]
 
-import json
 import copy
+import json
 import pathlib
 import textwrap
-from typing import Dict
 from collections import ChainMap
 from functools import reduce
-import yaml
+from typing import Dict
 
+import yaml
 from dagster import (
-    OpDefinition,
-    op,
-    # GroupIn,
-    OpExecutionContext,
-    Output,
     AssetMaterialization,
     MetadataValue,
+    OpDefinition,
+    OpExecutionContext,
+    Output,
+    op,
 )
 from docker_compose_graph.utils import *
+
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.utils import *
 
