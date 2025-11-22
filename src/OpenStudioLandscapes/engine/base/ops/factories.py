@@ -8,6 +8,7 @@ __all__ = [
 ]
 
 import copy
+import enum
 import json
 import pathlib
 import textwrap
@@ -28,6 +29,13 @@ from docker_compose_graph.utils import *
 
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.utils import *
+
+
+# https://github.com/yaml/pyyaml/issues/722#issuecomment-1969292770
+yaml.SafeDumper.add_multi_representer(
+    data_type=enum.Enum,
+    representer=yaml.representer.SafeRepresenter.represent_str,
+)
 
 
 def factory_feature_out(
@@ -381,7 +389,7 @@ def factory_compose(
     ):
         """ """
 
-        env = kwargs.pop("env")
+        env: Dict = kwargs.pop("env")
         compose_networks = kwargs.pop("compose_networks")
         compose_maps = kwargs.pop("compose_maps")
 

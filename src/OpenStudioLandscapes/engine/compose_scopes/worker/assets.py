@@ -1,4 +1,5 @@
 import copy
+import enum
 import json
 import operator
 import pathlib
@@ -46,7 +47,7 @@ from OpenStudioLandscapes.engine.utils.pangolin import *
 
 # https://github.com/yaml/pyyaml/issues/722#issuecomment-1969292770
 yaml.SafeDumper.add_multi_representer(
-    DockerComposeRestartPolicy,
+    enum.Enum,
     yaml.representer.SafeRepresenter.represent_str,
 )
 
