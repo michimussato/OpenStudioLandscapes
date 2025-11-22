@@ -339,15 +339,15 @@ src/OpenStudioLandscapes/engine/discovery/discovery.py:54:20: C0209: Formatting 
 ************* Module OpenStudioLandscapes.engine.compose_scopes.worker.assets
 src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:40:0: C0301: Line too long (101/100) (line-too-long)
 src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:211:0: C0301: Line too long (105/100) (line-too-long)
-src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:453:0: C0301: Line too long (499/100) (line-too-long)
-src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:498:0: C0301: Line too long (1053/100) (line-too-long)
-src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:499:0: C0301: Line too long (1051/100) (line-too-long)
-src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:500:0: C0301: Line too long (603/100) (line-too-long)
-src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:503:0: C0301: Line too long (1075/100) (line-too-long)
-src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:505:0: C0301: Line too long (1051/100) (line-too-long)
-src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:506:0: C0301: Line too long (1048/100) (line-too-long)
+src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:454:0: C0301: Line too long (499/100) (line-too-long)
+src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:499:0: C0301: Line too long (1053/100) (line-too-long)
+src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:500:0: C0301: Line too long (1051/100) (line-too-long)
+src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:501:0: C0301: Line too long (603/100) (line-too-long)
+src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:504:0: C0301: Line too long (1075/100) (line-too-long)
+src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:506:0: C0301: Line too long (1051/100) (line-too-long)
+src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:507:0: C0301: Line too long (1048/100) (line-too-long)
 src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:43:1: W0511: Todo: (fixme)
-src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:444:9: W0511: Todo (fixme)
+src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:445:9: W0511: Todo (fixme)
 src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:32:0: W0401: Wildcard import OpenStudioLandscapes.engine.constants (wildcard-import)
 src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:33:0: W0401: Wildcard import OpenStudioLandscapes.engine.discovery.discovery (wildcard-import)
@@ -378,8 +378,8 @@ src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:354:8: W0621: Re
 src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:355:8: W0621: Redefining name 'docker_config' from outer scope (line 32) (redefined-outer-name)
 src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:356:8: W0621: Redefining name 'docker_config_json' from outer scope (line 138) (redefined-outer-name)
 src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:361:15: W0612: Unused variable 'v' (unused-variable)
-src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:406:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:434:4: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:407:4: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:435:4: C0116: Missing function or method docstring (missing-function-docstring)
 src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:32:0: W0614: Unused import(s) docker_config, os, LOGGER, DOCKER_PROGRESS, docker_config_, msg, e, DOCKER_CONFIG, DOCKER_USE_CACHE_GLOBAL, DOCKER_USE_CACHE_BASE, PREFIX_COMPOSE_SCOPE, GROUP_COMPOSE, KEY_COMPOSE, ASSET_HEADER_COMPOSE, ENVIRONMENT_COMPOSE, GROUP_COMPOSE_LICENSE_SERVER, KEY_COMPOSE_LICENSE_SERVER, ASSET_HEADER_COMPOSE_LICENSE_SERVER, ENVIRONMENT_COMPOSE_LICENSE_SERVER, GROUP_COMPOSE_WORKER, KEY_COMPOSE_WORKER, ENVIRONMENT_COMPOSE_WORKER, GROUP_BASE_ENV, KEY_BASE_ENV, ASSET_HEADER_BASE_ENV, GROUP_BASE, KEY_BASE, GROUP_LANDSCAPE_MAP, KEY_LANDSCAPE_MAP, ASSET_HEADER_LANDSCAPE_MAP, GROUP_TELEPORT, KEY_TELEPORT, ASSET_HEADER_TELEPORT, GROUP_TRAEFIK, KEY_TRAEFIK, ASSET_HEADER_TRAEFIK, GROUP_DISTRIBUTABLE, KEY_DISTRIBUTABLE, ASSET_HEADER_DISTRIBUTABLE, constants_base, features, get_dagster_logger, enum, OpenStudioLandscapesConfig, FeatureVolumeType, ComposeScope, ComposeCmdExclusion, DockerComposeNetworkMode, DockerComposeDependsOnPolicy, DockerComposePolicies, DockerRegistry, DockerRepositoryType, EnvVar, FEATURES, constants_compose, constants_compose_license_server and constants_compose_worker from wildcard import of OpenStudioLandscapes.engine.constants (unused-wildcard-import)
 src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:33:0: W0614: Unused import(s) importlib, namespace_packages, DISCOVERED_MODULE, IMPORTABLE_FEATURES, feature_keys, key, IMPORTS, feature, module_object and find_namespace_packages from wildcard import of OpenStudioLandscapes.engine.discovery.discovery (unused-wildcard-import)
 src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:35:0: W0614: Unused import(s) operator_, shlex, time, git, cmd_list_to_str, get_pip_install_str, get_apt_install_str, get_copy_str, get_wget_str, get_git_root, get_configs_root, get_data_root, get_bin_root, get_image_name, parse_docker_image_path, get_compose_scope, get_feature_config, get_bool_env, get_str_env, get_image_metadata, create_image, get_networks_dict, Union, OpExecutionContext, ComposeScopeException, OpenStudioLandscapesException, queue, subprocess, threading, backoff, OpenStudioLandscapesDockerException, docker_build_cmd, docker_push_cmd, OutputReader, execute_in_threads, docker_process_cmds and docker_do from wildcard import of OpenStudioLandscapes.engine.utils (unused-wildcard-import)
@@ -387,12 +387,12 @@ src/OpenStudioLandscapes/engine/compose_scopes/worker/assets.py:36:0: W0614: Unu
 ************* Module OpenStudioLandscapes.engine.compose_scopes.worker.definitions
 src/OpenStudioLandscapes/engine/compose_scopes/worker/definitions.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 ************* Module OpenStudioLandscapes.engine.compose_scopes.worker.constants
-src/OpenStudioLandscapes/engine/compose_scopes/worker/constants.py:39:1: W0511: Todo: (fixme)
+src/OpenStudioLandscapes/engine/compose_scopes/worker/constants.py:40:1: W0511: Todo: (fixme)
 src/OpenStudioLandscapes/engine/compose_scopes/worker/constants.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 src/OpenStudioLandscapes/engine/compose_scopes/worker/constants.py:17:0: W0401: Wildcard import OpenStudioLandscapes.engine.enums (wildcard-import)
-src/OpenStudioLandscapes/engine/compose_scopes/worker/constants.py:45:0: C0112: Empty function docstring (empty-docstring)
-src/OpenStudioLandscapes/engine/compose_scopes/worker/constants.py:66:0: C0112: Empty function docstring (empty-docstring)
-src/OpenStudioLandscapes/engine/compose_scopes/worker/constants.py:66:0: C0103: Function name "DOCKER_COMPOSE" doesn't conform to snake_case naming style (invalid-name)
+src/OpenStudioLandscapes/engine/compose_scopes/worker/constants.py:46:0: C0112: Empty function docstring (empty-docstring)
+src/OpenStudioLandscapes/engine/compose_scopes/worker/constants.py:67:0: C0112: Empty function docstring (empty-docstring)
+src/OpenStudioLandscapes/engine/compose_scopes/worker/constants.py:67:0: C0103: Function name "DOCKER_COMPOSE" doesn't conform to snake_case naming style (invalid-name)
 src/OpenStudioLandscapes/engine/compose_scopes/worker/constants.py:17:0: W0614: Unused import(s) enum, GroupIn, OpenStudioLandscapesConfig, FeatureVolumeType, ComposeCmdExclusion, DockerComposeNetworkMode, DockerComposeRestartPolicy, DockerComposeDependsOnPolicy, DockerComposePolicies, DockerRegistry, DockerRepositoryType, DockerConfig and EnvVar from wildcard import of OpenStudioLandscapes.engine.enums (unused-wildcard-import)
 ************* Module OpenStudioLandscapes.engine.compose_scopes.default.assets
 src/OpenStudioLandscapes/engine/compose_scopes/default/assets.py:203:0: C0301: Line too long (105/100) (line-too-long)
@@ -424,8 +424,8 @@ src/OpenStudioLandscapes/engine/compose_scopes/default/assets.py:312:8: W0621: R
 src/OpenStudioLandscapes/engine/compose_scopes/default/assets.py:313:8: W0621: Redefining name 'docker_config' from outer scope (line 31) (redefined-outer-name)
 src/OpenStudioLandscapes/engine/compose_scopes/default/assets.py:314:8: W0621: Redefining name 'docker_config_json' from outer scope (line 132) (redefined-outer-name)
 src/OpenStudioLandscapes/engine/compose_scopes/default/assets.py:319:15: W0612: Unused variable 'v' (unused-variable)
-src/OpenStudioLandscapes/engine/compose_scopes/default/assets.py:364:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/compose_scopes/default/assets.py:383:4: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/compose_scopes/default/assets.py:365:4: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/compose_scopes/default/assets.py:384:4: C0116: Missing function or method docstring (missing-function-docstring)
 src/OpenStudioLandscapes/engine/compose_scopes/default/assets.py:31:0: W0614: Unused import(s) docker_config, os, LOGGER, DOCKER_PROGRESS, docker_config_, msg, e, DOCKER_CONFIG, DOCKER_USE_CACHE_GLOBAL, DOCKER_USE_CACHE_BASE, PREFIX_COMPOSE_SCOPE, GROUP_COMPOSE, KEY_COMPOSE, ENVIRONMENT_COMPOSE, GROUP_COMPOSE_LICENSE_SERVER, KEY_COMPOSE_LICENSE_SERVER, ASSET_HEADER_COMPOSE_LICENSE_SERVER, ENVIRONMENT_COMPOSE_LICENSE_SERVER, GROUP_COMPOSE_WORKER, KEY_COMPOSE_WORKER, ASSET_HEADER_COMPOSE_WORKER, ENVIRONMENT_COMPOSE_WORKER, GROUP_BASE_ENV, KEY_BASE_ENV, ASSET_HEADER_BASE_ENV, GROUP_BASE, KEY_BASE, GROUP_LANDSCAPE_MAP, KEY_LANDSCAPE_MAP, ASSET_HEADER_LANDSCAPE_MAP, GROUP_TELEPORT, KEY_TELEPORT, ASSET_HEADER_TELEPORT, GROUP_TRAEFIK, KEY_TRAEFIK, ASSET_HEADER_TRAEFIK, GROUP_DISTRIBUTABLE, KEY_DISTRIBUTABLE, ASSET_HEADER_DISTRIBUTABLE, constants_base, features, get_dagster_logger, enum, OpenStudioLandscapesConfig, FeatureVolumeType, ComposeScope, ComposeCmdExclusion, DockerComposeNetworkMode, DockerComposeDependsOnPolicy, DockerComposePolicies, DockerRegistry, DockerRepositoryType, EnvVar, FEATURES, constants_compose, constants_compose_license_server and constants_compose_worker from wildcard import of OpenStudioLandscapes.engine.constants (unused-wildcard-import)
 src/OpenStudioLandscapes/engine/compose_scopes/default/assets.py:32:0: W0614: Unused import(s) importlib, namespace_packages, DISCOVERED_MODULE, IMPORTABLE_FEATURES, feature_keys, key, IMPORTS, feature, module_object and find_namespace_packages from wildcard import of OpenStudioLandscapes.engine.discovery.discovery (unused-wildcard-import)
 src/OpenStudioLandscapes/engine/compose_scopes/default/assets.py:34:0: W0614: Unused import(s) operator_, shlex, time, git, cmd_list_to_str, get_pip_install_str, get_apt_install_str, get_copy_str, get_wget_str, get_git_root, get_configs_root, get_data_root, get_bin_root, get_image_name, parse_docker_image_path, get_compose_scope, get_feature_config, get_bool_env, get_str_env, get_image_metadata, create_image, get_networks_dict, Union, OpExecutionContext, ComposeScopeException, OpenStudioLandscapesException, queue, shutil, subprocess, threading, backoff, OpenStudioLandscapesDockerException, docker_build_cmd, docker_push_cmd, OutputReader, execute_in_threads, docker_process_cmds and docker_do from wildcard import of OpenStudioLandscapes.engine.utils (unused-wildcard-import)
@@ -435,9 +435,9 @@ src/OpenStudioLandscapes/engine/compose_scopes/default/definitions.py:1:0: C0114
 ************* Module OpenStudioLandscapes.engine.compose_scopes.default.constants
 src/OpenStudioLandscapes/engine/compose_scopes/default/constants.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 src/OpenStudioLandscapes/engine/compose_scopes/default/constants.py:17:0: W0401: Wildcard import OpenStudioLandscapes.engine.enums (wildcard-import)
-src/OpenStudioLandscapes/engine/compose_scopes/default/constants.py:43:0: C0112: Empty function docstring (empty-docstring)
-src/OpenStudioLandscapes/engine/compose_scopes/default/constants.py:64:0: C0112: Empty function docstring (empty-docstring)
-src/OpenStudioLandscapes/engine/compose_scopes/default/constants.py:64:0: C0103: Function name "DOCKER_COMPOSE" doesn't conform to snake_case naming style (invalid-name)
+src/OpenStudioLandscapes/engine/compose_scopes/default/constants.py:44:0: C0112: Empty function docstring (empty-docstring)
+src/OpenStudioLandscapes/engine/compose_scopes/default/constants.py:65:0: C0112: Empty function docstring (empty-docstring)
+src/OpenStudioLandscapes/engine/compose_scopes/default/constants.py:65:0: C0103: Function name "DOCKER_COMPOSE" doesn't conform to snake_case naming style (invalid-name)
 src/OpenStudioLandscapes/engine/compose_scopes/default/constants.py:17:0: W0614: Unused import(s) enum, GroupIn, OpenStudioLandscapesConfig, FeatureVolumeType, ComposeCmdExclusion, DockerComposeNetworkMode, DockerComposeRestartPolicy, DockerComposeDependsOnPolicy, DockerComposePolicies, DockerRegistry, DockerRepositoryType, DockerConfig and EnvVar from wildcard import of OpenStudioLandscapes.engine.enums (unused-wildcard-import)
 ************* Module OpenStudioLandscapes.engine.compose_scopes.license_server.assets
 src/OpenStudioLandscapes/engine/compose_scopes/license_server/assets.py:223:0: C0301: Line too long (105/100) (line-too-long)
@@ -469,8 +469,8 @@ src/OpenStudioLandscapes/engine/compose_scopes/license_server/assets.py:332:8: W
 src/OpenStudioLandscapes/engine/compose_scopes/license_server/assets.py:333:8: W0621: Redefining name 'docker_config' from outer scope (line 31) (redefined-outer-name)
 src/OpenStudioLandscapes/engine/compose_scopes/license_server/assets.py:334:8: W0621: Redefining name 'docker_config_json' from outer scope (line 143) (redefined-outer-name)
 src/OpenStudioLandscapes/engine/compose_scopes/license_server/assets.py:339:15: W0612: Unused variable 'v' (unused-variable)
-src/OpenStudioLandscapes/engine/compose_scopes/license_server/assets.py:384:4: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/compose_scopes/license_server/assets.py:403:4: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/compose_scopes/license_server/assets.py:385:4: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/compose_scopes/license_server/assets.py:404:4: C0116: Missing function or method docstring (missing-function-docstring)
 src/OpenStudioLandscapes/engine/compose_scopes/license_server/assets.py:31:0: W0614: Unused import(s) docker_config, os, LOGGER, DOCKER_PROGRESS, docker_config_, msg, e, DOCKER_CONFIG, DOCKER_USE_CACHE_GLOBAL, DOCKER_USE_CACHE_BASE, PREFIX_COMPOSE_SCOPE, GROUP_COMPOSE, KEY_COMPOSE, ASSET_HEADER_COMPOSE, ENVIRONMENT_COMPOSE, GROUP_COMPOSE_LICENSE_SERVER, KEY_COMPOSE_LICENSE_SERVER, ENVIRONMENT_COMPOSE_LICENSE_SERVER, GROUP_COMPOSE_WORKER, KEY_COMPOSE_WORKER, ASSET_HEADER_COMPOSE_WORKER, ENVIRONMENT_COMPOSE_WORKER, GROUP_BASE_ENV, KEY_BASE_ENV, ASSET_HEADER_BASE_ENV, GROUP_BASE, KEY_BASE, GROUP_LANDSCAPE_MAP, KEY_LANDSCAPE_MAP, ASSET_HEADER_LANDSCAPE_MAP, GROUP_TELEPORT, KEY_TELEPORT, ASSET_HEADER_TELEPORT, GROUP_TRAEFIK, KEY_TRAEFIK, ASSET_HEADER_TRAEFIK, GROUP_DISTRIBUTABLE, KEY_DISTRIBUTABLE, ASSET_HEADER_DISTRIBUTABLE, constants_base, features, get_dagster_logger, enum, OpenStudioLandscapesConfig, FeatureVolumeType, ComposeScope, ComposeCmdExclusion, DockerComposeNetworkMode, DockerComposeDependsOnPolicy, DockerComposePolicies, DockerRegistry, DockerRepositoryType, EnvVar, FEATURES, constants_compose, constants_compose_license_server and constants_compose_worker from wildcard import of OpenStudioLandscapes.engine.constants (unused-wildcard-import)
 src/OpenStudioLandscapes/engine/compose_scopes/license_server/assets.py:32:0: W0614: Unused import(s) importlib, namespace_packages, DISCOVERED_MODULE, IMPORTABLE_FEATURES, feature_keys, key, IMPORTS, feature, module_object and find_namespace_packages from wildcard import of OpenStudioLandscapes.engine.discovery.discovery (unused-wildcard-import)
 src/OpenStudioLandscapes/engine/compose_scopes/license_server/assets.py:34:0: W0614: Unused import(s) operator_, shlex, time, git, cmd_list_to_str, get_pip_install_str, get_apt_install_str, get_copy_str, get_wget_str, get_git_root, get_configs_root, get_data_root, get_bin_root, get_image_name, parse_docker_image_path, get_compose_scope, get_feature_config, get_bool_env, get_str_env, get_image_metadata, create_image, get_networks_dict, Union, OpExecutionContext, ComposeScopeException, OpenStudioLandscapesException, queue, shutil, subprocess, threading, backoff, OpenStudioLandscapesDockerException, docker_build_cmd, docker_push_cmd, OutputReader, execute_in_threads, docker_process_cmds and docker_do from wildcard import of OpenStudioLandscapes.engine.utils (unused-wildcard-import)
@@ -720,8 +720,8 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
 
     @asset( (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
-==OpenStudioLandscapes.engine.compose_scopes.default.assets:[290:360]
-==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[332:402]
+==OpenStudioLandscapes.engine.compose_scopes.default.assets:[290:361]
+==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[332:403]
         ins={
             "group_out_base": AssetIn(
                 AssetKey([*ASSET_HEADER_BASE["key_prefix"], str(GroupIn.BASE_IN)])
@@ -776,7 +776,8 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
 
         yield Output(kwargs)
 
-        kwargs_json = json.dumps(kwargs, default=str)
+        kwargs_json_: str = json.dumps(kwargs, default=str)
+        kwargs_json: dict = json.loads(kwargs_json_)
 
         yield AssetMaterialization(
             asset_key=context.asset_key,
@@ -793,8 +794,8 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
 
     @asset( (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
-==OpenStudioLandscapes.engine.compose_scopes.license_server.constants:[22:88]
-==OpenStudioLandscapes.engine.compose_scopes.worker.constants:[22:89]
+==OpenStudioLandscapes.engine.compose_scopes.default.constants:[22:88]
+==OpenStudioLandscapes.engine.compose_scopes.worker.constants:[22:90]
 ATTACH_SITE_TO_COMPOSE_SCOPE = bool(
     int(os.environ.get("OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE", 0))
 )
@@ -816,7 +817,7 @@ ENVIRONMENT = {}
     **ASSET_HEADER,
     description="",
 )
-def constants_compose_license_server(
+def constants_compose(
     context: AssetExecutionContext,
 ) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
     """ """
@@ -898,63 +899,6 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
         )
 
     @asset( (duplicate-code)
-src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
-==OpenStudioLandscapes.engine.compose_scopes.default.constants:[33:87]
-==OpenStudioLandscapes.engine.compose_scopes.worker.constants:[33:89]
-}
-
-ENVIRONMENT = {}
-
-
-@asset(
-    **ASSET_HEADER,
-    description="",
-)
-def constants_compose(
-    context: AssetExecutionContext,
-) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
-    """ """
-
-    _constants = ENVIRONMENT
-
-    yield Output(_constants)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(_constants),
-        },
-    )
-
-
-@asset(
-    **ASSET_HEADER,
-    description="",
-)
-def DOCKER_COMPOSE(
-    context: AssetExecutionContext,
-) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
-    """ """
-
-    docker_compose = pathlib.Path(
-        "{DOT_LANDSCAPES}",
-        "{LANDSCAPE}",
-        f"{ASSET_HEADER['group_name']}__{'_'.join(ASSET_HEADER['key_prefix'])}",
-        "__".join(context.asset_key.path),
-        "docker_compose",
-        "docker-compose.yml",
-    )
-
-    yield Output(
-        value=docker_compose,
-    )
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.path(docker_compose),
-        },
-    ) (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.compose_scopes.default.assets:[73:98]
 ==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[79:104]
@@ -1062,8 +1006,8 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
 
     @asset( (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
-==OpenStudioLandscapes.engine.compose_scopes.default.assets:[361:379]
-==OpenStudioLandscapes.engine.compose_scopes.license_server.assets:[381:399]
+==OpenStudioLandscapes.engine.compose_scopes.default.assets:[362:380]
+==OpenStudioLandscapes.engine.compose_scopes.license_server.assets:[382:400]
         ins={},
     )
     def cmd_extend(
@@ -1096,6 +1040,7 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
         cmds.extend(cmds_push)
 
     context.log.info(f"{cmds = }")
+    # cmds = [['/usr/local/bin/docker', '--debug', '--config', '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json', 'build', '--progress', 'plain', '--pull', '--file', '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles/Dockerfile', '--no-cache', '--tag', 'openstudiolandscapes_base_build_docker_image:2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f', '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles'], ['/usr/local/bin/docker', '--config', '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json', 'push', 'openstudiolandscapes_base_build_docker_image:2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f']]
 
     logs = docker_do(
         context=context,
@@ -1103,8 +1048,8 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
     )
  (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
-==OpenStudioLandscapes.engine.compose_scopes.default.assets:[380:400]
-==OpenStudioLandscapes.engine.compose_scopes.license_server.assets:[400:420]
+==OpenStudioLandscapes.engine.compose_scopes.default.assets:[381:401]
+==OpenStudioLandscapes.engine.compose_scopes.license_server.assets:[401:421]
         ins={},
     )
     def cmd_append(
@@ -1161,8 +1106,8 @@ defs = Definitions(
     ],
 ) (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
-==OpenStudioLandscapes.engine.compose_scopes.default.assets:[369:379]
-==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[411:421]
+==OpenStudioLandscapes.engine.compose_scopes.default.assets:[370:380]
+==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[412:422]
         yield Output(ret)
 
         yield AssetMaterialization(
@@ -1174,8 +1119,8 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
 
     @asset( (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
-==OpenStudioLandscapes.engine.compose_scopes.default.assets:[390:400]
-==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[517:527]
+==OpenStudioLandscapes.engine.compose_scopes.default.assets:[391:401]
+==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[518:528]
         yield Output(ret)
 
         yield AssetMaterialization(
@@ -1187,20 +1132,7 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
 
     group_out = get_group_out( (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
-==OpenStudioLandscapes.engine.compose_scopes.default.constants:[22:33]
-==OpenStudioLandscapes.engine.compose_scopes.worker.constants:[22:32]
-ATTACH_SITE_TO_COMPOSE_SCOPE = bool(
-    int(os.environ.get("OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE", 0))
-)
-
-GROUP = f"{PREFIX_COMPOSE_SCOPE}_{str(COMPOSE_SCOPE)}"
-KEY = [GROUP]
-
-ASSET_HEADER = {
-    "group_name": GROUP,
-    "key_prefix": KEY, (duplicate-code)
-src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
-==OpenStudioLandscapes.engine.compose_scopes.worker.constants:[51:70]
+==OpenStudioLandscapes.engine.compose_scopes.worker.constants:[52:71]
 ==OpenStudioLandscapes.engine.constants:[177:197]
     yield Output(_constants)
 
@@ -1213,28 +1145,29 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
 
 
 @asset(
-    **ASSET_HEADER,
+    **ASSET_HEADER_BASE_ENV,
     description="",
+    name="FEATURES",
 )
-def DOCKER_COMPOSE(
+def features(
     context: AssetExecutionContext,
-) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
+) -> Generator[Output[dict] | AssetMaterialization | Any, None, None]:
     """ """
  (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[99:107]
 ==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[81:89]
-    env_in.update(
-        expand_dict_vars(
-            dict_to_expand={"DOCKER_COMPOSE": DOCKER_COMPOSE.as_posix()},
-            kv=env_in,
+        env_in.update(
+            expand_dict_vars(
+                dict_to_expand={"DOCKER_COMPOSE": DOCKER_COMPOSE.as_posix()},
+                kv=env_in,
+            )
         )
-    )
 
-    env_in.update( (duplicate-code)
+        env_in.update( (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
-==OpenStudioLandscapes.engine.compose_scopes.default.assets:[390:399]
-==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[411:420]
+==OpenStudioLandscapes.engine.compose_scopes.default.assets:[391:400]
+==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[412:421]
         yield Output(ret)
 
         yield AssetMaterialization(
@@ -1245,8 +1178,8 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
         )
  (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
-==OpenStudioLandscapes.engine.compose_scopes.default.assets:[369:378]
-==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[517:526]
+==OpenStudioLandscapes.engine.compose_scopes.default.assets:[370:379]
+==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[518:527]
         yield Output(ret)
 
         yield AssetMaterialization(
@@ -1264,19 +1197,10 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
         docker_config_json=docker_config_json,
         docker_file=docker_file,
         tags=tags_full_str, (duplicate-code)
-src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
-==OpenStudioLandscapes.engine.base.ops.factories:[483:489]
-==OpenStudioLandscapes.engine.compose_scopes.worker.assets:[386:392]
-        kwargs_json = json.dumps(kwargs, default=str)
-
-        yield AssetMaterialization(
-            asset_key=context.asset_key,
-            metadata={
-                "__".join(context.asset_key.path): MetadataValue.json(kwargs_json), (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.license_server.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.worker.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.compose_scopes.default.constants -> OpenStudioLandscapes.engine.constants) (cyclic-import)
 
 ------------------------------------------------------------------
-Your code has been rated at 6.65/10 (previous run: 7.17/10, -0.52)
+Your code has been rated at 6.67/10 (previous run: 7.17/10, -0.50)
 
