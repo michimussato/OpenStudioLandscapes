@@ -1,4 +1,5 @@
 import copy
+import enum
 import json
 import operator
 import pathlib
@@ -40,7 +41,7 @@ from OpenStudioLandscapes.engine.utils.pangolin import *
 
 # https://github.com/yaml/pyyaml/issues/722#issuecomment-1969292770
 yaml.SafeDumper.add_multi_representer(
-    DockerComposeRestartPolicy,
+    enum.Enum,
     yaml.representer.SafeRepresenter.represent_str,
 )
 
@@ -53,7 +54,8 @@ ins, feature_ins = get_dynamic_ins(
 
 
 if bool(ins):
-
+    # Todo
+    #  - [ ] Why is default different from worker and license_server?
     @asset(
         **ASSET_HEADER_COMPOSE,
         ins={
@@ -95,6 +97,8 @@ if bool(ins):
             },
         )
 
+    # Todo
+    #  - [ ] Move to factory
     @asset(
         **ASSET_HEADER_COMPOSE,
         ins={
@@ -121,6 +125,8 @@ if bool(ins):
             },
         )
 
+    # Todo
+    #  - [ ] Move to factory
     @asset(
         **ASSET_HEADER_COMPOSE,
         ins={
@@ -149,6 +155,8 @@ if bool(ins):
             },
         )
 
+    # Todo
+    #  - [ ] Move to factory
     @asset(
         **ASSET_HEADER_COMPOSE,
         ins={
@@ -176,6 +184,8 @@ if bool(ins):
             },
         )
 
+    # Todo
+    #  - [ ] Move to factory
     @asset(
         **ASSET_HEADER_COMPOSE,
         ins={
@@ -286,6 +296,9 @@ if bool(ins):
             },
         )
 
+
+    # Todo
+    #  - [ ] Move to factory
     @asset(
         **ASSET_HEADER_COMPOSE,
         ins={
@@ -406,6 +419,8 @@ if bool(ins):
         ASSET_HEADER=ASSET_HEADER_COMPOSE,
     )
 
+    # Todo
+    #  - [ ] Move to factory
     docker_compose_graph = AssetsDefinition.from_op(
         op_docker_compose_graph,
         group_name=ASSET_HEADER_COMPOSE["group_name"],

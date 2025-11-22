@@ -60,7 +60,8 @@ ins, feature_ins = get_dynamic_ins(
 
 
 if bool(ins):
-
+    # Todo
+    #  - [ ] Why is default different from worker and license_server?
     @asset(
         **ASSET_HEADER_COMPOSE_WORKER,
         ins={
@@ -102,6 +103,8 @@ if bool(ins):
             },
         )
 
+    # Todo
+    #  - [ ] Move to factory
     @asset(
         **ASSET_HEADER_COMPOSE_WORKER,
         ins={
@@ -128,6 +131,8 @@ if bool(ins):
             },
         )
 
+    # Todo
+    #  - [ ] Move to factory
     @asset(
         **ASSET_HEADER_COMPOSE_WORKER,
         ins={
@@ -156,6 +161,8 @@ if bool(ins):
             },
         )
 
+    # Todo
+    #  - [ ] Move to factory
     @asset(
         **ASSET_HEADER_COMPOSE_WORKER,
         ins={
@@ -183,6 +190,8 @@ if bool(ins):
             },
         )
 
+    # Todo
+    #  - [ ] Move to factory
     @asset(
         **ASSET_HEADER_COMPOSE_WORKER,
         ins={
@@ -295,6 +304,8 @@ if bool(ins):
             },
         )
 
+    # Todo
+    #  - [ ] Why is this neither in default nor in license_server?
     @asset(
         **ASSET_HEADER_COMPOSE_WORKER,
         ins={
@@ -329,6 +340,9 @@ if bool(ins):
             },
         )
 
+
+    # Todo
+    #  - [ ] Move to factory
     @asset(
         **ASSET_HEADER_COMPOSE_WORKER,
         ins={
@@ -534,6 +548,8 @@ if bool(ins):
         ASSET_HEADER=ASSET_HEADER_COMPOSE_WORKER,
     )
 
+    # Todo
+    #  - [ ] Move to factory
     docker_compose_graph = AssetsDefinition.from_op(
         op_docker_compose_graph,
         group_name=ASSET_HEADER_COMPOSE_WORKER["group_name"],
