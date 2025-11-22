@@ -1,8 +1,8 @@
 import copy
 import json
 import operator
-import os
 import pathlib
+import textwrap
 from typing import Any, Dict, Generator, List, MutableMapping
 
 import yaml
@@ -21,11 +21,18 @@ from OpenStudioLandscapes.engine.base.ops import (
     op_docker_compose_graph,
 )
 from OpenStudioLandscapes.engine.common_assets.group_out import get_group_out
+from OpenStudioLandscapes.engine.common_assets.scrape_networks import (
+    get_scrape_networks,
+)
+from OpenStudioLandscapes.engine.compose_scopes.default.constants import (
+    ATTACH_SITE_TO_COMPOSE_SCOPE,
+    COMPOSE_SCOPE,
+)
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.discovery.discovery import *
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.utils import *
-from OpenStudioLandscapes.engine.utils.docker.compose_dicts import *
+from OpenStudioLandscapes.engine.utils.pangolin import *
 
 # Todo:
 #  - [ ] get assets from common_assets
@@ -37,13 +44,11 @@ yaml.SafeDumper.add_multi_representer(
     yaml.representer.SafeRepresenter.represent_str,
 )
 
-
 ins, feature_ins = get_dynamic_ins(
-    compose_scope_filter=[ComposeScope.DEFAULT],
+    compose_scope_filter=[COMPOSE_SCOPE],
     imported_features=IMPORTED_FEATURES,
     operator=operator.eq,
 )
-
 
 if bool(ins):
 
@@ -59,9 +64,9 @@ if bool(ins):
         },
     )
     def env(
-        context: AssetExecutionContext,
-        env_base: dict,
-        DOCKER_COMPOSE: pathlib.Path,  # pylint: disable=redefined-outer-name
+            context: AssetExecutionContext,
+            env_base: dict,
+            DOCKER_COMPOSE: pathlib.Path,  # pylint: disable=redefined-outer-name
     ) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
 
         env_in = copy.deepcopy(env_base)
@@ -75,7 +80,7 @@ if bool(ins):
 
         env_in.update(
             {
-                "COMPOSE_SCOPE": ComposeScope.DEFAULT,
+                "COMPOSE_SCOPE": COMPOSE_SCOPE,
             }
         )
 
@@ -88,6 +93,7 @@ if bool(ins):
             },
         )
 
+
     @asset(
         **ASSET_HEADER_COMPOSE,
         ins={
@@ -97,8 +103,8 @@ if bool(ins):
         },
     )
     def env_base(
-        context: AssetExecutionContext,
-        features_in: dict,
+            context: AssetExecutionContext,
+            features_in: dict,
     ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
 
         context.log.info(features_in)
@@ -114,6 +120,7 @@ if bool(ins):
             },
         )
 
+
     @asset(
         **ASSET_HEADER_COMPOSE,
         ins={
@@ -123,8 +130,8 @@ if bool(ins):
         },
     )
     def docker_config_json(
-        context: AssetExecutionContext,
-        features_in: dict,
+            context: AssetExecutionContext,
+            features_in: dict,
     ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
 
         context.log.info(features_in)
@@ -142,6 +149,7 @@ if bool(ins):
             },
         )
 
+
     @asset(
         **ASSET_HEADER_COMPOSE,
         ins={
@@ -151,8 +159,8 @@ if bool(ins):
         },
     )
     def docker_config(
-        context: AssetExecutionContext,
-        features_in: dict,
+            context: AssetExecutionContext,
+            features_in: dict,
     ) -> Generator[Output[DockerConfig] | AssetMaterialization, None, None]:
 
         context.log.info(features_in)
@@ -169,50 +177,6 @@ if bool(ins):
             },
         )
 
-    @asset(
-        **ASSET_HEADER_COMPOSE,
-        ins={
-            "features_in": AssetIn(
-                AssetKey([*ASSET_HEADER_COMPOSE["key_prefix"], "features_in"])
-            ),
-        },
-    )
-    def scrape_networks(
-        context: AssetExecutionContext,
-        features_in: dict,
-    ) -> Generator[Output[dict] | AssetMaterialization | Any, None, None]:
-
-        features_in.pop("env_base", {})
-        features_in.pop("docker_config", {})
-        features_in.pop("docker_image", {})
-        features_in.pop("docker_config_json", {})
-
-        networks_dict: Dict = {}
-
-        for feature, data in features_in.items():
-            context.log.info(f"{features_in[feature] = }")
-            compose_file = features_in[feature]["compose_yaml"]
-
-            network_dict = get_networks_dict(
-                context=context,
-                compose_file=compose_file,
-            )
-
-            networks_dict.update(network_dict)
-
-        networks_dict_yaml = yaml.safe_dump(networks_dict)
-
-        yield Output(networks_dict)
-
-        yield AssetMaterialization(
-            asset_key=context.asset_key,
-            metadata={
-                "__".join(context.asset_key.path): MetadataValue.json(networks_dict),
-                "networks_dict_yaml": MetadataValue.md(
-                    f"```yaml\n{networks_dict_yaml}\n```"
-                ),
-            },
-        )
 
     @asset(
         **ASSET_HEADER_COMPOSE,
@@ -227,12 +191,27 @@ if bool(ins):
                 AssetKey([*ASSET_HEADER_COMPOSE["key_prefix"], "scrape_networks"]),
             ),
         },
+        description=textwrap.dedent(
+            f"""
+            Environment variable `OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE` 
+            is set to `{ATTACH_SITE_TO_COMPOSE_SCOPE}`.
+
+            If `OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE` is `True`,
+            set the following environment variables before launching the Landscape:
+
+            ```shell
+            OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_{COMPOSE_SCOPE.upper()}__NEWT_ID
+            OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_{COMPOSE_SCOPE.upper()}__NEWT_SECRET
+            OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_{COMPOSE_SCOPE.upper()}__PANGOLIN_ENDPOINT
+            ```
+            """
+        ),
     )
     def compose(
-        context: AssetExecutionContext,
-        env: dict,  # pylint: disable=redefined-outer-name
-        features_in: dict,  # pylint: disable=redefined-outer-name
-        scrape_networks: dict,  # pylint: disable=redefined-outer-name
+            context: AssetExecutionContext,
+            env: dict,  # pylint: disable=redefined-outer-name
+            features_in: dict,  # pylint: disable=redefined-outer-name
+            scrape_networks: dict,  # pylint: disable=redefined-outer-name
     ) -> Generator[
         Output[MutableMapping[str, List[MutableMapping[str, List]]]]
         | AssetMaterialization,
@@ -257,7 +236,7 @@ if bool(ins):
             compose_file = features_in[feature]["compose_yaml"]
             compose_files.append(compose_file)
 
-        rel_paths = []
+        includes = []
         dot_landscapes = pathlib.Path(env["DOT_LANDSCAPES"])
 
         # Convert absolute paths in `include` to
@@ -270,37 +249,29 @@ if bool(ins):
                 path_common_root=dot_landscapes,
             )
 
-            rel_paths.append(rel_path.as_posix())
-
-        docker_dict_include: Dict = {
-            "include": [
-                {
-                    "path": rel_paths,
-                },
-            ],
-        }
-
-        if bool(
-            int(os.environ.get("OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE", 0))
-        ):
-
-            service_dict = get_pangolin_newt_service_skeleton(
-                compose_scope=ComposeScope.DEFAULT,
-            )
-
-            services = {
-                "services": {"newt": service_dict},
+            include_ = {
+                "project_directory": rel_path.parent.as_posix(),
+                "path": [
+                    rel_path.as_posix(),
+                ]
             }
 
-            networks = {"networks": {"default": {"name": "pangolin_default"}}}
+            includes.append(include_)
 
-            service_dict["networks"] = [
-                *networks["networks"].keys(),
-                *scrape_networks.keys(),
-            ]
+        docker_dict_include: Dict = {"include": includes}
 
-            docker_dict_include.update(services)
-            docker_dict_include.update(networks)
+        if ATTACH_SITE_TO_COMPOSE_SCOPE:
+            add_newt_service_to_compose_scope(
+                scrape_networks=scrape_networks,
+                docker_dict_include=docker_dict_include,
+                compose_scope=COMPOSE_SCOPE,
+            )
+
+        # # https://github.com/yaml/pyyaml/issues/722#issuecomment-1969292770
+        # yaml.SafeDumper.add_multi_representer(
+        #     pathlib.PosixPath,
+        #     yaml.representer.SafeRepresenter.represent_str,
+        # )
 
         docker_yaml_include = yaml.safe_dump(docker_dict_include)
 
@@ -318,16 +289,11 @@ if bool(ins):
                 ),
                 "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml_include}\n```"),
                 "OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE": MetadataValue.bool(
-                    bool(
-                        int(
-                            os.environ.get(
-                                "OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE", 0
-                            )
-                        )
-                    )
+                    ATTACH_SITE_TO_COMPOSE_SCOPE,
                 ),
             },
         )
+
 
     @asset(
         **ASSET_HEADER_COMPOSE,
@@ -339,9 +305,9 @@ if bool(ins):
         },
     )
     def features_in(
-        context: AssetExecutionContext,
-        group_out_base: dict,  # pylint: disable=redefined-outer-name
-        **kwargs,
+            context: AssetExecutionContext,
+            group_out_base: dict,  # pylint: disable=redefined-outer-name
+            **kwargs,
     ) -> Generator[
         Output[MutableMapping[str, List[MutableMapping[str, List]]]]
         | AssetMaterialization,
@@ -385,7 +351,8 @@ if bool(ins):
 
         yield Output(kwargs)
 
-        kwargs_json = json.dumps(kwargs, default=str)
+        kwargs_json_: str = json.dumps(kwargs, default=str)
+        kwargs_json: dict = json.loads(kwargs_json_)
 
         yield AssetMaterialization(
             asset_key=context.asset_key,
@@ -400,12 +367,13 @@ if bool(ins):
             },
         )
 
+
     @asset(
         **ASSET_HEADER_COMPOSE,
         ins={},
     )
     def cmd_extend(
-        context: AssetExecutionContext,
+            context: AssetExecutionContext,
     ) -> Generator[Output[list[Any]] | AssetMaterialization | Any, Any, None]:
 
         ret = []
@@ -419,12 +387,13 @@ if bool(ins):
             },
         )
 
+
     @asset(
         **ASSET_HEADER_COMPOSE,
         ins={},
     )
     def cmd_append(
-        context: AssetExecutionContext,
+            context: AssetExecutionContext,
     ) -> Generator[
         Output[dict[str, list[Any]]] | AssetMaterialization | Any, Any, None
     ]:
@@ -440,7 +409,12 @@ if bool(ins):
             },
         )
 
+
     group_out = get_group_out(
+        ASSET_HEADER=ASSET_HEADER_COMPOSE,
+    )
+
+    scrape_networks = get_scrape_networks(
         ASSET_HEADER=ASSET_HEADER_COMPOSE,
     )
 
