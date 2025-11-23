@@ -5,7 +5,7 @@ from dagster import (
     Out,
 )
 
-from OpenStudioLandscapes.engine.base.ops import factory_docker_config
+from OpenStudioLandscapes.engine.base.ops.factories import factory_docker_config
 from OpenStudioLandscapes.engine.enums import DockerConfig
 
 

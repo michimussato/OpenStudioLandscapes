@@ -1,8 +1,9 @@
 import copy
+import enum
 import json
 import operator
-import os
 import pathlib
+import textwrap
 from typing import Any, Dict, Generator, List, MutableMapping
 
 import yaml
@@ -21,11 +22,18 @@ from OpenStudioLandscapes.engine.base.ops import (
     op_docker_compose_graph,
 )
 from OpenStudioLandscapes.engine.common_assets.group_out import get_group_out
+from OpenStudioLandscapes.engine.common_assets.scrape_networks import (
+    get_scrape_networks,
+)
+from OpenStudioLandscapes.engine.compose_scopes.license_server.constants import (
+    ATTACH_SITE_TO_COMPOSE_SCOPE,
+    COMPOSE_SCOPE,
+)
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.discovery.discovery import *
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.utils import *
-from OpenStudioLandscapes.engine.utils.docker.compose_dicts import *
+from OpenStudioLandscapes.engine.utils.pangolin import *
 
 # Todo:
 #  - [ ] get assets from common_assets
@@ -33,13 +41,13 @@ from OpenStudioLandscapes.engine.utils.docker.compose_dicts import *
 
 # https://github.com/yaml/pyyaml/issues/722#issuecomment-1969292770
 yaml.SafeDumper.add_multi_representer(
-    DockerComposeRestartPolicy,
+    enum.Enum,
     yaml.representer.SafeRepresenter.represent_str,
 )
 
 
 ins, feature_ins = get_dynamic_ins(
-    compose_scope_filter=[ComposeScope.LICENSE_SERVER],
+    compose_scope_filter=[COMPOSE_SCOPE],
     imported_features=IMPORTED_FEATURES,
     operator=operator.eq,
 )
@@ -47,6 +55,8 @@ ins, feature_ins = get_dynamic_ins(
 
 if bool(ins):
 
+    # Todo
+    #  - [ ] Move to factory
     @asset(
         **ASSET_HEADER_COMPOSE_LICENSE_SERVER,
         ins={
@@ -69,7 +79,7 @@ if bool(ins):
         context: AssetExecutionContext,
         env_base: dict,
         DOCKER_COMPOSE: pathlib.Path,  # pylint: disable=redefined-outer-name
-    ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
+    ) -> Generator[Output[Dict] | AssetMaterialization, None, None]:
 
         env_in = copy.deepcopy(env_base)
 
@@ -82,7 +92,7 @@ if bool(ins):
 
         env_in.update(
             {
-                "COMPOSE_SCOPE": ComposeScope.LICENSE_SERVER,
+                "COMPOSE_SCOPE": COMPOSE_SCOPE,
             }
         )
 
@@ -95,6 +105,8 @@ if bool(ins):
             },
         )
 
+    # Todo
+    #  - [ ] Move to factory
     @asset(
         **ASSET_HEADER_COMPOSE_LICENSE_SERVER,
         ins={
@@ -123,6 +135,8 @@ if bool(ins):
             },
         )
 
+    # Todo
+    #  - [ ] Move to factory
     @asset(
         **ASSET_HEADER_COMPOSE_LICENSE_SERVER,
         ins={
@@ -153,6 +167,8 @@ if bool(ins):
             },
         )
 
+    # Todo
+    #  - [ ] Move to factory
     @asset(
         **ASSET_HEADER_COMPOSE_LICENSE_SERVER,
         ins={
@@ -185,53 +201,6 @@ if bool(ins):
     @asset(
         **ASSET_HEADER_COMPOSE_LICENSE_SERVER,
         ins={
-            "features_in": AssetIn(
-                AssetKey(
-                    [*ASSET_HEADER_COMPOSE_LICENSE_SERVER["key_prefix"], "features_in"]
-                )
-            ),
-        },
-    )
-    def scrape_networks(
-        context: AssetExecutionContext,
-        features_in: dict,
-    ) -> Generator[Output[dict] | AssetMaterialization | Any, None, None]:
-
-        features_in.pop("env_base", {})
-        features_in.pop("docker_config", {})
-        features_in.pop("docker_image", {})
-        features_in.pop("docker_config_json", {})
-
-        networks_dict: Dict = {}
-
-        for feature, data in features_in.items():
-            context.log.info(f"{features_in[feature] = }")
-            compose_file = features_in[feature]["compose_yaml"]
-
-            network_dict = get_networks_dict(
-                context=context,
-                compose_file=compose_file,
-            )
-
-            networks_dict.update(network_dict)
-
-        networks_dict_yaml = yaml.safe_dump(networks_dict)
-
-        yield Output(networks_dict)
-
-        yield AssetMaterialization(
-            asset_key=context.asset_key,
-            metadata={
-                "__".join(context.asset_key.path): MetadataValue.json(networks_dict),
-                "networks_dict_yaml": MetadataValue.md(
-                    f"```yaml\n{networks_dict_yaml}\n```"
-                ),
-            },
-        )
-
-    @asset(
-        **ASSET_HEADER_COMPOSE_LICENSE_SERVER,
-        ins={
             "env": AssetIn(
                 AssetKey([*ASSET_HEADER_COMPOSE_LICENSE_SERVER["key_prefix"], "env"]),
             ),
@@ -249,6 +218,21 @@ if bool(ins):
                 ),
             ),
         },
+        description=textwrap.dedent(
+            f"""
+            Environment variable `OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE` 
+            is set to `{ATTACH_SITE_TO_COMPOSE_SCOPE}`.
+            
+            If `OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE` is `True`,
+            set the following environment variables before launching the Landscape:
+            
+            ```shell
+            OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_{COMPOSE_SCOPE.upper()}__NEWT_ID
+            OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_{COMPOSE_SCOPE.upper()}__NEWT_SECRET
+            OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_{COMPOSE_SCOPE.upper()}__PANGOLIN_ENDPOINT
+            ```
+            """
+        ),
     )
     def compose(
         context: AssetExecutionContext,
@@ -302,27 +286,13 @@ if bool(ins):
             ],
         }
 
-        if bool(
-            int(os.environ.get("OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE", 0))
-        ):
+        if ATTACH_SITE_TO_COMPOSE_SCOPE:
 
-            service_dict = get_pangolin_newt_service_skeleton(
-                compose_scope=ComposeScope.LICENSE_SERVER,
+            add_newt_service_to_compose_scope(
+                scrape_networks=scrape_networks,
+                docker_dict_include=docker_dict_include,
+                compose_scope=COMPOSE_SCOPE,
             )
-
-            services = {
-                "services": {"newt": service_dict},
-            }
-
-            networks = {"networks": {"default": {"name": "pangolin_default"}}}
-
-            service_dict["networks"] = [
-                *networks["networks"].keys(),
-                *scrape_networks.keys(),
-            ]
-
-            docker_dict_include.update(services)
-            docker_dict_include.update(networks)
 
         docker_yaml_include = yaml.safe_dump(docker_dict_include)
 
@@ -340,17 +310,13 @@ if bool(ins):
                 ),
                 "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml_include}\n```"),
                 "OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE": MetadataValue.bool(
-                    bool(
-                        int(
-                            os.environ.get(
-                                "OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE", 0
-                            )
-                        )
-                    )
+                    ATTACH_SITE_TO_COMPOSE_SCOPE,
                 ),
             },
         )
 
+    # Todo
+    #  - [ ] Move to factory
     @asset(
         **ASSET_HEADER_COMPOSE_LICENSE_SERVER,
         ins={
@@ -407,7 +373,8 @@ if bool(ins):
 
         yield Output(kwargs)
 
-        kwargs_json = json.dumps(kwargs, default=str)
+        kwargs_json_: str = json.dumps(kwargs, default=str)
+        kwargs_json: dict = json.loads(kwargs_json_)
 
         yield AssetMaterialization(
             asset_key=context.asset_key,
@@ -466,6 +433,12 @@ if bool(ins):
         ASSET_HEADER=ASSET_HEADER_COMPOSE_LICENSE_SERVER,
     )
 
+    scrape_networks = get_scrape_networks(
+        ASSET_HEADER=ASSET_HEADER_COMPOSE_LICENSE_SERVER,
+    )
+
+    # Todo
+    #  - [ ] Move to factory
     docker_compose_graph = AssetsDefinition.from_op(
         op_docker_compose_graph,
         group_name=ASSET_HEADER_COMPOSE_LICENSE_SERVER["group_name"],

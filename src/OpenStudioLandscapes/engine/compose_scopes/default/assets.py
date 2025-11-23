@@ -1,4 +1,5 @@
 import copy
+import enum
 import json
 import operator
 import pathlib
@@ -40,9 +41,10 @@ from OpenStudioLandscapes.engine.utils.pangolin import *
 
 # https://github.com/yaml/pyyaml/issues/722#issuecomment-1969292770
 yaml.SafeDumper.add_multi_representer(
-    DockerComposeRestartPolicy,
+    enum.Enum,
     yaml.representer.SafeRepresenter.represent_str,
 )
+
 
 ins, feature_ins = get_dynamic_ins(
     compose_scope_filter=[COMPOSE_SCOPE],
@@ -50,8 +52,11 @@ ins, feature_ins = get_dynamic_ins(
     operator=operator.eq,
 )
 
+
 if bool(ins):
 
+    # Todo
+    #  - [ ] Move to factory
     @asset(
         **ASSET_HEADER_COMPOSE,
         ins={
@@ -64,10 +69,10 @@ if bool(ins):
         },
     )
     def env(
-            context: AssetExecutionContext,
-            env_base: dict,
-            DOCKER_COMPOSE: pathlib.Path,  # pylint: disable=redefined-outer-name
-    ) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
+        context: AssetExecutionContext,
+        env_base: dict,
+        DOCKER_COMPOSE: pathlib.Path,  # pylint: disable=redefined-outer-name
+    ) -> Generator[Output[Dict] | AssetMaterialization, None, None]:
 
         env_in = copy.deepcopy(env_base)
 
@@ -93,7 +98,8 @@ if bool(ins):
             },
         )
 
-
+    # Todo
+    #  - [ ] Move to factory
     @asset(
         **ASSET_HEADER_COMPOSE,
         ins={
@@ -103,8 +109,8 @@ if bool(ins):
         },
     )
     def env_base(
-            context: AssetExecutionContext,
-            features_in: dict,
+        context: AssetExecutionContext,
+        features_in: dict,
     ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
 
         context.log.info(features_in)
@@ -120,7 +126,8 @@ if bool(ins):
             },
         )
 
-
+    # Todo
+    #  - [ ] Move to factory
     @asset(
         **ASSET_HEADER_COMPOSE,
         ins={
@@ -130,8 +137,8 @@ if bool(ins):
         },
     )
     def docker_config_json(
-            context: AssetExecutionContext,
-            features_in: dict,
+        context: AssetExecutionContext,
+        features_in: dict,
     ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
 
         context.log.info(features_in)
@@ -149,7 +156,8 @@ if bool(ins):
             },
         )
 
-
+    # Todo
+    #  - [ ] Move to factory
     @asset(
         **ASSET_HEADER_COMPOSE,
         ins={
@@ -159,8 +167,8 @@ if bool(ins):
         },
     )
     def docker_config(
-            context: AssetExecutionContext,
-            features_in: dict,
+        context: AssetExecutionContext,
+        features_in: dict,
     ) -> Generator[Output[DockerConfig] | AssetMaterialization, None, None]:
 
         context.log.info(features_in)
@@ -177,7 +185,8 @@ if bool(ins):
             },
         )
 
-
+    # Todo
+    #  - [ ] Move to factory
     @asset(
         **ASSET_HEADER_COMPOSE,
         ins={
@@ -195,10 +204,10 @@ if bool(ins):
             f"""
             Environment variable `OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE` 
             is set to `{ATTACH_SITE_TO_COMPOSE_SCOPE}`.
-
+            
             If `OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE` is `True`,
             set the following environment variables before launching the Landscape:
-
+            
             ```shell
             OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_{COMPOSE_SCOPE.upper()}__NEWT_ID
             OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_{COMPOSE_SCOPE.upper()}__NEWT_SECRET
@@ -208,10 +217,10 @@ if bool(ins):
         ),
     )
     def compose(
-            context: AssetExecutionContext,
-            env: dict,  # pylint: disable=redefined-outer-name
-            features_in: dict,  # pylint: disable=redefined-outer-name
-            scrape_networks: dict,  # pylint: disable=redefined-outer-name
+        context: AssetExecutionContext,
+        env: dict,  # pylint: disable=redefined-outer-name
+        features_in: dict,  # pylint: disable=redefined-outer-name
+        scrape_networks: dict,  # pylint: disable=redefined-outer-name
     ) -> Generator[
         Output[MutableMapping[str, List[MutableMapping[str, List]]]]
         | AssetMaterialization,
@@ -236,7 +245,7 @@ if bool(ins):
             compose_file = features_in[feature]["compose_yaml"]
             compose_files.append(compose_file)
 
-        includes = []
+        rel_paths = []
         dot_landscapes = pathlib.Path(env["DOT_LANDSCAPES"])
 
         # Convert absolute paths in `include` to
@@ -249,29 +258,23 @@ if bool(ins):
                 path_common_root=dot_landscapes,
             )
 
-            include_ = {
-                "project_directory": rel_path.parent.as_posix(),
-                "path": [
-                    rel_path.as_posix(),
-                ]
-            }
+            rel_paths.append(rel_path.as_posix())
 
-            includes.append(include_)
-
-        docker_dict_include: Dict = {"include": includes}
+        docker_dict_include: Dict = {
+            "include": [
+                {
+                    "path": rel_paths,
+                },
+            ],
+        }
 
         if ATTACH_SITE_TO_COMPOSE_SCOPE:
+
             add_newt_service_to_compose_scope(
                 scrape_networks=scrape_networks,
                 docker_dict_include=docker_dict_include,
                 compose_scope=COMPOSE_SCOPE,
             )
-
-        # # https://github.com/yaml/pyyaml/issues/722#issuecomment-1969292770
-        # yaml.SafeDumper.add_multi_representer(
-        #     pathlib.PosixPath,
-        #     yaml.representer.SafeRepresenter.represent_str,
-        # )
 
         docker_yaml_include = yaml.safe_dump(docker_dict_include)
 
@@ -295,6 +298,8 @@ if bool(ins):
         )
 
 
+    # Todo
+    #  - [ ] Move to factory
     @asset(
         **ASSET_HEADER_COMPOSE,
         ins={
@@ -305,9 +310,9 @@ if bool(ins):
         },
     )
     def features_in(
-            context: AssetExecutionContext,
-            group_out_base: dict,  # pylint: disable=redefined-outer-name
-            **kwargs,
+        context: AssetExecutionContext,
+        group_out_base: dict,  # pylint: disable=redefined-outer-name
+        **kwargs,
     ) -> Generator[
         Output[MutableMapping[str, List[MutableMapping[str, List]]]]
         | AssetMaterialization,
@@ -367,13 +372,12 @@ if bool(ins):
             },
         )
 
-
     @asset(
         **ASSET_HEADER_COMPOSE,
         ins={},
     )
     def cmd_extend(
-            context: AssetExecutionContext,
+        context: AssetExecutionContext,
     ) -> Generator[Output[list[Any]] | AssetMaterialization | Any, Any, None]:
 
         ret = []
@@ -387,13 +391,12 @@ if bool(ins):
             },
         )
 
-
     @asset(
         **ASSET_HEADER_COMPOSE,
         ins={},
     )
     def cmd_append(
-            context: AssetExecutionContext,
+        context: AssetExecutionContext,
     ) -> Generator[
         Output[dict[str, list[Any]]] | AssetMaterialization | Any, Any, None
     ]:
@@ -409,7 +412,6 @@ if bool(ins):
             },
         )
 
-
     group_out = get_group_out(
         ASSET_HEADER=ASSET_HEADER_COMPOSE,
     )
@@ -418,6 +420,8 @@ if bool(ins):
         ASSET_HEADER=ASSET_HEADER_COMPOSE,
     )
 
+    # Todo
+    #  - [ ] Move to factory
     docker_compose_graph = AssetsDefinition.from_op(
         op_docker_compose_graph,
         group_name=ASSET_HEADER_COMPOSE["group_name"],

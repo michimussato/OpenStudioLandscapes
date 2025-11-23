@@ -95,6 +95,7 @@ function iterate_features() {
     echo "result = ${result}"
     PULL_REQUESTS+=("${result}")
   done
+  popd || exit 1
 
 #  for PR in "${PULL_REQUESTS[@]}"
 #  do

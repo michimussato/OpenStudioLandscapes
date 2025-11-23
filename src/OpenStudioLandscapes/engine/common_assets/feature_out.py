@@ -5,7 +5,7 @@ from dagster import (
     Out,
 )
 
-from OpenStudioLandscapes.engine.base.ops import factory_feature_out
+from OpenStudioLandscapes.engine.base.ops.factories import factory_feature_out
 
 
 def get_feature_out(
