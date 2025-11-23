@@ -54,8 +54,9 @@ ins, feature_ins = get_dynamic_ins(
 
 
 if bool(ins):
+
     # Todo
-    #  - [ ] Why is default different from worker and license_server?
+    #  - [ ] Move to factory
     @asset(
         **ASSET_HEADER_COMPOSE_LICENSE_SERVER,
         ins={
@@ -78,7 +79,7 @@ if bool(ins):
         context: AssetExecutionContext,
         env_base: dict,
         DOCKER_COMPOSE: pathlib.Path,  # pylint: disable=redefined-outer-name
-    ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
+    ) -> Generator[Output[Dict] | AssetMaterialization, None, None]:
 
         env_in = copy.deepcopy(env_base)
 
