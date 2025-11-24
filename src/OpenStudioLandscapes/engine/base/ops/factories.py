@@ -415,16 +415,16 @@ def factory_compose(
         with open(DOCKER_COMPOSE, mode="w", encoding="utf-8") as fw:
             fw.write(docker_yaml)
 
-        # Write docker-compose.yaml
-        with open(DOCKER_COMPOSE.parent / "env.yml", mode="w", encoding="utf-8") as fw:
-            yaml.safe_dump(env, fw)
-            # fw.write(docker_yaml)
+        # Write .env
+        dot_env = DOCKER_COMPOSE.parent / ".env"
+        with open(dot_env, mode="w", encoding="utf-8") as fw:
+            pass
 
-        # Write docker-compose.yaml
+        # Add content to .env
         for k, v in env.items():
             context.log.debug(f"{k} = {v}")
             set_key(
-                dotenv_path=DOCKER_COMPOSE.parent / ".env",
+                dotenv_path=dot_env,
                 key_to_set=k,
                 value_to_set=str(v),
                 quote_mode=["always", "auto", "never"][1],
@@ -436,7 +436,7 @@ def factory_compose(
         #     yaml.safe_dump(env, fw)
         #     # fw.write(docker_yaml)
 
-        with open(DOCKER_COMPOSE.parent / ".env", "r") as fr:
+        with open(dot_env, "r") as fr:
             lines = fr.read()
 
         yield Output(
