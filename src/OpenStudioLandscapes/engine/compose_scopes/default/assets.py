@@ -245,7 +245,7 @@ if bool(ins):
             compose_file = features_in[feature]["compose_yaml"]
             compose_files.append(compose_file)
 
-        rel_paths = []
+        includes = []
         dot_landscapes = pathlib.Path(env["DOT_LANDSCAPES"])
 
         # Convert absolute paths in `include` to
@@ -258,15 +258,16 @@ if bool(ins):
                 path_common_root=dot_landscapes,
             )
 
-            rel_paths.append(rel_path.as_posix())
+            include_ = {
+                "project_directory": rel_path.parent.as_posix(),
+                "path": [
+                    rel_path.as_posix(),
+                ]
+            }
 
-        docker_dict_include: Dict = {
-            "include": [
-                {
-                    "path": rel_paths,
-                },
-            ],
-        }
+            includes.append(include_)
+
+        docker_dict_include: Dict = {"include": includes}
 
         if ATTACH_SITE_TO_COMPOSE_SCOPE:
 
