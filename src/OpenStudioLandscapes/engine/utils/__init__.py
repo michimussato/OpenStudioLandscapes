@@ -21,6 +21,7 @@ __all__ = [
     "get_image_metadata",
     "create_image",
     "get_networks_dict",
+    "get_docker_compose_names",
 ]
 
 import copy
@@ -30,7 +31,7 @@ import os
 import pathlib
 import shlex
 import time
-from typing import Any, Dict, List, MutableMapping, Union
+from typing import Any, Dict, List, MutableMapping, Union, Tuple
 
 import git
 import yaml
@@ -648,3 +649,39 @@ def get_networks_dict(
         context.log.debug(f"{networks = }")
 
     return networks
+
+
+def get_docker_compose_names(
+    context: Union[AssetExecutionContext, OpExecutionContext],
+    service_name: str,
+    landscape_id: str,
+    domain_lan: str,
+) -> Tuple[str, str]:
+    """
+    Takes the service name and returns container_name and
+    host_name based on that.
+
+    Args:
+        context: Union[dagster.AssetExecutionContext, dagster.OpExecutionContext]
+        service_name: str
+        landscape_id: str
+        domain_lan: str
+
+    Returns:
+        container_name: str
+        host_name: str
+
+    """
+    # Todo
+    #  - [ ] Implement check so that none of the given strings
+    #        and the results do not exceed 63 chars (6 bits)
+    #        per segment.
+    #        https://github.com/michimussato/OpenStudioLandscapes/issues/48
+
+    container_name = ".".join(
+        [service_name, landscape_id]
+    )
+    host_name = ".".join(
+        [service_name, domain_lan]
+    )
+    return container_name, host_name
