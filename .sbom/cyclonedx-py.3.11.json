@@ -158,7 +158,7 @@
       "version": "0.0.0"
     },
     {
-      "bom-ref": "BomRef.6503252796107482.4675060426505454",
+      "bom-ref": "BomRef.9147571381335619.39341185226358844",
       "description": "A Toolkit to create dynamic Animation and VFX studio environments for robust automation and pipelines.",
       "externalReferences": [
         {
@@ -558,34 +558,6 @@
       "purl": "pkg:pypi/attrs@25.4.0",
       "type": "library",
       "version": "25.4.0"
-    },
-    {
-      "bom-ref": "backoff==2.2.1",
-      "description": "Function decoration for backoff and retry",
-      "externalReferences": [
-        {
-          "comment": "from packaging metadata Project-URL: Repository",
-          "type": "vcs",
-          "url": "https://github.com/litl/backoff"
-        },
-        {
-          "comment": "from packaging metadata: Home-page",
-          "type": "website",
-          "url": "https://github.com/litl/backoff"
-        }
-      ],
-      "licenses": [
-        {
-          "license": {
-            "acknowledgement": "declared",
-            "id": "MIT"
-          }
-        }
-      ],
-      "name": "backoff",
-      "purl": "pkg:pypi/backoff@2.2.1",
-      "type": "library",
-      "version": "2.2.1"
     },
     {
       "bom-ref": "boolean.py==5.0",
@@ -2022,7 +1994,7 @@
       "version": "2025.11.12"
     },
     {
-      "bom-ref": "packageurl-python==0.17.5",
+      "bom-ref": "packageurl-python==0.17.6",
       "description": "A purl aka. Package URL parser and builder",
       "externalReferences": [
         {
@@ -2040,9 +2012,9 @@
         }
       ],
       "name": "packageurl-python",
-      "purl": "pkg:pypi/packageurl-python@0.17.5",
+      "purl": "pkg:pypi/packageurl-python@0.17.6",
       "type": "library",
-      "version": "0.17.5"
+      "version": "0.17.6"
     },
     {
       "bom-ref": "packaging==25.0",
@@ -2365,7 +2337,7 @@
       "version": "2.1.0"
     },
     {
-      "bom-ref": "pydantic==2.12.4",
+      "bom-ref": "pydantic==2.12.5",
       "description": "Data validation using Python type hints",
       "externalReferences": [
         {
@@ -2403,9 +2375,9 @@
         }
       ],
       "name": "pydantic",
-      "purl": "pkg:pypi/pydantic@2.12.4",
+      "purl": "pkg:pypi/pydantic@2.12.5",
       "type": "library",
-      "version": "2.12.4"
+      "version": "2.12.5"
     },
     {
       "bom-ref": "pydantic_core==2.41.5",
@@ -3507,7 +3479,6 @@
         "GitPython==3.1.45",
         "PyYAML==6.0.3",
         "SnakeMD==2.4.0",
-        "backoff==2.2.1",
         "cyclonedx-bom==7.2.1",
         "dagster-postgres==0.25.11",
         "dagster==1.9.11",
@@ -3572,9 +3543,6 @@
       "ref": "attrs==25.4.0"
     },
     {
-      "ref": "backoff==2.2.1"
-    },
-    {
       "ref": "boolean.py==5.0"
     },
     {
@@ -3602,7 +3570,7 @@
       "dependsOn": [
         "chardet==5.2.0",
         "cyclonedx-python-lib==11.5.0",
-        "packageurl-python==0.17.5",
+        "packageurl-python==0.17.6",
         "packaging==25.0",
         "pip-requirements-parser==32.0.1",
         "tomli==2.3.0"
@@ -3614,7 +3582,7 @@
         "jsonschema==4.25.1",
         "license-expression==30.4.4",
         "lxml==6.0.2",
-        "packageurl-python==0.17.5",
+        "packageurl-python==0.17.6",
         "py-serializable==2.1.0",
         "referencing==0.37.0",
         "sortedcontainers==2.4.0",
@@ -3650,7 +3618,7 @@
         "grpcio==1.76.0",
         "packaging==25.0",
         "protobuf==5.29.5",
-        "pydantic==2.12.4",
+        "pydantic==2.12.5",
         "python-dotenv==1.2.1",
         "pytz==2025.2",
         "requests==2.32.5",
@@ -3830,7 +3798,7 @@
         "SQLAlchemy==2.0.44",
         "setuptools==80.9.0"
       ],
-      "ref": "packageurl-python==0.17.5"
+      "ref": "packageurl-python==0.17.6"
     },
     {
       "ref": "packaging==25.0"
@@ -3880,7 +3848,7 @@
         "typing_extensions==4.15.0",
         "tzdata==2025.2"
       ],
-      "ref": "pydantic==2.12.4"
+      "ref": "pydantic==2.12.5"
     },
     {
       "dependsOn": [
@@ -4017,7 +3985,7 @@
         "fsspec==2025.10.0",
         "packaging==25.0",
         "pathlib_abc==0.5.2",
-        "pydantic==2.12.4",
+        "pydantic==2.12.5",
         "typing_extensions==4.15.0"
       ],
       "ref": "universal_pathlib==0.3.6"
@@ -4050,7 +4018,7 @@
     }
   ],
   "metadata": {
-    "timestamp": "2025-11-21T15:43:44.507268+00:00",
+    "timestamp": "2025-11-26T20:11:42.697668+00:00",
     "tools": {
       "components": [
         {
@@ -4154,7 +4122,7 @@
       ]
     }
   },
-  "serialNumber": "urn:uuid:f50dd349-ff5b-48b4-a361-d8f4f87cb694",
+  "serialNumber": "urn:uuid:243cbf25-879d-4962-a651-93b7f7a951eb",
   "version": 1,
   "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
   "bomFormat": "CycloneDX",

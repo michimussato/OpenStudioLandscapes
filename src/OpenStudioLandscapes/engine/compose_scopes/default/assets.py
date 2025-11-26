@@ -297,7 +297,6 @@ if bool(ins):
             },
         )
 
-
     # Todo
     #  - [ ] Move to factory
     @asset(

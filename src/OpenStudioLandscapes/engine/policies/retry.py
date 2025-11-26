@@ -1,9 +1,8 @@
 from dagster import (
-    RetryPolicy,
     Backoff,
     Jitter,
+    RetryPolicy,
 )
-
 
 build_docker_image_retry_policy = RetryPolicy(
     # I've seen it many times that (mostly push) operations

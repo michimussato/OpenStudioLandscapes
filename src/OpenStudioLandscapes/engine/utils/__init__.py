@@ -31,7 +31,7 @@ import os
 import pathlib
 import shlex
 import time
-from typing import Any, Dict, List, MutableMapping, Union, Tuple
+from typing import Any, Dict, List, MutableMapping, Tuple, Union
 
 import git
 import yaml
@@ -678,10 +678,6 @@ def get_docker_compose_names(
     #        per segment.
     #        https://github.com/michimussato/OpenStudioLandscapes/issues/48
 
-    container_name = ".".join(
-        [service_name, landscape_id]
-    )
-    host_name = ".".join(
-        [service_name, domain_lan]
-    )
+    container_name = ".".join([service_name, landscape_id])
+    host_name = ".".join([service_name, domain_lan])
     return container_name, host_name
