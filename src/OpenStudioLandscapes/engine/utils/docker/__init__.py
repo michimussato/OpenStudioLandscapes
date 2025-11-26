@@ -12,7 +12,6 @@ import subprocess
 import threading
 from typing import Any, Generator, List
 
-import backoff
 from dagster import AssetExecutionContext, get_dagster_logger
 
 LOGGER = get_dagster_logger(__name__)
@@ -103,13 +102,6 @@ class OutputReader(threading.Thread):
             self.output_queue.put(line.decode().strip())
 
 
-@backoff.on_exception(
-    wait_gen=backoff.constant,
-    exception=OpenStudioLandscapesDockerException,
-    max_time=60,
-    max_tries=3,
-    logger=LOGGER,
-)
 def execute_in_threads(
     command: str,
 ) -> Generator[int | Any, None, None]:
@@ -129,16 +121,6 @@ def execute_in_threads(
 
     stdout_reader.start()
     stderr_reader.start()
-
-    # Todo
-    #  - [ ] Implement a re-try/back-off logic here?
-    #        I've seen it many times that (mostly push) operations
-    #        fail due to temporary network issues. Mostly because
-    #        DNS resolution fails. Is Pihole the bottle neck here?
-    #        Can we make it become more responsive?
-    #        Investigate:
-    #        - tail --follow=name -n +63 /var/log/pihole/FTL.log
-    #        - /usr/bin/pihole-FTL no-daemon
 
     while True:
         while not stdout_queue.empty():
