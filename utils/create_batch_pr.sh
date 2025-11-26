@@ -109,7 +109,7 @@ function iterate_features() {
 iterate_features
 #pull_requests=$(iterate_features)
 
-md=$(echo -e "\`<description>\`\n")
+md=$(echo -e "Implements [${ISSUE}](${ISSUE})\n")
 md+="\n"
 md+="---\n"
 md+="\n"
