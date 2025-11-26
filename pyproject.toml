@@ -16,7 +16,6 @@ classifiers = [
 ]
 dependencies = [
     "PyYAML",
-    "backoff",
     "dagster-postgres",
     "dagster==1.9.11",
     "docker",
