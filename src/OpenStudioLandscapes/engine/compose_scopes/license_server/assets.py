@@ -292,6 +292,7 @@ if bool(ins):
                 scrape_networks=scrape_networks,
                 docker_dict_include=docker_dict_include,
                 compose_scope=COMPOSE_SCOPE,
+                landscape_id=env["LANDSCAPE"],
             )
 
         docker_yaml_include = yaml.safe_dump(docker_dict_include)

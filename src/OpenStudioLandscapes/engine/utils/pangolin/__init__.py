@@ -12,6 +12,7 @@ def add_newt_service_to_compose_scope(
     scrape_networks: Dict,
     docker_dict_include: Dict,
     compose_scope: ComposeScope,
+    landscape_id: str,
 ) -> None:
     """
     Updates `docker_dict_include` with Pangolin `newt` service(s)
@@ -27,10 +28,11 @@ def add_newt_service_to_compose_scope(
     """
     service_dict = get_pangolin_newt_service_skeleton(
         compose_scope=compose_scope,
+        landscape_id=landscape_id,
     )
 
     services = {
-        "services": {"newt": service_dict},
+        "services": {f"newt.{compose_scope.value}.{landscape_id}": service_dict},
     }
 
     networks = {"networks": {"default": {"name": "pangolin_default"}}}

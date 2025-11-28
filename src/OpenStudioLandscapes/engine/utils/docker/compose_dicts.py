@@ -25,12 +25,12 @@ __all__ = [
 
 
 class DockerComposeServiceDefinition(TypedDict, total=False):
-    environment: Dict[LiteralString, Any]
-    container_name: Required[LiteralString]
-    image: Required[LiteralString]
-    volumes: List[LiteralString]
-    networks: List[LiteralString]
-    ports: List[LiteralString]
+    environment: Dict[str, Any]
+    container_name: Required[str]
+    image: Required[str]
+    volumes: List[str]
+    networks: List[str]
+    ports: List[str]
     network_mode: DockerComposeNetworkMode
     restart: DockerComposeRestartPolicy
 
@@ -42,7 +42,7 @@ class DockerComposeServiceDefinition(TypedDict, total=False):
 
 
 class _DockerComposeNetworkNiceName(TypedDict, total=False):
-    name: Required[LiteralString]
+    name: Required[str]
 
 
 class DockerComposeNetworkDefinition(TypedDict, total=False):
@@ -105,10 +105,11 @@ class DockerComposeNetworkDefinition(TypedDict, total=False):
 
 def get_pangolin_newt_service_skeleton(
     compose_scope: ComposeScope,
+    landscape_id: str,
 ) -> DockerComposeServiceDefinition:
     _service: DockerComposeServiceDefinition = {
         "image": "docker.io/fosrl/newt",
-        "container_name": "newt",
+        "container_name": f"newt.{compose_scope.value}.{landscape_id}",
         "restart": DockerComposePolicies.RESTART_POLICY.ALWAYS,
         "environment": {
             "PANGOLIN_ENDPOINT": "${OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_%s__PANGOLIN_ENDPOINT}"
