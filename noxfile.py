@@ -970,7 +970,11 @@ SERVICE_NAME_DAGSTER = "openstudiolandscapes-dagster"
 SERVICE_NAME_DAGSTER_POSTGRES = "openstudiolandscapes-dagster-postgres"
 
 HOSTNAME_DAGSTER_DEV = (
-    f"{SERVICE_NAME_DAGSTER}.{ENVIRONMENT_DAGSTER['OPENSTUDIOLANDSCAPES__DOMAIN_LAN']}"
+    [
+        "127.0.0.1",  # respond to requests from localhost
+        "0.0.0.0",  # respond to requests from everywhere
+        f"{SERVICE_NAME_DAGSTER}.{ENVIRONMENT_DAGSTER['OPENSTUDIOLANDSCAPES__DOMAIN_LAN']}",
+    ][1]
 )
 HOSTNAME_DAGSTER_POSTGRES = f"{SERVICE_NAME_DAGSTER_POSTGRES}.{ENVIRONMENT_DAGSTER['OPENSTUDIOLANDSCAPES__DOMAIN_LAN']}"
 
