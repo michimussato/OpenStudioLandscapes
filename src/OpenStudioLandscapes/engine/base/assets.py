@@ -19,6 +19,7 @@ from dagster import (
 
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.enums import DockerConfig, DockerRepositoryType
+from OpenStudioLandscapes.engine.policies.retry import build_docker_image_retry_policy
 from OpenStudioLandscapes.engine.utils import *
 from OpenStudioLandscapes.engine.utils.docker import *
 
@@ -117,6 +118,7 @@ def apt_packages(
             AssetKey([*ASSET_HEADER_BASE["key_prefix"], "pip_packages"])
         ),
     },
+    retry_policy=build_docker_image_retry_policy,
 )
 def build_docker_image(
     context: AssetExecutionContext,
