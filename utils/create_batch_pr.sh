@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 # THIS IS A CONCEPT
+# Todo:
+#  - [ ] Python implementation
 
 # Be sure to be on the feature branch (not main)
 # Example
@@ -109,8 +111,8 @@ function iterate_features() {
 iterate_features
 #pull_requests=$(iterate_features)
 
-md=$(echo -e "Implements [${ISSUE}](${ISSUE})\n")
-md+="\n"
+md=$(echo -e "Implements [${ISSUE}](${ISSUE})")
+md+="\n\n"
 md+="---\n"
 md+="\n"
 md+="Current Work in Progress:\n"
