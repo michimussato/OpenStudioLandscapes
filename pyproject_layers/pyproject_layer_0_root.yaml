@@ -67,8 +67,6 @@ project:
     coverage:
     - coverage
     - pytest
-    dev:
-    - dagster-webserver==1.9.11
     graphviz:
     - graphviz
     - pipdeptree

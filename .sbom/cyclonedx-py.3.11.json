@@ -158,7 +158,7 @@
       "version": "0.0.0"
     },
     {
-      "bom-ref": "BomRef.9147571381335619.39341185226358844",
+      "bom-ref": "BomRef.9238067113283486.22294353082415852",
       "description": "A Toolkit to create dynamic Animation and VFX studio environments for robust automation and pipelines.",
       "externalReferences": [
         {
@@ -441,6 +441,44 @@
       "version": "4.13.2"
     },
     {
+      "bom-ref": "anyio==4.12.0",
+      "description": "High-level concurrency and networking framework on top of asyncio or Trio",
+      "externalReferences": [
+        {
+          "comment": "from packaging metadata Project-URL: Documentation",
+          "type": "documentation",
+          "url": "https://anyio.readthedocs.io/en/latest/"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Issue tracker",
+          "type": "issue-tracker",
+          "url": "https://github.com/agronholm/anyio/issues"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Source code",
+          "type": "other",
+          "url": "https://github.com/agronholm/anyio"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Changelog",
+          "type": "release-notes",
+          "url": "https://anyio.readthedocs.io/en/stable/versionhistory.html"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "acknowledgement": "declared",
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "anyio",
+      "purl": "pkg:pypi/anyio@4.12.0",
+      "type": "library",
+      "version": "4.12.0"
+    },
+    {
       "bom-ref": "argcomplete==3.6.3",
       "description": "Bash tab completion for argparse",
       "externalReferences": [
@@ -558,6 +596,34 @@
       "purl": "pkg:pypi/attrs@25.4.0",
       "type": "library",
       "version": "25.4.0"
+    },
+    {
+      "bom-ref": "backoff==2.2.1",
+      "description": "Function decoration for backoff and retry",
+      "externalReferences": [
+        {
+          "comment": "from packaging metadata Project-URL: Repository",
+          "type": "vcs",
+          "url": "https://github.com/litl/backoff"
+        },
+        {
+          "comment": "from packaging metadata: Home-page",
+          "type": "website",
+          "url": "https://github.com/litl/backoff"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "acknowledgement": "declared",
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "backoff",
+      "purl": "pkg:pypi/backoff@2.2.1",
+      "type": "library",
+      "version": "2.2.1"
     },
     {
       "bom-ref": "boolean.py==5.0",
@@ -970,6 +1036,35 @@
       "version": "1.9.11"
     },
     {
+      "bom-ref": "dagster-graphql==1.9.11",
+      "description": "The GraphQL frontend to python dagster.",
+      "externalReferences": [
+        {
+          "comment": "from packaging metadata: Home-page",
+          "type": "website",
+          "url": "https://github.com/dagster-io/dagster/tree/master/python_modules/dagster-graphql"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "acknowledgement": "declared",
+            "id": "Apache-2.0"
+          }
+        },
+        {
+          "license": {
+            "acknowledgement": "declared",
+            "name": "License :: OSI Approved :: Apache Software License"
+          }
+        }
+      ],
+      "name": "dagster-graphql",
+      "purl": "pkg:pypi/dagster-graphql@1.9.11",
+      "type": "library",
+      "version": "1.9.11"
+    },
+    {
       "bom-ref": "dagster-pipes==1.9.11",
       "description": "Toolkit for Dagster integrations with transform logic outside of Dagster",
       "externalReferences": [
@@ -1026,6 +1121,35 @@
       "purl": "pkg:pypi/dagster-postgres@0.25.11",
       "type": "library",
       "version": "0.25.11"
+    },
+    {
+      "bom-ref": "dagster-webserver==1.9.11",
+      "description": "Web UI for dagster.",
+      "externalReferences": [
+        {
+          "comment": "from packaging metadata: Home-page",
+          "type": "website",
+          "url": "https://github.com/dagster-io/dagster"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "acknowledgement": "declared",
+            "id": "Apache-2.0"
+          }
+        },
+        {
+          "license": {
+            "acknowledgement": "declared",
+            "name": "License :: OSI Approved :: Apache Software License"
+          }
+        }
+      ],
+      "name": "dagster-webserver",
+      "purl": "pkg:pypi/dagster-webserver@1.9.11",
+      "type": "library",
+      "version": "1.9.11"
     },
     {
       "bom-ref": "defusedxml==0.7.1",
@@ -1131,49 +1255,6 @@
       "purl": "pkg:pypi/distlib@0.4.0",
       "type": "library",
       "version": "0.4.0"
-    },
-    {
-      "bom-ref": "docker==7.1.0",
-      "description": "A Python library for the Docker Engine API.",
-      "externalReferences": [
-        {
-          "comment": "from packaging metadata Project-URL: Documentation",
-          "type": "documentation",
-          "url": "https://docker-py.readthedocs.io"
-        },
-        {
-          "comment": "from packaging metadata Project-URL: Tracker",
-          "type": "issue-tracker",
-          "url": "https://github.com/docker/docker-py/issues"
-        },
-        {
-          "comment": "from packaging metadata Project-URL: Source",
-          "type": "other",
-          "url": "https://github.com/docker/docker-py"
-        },
-        {
-          "comment": "from packaging metadata Project-URL: Changelog",
-          "type": "release-notes",
-          "url": "https://docker-py.readthedocs.io/en/stable/change-log.html"
-        },
-        {
-          "comment": "from packaging metadata Project-URL: Homepage",
-          "type": "website",
-          "url": "https://github.com/docker/docker-py"
-        }
-      ],
-      "licenses": [
-        {
-          "license": {
-            "acknowledgement": "declared",
-            "id": "Apache-2.0"
-          }
-        }
-      ],
-      "name": "docker",
-      "purl": "pkg:pypi/docker@7.1.0",
-      "type": "library",
-      "version": "7.1.0"
     },
     {
       "bom-ref": "docker-compose-graph==1.0.0",
@@ -1399,6 +1480,104 @@
       "version": "4.0.12"
     },
     {
+      "bom-ref": "gql==3.5.3",
+      "description": "GraphQL client for Python",
+      "externalReferences": [
+        {
+          "comment": "from packaging metadata: Home-page",
+          "type": "website",
+          "url": "https://github.com/graphql-python/gql"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "acknowledgement": "declared",
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "gql",
+      "properties": [
+        {
+          "name": "cdx:python:package:required-extra",
+          "value": "requests"
+        }
+      ],
+      "purl": "pkg:pypi/gql@3.5.3",
+      "type": "library",
+      "version": "3.5.3"
+    },
+    {
+      "bom-ref": "graphene==3.4.3",
+      "description": "GraphQL Framework for Python",
+      "externalReferences": [
+        {
+          "comment": "from packaging metadata: Home-page",
+          "type": "website",
+          "url": "https://github.com/graphql-python/graphene"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "acknowledgement": "declared",
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "graphene",
+      "purl": "pkg:pypi/graphene@3.4.3",
+      "type": "library",
+      "version": "3.4.3"
+    },
+    {
+      "bom-ref": "graphql-core==3.2.6",
+      "description": "GraphQL implementation for Python, a port of GraphQL.js, the JavaScript reference implementation for GraphQL.",
+      "externalReferences": [
+        {
+          "comment": "from packaging metadata: Home-page",
+          "type": "website",
+          "url": "https://github.com/graphql-python/graphql-core"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "acknowledgement": "declared",
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "graphql-core",
+      "purl": "pkg:pypi/graphql-core@3.2.6",
+      "type": "library",
+      "version": "3.2.6"
+    },
+    {
+      "bom-ref": "graphql-relay==3.2.0",
+      "description": "Relay library for graphql-core",
+      "externalReferences": [
+        {
+          "comment": "from packaging metadata: Home-page",
+          "type": "website",
+          "url": "https://github.com/graphql-python/graphql-relay-py"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "acknowledgement": "declared",
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "graphql-relay",
+      "purl": "pkg:pypi/graphql-relay@3.2.0",
+      "type": "library",
+      "version": "3.2.0"
+    },
+    {
       "bom-ref": "graphviz==0.21",
       "description": "Simple Python interface for Graphviz",
       "externalReferences": [
@@ -1547,6 +1726,52 @@
       "purl": "pkg:pypi/grpcio-health-checking@1.71.2",
       "type": "library",
       "version": "1.71.2"
+    },
+    {
+      "bom-ref": "h11==0.16.0",
+      "description": "A pure-Python, bring-your-own-I/O implementation of HTTP/1.1",
+      "externalReferences": [
+        {
+          "comment": "from packaging metadata: Home-page",
+          "type": "website",
+          "url": "https://github.com/python-hyper/h11"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "acknowledgement": "declared",
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "h11",
+      "purl": "pkg:pypi/h11@0.16.0",
+      "type": "library",
+      "version": "0.16.0"
+    },
+    {
+      "bom-ref": "httptools==0.7.1",
+      "description": "A collection of framework independent HTTP protocol utils.",
+      "externalReferences": [
+        {
+          "comment": "from packaging metadata Project-URL: Homepage",
+          "type": "website",
+          "url": "https://github.com/MagicStack/httptools"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "acknowledgement": "declared",
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "httptools",
+      "purl": "pkg:pypi/httptools@0.7.1",
+      "type": "library",
+      "version": "0.7.1"
     },
     {
       "bom-ref": "humanfriendly==10.0",
@@ -1956,6 +2181,56 @@
       "version": "0.1.2"
     },
     {
+      "bom-ref": "multidict==6.7.0",
+      "description": "multidict implementation",
+      "externalReferences": [
+        {
+          "comment": "from packaging metadata Project-URL: Coverage: codecov",
+          "type": "other",
+          "url": "https://codecov.io/github/aio-libs/multidict"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Code of Conduct",
+          "type": "other",
+          "url": "https://github.com/aio-libs/.github/blob/master/CODE_OF_CONDUCT.md"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: GitHub: repo",
+          "type": "other",
+          "url": "https://github.com/aio-libs/multidict"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: CI: GitHub",
+          "type": "other",
+          "url": "https://github.com/aio-libs/multidict/actions"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: GitHub: issues",
+          "type": "other",
+          "url": "https://github.com/aio-libs/multidict/issues"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Docs: RTD",
+          "type": "other",
+          "url": "https://multidict.aio-libs.org"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Docs: Changelog",
+          "type": "other",
+          "url": "https://multidict.aio-libs.org/en/latest/changes/"
+        },
+        {
+          "comment": "from packaging metadata: Home-page",
+          "type": "website",
+          "url": "https://github.com/aio-libs/multidict"
+        }
+      ],
+      "name": "multidict",
+      "purl": "pkg:pypi/multidict@6.7.0",
+      "type": "library",
+      "version": "6.7.0"
+    },
+    {
       "bom-ref": "nox==2025.11.12",
       "description": "Flexible test automation.",
       "externalReferences": [
@@ -2224,6 +2499,70 @@
       "purl": "pkg:pypi/platformdirs@4.5.0",
       "type": "library",
       "version": "4.5.0"
+    },
+    {
+      "bom-ref": "propcache==0.4.1",
+      "description": "Accelerated property cache",
+      "externalReferences": [
+        {
+          "comment": "from packaging metadata Project-URL: Coverage: codecov",
+          "type": "other",
+          "url": "https://codecov.io/github/aio-libs/propcache"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Code of Conduct",
+          "type": "other",
+          "url": "https://github.com/aio-libs/.github/blob/master/CODE_OF_CONDUCT.md"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: GitHub: repo",
+          "type": "other",
+          "url": "https://github.com/aio-libs/propcache"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: CI: GitHub Workflows",
+          "type": "other",
+          "url": "https://github.com/aio-libs/propcache/actions?query=branch:master"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: GitHub: issues",
+          "type": "other",
+          "url": "https://github.com/aio-libs/propcache/issues"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Docs: RTD",
+          "type": "other",
+          "url": "https://propcache.readthedocs.io"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Docs: Changelog",
+          "type": "other",
+          "url": "https://propcache.readthedocs.io/en/latest/changes/"
+        },
+        {
+          "comment": "from packaging metadata: Home-page",
+          "type": "website",
+          "url": "https://github.com/aio-libs/propcache"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "acknowledgement": "declared",
+            "id": "Apache-2.0"
+          }
+        },
+        {
+          "license": {
+            "acknowledgement": "declared",
+            "name": "License :: OSI Approved :: Apache Software License"
+          }
+        }
+      ],
+      "name": "propcache",
+      "purl": "pkg:pypi/propcache@0.4.1",
+      "type": "library",
+      "version": "0.4.1"
     },
     {
       "bom-ref": "protobuf==5.29.5",
@@ -2656,6 +2995,39 @@
       "version": "2.32.5"
     },
     {
+      "bom-ref": "requests-toolbelt==1.0.0",
+      "description": "A utility belt for advanced users of python-requests",
+      "externalReferences": [
+        {
+          "comment": "from packaging metadata Project-URL: Source",
+          "type": "other",
+          "url": "https://github.com/requests/toolbelt"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Changelog",
+          "type": "release-notes",
+          "url": "https://github.com/requests/toolbelt/blob/master/HISTORY.rst"
+        },
+        {
+          "comment": "from packaging metadata: Home-page",
+          "type": "website",
+          "url": "https://toolbelt.readthedocs.io/"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "acknowledgement": "declared",
+            "name": "License :: OSI Approved :: Apache Software License"
+          }
+        }
+      ],
+      "name": "requests-toolbelt",
+      "purl": "pkg:pypi/requests-toolbelt@1.0.0",
+      "type": "library",
+      "version": "1.0.0"
+    },
+    {
       "bom-ref": "rfc3339-validator==0.1.4",
       "description": "A pure python RFC3339 validator",
       "externalReferences": [
@@ -2927,6 +3299,55 @@
       "purl": "pkg:pypi/sortedcontainers@2.4.0",
       "type": "library",
       "version": "2.4.0"
+    },
+    {
+      "bom-ref": "starlette==0.50.0",
+      "description": "The little ASGI library that shines.",
+      "externalReferences": [
+        {
+          "comment": "from packaging metadata Project-URL: Documentation",
+          "type": "documentation",
+          "url": "https://starlette.dev/"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Source",
+          "type": "other",
+          "url": "https://github.com/Kludex/starlette"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Funding",
+          "type": "other",
+          "url": "https://github.com/sponsors/Kludex"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Changelog",
+          "type": "release-notes",
+          "url": "https://starlette.dev/release-notes/"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Homepage",
+          "type": "website",
+          "url": "https://github.com/Kludex/starlette"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "acknowledgement": "declared",
+            "id": "BSD-3-Clause"
+          }
+        }
+      ],
+      "name": "starlette",
+      "properties": [
+        {
+          "name": "cdx:python:package:required-extra",
+          "value": "full"
+        }
+      ],
+      "purl": "pkg:pypi/starlette@0.50.0",
+      "type": "library",
+      "version": "0.50.0"
     },
     {
       "bom-ref": "structlog==25.5.0",
@@ -3330,6 +3751,79 @@
       "version": "2.5.0"
     },
     {
+      "bom-ref": "uvicorn==0.38.0",
+      "description": "The lightning-fast ASGI server.",
+      "externalReferences": [
+        {
+          "comment": "from packaging metadata Project-URL: Source",
+          "type": "other",
+          "url": "https://github.com/Kludex/uvicorn"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Funding",
+          "type": "other",
+          "url": "https://github.com/sponsors/encode"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Changelog",
+          "type": "release-notes",
+          "url": "https://uvicorn.dev/release-notes"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Homepage",
+          "type": "website",
+          "url": "https://uvicorn.dev/"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "acknowledgement": "declared",
+            "id": "BSD-3-Clause"
+          }
+        }
+      ],
+      "name": "uvicorn",
+      "properties": [
+        {
+          "name": "cdx:python:package:required-extra",
+          "value": "standard"
+        }
+      ],
+      "purl": "pkg:pypi/uvicorn@0.38.0",
+      "type": "library",
+      "version": "0.38.0"
+    },
+    {
+      "bom-ref": "uvloop==0.22.1",
+      "description": "Fast implementation of asyncio event loop on top of libuv",
+      "externalReferences": [
+        {
+          "comment": "from packaging metadata Project-URL: github",
+          "type": "vcs",
+          "url": "https://github.com/MagicStack/uvloop"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "acknowledgement": "declared",
+            "id": "MIT"
+          }
+        },
+        {
+          "license": {
+            "acknowledgement": "declared",
+            "name": "License :: OSI Approved :: Apache Software License"
+          }
+        }
+      ],
+      "name": "uvloop",
+      "purl": "pkg:pypi/uvloop@0.22.1",
+      "type": "library",
+      "version": "0.22.1"
+    },
+    {
       "bom-ref": "virtualenv==20.35.4",
       "description": "Virtual Python Environment builder",
       "externalReferences": [
@@ -3417,6 +3911,54 @@
       "version": "5.0.3"
     },
     {
+      "bom-ref": "watchfiles==1.1.1",
+      "description": "Simple, modern and high performance file watching and code reload in python.",
+      "externalReferences": [
+        {
+          "comment": "from packaging metadata Project-URL: Documentation",
+          "type": "documentation",
+          "url": "https://watchfiles.helpmanual.io"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Source",
+          "type": "other",
+          "url": "https://github.com/samuelcolvin/watchfiles"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Funding",
+          "type": "other",
+          "url": "https://github.com/sponsors/samuelcolvin"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Changelog",
+          "type": "release-notes",
+          "url": "https://github.com/samuelcolvin/watchfiles/releases"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Homepage",
+          "type": "website",
+          "url": "https://github.com/samuelcolvin/watchfiles"
+        },
+        {
+          "comment": "from packaging metadata: Home-page",
+          "type": "website",
+          "url": "https://github.com/samuelcolvin/watchfiles"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "acknowledgement": "declared",
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "watchfiles",
+      "purl": "pkg:pypi/watchfiles@1.1.1",
+      "type": "library",
+      "version": "1.1.1"
+    },
+    {
       "bom-ref": "webcolors==25.10.0",
       "description": "A library for working with the color formats defined by HTML and CSS.",
       "externalReferences": [
@@ -3449,6 +3991,119 @@
       "purl": "pkg:pypi/webcolors@25.10.0",
       "type": "library",
       "version": "25.10.0"
+    },
+    {
+      "bom-ref": "websockets==15.0.1",
+      "description": "An implementation of the WebSocket Protocol (RFC 6455 & 7692)",
+      "externalReferences": [
+        {
+          "comment": "from packaging metadata Project-URL: Documentation",
+          "type": "documentation",
+          "url": "https://websockets.readthedocs.io/"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Tracker",
+          "type": "issue-tracker",
+          "url": "https://github.com/python-websockets/websockets/issues"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Funding",
+          "type": "other",
+          "url": "https://tidelift.com/subscription/pkg/pypi-websockets?utm_source=pypi-websockets&utm_medium=referral&utm_campaign=readme"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Changelog",
+          "type": "release-notes",
+          "url": "https://websockets.readthedocs.io/en/stable/project/changelog.html"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Homepage",
+          "type": "website",
+          "url": "https://github.com/python-websockets/websockets"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "acknowledgement": "declared",
+            "id": "BSD-3-Clause"
+          }
+        },
+        {
+          "license": {
+            "acknowledgement": "declared",
+            "name": "License :: OSI Approved :: BSD License"
+          }
+        }
+      ],
+      "name": "websockets",
+      "purl": "pkg:pypi/websockets@15.0.1",
+      "type": "library",
+      "version": "15.0.1"
+    },
+    {
+      "bom-ref": "yarl==1.22.0",
+      "description": "Yet another URL library",
+      "externalReferences": [
+        {
+          "comment": "from packaging metadata Project-URL: Coverage: codecov",
+          "type": "other",
+          "url": "https://codecov.io/github/aio-libs/yarl"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Code of Conduct",
+          "type": "other",
+          "url": "https://github.com/aio-libs/.github/blob/master/CODE_OF_CONDUCT.md"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: GitHub: repo",
+          "type": "other",
+          "url": "https://github.com/aio-libs/yarl"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: CI: GitHub Workflows",
+          "type": "other",
+          "url": "https://github.com/aio-libs/yarl/actions?query=branch:master"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: GitHub: issues",
+          "type": "other",
+          "url": "https://github.com/aio-libs/yarl/issues"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Docs: RTD",
+          "type": "other",
+          "url": "https://yarl.aio-libs.org"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Docs: Changelog",
+          "type": "other",
+          "url": "https://yarl.aio-libs.org/en/latest/changes/"
+        },
+        {
+          "comment": "from packaging metadata: Home-page",
+          "type": "website",
+          "url": "https://github.com/aio-libs/yarl"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "acknowledgement": "declared",
+            "id": "Apache-2.0"
+          }
+        },
+        {
+          "license": {
+            "acknowledgement": "declared",
+            "name": "License :: OSI Approved :: Apache Software License"
+          }
+        }
+      ],
+      "name": "yarl",
+      "purl": "pkg:pypi/yarl@1.22.0",
+      "type": "library",
+      "version": "1.22.0"
     }
   ],
   "dependencies": [
@@ -3481,9 +4136,9 @@
         "SnakeMD==2.4.0",
         "cyclonedx-bom==7.2.1",
         "dagster-postgres==0.25.11",
+        "dagster-webserver==1.9.11",
         "dagster==1.9.11",
         "docker-compose-graph==1.0.0",
-        "docker==7.1.0",
         "graphviz==0.21",
         "nox==2025.11.12",
         "pipdeptree==2.30.0",
@@ -3529,6 +4184,13 @@
       "ref": "antlr4-python3-runtime==4.13.2"
     },
     {
+      "dependsOn": [
+        "idna==3.11",
+        "typing_extensions==4.15.0"
+      ],
+      "ref": "anyio==4.12.0"
+    },
+    {
       "ref": "argcomplete==3.6.3"
     },
     {
@@ -3541,6 +4203,9 @@
     },
     {
       "ref": "attrs==25.4.0"
+    },
+    {
+      "ref": "backoff==2.2.1"
     },
     {
       "ref": "boolean.py==5.0"
@@ -3591,6 +4256,16 @@
       "ref": "cyclonedx-python-lib==11.5.0"
     },
     {
+      "dependsOn": [
+        "dagster==1.9.11",
+        "gql==3.5.3",
+        "graphene==3.4.3",
+        "requests==2.32.5",
+        "starlette==0.50.0"
+      ],
+      "ref": "dagster-graphql==1.9.11"
+    },
+    {
       "ref": "dagster-pipes==1.9.11"
     },
     {
@@ -3602,6 +4277,16 @@
     },
     {
       "dependsOn": [
+        "click==8.3.1",
+        "dagster-graphql==1.9.11",
+        "dagster==1.9.11",
+        "starlette==0.50.0",
+        "uvicorn==0.38.0"
+      ],
+      "ref": "dagster-webserver==1.9.11"
+    },
+    {
+      "dependsOn": [
         "Jinja2==3.1.6",
         "PyYAML==6.0.3",
         "SQLAlchemy==2.0.44",
@@ -3610,7 +4295,6 @@
         "click==8.3.1",
         "coloredlogs==14.0",
         "dagster-pipes==1.9.11",
-        "docker==7.1.0",
         "docstring_parser==0.17.0",
         "filelock==3.20.0",
         "fsspec==2025.10.0",
@@ -3662,13 +4346,6 @@
       "ref": "docker-compose-graph==1.0.0"
     },
     {
-      "dependsOn": [
-        "requests==2.32.5",
-        "urllib3==2.5.0"
-      ],
-      "ref": "docker==7.1.0"
-    },
-    {
       "ref": "docstring_parser==0.17.0"
     },
     {
@@ -3682,7 +4359,8 @@
         "Jinja2==3.1.6",
         "requests==2.32.5",
         "tqdm==4.67.1",
-        "urllib3==2.5.0"
+        "urllib3==2.5.0",
+        "yarl==1.22.0"
       ],
       "ref": "fsspec==2025.10.0"
     },
@@ -3691,6 +4369,40 @@
         "smmap==5.0.2"
       ],
       "ref": "gitdb==4.0.12"
+    },
+    {
+      "dependsOn": [
+        "anyio==4.12.0",
+        "backoff==2.2.1",
+        "graphql-core==3.2.6",
+        "requests-toolbelt==1.0.0",
+        "requests==2.32.5",
+        "websockets==15.0.1",
+        "yarl==1.22.0"
+      ],
+      "ref": "gql==3.5.3"
+    },
+    {
+      "dependsOn": [
+        "graphql-core==3.2.6",
+        "graphql-relay==3.2.0",
+        "python-dateutil==2.9.0.post0",
+        "typing_extensions==4.15.0"
+      ],
+      "ref": "graphene==3.4.3"
+    },
+    {
+      "dependsOn": [
+        "typing_extensions==4.15.0"
+      ],
+      "ref": "graphql-core==3.2.6"
+    },
+    {
+      "dependsOn": [
+        "graphql-core==3.2.6",
+        "typing_extensions==4.15.0"
+      ],
+      "ref": "graphql-relay==3.2.0"
     },
     {
       "ref": "graphviz==0.21"
@@ -3713,6 +4425,12 @@
         "typing_extensions==4.15.0"
       ],
       "ref": "grpcio==1.76.0"
+    },
+    {
+      "ref": "h11==0.16.0"
+    },
+    {
+      "ref": "httptools==0.7.1"
     },
     {
       "ref": "humanfriendly==10.0"
@@ -3781,6 +4499,12 @@
     },
     {
       "dependsOn": [
+        "typing_extensions==4.15.0"
+      ],
+      "ref": "multidict==6.7.0"
+    },
+    {
+      "dependsOn": [
         "Jinja2==3.1.6",
         "argcomplete==3.6.3",
         "attrs==25.4.0",
@@ -3827,6 +4551,9 @@
     },
     {
       "ref": "platformdirs==4.5.0"
+    },
+    {
+      "ref": "propcache==0.4.1"
     },
     {
       "ref": "protobuf==5.29.5"
@@ -3894,6 +4621,12 @@
     },
     {
       "dependsOn": [
+        "requests==2.32.5"
+      ],
+      "ref": "requests-toolbelt==1.0.0"
+    },
+    {
+      "dependsOn": [
         "certifi==2025.11.12",
         "chardet==5.2.0",
         "charset-normalizer==3.4.4",
@@ -3949,6 +4682,15 @@
     },
     {
       "dependsOn": [
+        "Jinja2==3.1.6",
+        "PyYAML==6.0.3",
+        "anyio==4.12.0",
+        "typing_extensions==4.15.0"
+      ],
+      "ref": "starlette==0.50.0"
+    },
+    {
+      "dependsOn": [
         "typing_extensions==4.15.0"
       ],
       "ref": "structlog==25.5.0"
@@ -3998,6 +4740,26 @@
     },
     {
       "dependsOn": [
+        "PyYAML==6.0.3",
+        "click==8.3.1",
+        "h11==0.16.0",
+        "httptools==0.7.1",
+        "python-dotenv==1.2.1",
+        "typing_extensions==4.15.0",
+        "uvloop==0.22.1",
+        "watchfiles==1.1.1",
+        "websockets==15.0.1"
+      ],
+      "ref": "uvicorn==0.38.0"
+    },
+    {
+      "dependsOn": [
+        "setuptools==80.9.0"
+      ],
+      "ref": "uvloop==0.22.1"
+    },
+    {
+      "dependsOn": [
         "distlib==0.4.0",
         "filelock==3.20.0",
         "packaging==25.0",
@@ -4014,11 +4776,28 @@
       "ref": "watchdog==5.0.3"
     },
     {
+      "dependsOn": [
+        "anyio==4.12.0"
+      ],
+      "ref": "watchfiles==1.1.1"
+    },
+    {
       "ref": "webcolors==25.10.0"
+    },
+    {
+      "ref": "websockets==15.0.1"
+    },
+    {
+      "dependsOn": [
+        "idna==3.11",
+        "multidict==6.7.0",
+        "propcache==0.4.1"
+      ],
+      "ref": "yarl==1.22.0"
     }
   ],
   "metadata": {
-    "timestamp": "2025-11-26T20:11:42.697668+00:00",
+    "timestamp": "2025-11-30T12:14:17.641762+00:00",
     "tools": {
       "components": [
         {
@@ -4122,7 +4901,7 @@
       ]
     }
   },
-  "serialNumber": "urn:uuid:243cbf25-879d-4962-a651-93b7f7a951eb",
+  "serialNumber": "urn:uuid:33056cf4-76e8-4063-ab90-e9a9f05e63ac",
   "version": 1,
   "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
   "bomFormat": "CycloneDX",

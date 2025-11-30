@@ -498,7 +498,7 @@ def factory_group_in(
         if len(kw_keys) == 1:
             kw_key = kw_keys[0]
         else:
-            raise NotImplementedError()
+            raise NotImplementedError("We expect `kw_keys` to be exactly 1.")
 
         # parent env would be:
         # kwargs[kw_key]["env"]
@@ -514,15 +514,17 @@ def factory_group_in(
             value=group_out,
         )
 
-        kwargs_json = json.dumps(kwargs, default=str)
+        assert bool(kwargs) == False
 
         yield AssetMaterialization(
             asset_key=context.asset_key,
             metadata={
-                "__".join(context.asset_key.path): MetadataValue.json(kwargs_json),
+                "__".join(context.asset_key.path): MetadataValue.json(
+                    json.loads(json.dumps(group_out, default=str))
+                ),
                 **metadatavalues_from_dict(
                     context=context,
-                    d_serialized=kwargs_json,
+                    d_serialized=json.loads(json.dumps(group_out, default=str)),
                 ),
             },
         )

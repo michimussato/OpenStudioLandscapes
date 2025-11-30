@@ -1,9 +1,12 @@
-from typing import Any, Dict, List, LiteralString, Required, TypedDict
+from typing import Any, Dict, List, LiteralString, Required, TypedDict, Union
+
+from dagster import AssetExecutionContext, OpExecutionContext
 
 from OpenStudioLandscapes.engine.enums import *
 
 __all__ = [
     "get_pangolin_newt_service_skeleton",
+    "get_network_dicts",
 ]
 
 
@@ -25,12 +28,12 @@ __all__ = [
 
 
 class DockerComposeServiceDefinition(TypedDict, total=False):
-    environment: Dict[LiteralString, Any]
-    container_name: Required[LiteralString]
-    image: Required[LiteralString]
-    volumes: List[LiteralString]
-    networks: List[LiteralString]
-    ports: List[LiteralString]
+    environment: Dict[str, Any]
+    container_name: Required[str]
+    image: Required[str]
+    volumes: List[str]
+    networks: List[str]
+    ports: List[str]
     network_mode: DockerComposeNetworkMode
     restart: DockerComposeRestartPolicy
 
@@ -42,7 +45,7 @@ class DockerComposeServiceDefinition(TypedDict, total=False):
 
 
 class _DockerComposeNetworkNiceName(TypedDict, total=False):
-    name: Required[LiteralString]
+    name: Required[str]
 
 
 class DockerComposeNetworkDefinition(TypedDict, total=False):
@@ -105,10 +108,11 @@ class DockerComposeNetworkDefinition(TypedDict, total=False):
 
 def get_pangolin_newt_service_skeleton(
     compose_scope: ComposeScope,
+    unique_suffix: str,
 ) -> DockerComposeServiceDefinition:
     _service: DockerComposeServiceDefinition = {
         "image": "docker.io/fosrl/newt",
-        "container_name": "newt",
+        "container_name": f"newt_container.{unique_suffix}",
         "restart": DockerComposePolicies.RESTART_POLICY.ALWAYS,
         "environment": {
             "PANGOLIN_ENDPOINT": "${OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_%s__PANGOLIN_ENDPOINT}"
@@ -117,8 +121,9 @@ def get_pangolin_newt_service_skeleton(
             % compose_scope.upper(),
             "NEWT_SECRET": "${OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_%s__NEWT_SECRET}"
             % compose_scope.upper(),
-            # "ACCEPT_CLIENTS": "${OPENSTUDIOLANDSCAPES__PANGOLIN_SITE_%s__ACCEPT_CLIENTS}" % compose_scope.upper(),
-            "ACCEPT_CLIENTS": True,
+            "ACCEPT_CLIENTS": "${OPENSTUDIOLANDSCAPES__PANGOLIN_SITE_%s__ACCEPT_CLIENTS:-false}"
+            % compose_scope.upper(),
+            # "ACCEPT_CLIENTS": True,
             "DOCKER_SOCKET": "/var/run/docker.sock",
         },
         "volumes": [
@@ -128,3 +133,51 @@ def get_pangolin_newt_service_skeleton(
     }
 
     return _service
+
+
+def get_network_dicts(
+    context: Union[AssetExecutionContext, OpExecutionContext],
+    compose_network_mode: DockerComposeNetworkMode,
+    env: Dict,
+    compose_network_parent: Dict = None,
+):
+
+    asset_key = ".".join(context.asset_key.path)
+
+    unique_network = f"{asset_key}_network.{env['LANDSCAPE']}"
+
+    if compose_network_mode == DockerComposePolicies.NETWORK_MODE.HOST:
+        docker_dict = {
+            "network_mode": compose_network_mode.value,
+        }
+
+    elif compose_network_mode in [
+        DockerComposePolicies.NETWORK_MODE.DEFAULT,
+        DockerComposePolicies.NETWORK_MODE.BRIDGE,
+    ]:
+        docker_dict = {
+            "networks": {
+                unique_network: {
+                    "name": unique_network,
+                    "driver": DockerComposeNetworkMode.BRIDGE.value,
+                },
+            },
+        }
+        # Results in:
+        # {
+        #   "networks": {
+        #     "Kitsu.compose_networks_network.2025-11-26-19-18-42-b013cc3b8dd848b3a19a04c82a6d5d07": {
+        #       "driver": "bridge",
+        #       "name": "Kitsu.compose_networks_network.2025-11-26-19-18-42-b013cc3b8dd848b3a19a04c82a6d5d07"
+        #     }
+        #   }
+        # }
+        if compose_network_parent is not None:
+            docker_dict["networks"].update(compose_network_parent)
+
+    else:
+        raise NotImplementedError(
+            f"Network mode {compose_network_mode} is not implemented."
+        )
+
+    return docker_dict
