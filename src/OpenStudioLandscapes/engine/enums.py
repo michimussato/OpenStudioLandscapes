@@ -65,7 +65,23 @@ class DockerComposeNetworkMode(enum.StrEnum):
     # https://docs.docker.com/engine/network/
     # Docker Compose Ports settings
     # will be ignored if other than "default"
-    DEFAULT = "default"
+    #
+    # https://docs.docker.com/engine/network/#user-defined-networks
+    # With the default configuration, containers attached
+    # to the default bridge network have unrestricted network
+    # access to each other using container IP
+    # addresses. They cannot refer to each other by name.
+    #
+    # You can create custom, user-defined networks, and
+    # connect groups of containers to the same network.
+    # Once connected to a user-defined network, containers
+    # can communicate with each other using container IP
+    # addresses or container names.
+    #
+    # More ref:
+    # - https://docs.docker.com/compose/how-tos/networking/
+    # - https://dev.to/lovestaco/how-to-bridge-networks-in-docker-compose-docker-composeyml-1i03
+    DEFAULT = "default"  # of type "bridge"; try to avoid this one. Use "bridge" explicitly instead.
     BRIDGE = "bridge"
     HOST = "host"
     NONE = "none"

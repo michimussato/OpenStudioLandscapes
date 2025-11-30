@@ -971,10 +971,12 @@ SERVICE_NAME_DAGSTER_POSTGRES = "openstudiolandscapes-dagster-postgres"
 
 HOSTNAME_DAGSTER_DEV = (
     [
-        "127.0.0.1",  # respond to requests from localhost
+        # For Dagster to be accessible via Pangolin, use
+        # 0.0.0.0
         "0.0.0.0",  # respond to requests from everywhere
-        f"{SERVICE_NAME_DAGSTER}.{ENVIRONMENT_DAGSTER['OPENSTUDIOLANDSCAPES__DOMAIN_LAN']}",
-    ][1]
+        "127.0.0.1",  # respond to requests from localhost
+        f"{SERVICE_NAME_DAGSTER}.{ENVIRONMENT_DAGSTER['OPENSTUDIOLANDSCAPES__DOMAIN_LAN']}",  # also only responds to limited sources
+    ][0]
 )
 HOSTNAME_DAGSTER_POSTGRES = f"{SERVICE_NAME_DAGSTER_POSTGRES}.{ENVIRONMENT_DAGSTER['OPENSTUDIOLANDSCAPES__DOMAIN_LAN']}"
 
@@ -2084,307 +2086,307 @@ def menu_from_choices(
 
 #######################################################################################################################
 # Tag
-@nox.session(python=None, tags=["tag"])
-@nox.parametrize(
-    "working_directory",
-    # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
-    [
-        nox.param(engine_dir.name, id=engine_dir.name),
-        *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED],
-    ],
-)
-def tag(session, working_directory):
-    """
-    Git tag OpenStudioLandscapes modules.
-    See wiki/guides/release_strategy.md#main-release
+# @nox.session(python=None, tags=["tag"])
+# @nox.parametrize(
+#     "working_directory",
+#     # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
+#     [
+#         nox.param(engine_dir.name, id=engine_dir.name),
+#         *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED],
+#     ],
+# )
+# def tag(session, working_directory):
+#     """
+#     Git tag OpenStudioLandscapes modules.
+#     See wiki/guides/release_strategy.md#main-release
+#
+#     Scope:
+#     - [x] Engine
+#     - [x] Features
+#     """
+#     # Ex:
+#     # nox --session tag
+#     # nox --tags tag
+#
+#     # TAG
+#     repo = git.Repo(engine_dir.parent / working_directory)
+#     repo.git.fetch(tags=True, all=True, force=True)
+#     tags = repo.tags
+#
+#     tag_ = os.environ.get("TAG", None)
+#     if tag_ is None:
+#         input_message = "Version tag:\n"
+#
+#         tag_ = menu_from_choices(
+#             input_message=input_message,
+#             choices=tags,
+#             description="",
+#             manual_value=True,
+#         )
+#
+#         os.environ["TAG"] = tag_
+#
+#     # RELEASE_TYPE
+#     release_type = os.environ.get("RELEASE_TYPE", None)
+#     if release_type is None:
+#
+#         release_types = ["rc", "main"]
+#
+#         input_message = "Tag type:\n"
+#
+#         release_type = menu_from_choices(
+#             input_message=input_message,
+#             choices=release_types,
+#             description="- `rc` will only create/update given tag\n"
+#             "- `main` will create/update given tag and also "
+#             "update latest with a pointer the same commit as given tag\n",
+#             manual_value=False,
+#         )
+#
+#         os.environ["RELEASE_TYPE"] = release_type
+#
+#     # FORCE
+#     force = os.environ.get("FORCE", None)
+#     if force is None:
+#         forced = ["no", "yes"]
+#
+#         input_message = "Force:\n"
+#
+#         force = menu_from_choices(
+#             input_message=input_message,
+#             choices=forced,
+#             description="",
+#             manual_value=False,
+#         )
+#
+#         os.environ["FORCE"] = force
+#
+#     session.log(f"{tag_ = }")
+#     session.log(f"{release_type = }")
+#     session.log(f"{force = }")
+#
+#     cmds = []
+#
+#     # cmd_fetch = [
+#     #     shutil.which("git"),
+#     #     "fetch",
+#     #     "--tags",
+#     #     "--force",
+#     # ]
+#     # cmds.append(cmd_fetch)
+#
+#     if release_type == "rc":
+#         msg = f"Release Candidate Version {tag_}"
+#     elif release_type == "main":
+#         msg = f"Main Release Version {tag_}"
+#
+#     cmd_annotate = [
+#         shutil.which("git"),
+#         "tag",
+#         "--annotate",
+#         tag_,
+#         "--message",
+#         msg,
+#     ]
+#     if force == "yes":
+#         cmd_annotate.append("--force")
+#     cmds.append(cmd_annotate)
+#
+#     if release_type == "main":
+#
+#         cmd_annotate_latest = [
+#             shutil.which("git"),
+#             "tag",
+#             "--annotate",
+#             "latest",
+#             "--message",
+#             f"Latest Release Version (pointing to {tag_}",
+#             "%s^{}" % tag_,
+#         ]
+#         if force == "yes":
+#             cmd_annotate_latest.append("--force")
+#         cmds.append(cmd_annotate_latest)
+#
+#     cmd_push = [
+#         shutil.which("git"),
+#         "push",
+#         "--tags",
+#     ]
+#     if force == "yes":
+#         cmd_push.append("--force")
+#     cmds.append(cmd_push)
+#
+#     with session.chdir(engine_dir.parent / working_directory):
+#
+#         session.log(
+#             f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
+#         )
+#
+#         for cmd in cmds:
+#
+#             session.log(f"Running Command:\n\t{shlex.join(cmd)}")
+#
+#             session.run(
+#                 *cmd,
+#                 env=ENV,
+#                 external=True,
+#                 silent=SESSION_RUN_SILENT,
+#             )
 
-    Scope:
-    - [x] Engine
-    - [x] Features
-    """
-    # Ex:
-    # nox --session tag
-    # nox --tags tag
 
-    # TAG
-    repo = git.Repo(engine_dir.parent / working_directory)
-    repo.git.fetch(tags=True, all=True, force=True)
-    tags = repo.tags
+# @nox.session(python=None, tags=["tag_delete"])
+# @nox.parametrize(
+#     "working_directory",
+#     # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
+#     [
+#         nox.param(engine_dir.name, id=engine_dir.name),
+#         *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED],
+#     ],
+# )
+# def tag_delete(session, working_directory):
+#     """
+#     Git tag delete OpenStudioLandscapes modules.
+#     See wiki/guides/release_strategy.md#delete-tags
+#
+#     Scope:
+#     - [x] Engine
+#     - [x] Features
+#     """
+#     # Ex:
+#     # nox --session tag_delete
+#     # nox --tags tag_delete
+#
+#     # TAG
+#     repo = git.Repo(engine_dir.parent / working_directory)
+#     repo.git.fetch(tags=True, all=True, force=True)
+#     tags = repo.tags
+#
+#     tag_ = os.environ.get("TAG", None)
+#     if tag_ is None:
+#         input_message = "Existing tags:\n"
+#
+#         tag_ = menu_from_choices(
+#             input_message=input_message,
+#             choices=tags,
+#             description="- force delete tag if it exists\n",
+#             manual_value=True,
+#             regex=RE_SEMVER,
+#         )
+#
+#         os.environ["TAG"] = tag_
+#
+#     cmds = []
+#
+#     # cmd_fetch = [
+#     #     shutil.which("git"),
+#     #     "fetch",
+#     #     "--tags",
+#     #     "--force",
+#     # ]
+#     # cmds.append(cmd_fetch)
+#
+#     cmd_delete_tag = [
+#         shutil.which("git"),
+#         "tag",
+#         "-d",
+#         tag_,
+#     ]
+#     cmds.append(cmd_delete_tag)
+#
+#     cmd_push = [
+#         shutil.which("git"),
+#         "push",
+#         "origin",
+#         f":refs/tags/{tag_}",
+#     ]
+#     cmds.append(cmd_push)
+#
+#     with session.chdir(engine_dir.parent / working_directory):
+#
+#         session.log(
+#             f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
+#         )
+#
+#         for cmd in cmds:
+#
+#             session.log(f"Running Command:\n\t{shlex.join(cmd)}")
+#
+#             session.run(
+#                 *cmd,
+#                 env=ENV,
+#                 external=True,
+#                 silent=SESSION_RUN_SILENT,
+#             )
 
-    tag_ = os.environ.get("TAG", None)
-    if tag_ is None:
-        input_message = "Version tag:\n"
-
-        tag_ = menu_from_choices(
-            input_message=input_message,
-            choices=tags,
-            description="",
-            manual_value=True,
-        )
-
-        os.environ["TAG"] = tag_
-
-    # RELEASE_TYPE
-    release_type = os.environ.get("RELEASE_TYPE", None)
-    if release_type is None:
-
-        release_types = ["rc", "main"]
-
-        input_message = "Tag type:\n"
-
-        release_type = menu_from_choices(
-            input_message=input_message,
-            choices=release_types,
-            description="- `rc` will only create/update given tag\n"
-            "- `main` will create/update given tag and also "
-            "update latest with a pointer the same commit as given tag\n",
-            manual_value=False,
-        )
-
-        os.environ["RELEASE_TYPE"] = release_type
-
-    # FORCE
-    force = os.environ.get("FORCE", None)
-    if force is None:
-        forced = ["no", "yes"]
-
-        input_message = "Force:\n"
-
-        force = menu_from_choices(
-            input_message=input_message,
-            choices=forced,
-            description="",
-            manual_value=False,
-        )
-
-        os.environ["FORCE"] = force
-
-    session.log(f"{tag_ = }")
-    session.log(f"{release_type = }")
-    session.log(f"{force = }")
-
-    cmds = []
-
-    # cmd_fetch = [
-    #     shutil.which("git"),
-    #     "fetch",
-    #     "--tags",
-    #     "--force",
-    # ]
-    # cmds.append(cmd_fetch)
-
-    if release_type == "rc":
-        msg = f"Release Candidate Version {tag_}"
-    elif release_type == "main":
-        msg = f"Main Release Version {tag_}"
-
-    cmd_annotate = [
-        shutil.which("git"),
-        "tag",
-        "--annotate",
-        tag_,
-        "--message",
-        msg,
-    ]
-    if force == "yes":
-        cmd_annotate.append("--force")
-    cmds.append(cmd_annotate)
-
-    if release_type == "main":
-
-        cmd_annotate_latest = [
-            shutil.which("git"),
-            "tag",
-            "--annotate",
-            "latest",
-            "--message",
-            f"Latest Release Version (pointing to {tag_}",
-            "%s^{}" % tag_,
-        ]
-        if force == "yes":
-            cmd_annotate_latest.append("--force")
-        cmds.append(cmd_annotate_latest)
-
-    cmd_push = [
-        shutil.which("git"),
-        "push",
-        "--tags",
-    ]
-    if force == "yes":
-        cmd_push.append("--force")
-    cmds.append(cmd_push)
-
-    with session.chdir(engine_dir.parent / working_directory):
-
-        session.log(
-            f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
-        )
-
-        for cmd in cmds:
-
-            session.log(f"Running Command:\n\t{shlex.join(cmd)}")
-
-            session.run(
-                *cmd,
-                env=ENV,
-                external=True,
-                silent=SESSION_RUN_SILENT,
-            )
-
-
-@nox.session(python=None, tags=["tag_delete"])
-@nox.parametrize(
-    "working_directory",
-    # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
-    [
-        nox.param(engine_dir.name, id=engine_dir.name),
-        *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED],
-    ],
-)
-def tag_delete(session, working_directory):
-    """
-    Git tag delete OpenStudioLandscapes modules.
-    See wiki/guides/release_strategy.md#delete-tags
-
-    Scope:
-    - [x] Engine
-    - [x] Features
-    """
-    # Ex:
-    # nox --session tag_delete
-    # nox --tags tag_delete
-
-    # TAG
-    repo = git.Repo(engine_dir.parent / working_directory)
-    repo.git.fetch(tags=True, all=True, force=True)
-    tags = repo.tags
-
-    tag_ = os.environ.get("TAG", None)
-    if tag_ is None:
-        input_message = "Existing tags:\n"
-
-        tag_ = menu_from_choices(
-            input_message=input_message,
-            choices=tags,
-            description="- force delete tag if it exists\n",
-            manual_value=True,
-            regex=RE_SEMVER,
-        )
-
-        os.environ["TAG"] = tag_
-
-    cmds = []
-
-    # cmd_fetch = [
-    #     shutil.which("git"),
-    #     "fetch",
-    #     "--tags",
-    #     "--force",
-    # ]
-    # cmds.append(cmd_fetch)
-
-    cmd_delete_tag = [
-        shutil.which("git"),
-        "tag",
-        "-d",
-        tag_,
-    ]
-    cmds.append(cmd_delete_tag)
-
-    cmd_push = [
-        shutil.which("git"),
-        "push",
-        "origin",
-        f":refs/tags/{tag_}",
-    ]
-    cmds.append(cmd_push)
-
-    with session.chdir(engine_dir.parent / working_directory):
-
-        session.log(
-            f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
-        )
-
-        for cmd in cmds:
-
-            session.log(f"Running Command:\n\t{shlex.join(cmd)}")
-
-            session.run(
-                *cmd,
-                env=ENV,
-                external=True,
-                silent=SESSION_RUN_SILENT,
-            )
-
-# Checkout
-@nox.session(python=None, tags=["checkout_branch"])
-@nox.parametrize(
-    "working_directory",
-    # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
-    [
-        nox.param(engine_dir.name, id=engine_dir.name),
-        *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED],
-    ],
-)
-def checkout_branch(session, working_directory):
-    """
-    Git checkout OpenStudioLandscapes modules.
-    See wiki/guides/release_strategy.md#main-release
-
-    Scope:
-    - [x] Engine
-    - [x] Features
-    """
-    # Ex:
-    # nox --session checkout_branch
-    # nox --tags checkout_branch
-
-    # BRANCHES
-    repo = git.Repo(engine_dir.parent / working_directory)
-    repo.git.fetch(tags=True, all=True, force=True)
-    branches = repo.branches
-
-    branch_ = os.environ.get("BRANCH", None)
-    if branch_ is None:
-        input_message = "Branch:\n"
-
-        branch_ = menu_from_choices(
-            input_message=input_message,
-            choices=branches,
-            description="",
-            manual_value=True,
-        )
-
-        os.environ["BRANCH"] = branch_
-
-    session.log(f"{branch_ = }")
-
-    cmds = []
-
-    cmd_checkout = [
-        shutil.which("git"),
-        "checkout",
-        branch_,
-    ]
-
-    cmds.append(cmd_checkout)
-
-    with session.chdir(engine_dir.parent / working_directory):
-
-        session.log(
-            f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
-        )
-
-        for cmd in cmds:
-
-            session.log(f"Running Command:\n\t{shlex.join(cmd)}")
-
-            session.run(
-                *cmd,
-                env=ENV,
-                external=True,
-                silent=SESSION_RUN_SILENT,
-            )
+# # Checkout
+# @nox.session(python=None, tags=["checkout_branch"])
+# @nox.parametrize(
+#     "working_directory",
+#     # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
+#     [
+#         nox.param(engine_dir.name, id=engine_dir.name),
+#         *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED],
+#     ],
+# )
+# def checkout_branch(session, working_directory):
+#     """
+#     Git checkout OpenStudioLandscapes modules.
+#     See wiki/guides/release_strategy.md#main-release
+#
+#     Scope:
+#     - [x] Engine
+#     - [x] Features
+#     """
+#     # Ex:
+#     # nox --session checkout_branch
+#     # nox --tags checkout_branch
+#
+#     # BRANCHES
+#     repo = git.Repo(engine_dir.parent / working_directory)
+#     repo.git.fetch(tags=True, all=True, force=True)
+#     branches = repo.branches
+#
+#     branch_ = os.environ.get("BRANCH", None)
+#     if branch_ is None:
+#         input_message = "Branch:\n"
+#
+#         branch_ = menu_from_choices(
+#             input_message=input_message,
+#             choices=branches,
+#             description="",
+#             manual_value=True,
+#         )
+#
+#         os.environ["BRANCH"] = branch_
+#
+#     session.log(f"{branch_ = }")
+#
+#     cmds = []
+#
+#     cmd_checkout = [
+#         shutil.which("git"),
+#         "checkout",
+#         branch_,
+#     ]
+#
+#     cmds.append(cmd_checkout)
+#
+#     with session.chdir(engine_dir.parent / working_directory):
+#
+#         session.log(
+#             f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
+#         )
+#
+#         for cmd in cmds:
+#
+#             session.log(f"Running Command:\n\t{shlex.join(cmd)}")
+#
+#             session.run(
+#                 *cmd,
+#                 env=ENV,
+#                 external=True,
+#                 silent=SESSION_RUN_SILENT,
+#             )
 
 
 #######################################################################################################################
@@ -2395,9 +2397,9 @@ def checkout_branch(session, working_directory):
 # Todo:
 #  - [x] gh_login
 #        See wiki/guides/release_strategy.md#pull-requests-gh
-#  - [x] gh_pr_create
+#  - [ ] gh_pr_create
 #        See wiki/guides/release_strategy.md#create-pr
-#  - [x] gh_pr_edit
+#  - [ ] gh_pr_edit
 #        See wiki/guides/release_strategy.md#edit-pr
 #  - [ ] gh_pr_close
 #        See wiki/guides/release_strategy.md#close-pr
@@ -2451,6 +2453,8 @@ def gh_login(session):
         session.skip(msg)
 
 
+# Todo:
+#  - [ ] refactor
 @nox.session(python=None, tags=["gh_pr_create"])
 @nox.parametrize(
     "working_directory",
@@ -2473,93 +2477,98 @@ def gh_pr_create(session, working_directory):
     # nox --session gh_pr_create
     # nox --tags gh_pr_create
 
-    # BRANCH
-    repo = git.Repo(engine_dir.parent / working_directory)
-    branches = repo.branches
+    session.skip("Not implemented")
 
-    branch = os.environ.get("BRANCH", None)
-    if branch is None:
-        input_message = "Branch:\n"
+#
+#     # BRANCH
+#     repo = git.Repo(engine_dir.parent / working_directory)
+#     branches = repo.branches
+#
+#     branch = os.environ.get("BRANCH", None)
+#     if branch is None:
+#         input_message = "Branch:\n"
+#
+#         branch = menu_from_choices(
+#             input_message=input_message,
+#             choices=branches,
+#             description="",
+#             manual_value=True,
+#         )
+#
+#         os.environ["BRANCH"] = branch
+#
+#     # DRY_RUN
+#     dry_run = os.environ.get("DRY_RUN", None)
+#     if dry_run is None:
+#         options = ["yes", "no"]
+#
+#         input_message = "Dry run:\n"
+#
+#         dry_run = menu_from_choices(
+#             input_message=input_message,
+#             choices=options,
+#             description="",
+#             manual_value=False,
+#         )
+#
+#         os.environ["DRY_RUN"] = dry_run
+#
+#     cmds = []
+#
+#     gh = shutil.which("gh")
+#
+#     # body_file = str(os.environ.get("BODY_FILE", ""))
+#     # session.log(f"{body_file = }")
+#
+#     if bool(gh):
+#
+#         cmd_gh_pr_create = [
+#             gh,
+#             "pr",
+#             "create",
+#             "--draft",
+#             "--title",
+#             branch,
+#             "--head",
+#             branch,
+#             "--base",
+#             GIT_MAIN_BRANCH,
+#             # Todo
+#             #  - [ ] --body-file
+#             "--body",
+#             "",
+#         ]
+#         if dry_run == "yes":
+#             cmd_gh_pr_create.append("--dry-run")
+#         cmds.append(cmd_gh_pr_create)
+#
+#         with session.chdir(engine_dir.parent / working_directory):
+#
+#             session.log(
+#                 f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
+#             )
+#
+#             if dry_run:
+#                 session.warn(f"DRY_RUN is set to {dry_run}")
+#
+#             for cmd in cmds:
+#
+#                 session.log(f"Running Command:\n\t{shlex.join(cmd)}")
+#
+#                 session.run(
+#                     *cmd,
+#                     env=ENV,
+#                     external=True,
+#                     silent=SESSION_RUN_SILENT,
+#                 )
+#
+#     else:
+#         msg = "No Github CLI Found."
+#         session.skip(msg)
 
-        branch = menu_from_choices(
-            input_message=input_message,
-            choices=branches,
-            description="",
-            manual_value=True,
-        )
 
-        os.environ["BRANCH"] = branch
-
-    # DRY_RUN
-    dry_run = os.environ.get("DRY_RUN", None)
-    if dry_run is None:
-        options = ["yes", "no"]
-
-        input_message = "Dry run:\n"
-
-        dry_run = menu_from_choices(
-            input_message=input_message,
-            choices=options,
-            description="",
-            manual_value=False,
-        )
-
-        os.environ["DRY_RUN"] = dry_run
-
-    cmds = []
-
-    gh = shutil.which("gh")
-
-    # body_file = str(os.environ.get("BODY_FILE", ""))
-    # session.log(f"{body_file = }")
-
-    if bool(gh):
-
-        cmd_gh_pr_create = [
-            gh,
-            "pr",
-            "create",
-            "--draft",
-            "--title",
-            branch,
-            "--head",
-            branch,
-            "--base",
-            GIT_MAIN_BRANCH,
-            # Todo
-            #  - [ ] --body-file
-            "--body",
-            "",
-        ]
-        if dry_run == "yes":
-            cmd_gh_pr_create.append("--dry-run")
-        cmds.append(cmd_gh_pr_create)
-
-        with session.chdir(engine_dir.parent / working_directory):
-
-            session.log(
-                f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
-            )
-
-            if dry_run:
-                session.warn(f"DRY_RUN is set to {dry_run}")
-
-            for cmd in cmds:
-
-                session.log(f"Running Command:\n\t{shlex.join(cmd)}")
-
-                session.run(
-                    *cmd,
-                    env=ENV,
-                    external=True,
-                    silent=SESSION_RUN_SILENT,
-                )
-
-    else:
-        msg = "No Github CLI Found."
-        session.skip(msg)
-
-
+# Todo:
+#  - [ ] refactor
 @nox.session(python=None, tags=["gh_pr_set_mode"])
 @nox.parametrize(
     "working_directory",
@@ -2582,95 +2591,97 @@ def gh_pr_set_mode(session, working_directory):
     # nox --session gh_pr_set_mode
     # nox --tags gh_pr_set_mode
 
-    # BRANCH
-    repo = git.Repo(engine_dir.parent / working_directory)
-    branches = repo.branches
+    session.skip("Not implemented")
 
-    branch = os.environ.get("BRANCH", None)
-    if branch is None:
-        input_message = "Branch:\n"
-
-        branch = menu_from_choices(
-            input_message=input_message,
-            choices=branches,
-            description="",
-            manual_value=True,
-        )
-
-        os.environ["BRANCH"] = branch
-
-    # RELEASE_TYPE
-    mode = os.environ.get("MODE", None)
-    if mode is None:
-        modes = ["draft", "ready"]
-
-        input_message = "PR mode:\n"
-
-        mode = menu_from_choices(
-            input_message=input_message,
-            choices=modes,
-            description="",
-            manual_value=False,
-        )
-
-        os.environ["MODE"] = mode
-
-    cmds = []
-
-    gh = shutil.which("gh")
-
-    # # defaults to draft if not overridden
-    # _mode = os.environ.get("MODE", "draft").lower()
-    # if _mode not in ["draft", "ready"]:
-    #     session.error("MODE must be draft or ready.")
-    # modes = str(_mode)
-
-    # body_file = str(os.environ.get("BODY_FILE", ""))
-    # session.log(f"{body_file = }")
-
-    if bool(gh):
-
-        # branch_name = session.posargs
-        #
-        # if len(branch_name) != 1:
-        #     msg = "Invalid branch name. Tag argument must be exactly 1 argument."
-        #     session.warn(msg)
-        #     raise ValueError(msg)
-        #
-        # branch_name = branch_name[0]
-
-        cmd_gh_pr_set_mode = [
-            gh,
-            "pr",
-            "ready",
-            branch,
-        ]
-        if mode == "draft":
-            cmd_gh_pr_set_mode.append("--undo")
-        cmds.append(cmd_gh_pr_set_mode)
-
-        with session.chdir(engine_dir.parent / working_directory):
-
-            session.log(
-                f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
-            )
-
-            session.warn(f"MODE is set to '{mode}'")
-
-            for cmd in cmds:
-
-                session.log(f"Running Command:\n\t{shlex.join(cmd)}")
-
-                session.run(
-                    *cmd,
-                    env=ENV,
-                    external=True,
-                    silent=SESSION_RUN_SILENT,
-                )
-
-    else:
-        msg = "No Github CLI Found."
-        session.skip(msg)
+#     # BRANCH
+#     repo = git.Repo(engine_dir.parent / working_directory)
+#     branches = repo.branches
+#
+#     branch = os.environ.get("BRANCH", None)
+#     if branch is None:
+#         input_message = "Branch:\n"
+#
+#         branch = menu_from_choices(
+#             input_message=input_message,
+#             choices=branches,
+#             description="",
+#             manual_value=True,
+#         )
+#
+#         os.environ["BRANCH"] = branch
+#
+#     # RELEASE_TYPE
+#     mode = os.environ.get("MODE", None)
+#     if mode is None:
+#         modes = ["draft", "ready"]
+#
+#         input_message = "PR mode:\n"
+#
+#         mode = menu_from_choices(
+#             input_message=input_message,
+#             choices=modes,
+#             description="",
+#             manual_value=False,
+#         )
+#
+#         os.environ["MODE"] = mode
+#
+#     cmds = []
+#
+#     gh = shutil.which("gh")
+#
+#     # # defaults to draft if not overridden
+#     # _mode = os.environ.get("MODE", "draft").lower()
+#     # if _mode not in ["draft", "ready"]:
+#     #     session.error("MODE must be draft or ready.")
+#     # modes = str(_mode)
+#
+#     # body_file = str(os.environ.get("BODY_FILE", ""))
+#     # session.log(f"{body_file = }")
+#
+#     if bool(gh):
+#
+#         # branch_name = session.posargs
+#         #
+#         # if len(branch_name) != 1:
+#         #     msg = "Invalid branch name. Tag argument must be exactly 1 argument."
+#         #     session.warn(msg)
+#         #     raise ValueError(msg)
+#         #
+#         # branch_name = branch_name[0]
+#
+#         cmd_gh_pr_set_mode = [
+#             gh,
+#             "pr",
+#             "ready",
+#             branch,
+#         ]
+#         if mode == "draft":
+#             cmd_gh_pr_set_mode.append("--undo")
+#         cmds.append(cmd_gh_pr_set_mode)
+#
+#         with session.chdir(engine_dir.parent / working_directory):
+#
+#             session.log(
+#                 f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
+#             )
+#
+#             session.warn(f"MODE is set to '{mode}'")
+#
+#             for cmd in cmds:
+#
+#                 session.log(f"Running Command:\n\t{shlex.join(cmd)}")
+#
+#                 session.run(
+#                     *cmd,
+#                     env=ENV,
+#                     external=True,
+#                     silent=SESSION_RUN_SILENT,
+#                 )
+#
+#     else:
+#         msg = "No Github CLI Found."
+#         session.skip(msg)
 
 
 #######################################################################################################################
