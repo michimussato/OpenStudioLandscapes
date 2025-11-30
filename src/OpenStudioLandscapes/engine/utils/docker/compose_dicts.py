@@ -121,7 +121,8 @@ def get_pangolin_newt_service_skeleton(
             % compose_scope.upper(),
             "NEWT_SECRET": "${OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_%s__NEWT_SECRET}"
             % compose_scope.upper(),
-            "ACCEPT_CLIENTS": "${OPENSTUDIOLANDSCAPES__PANGOLIN_SITE_%s__ACCEPT_CLIENTS:-false}" % compose_scope.upper(),
+            "ACCEPT_CLIENTS": "${OPENSTUDIOLANDSCAPES__PANGOLIN_SITE_%s__ACCEPT_CLIENTS:-false}"
+            % compose_scope.upper(),
             # "ACCEPT_CLIENTS": True,
             "DOCKER_SOCKET": "/var/run/docker.sock",
         },
@@ -138,7 +139,7 @@ def get_network_dicts(
     context: Union[AssetExecutionContext, OpExecutionContext],
     compose_network_mode: DockerComposeNetworkMode,
     env: Dict,
-    compose_network_parent: Dict = None
+    compose_network_parent: Dict = None,
 ):
 
     asset_key = ".".join(context.asset_key.path)
@@ -175,6 +176,8 @@ def get_network_dicts(
             docker_dict["networks"].update(compose_network_parent)
 
     else:
-        raise NotImplementedError(f"Network mode {compose_network_mode} is not implemented.")
+        raise NotImplementedError(
+            f"Network mode {compose_network_mode} is not implemented."
+        )
 
     return docker_dict
