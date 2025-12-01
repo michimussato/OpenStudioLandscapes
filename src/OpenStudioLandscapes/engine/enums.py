@@ -33,7 +33,7 @@ class FeatureVolumeType(enum.StrEnum):
     CONTAINED means that the data a container produces gets created
         inside a volume that is mounted to directory that lives INSIDE
         a Landscape. New Landscape -> NEW DATA.
-    SHARDED means that the data a container produces gets created
+    SHARED means that the data a container produces gets created
         inside a volume that is mounted to directory that lives OUTSIDE
         a Landscape. New Landscape -> EXISTING DATA.
     """
