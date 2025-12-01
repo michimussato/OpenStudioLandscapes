@@ -342,10 +342,10 @@ def env(
         "GIT_ROOT": git_root.as_posix(),
         # Todo
         #  - [ ] Move CONFIGS_ROOT to individual modules
-        "CONFIGS_ROOT": pathlib.Path(
-            git_root,
-            "configs",
-        ).as_posix(),
+        # "CONFIGS_ROOT": pathlib.Path(
+        #     git_root,
+        #     "configs",
+        # ).as_posix(),
         "DOT_LANDSCAPES": dot_landscapes.as_posix(),
         "DOT_SHARED_VOLUMES": ".shared_volumes",
         "DOT_FEATURES": dot_features.as_posix(),
@@ -359,6 +359,9 @@ def env(
         # Todo:
         #  - [ ] Where is this being used?
         "DEFAULT_CONFIG_DBPATH": "/data/configdb",
+        # "OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT": EnvVar(
+        #     "OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT"
+        # ).get_value(),
         "OPENSTUDIOLANDSCAPES__DOMAIN_LAN": EnvVar(
             "OPENSTUDIOLANDSCAPES__DOMAIN_LAN"
         ).get_value(),

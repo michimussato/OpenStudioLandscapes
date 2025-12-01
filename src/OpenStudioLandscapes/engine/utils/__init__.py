@@ -326,6 +326,13 @@ def expand_dict_vars(
                 raise OpenStudioLandscapesException(
                     f"Could not expand {dict_to_expand[k] = } in {dict_to_expand = }"
                 ) from e
+        elif isinstance(v, pathlib.PosixPath):
+            try:
+                dict_to_expand[k] = pathlib.PosixPath(v.as_posix().format(**kv))
+            except KeyError as e:
+                raise OpenStudioLandscapesException(
+                    f"Could not expand {dict_to_expand[k] = } in {dict_to_expand = }"
+                ) from e
 
     return dict_to_expand
 
@@ -681,3 +688,22 @@ def get_docker_compose_names(
     container_name = ".".join([service_name, landscape_id])
     host_name = ".".join([service_name, domain_lan])
     return container_name, host_name
+
+
+# def validate_config(
+#     context: Union[AssetExecutionContext, OpExecutionContext],
+#     Config: Config,
+#     config: dict,
+#     feature: str,
+# ):
+#     from
+#     try:
+#         config = Config(**config_)
+#     except ValidationError as err:
+#         context.log.error(
+#             "Config Validation failed. "
+#             "The default `config.yml` for "
+#             f"{FEATURE} contains "
+#             "errors or missing parameters."
+#         )
+#         raise ValidationError from err
