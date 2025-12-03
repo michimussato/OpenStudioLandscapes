@@ -1,5 +1,3 @@
-# import pathlib
-
 from dagster import (  # In,; Out,
     AssetKey,
     AssetsDefinition,
@@ -38,6 +36,7 @@ def get_group_out(
             "docker_compose_commands": AssetKey(
                 [*ASSET_HEADER["key_prefix"], "docker_compose_commands"]
             ),
+            # "CONFIG_STORE": AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG_STORE"]),
         },
         keys_by_input_name={
             "compose": AssetKey([*ASSET_HEADER["key_prefix"], "compose"]),
@@ -48,6 +47,7 @@ def get_group_out(
             ),
             "cmd_extend": AssetKey([*ASSET_HEADER["key_prefix"], "cmd_extend"]),
             "cmd_append": AssetKey([*ASSET_HEADER["key_prefix"], "cmd_append"]),
+            # "CONFIG_STORE": AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG_STORE"]),
         },
     )
 

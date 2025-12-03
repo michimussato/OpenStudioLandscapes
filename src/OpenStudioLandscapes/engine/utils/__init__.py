@@ -31,6 +31,7 @@ import os
 import pathlib
 import shlex
 import time
+from pydantic import BaseModel
 from typing import Any, Dict, List, MutableMapping, Tuple, Union
 
 import git
@@ -44,12 +45,15 @@ from dagster import (
     get_dagster_logger,
 )
 
+from OpenStudioLandscapes.engine.config.validate_config import DockerRegistryConfig, DockerConfigModel
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.exceptions import (
     ComposeScopeException,
     OpenStudioLandscapesException,
 )
 from OpenStudioLandscapes.engine.utils.docker import *
+
+from OpenStudioLandscapes.engine.config.validate_config import ConfigEngine
 
 LOGGER = get_dagster_logger(__name__)
 
@@ -129,7 +133,7 @@ def get_wget_str(
 def get_git_root(
     path: pathlib.Path = pathlib.Path(__file__),
 ) -> pathlib.Path:
-    """Get the Git base path of a file which is lives inside a repository."""
+    """Get the Git base path of a file which lives inside a repository."""
     git_repo = git.Repo(path, search_parent_directories=True)
     git_root = git_repo.git.rev_parse("--show-toplevel")
     return pathlib.Path(git_root)
@@ -177,7 +181,7 @@ def get_image_name(
 def parse_docker_image_path(
     *,
     context: AssetExecutionContext,
-    docker_config: Union[DockerConfig, MutableMapping],
+    docker_config: Union[DockerConfig, MutableMapping, DockerConfigModel],
 ) -> str:
 
     image_path = []
@@ -186,15 +190,21 @@ def parse_docker_image_path(
 
     if isinstance(docker_config, DockerConfig):
         _docker_config: MutableMapping = docker_config.value
+        # if the images stay local, we don't want
+        # have to prepend anything and we don't push the
+        # image anywhere
+        image_on_localhost_only = docker_config == DockerConfig.LOCALHOST
     elif isinstance(docker_config, MutableMapping):
         _docker_config: MutableMapping = docker_config
+        # if the images stay local, we don't want
+        # have to prepend anything and we don't push the
+        # image anywhere
+        image_on_localhost_only = docker_config == DockerConfig.LOCALHOST
+    elif isinstance(docker_config, DockerConfigModel):
+        _docker_config: DockerConfigModel = docker_config
+        image_on_localhost_only = not docker_config.use_registry
     else:
         raise TypeError
-
-    # if the images stay local, we don't want
-    # have to prepend anything and we don't push the
-    # image anywhere
-    image_on_localhost_only = docker_config == DockerConfig.LOCALHOST
 
     # The idea is: explicit is better than implicit
     # In reality, we have to deal with 3 cases IF
@@ -219,11 +229,24 @@ def parse_docker_image_path(
         # Do
         # - prefix a <registry>/<repository>
 
-        prepend_registry = not image_on_localhost_only
+        if isinstance(docker_config, MutableMapping):
 
-        _repository_name = _docker_config["docker_repository"]
-        _docker_registry_url = _docker_config["docker_registry_url"]
-        _repository_port = _docker_config["docker_registry_port"]
+            prepend_registry = not image_on_localhost_only
+
+            _repository_name = _docker_config["docker_repository"]
+            _docker_registry_url = _docker_config["docker_registry_url"]
+            _repository_port = _docker_config["docker_registry_port"]
+
+        elif isinstance(docker_config, DockerConfigModel):
+
+            prepend_registry = docker_config.use_registry
+
+            _repository_name = docker_config.docker_registry_config.docker_repository_name
+            _docker_registry_url = docker_config.docker_registry_config.docker_registry_fqdn
+            _repository_port = docker_config.docker_registry_config.docker_registry_port
+
+        else:
+            raise TypeError
 
         if bool(prepend_registry):
             if bool(_docker_registry_url):
@@ -231,7 +254,7 @@ def parse_docker_image_path(
 
                 if bool(_repository_port):
                     image_path.append(":")
-                    image_path.append(_repository_port)
+                    image_path.append(str(_repository_port))
 
                 image_path.append("/")
 
@@ -337,20 +360,30 @@ def expand_dict_vars(
     return dict_to_expand
 
 
+# Todo
+#  - [ ] write a decent serializer
 def metadatavalues_from_dict(
     context: Union[AssetExecutionContext, OpExecutionContext],
     d_serialized: Union[str, MutableMapping],
 ) -> MutableMapping[str, MetadataValue]:
-
+    # if isinstance(d_serialized, ConfigEngine):
+    #     context.log.error("HHHHHHHHH")
     if isinstance(d_serialized, str):
         d_serialized = json.loads(d_serialized)
+        # if isinstance(d_serialized, ConfigEngine):
+        #     context.log.error("HHHHHHHHH")
 
     metadata = {}
 
     for k, v in d_serialized.items():
-        metadata[k] = MetadataValue.json(v)
-
-    context.log.debug(f"{metadata = }")
+        if isinstance(v, ConfigEngine):
+            metadata[k] = MetadataValue.md(
+                f"```yaml\n{v.model_dump_json(indent=2)}\n```"
+            )
+        elif isinstance(v, pathlib.PosixPath):
+            metadata[k] = MetadataValue.path(v)
+        else:
+            metadata[k] = MetadataValue.json(v)
 
     return metadata
 

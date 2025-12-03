@@ -14,7 +14,9 @@ import pathlib
 import textwrap
 from collections import ChainMap
 from functools import reduce
-from typing import Dict
+from typing import Dict, Union
+
+import pydantic
 from dotenv import set_key
 
 import yaml
@@ -30,6 +32,7 @@ from docker_compose_graph.utils import *
 
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.utils import *
+from OpenStudioLandscapes.engine.config.validate_config import DockerConfigModel, ConfigEngine
 
 # https://github.com/yaml/pyyaml/issues/722#issuecomment-1969292770
 yaml.SafeDumper.add_multi_representer(
@@ -291,9 +294,29 @@ def factory_docker_config(
         **kwargs,
     ):
 
+        # Untangle the input kwargs:
         group_in = kwargs.pop("group_in")
         context.log.debug(group_in)
-        docker_config: DockerConfig = group_in.pop("docker_config")
+        config_engine: ConfigEngine = group_in.pop("config_engine")
+        # docker_config: DockerConfig = group_in.pop("docker_config")
+        docker_config: DockerConfigModel = config_engine.openstudiolandscapes__docker_config
+
+        # docker_config: ConfigEngine = group_in.pop("config_engine")
+
+        if not isinstance(docker_config, DockerConfigModel):
+            raise TypeError(f"Migrate to `DockerConfigModel`. "
+                            f"Current type: {type(docker_config)}")
+
+        # if isinstance(docker_config, DockerConfigModel):
+        #     docker_config_ = docker_config.model_dump()
+        #     ret = docker_config.model_dump_json(indent=2)
+        # elif isinstance(docker_config, DockerConfig):
+        #     docker_config_ = docker_config.value
+        #     ret = docker_config_
+        #     raise TypeError(f"Migrate to `DockerConfigModel`. "
+        #                     f"Current type: {type(docker_config)}")
+        # else:
+        #     raise TypeError
         context.log.debug(docker_config)
 
         output_name = "docker_config"
@@ -306,7 +329,7 @@ def factory_docker_config(
         yield AssetMaterialization(
             asset_key=context.asset_key_for_output(output_name),
             metadata={
-                docker_config.name: MetadataValue.json(docker_config.value),
+                "docker_config": MetadataValue.json(docker_config.model_dump()),
             },
         )
 
@@ -524,7 +547,7 @@ def factory_group_in(
                 ),
                 **metadatavalues_from_dict(
                     context=context,
-                    d_serialized=json.loads(json.dumps(group_out, default=str)),
+                    d_serialized=group_out,
                 ),
             },
         )

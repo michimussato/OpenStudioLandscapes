@@ -207,25 +207,25 @@ def features(
     )
 
 
-@asset(
-    **ASSET_HEADER_BASE_ENV,
-    description="",
-    name="DOCKER_CONFIG",
-)
-def docker_config(
-    context: AssetExecutionContext,
-) -> Generator[Output[DockerConfig] | AssetMaterialization | Any, None, None]:
-    """ """
-
-    global DOCKER_CONFIG
-
-    yield Output(DOCKER_CONFIG)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "DOCKER_CONFIG": MetadataValue.text(DOCKER_CONFIG.name),
-            "value": MetadataValue.json(DOCKER_CONFIG.value),
-            "type": MetadataValue.text(str(type(DOCKER_CONFIG))),
-        },
-    )
+# @asset(
+#     **ASSET_HEADER_BASE_ENV,
+#     description="",
+#     name="DOCKER_CONFIG",
+# )
+# def docker_config(
+#     context: AssetExecutionContext,
+# ) -> Generator[Output[DockerConfig] | AssetMaterialization | Any, None, None]:
+#     """ """
+#
+#     global DOCKER_CONFIG
+#
+#     yield Output(DOCKER_CONFIG)
+#
+#     yield AssetMaterialization(
+#         asset_key=context.asset_key,
+#         metadata={
+#             "DOCKER_CONFIG": MetadataValue.text(DOCKER_CONFIG.name),
+#             "value": MetadataValue.json(DOCKER_CONFIG.value),
+#             "type": MetadataValue.text(str(type(DOCKER_CONFIG))),
+#         },
+#     )

@@ -117,6 +117,7 @@ class DockerComposePolicies:
 
 
 class DockerRegistry(enum.StrEnum):
+    # NONE = "none"
     LOCAL_LOCALHOST = "localhost"
     LOCAL_REGISTRY = EnvVar("OPENSTUDIOLANDSCAPES__REGISTRY_HOSTNAME").get_value()
     # LOCAL_MINIBOSS = os.environ.get("IP_MASTER", "localhost")

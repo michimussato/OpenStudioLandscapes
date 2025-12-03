@@ -727,10 +727,11 @@ def op_docker_compose_graph(
     ins={
         "compose": In(dict),
         "env": In(dict),
-        "docker_config": In(DockerConfig),
+        "docker_config": In(),
         "docker_config_json": In(pathlib.Path),
         "cmd_extend": In(list),
         "cmd_append": In(dict[str, list]),
+        # "CONFIG_STORE": In(BaseModel),
     },
     out={
         "group_out": Out(pathlib.Path),
@@ -746,10 +747,11 @@ def op_group_out(
     compose: dict,  # pylint: disable=redefined-outer-name
     env: dict,  # pylint: disable=redefined-outer-name
     # group_in: dict,  # pylint: disable=redefined-outer-name
-    docker_config: DockerConfig,  # pylint: disable=redefined-outer-name
+    docker_config,  # pylint: disable=redefined-outer-name
     docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name
     cmd_extend: list,  # pylint: disable=redefined-outer-name
     cmd_append: dict[str, list],  # pylint: disable=redefined-outer-name
+    # CONFIG_STORE: BaseModel,  # pylint: disable=redefined-outer-name
 ) -> Generator[
     Output[pathlib.Path]
     | Output[MutableMapping]
@@ -773,8 +775,17 @@ def op_group_out(
     context.log.debug(context.asset_key_for_output("compose_project_name"))
     context.log.debug(context.selected_output_names)
 
-    build_base_docker_config: DockerConfig = docker_config
-    build_base_docker_config_value = build_base_docker_config.value
+    if isinstance(docker_config, DockerConfig):
+        build_base_docker_config: DockerConfig = docker_config
+        build_base_docker_config_value = build_base_docker_config.value
+    elif isinstance(docker_config, dict):
+        build_base_docker_config: dict = docker_config
+        build_base_docker_config_value = build_base_docker_config
+    else:
+        raise TypeError()
+
+    # build_base_docker_config: DockerConfig = docker_config
+    # build_base_docker_config_value = build_base_docker_config.value
 
     compose_project_name = (
         f"{env.get('LANDSCAPE', 'default').replace('.', '-')}-{env['COMPOSE_SCOPE']}"

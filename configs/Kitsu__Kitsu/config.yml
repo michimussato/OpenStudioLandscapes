@@ -1,0 +1,10 @@
+kitsu_admin_user: admin@example.com
+kitsu_database_install_destination: '{DOT_LANDSCAPES}/{LANDSCAPE}/{GROUP}__{''__''.join(KEY)}/data/kitsu'
+kitsu_db_password: mysecretpassword
+kitsu_enable_job_queue: true
+kitsu_port_container: 80
+kitsu_port_host: 4545
+kitsu_postgres_conf: '{DOT_FEATURES}/{FEATURE}/.payload/config/etc/postresql/14/main/postgresql.conf'
+kitsu_preview_folder: /opt/zou/previews
+kitsu_secret_key: yourrandomsecretkey
+kitsu_tmp_dir: /opt/zou/tmp

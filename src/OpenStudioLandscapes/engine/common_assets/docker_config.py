@@ -6,7 +6,8 @@ from dagster import (
 )
 
 from OpenStudioLandscapes.engine.base.ops.factories import factory_docker_config
-from OpenStudioLandscapes.engine.enums import DockerConfig
+from OpenStudioLandscapes.engine.config.validate_config import DockerConfigModel
+# from OpenStudioLandscapes.engine.enums import DockerConfig
 
 
 def get_docker_config(
@@ -17,9 +18,11 @@ def get_docker_config(
         name=f"op_docker_config_{ASSET_HEADER['group_name']}",
         ins={
             "group_in": In(dict),
+            # "group_in": In(pydantic.BaseModel),
         },
         out={
-            "docker_config": Out(DockerConfig),
+            "docker_config": Out(DockerConfigModel),
+            # "docker_config": Out(pydantic.BaseModel),
         },
     )
 

@@ -17,11 +17,13 @@ from dagster import (
     asset,
 )
 
+from OpenStudioLandscapes.engine.config.validate_config import DockerConfigModel
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.enums import DockerConfig, DockerRepositoryType
 from OpenStudioLandscapes.engine.policies.retry import build_docker_image_retry_policy
 from OpenStudioLandscapes.engine.utils import *
 from OpenStudioLandscapes.engine.utils.docker import *
+from OpenStudioLandscapes.engine.config.validate_config import ConfigEngine
 
 
 @asset(
@@ -106,7 +108,7 @@ def apt_packages(
     ins={
         "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
         "docker_config": AssetIn(
-            AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "DOCKER_CONFIG"])
+            AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "DOCKER_CONFIG_V2"])
         ),
         "docker_config_json": AssetIn(
             AssetKey([*ASSET_HEADER_BASE["key_prefix"], "docker_config_json"])
@@ -123,14 +125,14 @@ def apt_packages(
 def build_docker_image(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
-    docker_config: DockerConfig,  # pylint: disable=redefined-outer-name
+    docker_config: DockerConfigModel,  # pylint: disable=redefined-outer-name
     docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name
     apt_packages: dict[str, list[str]],  # pylint: disable=redefined-outer-name
     pip_packages: list,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict[str, str | list[str]]] | AssetMaterialization, None, None]:
     """ """
 
-    context.log.debug(f"{docker_config = }")
+    # context.log.debug(f"{docker_config = }")
 
     docker_file = pathlib.Path(
         env["DOT_LANDSCAPES"],
@@ -258,7 +260,7 @@ def build_docker_image(
         docker_config_json=docker_config_json,
         docker_file=docker_file,
         tags=tags_full_str,
-        pull=not docker_config == DockerConfig.LOCALHOST,
+        pull=docker_config.docker_registry_config.docker_pull,
     )
 
     cmds.append(cmd_build)
@@ -297,6 +299,8 @@ def build_docker_image(
 
 @asset(
     **ASSET_HEADER_BASE,
+    # Todo:
+    #  - [ ] still necessary?
     tags={
         "group_out": "base",
     },
@@ -305,8 +309,11 @@ def build_docker_image(
         "constants_base": AssetIn(
             AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "constants_base"])
         ),
+        "CONFIG_ENGINE": AssetIn(
+            AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"])
+        ),
         "docker_config": AssetIn(
-            AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "DOCKER_CONFIG"])
+            AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "DOCKER_CONFIG_V2"])
         ),
         "docker_config_json": AssetIn(
             AssetKey([*ASSET_HEADER_BASE["key_prefix"], "docker_config_json"])
@@ -332,7 +339,8 @@ def group_out_base(
     constants_base: dict,  # pylint: disable=redefined-outer-name
     # Todo:
     #  - [ ] Probably not needed with the docker config.json specified
-    docker_config: DockerConfig,  # pylint: disable=redefined-outer-name
+    docker_config: DockerConfigModel,  # pylint: disable=redefined-outer-name
+    CONFIG_ENGINE: ConfigEngine,  # pylint: disable=redefined-outer-name
     docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name
     features: dict,  # pylint: disable=redefined-outer-name
     build_docker_image: dict,  # pylint: disable=redefined-outer-name
@@ -342,13 +350,45 @@ def group_out_base(
 
     out_dict["env"] = env
     out_dict["env_base"] = env
+    out_dict["config_engine"]: ConfigEngine = CONFIG_ENGINE
     out_dict["constants_base"] = constants_base
-    out_dict["docker_config"] = docker_config
+    out_dict["docker_config"] = docker_config.docker_registry_config.model_dump()
+    out_dict["docker_config"]["docker_repository"] = docker_config.docker_registry_config.docker_repository_name
+    out_dict["docker_config"]["docker_repository_type"] = docker_config.docker_registry_config.docker_registry_access
+    out_dict["docker_config"]["docker_registry_url"] = docker_config.docker_registry_config.docker_registry_fqdn
+    out_dict["docker_config"]["docker_use_local"] = not docker_config.docker_registry_config.docker_push
     out_dict["docker_config_json"] = docker_config_json
     out_dict["features"] = features
     out_dict["docker_image"] = build_docker_image
 
     yield Output(out_dict)
+
+    # {
+    #   "docker_push": true,
+    #   "docker_registry_password": "registry-password",
+    #   "docker_registry_port": "5000",
+    #   "docker_registry_url": "registry.openstudiolandscapes.lan",
+    #   "docker_registry_username": "registry-user",
+    #   "docker_repository": "openstudiolandscapes",
+    #   "docker_repository_type": "private",
+    #   "docker_use_local": false
+    # }
+
+    # {
+    #   "docker_pull": true,
+    #   "docker_push": true,
+    #   "docker_registry_access": "public",
+    #   "docker_registry_fqdn": "registry.openstudiolandscapes.lan",
+    #   "docker_registry_password": "registry-password",
+    #   "docker_registry_port": 5000,
+    #   "docker_registry_protocol": "https",
+    #   "docker_registry_url": "registry.openstudiolandscapes.lan",
+    #   "docker_registry_username": "registry-user",
+    #   "docker_repository": "openstudiolandscapes",
+    #   "docker_repository_name": "openstudiolandscapes",
+    #   "docker_repository_type": "public",
+    #   "docker_use_local": false
+    # }
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
@@ -356,7 +396,8 @@ def group_out_base(
             "env": MetadataValue.json(env),
             "env_base": MetadataValue.json(env),
             "constants_base": MetadataValue.json(constants_base),
-            "docker_config": MetadataValue.json(docker_config.value),
+            "config_engine": MetadataValue.md(f"```json\n{CONFIG_ENGINE.model_dump_json(indent=2)}\n```"),
+            "docker_config": MetadataValue.json(out_dict["docker_config"]),
             "docker_config_json": MetadataValue.path(docker_config_json),
             "features": MetadataValue.json(features),
             "docker_image": MetadataValue.json(build_docker_image),
@@ -369,7 +410,7 @@ def group_out_base(
     ins={
         "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
         "docker_config": AssetIn(
-            AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "DOCKER_CONFIG"])
+            AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "DOCKER_CONFIG_V2"])
         ),
         # "constants_base": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "constants_base"])),
         # "docker_config": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "DOCKER_CONFIG"])),
@@ -382,15 +423,13 @@ def group_out_base(
 def docker_config_json(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
-    docker_config: DockerConfig,  # pylint: disable=redefined-outer-name
+    docker_config: DockerConfigModel,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
 
-    context.log.info(f"{dir(docker_config.value) = }")
+    # context.log.info(f"{dir(docker_config.value) = }")
 
-    login_required: bool = (
-        docker_config.value["docker_repository_type"] == DockerRepositoryType.PRIVATE
-    )
-    context.log.debug(f"{login_required = }")
+    # login_required: bool = docker_config.docker_registry_config.docker_registry_access == "private"
+    # context.log.debug(f"{login_required = }")
 
     dockercfg_path = pathlib.Path(
         env["DOT_LANDSCAPES"],
@@ -407,17 +446,19 @@ def docker_config_json(
 
     # process from docker/api/config.py:create_config
     # (https://docker-py.readthedocs.io/en/stable/api.html#docker.api.config.ConfigApiMixin.create_config)
-    username: str = docker_config.value["docker_registry_username"]
-    password: str = docker_config.value["docker_registry_password"]
-    url_: str = docker_config.value["docker_registry_url"]
-    port_: str = docker_config.value["docker_registry_port"]
+    username: str = docker_config.docker_registry_config.docker_registry_username
+    password: str = docker_config.docker_registry_config.docker_registry_password
+    fqdn: str = docker_config.docker_registry_config.docker_registry_fqdn
+    protocol: str = docker_config.docker_registry_config.docker_registry_protocol
+    port: int = docker_config.docker_registry_config.docker_registry_port
+    url_: str = f"{protocol}://{fqdn}"
     # url: str = f"http://{url_}:{port_}"
 
     credentials_str = f"{username}:{password}"
     credentials_bytes = credentials_str.encode("utf-8")
     credentials_encoded = base64.b64encode(credentials_bytes).decode("ascii")
 
-    auths[f"{url_}:{port_}"] = {"auth": credentials_encoded}
+    auths[f"{url_}:{port}"] = {"auth": credentials_encoded}
 
     # docker client does not pick up the dockercfg_path
     # if the file is not present
