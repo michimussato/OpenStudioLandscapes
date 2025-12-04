@@ -732,7 +732,6 @@ def op_docker_compose_graph(
         "docker_config_json": In(pathlib.Path),
         "cmd_extend": In(list),
         "cmd_append": In(dict[str, list]),
-        # "CONFIG_STORE": In(BaseModel),
     },
     out={
         "group_out": Out(pathlib.Path),
@@ -775,15 +774,6 @@ def op_group_out(
     context.log.debug(context.asset_key_for_output("group_out"))
     context.log.debug(context.asset_key_for_output("compose_project_name"))
     context.log.debug(context.selected_output_names)
-
-    # if isinstance(docker_config, DockerConfigModel):
-    #     build_base_docker_config: DockerRegistryConfig = docker_config.docker_registry_config
-    #     # build_base_docker_config_value = build_base_docker_config.value
-    # elif isinstance(docker_config, dict):
-    #     build_base_docker_config: dict = docker_config
-    #     build_base_docker_config_value = build_base_docker_config
-    # else:
-    #     raise TypeError()
 
     # build_base_docker_config: DockerConfig = docker_config
     # build_base_docker_config_value = build_base_docker_config.value

@@ -31,7 +31,6 @@ import os
 import pathlib
 import shlex
 import time
-from pydantic import BaseModel
 from typing import Any, Dict, List, MutableMapping, Tuple, Union
 
 import git
@@ -45,7 +44,7 @@ from dagster import (
     get_dagster_logger,
 )
 
-from OpenStudioLandscapes.engine.config.validate_config import DockerRegistryConfig, DockerConfigModel
+from OpenStudioLandscapes.engine.config.validate_config import DockerConfigModel
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.exceptions import (
     ComposeScopeException,
@@ -181,35 +180,19 @@ def get_image_name(
 def parse_docker_image_path(
     *,
     context: AssetExecutionContext,
-    docker_config: Union[DockerConfig, MutableMapping, DockerConfigModel],
-    # docker_config: DockerConfigModel,
+    docker_config: DockerConfigModel,
 ) -> str:
 
     image_path = []
     context.log.debug(f"{docker_config = }")
     context.log.debug(f"{type(docker_config) = }")
-    # docker_config = <dagster._core.definitions.assets.AssetsDefinition object at 0x7f683120ef10>
 
-    if isinstance(docker_config, DockerConfig):
-        _docker_config: MutableMapping = docker_config.value
-        # if the images stay local, we don't want
-        # have to prepend anything and we don't push the
-        # image anywhere
-        image_on_localhost_only = _docker_config == DockerConfig.LOCALHOST
-    elif isinstance(docker_config, MutableMapping):
-        _docker_config: MutableMapping = docker_config
-        # if the images stay local, we don't want
-        # have to prepend anything and we don't push the
-        # image anywhere
-        image_on_localhost_only = _docker_config == DockerConfig.LOCALHOST
-    elif isinstance(docker_config, DockerConfigModel):
-        _docker_config: DockerConfigModel = docker_config
-        image_on_localhost_only = not _docker_config.use_registry  # not _docker_config.use_registry
-    # elif isinstance(docker_config, DockerRegistryConfig):
-    #     _docker_config: DockerRegistryConfig = docker_config
-    #     image_on_localhost_only = False  # not _docker_config.use_registry
-    else:
-        raise TypeError
+    if not isinstance(docker_config, DockerConfigModel):
+        raise TypeError("`docker_config` must be a DockerConfigModel. "
+                        f"{type(docker_config) = }")
+
+    _docker_config: DockerConfigModel = docker_config
+    image_on_localhost_only = not _docker_config.use_registry  # not _docker_config.use_registry
 
     # The idea is: explicit is better than implicit
     # In reality, we have to deal with 3 cases IF
@@ -234,32 +217,15 @@ def parse_docker_image_path(
         # Do
         # - prefix a <registry>/<repository>
 
-        if isinstance(_docker_config, MutableMapping):
+        if not isinstance(_docker_config, DockerConfigModel):
+            raise TypeError("`docker_config` must be a DockerConfigModel. ")
 
-            prepend_registry = not image_on_localhost_only
+        # OpenStudioLandscapes_Base / build_docker_image
+        prepend_registry = _docker_config.use_registry  # _docker_config.use_registry
 
-            _repository_name = _docker_config["docker_repository"]
-            _docker_registry_url = _docker_config["docker_registry_url"]
-            _repository_port = _docker_config["docker_registry_port"]
-
-        elif isinstance(_docker_config, DockerConfigModel):
-            # OpenStudioLandscapes_Base / build_docker_image
-            prepend_registry = _docker_config.use_registry  # _docker_config.use_registry
-
-            _repository_name = _docker_config.docker_registry_config.docker_repository_name
-            _docker_registry_url = _docker_config.docker_registry_config.docker_registry_fqdn
-            _repository_port = _docker_config.docker_registry_config.docker_registry_port
-
-        # elif isinstance(_docker_config, DockerRegistryConfig):
-        #
-        #     prepend_registry = True  # _docker_config.use_registry
-        #
-        #     _repository_name = _docker_config.docker_repository_name
-        #     _docker_registry_url = _docker_config.docker_registry_fqdn
-        #     _repository_port = _docker_config.docker_registry_port
-
-        else:
-            raise TypeError
+        _repository_name = _docker_config.docker_registry_config.docker_repository_name
+        _docker_registry_url = _docker_config.docker_registry_config.docker_registry_fqdn
+        _repository_port = _docker_config.docker_registry_config.docker_registry_port
 
         if bool(prepend_registry):
             if bool(_docker_registry_url):
@@ -379,12 +345,8 @@ def metadatavalues_from_dict(
     context: Union[AssetExecutionContext, OpExecutionContext],
     d_serialized: Union[str, MutableMapping],
 ) -> MutableMapping[str, MetadataValue]:
-    # if isinstance(d_serialized, ConfigEngine):
-    #     context.log.error("HHHHHHHHH")
     if isinstance(d_serialized, str):
         d_serialized = json.loads(d_serialized)
-        # if isinstance(d_serialized, ConfigEngine):
-        #     context.log.error("HHHHHHHHH")
 
     metadata = {}
 
@@ -734,22 +696,3 @@ def get_docker_compose_names(
     container_name = ".".join([service_name, landscape_id])
     host_name = ".".join([service_name, domain_lan])
     return container_name, host_name
-
-
-# def validate_config(
-#     context: Union[AssetExecutionContext, OpExecutionContext],
-#     Config: Config,
-#     config: dict,
-#     feature: str,
-# ):
-#     from
-#     try:
-#         config = Config(**config_)
-#     except ValidationError as err:
-#         context.log.error(
-#             "Config Validation failed. "
-#             "The default `config.yml` for "
-#             f"{FEATURE} contains "
-#             "errors or missing parameters."
-#         )
-#         raise ValidationError from err

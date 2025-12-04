@@ -19,7 +19,6 @@ from dagster import (
 
 from OpenStudioLandscapes.engine.config.validate_config import DockerConfigModel
 from OpenStudioLandscapes.engine.constants import *
-from OpenStudioLandscapes.engine.enums import DockerConfig, DockerRepositoryType
 from OpenStudioLandscapes.engine.policies.retry import build_docker_image_retry_policy
 from OpenStudioLandscapes.engine.utils import *
 from OpenStudioLandscapes.engine.utils.docker import *
@@ -131,8 +130,6 @@ def build_docker_image(
     pip_packages: list,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict[str, str | list[str]]] | AssetMaterialization, None, None]:
     """ """
-
-    # context.log.debug(f"{docker_config = }")
 
     docker_file = pathlib.Path(
         env["DOT_LANDSCAPES"],
@@ -265,9 +262,8 @@ def build_docker_image(
 
     cmds.append(cmd_build)
 
-    if docker_config == DockerConfig.LOCALHOST:  # or not_push
-        pass
-    else:
+    if docker_config.use_registry \
+            and docker_config.docker_registry_config.docker_push :  # or not_push
         cmds_push = docker_push_cmd(
             context=context,
             docker_config_json=docker_config_json,
@@ -275,6 +271,8 @@ def build_docker_image(
         )
 
         cmds.extend(cmds_push)
+    else:
+        pass
 
     context.log.info(f"{cmds = }")
     # cmds = [['/usr/local/bin/docker', '--debug', '--config', '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json', 'build', '--progress', 'plain', '--pull', '--file', '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles/Dockerfile', '--no-cache', '--tag', 'openstudiolandscapes_base_build_docker_image:2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f', '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles'], ['/usr/local/bin/docker', '--config', '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json', 'push', 'openstudiolandscapes_base_build_docker_image:2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f']]
@@ -363,33 +361,6 @@ def group_out_base(
 
     yield Output(out_dict)
 
-    # {
-    #   "docker_push": true,
-    #   "docker_registry_password": "registry-password",
-    #   "docker_registry_port": "5000",
-    #   "docker_registry_url": "registry.openstudiolandscapes.lan",
-    #   "docker_registry_username": "registry-user",
-    #   "docker_repository": "openstudiolandscapes",
-    #   "docker_repository_type": "private",
-    #   "docker_use_local": false
-    # }
-
-    # {
-    #   "docker_pull": true,
-    #   "docker_push": true,
-    #   "docker_registry_access": "public",
-    #   "docker_registry_fqdn": "registry.openstudiolandscapes.lan",
-    #   "docker_registry_password": "registry-password",
-    #   "docker_registry_port": 5000,
-    #   "docker_registry_protocol": "https",
-    #   "docker_registry_url": "registry.openstudiolandscapes.lan",
-    #   "docker_registry_username": "registry-user",
-    #   "docker_repository": "openstudiolandscapes",
-    #   "docker_repository_name": "openstudiolandscapes",
-    #   "docker_repository_type": "public",
-    #   "docker_use_local": false
-    # }
-
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
@@ -425,11 +396,6 @@ def docker_config_json(
     env: dict,  # pylint: disable=redefined-outer-name
     docker_config: DockerConfigModel,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
-
-    # context.log.info(f"{dir(docker_config.value) = }")
-
-    # login_required: bool = docker_config.docker_registry_config.docker_registry_access == "private"
-    # context.log.debug(f"{login_required = }")
 
     dockercfg_path = pathlib.Path(
         env["DOT_LANDSCAPES"],

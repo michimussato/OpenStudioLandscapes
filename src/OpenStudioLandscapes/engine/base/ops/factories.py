@@ -14,9 +14,8 @@ import pathlib
 import textwrap
 from collections import ChainMap
 from functools import reduce
-from typing import Dict, Union
+from typing import Dict
 
-import pydantic
 from dotenv import set_key
 
 import yaml
@@ -309,16 +308,6 @@ def factory_docker_config(
             raise TypeError(f"Migrate to `DockerConfigModel`. "
                             f"Current type: {type(docker_config)}")
 
-        # if isinstance(docker_config, DockerConfigModel):
-        #     docker_config_ = docker_config.model_dump()
-        #     ret = docker_config.model_dump_json(indent=2)
-        # elif isinstance(docker_config, DockerConfig):
-        #     docker_config_ = docker_config.value
-        #     ret = docker_config_
-        #     raise TypeError(f"Migrate to `DockerConfigModel`. "
-        #                     f"Current type: {type(docker_config)}")
-        # else:
-        #     raise TypeError
         context.log.debug(docker_config)
 
         output_name = "docker_config"
@@ -455,10 +444,6 @@ def factory_compose(
                 export=False,
                 encoding="utf-8",
             )
-        # with open(DOCKER_COMPOSE.parent / ".env", mode="w", encoding="utf-8") as fw:
-        #     env_ =
-        #     yaml.safe_dump(env, fw)
-        #     # fw.write(docker_yaml)
 
         with open(dot_env, "r") as fr:
             lines = fr.read()

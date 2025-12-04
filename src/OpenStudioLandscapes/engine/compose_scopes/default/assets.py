@@ -172,20 +172,11 @@ if bool(ins):
         features_in: dict,
     ) -> Generator[Output[DockerConfigModel] | AssetMaterialization, None, None]:
 
-        from pprint import pformat
-
-        # context.log.info(f"{features_in = }")
-        context.log.info(pformat(features_in, indent=1, width=100))
-        # context.log.info(f"{features_in.get('config_engine') = }")
-        # context.log.info(f"{features_in.keys() = }")
-        # context.log.info(f"{features_in['env_base'].keys() = }")
-        # context.log.info(f"{features_in['docker_config'].keys() = }")
+        context.log.info(f"{features_in = }")
 
         docker_config: DockerConfigModel = features_in.pop("docker_config")
-        # docker_config: DockerConfigModel = config_engine.openstudiolandscapes__docker_config
 
-        # _docker_config: DockerConfig = features_in.pop("docker_config")
-        context.log.info(docker_config)
+        context.log.info(f"{docker_config = }")
 
         yield Output(docker_config)
 
@@ -333,9 +324,7 @@ if bool(ins):
     ]:
         """ """
 
-        from pprint import pformat
-
-        context.log.info(pformat(kwargs, indent=1))
+        context.log.info(f"{kwargs = }")
 
         config_engine: ConfigEngine = group_out_base["config_engine"]
 
