@@ -44,15 +44,13 @@ from dagster import (
     get_dagster_logger,
 )
 
-from OpenStudioLandscapes.engine.config.validate_config import DockerConfigModel
+from OpenStudioLandscapes.engine.config.validate_config import ConfigEngine, DockerConfigModel
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.exceptions import (
     ComposeScopeException,
     OpenStudioLandscapesException,
 )
 from OpenStudioLandscapes.engine.utils.docker import *
-
-from OpenStudioLandscapes.engine.config.validate_config import ConfigEngine
 
 LOGGER = get_dagster_logger(__name__)
 
@@ -191,8 +189,7 @@ def parse_docker_image_path(
         raise TypeError("`docker_config` must be a DockerConfigModel. "
                         f"{type(docker_config) = }")
 
-    _docker_config: DockerConfigModel = docker_config
-    image_on_localhost_only = not _docker_config.use_registry  # not _docker_config.use_registry
+    image_on_localhost_only = not docker_config.use_registry
 
     # The idea is: explicit is better than implicit
     # In reality, we have to deal with 3 cases IF
@@ -211,21 +208,16 @@ def parse_docker_image_path(
     if image_on_localhost_only:
         # Never
         # - prefix a <registry>/<repository>
-        # return empty string
+        # Hence, return empty string
         return str("")
     else:
-        # Do
-        # - prefix a <registry>/<repository>
-
-        if not isinstance(_docker_config, DockerConfigModel):
-            raise TypeError("`docker_config` must be a DockerConfigModel. ")
 
         # OpenStudioLandscapes_Base / build_docker_image
-        prepend_registry = _docker_config.use_registry  # _docker_config.use_registry
+        prepend_registry = docker_config.use_registry
 
-        _repository_name = _docker_config.docker_registry_config.docker_repository_name
-        _docker_registry_url = _docker_config.docker_registry_config.docker_registry_fqdn
-        _repository_port = _docker_config.docker_registry_config.docker_registry_port
+        _repository_name = docker_config.docker_registry_config.docker_repository_name
+        _docker_registry_url = docker_config.docker_registry_config.docker_registry_fqdn
+        _repository_port = docker_config.docker_registry_config.docker_registry_port
 
         if bool(prepend_registry):
             if bool(_docker_registry_url):
@@ -351,6 +343,7 @@ def metadatavalues_from_dict(
     metadata = {}
 
     for k, v in d_serialized.items():
+        context.log.debug(f"{type(v) = }")
         if isinstance(v, ConfigEngine):
             metadata[k] = MetadataValue.md(
                 f"```yaml\n{v.model_dump_json(indent=2)}\n```"
@@ -588,7 +581,7 @@ def create_image(
     image_prefixes,
     tags,
     docker_image,
-    docker_config,
+    docker_config: DockerConfigModel,
     docker_config_json,
     docker_file,
 ):
@@ -605,7 +598,7 @@ def create_image(
     tags_full_str = [f"{image_prefixes}{image_name}:{tag}" for tag in tags]
     context.log.debug(f"{tags_full_str = }")
 
-    localhost_only = docker_config == DockerConfig.LOCALHOST
+    localhost_only = docker_config.use_registry and docker_config.docker_registry_config.docker_push
     context.log.debug(f"{localhost_only = }")
 
     cmd_build = docker_build_cmd(

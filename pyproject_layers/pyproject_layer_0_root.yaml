@@ -18,10 +18,11 @@ project:
   - 'Framework :: OpenStudioLandscapes'
   dependencies:
   - importlib-metadata; python_version<"3.8"
-  - dagster==1.9.11
-  - gitpython
-  - PyYAML
-  - snakemd
+  - dagster==1.9.11  # https://release-1-9-13.archive.dagster-docs.io/
+  - deprecation  # https://deprecation.readthedocs.io/en/latest/
+  - gitpython  # https://gitpython.readthedocs.io/en/latest/
+  - PyYAML  # https://pyyaml.org/wiki/PyYAMLDocumentation
+  - snakemd  # https://www.snakemd.io/en/latest/docs/
   # docker-compose-graph is needed because of yaml_tags.overrides
   - docker-compose-graph @ git+https://github.com/michimussato/docker-compose-graph.git@v1.0.0
   dynamic:
@@ -65,27 +66,27 @@ project:
     # PDF = ReportLab; RXP
     # Add here test requirements (semicolon/line-separated)
     coverage:
-    - coverage
-    - pytest
+    - coverage  # https://coverage.readthedocs.io/en/latest/
+    - pytest  # https://docs.pytest.org/en/stable/
     graphviz:
-    - graphviz
-    - pipdeptree
+    - graphviz  # https://graphviz.readthedocs.io/en/stable/
+    - pipdeptree  # https://github.com/tox-dev/pipdeptree
     lint:
-    - black
-    - isort
-    - pre-commit
-    - pylint
+    - black  # https://black.readthedocs.io/en/stable/
+    - isort  # https://pycqa.github.io/isort/index.html
+    - pre-commit  # https://pre-commit.com/
+    - pylint  # https://docs.pylint.org/
     nox:
-    - nox
+    - nox  # https://nox.thea.codes/en/stable/index.html
     readme:
     # - OpenStudioLandscapesUtil-ReadmeGenerator @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-ReadmeGenerator.git@v1.9.0
     - OpenStudioLandscapesUtil-ReadmeGenerator @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-ReadmeGenerator.git
     sbom:
-    - cyclonedx-bom
+    - cyclonedx-bom  # https://cyclonedx-bom-tool.readthedocs.io/en/latest/
     testing:
     - setuptools
-    - pytest
-    - pytest-cov
+    - pytest  # https://docs.pytest.org/en/stable/
+    - pytest-cov  # https://pytest-cov.readthedocs.io/en/latest/
   readme:
     # Change if running only on Windows, Mac or Linux (comma-separated)
     # Add here all kinds of additional classifiers as defined under

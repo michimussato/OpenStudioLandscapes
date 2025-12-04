@@ -1,6 +1,5 @@
 import copy
 import enum
-import json
 import operator
 import pathlib
 import textwrap
@@ -174,7 +173,9 @@ if bool(ins):
 
         context.log.info(f"{features_in = }")
 
-        docker_config: DockerConfigModel = features_in.pop("docker_config")
+        config_engine: ConfigEngine = features_in.pop("config_engine")
+
+        docker_config: DockerConfigModel = config_engine.openstudiolandscapes__docker_config
 
         context.log.info(f"{docker_config = }")
 
@@ -231,10 +232,15 @@ if bool(ins):
     ]:
         """ """
 
-        features_in.pop("env_base", {})
-        features_in.pop("docker_config", {})
-        features_in.pop("docker_image", {})
-        features_in.pop("docker_config_json", {})
+        # Todo:
+        #  - [ ] Duplicated code `OpenStudioLandscapes.engine.base.ops.factories.factory_scrape_networks`
+        #  - [ ] Duplicated code `OpenStudioLandscapes.engine.compose_scopes.default.assets.compose`
+
+        # features_in.pop("env_base", {})
+        context.log.debug(f"Popping: {features_in.pop('env_base', {}) = }")
+        context.log.debug(f"Popping: {features_in.pop('config_engine', {}) = }")
+        context.log.debug(f"Popping: {features_in.pop('docker_image', {}) = }")
+        context.log.debug(f"Popping: {features_in.pop('docker_config_json', {}) = }")
 
         DOCKER_COMPOSE = pathlib.Path(env["DOCKER_COMPOSE"])
         DOCKER_COMPOSE.parent.mkdir(parents=True, exist_ok=True)
@@ -329,7 +335,7 @@ if bool(ins):
         config_engine: ConfigEngine = group_out_base["config_engine"]
 
         env_base = group_out_base["env_base"]
-        docker_config: DockerConfigModel = config_engine.openstudiolandscapes__docker_config
+
         docker_config_json: pathlib.Path = group_out_base["docker_config_json"]
 
         docker_compose_yaml: MutableMapping[str, str] = {}
@@ -340,7 +346,6 @@ if bool(ins):
             # - env_base
             # - constants_base
             # - features
-            # - docker_config
             # - config_engine
             # - docker_config_json
             # from kwargs dicts
@@ -348,7 +353,6 @@ if bool(ins):
                 "env_base",
                 "constants_base",
                 "features",
-                "docker_config",
                 "config_engine",
                 "docker_config_json",
             ]:
@@ -358,23 +362,19 @@ if bool(ins):
             docker_compose[k] = str(kwargs[k]["compose"])
 
         kwargs["env_base"] = env_base
-        kwargs["docker_config"] = docker_config
+        kwargs["config_engine"] = config_engine
         kwargs["docker_config_json"] = docker_config_json
 
         yield Output(kwargs)
 
-        kwargs_json_: str = json.dumps(kwargs, default=str)
-        kwargs_json: dict = json.loads(kwargs_json_)
-
         yield AssetMaterialization(
             asset_key=context.asset_key,
             metadata={
-                "__".join(context.asset_key.path): MetadataValue.json(kwargs_json),
                 "docker_compose_yaml": MetadataValue.json(docker_compose_yaml),
                 "docker_compose": MetadataValue.json(docker_compose),
                 **metadatavalues_from_dict(
                     context=context,
-                    d_serialized=kwargs_json,
+                    d_serialized=kwargs,
                 ),
             },
         )

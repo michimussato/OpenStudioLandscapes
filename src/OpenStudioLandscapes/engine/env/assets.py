@@ -393,39 +393,6 @@ def CONFIG(
     )
 
 
-@asset(
-    **ASSET_HEADER_BASE_ENV,
-    ins={
-        "CONFIG": AssetIn(
-            AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"]),
-        ),
-    },
-    description="",
-    # name="DOCKER_CONFIG",
-)
-def DOCKER_CONFIG_V2(
-    context: AssetExecutionContext,
-    CONFIG: ConfigEngine,
-) -> Generator[Output[DockerConfigModel] | AssetMaterialization | Any, None, None]:
-    """ """
-
-    openstudiolandscapes__docker_config: DockerConfigModel = CONFIG.openstudiolandscapes__docker_config
-    use_registry: bool = openstudiolandscapes__docker_config.use_registry
-    docker_registry_config: DockerRegistryConfig = openstudiolandscapes__docker_config.docker_registry_config
-    context.log.debug(f"{docker_registry_config = }")
-
-    yield Output(openstudiolandscapes__docker_config)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.md(f"```json\n{openstudiolandscapes__docker_config.model_dump_json(indent=2, ensure_ascii=True)}\n```"),
-            "docker_registry_config": MetadataValue.md(f"```json\n{docker_registry_config.model_dump_json(indent=2, ensure_ascii=True)}\n```"),
-            "use_registry": MetadataValue.bool(use_registry),
-        },
-    )
-
-
 @multi_asset(
     outs={
         "env": AssetOut(
@@ -495,6 +462,8 @@ def env(
     ENVIRONMENT_BASE: dict = {
         "GIT_ROOT": git_root.as_posix(),
         "DOT_LANDSCAPES": dot_landscapes.as_posix(),
+        # Todo
+        #  - [ ] move DOT_SHARED_VOLUMES to config.yml
         "DOT_SHARED_VOLUMES": ".shared_volumes",
         "DOT_FEATURES": dot_features.as_posix(),
         "DOT_OVERRIDES": pathlib.Path(landscape_root_dir, ".overrides").as_posix(),
@@ -502,17 +471,19 @@ def env(
         "CREATED_BY": str(getpass.getuser()),
         "CREATED_ON": str(socket.gethostname()),
         "CREATED_AT": str(datetime.strftime(datetime.now(), "%Y-%m-%d_%H-%M-%S")),
+        # Todo
+        #  - [ ] move TIMEZONE to config.yml
         "TIMEZONE": str(tz),
         # "IMAGE_PREFIX": "michimussato",
         # Todo:
         #  - [ ] Where is this being used?
         "DEFAULT_CONFIG_DBPATH": "/data/configdb",
-        "OPENSTUDIOLANDSCAPES__DOMAIN_LAN": EnvVar(
-            "OPENSTUDIOLANDSCAPES__DOMAIN_LAN"
-        ).get_value(),
-        "OPENSTUDIOLANDSCAPES__DOMAIN_WAN": EnvVar(
-            "OPENSTUDIOLANDSCAPES__DOMAIN_WAN"
-        ).get_value(),
+        # "OPENSTUDIOLANDSCAPES__DOMAIN_LAN": EnvVar(
+        #     "OPENSTUDIOLANDSCAPES__DOMAIN_LAN"
+        # ).get_value(),
+        # "OPENSTUDIOLANDSCAPES__DOMAIN_WAN": EnvVar(
+        #     "OPENSTUDIOLANDSCAPES__DOMAIN_WAN"
+        # ).get_value(),
         # https://vfxplatform.com/
         "PYTHON_MAJ": "3",
         "PYTHON_MIN": "11",

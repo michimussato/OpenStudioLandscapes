@@ -40,7 +40,6 @@ def get_group_out(
         keys_by_input_name={
             "compose": AssetKey([*ASSET_HEADER["key_prefix"], "compose"]),
             "env": AssetKey([*ASSET_HEADER["key_prefix"], "env"]),
-            "docker_config": AssetKey([*ASSET_HEADER["key_prefix"], "docker_config"]),
             "docker_config_json": AssetKey(
                 [*ASSET_HEADER["key_prefix"], "docker_config_json"]
             ),

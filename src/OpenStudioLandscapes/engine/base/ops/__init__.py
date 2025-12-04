@@ -278,6 +278,7 @@ def op_constants(
     ins={
         "group_out": In(pathlib.Path),
         "compose_project_name": In(str),
+        # "compose": In(dict)
     },
     out={
         "docker_compose_graph": Out(pydot.Dot),
@@ -288,10 +289,15 @@ def op_docker_compose_graph(
     context: OpExecutionContext,
     group_out: pathlib.Path,  # pylint: disable=redefined-outer-name
     compose_project_name: str,  # pylint: disable=redefined-outer-name
+    # compose: dict,  # pylint: disable=redefined-outer-name
 ) -> Generator[
     Output[pydot.Dot] | Output[pathlib.Path] | AssetMaterialization, None, None
 ]:
     """ """
+
+    # # not used, it's just a dependency to make sure that the compose files
+    # # actually exist before analyzing it
+    # del compose
 
     dcg = DockerComposeGraph(
         label_root_service=compose_project_name,
@@ -728,7 +734,6 @@ def op_docker_compose_graph(
     ins={
         "compose": In(dict),
         "env": In(dict),
-        "docker_config": In(DockerConfigModel),
         "docker_config_json": In(pathlib.Path),
         "cmd_extend": In(list),
         "cmd_append": In(dict[str, list]),
@@ -744,14 +749,14 @@ def op_group_out(
     # Todo:
     #  - [ ] remove unused compose (but need to stay here
     #        until done so globally
+    #  - [ ] unused because it's just a dependency to make
+    #        sure that the compose files actually exist
+    #        before compose-graph analyzes them
     compose: dict,  # pylint: disable=redefined-outer-name
     env: dict,  # pylint: disable=redefined-outer-name
-    # group_in: dict,  # pylint: disable=redefined-outer-name
-    docker_config,  # pylint: disable=redefined-outer-name
     docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name
     cmd_extend: list,  # pylint: disable=redefined-outer-name
     cmd_append: dict[str, list],  # pylint: disable=redefined-outer-name
-    # CONFIG_STORE: BaseModel,  # pylint: disable=redefined-outer-name
 ) -> Generator[
     Output[pathlib.Path]
     | Output[MutableMapping]
@@ -761,6 +766,8 @@ def op_group_out(
     None,
     None,
 ]:
+
+    del compose
 
     cmd_append["exclude_from_quote"].extend(
         ComposeCmdExclusion.CMD_APPEND_ALWAYS_EXCLUDE_FROM_QUOTATION.value
@@ -1027,12 +1034,6 @@ def op_group_out(
         ) as fw:
 
             context.log.debug(f"Writing script: {script_dict['script'].as_posix()}")
-
-            # import inspect
-            # context.log.debug(f"{__package__} :: Writing script: {script_dict['script'].as_posix()}")
-            # context.log.debug(f"{__name__} :: Writing script: {script_dict['script'].as_posix()}")
-            # context.log.debug(f"{inspect.currentframe().f_code.co_name} :: Writing script: {script_dict['script'].as_posix()}")
-            # context.log.debug(f"{inspect.currentframe().co}:{inspect.currentframe().f_lineno} :: Writing script: {script_dict['script'].as_posix()}")
 
             fw.write(docker_script["script"])
             fw.write("\n")

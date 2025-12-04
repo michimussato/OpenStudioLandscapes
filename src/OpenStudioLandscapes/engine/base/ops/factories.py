@@ -80,8 +80,8 @@ def factory_feature_out(
         kwargs["constants_base"] = constants_base
         features = kwargs["group_in"].pop("features")
         kwargs["features"] = features
-        docker_config = kwargs["group_in"].pop("docker_config")
-        kwargs["docker_config"] = docker_config
+        # docker_config = kwargs["group_in"].pop("docker_config")
+        # kwargs["docker_config"] = docker_config
         config_engine = kwargs["group_in"].pop("config_engine")
         kwargs["config_engine"] = config_engine
         docker_config_json = kwargs["group_in"].pop("docker_config_json")
@@ -103,10 +103,10 @@ def factory_feature_out(
         yield AssetMaterialization(
             asset_key=context.asset_key_for_output(output_name),
             metadata={
-                "__".join(context.asset_key.path): MetadataValue.json(kwargs_json),
+                # "__".join(context.asset_key.path): MetadataValue.json(kwargs_json),
                 **metadatavalues_from_dict(
                     context=context,
-                    d_serialized=kwargs_json,
+                    d_serialized=kwargs,
                 ),
             },
         )
@@ -165,6 +165,10 @@ def factory_scrape_networks(
         del kwargs
         context.log.debug(f"{features_in = }")
 
+        # Todo:
+        #  - [ ] Duplicated code `OpenStudioLandscapes.engine.base.ops.factories.factory_scrape_networks`
+        #  - [ ] Duplicated code `OpenStudioLandscapes.engine.compose_scopes.default.assets.compose`
+
         # I want to remove
         # - env_base
         # - docker_config
@@ -172,7 +176,7 @@ def factory_scrape_networks(
         # - docker_config_json
         # from features_in
         context.log.debug(f"Popping: {features_in.pop('env_base', {}) = }")
-        context.log.debug(f"Popping: {features_in.pop('docker_config', {}) = }")
+        context.log.debug(f"Popping: {features_in.pop('config_engine', {}) = }")
         context.log.debug(f"Popping: {features_in.pop('docker_image', {}) = }")
         context.log.debug(f"Popping: {features_in.pop('docker_config_json', {}) = }")
         # kwargs.pop("env_base", {})
@@ -299,10 +303,7 @@ def factory_docker_config(
         group_in = kwargs.pop("group_in")
         context.log.debug(group_in)
         config_engine: ConfigEngine = group_in.pop("config_engine")
-        # docker_config: DockerConfig = group_in.pop("docker_config")
         docker_config: DockerConfigModel = config_engine.openstudiolandscapes__docker_config
-
-        # docker_config: ConfigEngine = group_in.pop("config_engine")
 
         if not isinstance(docker_config, DockerConfigModel):
             raise TypeError(f"Migrate to `DockerConfigModel`. "

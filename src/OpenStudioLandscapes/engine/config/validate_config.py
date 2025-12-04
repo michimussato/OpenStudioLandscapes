@@ -6,7 +6,7 @@ from typing import Union, Optional
 from pydantic import BaseModel, field_validator, PositiveInt
 from pydantic_core.core_schema import ValidationInfo
 
-from OpenStudioLandscapes.engine.enums import ComposeScope, DockerConfig, DockerRepositoryType, DockerRegistry
+# from OpenStudioLandscapes.engine.enums import ComposeScope, DockerRepositoryType
 
 from dagster import (
     EnvVar,

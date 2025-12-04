@@ -106,8 +106,8 @@ def apt_packages(
     **ASSET_HEADER_BASE,
     ins={
         "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
-        "docker_config": AssetIn(
-            AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "DOCKER_CONFIG_V2"])
+        "CONFIG": AssetIn(
+            AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"])
         ),
         "docker_config_json": AssetIn(
             AssetKey([*ASSET_HEADER_BASE["key_prefix"], "docker_config_json"])
@@ -124,7 +124,7 @@ def apt_packages(
 def build_docker_image(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
-    docker_config: DockerConfigModel,  # pylint: disable=redefined-outer-name
+    CONFIG: ConfigEngine,  # pylint: disable=redefined-outer-name
     docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name
     apt_packages: dict[str, list[str]],  # pylint: disable=redefined-outer-name
     pip_packages: list,  # pylint: disable=redefined-outer-name
@@ -146,6 +146,8 @@ def build_docker_image(
 
     image_name = get_image_name(context=context)
     context.log.debug(f"{image_name = }")
+
+    docker_config: DockerConfigModel = CONFIG.openstudiolandscapes__docker_config
 
     image_prefixes = parse_docker_image_path(
         docker_config=docker_config,
@@ -307,12 +309,12 @@ def build_docker_image(
         "constants_base": AssetIn(
             AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "constants_base"])
         ),
-        "CONFIG_ENGINE": AssetIn(
+        "CONFIG": AssetIn(
             AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"])
         ),
-        "docker_config": AssetIn(
-            AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "DOCKER_CONFIG_V2"])
-        ),
+        # "docker_config": AssetIn(
+        #     AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "DOCKER_CONFIG"])
+        # ),
         "docker_config_json": AssetIn(
             AssetKey([*ASSET_HEADER_BASE["key_prefix"], "docker_config_json"])
         ),
@@ -337,8 +339,8 @@ def group_out_base(
     constants_base: dict,  # pylint: disable=redefined-outer-name
     # Todo:
     #  - [ ] Probably not needed with the docker config.json specified
-    docker_config: DockerConfigModel,  # pylint: disable=redefined-outer-name
-    CONFIG_ENGINE: ConfigEngine,  # pylint: disable=redefined-outer-name
+    # docker_config: DockerConfigModel,  # pylint: disable=redefined-outer-name
+    CONFIG: ConfigEngine,  # pylint: disable=redefined-outer-name
     docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name
     features: dict,  # pylint: disable=redefined-outer-name
     build_docker_image: dict,  # pylint: disable=redefined-outer-name
@@ -346,9 +348,11 @@ def group_out_base(
 
     out_dict: dict = {}
 
+    docker_config: DockerConfigModel = CONFIG.openstudiolandscapes__docker_config
+
     out_dict["env"] = env
     out_dict["env_base"] = env
-    out_dict["config_engine"]: ConfigEngine = CONFIG_ENGINE
+    out_dict["config_engine"]: ConfigEngine = CONFIG
     out_dict["constants_base"] = constants_base
     out_dict["docker_config"] = docker_config.docker_registry_config.model_dump()
     out_dict["docker_config"]["docker_repository"] = docker_config.docker_registry_config.docker_repository_name
@@ -363,16 +367,10 @@ def group_out_base(
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
-        metadata={
-            "env": MetadataValue.json(env),
-            "env_base": MetadataValue.json(env),
-            "constants_base": MetadataValue.json(constants_base),
-            "config_engine": MetadataValue.md(f"```json\n{CONFIG_ENGINE.model_dump_json(indent=2)}\n```"),
-            "docker_config": MetadataValue.json(out_dict["docker_config"]),
-            "docker_config_json": MetadataValue.path(docker_config_json),
-            "features": MetadataValue.json(features),
-            "docker_image": MetadataValue.json(build_docker_image),
-        },
+        metadata=metadatavalues_from_dict(
+            context=context,
+            d_serialized=out_dict,
+        )
     )
 
 
@@ -380,21 +378,15 @@ def group_out_base(
     **ASSET_HEADER_BASE,
     ins={
         "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
-        "docker_config": AssetIn(
-            AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "DOCKER_CONFIG_V2"])
+        "CONFIG": AssetIn(
+            AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"])
         ),
-        # "constants_base": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "constants_base"])),
-        # "docker_config": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "DOCKER_CONFIG"])),
-        # "features": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "features"])),
-        # "build_docker_image": AssetIn(
-        #     AssetKey([*ASSET_HEADER_BASE["key_prefix"], "build_docker_image"]),
-        # ),
     },
 )
 def docker_config_json(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
-    docker_config: DockerConfigModel,  # pylint: disable=redefined-outer-name
+    CONFIG: ConfigEngine,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
 
     dockercfg_path = pathlib.Path(
@@ -410,6 +402,8 @@ def docker_config_json(
     docker_auth = {}
     docker_auth["auths"] = auths = {}
 
+    docker_config: DockerConfigModel = CONFIG.openstudiolandscapes__docker_config
+
     # process from docker/api/config.py:create_config
     # (https://docker-py.readthedocs.io/en/stable/api.html#docker.api.config.ConfigApiMixin.create_config)
     username: str = docker_config.docker_registry_config.docker_registry_username
@@ -418,7 +412,6 @@ def docker_config_json(
     protocol: str = docker_config.docker_registry_config.docker_registry_protocol
     port: int = docker_config.docker_registry_config.docker_registry_port
     url_: str = f"{protocol}://{fqdn}"
-    # url: str = f"http://{url_}:{port_}"
 
     credentials_str = f"{username}:{password}"
     credentials_bytes = credentials_str.encode("utf-8")

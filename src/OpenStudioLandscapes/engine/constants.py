@@ -1,6 +1,6 @@
 __all__ = [
     "PREFIX_COMPOSE_SCOPE",
-    "DOCKER_CONFIG",
+    # "DOCKER_CONFIG",
     "DOCKER_USE_CACHE_BASE",
     "DOCKER_USE_CACHE_GLOBAL",
     "ASSET_HEADER_BASE_ENV",
@@ -66,10 +66,10 @@ except KeyError as e:
 #  - [ ] Find better config entry point
 #        - Pydantic: https://medium.com/@jonathan_b/a-simple-guide-to-configure-your-python-project-with-pydantic-and-a-yaml-file-bef76888f366
 #        - TypedDict:
-DOCKER_CONFIG = {
-    "localhost": DockerConfig.LOCALHOST,
-    "local_registry": DockerConfig.LOCAL_REGISTRY,
-}[docker_config_]
+# DOCKER_CONFIG = {
+#     "localhost": DockerConfig.LOCALHOST,
+#     "local_registry": DockerConfig.LOCAL_REGISTRY,
+# }[docker_config_]
 
 DOCKER_USE_CACHE_GLOBAL = False
 DOCKER_USE_CACHE_BASE = DOCKER_USE_CACHE_GLOBAL or False
