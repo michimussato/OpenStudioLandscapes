@@ -7,7 +7,7 @@ import tempfile
 import textwrap
 import uuid
 from datetime import datetime
-from typing import Generator, MutableMapping, Any
+from typing import Generator, MutableMapping
 from deepdiff import DeepDiff
 from pydantic_core._pydantic_core import ValidationError
 
@@ -18,7 +18,6 @@ from dagster import (
     AssetKey,
     AssetMaterialization,
     AssetOut,
-    EnvVar,
     MetadataValue,
     Output,
     asset,
@@ -28,7 +27,7 @@ from dagster import (
 from OpenStudioLandscapes.engine import exceptions
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.utils import *
-from OpenStudioLandscapes.engine.config.validate_config import ConfigEngine, DockerConfigModel, DockerRegistryConfig
+from OpenStudioLandscapes.engine.config.validate_config import ConfigEngine
 
 
 @asset(
@@ -351,8 +350,6 @@ def CONFIG(
         dict_to_expand=config.copy(),
         kv=env,
     )
-
-    # context.log.debug(f"{config_expanded = }")
 
     try:
         # Final validation of the parsed configs

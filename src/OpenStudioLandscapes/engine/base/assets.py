@@ -312,9 +312,6 @@ def build_docker_image(
         "CONFIG": AssetIn(
             AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"])
         ),
-        # "docker_config": AssetIn(
-        #     AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "DOCKER_CONFIG"])
-        # ),
         "docker_config_json": AssetIn(
             AssetKey([*ASSET_HEADER_BASE["key_prefix"], "docker_config_json"])
         ),
@@ -337,9 +334,6 @@ def group_out_base(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
     constants_base: dict,  # pylint: disable=redefined-outer-name
-    # Todo:
-    #  - [ ] Probably not needed with the docker config.json specified
-    # docker_config: DockerConfigModel,  # pylint: disable=redefined-outer-name
     CONFIG: ConfigEngine,  # pylint: disable=redefined-outer-name
     docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name
     features: dict,  # pylint: disable=redefined-outer-name

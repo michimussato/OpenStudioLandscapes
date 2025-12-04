@@ -1,6 +1,5 @@
 __all__ = [
     "PREFIX_COMPOSE_SCOPE",
-    # "DOCKER_CONFIG",
     "DOCKER_USE_CACHE_BASE",
     "DOCKER_USE_CACHE_GLOBAL",
     "ASSET_HEADER_BASE_ENV",
@@ -15,7 +14,7 @@ __all__ = [
     "DOCKER_PROGRESS",
 ]
 
-import os
+# import os
 from typing import Any, Generator, MutableMapping
 
 from dagster import (
@@ -26,8 +25,6 @@ from dagster import (
     asset,
     get_dagster_logger,
 )
-
-from OpenStudioLandscapes.engine.enums import *
 
 # used in OpenStudioLandscapes.engine.discovery.discovery
 from OpenStudioLandscapes.engine.features import (
@@ -45,31 +42,27 @@ DOCKER_PROGRESS = [
 ][2]
 
 
-try:
-    docker_config_ = os.environ["OPENSTUDIOLANDSCAPES__DOCKER_CONFIG"]
-    msg = (
-        f"OPENSTUDIOLANDSCAPES__DOCKER_CONFIG environment "
-        f"variable set to value `{docker_config_}`."
-    )
-    LOGGER.info(msg)
-except KeyError as e:
-    docker_config_ = "localhost"
-    msg = (
-        f"OPENSTUDIOLANDSCAPES__DOCKER_CONFIG environment "
-        f"variable not set; using default value "
-        f"`{docker_config_}`."
-    )
-    LOGGER.warning(msg)
+# try:
+#     docker_config_ = os.environ["OPENSTUDIOLANDSCAPES__DOCKER_CONFIG"]
+#     msg = (
+#         f"OPENSTUDIOLANDSCAPES__DOCKER_CONFIG environment "
+#         f"variable set to value `{docker_config_}`."
+#     )
+#     LOGGER.info(msg)
+# except KeyError as e:
+#     docker_config_ = "localhost"
+#     msg = (
+#         f"OPENSTUDIOLANDSCAPES__DOCKER_CONFIG environment "
+#         f"variable not set; using default value "
+#         f"`{docker_config_}`."
+#     )
+#     LOGGER.warning(msg)
 
 
 # Todo
 #  - [ ] Find better config entry point
 #        - Pydantic: https://medium.com/@jonathan_b/a-simple-guide-to-configure-your-python-project-with-pydantic-and-a-yaml-file-bef76888f366
 #        - TypedDict:
-# DOCKER_CONFIG = {
-#     "localhost": DockerConfig.LOCALHOST,
-#     "local_registry": DockerConfig.LOCAL_REGISTRY,
-# }[docker_config_]
 
 DOCKER_USE_CACHE_GLOBAL = False
 DOCKER_USE_CACHE_BASE = DOCKER_USE_CACHE_GLOBAL or False
@@ -205,27 +198,3 @@ def features(
             "__".join(context.asset_key.path): MetadataValue.json(FEATURES),
         },
     )
-
-
-# @asset(
-#     **ASSET_HEADER_BASE_ENV,
-#     description="",
-#     name="DOCKER_CONFIG",
-# )
-# def docker_config(
-#     context: AssetExecutionContext,
-# ) -> Generator[Output[DockerConfig] | AssetMaterialization | Any, None, None]:
-#     """ """
-#
-#     global DOCKER_CONFIG
-#
-#     yield Output(DOCKER_CONFIG)
-#
-#     yield AssetMaterialization(
-#         asset_key=context.asset_key,
-#         metadata={
-#             "DOCKER_CONFIG": MetadataValue.text(DOCKER_CONFIG.name),
-#             "value": MetadataValue.json(DOCKER_CONFIG.value),
-#             "type": MetadataValue.text(str(type(DOCKER_CONFIG))),
-#         },
-#     )

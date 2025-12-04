@@ -236,7 +236,6 @@ if bool(ins):
         #  - [ ] Duplicated code `OpenStudioLandscapes.engine.base.ops.factories.factory_scrape_networks`
         #  - [ ] Duplicated code `OpenStudioLandscapes.engine.compose_scopes.default.assets.compose`
 
-        # features_in.pop("env_base", {})
         context.log.debug(f"Popping: {features_in.pop('env_base', {}) = }")
         context.log.debug(f"Popping: {features_in.pop('config_engine', {}) = }")
         context.log.debug(f"Popping: {features_in.pop('docker_image', {}) = }")

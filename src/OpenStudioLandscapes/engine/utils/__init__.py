@@ -212,7 +212,6 @@ def parse_docker_image_path(
         return str("")
     else:
 
-        # OpenStudioLandscapes_Base / build_docker_image
         prepend_registry = docker_config.use_registry
 
         _repository_name = docker_config.docker_registry_config.docker_repository_name

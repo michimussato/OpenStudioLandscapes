@@ -8,13 +8,10 @@ __all__ = [
     "DockerComposeDependsOnPolicy",
     "DockerComposePolicies",
     "DockerComposeNetworkMode",
-    "DockerRepositoryType",
-    # "DockerConfig",
+    # "DockerRepositoryType",
 ]
 
 import enum
-
-from dagster import EnvVar
 
 
 class GroupIn(enum.StrEnum):
@@ -116,50 +113,6 @@ class DockerComposePolicies:
 ##################################################################
 
 
-# class DockerRegistry(enum.StrEnum):
-#     # NONE = "none"
-#     LOCAL_LOCALHOST = "localhost"
-#     LOCAL_REGISTRY = EnvVar("OPENSTUDIOLANDSCAPES__REGISTRY_HOSTNAME").get_value()
-#     # LOCAL_MINIBOSS = os.environ.get("IP_MASTER", "localhost")
-
-
-class DockerRepositoryType(enum.StrEnum):
-    PUBLIC = "public"
-    PRIVATE = "private"
-
-
-# class DockerConfig(enum.Enum):
-#     _REPOSITORY_NAME = "openstudiolandscapes".lower()
-#     # Do not:
-#     # - repeat special characters multiple times (like "__")
-#     # - use capitals in repository names
-#     # Todo:
-#     #  - [ ] LOCAL_NO_PUSH is NOT SUPPORTED YET. Should it be?
-#     #  - [ ] Whether to use http or https
-#     LOCALHOST = {
-#         # Not used:
-#         # "docker_push": False,
-#         # "docker_use_local": True,
-#         "docker_registry_url": DockerRegistry.LOCAL_LOCALHOST,
-#         "docker_registry_port": None,
-#         "docker_registry_username": None,
-#         "docker_registry_password": None,
-#         # "docker_repository": _REPOSITORY_NAME,
-#         "docker_repository_type": DockerRepositoryType.PUBLIC,
-#     }
-#     LOCAL_REGISTRY = {
-#         "docker_push": True,  # auto_push ?
-#         "docker_use_local": False,
-#         "docker_registry_url": DockerRegistry.LOCAL_REGISTRY,
-#         "docker_registry_port": EnvVar(
-#             "OPENSTUDIOLANDSCAPES__REGISTRY_PORT"
-#         ).get_value(),
-#         "docker_registry_username": EnvVar(
-#             "OPENSTUDIOLANDSCAPES__REGISTRY_USERNAME"
-#         ).get_value(),
-#         "docker_registry_password": EnvVar(
-#             "OPENSTUDIOLANDSCAPES__REGISTRY_PASSWORD"
-#         ).get_value(),
-#         "docker_repository": _REPOSITORY_NAME,
-#         "docker_repository_type": DockerRepositoryType.PRIVATE,
-#     }
+# class DockerRepositoryType(enum.StrEnum):
+#     PUBLIC = "public"
+#     PRIVATE = "private"

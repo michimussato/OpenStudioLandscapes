@@ -28,7 +28,6 @@ from docker_compose_graph.docker_compose_graph import DockerComposeGraph
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.utils import *
-from OpenStudioLandscapes.engine.config.validate_config import DockerRegistryConfig, DockerConfigModel
 
 
 # Todo
@@ -278,7 +277,6 @@ def op_constants(
     ins={
         "group_out": In(pathlib.Path),
         "compose_project_name": In(str),
-        # "compose": In(dict)
     },
     out={
         "docker_compose_graph": Out(pydot.Dot),
@@ -289,15 +287,10 @@ def op_docker_compose_graph(
     context: OpExecutionContext,
     group_out: pathlib.Path,  # pylint: disable=redefined-outer-name
     compose_project_name: str,  # pylint: disable=redefined-outer-name
-    # compose: dict,  # pylint: disable=redefined-outer-name
 ) -> Generator[
     Output[pydot.Dot] | Output[pathlib.Path] | AssetMaterialization, None, None
 ]:
     """ """
-
-    # # not used, it's just a dependency to make sure that the compose files
-    # # actually exist before analyzing it
-    # del compose
 
     dcg = DockerComposeGraph(
         label_root_service=compose_project_name,
@@ -781,9 +774,6 @@ def op_group_out(
     context.log.debug(context.asset_key_for_output("group_out"))
     context.log.debug(context.asset_key_for_output("compose_project_name"))
     context.log.debug(context.selected_output_names)
-
-    # build_base_docker_config: DockerConfig = docker_config
-    # build_base_docker_config_value = build_base_docker_config.value
 
     compose_project_name = (
         f"{env.get('LANDSCAPE', 'default').replace('.', '-')}-{env['COMPOSE_SCOPE']}"
