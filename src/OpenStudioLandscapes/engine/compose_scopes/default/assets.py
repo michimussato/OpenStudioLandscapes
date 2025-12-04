@@ -34,6 +34,7 @@ from OpenStudioLandscapes.engine.discovery.discovery import *
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.utils import *
 from OpenStudioLandscapes.engine.utils.pangolin import *
+from OpenStudioLandscapes.engine.config.validate_config import ConfigEngine, DockerConfigModel
 
 # Todo:
 #  - [ ] get assets from common_assets
@@ -169,19 +170,29 @@ if bool(ins):
     def docker_config(
         context: AssetExecutionContext,
         features_in: dict,
-    ) -> Generator[Output[DockerConfig] | AssetMaterialization, None, None]:
+    ) -> Generator[Output[DockerConfigModel] | AssetMaterialization, None, None]:
 
-        context.log.info(features_in)
+        from pprint import pformat
 
-        _docker_config: DockerConfig = features_in.pop("docker_config")
-        context.log.info(_docker_config)
+        # context.log.info(f"{features_in = }")
+        context.log.info(pformat(features_in, indent=1, width=100))
+        # context.log.info(f"{features_in.get('config_engine') = }")
+        # context.log.info(f"{features_in.keys() = }")
+        # context.log.info(f"{features_in['env_base'].keys() = }")
+        # context.log.info(f"{features_in['docker_config'].keys() = }")
 
-        yield Output(_docker_config)
+        docker_config: DockerConfigModel = features_in.pop("docker_config")
+        # docker_config: DockerConfigModel = config_engine.openstudiolandscapes__docker_config
+
+        # _docker_config: DockerConfig = features_in.pop("docker_config")
+        context.log.info(docker_config)
+
+        yield Output(docker_config)
 
         yield AssetMaterialization(
             asset_key=context.asset_key,
             metadata={
-                _docker_config.name: MetadataValue.json(_docker_config.value),
+                "docker_config": MetadataValue.json(docker_config.model_dump()),
             },
         )
 
@@ -322,10 +333,14 @@ if bool(ins):
     ]:
         """ """
 
-        context.log.info(kwargs)
+        from pprint import pformat
+
+        context.log.info(pformat(kwargs, indent=1))
+
+        config_engine: ConfigEngine = group_out_base["config_engine"]
 
         env_base = group_out_base["env_base"]
-        docker_config: DockerConfig = group_out_base["docker_config"]
+        docker_config: DockerConfigModel = config_engine.openstudiolandscapes__docker_config
         docker_config_json: pathlib.Path = group_out_base["docker_config_json"]
 
         docker_compose_yaml: MutableMapping[str, str] = {}
@@ -337,6 +352,7 @@ if bool(ins):
             # - constants_base
             # - features
             # - docker_config
+            # - config_engine
             # - docker_config_json
             # from kwargs dicts
             for d in [
@@ -344,6 +360,7 @@ if bool(ins):
                 "constants_base",
                 "features",
                 "docker_config",
+                "config_engine",
                 "docker_config_json",
             ]:
                 kwargs[k].pop(d)

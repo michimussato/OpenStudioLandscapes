@@ -182,10 +182,12 @@ def parse_docker_image_path(
     *,
     context: AssetExecutionContext,
     docker_config: Union[DockerConfig, MutableMapping, DockerConfigModel],
+    # docker_config: DockerConfigModel,
 ) -> str:
 
     image_path = []
     context.log.debug(f"{docker_config = }")
+    context.log.debug(f"{type(docker_config) = }")
     # docker_config = <dagster._core.definitions.assets.AssetsDefinition object at 0x7f683120ef10>
 
     if isinstance(docker_config, DockerConfig):
@@ -193,16 +195,19 @@ def parse_docker_image_path(
         # if the images stay local, we don't want
         # have to prepend anything and we don't push the
         # image anywhere
-        image_on_localhost_only = docker_config == DockerConfig.LOCALHOST
+        image_on_localhost_only = _docker_config == DockerConfig.LOCALHOST
     elif isinstance(docker_config, MutableMapping):
         _docker_config: MutableMapping = docker_config
         # if the images stay local, we don't want
         # have to prepend anything and we don't push the
         # image anywhere
-        image_on_localhost_only = docker_config == DockerConfig.LOCALHOST
+        image_on_localhost_only = _docker_config == DockerConfig.LOCALHOST
     elif isinstance(docker_config, DockerConfigModel):
         _docker_config: DockerConfigModel = docker_config
-        image_on_localhost_only = not docker_config.use_registry
+        image_on_localhost_only = not _docker_config.use_registry  # not _docker_config.use_registry
+    # elif isinstance(docker_config, DockerRegistryConfig):
+    #     _docker_config: DockerRegistryConfig = docker_config
+    #     image_on_localhost_only = False  # not _docker_config.use_registry
     else:
         raise TypeError
 
@@ -229,7 +234,7 @@ def parse_docker_image_path(
         # Do
         # - prefix a <registry>/<repository>
 
-        if isinstance(docker_config, MutableMapping):
+        if isinstance(_docker_config, MutableMapping):
 
             prepend_registry = not image_on_localhost_only
 
@@ -237,13 +242,21 @@ def parse_docker_image_path(
             _docker_registry_url = _docker_config["docker_registry_url"]
             _repository_port = _docker_config["docker_registry_port"]
 
-        elif isinstance(docker_config, DockerConfigModel):
+        elif isinstance(_docker_config, DockerConfigModel):
+            # OpenStudioLandscapes_Base / build_docker_image
+            prepend_registry = _docker_config.use_registry  # _docker_config.use_registry
 
-            prepend_registry = docker_config.use_registry
+            _repository_name = _docker_config.docker_registry_config.docker_repository_name
+            _docker_registry_url = _docker_config.docker_registry_config.docker_registry_fqdn
+            _repository_port = _docker_config.docker_registry_config.docker_registry_port
 
-            _repository_name = docker_config.docker_registry_config.docker_repository_name
-            _docker_registry_url = docker_config.docker_registry_config.docker_registry_fqdn
-            _repository_port = docker_config.docker_registry_config.docker_registry_port
+        # elif isinstance(_docker_config, DockerRegistryConfig):
+        #
+        #     prepend_registry = True  # _docker_config.use_registry
+        #
+        #     _repository_name = _docker_config.docker_repository_name
+        #     _docker_registry_url = _docker_config.docker_registry_fqdn
+        #     _repository_port = _docker_config.docker_registry_port
 
         else:
             raise TypeError
@@ -554,8 +567,8 @@ def get_dynamic_ins(
 
 def get_image_metadata(
     context: AssetExecutionContext,
-    docker_image,
-    docker_config,
+    docker_image: dict,
+    docker_config: DockerConfigModel,
     env,
 ):
 
@@ -563,7 +576,7 @@ def get_image_metadata(
     context.log.debug(f"{build_base_image_data = }")
     # build_base_image_data = {'image_name': 'openstudiolandscapes_base_build_docker_image', 'image_prefixes': '', 'image_tags': ['2025-11-17-01-26-31-05a9b85aa33b47ffa7dfb21a28ca24ab'], 'image_parent': {}}
 
-    build_base_docker_config: DockerConfig = docker_config
+    build_base_docker_config: DockerConfigModel = docker_config
     context.log.debug(f"{build_base_docker_config = }")
     # build_base_docker_config = build_base_docker_config = <DockerConfig.LOCALHOST: {'docker_registry_url': <DockerRegistry.LOCAL_LOCALHOST: 'localhost'>, 'docker_registry_port': None, 'docker_registry_username': None, 'docker_registry_password': None, 'docker_repository_type': <DockerRepositoryType.PUBLIC: 'public'>}>
 
@@ -577,7 +590,7 @@ def get_image_metadata(
 
     image_prefixes = parse_docker_image_path(
         context=context,
-        docker_config=build_base_docker_config,
+        docker_config=build_base_docker_config,  # DockerRegistryConfig
     )
 
     tags = [

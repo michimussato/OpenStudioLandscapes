@@ -83,6 +83,8 @@ def factory_feature_out(
         kwargs["features"] = features
         docker_config = kwargs["group_in"].pop("docker_config")
         kwargs["docker_config"] = docker_config
+        config_engine = kwargs["group_in"].pop("config_engine")
+        kwargs["config_engine"] = config_engine
         docker_config_json = kwargs["group_in"].pop("docker_config_json")
         kwargs["docker_config_json"] = docker_config_json
 
