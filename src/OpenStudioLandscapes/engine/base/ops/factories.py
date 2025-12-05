@@ -75,7 +75,6 @@ def factory_feature_out(
 
         # I want
         # - env_base
-        # - constants_base
         # - features
         # - docker_config
         # - docker_config_json
@@ -83,8 +82,6 @@ def factory_feature_out(
         # of the dict
         env_base = kwargs["group_in"].pop("env_base")
         kwargs["env_base"] = env_base
-        constants_base = kwargs["group_in"].pop("constants_base")
-        kwargs["constants_base"] = constants_base
         features = kwargs["group_in"].pop("features")
         kwargs["features"] = features
         config_engine = kwargs["group_in"].pop("config_engine")

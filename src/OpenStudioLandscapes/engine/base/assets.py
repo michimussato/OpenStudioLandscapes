@@ -260,6 +260,7 @@ def build_docker_image(
         docker_file=docker_file,
         tags=tags_full_str,
         pull=docker_config.docker_registry_config.docker_pull,
+        no_cache=docker_config.no_cache,
     )
 
     cmds.append(cmd_build)

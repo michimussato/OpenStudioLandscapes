@@ -24,25 +24,6 @@ else
 PYTHON_PAT := 11
 endif
 
-# Todo:
-#  - [ ] deprecate OPENSTUDIOLANDSCAPES__REPO_ROOT (replace by OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT)
-#ifdef OPENSTUDIOLANDSCAPES__REPO_ROOT
-#OPENSTUDIOLANDSCAPES__REPO_ROOT := $(OPENSTUDIOLANDSCAPES__REPO_ROOT)
-#else
-OPENSTUDIOLANDSCAPES__REPO_ROOT := $(shell pwd)
-#endif
-
-ifdef OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT
-OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT := $(OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT)
-else
-OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT := $(shell pwd)
-endif
-
-ifdef OPENSTUDIOLANDSCAPES__DOMAIN_LAN
-OPENSTUDIOLANDSCAPES__DOMAIN_LAN := $(OPENSTUDIOLANDSCAPES__DOMAIN_LAN)
-else
-OPENSTUDIOLANDSCAPES__DOMAIN_LAN := openstudiolandscapes.lan
-endif
 
 #install: \
 #		disable_unattended \
@@ -184,22 +165,19 @@ edit_hosts_file:
 # or
 # git clone --tags --branch <branch> https://github.com/michimussato/OpenStudioLandscapes.git
 openstudiolandscapes_install:
-	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
-		&& python3.11 -m venv .venv \
+	python3.11 -m venv .venv \
 		&& source .venv/bin/activate \
 		&& pip install --upgrade pip setuptools setuptools_scm wheel \
 		&& pip install -e .[dev] \
 		&& deactivate
 
 openstudiolandscapes_features_clone:
-	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
-		&& source .venv/bin/activate \
+	source .venv/bin/activate \
 		&& nox -s clone_features \
 		&& deactivate
 
 openstudiolandscapes_features_install:
-	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
-		&& source .venv/bin/activate \
+	source .venv/bin/activate \
 		&& nox -s install_features_into_engine \
 		&& deactivate
 
@@ -209,18 +187,14 @@ openstudiolandscapes_features_install:
 ###############################################################################
 # CLEAN UP
 
-nox_CLEAR_ALL:
-	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT}/.nox \
-		&& rm -r */
-		# && sudo rm -r */
+#nox_CLEAR_ALL:
+#	rm -r ./.nox/*/
 
 setup_venv:
-	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
-		&& python3.11 -m venv .venv
+	python3.11 -m venv .venv
 
 openstudiolandscapes_update:
-	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
-		&& source .venv/bin/activate \
+	source .venv/bin/activate \
 		&& pip install -e .[dev] \
 		&& deactivate
 
@@ -233,14 +207,12 @@ openstudiolandscapes_update:
 #	sed -i -e '$$asource ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT}/\.openstudiolandscapesrc' -e '/source ${REPLACED}\/\.openstudiolandscapesrc/d' "$${HOME}/.bashrc"
 
 up:
-	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
-		&& source .venv/bin/activate \
+	source .venv/bin/activate \
 		&& nox --sessions dagster_postgres_up_detach dagster_postgres \
 		&& deactivate
 
 down:
-	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
-		&& source .venv/bin/activate \
+	source .venv/bin/activate \
 		&& nox --sessions dagster_postgres_down \
 		&& deactivate
 
@@ -250,23 +222,19 @@ down:
 # NOX
 
 nox:
-	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
-		&& source .venv/bin/activate \
+	source .venv/bin/activate \
 		&& nox
 
 nox_readme:
-	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
-		&& source .venv/bin/activate \
+	source .venv/bin/activate \
 		&& nox --sessions readme
 
 nox_tag:
-	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
-		&& source .venv/bin/activate \
+	source .venv/bin/activate \
 		&& nox --sessions tag
 
 nox_checkout:
-	cd ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT} \
-		&& source .venv/bin/activate \
+	source .venv/bin/activate \
 		&& nox --sessions checkout_branch
 
 ###############################################################################

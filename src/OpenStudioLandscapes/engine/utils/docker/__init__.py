@@ -27,6 +27,7 @@ def docker_build_cmd(
     docker_file: pathlib.Path,
     tags: list[str],
     pull: bool,
+    no_cache: bool = False,
 ) -> list:
 
     # with buildx, the target command could look like:
@@ -50,7 +51,7 @@ def docker_build_cmd(
         "--pull" if pull else None,
         "--file",
         docker_file.as_posix(),
-        "--no-cache",
+        "--no-cache" if no_cache else None,
         # https://stackoverflow.com/a/11869360
         *[i(tag) for tag in tags for i in (lambda x: "--tag", lambda x: tag)],
         docker_file.parent.as_posix(),

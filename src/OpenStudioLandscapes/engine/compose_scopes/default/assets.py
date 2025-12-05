@@ -309,14 +309,12 @@ if bool(ins):
         for k, v in kwargs.items():
             # remove
             # - env_base
-            # - constants_base
             # - features
             # - config_engine
             # - docker_config_json
             # from kwargs dicts
             for d in [
                 "env_base",
-                "constants_base",
                 "features",
                 "config",  # pydantic.BaseModel in a nested dict is not JSON serializable yet
                 "config_engine",  # pydantic.BaseModel in a nested dict is not JSON serializable yet

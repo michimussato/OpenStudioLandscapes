@@ -936,9 +936,15 @@ def fix_hardlinks_in_features(session):
 ENVIRONMENT_DAGSTER = {
     # Todo:
     #  - [ ] maybe better to source .env instead of hardcoding these values
-    "OPENSTUDIOLANDSCAPES__DOMAIN_LAN": os.environ["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"],
+    "OPENSTUDIOLANDSCAPES__DOMAIN_LAN": os.environ.get(
+        "OPENSTUDIOLANDSCAPES__DOMAIN_LAN",
+        "openstudiolandscapes.lan",
+    ),
     # Todo:
-    #  - [ ] move these two into `.landscapes`
+    #  - [ ] move these two to:
+    #        `.landscapes`
+    #        or
+    #        `~/.config/OpenStudioLandscapes`
     "DAGSTER_POSTGRES_ROOT_DIR": pathlib.Path.cwd() / ".dagster-postgres",
     "DAGSTER_MYSQL_ROOT_DIR": pathlib.Path.cwd() / ".dagster",
     "DAGSTER_POSTGRES_DB_DIR_DIR": ".postgres",

@@ -607,6 +607,7 @@ def create_image(
         docker_file=docker_file,
         tags=tags_full_str,
         pull=not localhost_only,
+        no_cache=docker_config.no_cache,
     )
 
     cmds.append(cmd_build)

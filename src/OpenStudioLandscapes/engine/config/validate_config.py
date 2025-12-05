@@ -16,6 +16,11 @@ Resources:
 """
 
 
+# Todo
+#  - [ ] Learn about serialization
+#        - https://docs.pydantic.dev/latest/concepts/serialization/
+
+
 class DockerRegistryConfig(BaseModel):
     """
     A current, valid DockerConfig:
@@ -52,7 +57,7 @@ class DockerRegistryConfig(BaseModel):
 class DockerConfigModel(BaseModel):
 
     use_registry: bool
-    use_cache: bool
+    no_cache: bool
     docker_registry_config: DockerRegistryConfig
 
     # @field_validator("docker_registry_config")
