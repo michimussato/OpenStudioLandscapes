@@ -1,15 +1,9 @@
 import os
 import pathlib
 
-from typing import Union, Optional
-
-from pydantic import BaseModel, field_validator, PositiveInt
-from pydantic_core.core_schema import ValidationInfo
-
-# from OpenStudioLandscapes.engine.enums import ComposeScope, DockerRepositoryType
+from pydantic import BaseModel, field_validator
 
 from dagster import (
-    EnvVar,
     get_dagster_logger,
 )
 
@@ -20,19 +14,6 @@ LOG = get_dagster_logger(__name__)
 Resources:
 - https://app.studyraid.com/en/read/15002/518529/conditional-validation-based-on-other-fields
 """
-
-
-# class _DockerRepositoryType(BaseModel):
-#     repository_type: DockerRepositoryType
-#     repository_name: str
-#
-#     @field_validator("repository_name")
-#     @classmethod
-#     def ensure_valid__repository_name(cls, value):
-#         # Do not:
-#         # - repeat special characters multiple times (like "__")
-#         # - use capitals in repository names
-#         return value.lower()
 
 
 class DockerRegistryConfig(BaseModel):
@@ -49,10 +30,8 @@ class DockerRegistryConfig(BaseModel):
       "docker_use_local": false
     }
     """
-    # docker_repository_type: _DockerRepositoryType
     docker_push: bool
     docker_pull: bool
-    # docker_use_local: bool
     docker_repository_name: str
     docker_registry_access: str
     docker_registry_protocol: str
@@ -73,6 +52,7 @@ class DockerRegistryConfig(BaseModel):
 class DockerConfigModel(BaseModel):
 
     use_registry: bool
+    use_cache: bool
     docker_registry_config: DockerRegistryConfig
 
     # @field_validator("docker_registry_config")

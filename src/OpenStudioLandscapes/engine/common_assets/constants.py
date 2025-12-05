@@ -20,7 +20,6 @@ def get_constants(
         },
         keys_by_output_name={
             "COMPOSE_SCOPE": AssetKey([*ASSET_HEADER["key_prefix"], "COMPOSE_SCOPE"]),
-            "FEATURE_CONFIG": AssetKey([*ASSET_HEADER["key_prefix"], "FEATURE_CONFIG"]),
         },
     )
 

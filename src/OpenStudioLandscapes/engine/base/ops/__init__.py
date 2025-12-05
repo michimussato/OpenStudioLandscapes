@@ -65,27 +65,16 @@ from OpenStudioLandscapes.engine.utils import *
     name="op_env",
     ins={
         "group_in": In(dict),
-        "constants": In(dict),
-        "FEATURE_CONFIG": In(OpenStudioLandscapesConfig),
         "COMPOSE_SCOPE": In(ComposeScope),
         "DOCKER_COMPOSE": In(pathlib.Path),
     },
     out={
         "env_out": Out(dict),
-        # Todo:
-        #  - [ ] make global use of env_parent_out asset
-        #  - [ ] keep env and env_parent separated to avoid unintended side effects
-        #        problem we had: `HOSTNAME` got overridden while we still needed
-        #        the parent Kitsu `HOSTNAME` to be available in the Watchtower env
-        #  - [ ] Watchtower `dot_env_local` makes use of env_parent (as an example)
-        "env_parent_out": Out(dict),
     },
 )
 def op_env(
     context: OpExecutionContext,
     group_in: dict,  # pylint: disable=redefined-outer-name
-    constants: dict,  # pylint: disable=redefined-outer-name
-    FEATURE_CONFIG: OpenStudioLandscapesConfig,  # pylint: disable=redefined-outer-name
     COMPOSE_SCOPE: ComposeScope,  # pylint: disable=redefined-outer-name
     DOCKER_COMPOSE: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
@@ -100,13 +89,6 @@ def op_env(
     env_in.update(
         expand_dict_vars(
             dict_to_expand={"DOCKER_COMPOSE": DOCKER_COMPOSE.as_posix()},
-            kv=env_in,
-        )
-    )
-
-    env_in.update(
-        expand_dict_vars(
-            dict_to_expand=constants[FEATURE_CONFIG],
             kv=env_in,
         )
     )
@@ -130,24 +112,6 @@ def op_env(
                 "__".join(
                     context.asset_key_for_output("env_out").path
                 ): MetadataValue.json(env_in),
-                "ENVIRONMENT": MetadataValue.json(constants[FEATURE_CONFIG]),
-            },
-        )
-
-    if "env_parent_out" in context.selected_output_names:
-
-        yield Output(
-            output_name="env_parent_out",
-            value=env_parent_in,
-        )
-
-        yield AssetMaterialization(
-            asset_key=context.asset_key_for_output("env_parent_out"),
-            metadata={
-                "__".join(
-                    context.asset_key_for_output("env_parent_out").path
-                ): MetadataValue.json(env_parent_in),
-                # "ENVIRONMENT": MetadataValue.json(constants[FEATURE_CONFIG]),
             },
         )
 
@@ -158,10 +122,6 @@ def op_env(
     name="op_docker_config_json",
     ins={
         "group_in": In(dict),
-        # "constants": In(dict),
-        # "FEATURE_CONFIG": In(OpenStudioLandscapesConfig),
-        # "COMPOSE_SCOPE": In(ComposeScope),
-        # "DOCKER_COMPOSE": In(pathlib.Path),
     },
     out={
         "docker_config_json": Out(pathlib.Path),
@@ -200,7 +160,6 @@ def op_docker_config_json(
     },
     out={
         "COMPOSE_SCOPE": Out(ComposeScope),
-        "FEATURE_CONFIG": Out(OpenStudioLandscapesConfig),
     },
 )
 def op_constants(
@@ -234,13 +193,6 @@ def op_constants(
         name=NAME,
     )
 
-    # FEATURE_CONFIG
-    FEATURE_CONFIG = get_feature_config(
-        context=context,
-        features=features,
-        name=NAME,
-    )
-
     yield Output(
         output_name="COMPOSE_SCOPE",
         value=COMPOSE_SCOPE,
@@ -252,20 +204,6 @@ def op_constants(
             "__".join(
                 context.asset_key_for_output("COMPOSE_SCOPE").path
             ): MetadataValue.json(COMPOSE_SCOPE),
-        },
-    )
-
-    yield Output(
-        output_name="FEATURE_CONFIG",
-        value=FEATURE_CONFIG,
-    )
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key_for_output("FEATURE_CONFIG"),
-        metadata={
-            "__".join(
-                context.asset_key_for_output("FEATURE_CONFIG").path
-            ): MetadataValue.json(FEATURE_CONFIG),
         },
     )
 

@@ -32,6 +32,7 @@ import pathlib
 import shlex
 import time
 from typing import Any, Dict, List, MutableMapping, Tuple, Union
+from pydantic import BaseModel
 
 import git
 import yaml
@@ -236,7 +237,7 @@ def parse_docker_image_path(
 
 
 def get_compose_scope(
-    context: AssetExecutionContext,  # Todo: necessary?
+    context: Union[OpExecutionContext, AssetExecutionContext],  # Todo: necessary? -> Yes: `OpenStudioLandscapes.engine.base.ops.op_constants`
     features: MutableMapping,
     name: str,
 ) -> ComposeScope:
@@ -342,8 +343,8 @@ def metadatavalues_from_dict(
     metadata = {}
 
     for k, v in d_serialized.items():
-        context.log.debug(f"{type(v) = }")
-        if isinstance(v, ConfigEngine):
+        context.log.debug(f"{type(v) = } ({v = })")
+        if isinstance(v, BaseModel):
             metadata[k] = MetadataValue.md(
                 f"```yaml\n{v.model_dump_json(indent=2)}\n```"
             )

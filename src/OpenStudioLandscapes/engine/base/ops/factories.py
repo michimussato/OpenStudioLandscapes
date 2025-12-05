@@ -66,6 +66,13 @@ def factory_feature_out(
         **kwargs,
     ):
 
+        context.log.debug(f"{kwargs.keys() = }")
+        context.log.debug(f"{kwargs['group_in'].keys() = }")
+
+        # Todo
+        #  - [ ] I can't serialize this nested BaseModel yet
+        config_parent = kwargs['group_in'].pop('config_parent')
+
         # I want
         # - env_base
         # - constants_base
@@ -84,6 +91,8 @@ def factory_feature_out(
         kwargs["config_engine"] = config_engine
         docker_config_json = kwargs["group_in"].pop("docker_config_json")
         kwargs["docker_config_json"] = docker_config_json
+        config = kwargs.pop("CONFIG")
+        kwargs["config"] = config
 
         # Todo
         #  - [ ] replace "group_out" (i.e. with "compose_yaml" or "feature_out")
@@ -96,12 +105,9 @@ def factory_feature_out(
             value=kwargs,
         )
 
-        kwargs_json = json.dumps(kwargs, default=str)
-
         yield AssetMaterialization(
             asset_key=context.asset_key_for_output(output_name),
             metadata={
-                # "__".join(context.asset_key.path): MetadataValue.json(kwargs_json),
                 **metadatavalues_from_dict(
                     context=context,
                     d_serialized=kwargs,
@@ -510,7 +516,14 @@ def factory_group_in(
 
         # Access Enum value by key:
         # https://stackoverflow.com/a/38716384
-        group_out = kwargs.pop(GroupIn(kw_key))
+        group_out: dict = kwargs.pop(GroupIn(kw_key))
+
+
+        if "config" in group_out:
+            # rename "config" to "config_parent"
+            group_out["config_parent"] = group_out.pop("config")
+        else:
+            group_out["config_parent"] = None
 
         context.log.debug(f"{group_out = }")
 
@@ -524,9 +537,6 @@ def factory_group_in(
         yield AssetMaterialization(
             asset_key=context.asset_key,
             metadata={
-                "__".join(context.asset_key.path): MetadataValue.json(
-                    json.loads(json.dumps(group_out, default=str))
-                ),
                 **metadatavalues_from_dict(
                     context=context,
                     d_serialized=group_out,

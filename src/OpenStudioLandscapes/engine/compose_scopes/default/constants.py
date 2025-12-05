@@ -1,6 +1,6 @@
 import os
 import pathlib
-from typing import Generator, MutableMapping
+from typing import Generator
 
 from dagster import (
     AssetExecutionContext,
@@ -11,12 +11,9 @@ from dagster import (
 )
 
 from OpenStudioLandscapes.engine.constants import (
-    DOCKER_USE_CACHE_GLOBAL,
     PREFIX_COMPOSE_SCOPE,
 )
 from OpenStudioLandscapes.engine.enums import *
-
-DOCKER_USE_CACHE = DOCKER_USE_CACHE_GLOBAL or False
 
 COMPOSE_SCOPE = ComposeScope.DEFAULT
 
@@ -35,27 +32,6 @@ ASSET_HEADER = {
 }
 
 ENVIRONMENT = {}
-
-
-@asset(
-    **ASSET_HEADER,
-    description="",
-)
-def constants_compose(
-    context: AssetExecutionContext,
-) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
-    """ """
-
-    _constants = ENVIRONMENT
-
-    yield Output(_constants)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(_constants),
-        },
-    )
 
 
 @asset(

@@ -33,7 +33,6 @@ from OpenStudioLandscapes.engine.discovery.discovery import *
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.utils import *
 from OpenStudioLandscapes.engine.utils.pangolin import *
-from OpenStudioLandscapes.engine.config.validate_config import ConfigEngine, DockerConfigModel
 
 # Todo:
 #  - [ ] get assets from common_assets
@@ -156,37 +155,6 @@ if bool(ins):
             },
         )
 
-    # Todo
-    #  - [ ] Move to factory
-    @asset(
-        **ASSET_HEADER_COMPOSE,
-        ins={
-            "features_in": AssetIn(
-                AssetKey([*ASSET_HEADER_COMPOSE["key_prefix"], "features_in"])
-            ),
-        },
-    )
-    def docker_config(
-        context: AssetExecutionContext,
-        features_in: dict,
-    ) -> Generator[Output[DockerConfigModel] | AssetMaterialization, None, None]:
-
-        context.log.info(f"{features_in = }")
-
-        config_engine: ConfigEngine = features_in.pop("config_engine")
-
-        docker_config: DockerConfigModel = config_engine.openstudiolandscapes__docker_config
-
-        context.log.info(f"{docker_config = }")
-
-        yield Output(docker_config)
-
-        yield AssetMaterialization(
-            asset_key=context.asset_key,
-            metadata={
-                "docker_config": MetadataValue.json(docker_config.model_dump()),
-            },
-        )
 
     # Todo
     #  - [ ] Move to factory
@@ -331,8 +299,6 @@ if bool(ins):
 
         context.log.info(f"{kwargs = }")
 
-        config_engine: ConfigEngine = group_out_base["config_engine"]
-
         env_base = group_out_base["env_base"]
 
         docker_config_json: pathlib.Path = group_out_base["docker_config_json"]
@@ -352,16 +318,16 @@ if bool(ins):
                 "env_base",
                 "constants_base",
                 "features",
-                "config_engine",
+                "config",  # pydantic.BaseModel in a nested dict is not JSON serializable yet
+                "config_engine",  # pydantic.BaseModel in a nested dict is not JSON serializable yet
                 "docker_config_json",
             ]:
-                kwargs[k].pop(d)
+                context.log.debug(f"Popping `{d}`: {kwargs[k].pop(d)}")
 
             docker_compose_yaml[k] = str(kwargs[k]["compose_yaml"])
             docker_compose[k] = str(kwargs[k]["compose"])
 
         kwargs["env_base"] = env_base
-        kwargs["config_engine"] = config_engine
         kwargs["docker_config_json"] = docker_config_json
 
         yield Output(kwargs)

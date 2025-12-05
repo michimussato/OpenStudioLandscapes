@@ -306,9 +306,6 @@ def build_docker_image(
     },
     ins={
         "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
-        "constants_base": AssetIn(
-            AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "constants_base"])
-        ),
         "CONFIG": AssetIn(
             AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"])
         ),
@@ -333,7 +330,6 @@ def build_docker_image(
 def group_out_base(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
-    constants_base: dict,  # pylint: disable=redefined-outer-name
     CONFIG: ConfigEngine,  # pylint: disable=redefined-outer-name
     docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name
     features: dict,  # pylint: disable=redefined-outer-name
@@ -347,7 +343,6 @@ def group_out_base(
     out_dict["env"] = env
     out_dict["env_base"] = env
     out_dict["config_engine"]: ConfigEngine = CONFIG
-    out_dict["constants_base"] = constants_base
     out_dict["docker_config"] = docker_config.docker_registry_config.model_dump()
     out_dict["docker_config"]["docker_repository"] = docker_config.docker_registry_config.docker_repository_name
     out_dict["docker_config"]["docker_repository_type"] = docker_config.docker_registry_config.docker_registry_access

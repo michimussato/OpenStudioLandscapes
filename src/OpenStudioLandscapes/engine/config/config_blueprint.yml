@@ -15,6 +15,7 @@ openstudiolandscapes__domain_lan: "openstudiolandscapes.lan"
 
 openstudiolandscapes__docker_config:
   use_registry: true
+  use_cache: false
   # If `use_registry` is false,
   # `docker_registry_config` values are ignored.
   docker_registry_config:

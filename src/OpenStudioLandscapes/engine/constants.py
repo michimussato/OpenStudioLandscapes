@@ -1,7 +1,5 @@
 __all__ = [
     "PREFIX_COMPOSE_SCOPE",
-    "DOCKER_USE_CACHE_BASE",
-    "DOCKER_USE_CACHE_GLOBAL",
     "ASSET_HEADER_BASE_ENV",
     "ASSET_HEADER_BASE",
     "ASSET_HEADER_LANDSCAPE_MAP",
@@ -14,8 +12,7 @@ __all__ = [
     "DOCKER_PROGRESS",
 ]
 
-# import os
-from typing import Any, Generator, MutableMapping
+from typing import Any, Generator
 
 from dagster import (
     AssetExecutionContext,
@@ -27,6 +24,7 @@ from dagster import (
 )
 
 # used in OpenStudioLandscapes.engine.discovery.discovery
+# DO NOT REMOVE
 from OpenStudioLandscapes.engine.features import (
     FEATURES,
 )
@@ -42,30 +40,11 @@ DOCKER_PROGRESS = [
 ][2]
 
 
-# try:
-#     docker_config_ = os.environ["OPENSTUDIOLANDSCAPES__DOCKER_CONFIG"]
-#     msg = (
-#         f"OPENSTUDIOLANDSCAPES__DOCKER_CONFIG environment "
-#         f"variable set to value `{docker_config_}`."
-#     )
-#     LOGGER.info(msg)
-# except KeyError as e:
-#     docker_config_ = "localhost"
-#     msg = (
-#         f"OPENSTUDIOLANDSCAPES__DOCKER_CONFIG environment "
-#         f"variable not set; using default value "
-#         f"`{docker_config_}`."
-#     )
-#     LOGGER.warning(msg)
-
-
 # Todo
 #  - [ ] Find better config entry point
 #        - Pydantic: https://medium.com/@jonathan_b/a-simple-guide-to-configure-your-python-project-with-pydantic-and-a-yaml-file-bef76888f366
 #        - TypedDict:
 
-DOCKER_USE_CACHE_GLOBAL = False
-DOCKER_USE_CACHE_BASE = DOCKER_USE_CACHE_GLOBAL or False
 PREFIX_COMPOSE_SCOPE = "ComposeScope"
 
 
@@ -151,31 +130,6 @@ ASSET_HEADER_DISTRIBUTABLE = {
     "group_name": GROUP_DISTRIBUTABLE,
     "key_prefix": KEY_DISTRIBUTABLE,
 }
-
-
-@asset(
-    **ASSET_HEADER_BASE_ENV,
-    description="",
-)
-def constants_base(
-    context: AssetExecutionContext,
-) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
-    """ """
-
-    _constants = {
-        "DOCKER_USE_CACHE_BASE": DOCKER_USE_CACHE_BASE,
-        "DOCKER_USE_CACHE_GLOBAL": DOCKER_USE_CACHE_GLOBAL,
-        "ASSET_HEADER_BASE": ASSET_HEADER_BASE,
-    }
-
-    yield Output(_constants)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(_constants),
-        },
-    )
 
 
 @asset(
