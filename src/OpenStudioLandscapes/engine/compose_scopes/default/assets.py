@@ -174,9 +174,9 @@ if bool(ins):
         _compose_networks = set()
 
         for feature, data in features_in.items():
-            CONFIG: FeatureBaseModel = data["config"]
-            context.log.info(f"{CONFIG.feature_name = }")
-            compose_file = CONFIG.docker_compose
+            CONFIG_: FeatureBaseModel = data["config"]
+            context.log.info(f"{CONFIG_.feature_name = }")
+            compose_file = CONFIG_.docker_compose
             compose_files.append(compose_file)
 
         includes = []
