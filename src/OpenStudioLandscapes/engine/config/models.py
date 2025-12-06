@@ -7,12 +7,14 @@ from pydantic import (
     BaseModel,
     PositiveInt,
     field_validator,
-    Field, SecretStr,
+    Field,
 )
 
 from dagster import (
     get_dagster_logger,
 )
+
+from OpenStudioLandscapes.engine.enums import ComposeScope
 
 LOG = get_dagster_logger(__name__)
 
@@ -42,10 +44,16 @@ class DockerRegistryAccess(enum.StrEnum):
     private = "private"
 
 
-class ComposeScope(enum.StrEnum):
-    default = "default"
-    license_server = "license_server"
-    worker = "worker"
+class ComposeScopeBaseModel(BaseModel):
+    compose_scope: ComposeScope
+    attach_pangolin_site_to_compose_scope: bool = Field(
+        default=False,
+        description="Do you want the ComposeScope to dial in to "
+                    "a Pangolin site?",
+    )
+    docker_compose: pathlib.Path = Field(
+        description="The path to the `docker-compose.yml` file.",
+    )
 
 
 class FeatureBaseModel(BaseModel):

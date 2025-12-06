@@ -53,7 +53,6 @@ from OpenStudioLandscapes.engine.compose_scopes.default import (
 GROUP_COMPOSE = constants_compose.GROUP
 KEY_COMPOSE = constants_compose.KEY
 ASSET_HEADER_COMPOSE = constants_compose.ASSET_HEADER
-ENVIRONMENT_COMPOSE = constants_compose.ENVIRONMENT
 
 
 from OpenStudioLandscapes.engine.compose_scopes.license_server import (
@@ -63,7 +62,7 @@ from OpenStudioLandscapes.engine.compose_scopes.license_server import (
 GROUP_COMPOSE_LICENSE_SERVER = constants_compose_license_server.GROUP
 KEY_COMPOSE_LICENSE_SERVER = constants_compose_license_server.KEY
 ASSET_HEADER_COMPOSE_LICENSE_SERVER = constants_compose_license_server.ASSET_HEADER
-ENVIRONMENT_COMPOSE_LICENSE_SERVER = constants_compose_license_server.ENVIRONMENT
+# ENVIRONMENT_COMPOSE_LICENSE_SERVER = constants_compose_license_server.ENVIRONMENT
 
 
 from OpenStudioLandscapes.engine.compose_scopes.worker import (
@@ -73,7 +72,7 @@ from OpenStudioLandscapes.engine.compose_scopes.worker import (
 GROUP_COMPOSE_WORKER = constants_compose_worker.GROUP
 KEY_COMPOSE_WORKER = constants_compose_worker.KEY
 ASSET_HEADER_COMPOSE_WORKER = constants_compose_worker.ASSET_HEADER
-ENVIRONMENT_COMPOSE_WORKER = constants_compose_worker.ENVIRONMENT
+# ENVIRONMENT_COMPOSE_WORKER = constants_compose_worker.ENVIRONMENT
 
 
 GROUP_BASE_ENV = "OpenStudioLandscapes_Env"

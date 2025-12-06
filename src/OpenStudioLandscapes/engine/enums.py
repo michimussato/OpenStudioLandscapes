@@ -8,7 +8,6 @@ __all__ = [
     "DockerComposeDependsOnPolicy",
     "DockerComposePolicies",
     "DockerComposeNetworkMode",
-    # "DockerRepositoryType",
 ]
 
 import enum
@@ -111,8 +110,3 @@ class DockerComposePolicies:
 
 # Docker Compose Enums
 ##################################################################
-
-
-# class DockerRepositoryType(enum.StrEnum):
-#     PUBLIC = "public"
-#     PRIVATE = "private"

@@ -183,7 +183,8 @@ def factory_scrape_networks(
 
         for feature, data in features_in.items():
             context.log.info(f"{features_in[feature] = }")
-            compose_file = features_in[feature]["compose_yaml"]
+            CONFIG: FeatureBaseModel = data.pop("config")
+            compose_file: pathlib.Path = CONFIG.docker_compose
 
             network_dict = get_networks_dict(
                 context=context,
