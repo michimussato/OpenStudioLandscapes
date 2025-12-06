@@ -1,7 +1,6 @@
 __all__ = [
     "op_group_out",
     "op_env",
-    "op_constants",
     "op_docker_compose_graph",
 ]
 
@@ -28,6 +27,7 @@ from docker_compose_graph.docker_compose_graph import DockerComposeGraph
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.utils import *
+from OpenStudioLandscapes.engine.config.models import FeatureBaseModel
 
 
 # Todo
@@ -65,8 +65,6 @@ from OpenStudioLandscapes.engine.utils import *
     name="op_env",
     ins={
         "group_in": In(dict),
-        "COMPOSE_SCOPE": In(ComposeScope),
-        "DOCKER_COMPOSE": In(pathlib.Path),
     },
     out={
         "env_out": Out(dict),
@@ -75,29 +73,12 @@ from OpenStudioLandscapes.engine.utils import *
 def op_env(
     context: OpExecutionContext,
     group_in: dict,  # pylint: disable=redefined-outer-name
-    COMPOSE_SCOPE: ComposeScope,  # pylint: disable=redefined-outer-name
-    DOCKER_COMPOSE: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
     """
     Provides a Feature with the `env` dict.
     """
 
-    env_parent_in = copy.deepcopy(group_in["env"])
-
     env_in = copy.deepcopy(group_in["env"])
-
-    env_in.update(
-        expand_dict_vars(
-            dict_to_expand={"DOCKER_COMPOSE": DOCKER_COMPOSE.as_posix()},
-            kv=env_in,
-        )
-    )
-
-    env_in.update(
-        {
-            "COMPOSE_SCOPE": COMPOSE_SCOPE,
-        },
-    )
 
     if "env_out" in context.selected_output_names:
 
@@ -146,64 +127,6 @@ def op_docker_config_json(
         asset_key=context.asset_key,
         metadata={
             "__".join(context.asset_key.path): MetadataValue.path(docker_config_json),
-        },
-    )
-
-
-# Todo
-#  - [ ] convert to factory
-@op(
-    name="op_constants",
-    ins={
-        "group_in": In(dict),
-        # "NAME": In(str),
-    },
-    out={
-        "COMPOSE_SCOPE": Out(ComposeScope),
-    },
-)
-def op_constants(
-    context: OpExecutionContext,
-    group_in: dict,  # pylint: disable=redefined-outer-name
-    # NAME: str,  # pylint: disable=redefined-outer-name
-) -> Generator[
-    Output[ComposeScope]
-    | AssetMaterialization
-    | Output[Any]
-    | Output[
-        MutableMapping[
-            OpenStudioLandscapesConfig, MutableMapping[str, bool | str | Any]
-        ]
-    ]
-    | Output[bool | Any]
-    | Any,
-    None,
-    None,
-]:
-    """
-    Provides a Feature with some constant data.
-    """
-
-    features = group_in["features"]
-
-    # COMPOSE_SCOPE
-    COMPOSE_SCOPE = get_compose_scope(
-        context=context,
-        features=features,
-        name=NAME,
-    )
-
-    yield Output(
-        output_name="COMPOSE_SCOPE",
-        value=COMPOSE_SCOPE,
-    )
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key_for_output("COMPOSE_SCOPE"),
-        metadata={
-            "__".join(
-                context.asset_key_for_output("COMPOSE_SCOPE").path
-            ): MetadataValue.json(COMPOSE_SCOPE),
         },
     )
 
@@ -668,6 +591,7 @@ def op_docker_compose_graph(
         "docker_config_json": In(pathlib.Path),
         "cmd_extend": In(list),
         "cmd_append": In(dict[str, list]),
+        "CONFIG": In(FeatureBaseModel),
     },
     out={
         "group_out": Out(pathlib.Path),
@@ -688,6 +612,7 @@ def op_group_out(
     docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name
     cmd_extend: list,  # pylint: disable=redefined-outer-name
     cmd_append: dict[str, list],  # pylint: disable=redefined-outer-name
+    CONFIG: FeatureBaseModel,  # pylint: disable=redefined-outer-name
 ) -> Generator[
     Output[pathlib.Path]
     | Output[MutableMapping]
@@ -704,7 +629,7 @@ def op_group_out(
         ComposeCmdExclusion.CMD_APPEND_ALWAYS_EXCLUDE_FROM_QUOTATION.value
     )
 
-    DOCKER_COMPOSE = pathlib.Path(env["DOCKER_COMPOSE"])
+    DOCKER_COMPOSE: pathlib.Path = CONFIG.docker_compose
     # Todo:
     #  - [ ] Is this necessary here?
     DOCKER_COMPOSE.parent.mkdir(parents=True, exist_ok=True)
@@ -714,7 +639,7 @@ def op_group_out(
     context.log.debug(context.selected_output_names)
 
     compose_project_name = (
-        f"{env.get('LANDSCAPE', 'default').replace('.', '-')}-{env['COMPOSE_SCOPE']}"
+        f"{env.get('LANDSCAPE', 'default').replace('.', '-')}-{CONFIG.compose_scope}"
     )
 
     group_names_by_key_dict = context.assets_def.group_names_by_key

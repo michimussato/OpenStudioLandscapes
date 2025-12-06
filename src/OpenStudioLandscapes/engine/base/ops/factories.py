@@ -31,7 +31,7 @@ from docker_compose_graph.utils import *
 
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.utils import *
-from OpenStudioLandscapes.engine.config.models import DockerConfigModel, ConfigEngine
+from OpenStudioLandscapes.engine.config.models import DockerConfigModel, ConfigEngine, FeatureBaseModel
 
 # https://github.com/yaml/pyyaml/issues/722#issuecomment-1969292770
 yaml.SafeDumper.add_multi_representer(
@@ -88,12 +88,12 @@ def factory_feature_out(
         kwargs["config_engine"] = config_engine
         docker_config_json = kwargs["group_in"].pop("docker_config_json")
         kwargs["docker_config_json"] = docker_config_json
-        config = kwargs.pop("CONFIG")
-        kwargs["config"] = config
+        CONFIG: FeatureBaseModel = kwargs.pop("CONFIG")
+        kwargs["config"] = CONFIG
 
         # Todo
         #  - [ ] replace "group_out" (i.e. with "compose_yaml" or "feature_out")
-        kwargs["compose_yaml"] = kwargs["env"]["DOCKER_COMPOSE"]
+        # kwargs["compose_yaml"] = kwargs["env"]["DOCKER_COMPOSE"]
 
         output_name = "feature_out"
 
@@ -404,8 +404,9 @@ def factory_compose(
         env: Dict = kwargs.pop("env")
         compose_networks = kwargs.pop("compose_networks")
         compose_maps = kwargs.pop("compose_maps")
+        CONFIG: FeatureBaseModel = kwargs.pop("CONFIG")
 
-        DOCKER_COMPOSE = pathlib.Path(env["DOCKER_COMPOSE"])
+        DOCKER_COMPOSE: pathlib.Path = CONFIG.docker_compose
         DOCKER_COMPOSE.parent.mkdir(parents=True, exist_ok=True)
 
         if "networks" in compose_networks:

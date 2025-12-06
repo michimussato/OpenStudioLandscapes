@@ -10,20 +10,6 @@ def get_group_out(
     ASSET_HEADER: dict,
 ) -> AssetsDefinition:
 
-    # group_out_op = factory_group_out(
-    #     name=f"op_group_in_{ASSET_HEADER['group_name']}",
-    #     ins={
-    #         # "compose": In(dict),
-    #         "env": In(dict),
-    #         "docker_config": In(DockerConfig),
-    #     },
-    #     out={
-    #         "group_out": Out(pathlib.Path),
-    #         "compose_project_name": Out(str),
-    #         "cmd_docker_compose_up": Out(dict[str, list]),
-    #     },
-    # )
-
     group_out = AssetsDefinition.from_op(
         op_group_out,
         can_subset=False,
@@ -45,6 +31,7 @@ def get_group_out(
             ),
             "cmd_extend": AssetKey([*ASSET_HEADER["key_prefix"], "cmd_extend"]),
             "cmd_append": AssetKey([*ASSET_HEADER["key_prefix"], "cmd_append"]),
+            "CONFIG": AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
         },
     )
 

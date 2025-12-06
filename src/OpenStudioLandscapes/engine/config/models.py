@@ -58,6 +58,9 @@ class FeatureBaseModel(BaseModel):
         frozen=True,
     )
     key_prefixes: List[str] = Field()
+    docker_compose: pathlib.Path = Field(
+        description="The path to the `docker-compose.yml` file.",
+    )
     compose_scope: ComposeScope = Field(
         default="default",
         examples=["default", "license_server", "worker"],
