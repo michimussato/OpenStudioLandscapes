@@ -1,5 +1,6 @@
 import copy
 import enum
+import json
 import operator
 import pathlib
 import textwrap
@@ -11,7 +12,6 @@ from dagster import (
     AssetIn,
     AssetKey,
     AssetMaterialization,
-    AssetsDefinition,
     MetadataValue,
     Output,
     asset,
@@ -28,6 +28,7 @@ from OpenStudioLandscapes.engine.compose_scopes.default.constants import (
     ATTACH_SITE_TO_COMPOSE_SCOPE,
     COMPOSE_SCOPE,
 )
+from OpenStudioLandscapes.engine.config.models import FeatureBaseModel
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.discovery.discovery import *
 from OpenStudioLandscapes.engine.enums import *
@@ -62,25 +63,14 @@ if bool(ins):
             "env_base": AssetIn(
                 AssetKey([*ASSET_HEADER_COMPOSE["key_prefix"], "env_base"])
             ),
-            "DOCKER_COMPOSE": AssetIn(
-                AssetKey([*ASSET_HEADER_COMPOSE["key_prefix"], "DOCKER_COMPOSE"])
-            ),
         },
     )
     def env(
         context: AssetExecutionContext,
         env_base: dict,
-        DOCKER_COMPOSE: pathlib.Path,  # pylint: disable=redefined-outer-name
     ) -> Generator[Output[Dict] | AssetMaterialization, None, None]:
 
         env_in = copy.deepcopy(env_base)
-
-        env_in.update(
-            expand_dict_vars(
-                dict_to_expand={"DOCKER_COMPOSE": DOCKER_COMPOSE.as_posix()},
-                kv=env_in,
-            )
-        )
 
         env_in.update(
             {
@@ -216,8 +206,9 @@ if bool(ins):
         _compose_networks = set()
 
         for feature, data in features_in.items():
-            context.log.info(f"{features_in[feature] = }")
-            compose_file = features_in[feature]["compose_yaml"]
+            CONFIG: FeatureBaseModel = data["config"]
+            context.log.info(f"{CONFIG.feature_name = }")
+            compose_file = CONFIG.docker_compose
             compose_files.append(compose_file)
 
         includes = []
@@ -268,6 +259,7 @@ if bool(ins):
                     docker_dict_include
                 ),
                 "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml_include}\n```"),
+                "includes": MetadataValue.json(includes),
                 "OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE": MetadataValue.bool(
                     ATTACH_SITE_TO_COMPOSE_SCOPE,
                 ),
@@ -297,11 +289,14 @@ if bool(ins):
     ]:
         """ """
 
+        context.log.info(f"{group_out_base = }")
         context.log.info(f"{kwargs = }")
 
-        env_base = group_out_base["env_base"]
+        env_base = group_out_base.pop("env_base")
 
-        docker_config_json: pathlib.Path = group_out_base["docker_config_json"]
+        config_engine = group_out_base.pop("config_engine")
+
+        docker_config_json: pathlib.Path = group_out_base.pop("docker_config_json")
 
         docker_compose_yaml: MutableMapping[str, str] = {}
         docker_compose: MutableMapping[str, Any] = {}
@@ -314,15 +309,16 @@ if bool(ins):
             # - docker_config_json
             # from kwargs dicts
             for d in [
+                "env",
                 "env_base",
                 "features",
-                "config",  # pydantic.BaseModel in a nested dict is not JSON serializable yet
+                # "config",  # pydantic.BaseModel in a nested dict is not JSON serializable yet
                 "config_engine",  # pydantic.BaseModel in a nested dict is not JSON serializable yet
                 "docker_config_json",
             ]:
                 context.log.debug(f"Popping `{d}`: {kwargs[k].pop(d)}")
 
-            docker_compose_yaml[k] = str(kwargs[k]["compose_yaml"])
+            # docker_compose_yaml[k] = str(kwargs[k]["compose_yaml"])
             docker_compose[k] = str(kwargs[k]["compose"])
 
         kwargs["env_base"] = env_base
@@ -330,15 +326,18 @@ if bool(ins):
 
         yield Output(kwargs)
 
+        kwargs_str = json.loads(json.dumps(kwargs, default=str))
+
         yield AssetMaterialization(
             asset_key=context.asset_key,
             metadata={
                 "docker_compose_yaml": MetadataValue.json(docker_compose_yaml),
                 "docker_compose": MetadataValue.json(docker_compose),
-                **metadatavalues_from_dict(
-                    context=context,
-                    d_serialized=kwargs,
-                ),
+                "kwargs": MetadataValue.json(kwargs_str),
+                # **metadatavalues_from_dict(
+                #     context=context,
+                #     d_serialized=kwargs,
+                # ),
             },
         )
 
@@ -382,24 +381,24 @@ if bool(ins):
             },
         )
 
-    group_out = get_group_out(
-        ASSET_HEADER=ASSET_HEADER_COMPOSE,
-    )
+    # group_out = get_group_out(
+    #     ASSET_HEADER=ASSET_HEADER_COMPOSE,
+    # )
 
     scrape_networks = get_scrape_networks(
         ASSET_HEADER=ASSET_HEADER_COMPOSE,
     )
 
-    # Todo
-    #  - [ ] Move to factory
-    docker_compose_graph = AssetsDefinition.from_op(
-        op_docker_compose_graph,
-        group_name=ASSET_HEADER_COMPOSE["group_name"],
-        key_prefix=ASSET_HEADER_COMPOSE["key_prefix"],
-        keys_by_input_name={
-            "group_out": AssetKey([*ASSET_HEADER_COMPOSE["key_prefix"], "group_out"]),
-            "compose_project_name": AssetKey(
-                [*ASSET_HEADER_COMPOSE["key_prefix"], "compose_project_name"]
-            ),
-        },
-    )
+    # # Todo
+    # #  - [ ] Move to factory
+    # docker_compose_graph = AssetsDefinition.from_op(
+    #     op_docker_compose_graph,
+    #     group_name=ASSET_HEADER_COMPOSE["group_name"],
+    #     key_prefix=ASSET_HEADER_COMPOSE["key_prefix"],
+    #     keys_by_input_name={
+    #         "group_out": AssetKey([*ASSET_HEADER_COMPOSE["key_prefix"], "group_out"]),
+    #         "compose_project_name": AssetKey(
+    #             [*ASSET_HEADER_COMPOSE["key_prefix"], "compose_project_name"]
+    #         ),
+    #     },
+    # )

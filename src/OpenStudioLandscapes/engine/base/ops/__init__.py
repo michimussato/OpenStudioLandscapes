@@ -1,16 +1,14 @@
 __all__ = [
     "op_group_out",
-    "op_env",
     "op_docker_compose_graph",
 ]
 
 import base64
-import copy
 import os
 import pathlib
 import shlex
 import shutil
-from typing import Any, Generator, List, MutableMapping, Union
+from typing import Generator, List, MutableMapping, Union
 
 import pydot
 from dagster import (
@@ -28,73 +26,6 @@ from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.utils import *
 from OpenStudioLandscapes.engine.config.models import FeatureBaseModel
-
-
-# Todo
-#  - [ ] convert to factory:
-# def factory_env(
-#     name="op_env_from_factory",
-#     ins=None,
-#     **kwargs,
-# ) -> OpDefinition:
-#     """
-#     https://docs.dagster.io/guides/build/ops#op-factory
-#
-#     Args:
-#         name (str): The name of the new op.
-#         ins (Dict[str, In]): Any Ins for the new op. Default: None.
-#
-#     Returns:
-#         function: The new op.
-#     """
-#
-#     @op(
-#         name=name,
-#         ins=ins,
-#         **kwargs,
-#     )
-#     def _op_env(
-#         context: OpExecutionContext,
-#         **kwargs,
-#     ):
-#         """ """
-#         pass
-#
-#     return _op_env
-@op(
-    name="op_env",
-    ins={
-        "group_in": In(dict),
-    },
-    out={
-        "env_out": Out(dict),
-    },
-)
-def op_env(
-    context: OpExecutionContext,
-    group_in: dict,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[dict] | AssetMaterialization, None, None]:
-    """
-    Provides a Feature with the `env` dict.
-    """
-
-    env_in = copy.deepcopy(group_in["env"])
-
-    if "env_out" in context.selected_output_names:
-
-        yield Output(
-            output_name="env_out",
-            value=env_in,
-        )
-
-        yield AssetMaterialization(
-            asset_key=context.asset_key_for_output("env_out"),
-            metadata={
-                "__".join(
-                    context.asset_key_for_output("env_out").path
-                ): MetadataValue.json(env_in),
-            },
-        )
 
 
 # Todo
@@ -587,8 +518,7 @@ def op_docker_compose_graph(
     name="group_out",
     ins={
         "compose": In(dict),
-        "env": In(dict),
-        "docker_config_json": In(pathlib.Path),
+        "group_in": In(dict),
         "cmd_extend": In(list),
         "cmd_append": In(dict[str, list]),
         "CONFIG": In(FeatureBaseModel),
@@ -608,8 +538,7 @@ def op_group_out(
     #        sure that the compose files actually exist
     #        before compose-graph analyzes them
     compose: dict,  # pylint: disable=redefined-outer-name
-    env: dict,  # pylint: disable=redefined-outer-name
-    docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name
+    group_in: dict,  # pylint: disable=redefined-outer-name
     cmd_extend: list,  # pylint: disable=redefined-outer-name
     cmd_append: dict[str, list],  # pylint: disable=redefined-outer-name
     CONFIG: FeatureBaseModel,  # pylint: disable=redefined-outer-name
@@ -624,6 +553,15 @@ def op_group_out(
 ]:
 
     del compose
+    context.log.debug(f"{group_in = }")
+
+    if "group_in" in group_in:
+        # Todo:
+        #  - [ ] this is a bit hacky
+        group_in = group_in["group_in"]
+
+    env: dict = group_in.pop("env")
+    docker_config_json: pathlib.Path = group_in.pop("docker_config_json")
 
     cmd_append["exclude_from_quote"].extend(
         ComposeCmdExclusion.CMD_APPEND_ALWAYS_EXCLUDE_FROM_QUOTATION.value

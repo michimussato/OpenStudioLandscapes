@@ -25,10 +25,7 @@ def get_group_out(
         },
         keys_by_input_name={
             "compose": AssetKey([*ASSET_HEADER["key_prefix"], "compose"]),
-            "env": AssetKey([*ASSET_HEADER["key_prefix"], "env"]),
-            "docker_config_json": AssetKey(
-                [*ASSET_HEADER["key_prefix"], "docker_config_json"]
-            ),
+            "group_in": AssetKey([*ASSET_HEADER["key_prefix"], "group_in"]),
             "cmd_extend": AssetKey([*ASSET_HEADER["key_prefix"], "cmd_extend"]),
             "cmd_append": AssetKey([*ASSET_HEADER["key_prefix"], "cmd_append"]),
             "CONFIG": AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),

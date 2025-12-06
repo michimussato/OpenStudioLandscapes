@@ -73,6 +73,10 @@ def factory_feature_out(
         #  - [ ] I can't serialize this nested BaseModel yet
         config_parent = kwargs['group_in'].pop('config_parent')
 
+        # context.log.debug(f"Popping: {kwargs.pop('env') = }")
+        group_in: dict = kwargs.pop('group_in')
+        kwargs["group_in"] = group_in
+
         # I want
         # - env_base
         # - features
@@ -80,14 +84,6 @@ def factory_feature_out(
         # - docker_config_json
         # to stay in the root level
         # of the dict
-        env_base = kwargs["group_in"].pop("env_base")
-        kwargs["env_base"] = env_base
-        features = kwargs["group_in"].pop("features")
-        kwargs["features"] = features
-        config_engine = kwargs["group_in"].pop("config_engine")
-        kwargs["config_engine"] = config_engine
-        docker_config_json = kwargs["group_in"].pop("docker_config_json")
-        kwargs["docker_config_json"] = docker_config_json
         CONFIG: FeatureBaseModel = kwargs.pop("CONFIG")
         kwargs["config"] = CONFIG
 
@@ -102,12 +98,14 @@ def factory_feature_out(
             value=kwargs,
         )
 
+        kwargs_str = json.loads(json.dumps(kwargs, default=str))
+
         yield AssetMaterialization(
             asset_key=context.asset_key_for_output(output_name),
             metadata={
                 **metadatavalues_from_dict(
                     context=context,
-                    d_serialized=kwargs,
+                    d_serialized=kwargs_str,
                 ),
             },
         )
@@ -325,55 +323,6 @@ def factory_docker_config(
     return _op_docker_config
 
 
-# def factory_docker_config_json(
-#     name="op_docker_config_json_from_factory",
-#     ins=None,
-#     # out=None,
-#     **kwargs,
-# ) -> OpDefinition:
-#     """
-#     https://docs.dagster.io/guides/build/ops#op-factory
-#
-#     Args:
-#         name (str): The name of the new op.
-#         ins (Dict[str, In]): Any Ins for the new op. Default: None.
-#
-#     Returns:
-#         function: The new op.
-#     """
-#
-#     @op(
-#         name=name,
-#         ins=ins,
-#         **kwargs,
-#     )
-#     def _op_docker_config_json(
-#         context: OpExecutionContext,
-#         **kwargs,
-#     ):
-#
-#         group_in = kwargs.pop("group_in")
-#         context.log.debug(group_in)
-#         docker_config: DockerConfig = group_in.pop("docker_config")
-#         context.log.debug(docker_config)
-#
-#         output_name = "docker_config_json"
-#
-#         yield Output(
-#             output_name=output_name,
-#             value=docker_config,
-#         )
-#
-#         yield AssetMaterialization(
-#             asset_key=context.asset_key_for_output(output_name),
-#             metadata={
-#                 docker_config.name: MetadataValue.json(docker_config.value),
-#             },
-#         )
-#
-#     return _op_docker_config_json
-
-
 def factory_compose(
     name="op_compose_from_factory",
     ins=None,
@@ -401,7 +350,6 @@ def factory_compose(
     ):
         """ """
 
-        env: Dict = kwargs.pop("env")
         compose_networks = kwargs.pop("compose_networks")
         compose_maps = kwargs.pop("compose_maps")
         CONFIG: FeatureBaseModel = kwargs.pop("CONFIG")
@@ -427,26 +375,6 @@ def factory_compose(
         with open(DOCKER_COMPOSE, mode="w", encoding="utf-8") as fw:
             fw.write(docker_yaml)
 
-        # Write .env
-        dot_env = DOCKER_COMPOSE.parent / ".env"
-        with open(dot_env, mode="w", encoding="utf-8") as fw:
-            pass
-
-        # Add content to .env
-        for k, v in env.items():
-            context.log.debug(f"{k} = {v}")
-            set_key(
-                dotenv_path=dot_env,
-                key_to_set=k,
-                value_to_set=str(v),
-                quote_mode=["always", "auto", "never"][1],
-                export=False,
-                encoding="utf-8",
-            )
-
-        with open(dot_env, "r") as fr:
-            lines = fr.read()
-
         yield Output(
             output_name="compose",
             value=docker_dict,
@@ -457,7 +385,6 @@ def factory_compose(
             metadata={
                 "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
                 "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
-                "dot_env": MetadataValue.md(f"```\n{lines}\n```"),
                 # Todo: "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)),
             },
         )
@@ -515,6 +442,9 @@ def factory_group_in(
         # Access Enum value by key:
         # https://stackoverflow.com/a/38716384
         group_out: dict = kwargs.pop(GroupIn(kw_key))
+        context.log.debug(f"{group_out = }")
+
+        group_out["feature_out_parent"] = group_out.pop("feature_out", {})
 
 
         if "config" in group_out:
@@ -532,12 +462,14 @@ def factory_group_in(
 
         assert bool(kwargs) == False
 
+        group_out_str = json.loads(json.dumps(group_out, default=str))
+
         yield AssetMaterialization(
             asset_key=context.asset_key,
             metadata={
                 **metadatavalues_from_dict(
                     context=context,
-                    d_serialized=group_out,
+                    d_serialized=group_out_str,
                 ),
             },
         )
