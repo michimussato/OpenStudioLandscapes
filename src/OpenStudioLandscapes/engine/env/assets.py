@@ -28,6 +28,7 @@ from OpenStudioLandscapes.engine import exceptions
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.utils import *
 from OpenStudioLandscapes.engine.config.models import ConfigEngine
+from OpenStudioLandscapes.engine.config import dist
 
 
 @asset(
@@ -339,7 +340,7 @@ def CONFIG(
             context.log.error(
                 "Config Validation failed. "
                 f"The custom `config.yml` ({config_yml.as_posix()}) for "
-                "{FEATURE} contains "
+                f"{dist.name} contains "
                 "errors, missing and/or illegal parameters."
             )
             raise ValidationError from err
@@ -360,7 +361,7 @@ def CONFIG(
         context.log.error(
             "Config Validation failed. "
             f"The parsed config for "
-            "{FEATURE} contains "
+            f"{dist.name} contains "
             "errors, missing and/or illegal parameters."
         )
         raise ValidationError from err
@@ -384,7 +385,7 @@ def CONFIG(
         metadata={
             "__".join(context.asset_key.path): MetadataValue.md(f"```json\n{json.dumps(config_validated.model_dump(mode='json'), indent=2, default=str)}\n```"),
             "config_yml": MetadataValue.path(config_yml),
-            "config_raw": MetadataValue.md(f"```json\n{json.dumps(config, indent=2, default=str)}\n```"),
+            # "config_raw": MetadataValue.md(f"```json\n{json.dumps(config, indent=2, default=str)}\n```"),
             "diff": MetadataValue.md(f"```json\n{json.dumps(diff, indent=2, default=str)}\n```"),
         },
     )
