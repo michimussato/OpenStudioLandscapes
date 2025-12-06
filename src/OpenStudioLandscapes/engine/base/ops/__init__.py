@@ -156,7 +156,7 @@ def op_docker_config_json(
     name="op_constants",
     ins={
         "group_in": In(dict),
-        "NAME": In(str),
+        # "NAME": In(str),
     },
     out={
         "COMPOSE_SCOPE": Out(ComposeScope),
@@ -165,7 +165,7 @@ def op_docker_config_json(
 def op_constants(
     context: OpExecutionContext,
     group_in: dict,  # pylint: disable=redefined-outer-name
-    NAME: str,  # pylint: disable=redefined-outer-name
+    # NAME: str,  # pylint: disable=redefined-outer-name
 ) -> Generator[
     Output[ComposeScope]
     | AssetMaterialization

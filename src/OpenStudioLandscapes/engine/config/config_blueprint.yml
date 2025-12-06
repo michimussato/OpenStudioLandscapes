@@ -23,8 +23,8 @@ openstudiolandscapes__docker_config:
     docker_pull: true  # Is this necessary?
     # docker_use_local: false  # What is this for?
     docker_repository_name: "OpenStudioLandscapes"  # will be converted to all lowercase
-    docker_registry_access: "public"
-    docker_registry_protocol: "https"
+#    docker_registry_access: "public"
+#    docker_registry_protocol: "https"
     docker_registry_fqdn: "registry.openstudiolandscapes.lan"
     docker_registry_port: 5000
     docker_registry_username: "registry-user"

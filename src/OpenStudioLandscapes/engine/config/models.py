@@ -1,7 +1,14 @@
+import enum
 import os
 import pathlib
+from typing import List
 
-from pydantic import BaseModel, field_validator
+from pydantic import (
+    BaseModel,
+    PositiveInt,
+    field_validator,
+    Field, SecretStr,
+)
 
 from dagster import (
     get_dagster_logger,
@@ -13,12 +20,49 @@ LOG = get_dagster_logger(__name__)
 """
 Resources:
 - https://app.studyraid.com/en/read/15002/518529/conditional-validation-based-on-other-fields
+- https://thelinuxcode.com/work-with-pydantic-fields-detailed-examination/
+- https://www.youtube.com/watch?v=Vj-iU-8_xLs
+- https://www.youtube.com/watch?v=502XOB0u8OY
+- https://docs.pydantic.dev/2.0/usage/models/
 """
 
 
 # Todo
 #  - [ ] Learn about serialization
 #        - https://docs.pydantic.dev/latest/concepts/serialization/
+
+
+class DockerRegistryProtocol(enum.StrEnum):
+    http = "http"
+    https = "https"
+
+
+class DockerRegistryAccess(enum.StrEnum):
+    public = "public"
+    private = "private"
+
+
+class ComposeScope(enum.StrEnum):
+    default = "default"
+    license_server = "license_server"
+    worker = "worker"
+
+
+class FeatureBaseModel(BaseModel):
+    feature_name: str = Field(
+        description="The name of the feature.",
+        examples=["OpenStudioLandscapes-Kitsu", "OpenStudioLandscapes-VERT"],
+        frozen=True,
+    )
+    group_name: str = Field(
+        frozen=True,
+    )
+    key_prefixes: List[str] = Field()
+    compose_scope: ComposeScope = Field(
+        default="default",
+        examples=["default", "license_server", "worker"],
+    )
+    # dependencies: List[str] = Field(examples=["OpenStudioLandscapes-Kitsu"])
 
 
 class DockerRegistryConfig(BaseModel):
@@ -35,15 +79,64 @@ class DockerRegistryConfig(BaseModel):
       "docker_use_local": false
     }
     """
-    docker_push: bool
-    docker_pull: bool
-    docker_repository_name: str
-    docker_registry_access: str
-    docker_registry_protocol: str
+    docker_push: bool = Field(description="Run `docker` commands with the `--push` flag.")
+    docker_pull: bool = Field(description="Run `docker` commands with the `--pull` flag.")
+    docker_repository_name: str = Field(default="openstudiolandscapes", description="The registry repository name.")
+    docker_registry_access: DockerRegistryAccess = Field(
+        default="public",
+        examples=["public", "private"],
+    )
+    docker_registry_protocol: DockerRegistryProtocol = Field(
+        default="https",
+        examples=["http", "https"],
+    )
     docker_registry_fqdn: str
-    docker_registry_port: int  # PositiveInt
-    docker_registry_username: str
-    docker_registry_password: str
+    docker_registry_port: PositiveInt
+    docker_registry_username: str = Field(description="The username of the Docker registry.")
+    # Todo: docker_registry_password: SecretStr = Field(description="The password of the Docker registry.")
+    #  Error:
+    #  $ /usr/local/bin/docker --config /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-12-06-12-17-15-0a7941b92f824ef49f91c51870d89728/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json push registry.openstudiolandscapes.lan:5000/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-12-06-12-17-15-0a7941b92f824ef49f91c51870d89728
+    #  The push refers to repository [registry.openstudiolandscapes.lan:5000/openstudiolandscapes/openstudiolandscapes_base_build_docker_image]
+    #  f63ce67a7c61: Preparing
+    #  f570bf7dffd1: Waiting
+    #  190c42798dae: Waiting
+    #  16035682a394: Waiting
+    #  c8fa3aa32373: Waiting
+    #  37f6c938862f: Waiting
+    #  3713e6602b1c: Waiting
+    #  5f70bf18a086: Waiting
+    #  f414c81675d7: Waiting
+    #  3a7a3de43f27: Waiting
+    #  9b7574765262: Waiting
+    #  e3a9ac4f35d1: Waiting
+    #  814a4cc3f847: Waiting
+    #  82ebc9df533a: Waiting
+    #  04d8d56cf576: Waiting
+    #  40f81487c646: Waiting
+    #  5a1c3461da13: Waiting
+    #  7db9cbeb8f44: Waiting
+    #  46297afc02d3: Waiting
+    #  475e9b631c20: Waiting
+    #  ba5b5fb59128: Waiting
+    #  ca51a7a2856a: Waiting
+    #  dc863ccfdead: Waiting
+    #  85597d481860: Waiting
+    #  93079f5ed46d: Waiting
+    #  e94f415811a7: Waiting
+    #  32e97507fefc: Waiting
+    #  9a00c67ce6ea: Waiting
+    #  12e839af3df7: Waiting
+    #  c1a487dda8ca: Waiting
+    #  a319b73b6720: Waiting
+    #  23a30637df68: Waiting
+    #  a2a119fe7b9c: Waiting
+    #  904ab20e9bbc: Waiting
+    #  b91b4f675656: Waiting
+    #  d24a6c37ccbe: Waiting
+    #  63856c8ccf1c: Waiting
+    #  470b66ea5123: Waiting
+    #  unauthorized: authentication required
+    docker_registry_password: str = Field(description="The password of the Docker registry.")
 
     @field_validator("docker_repository_name")
     @classmethod
@@ -56,9 +149,15 @@ class DockerRegistryConfig(BaseModel):
 
 class DockerConfigModel(BaseModel):
 
-    use_registry: bool
-    no_cache: bool
-    docker_registry_config: DockerRegistryConfig
+    use_registry: bool = Field(
+        default=False,
+        description="Enable use of local or remote registry: push/pull images to registry like hub.docker.io.",
+    )
+    no_cache: bool = Field(
+        default=False,
+        description="Run `docker` commands with the `--no-cache` flag.",
+    )
+    docker_registry_config: DockerRegistryConfig = Field()
 
     # @field_validator("docker_registry_config")
     # @classmethod

@@ -31,7 +31,7 @@ from docker_compose_graph.utils import *
 
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.utils import *
-from OpenStudioLandscapes.engine.config.validate_config import DockerConfigModel, ConfigEngine
+from OpenStudioLandscapes.engine.config.models import DockerConfigModel, ConfigEngine
 
 # https://github.com/yaml/pyyaml/issues/722#issuecomment-1969292770
 yaml.SafeDumper.add_multi_representer(

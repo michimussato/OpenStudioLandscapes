@@ -6,7 +6,7 @@ from dagster import (
 )
 
 from OpenStudioLandscapes.engine.base.ops.factories import factory_docker_config
-from OpenStudioLandscapes.engine.config.validate_config import DockerConfigModel
+from OpenStudioLandscapes.engine.config.models import DockerConfigModel
 
 
 def get_docker_config(

@@ -23,6 +23,7 @@ project:
   - gitpython  # https://gitpython.readthedocs.io/en/latest/
   - PyYAML  # https://pyyaml.org/wiki/PyYAMLDocumentation
   - snakemd  # https://www.snakemd.io/en/latest/docs/
+  - email-validator
   # docker-compose-graph is needed because of yaml_tags.overrides
   - docker-compose-graph @ git+https://github.com/michimussato/docker-compose-graph.git@v1.0.0
   dynamic:

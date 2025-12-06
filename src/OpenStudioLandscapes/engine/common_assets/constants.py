@@ -16,7 +16,7 @@ def get_constants(
         group_name=ASSET_HEADER["group_name"],
         keys_by_input_name={
             "group_in": AssetKey([*ASSET_HEADER["key_prefix"], "group_in"]),
-            "NAME": AssetKey([*ASSET_HEADER["key_prefix"], "NAME"]),
+            # "NAME": AssetKey([*ASSET_HEADER["key_prefix"], "NAME"]),
         },
         keys_by_output_name={
             "COMPOSE_SCOPE": AssetKey([*ASSET_HEADER["key_prefix"], "COMPOSE_SCOPE"]),

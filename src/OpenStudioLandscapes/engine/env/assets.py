@@ -27,7 +27,7 @@ from dagster import (
 from OpenStudioLandscapes.engine import exceptions
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.utils import *
-from OpenStudioLandscapes.engine.config.validate_config import ConfigEngine
+from OpenStudioLandscapes.engine.config.models import ConfigEngine
 
 
 @asset(

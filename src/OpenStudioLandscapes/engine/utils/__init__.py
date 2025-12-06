@@ -45,7 +45,7 @@ from dagster import (
     get_dagster_logger,
 )
 
-from OpenStudioLandscapes.engine.config.validate_config import ConfigEngine, DockerConfigModel
+from OpenStudioLandscapes.engine.config.models import DockerConfigModel
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.exceptions import (
     ComposeScopeException,
@@ -244,8 +244,9 @@ def get_compose_scope(
 
     feature_keys = features.keys()
 
-    _module = name
+    # _module = name
     _parent = ".".join(_module.split(".")[:-1])
+    context.log.error(f"{_parent = }")
     _definitions = ".".join([_parent, "definitions"])
 
     COMPOSE_SCOPE = None
@@ -606,7 +607,7 @@ def create_image(
         docker_config_json=docker_config_json,
         docker_file=docker_file,
         tags=tags_full_str,
-        pull=not localhost_only,
+        pull=docker_config.use_registry and docker_config.docker_registry_config.docker_pull,
         no_cache=docker_config.no_cache,
     )
 

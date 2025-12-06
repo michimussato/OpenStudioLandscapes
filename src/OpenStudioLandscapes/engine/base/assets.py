@@ -17,12 +17,11 @@ from dagster import (
     asset,
 )
 
-from OpenStudioLandscapes.engine.config.validate_config import DockerConfigModel
+from OpenStudioLandscapes.engine.config.models import DockerConfigModel, ConfigEngine
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.policies.retry import build_docker_image_retry_policy
 from OpenStudioLandscapes.engine.utils import *
 from OpenStudioLandscapes.engine.utils.docker import *
-from OpenStudioLandscapes.engine.config.validate_config import ConfigEngine
 
 
 @asset(
@@ -259,7 +258,7 @@ def build_docker_image(
         docker_config_json=docker_config_json,
         docker_file=docker_file,
         tags=tags_full_str,
-        pull=docker_config.docker_registry_config.docker_pull,
+        pull=docker_config.use_registry and docker_config.docker_registry_config.docker_pull,
         no_cache=docker_config.no_cache,
     )
 
