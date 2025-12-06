@@ -92,7 +92,7 @@ function iterate_features() {
   pushd ~/git/repos/OpenStudioLandscapes || exit 1
   for d in ./.features/*
   do
-    echo "pwd = $(pwd)"
+    echo "repo = $(realpath $(pwd)/${d})"
     result="$(create_pr "${d}" "Links ${ISSUE}")"
     echo "result = ${result}"
     PULL_REQUESTS+=("${result}")
@@ -124,11 +124,17 @@ md+="| ---------- | ---- |\n"
 for PR in "${PULL_REQUESTS[@]}"
 do
 #  echo "PR = ${PR}"
-  md+="| &#x2611; | ${PR} |\n"
+  if [ "${PR}" == "" ]; then
+    md+="| &#x2610; | ${PR} |\n"
+  else
+    md+="| &#x2611; | ${PR} |\n"
+  fi
 done
 
 result_main="$(create_pr "$(pwd)" "${md}")"
 
 echo "${result_main}"
+
+echo "${md}"
 
 unset ISSUE
