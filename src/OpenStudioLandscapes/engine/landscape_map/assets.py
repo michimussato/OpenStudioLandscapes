@@ -19,6 +19,7 @@ from pydot import Dot
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.discovery.discovery import *
 from OpenStudioLandscapes.engine.enums import *
+from OpenStudioLandscapes.engine.config import dist
 
 # Dynamic inputs based on the imported
 # third party code locations
@@ -67,7 +68,7 @@ if bool(ins):
         landscape_packed_out = pathlib.Path(
             env["DOT_LANDSCAPES"],
             env.get("LANDSCAPE", "default"),
-            f"{ASSET_HEADER_LANDSCAPE_MAP['group_name']}__{'__'.join(ASSET_HEADER_LANDSCAPE_MAP['key_prefix'])}",
+            f"{dist.name}",
             "__".join(context.asset_key.path),
             "landscape_map_gvpacked.dot",
         )

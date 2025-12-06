@@ -22,6 +22,7 @@ from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.policies.retry import build_docker_image_retry_policy
 from OpenStudioLandscapes.engine.utils import *
 from OpenStudioLandscapes.engine.utils.docker import *
+from OpenStudioLandscapes.engine.config import dist
 
 
 @asset(
@@ -133,7 +134,7 @@ def build_docker_image(
     docker_file = pathlib.Path(
         env["DOT_LANDSCAPES"],
         env.get("LANDSCAPE", "default"),
-        f"{ASSET_HEADER_BASE['group_name']}__{'__'.join(ASSET_HEADER_BASE['key_prefix'])}",
+        f"{dist.name}",
         "__".join(context.asset_key.path),
         "Dockerfiles",
         "Dockerfile",
@@ -381,7 +382,7 @@ def docker_config_json(
     dockercfg_path = pathlib.Path(
         env["DOT_LANDSCAPES"],
         env.get("LANDSCAPE", "default"),
-        f"{ASSET_HEADER_BASE['group_name']}__{'__'.join(ASSET_HEADER_BASE['key_prefix'])}",
+        f"{dist.name}",
         "__".join(context.asset_key.path),
         "config.json",
     )
