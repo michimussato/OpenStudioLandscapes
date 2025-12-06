@@ -15,7 +15,7 @@ openstudiolandscapes__domain_lan: "openstudiolandscapes.lan"
 
 openstudiolandscapes__docker_config:
   use_registry: true
-  no_cache: true
+#  no_cache: true
   # If `use_registry` is false,
   # `docker_registry_config` values are ignored.
   docker_registry_config:
@@ -26,7 +26,7 @@ openstudiolandscapes__docker_config:
 #    docker_registry_access: "public"
 #    docker_registry_protocol: "https"
     docker_registry_fqdn: "registry.openstudiolandscapes.lan"
-    docker_registry_port: 5000
+#    docker_registry_port: 5000
     docker_registry_username: "registry-user"
     docker_registry_password: "registry-password"
 

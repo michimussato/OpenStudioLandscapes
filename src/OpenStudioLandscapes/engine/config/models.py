@@ -59,6 +59,7 @@ class FeatureBaseModel(BaseModel):
     )
     key_prefixes: List[str] = Field()
     docker_compose: pathlib.Path = Field(
+        default="{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml",
         description="The path to the `docker-compose.yml` file.",
     )
     compose_scope: ComposeScope = Field(
@@ -93,8 +94,13 @@ class DockerRegistryConfig(BaseModel):
         default="https",
         examples=["http", "https"],
     )
-    docker_registry_fqdn: str
-    docker_registry_port: PositiveInt
+    docker_registry_fqdn: str = Field(
+        description="The fully qualified domain name of the Docker Registry server.",
+    )
+    docker_registry_port: PositiveInt = Field(
+        default=5000,
+        description="The port the Docker Registry server is listening on.",
+    )
     docker_registry_username: str = Field(description="The username of the Docker registry.")
     # Todo: docker_registry_password: SecretStr = Field(description="The password of the Docker registry.")
     #  Error:
