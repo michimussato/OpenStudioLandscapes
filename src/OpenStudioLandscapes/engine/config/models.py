@@ -14,8 +14,6 @@ from dagster import (
     get_dagster_logger,
 )
 
-from OpenStudioLandscapes.engine.enums import ComposeScope
-
 LOG = get_dagster_logger(__name__)
 
 
@@ -45,7 +43,7 @@ class DockerRegistryAccess(enum.StrEnum):
 
 
 class ComposeScopeBaseModel(BaseModel):
-    compose_scope: ComposeScope
+    compose_scope: str = Field()
     attach_pangolin_site_to_compose_scope: bool = Field(
         default=False,
         description="Do you want the ComposeScope to dial in to "
@@ -57,6 +55,17 @@ class ComposeScopeBaseModel(BaseModel):
 
 
 class FeatureBaseModel(BaseModel):
+    # Automatic registration
+    # - https://labex.io/tutorials/python-how-to-implement-automatic-registration-437881
+    enabled: bool = Field(
+        default=True,
+        description="Whether the Feature is enabled or not.",
+    )
+    registry: DockerRegistryProtocol = DockerRegistryProtocol.http
+    compose_scope: str = Field(
+        default="default",
+        examples=["default", "license_server", "worker"],
+    )
     feature_name: str = Field(
         description="The name of the feature.",
         examples=["OpenStudioLandscapes-Kitsu", "OpenStudioLandscapes-VERT"],
@@ -70,11 +79,13 @@ class FeatureBaseModel(BaseModel):
         default="{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml",
         description="The path to the `docker-compose.yml` file.",
     )
-    compose_scope: ComposeScope = Field(
-        default="default",
-        examples=["default", "license_server", "worker"],
-    )
     # dependencies: List[str] = Field(examples=["OpenStudioLandscapes-Kitsu"])
+    definitions: str = Field(
+        description="The path to the `definitions.py` file.",
+        examples=[
+            "OpenStudioLandscapes.Kitsu.definitions",
+        ],
+    )
 
 
 class DockerRegistryConfig(BaseModel):

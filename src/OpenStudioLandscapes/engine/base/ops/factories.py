@@ -16,8 +16,6 @@ from collections import ChainMap
 from functools import reduce
 from typing import Dict
 
-from dotenv import set_key
-
 import yaml
 from dagster import (
     AssetMaterialization,

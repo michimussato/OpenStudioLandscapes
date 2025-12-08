@@ -2,7 +2,6 @@ __all__ = [
     "GroupIn",
     "OpenStudioLandscapesConfig",
     "FeatureVolumeType",
-    "ComposeScope",
     "ComposeCmdExclusion",
     "DockerComposeRestartPolicy",
     "DockerComposeDependsOnPolicy",
@@ -36,14 +35,6 @@ class FeatureVolumeType(enum.StrEnum):
 
     CONTAINED = "contained"
     SHARED = "shared"
-
-
-class ComposeScope(enum.StrEnum):
-    # Todo:
-    #  - [ ] Check if new Compose Scopes need `pip install -e .[dev]`
-    DEFAULT = "default"
-    LICENSE_SERVER = "license_server"
-    WORKER = "worker"
 
 
 class ComposeCmdExclusion(enum.Enum):

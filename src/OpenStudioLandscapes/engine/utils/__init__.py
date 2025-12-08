@@ -10,7 +10,6 @@ __all__ = [
     "get_bin_root",
     "get_image_name",
     "parse_docker_image_path",
-    "get_compose_scope",
     "get_feature_config",
     "expand_dict_vars",
     "metadatavalues_from_dict",
@@ -26,7 +25,6 @@ __all__ = [
 
 import copy
 import json
-import operator as operator_
 import os
 import pathlib
 import shlex
@@ -45,7 +43,7 @@ from dagster import (
     get_dagster_logger,
 )
 
-from OpenStudioLandscapes.engine.config.models import DockerConfigModel
+from OpenStudioLandscapes.engine.config.models import DockerConfigModel, FeatureBaseModel
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.exceptions import (
     ComposeScopeException,
@@ -240,11 +238,13 @@ def get_compose_scope(
     context: Union[OpExecutionContext, AssetExecutionContext],  # Todo: necessary? -> Yes: `OpenStudioLandscapes.engine.base.ops.op_constants`
     features: MutableMapping,
     name: str,
-) -> ComposeScope:
+) -> str:
 
     feature_keys = features.keys()
 
-    # _module = name
+    LOGGER.error(f"{features = }")
+
+    _module = name
     _parent = ".".join(_module.split(".")[:-1])
     context.log.error(f"{_parent = }")
     _definitions = ".".join([_parent, "definitions"])
@@ -252,7 +252,7 @@ def get_compose_scope(
     COMPOSE_SCOPE = None
     for key in feature_keys:
         if features[key]["module"] == _definitions:
-            COMPOSE_SCOPE: ComposeScope = features[key]["compose_scope"]
+            COMPOSE_SCOPE: str = features[key]["compose_scope"]
             break
 
     if COMPOSE_SCOPE is None:
@@ -474,16 +474,18 @@ def get_str_env(
     return _env
 
 
+def get_compose_scopes(usable_features) -> set:
+    compose_scopes = []
+    for feature in usable_features:
+        config: FeatureBaseModel = feature["Config"]
+        compose_scopes.append(config.compose_scope)
+    return set(compose_scopes)
+
+
+# Edited func for testing
 def get_dynamic_ins(
-    compose_scope_filter: List[ComposeScope],
-    imported_features: List[
-        dict[
-            str,
-            [str | dict[str, bool | str | ComposeScope | OpenStudioLandscapesConfig]],
-        ]
-    ],
-    operator: Union[operator_.eq, operator_.ne],
-) -> tuple[dict[str, AssetIn], dict[str, AssetIn]]:
+    imported_features: List,
+):
     """
     Dynamic inputs based on the imported
     third party code locations
@@ -497,28 +499,35 @@ def get_dynamic_ins(
 
     """
 
-    def _add_module(_module) -> None:
+    compose_scopes: set = get_compose_scopes(usable_features=imported_features)
+    LOGGER.info(f"{compose_scopes = }")
+
+    def _add_module(_module, compose_scope) -> None:
         split = _module.split(".")
-        key = split[1]  # key = "Ayon"
-        ins[f"{split[0]}_{split[1]}"] = AssetIn(AssetKey([key, "group_out"]))
-        feature_ins[f"{split[0]}_{split[1]}"] = AssetIn(AssetKey([key, "feature_out"]))
+        namespace = split[2]  # OpenStudioLandscapes
+        key = split[3]  # key = "Ayon"
+        feature_ins[compose_scope][f"{namespace}_{key}"] = AssetIn(AssetKey([key, "feature_out"]))
         return None
 
-    ins = {}
     feature_ins = {}
-    for i in imported_features:
-        # ex: module = "OpenStudioLandscapes.Ayon.definitions"
-        module = i["module"]
-        compose_scope_ = i["compose_scope"]
 
-        if not bool(compose_scope_filter):
-            # Empty Filter, meaning, add all
-            _add_module(_module=module)
-        else:
-            for compose_scope in compose_scope_filter:
-                if operator(compose_scope_, compose_scope):
-                    _add_module(_module=module)
-    return ins, feature_ins
+    for compose_scope in compose_scopes:
+        feature_ins[compose_scope] = {}
+
+        for feature in imported_features:
+            LOGGER.error(f"{feature = }")
+            config: FeatureBaseModel = feature["Config"]
+
+            if config.compose_scope == compose_scope:
+                LOGGER.error(f"{compose_scope = }")
+
+                # feature = {'package': 'OpenStudioLandscapes-VERT.src.OpenStudioLandscapes.VERT', 'discovered_model': OpenStudioLandscapesDiscoveredFeature(definitions='OpenStudioLandscapes.VERT.definitions', models='OpenStudioLandscapes.VERT.config.models'), 'models': <module 'OpenStudioLandscapes.VERT.config.models' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-VERT/src/OpenStudioLandscapes/VERT/config/models.py'>, 'definitions': <module 'OpenStudioLandscapes.VERT.definitions' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-VERT/src/OpenStudioLandscapes/VERT/definitions.py'>, 'Config': Config(enabled=True, registry=<DockerRegistryProtocol.http: 'http'>, compose_scope='default', feature_name='OpenStudioLandscapes-VERT', group_name='VERT', key_prefixes=['VERT'], docker_compose='{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml', definitions='OpenStudioLandscapes.VERT.definitions', docker_compose_override='{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.override.yml', vert_port_container=80, vert_port_host=3344, repository_url='https://github.com/VERT-sh/VERT.git', repository_branch='main', repository_subdir='VERT', docker_compose_yml='docker-compose.yml', docker_compose_worker_yml='docker-compose.worker.yml')}
+                module = feature["package"]
+
+                _add_module(_module=module, compose_scope=compose_scope)
+
+    # feature_ins = {'default': {'OpenStudioLandscapes_Kitsu': AssetIn(key=AssetKey(['Kitsu', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>), 'OpenStudioLandscapes_Watchtower': AssetIn(key=AssetKey(['Watchtower', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>)}, 'test': {'OpenStudioLandscapes_VERT': AssetIn(key=AssetKey(['VERT', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>)}}
+    return feature_ins
 
 
 def get_image_metadata(

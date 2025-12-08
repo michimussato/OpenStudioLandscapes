@@ -107,7 +107,7 @@ class DockerComposeNetworkDefinition(TypedDict, total=False):
 
 
 def get_pangolin_newt_service_skeleton(
-    compose_scope: ComposeScope,
+    compose_scope: str,
     unique_suffix: str,
 ) -> DockerComposeServiceDefinition:
     _service: DockerComposeServiceDefinition = {

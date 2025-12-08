@@ -11,7 +11,7 @@ from OpenStudioLandscapes.engine.utils.docker.compose_dicts import *
 def add_newt_service_to_compose_scope(
     scrape_networks: Dict,
     docker_dict_include: Dict,
-    compose_scope: ComposeScope,
+    compose_scope: str,
     landscape_id: str,
 ) -> None:
     """
@@ -20,7 +20,7 @@ def add_newt_service_to_compose_scope(
     a Pangolin Site.
 
     Args:
-        compose_scope: ComposeScope
+        compose_scope: str
         scrape_networks: dict of networks
         docker_dict_include: include-dict that will be populated with Pangolin `newt` service(s) and network(s)
         landscape_id: landscape id str
@@ -28,7 +28,7 @@ def add_newt_service_to_compose_scope(
     Returns: None
     """
 
-    _unique_suffix = f"compose_scope-{compose_scope.value}.{landscape_id}"
+    _unique_suffix = f"compose_scope-{compose_scope}.{landscape_id}"
 
     service_dict = get_pangolin_newt_service_skeleton(
         compose_scope=compose_scope,

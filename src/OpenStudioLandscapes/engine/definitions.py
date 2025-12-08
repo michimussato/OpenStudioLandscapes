@@ -4,7 +4,7 @@ import os
 
 from dagster import Definitions, get_dagster_logger
 
-from OpenStudioLandscapes.engine.discovery.discovery import IMPORTS
+from OpenStudioLandscapes.engine.discovery.discovery import USABLE_FEATURES
 from OpenStudioLandscapes.engine.utils import *
 
 LOGGER = get_dagster_logger(__name__)
@@ -13,8 +13,8 @@ LOGGER = get_dagster_logger(__name__)
 imports_engine = [
     "OpenStudioLandscapes.engine.base.definitions",
     "OpenStudioLandscapes.engine.env.definitions",
-    "OpenStudioLandscapes.engine.landscape_map.definitions",
-    "OpenStudioLandscapes.engine.distributable.definitions",
+    # "OpenStudioLandscapes.engine.landscape_map.definitions",
+    # "OpenStudioLandscapes.engine.distributable.definitions",
 ]
 
 e_ = expand_dict_vars(
@@ -45,7 +45,10 @@ for core in imports_engine:
         raise e
 
 
-modules.extend(IMPORTS)
+modules.extend([i["definitions"] for i in USABLE_FEATURES])
+
+# for useable_feature in USABLE_FEATURES:
+#     LOGGER.error(f"{useable_feature = }")
 
 
 defs = Definitions.merge(

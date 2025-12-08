@@ -398,11 +398,6 @@ def CONFIG(
             dagster_type=dict,
             description="",
         ),
-        "features": AssetOut(
-            **ASSET_HEADER_BASE_ENV,
-            dagster_type=dict,
-            description="",
-        ),
     },
     ins={
         "git_root": AssetIn(
@@ -417,9 +412,6 @@ def CONFIG(
         "dot_features": AssetIn(
             AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "dot_features"])
         ),
-        "FEATURES": AssetIn(
-            AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "FEATURES"])
-        ),
     },
 )
 def env(
@@ -428,7 +420,6 @@ def env(
     landscape_id: dict,  # pylint: disable=redefined-outer-name
     dot_landscapes: pathlib.Path,  # pylint: disable=redefined-outer-name
     dot_features: pathlib.Path,  # pylint: disable=redefined-outer-name
-    FEATURES: dict,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
 
     # @formatter:off
@@ -502,19 +493,5 @@ def env(
             "__".join(context.asset_key_for_output("env").path): MetadataValue.json(
                 ENVIRONMENT_BASE
             ),
-        },
-    )
-
-    yield Output(
-        output_name="features",
-        value=FEATURES,
-    )
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key_for_output("features"),
-        metadata={
-            "__".join(
-                context.asset_key_for_output("features").path
-            ): MetadataValue.json(FEATURES),
         },
     )

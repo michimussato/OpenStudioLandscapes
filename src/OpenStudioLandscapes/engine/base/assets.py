@@ -313,9 +313,6 @@ def build_docker_image(
         "docker_config_json": AssetIn(
             AssetKey([*ASSET_HEADER_BASE["key_prefix"], "docker_config_json"])
         ),
-        "features": AssetIn(
-            AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "features"])
-        ),
         "build_docker_image": AssetIn(
             AssetKey([*ASSET_HEADER_BASE["key_prefix"], "build_docker_image"]),
         ),
@@ -333,7 +330,6 @@ def group_out_base(
     env: dict,  # pylint: disable=redefined-outer-name
     CONFIG: ConfigEngine,  # pylint: disable=redefined-outer-name
     docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name
-    features: dict,  # pylint: disable=redefined-outer-name
     build_docker_image: dict,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict[str, str | dict]] | AssetMaterialization, None, None]:
 
@@ -350,7 +346,6 @@ def group_out_base(
     out_dict["docker_config"]["docker_registry_url"] = docker_config.docker_registry_config.docker_registry_fqdn
     out_dict["docker_config"]["docker_use_local"] = not docker_config.docker_registry_config.docker_push
     out_dict["docker_config_json"] = docker_config_json
-    out_dict["features"] = features
     out_dict["docker_image"] = build_docker_image
 
     yield Output(out_dict)
