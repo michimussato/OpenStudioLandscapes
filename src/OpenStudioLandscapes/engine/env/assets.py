@@ -8,7 +8,6 @@ import textwrap
 import uuid
 from datetime import datetime
 from typing import Generator, MutableMapping
-from deepdiff import DeepDiff
 from pydantic_core._pydantic_core import ValidationError
 
 import pytz
@@ -27,7 +26,7 @@ from dagster import (
 from OpenStudioLandscapes.engine import exceptions
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.utils import *
-from OpenStudioLandscapes.engine.config.models import ConfigEngine
+from OpenStudioLandscapes.engine.config.models import ConfigEngine, CONFIG_STR
 from OpenStudioLandscapes.engine.config import dist
 
 
@@ -196,91 +195,30 @@ def dot_features(
 
 @asset(
     **ASSET_HEADER_BASE_ENV,
-    description=textwrap.dedent(
-        """
-        Loads the `default_config.yml` that comes with
-        the Engine itself. Contents are being validated
-        against a `pydantic.BaseModel` in this step.
-        """
-    )
-)
-def CONFIG_BLUEPRINT(
-    context: AssetExecutionContext,
-) -> Generator[
-    Output[str] | AssetMaterialization,
-    None,
-    None,
-]:
-
-    with open(pathlib.Path(__file__).parent.parent / "config" / "config_blueprint.yml") as fr:
-        # This is str so that comments are read as well
-        config_str_: str = fr.read()
-
-    def to_tilde_path(absolute_path):
-        home = pathlib.Path.home()
-        return pathlib.Path(str(absolute_path).replace(str(home), '~', 1))
-
-    config_str = config_str_.format(
-        REPOSITORY_ROOT=to_tilde_path(get_git_root()),
-    )
-
-    config = yaml.safe_load(config_str)
-
-    try:
-        context.log.info(f"Validating: {config = }")
-        _config_validated = ConfigEngine(**config)
-        context.log.debug(f"Validated.")
-    except ValidationError as err:
-        context.log.error(
-            "Config Validation failed. "
-            "The `default_config.yml` for "
-            "the Engine contains "
-            "errors, missing and/or illegal parameters."
-        )
-        raise ValidationError from err
-
-    yield Output(config_str)
-
-    diff = DeepDiff(
-        config,
-        # We don't want to compare expanded
-        # with non-expanded dicts - creates too
-        # much noise in the diff
-        _config_validated.model_dump(mode="json")
-    )
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.md(f"```yaml\n{config_str}\n```"),
-            "raw": MetadataValue.md(f"```yaml\n{config_str_}\n```"),
-            "diff": MetadataValue.md(f"```json\n{json.dumps(diff, indent=2, default=str)}\n```"),
-        },
-    )
-
-
-@asset(
-    **ASSET_HEADER_BASE_ENV,
     ins={
         "env": AssetIn(
             AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"]),
         ),
-        "DEFAULT_CONFIG": AssetIn(
-            AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG_BLUEPRINT"]),
-        ),
     },
     description=textwrap.dedent(
-        """
-        Reads options from a custom `config.yml`.
-        If the custom `config.yml` does not exist, it
-        will be created locally containing default options.
-        """
+        f"""
+Reads options from a custom `config.yml`.
+If the custom `config.yml` does not exist, it 
+will be created locally containing default options.
+
+---
+
+For reference, the default `config.yml` looks as follows:
+        
+```yaml
+{CONFIG_STR}
+```
+"""
     )
 )
 def CONFIG(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
-    DEFAULT_CONFIG: str,  # pylint: disable=redefined-outer-name
 ) -> Generator[
     Output[ConfigEngine]
     | AssetMaterialization,
@@ -288,72 +226,74 @@ def CONFIG(
     None,
 ]:
 
-    config_default_ = yaml.safe_load(DEFAULT_CONFIG)
+    config_default_ = yaml.safe_load(CONFIG_STR)
 
     # This is valid as we checked it already
     config_base = ConfigEngine(**config_default_)
 
-    configs_root = config_base.openstudiolandscapes__configstore_root
-    context.log.debug(f"{configs_root = }")
-    config_yml = configs_root / "OpenStudioLandscapes" / "config.yml"
-    context.log.debug(f"{config_yml = }")
-    config_yml_expanded = config_yml.expanduser().resolve()
-    config_yml_expanded.parent.mkdir(parents=True, exist_ok=True)
-    context.log.debug(f"{config_yml_expanded = }")
+    # https://jsschools.com/python/5-powerful-python-libraries-for-efficient-file-han/
+    config_yml_object = config_base.openstudiolandscapes__configstore_root.expanduser().resolve() / dist.name / "config.yml"
+    if not config_yml_object.exists():
+        config_yml_object.parent.mkdir(parents=True, exist_ok=True)
+        config_yml_object.touch(exist_ok=True)
+        config_yml_object.write_text(CONFIG_STR)
+    config_dict: dict = yaml.safe_load(config_yml_object.read_text())
 
-    if not config_yml_expanded.exists():
-        context.log.info(
-            f"No existing config file found. "
-            f"Creating {config_yml_expanded.as_posix()}..."
-        )
-        with open(config_yml_expanded, "w") as fw:
-            # Just write the exact same
-            # contents to the new file
-            fw.write(DEFAULT_CONFIG)
-            # No need to re-validate
-            # config_validated = Config(**config_base)
-    else:
-        context.log.info(f"Skipping config file creation, "
-                         f"using existing one.")
+    context.log.error(f"{config_dict = }")
+    # config_dict = {'openstudiolandscapes__repository_root': '{REPOSITORY_ROOT}', 'openstudiolandscapes__configstore_root': '~/.config/OpenStudioLandscapes/config-store', 'openstudiolandscapes__domain_lan': 'openstudiolandscapes.lan', 'openstudiolandscapes__docker_config': {'use_registry': True, 'docker_registry_config': {'docker_push': True, 'docker_pull': True, 'docker_repository_name': 'OpenStudioLandscapes', 'docker_registry_fqdn': 'registry.openstudiolandscapes.lan', 'docker_registry_username': 'registry-user', 'docker_registry_password': 'registry-password'}}, 'illegal_option': 1234}
+    context.log.error(f"{env = }")
+    # env = {'GIT_ROOT': '/home/michael/git/repos/OpenStudioLandscapes', 'DOT_LANDSCAPES': '/home/michael/git/repos/OpenStudioLandscapes/.landscapes', 'DOT_SHARED_VOLUMES': '.shared_volumes', 'DOT_FEATURES': '/home/michael/git/repos/OpenStudioLandscapes/.features', 'DOT_OVERRIDES': '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-12-09-03-03-05-32bc816edf7f49438b6a19030e82d0dc/.overrides', 'AUTHOR': 'michimussato@gmail.com', 'CREATED_BY': 'michael', 'CREATED_ON': 'lenovo', 'CREATED_AT': '2025-12-09_03-03-11', 'TIMEZONE': 'Europe/Zurich', 'DEFAULT_CONFIG_DBPATH': '/data/configdb', 'PYTHON_MAJ': '3', 'PYTHON_MIN': '11', 'PYTHON_PAT': '11', 'LANDSCAPE': '2025-12-09-03-03-05-32bc816edf7f49438b6a19030e82d0dc'}
 
-    context.log.info(
-        f"Reading {config_yml_expanded.as_posix()}..."
-    )
-    with open(config_yml_expanded, "r") as fr:
-        config_store = yaml.safe_load(fr)
+    # dagster._core.errors.DagsterExecutionStepExecutionError: Error occurred while executing op "OpenStudioLandscapes_Env__CONFIG":
+    #
+    #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/execution/plan/execute_plan.py", line 245, in dagster_event_sequence_for_step
+    #     yield from check.generator(step_events)
+    #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/execution/plan/execute_step.py", line 501, in core_dagster_event_sequence_for_step
+    #     for user_event in _step_output_error_checked_user_event_sequence(
+    #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/execution/plan/execute_step.py", line 184, in _step_output_error_checked_user_event_sequence
+    #     for user_event in user_event_sequence:
+    #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/execution/plan/execute_step.py", line 88, in _process_asset_results_to_events
+    #     for user_event in user_event_sequence:
+    #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/execution/plan/compute.py", line 190, in execute_core_compute
+    #     for step_output in _yield_compute_results(step_context, inputs, compute_fn, compute_context):
+    #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/execution/plan/compute.py", line 159, in _yield_compute_results
+    #     for event in iterate_with_context(
+    #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_utils/__init__.py", line 478, in iterate_with_context
+    #     with context_fn():
+    #   File "/usr/lib/python3.11/contextlib.py", line 158, in __exit__
+    #     self.gen.throw(typ, value, traceback)
+    #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/execution/plan/utils.py", line 86, in op_execution_error_boundary
+    #     raise error_cls(
+    #
+    # The above exception was caused by the following exception:
+    # OpenStudioLandscapes.engine.exceptions.OpenStudioLandscapesException: Could not expand dict_to_expand[k] = '{REPOSITORY_ROOT}' in dict_to_expand = {'openstudiolandscapes__repository_root': '{REPOSITORY_ROOT}', 'openstudiolandscapes__configstore_root': '~/.config/OpenStudioLandscapes/config-store', 'openstudiolandscapes__domain_lan': 'openstudiolandscapes.lan', 'openstudiolandscapes__docker_config': {'use_registry': True, 'docker_registry_config': {'docker_push': True, 'docker_pull': True, 'docker_repository_name': 'OpenStudioLandscapes', 'docker_registry_fqdn': 'registry.openstudiolandscapes.lan', 'docker_registry_username': 'registry-user', 'docker_registry_password': 'registry-password'}}, 'illegal_option': 1234}
+    #
+    #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/execution/plan/utils.py", line 56, in op_execution_error_boundary
+    #     yield
+    #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_utils/__init__.py", line 480, in iterate_with_context
+    #     next_output = next(iterator)
+    #                   ^^^^^^^^^^^^^^
+    #   File "/home/michael/git/repos/OpenStudioLandscapes/src/OpenStudioLandscapes/engine/env/assets.py", line 247, in CONFIG
+    #     config_expanded = expand_dict_vars(
+    #                       ^^^^^^^^^^^^^^^^^
+    #   File "/home/michael/git/repos/OpenStudioLandscapes/src/OpenStudioLandscapes/engine/utils/__init__.py", line 321, in expand_dict_vars
+    #     raise OpenStudioLandscapesException(
+    #
+    # The above exception was caused by the following exception:
+    # KeyError: 'REPOSITORY_ROOT'
+    #
+    #   File "/home/michael/git/repos/OpenStudioLandscapes/src/OpenStudioLandscapes/engine/utils/__init__.py", line 319, in expand_dict_vars
+    #     dict_to_expand[k] = v.format(**kv)
+    #                         ^^^^^^^^^^^^^^
 
-        try:
-            context.log.info(f"Validating: {config_store = }")
-            config_store_validated = ConfigEngine(
-                # Layer the dicts on top of each other
-                # to create the resulting Config
-                # Todo:
-                #  - [x] is that a safe operation? -> No, it's not (makes things a bit unpredictable)
-                # **{
-                #     **config_default_,
-                #     **config_store,
-                # }
-                **config_store,
-            )
-            context.log.debug(f"Validated.")
-        except ValidationError as err:
-            context.log.error(
-                "Config Validation failed. "
-                f"The custom `config.yml` ({config_yml.as_posix()}) for "
-                f"{dist.name} contains "
-                "errors, missing and/or illegal parameters."
-            )
-            raise ValidationError from err
-
-    config = config_store_validated.model_dump(mode="python")
+    # config_store_validated.model_dump(mode="python")
 
     config_expanded = expand_dict_vars(
-        dict_to_expand=config.copy(),
+        dict_to_expand=config_dict.copy(),
         kv=env,
     )
 
     try:
-        # Final validation of the parsed configs
         context.log.info(f"Validating: {config_expanded = }")
         config_validated = ConfigEngine(**config_expanded)
         context.log.debug(f"Validated.")
@@ -368,25 +308,13 @@ def CONFIG(
 
     yield Output(config_validated)
 
-    diff = DeepDiff(
-        t1={
-            **config_store,
-            **config_base.model_dump(mode="json")},
-        # We don't want to compare expanded
-        # with non-expanded dicts - creates too
-        # much noise in the diff
-        t2={
-            **config_store_validated.model_dump(mode="json"),
-        },
-    )
-
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
             "__".join(context.asset_key.path): MetadataValue.md(f"```json\n{json.dumps(config_validated.model_dump(mode='json'), indent=2, default=str)}\n```"),
-            "config_yml": MetadataValue.path(config_yml),
-            # "config_raw": MetadataValue.md(f"```json\n{json.dumps(config, indent=2, default=str)}\n```"),
-            "diff": MetadataValue.md(f"```json\n{json.dumps(diff, indent=2, default=str)}\n```"),
+            "config_yml_path": MetadataValue.path(config_yml_object),
+            "config_dict": MetadataValue.md(f"```json\n{json.dumps(config_dict, indent=2, default=str)}\n```"),
+            "config_dict_expanded": MetadataValue.md(f"```json\n{json.dumps(config_expanded, indent=2, default=str)}\n```"),
         },
     )
 
