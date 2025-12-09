@@ -17,7 +17,7 @@ field_validator,
 )
 
 
-class FeatureBase(BaseModel):
+class FeatureDiscovery(BaseModel):
     """
     Base class for the FeatureModel.
 
@@ -26,6 +26,10 @@ class FeatureBase(BaseModel):
     Concept is described here:
     - https://stackoverflow.com/a/50099920/2207196
     """
+
+    # Todo
+    #  - Merge this with `OpenStudioLandscapes.engine.config.models.FeatureBaseModel`!!!
+
     subclasses: ClassVar[Dict] = {}
 
     def __init_subclass__(cls, **kwargs):
@@ -64,7 +68,7 @@ class FeatureBase(BaseModel):
         ]
     )
     docker_compose: Path = Field(
-        default="{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml",
+        # default="{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml",
         description="The path to the `docker-compose.yml` file.",
     )
     # compose_scope: ComposeScope = Field(

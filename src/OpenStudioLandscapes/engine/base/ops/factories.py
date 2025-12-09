@@ -352,8 +352,21 @@ def factory_compose(
         compose_networks = kwargs.pop("compose_networks")
         compose_maps = kwargs.pop("compose_maps")
         CONFIG: FeatureBaseModel = kwargs.pop("CONFIG")
+        # group_in: dict = kwargs.pop("group_in")
+        # env: dict = group_in.pop("env")
 
         DOCKER_COMPOSE: pathlib.Path = CONFIG.docker_compose
+        # DOCKER_COMPOSE: pathlib.Path = pathlib.Path(
+        #     CONFIG
+        #     .docker_compose
+        #     .as_posix()
+        #     .format(
+        #         **{
+        #             "FEATURE": dist.name,
+        #             **env,
+        #         }
+        #     )
+        # )
         DOCKER_COMPOSE.parent.mkdir(parents=True, exist_ok=True)
 
         if "networks" in compose_networks:

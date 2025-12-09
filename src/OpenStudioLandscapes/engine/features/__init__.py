@@ -1,5 +1,5 @@
 __all__ = [
-    "FeatureBase",
+    "FeatureDiscovery",
 ]
 
-from OpenStudioLandscapes.engine.features.feature import FeatureBase
+from OpenStudioLandscapes.engine.features.feature import FeatureDiscovery

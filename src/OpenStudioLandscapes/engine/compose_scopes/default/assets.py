@@ -27,7 +27,7 @@ from OpenStudioLandscapes.engine.common_assets.scrape_networks import (
 from OpenStudioLandscapes.engine.compose_scopes.default.constants import (
     ATTACH_SITE_TO_COMPOSE_SCOPE,
 )
-from OpenStudioLandscapes.engine.config.models import FeatureBaseModel
+# from OpenStudioLandscapes.engine.config.models import FeatureBaseModel
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.discovery.discovery import *
 from OpenStudioLandscapes.engine.enums import *
@@ -49,7 +49,7 @@ yaml.SafeDumper.add_multi_representer(
 )
 
 feature_ins = get_dynamic_ins(
-    imported_features=USABLE_FEATURES,
+    imported_features=FUNCTIONAL_FEATURES,
 )
 
 LOGGER.error(f"{feature_ins = }")

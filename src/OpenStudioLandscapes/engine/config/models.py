@@ -35,7 +35,8 @@ Resources:
 
 CONFIG_STR = textwrap.dedent(
     """
-    openstudiolandscapes__repository_root: "{REPOSITORY_ROOT}"  # maybe use GIT_ROOT?
+    # openstudiolandscapes__repository_root: "{REPOSITORY_ROOT}"  # maybe use GIT_ROOT?
+    openstudiolandscapes__repository_root: "{GIT_ROOT}"  # maybe use GIT_ROOT?
     openstudiolandscapes__configstore_root: "~/.config/OpenStudioLandscapes/config-store"
     
     openstudiolandscapes__domain_lan: "openstudiolandscapes.lan"
@@ -98,6 +99,15 @@ class ComposeScopeBaseModel(BaseModel):
 # This is the Feature Base Model
 class FeatureBaseModel(BaseModel):
 
+    # Todo
+    #  - Merge this with `OpenStudioLandscapes.engine.features.feature.FeatureBase`!!!
+
+    def __repr__(self):
+        return f"Feature({[f'{k}={v}' for k, v in self.__dict__.items()]})"
+
+    def __str__(self):
+        return f"{self.feature_name}"
+
     config_file_path: pathlib.Path = Field(
         default=None,
         description="The path to the `config.yml` file. "
@@ -126,10 +136,16 @@ class FeatureBaseModel(BaseModel):
         frozen=True,
     )
     key_prefixes: List[str] = Field()
+
+
+
     docker_compose: pathlib.Path = Field(
-        default="{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml",
+        default=pathlib.Path("{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml"),
         description="The path to the `docker-compose.yml` file.",
     )
+
+
+
     # dependencies: List[str] = Field(examples=["OpenStudioLandscapes-Kitsu"])
     definitions: str = Field(
         description="The path to the `definitions.py` file.",

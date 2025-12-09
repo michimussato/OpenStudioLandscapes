@@ -4,7 +4,7 @@ import os
 
 from dagster import Definitions, get_dagster_logger
 
-from OpenStudioLandscapes.engine.discovery.discovery import USABLE_FEATURES
+from OpenStudioLandscapes.engine.discovery.discovery import FUNCTIONAL_FEATURES
 from OpenStudioLandscapes.engine.utils import *
 
 LOGGER = get_dagster_logger(__name__)
@@ -45,7 +45,7 @@ for core in imports_engine:
         raise e
 
 
-modules.extend([i["definitions"] for i in USABLE_FEATURES])
+modules.extend([i["definitions"] for i in FUNCTIONAL_FEATURES])
 
 # for useable_feature in USABLE_FEATURES:
 #     LOGGER.error(f"{useable_feature = }")

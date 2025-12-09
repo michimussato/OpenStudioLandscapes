@@ -18,7 +18,8 @@ def get_compose(
         ins={
             "compose_networks": In(dict),
             "compose_maps": In(list),
-            "CONFIG": In(FeatureBaseModel)
+            "CONFIG": In(FeatureBaseModel),
+            # "group_in": In(dict)
         },
         out={
             "compose": Out(dict),
@@ -42,6 +43,7 @@ def get_compose(
             ),
             "compose_maps": AssetKey([*ASSET_HEADER["key_prefix"], "compose_maps"]),
             "CONFIG": AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
+            # "group_in": AssetKey([*ASSET_HEADER["key_prefix"], "group_in"]),
         },
     )
 

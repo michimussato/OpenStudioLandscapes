@@ -1,5 +1,5 @@
 __all__ = [
-    "USABLE_FEATURES"
+    "FUNCTIONAL_FEATURES"
 ]
 
-from OpenStudioLandscapes.engine.discovery.discovery import USABLE_FEATURES
+from OpenStudioLandscapes.engine.discovery.discovery import FUNCTIONAL_FEATURES
