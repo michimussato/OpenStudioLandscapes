@@ -15,6 +15,8 @@ from dagster import (
     get_dagster_logger,
 )
 
+import OpenStudioLandscapes.engine.discovery.discovery as discovery
+
 LOG = get_dagster_logger(__name__)
 
 
@@ -37,7 +39,7 @@ CONFIG_STR = textwrap.dedent(
     """
     # openstudiolandscapes__repository_root: "{REPOSITORY_ROOT}"  # maybe use GIT_ROOT?
     openstudiolandscapes__repository_root: "{GIT_ROOT}"  # maybe use GIT_ROOT?
-    openstudiolandscapes__configstore_root: "~/.config/OpenStudioLandscapes/config-store"
+    # openstudiolandscapes__configstore_root: "~/.config/OpenStudioLandscapes/config-store"
     
     openstudiolandscapes__domain_lan: "openstudiolandscapes.lan"
     #openstudiolandscapes__domain_wan: "openstudiolandscapes.cloud-ip.cc"
@@ -197,6 +199,18 @@ class DockerConfigModel(BaseModel):
 
 
 class ConfigEngine(BaseModel):
+    """
+    An instance of this model has to be a singleton class.
+    There can only be one ConfigEngine instance.
+
+    References:
+        - https://www.geeksforgeeks.org/python/singleton-pattern-in-python-a-complete-guide/
+    """
+
+    def __new__(cls, *args, **kwargs):
+        if not hasattr(cls, 'instance'):
+            cls.instance = super(ConfigEngine, cls).__new__(cls)
+        return cls.instance
 
     openstudiolandscapes__docker_config: DockerConfigModel = Field()
 
@@ -209,14 +223,15 @@ class ConfigEngine(BaseModel):
         )
     )
 
-    openstudiolandscapes__configstore_root: pathlib.Path = Field(
-        default=pathlib.Path(
-            os.environ.get(
-                "OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT",
-                default="~/.config/OpenStudioLandscapes/config-store",
-            )
-        )
-    )
+    # This has to be set via `OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT`
+    # openstudiolandscapes__configstore_root: pathlib.Path = Field(
+    #     # default=pathlib.Path(
+    #     #     os.environ.get(
+    #     #         "OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT",
+    #     #         default="~/.config/OpenStudioLandscapes/config-store",
+    #     #     )
+    #     # )
+    # )
 
     openstudiolandscapes__domain_lan: str = Field(
         default=os.environ.get(
@@ -241,8 +256,11 @@ class ConfigEngine(BaseModel):
     @field_validator("openstudiolandscapes__repository_root")
     @classmethod
     def ensure_valid__openstudiolandscapes__repository_root(cls, value: pathlib.Path):
-        _value = value.expanduser().resolve()
+        _value = value.expanduser()
         if not _value.exists():
+            # Todo:
+            #  - [ ] is_absolute()?
+            #  - [ ] resolve()?
             # Create directory
             _value.mkdir(parents=True, exist_ok=True)
         if not _value.is_dir():
@@ -251,22 +269,34 @@ class ConfigEngine(BaseModel):
             )
         return value
 
-    @field_validator("openstudiolandscapes__configstore_root")
-    @classmethod
-    def ensure_valid__openstudiolandscapes__configstore_root(cls, value: pathlib.Path):
-        _value = value.expanduser().resolve()
-        if not _value.exists():
-            # Create directory
-            _value.mkdir(parents=True, exist_ok=True)
-        if not _value.is_dir():
-            raise ValueError(
-                "`openstudiolandscapes__configstore_root` is not a valid directory."
-            )
-        return value
+    # @field_validator("openstudiolandscapes__configstore_root")
+    # @classmethod
+    # def ensure_valid__openstudiolandscapes__configstore_root(cls, value: pathlib.Path):
+    #     _value = value.expanduser().resolve()
+    #     if not _value.exists():
+    #         # Create directory
+    #         _value.mkdir(parents=True, exist_ok=True)
+    #     if not _value.is_dir():
+    #         raise ValueError(
+    #             "`openstudiolandscapes__configstore_root` is not a valid directory."
+    #         )
+    #     return value
 
 
 # This is the Feature Base Model
 class FeatureBaseModel(BaseModel):
+    """
+    An instance of this model has to be a singleton class.
+    There can only be one ConfigEngine instance.
+
+    References:
+        - https://www.geeksforgeeks.org/python/singleton-pattern-in-python-a-complete-guide/
+    """
+
+    def __new__(cls, *args, **kwargs):
+        if not hasattr(cls, 'instance'):
+            cls.instance = super(FeatureBaseModel, cls).__new__(cls)
+        return cls.instance
 
     # Todo
     #  - Merge this with `OpenStudioLandscapes.engine.features.feature.FeatureBase`!!!
@@ -285,28 +315,11 @@ class FeatureBaseModel(BaseModel):
         default=None,
     )
 
-    # config_file_path: pathlib.Path = Field(
-    #     default=None,
-    #     description="The path to the `config.yml` file. "
-    #                 "The path prefix can be derived from "
-    #                 "`ConfigEngine.openstudiolandscapes__configstore_root`.",
-    #     frozen=False,
-    # )
-
     # EXPANDABLE PATHS
     @property
     def config_file_path(self) -> pathlib.Path:
-        # LOGGER.debug(f"{self.env = }")
-        if self.config_engine is None:
-            raise KeyError("`config_engine` is `None`.")
-            # return un-expanded path if `self.env` is None
-            return self.kitsu_postgres_conf
-        # LOGGER.debug(f"Expanding {self.kitsu_postgres_conf}...")
-        ret = pathlib.Path(self.config_engine.openstudiolandscapes__configstore_root.expanduser() / self.feature_name / "config.yml")
+        ret = pathlib.Path(discovery.OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.expanduser() / self.feature_name / "config.yml")
         ret.parent.mkdir(parents=True, exist_ok=True)
-        # if ret.exists():
-        #     ret.unlink()
-
         return ret
 
     # Automatic registration
@@ -314,9 +327,6 @@ class FeatureBaseModel(BaseModel):
     enabled: bool = Field(
         default=True,
         description="Whether the Feature is enabled or not.",
-    )
-    registry: DockerRegistryProtocol = Field(
-        default=DockerRegistryProtocol.http,
     )
     compose_scope: str = Field(
         default="default",
@@ -331,9 +341,6 @@ class FeatureBaseModel(BaseModel):
         frozen=True,
     )
     key_prefixes: List[str] = Field()
-
-
-
     docker_compose: pathlib.Path = Field(
         default=pathlib.Path("{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml"),
         description="The path to the `docker-compose.yml` file.",
@@ -344,7 +351,6 @@ class FeatureBaseModel(BaseModel):
         ret = pathlib.Path(
             self.docker_compose
             .expanduser()
-            # .resolve()
             .as_posix()
             .format(
                 **{

@@ -4,7 +4,7 @@ import os
 
 from dagster import Definitions, get_dagster_logger
 
-from OpenStudioLandscapes.engine.discovery.discovery import FUNCTIONAL_FEATURES
+import OpenStudioLandscapes.engine.discovery.discovery as discovery
 from OpenStudioLandscapes.engine.utils import *
 
 LOGGER = get_dagster_logger(__name__)
@@ -44,11 +44,10 @@ for core in imports_engine:
         LOGGER.error(f"Engine setup failed to complete: {e}")
         raise e
 
-
-modules.extend([i["definitions"] for i in FUNCTIONAL_FEATURES])
-
-# for useable_feature in USABLE_FEATURES:
-#     LOGGER.error(f"{useable_feature = }")
+package: str
+feature: discovery.OpenStudioLandscapesDiscoveredFeature
+for package, feature in discovery.DISCOVERED_MODELS.items():
+    modules.append(feature.definitions_object)
 
 
 defs = Definitions.merge(

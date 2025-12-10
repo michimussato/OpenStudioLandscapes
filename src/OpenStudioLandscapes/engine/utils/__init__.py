@@ -43,7 +43,8 @@ from dagster import (
     get_dagster_logger,
 )
 
-from OpenStudioLandscapes.engine.config.models import DockerConfigModel, FeatureBaseModel
+from OpenStudioLandscapes.engine.config.models import DockerConfigModel
+import OpenStudioLandscapes.engine.discovery.discovery as discovery
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.exceptions import (
     ComposeScopeException,
@@ -474,26 +475,28 @@ def get_str_env(
     return _env
 
 
-def get_compose_scopes(usable_features) -> set:
+def get_compose_scopes(
+        usable_features: Dict[str, discovery.OpenStudioLandscapesDiscoveredFeature]) -> set:
     compose_scopes = []
-    for feature in usable_features:
-        config: FeatureBaseModel = feature["Config"]
-        compose_scopes.append(config.compose_scope)
+
+    package: str
+    feature: discovery.OpenStudioLandscapesDiscoveredFeature
+    for package, feature in usable_features.items():
+        LOGGER.error(f"usable {feature = }")
+        compose_scopes.append(feature.config.compose_scope)
     return set(compose_scopes)
 
 
 # Edited func for testing
 def get_dynamic_ins(
-    imported_features: List,
+    imported_features: Dict,
 ):
     """
     Dynamic inputs based on the imported
     third party code locations
 
     Args:
-        compose_scope_filter:
         imported_features:
-        operator:
 
     Returns:
 
@@ -514,15 +517,16 @@ def get_dynamic_ins(
     for compose_scope in compose_scopes:
         feature_ins[compose_scope] = {}
 
-        for feature in imported_features:
+        package: str
+        feature: discovery.OpenStudioLandscapesDiscoveredFeature
+        for package, feature in imported_features.items():
             LOGGER.error(f"{feature = }")
-            config: FeatureBaseModel = feature["Config"]
 
-            if config.compose_scope == compose_scope:
+            if feature.config.compose_scope == compose_scope:
                 LOGGER.error(f"{compose_scope = }")
 
                 # feature = {'package': 'OpenStudioLandscapes-VERT.src.OpenStudioLandscapes.VERT', 'discovered_model': OpenStudioLandscapesDiscoveredFeature(definitions='OpenStudioLandscapes.VERT.definitions', models='OpenStudioLandscapes.VERT.config.models'), 'models': <module 'OpenStudioLandscapes.VERT.config.models' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-VERT/src/OpenStudioLandscapes/VERT/config/models.py'>, 'definitions': <module 'OpenStudioLandscapes.VERT.definitions' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-VERT/src/OpenStudioLandscapes/VERT/definitions.py'>, 'Config': Config(enabled=True, registry=<DockerRegistryProtocol.http: 'http'>, compose_scope='default', feature_name='OpenStudioLandscapes-VERT', group_name='VERT', key_prefixes=['VERT'], docker_compose='{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml', definitions='OpenStudioLandscapes.VERT.definitions', docker_compose_override='{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.override.yml', vert_port_container=80, vert_port_host=3344, repository_url='https://github.com/VERT-sh/VERT.git', repository_branch='main', repository_subdir='VERT', docker_compose_yml='docker-compose.yml', docker_compose_worker_yml='docker-compose.worker.yml')}
-                module = feature["package"]
+                module = package
 
                 _add_module(_module=module, compose_scope=compose_scope)
 

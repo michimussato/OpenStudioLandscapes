@@ -1,7 +1,9 @@
 import enum
 import json
 import textwrap
-from typing import Any, Dict, Generator, MutableMapping
+import pathlib
+import yaml
+from typing import Any, Dict, Generator, MutableMapping, List
 
 from dagster import (
     AssetExecutionContext,
@@ -27,15 +29,15 @@ from OpenStudioLandscapes.engine.common_assets.scrape_networks import (
 from OpenStudioLandscapes.engine.compose_scopes.default.constants import (
     ATTACH_SITE_TO_COMPOSE_SCOPE,
 )
-# from OpenStudioLandscapes.engine.config.models import FeatureBaseModel
 from OpenStudioLandscapes.engine.constants import *
-from OpenStudioLandscapes.engine.discovery.discovery import *
+import OpenStudioLandscapes.engine.discovery.discovery as discovery
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.utils import *
 from OpenStudioLandscapes.engine.utils.pangolin import *
 
 from OpenStudioLandscapes.engine.config.models import (
     ComposeScopeBaseModel,
+    FeatureBaseModel,
 )
 
 # Todo:
@@ -49,7 +51,7 @@ yaml.SafeDumper.add_multi_representer(
 )
 
 feature_ins = get_dynamic_ins(
-    imported_features=FUNCTIONAL_FEATURES,
+    imported_features=discovery.DISCOVERED_MODELS,
 )
 
 LOGGER.error(f"{feature_ins = }")

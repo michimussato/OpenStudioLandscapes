@@ -27,6 +27,11 @@ class FeatureDiscovery(BaseModel):
     - https://stackoverflow.com/a/50099920/2207196
     """
 
+    def __new__(cls, *args, **kwargs):
+        if not hasattr(cls, 'instance'):
+            cls.instance = super(FeatureDiscovery, cls).__new__(cls)
+        return cls.instance
+
     # Todo
     #  - Merge this with `OpenStudioLandscapes.engine.config.models.FeatureBaseModel`!!!
 
@@ -96,7 +101,7 @@ class FeatureDiscovery(BaseModel):
         return transformed_value.lower()
 
     def __repr__(self):
-        return f"Feature({[f'{k}={v}' for k, v in self.__dict__.items()]})"
+        return f"DiscoveredFeature({[f'{k}={v}' for k, v in self.__dict__.items()]})"
 
     def __str__(self):
         return f"{self.feature_name}"
