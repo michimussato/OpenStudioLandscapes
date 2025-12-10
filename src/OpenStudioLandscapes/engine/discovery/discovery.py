@@ -43,28 +43,34 @@ OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT: pathlib.Path = pathlib.Path(
 )
 
 
-def init_repo(repo: pathlib.Path) -> Tuple[git.Repo, bool]:
-    # repo_path.mkdir(parents=True, exist_ok=True)
-    # if not OPENSTUDIOLANDSCAPES__CONFIGSTOROPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOTE_ROOT.expanduser().exists():
-    if not repo.expanduser().exists():
-        repo.expanduser().mkdir(parents=True, exist_ok=True)
-        LOGGER.info(f"Repo dir created: {repo.expanduser().as_posix()}.")
+REPO_INITIALIZED = False
+
+def init_config_store(
+        root: pathlib.Path,
+) -> Tuple[git.Repo, bool]:
     # Get Git repo
     try:
-        FRESH_REPO = False
-        r = git.Repo(repo.expanduser())
+        fresh_repo = False
+        r = git.Repo(root.expanduser())
         LOGGER.info(f"Using existing repo: {r.common_dir}.")
     except git.exc.InvalidGitRepositoryError:
-        FRESH_REPO = True
+        fresh_repo = True
         # Create Repo if dir is not a Git repo
         # https://gitpython.readthedocs.io/en/stable/tutorial.html#initializing-a-repository
-        r = git.Repo.init(repo.expanduser())
+        r = git.Repo.init(root.expanduser())
         LOGGER.info(f"New repo created: {r.common_dir}.")
 
-    return r, FRESH_REPO
+    global REPO_INITIALIZED
+    REPO_INITIALIZED = True
+
+    return r, fresh_repo
 
 
-config_store_repo, fresh_repo = init_repo(OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT)
+if not OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.expanduser().exists():
+    OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.expanduser().mkdir(parents=True, exist_ok=True)
+    LOGGER.info(f"Repo dir created: {OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.expanduser().as_posix()}.")
+
+config_store_repo, fresh_repo = init_config_store(OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT)
 
 
 def get_config_engine() -> ConfigEngine:
@@ -87,6 +93,7 @@ def get_config_engine() -> ConfigEngine:
         )
         engine_config_yml_expanded: pathlib.Path = engine_config_yml.expanduser()
         LOGGER.info(f"{engine_config_yml = }")
+        LOGGER.info(f"{engine_config_yml_expanded = }")
 
         # Create the `config.yml` for the engine
         # with the default `CONFIG_STR` if
@@ -105,8 +112,8 @@ def get_config_engine() -> ConfigEngine:
     engine_config_dict = get_config_dict()
 
     config_engine: ConfigEngine = ConfigEngine(**engine_config_dict)
-
     LOGGER.info(f"{config_engine = }")
+
     return config_engine
 
 
@@ -321,20 +328,21 @@ LOGGER.info(f"{FeatureBaseModel.subclasses = }")
 #  }
 
 
-# Add all files to tracked files in Git repo
-if fresh_repo:
-    LOGGER.info(f"Add files to tracked file...")
-    config_store_repo.index.add("*")
-    LOGGER.info(f"Making initial commit...")
-    config_store_repo.index.commit("Initial Commit")
-    LOGGER.info(f"Initial Commit successful.")
-else:
-    if config_store_repo.is_dirty():
-        # config_store_repo.git.status("--porcelain")
-        LOGGER.warning(
-            f"Config Store '{config_store_repo.common_dir}' has uncommited changes: "
-            f"{config_store_repo.git.status()}"
-        )
+if REPO_INITIALIZED:
+    # Add all files to tracked files in Git repo
+    if fresh_repo:
+        LOGGER.info(f"Add files to tracked file...")
+        config_store_repo.index.add("*")
+        LOGGER.info(f"Making initial commit...")
+        config_store_repo.index.commit("Initial Commit")
+        LOGGER.info(f"Initial Commit successful.")
+    else:
+        if config_store_repo.is_dirty():
+            # config_store_repo.git.status("--porcelain")
+            LOGGER.warning(
+                f"Config Store '{config_store_repo.common_dir}' has uncommited changes: "
+                f"{config_store_repo.git.status()}"
+            )
 
 
 LOGGER.info(f"Bootstrapping finished successfully.")

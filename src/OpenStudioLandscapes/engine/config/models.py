@@ -215,6 +215,8 @@ class ConfigEngine(BaseModel):
 
     openstudiolandscapes__docker_config: DockerConfigModel = Field()
 
+    # this initilizes a 'GIT_ROOT' by the config.yml
+    # not sure yet if this is really necessary.
     openstudiolandscapes__repository_root: pathlib.Path = Field(
         default=pathlib.Path(
             os.environ.get(
@@ -254,21 +256,21 @@ class ConfigEngine(BaseModel):
     #
     # openstudiolandscapes__attach_pangolin_site_to_compose_scope: bool
 
-    @field_validator("openstudiolandscapes__repository_root")
-    @classmethod
-    def ensure_valid__openstudiolandscapes__repository_root(cls, value: pathlib.Path):
-        _value = value.expanduser()
-        if not _value.exists():
-            # Todo:
-            #  - [ ] is_absolute()?
-            #  - [ ] resolve()?
-            # Create directory
-            _value.mkdir(parents=True, exist_ok=True)
-        if not _value.is_dir():
-            raise ValueError(
-                "`openstudiolandscapes__repository_root` is not a valid directory."
-            )
-        return value
+    # @field_validator("openstudiolandscapes__repository_root")
+    # @classmethod
+    # def ensure_valid__openstudiolandscapes__repository_root(cls, value: pathlib.Path):
+    #     _value = value.expanduser()
+    #     if not _value.exists():
+    #         # Todo:
+    #         #  - [ ] is_absolute()?
+    #         #  - [ ] resolve()?
+    #         # Create directory
+    #         _value.mkdir(parents=True, exist_ok=True)
+    #     if not _value.is_dir():
+    #         raise ValueError(
+    #             "`openstudiolandscapes__repository_root` is not a valid directory."
+    #         )
+    #     return value
 
     # @field_validator("openstudiolandscapes__configstore_root")
     # @classmethod
