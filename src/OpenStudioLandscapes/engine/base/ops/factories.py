@@ -355,18 +355,7 @@ def factory_compose(
         # group_in: dict = kwargs.pop("group_in")
         # env: dict = group_in.pop("env")
 
-        DOCKER_COMPOSE: pathlib.Path = CONFIG.docker_compose
-        # DOCKER_COMPOSE: pathlib.Path = pathlib.Path(
-        #     CONFIG
-        #     .docker_compose
-        #     .as_posix()
-        #     .format(
-        #         **{
-        #             "FEATURE": dist.name,
-        #             **env,
-        #         }
-        #     )
-        # )
+        DOCKER_COMPOSE: pathlib.Path = CONFIG.docker_compose_expanded
         DOCKER_COMPOSE.parent.mkdir(parents=True, exist_ok=True)
 
         if "networks" in compose_networks:

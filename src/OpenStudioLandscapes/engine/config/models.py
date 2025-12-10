@@ -2,7 +2,7 @@ import enum
 import os
 import pathlib
 import textwrap
-from typing import List
+from typing import List, Dict
 
 from pydantic import (
     BaseModel,
@@ -93,65 +93,6 @@ class ComposeScopeBaseModel(BaseModel):
     )
     docker_compose: pathlib.Path = Field(
         description="The path to the `docker-compose.yml` file.",
-    )
-
-
-# This is the Feature Base Model
-class FeatureBaseModel(BaseModel):
-
-    # Todo
-    #  - Merge this with `OpenStudioLandscapes.engine.features.feature.FeatureBase`!!!
-
-    def __repr__(self):
-        return f"Feature({[f'{k}={v}' for k, v in self.__dict__.items()]})"
-
-    def __str__(self):
-        return f"{self.feature_name}"
-
-    config_file_path: pathlib.Path = Field(
-        default=None,
-        description="The path to the `config.yml` file. "
-                    "The path prefix can be derived from "
-                    "`ConfigEngine.openstudiolandscapes__configstore_root`.",
-        frozen=False,
-    )
-
-    # Automatic registration
-    # - https://labex.io/tutorials/python-how-to-implement-automatic-registration-437881
-    enabled: bool = Field(
-        default=True,
-        description="Whether the Feature is enabled or not.",
-    )
-    registry: DockerRegistryProtocol = DockerRegistryProtocol.http
-    compose_scope: str = Field(
-        default="default",
-        examples=["default", "license_server", "worker"],
-    )
-    feature_name: str = Field(
-        description="The name of the feature.",
-        examples=["OpenStudioLandscapes-Kitsu", "OpenStudioLandscapes-VERT"],
-        frozen=True,
-    )
-    group_name: str = Field(
-        frozen=True,
-    )
-    key_prefixes: List[str] = Field()
-
-
-
-    docker_compose: pathlib.Path = Field(
-        default=pathlib.Path("{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml"),
-        description="The path to the `docker-compose.yml` file.",
-    )
-
-
-
-    # dependencies: List[str] = Field(examples=["OpenStudioLandscapes-Kitsu"])
-    definitions: str = Field(
-        description="The path to the `definitions.py` file.",
-        examples=[
-            "OpenStudioLandscapes.Kitsu.definitions",
-        ],
     )
 
 
@@ -322,3 +263,102 @@ class ConfigEngine(BaseModel):
                 "`openstudiolandscapes__configstore_root` is not a valid directory."
             )
         return value
+
+
+# This is the Feature Base Model
+class FeatureBaseModel(BaseModel):
+
+    # Todo
+    #  - Merge this with `OpenStudioLandscapes.engine.features.feature.FeatureBase`!!!
+
+    def __repr__(self):
+        return f"Feature({[f'{k}={v}' for k, v in self.__dict__.items()]})"
+
+    def __str__(self):
+        return f"{self.feature_name}"
+
+    env: Dict = Field(
+        default=None,
+    )
+
+    config_engine: ConfigEngine = Field(
+        default=None,
+    )
+
+    # config_file_path: pathlib.Path = Field(
+    #     default=None,
+    #     description="The path to the `config.yml` file. "
+    #                 "The path prefix can be derived from "
+    #                 "`ConfigEngine.openstudiolandscapes__configstore_root`.",
+    #     frozen=False,
+    # )
+
+    # EXPANDABLE PATHS
+    @property
+    def config_file_path(self) -> pathlib.Path:
+        # LOGGER.debug(f"{self.env = }")
+        if self.config_engine is None:
+            raise KeyError("`config_engine` is `None`.")
+            # return un-expanded path if `self.env` is None
+            return self.kitsu_postgres_conf
+        # LOGGER.debug(f"Expanding {self.kitsu_postgres_conf}...")
+        ret = pathlib.Path(self.config_engine.openstudiolandscapes__configstore_root.expanduser() / self.feature_name / "config.yml")
+        ret.parent.mkdir(parents=True, exist_ok=True)
+        # if ret.exists():
+        #     ret.unlink()
+
+        return ret
+
+    # Automatic registration
+    # - https://labex.io/tutorials/python-how-to-implement-automatic-registration-437881
+    enabled: bool = Field(
+        default=True,
+        description="Whether the Feature is enabled or not.",
+    )
+    registry: DockerRegistryProtocol = Field(
+        default=DockerRegistryProtocol.http,
+    )
+    compose_scope: str = Field(
+        default="default",
+        examples=["default", "license_server", "worker"],
+    )
+    feature_name: str = Field(
+        description="The name of the feature.",
+        examples=["OpenStudioLandscapes-Kitsu", "OpenStudioLandscapes-VERT"],
+        frozen=True,
+    )
+    group_name: str = Field(
+        frozen=True,
+    )
+    key_prefixes: List[str] = Field()
+
+
+
+    docker_compose: pathlib.Path = Field(
+        default=pathlib.Path("{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml"),
+        description="The path to the `docker-compose.yml` file.",
+    )
+
+    @property
+    def docker_compose_expanded(self) -> pathlib.Path:
+        ret = pathlib.Path(
+            self.docker_compose
+            .expanduser()
+            # .resolve()
+            .as_posix()
+            .format(
+                **{
+                    "FEATURE": self.feature_name,
+                    **self.env,
+                }
+            )
+        )
+        return ret
+
+    # dependencies: List[str] = Field(examples=["OpenStudioLandscapes-Kitsu"])
+    definitions: str = Field(
+        description="The path to the `definitions.py` file.",
+        examples=[
+            "OpenStudioLandscapes.Kitsu.definitions",
+        ],
+    )
