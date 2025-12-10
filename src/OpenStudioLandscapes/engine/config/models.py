@@ -1,8 +1,9 @@
 import enum
 import os
+import re
 import pathlib
 import textwrap
-from typing import List, Dict
+from typing import List, Dict, ClassVar
 
 from pydantic import (
     BaseModel,
@@ -15,7 +16,7 @@ from dagster import (
     get_dagster_logger,
 )
 
-import OpenStudioLandscapes.engine.discovery.discovery as discovery
+# import OpenStudioLandscapes.engine.discovery.discovery as discovery
 
 LOG = get_dagster_logger(__name__)
 
@@ -284,8 +285,19 @@ class ConfigEngine(BaseModel):
 
 
 # This is the Feature Base Model
+# DO NOT INSTANCE THIS DIRECTLY
+# use Config Subclass instead
 class FeatureBaseModel(BaseModel):
     """
+    Base class for the Feature Config.
+
+    All features inherit from this class.
+
+    Concept is described here:
+    - https://stackoverflow.com/a/50099920/2207196
+
+    ---
+
     An instance of this model has to be a singleton class.
     There can only be one ConfigEngine instance.
 
@@ -294,9 +306,35 @@ class FeatureBaseModel(BaseModel):
     """
 
     def __new__(cls, *args, **kwargs):
+        if cls is FeatureBaseModel:
+            # Prevent direct instantiation
+            # References:
+            # - https://stackoverflow.com/a/7990308/2207196
+            raise TypeError(
+                f"Do not instance this class directly. "
+                f"Only children of '{cls.__name__}' may be instantiated"
+            )
         if not hasattr(cls, 'instance'):
             cls.instance = super(FeatureBaseModel, cls).__new__(cls)
         return cls.instance
+
+        return cls
+
+    subclasses: ClassVar[Dict] = {}
+
+    def __init_subclass__(cls, **kwargs):
+        """
+
+        This method is called when a subclass is instantiated.
+        The instance will then be added to the base class subclasses list.
+
+        Args:
+            **kwargs:
+        """
+        super().__init_subclass__(**kwargs)
+        # NOT UNIQUE: cls.__name__ = 'Config'
+        # HENCE, USING: cls.feature_name = 'OpenStudioLandscapes-VERT'
+        cls.subclasses[cls.feature_name] = cls
 
     # Todo
     #  - Merge this with `OpenStudioLandscapes.engine.features.feature.FeatureBase`!!!
@@ -318,7 +356,13 @@ class FeatureBaseModel(BaseModel):
     # EXPANDABLE PATHS
     @property
     def config_file_path(self) -> pathlib.Path:
-        ret = pathlib.Path(discovery.OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.expanduser() / self.feature_name / "config.yml")
+        OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT = pathlib.Path(
+            os.environ.get(
+                "OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT",
+                default="~/.config/OpenStudioLandscapes/config-store",
+            )
+        )
+        ret = pathlib.Path(OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.expanduser() / self.feature_name / "config.yml")
         ret.parent.mkdir(parents=True, exist_ok=True)
         return ret
 
@@ -340,6 +384,19 @@ class FeatureBaseModel(BaseModel):
     group_name: str = Field(
         frozen=True,
     )
+
+    @field_validator("group_name")
+    @classmethod
+    def validate(cls, value: str) -> str:
+        # Methods:
+        # - https://blog.finxter.com/5-best-ways-to-replace-a-list-of-characters-in-a-string-with-python/
+        chars_to_replace = " .,-"
+        replace_with = "_"
+
+        regex_pattern = f"[{chars_to_replace}]"
+        transformed_value = re.sub(regex_pattern, replace_with, value)
+        return transformed_value.lower()
+
     key_prefixes: List[str] = Field()
     docker_compose: pathlib.Path = Field(
         default=pathlib.Path("{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml"),
