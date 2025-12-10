@@ -21,6 +21,9 @@ from OpenStudioLandscapes.engine.config.models import CONFIG_STR as ENGINE_CONFI
 LOGGER = get_dagster_logger(__name__)
 
 
+LOGGER.info("Start bootstrapping...")
+
+
 # Important
 # The Feature Git repositories have to physically exist locally.
 # It's not enough to just pip install them from the repo directly, like:
@@ -40,19 +43,28 @@ OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT: pathlib.Path = pathlib.Path(
 )
 
 
-# if not OPENSTUDIOLANDSCAPES__CONFIGSTOROPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOTE_ROOT.expanduser().exists():
-if not OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.expanduser().exists():
-    OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.expanduser().mkdir(parents=True, exist_ok=True)
-# Get Git repo
-try:
-    FRESH_REPO = False
-    r = git.Repo(OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.expanduser())
-except git.exc.InvalidGitRepositoryError:
-    FRESH_REPO = True
-    # Create Repo if dir is not a Git repo
-    # https://gitpython.readthedocs.io/en/stable/tutorial.html#initializing-a-repository
-    r = git.Repo.init(OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.expanduser())
+def init_repo(repo: pathlib.Path) -> Tuple[git.Repo, bool]:
+    # repo_path.mkdir(parents=True, exist_ok=True)
+    # if not OPENSTUDIOLANDSCAPES__CONFIGSTOROPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOTE_ROOT.expanduser().exists():
+    if not repo.expanduser().exists():
+        repo.expanduser().mkdir(parents=True, exist_ok=True)
+        LOGGER.info(f"Repo dir created: {repo.expanduser().as_posix()}.")
+    # Get Git repo
+    try:
+        FRESH_REPO = False
+        r = git.Repo(repo.expanduser())
+        LOGGER.info(f"Using existing repo: {r.common_dir}.")
+    except git.exc.InvalidGitRepositoryError:
+        FRESH_REPO = True
+        # Create Repo if dir is not a Git repo
+        # https://gitpython.readthedocs.io/en/stable/tutorial.html#initializing-a-repository
+        r = git.Repo.init(repo.expanduser())
+        LOGGER.info(f"New repo created: {r.common_dir}.")
 
+    return r, FRESH_REPO
+
+
+config_store_repo, fresh_repo = init_repo(OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT)
 
 
 def get_config_engine() -> ConfigEngine:
@@ -63,29 +75,35 @@ def get_config_engine() -> ConfigEngine:
         ConfigEngine
     """
 
-    # Specify the `config.yml` for the engine.
-    # Hard coding this is a good and predictable way
-    # to implement this.
-    engine_config_yml: pathlib.Path = (
-        OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.joinpath(
-            "OpenStudioLandscapes-Engine",
-            "config.yml",
+    def get_config_dict() -> Dict:
+        # Specify the `config.yml` for the engine.
+        # Hard coding this is a good and predictable way
+        # to implement this.
+        engine_config_yml: pathlib.Path = (
+            OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.joinpath(
+                "OpenStudioLandscapes-Engine",
+                "config.yml",
+            )
         )
-    )
-    engine_config_yml_expanded: pathlib.Path = engine_config_yml.expanduser()
-    LOGGER.error(f"{engine_config_yml = }")
+        engine_config_yml_expanded: pathlib.Path = engine_config_yml.expanduser()
+        LOGGER.info(f"{engine_config_yml = }")
 
-    # Create the `config.yml` for the engine
-    # with the default `CONFIG_STR` if
-    # it does not exist
-    if not engine_config_yml_expanded.exists():
-        engine_config_yml_expanded.parent.mkdir(parents=True, exist_ok=True)
-        engine_config_yml_expanded.write_text(ENGINE_CONFIG_STR)
+        # Create the `config.yml` for the engine
+        # with the default `CONFIG_STR` if
+        # it does not exist
+        if not engine_config_yml_expanded.exists():
+            engine_config_yml_expanded.parent.mkdir(parents=True, exist_ok=True)
+            engine_config_yml_expanded.write_text(ENGINE_CONFIG_STR)
 
-    # Read the `config.yml` as a str
-    engine_config_str: str = engine_config_yml_expanded.read_text()
+        # Read the `config.yml` as a str
+        engine_config_str: str = engine_config_yml_expanded.read_text()
 
-    engine_config_dict: Dict = yaml.safe_load(engine_config_str)
+        engine_config_dict: Dict = yaml.safe_load(engine_config_str)
+
+        return engine_config_dict
+
+    engine_config_dict = get_config_dict()
+
     config_engine: ConfigEngine = ConfigEngine(**engine_config_dict)
 
     LOGGER.info(f"{config_engine = }")
@@ -225,15 +243,37 @@ for package in get_namespace_packages():
 
 LOGGER.info(f"{DISCOVERED_MODELS = }")
 
-# LOGGER.info(f"{FeatureDiscovery.subclasses = }")
 
-# SUCCESSFUL_MODULE_IMPORTS = []  # used in definitions.py (list of <module> objects)
-# IMPORTED_FEATURES = []  # used in dynamic asset imports
-#
-# FUNCTIONAL_FEATURES = []
+def get_config_dict_feature(
+    package: str,
+    feature: OpenStudioLandscapesDiscoveredFeature,
+):
+    # Create the `config.yml` for the feature
+    # with the default `CONFIG_STR` if
+    # it does not exist
+    config_yml_feature = OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT / package.split(".")[0] / "config.yml"
+    LOGGER.info(f"{config_yml_feature = }")
+    config_yml_feature_expanded = config_yml_feature.expanduser()
 
+    if not config_yml_feature_expanded.exists():
+        config_yml_feature_expanded.parent.mkdir(parents=True, exist_ok=True)
+        LOGGER.info("Loading config from `CONFIG_STR`...")
+        try:
+            CONFIG_STR = feature.models_object.CONFIG_STR
+            LOGGER.info(f"`CONFIG_STR` for {package} successfully read.")
+        except (KeyError, AttributeError) as e:
+            raise ImportError(e) from e
 
-# CONFIG_STORE = config_engine.openstudiolandscapes__configstore_root
+        config_yml_feature_expanded.write_text(CONFIG_STR)
+
+    # Read the `config.yml` as a str
+    config_str_feature: str = config_yml_feature_expanded.read_text()
+    LOGGER.info(f"{config_str_feature = }")
+
+    config_dict_feature: Dict = yaml.safe_load(config_str_feature)
+    LOGGER.info(f"{config_dict_feature = }")
+
+    return config_dict_feature
 
 
 # Annotate the types before the loop
@@ -242,10 +282,10 @@ LOGGER.info(f"{DISCOVERED_MODELS = }")
 package: str
 feature: OpenStudioLandscapesDiscoveredFeature
 for package, feature in DISCOVERED_MODELS.items():
-    LOGGER.error(f"{package = }")
+    LOGGER.info(f"{package = }")
     # package =
     # 'OpenStudioLandscapes-Kitsu.src.OpenStudioLandscapes.Kitsu'
-    LOGGER.error(f"{feature = }")
+    LOGGER.info(f"{feature = }")
     # feature =
     # OpenStudioLandscapesDiscoveredFeature(
     #     definitions='OpenStudioLandscapes.Kitsu.definitions',
@@ -255,31 +295,11 @@ for package, feature in DISCOVERED_MODELS.items():
     #     config=None
     # )
 
-    # Create the `config.yml` for the feature
-    # with the default `CONFIG_STR` if
-    # it does not exist
-    config_yml_feature = OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT / package.split(".")[0] / "config.yml"
-    LOGGER.warning(f"{config_yml_feature = }")
-    config_yml_feature_expanded = config_yml_feature.expanduser()
-
-    if not config_yml_feature_expanded.exists():
-        config_yml_feature_expanded.parent.mkdir(parents=True, exist_ok=True)
-        LOGGER.warning("Loading config from `CONFIG_STR`...")
-        try:
-            CONFIG_STR = feature.models_object.CONFIG_STR
-            LOGGER.debug(f"`CONFIG_STR` for {package} successfully read.")
-        except (KeyError, AttributeError) as e:
-            LOGGER.error(f"`CONFIG_STR` for {package} not found. Ignoring.")
-            continue
-
-        config_yml_feature_expanded.write_text(CONFIG_STR)
-
-    # Read the `config.yml` as a str
-    config_str_feature: str = config_yml_feature_expanded.read_text()
-    LOGGER.debug(f"{config_str_feature = }")
-
-    config_dict_feature: Dict = yaml.safe_load(config_str_feature)
-    LOGGER.debug(f"{config_dict_feature = }")
+    try:
+        config_dict_feature = get_config_dict_feature(package, feature)
+    except ImportError as e:
+        LOGGER.error(f"`CONFIG_STR` for {package} not found. Ignoring.")
+        continue
 
     # Config is the `OpenStudioLandscapes.<FEATURE>.config.models.Config` object.
     #
@@ -289,6 +309,7 @@ for package, feature in DISCOVERED_MODELS.items():
     LOGGER.info(f"{config_model_object = }")
     feature.config = config_model_object
 
+
 LOGGER.info(f"{FeatureBaseModel.subclasses = }")
 #  FeatureBaseModel.subclasses =
 #  {
@@ -297,32 +318,21 @@ LOGGER.info(f"{FeatureBaseModel.subclasses = }")
 #      'OpenStudioLandscapes-VERT': <class 'OpenStudioLandscapes.VERT.config.models.Config'>,
 #  }
 
-# LOGGER.info(f"{json.loads(json.dumps(FUNCTIONAL_FEATURES, indent=4, default=str)) = }")
-# json.loads(json.dumps(FUNCTIONAL_FEATURES, indent=4, default=str)) =
-# [
-#     {'package': 'OpenStudioLandscapes-Kitsu.src.OpenStudioLandscapes.Kitsu',
-#      'discovered_model': "definitions='OpenStudioLandscapes.Kitsu.definitions' models='OpenStudioLandscapes.Kitsu.config.models'",
-#      'models': "<module 'OpenStudioLandscapes.Kitsu.config.models' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Kitsu/src/OpenStudioLandscapes/Kitsu/config/models.py'>",
-#      'definitions': "<module 'OpenStudioLandscapes.Kitsu.definitions' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Kitsu/src/OpenStudioLandscapes/Kitsu/definitions.py'>",
-#      'Config': 'OpenStudioLandscapes-Kitsu'},
-#     {'package': 'OpenStudioLandscapes-Watchtower.src.OpenStudioLandscapes.Watchtower',
-#      'discovered_model': "definitions='OpenStudioLandscapes.Watchtower.definitions' models='OpenStudioLandscapes.Watchtower.config.models'",
-#      'models': "<module 'OpenStudioLandscapes.Watchtower.config.models' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Watchtower/src/OpenStudioLandscapes/Watchtower/config/models.py'>",
-#      'definitions': "<module 'OpenStudioLandscapes.Watchtower.definitions' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Watchtower/src/OpenStudioLandscapes/Watchtower/definitions.py'>",
-#      'Config': 'OpenStudioLandscapes-Watchtower'},
-#     {'package': 'OpenStudioLandscapes-VERT.src.OpenStudioLandscapes.VERT',
-#      'discovered_model': "definitions='OpenStudioLandscapes.VERT.definitions' models='OpenStudioLandscapes.VERT.config.models'",
-#      'models': "<module 'OpenStudioLandscapes.VERT.config.models' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-VERT/src/OpenStudioLandscapes/VERT/config/models.py'>",
-#      'definitions': "<module 'OpenStudioLandscapes.VERT.definitions' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-VERT/src/OpenStudioLandscapes/VERT/definitions.py'>",
-#      'Config': 'OpenStudioLandscapes-VERT'}
-# ]
 
 # Add all files to tracked files in Git repo
-if FRESH_REPO:
-    r.index.add("*")
-    r.index.commit("Initial Commit")
+if fresh_repo:
+    LOGGER.info(f"Add files to tracked file...")
+    config_store_repo.index.add("*")
+    LOGGER.info(f"Making initial commit...")
+    config_store_repo.index.commit("Initial Commit")
+    LOGGER.info(f"Initial Commit successful.")
 else:
-    if r.is_dirty():
-        LOGGER.warning(f"Config Store '{r.working_dir}' has uncommited changes.")
-        # LOGGER.warning(f"{r.index.entries = }")
+    if config_store_repo.is_dirty():
+        # config_store_repo.git.status("--porcelain")
+        LOGGER.warning(
+            f"Config Store '{config_store_repo.common_dir}' has uncommited changes: "
+            f"{config_store_repo.git.status()}"
+        )
 
+
+LOGGER.info(f"Bootstrapping finished successfully.")
