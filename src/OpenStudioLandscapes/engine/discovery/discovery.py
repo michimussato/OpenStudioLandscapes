@@ -297,6 +297,8 @@ for package, feature in DISCOVERED_MODELS.items():
 
     try:
         config_dict_feature = get_config_dict_feature(package, feature)
+        # Also inject the ConfigEngine object
+        config_dict_feature["config_engine"] = config_engine
     except ImportError as e:
         LOGGER.error(f"`CONFIG_STR` for {package} not found. Ignoring.")
         continue
