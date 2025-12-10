@@ -323,6 +323,6 @@ if FRESH_REPO:
     r.index.commit("Initial Commit")
 else:
     if r.is_dirty():
-        LOGGER.warning(f"Config Store has uncommited changes.")
+        LOGGER.warning(f"Config Store '{r.working_dir}' has uncommited changes.")
         # LOGGER.warning(f"{r.index.entries = }")
 
