@@ -266,6 +266,10 @@ def run():
 
 if __name__ == "__main__":
     raise SystemExit(
-        "Wrong entry point.\n"
-        "Use `openstudiolandscapes --help` for more information."
+        textwrap.dedent(
+            """
+            Wrong entry point.
+            Use `openstudiolandscapes --help` for more information.
+            """
+        )
     )
