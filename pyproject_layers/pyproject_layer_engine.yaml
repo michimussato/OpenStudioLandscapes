@@ -24,6 +24,8 @@ project:
     - OpenStudioLandscapes[graphviz]
   urls:
     Homepage: https://github.com/michimussato/OpenStudioLandscapes
+  scripts:
+    openstudiolandscapes: "OpenStudioLandscapes.cli:run"
 tool:
   setuptools:
     include-package-data: true

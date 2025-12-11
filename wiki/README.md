@@ -11,7 +11,7 @@
 * [Usage](#usage)
   * [Configure Features](#configure-features)
   * [Run OpenStudioLandscapes](#run-openstudiolandscapes)
-    * [Red Pill Method](#red-pill-method)
+    * [Manual Method](#manual-method)
     * [Create Landscape](#create-landscape)
   * [Docker Compose Graph](#docker-compose-graph)
 * [Contributors](#contributors)

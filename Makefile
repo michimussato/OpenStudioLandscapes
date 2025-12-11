@@ -33,6 +33,15 @@ endif
 #		install_docker \
 #		edit_hosts_file
 
+
+sys_deps_install: \
+	disable_unattended \
+	install_deps \
+	install_gh_cli \
+	install_python \
+	prepare_install_docker \
+	install_docker \
+
 disable_unattended:
 	echo "Starting prep..."
 	sudo systemctl disable --now unattended-upgrades
@@ -111,11 +120,13 @@ install_python:
 		&& sudo make altinstall \
 	# popd || exit 1
 
-install_docker:
+prepare_install_docker:
 	# https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user
-	# sudo groupadd --force --gid 959 docker
-	# sudo usermod --append --groups docker $${USER}
+	sudo groupadd --force --gid 959 docker
+	sudo usermod --append --groups docker $${USER}
 
+
+install_docker:
 	# https://docs.docker.com/engine/install/ubuntu/
 	for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do \
 		sudo apt-get remove $$pkg ; \
@@ -206,15 +217,15 @@ openstudiolandscapes_update:
 #	# your\/string
 #	sed -i -e '$$asource ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT}/\.openstudiolandscapesrc' -e '/source ${REPLACED}\/\.openstudiolandscapesrc/d' "$${HOME}/.bashrc"
 
-up:
-	source .venv/bin/activate \
-		&& nox --sessions dagster_postgres_up_detach dagster_postgres \
-		&& deactivate
-
-down:
-	source .venv/bin/activate \
-		&& nox --sessions dagster_postgres_down \
-		&& deactivate
+#up:
+#	source .venv/bin/activate \
+#		&& nox --sessions dagster_postgres_up_detach dagster_postgres \
+#		&& deactivate
+#
+#down:
+#	source .venv/bin/activate \
+#		&& nox --sessions dagster_postgres_down \
+#		&& deactivate
 
 ###############################################################################
 

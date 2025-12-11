@@ -91,6 +91,9 @@ testing = [
 content-type = "text/markdown; charset=UTF-8"
 file = "README.md"
 
+[project.scripts]
+openstudiolandscapes = "OpenStudioLandscapes.cli:run"
+
 [project.urls]
 Homepage = "https://github.com/michimussato/OpenStudioLandscapes"
 
