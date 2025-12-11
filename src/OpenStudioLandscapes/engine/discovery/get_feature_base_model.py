@@ -32,12 +32,7 @@ def get_feature_base_model(
     #  - [ ] This is a bit of a naive approach and could be done better
 
     for package, feature in discovered_models.items():
-        # package = 'OpenStudioLandscapes-Kitsu'
-        # package_discovered: str = package
-        # context.log.error(f"{package_discovered = }")
-        # package_discovered = 'OpenStudioLandscapes-Kitsu.src.OpenStudioLandscapes.Kitsu'
-        # if package.split(".")[0] == distribution.name:
-        if feature.config.distribution == distribution:
+        if feature.config.distribution.name == distribution.name:
             feature_config: discovery.FeatureBaseModel = feature.config
             return feature_config
     else:
