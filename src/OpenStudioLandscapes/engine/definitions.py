@@ -5,6 +5,7 @@ import os
 from dagster import Definitions, get_dagster_logger
 
 import OpenStudioLandscapes.engine.discovery.discovery as discovery
+from OpenStudioLandscapes.engine.config.models import FeatureBaseModel
 from OpenStudioLandscapes.engine.utils import *
 
 LOGGER = get_dagster_logger(__name__)
@@ -47,7 +48,12 @@ for core in imports_engine:
 package: str
 feature: discovery.OpenStudioLandscapesDiscoveredFeature
 for package, feature in discovery.DISCOVERED_MODELS.items():
-    modules.append(feature.definitions_object)
+    config: FeatureBaseModel = feature.config
+    enabled: bool = config.enabled
+    if enabled:
+        modules.append(feature.definitions_object)
+    else:
+        continue
 
 
 defs = Definitions.merge(

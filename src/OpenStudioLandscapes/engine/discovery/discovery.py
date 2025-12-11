@@ -215,6 +215,8 @@ def try_import_discovered(
 
 
 DISCOVERED_MODELS = {}
+
+
 for package in get_namespace_packages():
     feature_dict = {
         "definitions": get_definitions_path(package),
@@ -243,9 +245,11 @@ for package in get_namespace_packages():
     # 'OpenStudioLandscapes-Kitsu.src.OpenStudioLandscapes.Kitsu':
     #     OpenStudioLandscapesDiscoveredFeature(
     #         definitions='OpenStudioLandscapes.Kitsu.definitions',
-    #         definitions_object=<module 'OpenStudioLandscapes.Kitsu.definitions' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Kitsu/src/OpenStudioLandscapes/Kitsu/definitions.py'>,
+    #         definitions_object=<module 'OpenStudioLandscapes.Kitsu.definitions'
+    #             from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Kitsu/src/OpenStudioLandscapes/Kitsu/definitions.py'>,
     #         models='OpenStudioLandscapes.Kitsu.config.models',
-    #         models_object=<module 'OpenStudioLandscapes.Kitsu.config.models' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Kitsu/src/OpenStudioLandscapes/Kitsu/config/models.py'>,
+    #         models_object=<module 'OpenStudioLandscapes.Kitsu.config.models'
+    #             from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Kitsu/src/OpenStudioLandscapes/Kitsu/config/models.py'>,
     #         config=None
     #     ),
 
@@ -312,9 +316,11 @@ for package, feature in DISCOVERED_MODELS.items():
     # feature =
     # OpenStudioLandscapesDiscoveredFeature(
     #     definitions='OpenStudioLandscapes.Kitsu.definitions',
-    #     definitions_object=<module 'OpenStudioLandscapes.Kitsu.definitions' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Kitsu/src/OpenStudioLandscapes/Kitsu/definitions.py'>,
+    #     definitions_object=<module 'OpenStudioLandscapes.Kitsu.definitions'
+    #         from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Kitsu/src/OpenStudioLandscapes/Kitsu/definitions.py'>,
     #     models='OpenStudioLandscapes.Kitsu.config.models',
-    #     models_object=<module 'OpenStudioLandscapes.Kitsu.config.models' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Kitsu/src/OpenStudioLandscapes/Kitsu/config/models.py'>,
+    #     models_object=<module 'OpenStudioLandscapes.Kitsu.config.models'
+    #         from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Kitsu/src/OpenStudioLandscapes/Kitsu/config/models.py'>,
     #     config=None
     # )
 
