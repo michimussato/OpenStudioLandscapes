@@ -36,7 +36,8 @@ def get_feature_base_model(
         # package_discovered: str = package
         # context.log.error(f"{package_discovered = }")
         # package_discovered = 'OpenStudioLandscapes-Kitsu.src.OpenStudioLandscapes.Kitsu'
-        if package.split(".")[0] == distribution.name:
+        # if package.split(".")[0] == distribution.name:
+        if feature.config.distribution == distribution:
             feature_config: discovery.FeatureBaseModel = feature.config
             return feature_config
     else:
