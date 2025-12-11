@@ -3,6 +3,7 @@ import os
 import re
 import pathlib
 import textwrap
+from importlib.metadata import Distribution
 from typing import List, Dict, ClassVar
 
 from pydantic import (
@@ -10,6 +11,7 @@ from pydantic import (
     PositiveInt,
     field_validator,
     Field,
+    ConfigDict,
 )
 
 from dagster import (
@@ -306,6 +308,18 @@ class FeatureBaseModel(BaseModel):
     References:
         - https://www.geeksforgeeks.org/python/singleton-pattern-in-python-a-complete-guide/
     """
+    # ModuleType Fields:
+    # pydantic.errors.PydanticSchemaGenerationError:
+    #   Unable to generate pydantic-core schema for <class 'module'>.
+    #   Set `arbitrary_types_allowed=True` in the model_config to
+    #   ignore this error or implement `__get_pydantic_core_schema__`
+    #   on your type to fully support it.
+    model_config = ConfigDict(
+        # This disables model checks for all fields.
+        # More info here:
+        # - https://stackoverflow.com/a/78379656/2207196
+        arbitrary_types_allowed=True,
+    )
 
     def __new__(cls, *args, **kwargs):
         if cls is FeatureBaseModel:
@@ -352,6 +366,10 @@ class FeatureBaseModel(BaseModel):
     )
 
     config_engine: ConfigEngine = Field(
+        default=None,
+    )
+
+    distribution: Distribution = Field(
         default=None,
     )
 

@@ -3,6 +3,9 @@ This is the Feature discovery engine for OpenStudioLandscapes.
 """
 
 import importlib
+
+from importlib import metadata
+from importlib.metadata import Distribution
 import os
 import git
 from types import ModuleType
@@ -16,7 +19,7 @@ from setuptools import find_namespace_packages
 
 from OpenStudioLandscapes.engine.config.models import FeatureBaseModel, ConfigEngine
 from OpenStudioLandscapes.engine.config.models import CONFIG_STR as ENGINE_CONFIG_STR
-# from OpenStudioLandscapes.engine.features import FeatureDiscovery
+from OpenStudioLandscapes.engine import dist as dist_engine
 
 LOGGER = get_dagster_logger(__name__)
 
@@ -85,9 +88,10 @@ def get_config_engine() -> ConfigEngine:
         # Specify the `config.yml` for the engine.
         # Hard coding this is a good and predictable way
         # to implement this.
+        LOGGER.info(f"{dist_engine.name = }")
         engine_config_yml: pathlib.Path = (
             OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.joinpath(
-                "OpenStudioLandscapes-Engine",
+                dist_engine.name,
                 "config.yml",
             )
         )
@@ -254,11 +258,18 @@ LOGGER.info(f"{DISCOVERED_MODELS = }")
 def get_config_dict_feature(
     package: str,
     feature: OpenStudioLandscapesDiscoveredFeature,
-):
+) -> Dict:
+    distribution: Distribution = metadata.distribution(package.partition(".")[0])
+
     # Create the `config.yml` for the feature
     # with the default `CONFIG_STR` if
     # it does not exist
-    config_yml_feature = OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT / package.split(".")[0] / "config.yml"
+    config_yml_feature: pathlib.Path = (
+        OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.joinpath(
+            distribution.name,
+            "config.yml",
+        )
+    )
     LOGGER.info(f"{config_yml_feature = }")
     config_yml_feature_expanded = config_yml_feature.expanduser()
 
@@ -278,6 +289,11 @@ def get_config_dict_feature(
     LOGGER.info(f"{config_str_feature = }")
 
     config_dict_feature: Dict = yaml.safe_load(config_str_feature)
+
+    # Also inject the ConfigEngine object
+    config_dict_feature["config_engine"] = config_engine
+    # and the Distribution object
+    config_dict_feature["distribution"] = distribution
     LOGGER.info(f"{config_dict_feature = }")
 
     return config_dict_feature
@@ -304,8 +320,6 @@ for package, feature in DISCOVERED_MODELS.items():
 
     try:
         config_dict_feature = get_config_dict_feature(package, feature)
-        # Also inject the ConfigEngine object
-        config_dict_feature["config_engine"] = config_engine
     except ImportError as e:
         LOGGER.error(f"`CONFIG_STR` for {package} not found. Ignoring.")
         continue
