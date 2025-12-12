@@ -354,7 +354,7 @@ def group_out_base(
         asset_key=context.asset_key,
         metadata=metadatavalues_from_dict(
             context=context,
-            d_serialized=out_dict,
+            d=out_dict,
         )
     )
 

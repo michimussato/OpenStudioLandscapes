@@ -288,26 +288,7 @@ class ConfigEngine(BaseModel):
     #     return value
 
 
-# This is the Feature Base Model
-# DO NOT INSTANCE THIS DIRECTLY
-# use Config Subclass instead
-class FeatureBaseModel(BaseModel):
-    """
-    Base class for the Feature Config.
-
-    All features inherit from this class.
-
-    Concept is described here:
-    - https://stackoverflow.com/a/50099920/2207196
-
-    ---
-
-    An instance of this model has to be a singleton class.
-    There can only be one ConfigEngine instance.
-
-    References:
-        - https://www.geeksforgeeks.org/python/singleton-pattern-in-python-a-complete-guide/
-    """
+class _FeatureBaseModel(BaseModel):
     # ModuleType Fields:
     # pydantic.errors.PydanticSchemaGenerationError:
     #   Unable to generate pydantic-core schema for <class 'module'>.
@@ -322,7 +303,7 @@ class FeatureBaseModel(BaseModel):
     )
 
     def __new__(cls, *args, **kwargs):
-        if cls is FeatureBaseModel:
+        if cls is _FeatureBaseModel:
             # Prevent direct instantiation
             # References:
             # - https://stackoverflow.com/a/7990308/2207196
@@ -331,29 +312,8 @@ class FeatureBaseModel(BaseModel):
                 f"Only children of '{cls.__name__}' may be instantiated"
             )
         if not hasattr(cls, 'instance'):
-            cls.instance = super(FeatureBaseModel, cls).__new__(cls)
+            cls.instance = super(_FeatureBaseModel, cls).__new__(cls)
         return cls.instance
-
-        return cls
-
-    subclasses: ClassVar[Dict] = {}
-
-    def __init_subclass__(cls, **kwargs):
-        """
-
-        This method is called when a subclass is instantiated.
-        The instance will then be added to the base class subclasses list.
-
-        Args:
-            **kwargs:
-        """
-        super().__init_subclass__(**kwargs)
-        # NOT UNIQUE: cls.__name__ = 'Config'
-        # HENCE, USING: cls.feature_name = 'OpenStudioLandscapes-VERT'
-        cls.subclasses[cls.feature_name] = cls
-
-    # Todo
-    #  - Merge this with `OpenStudioLandscapes.engine.features.feature.FeatureBase`!!!
 
     def __repr__(self):
         return f"Feature({[f'{k}={v}' for k, v in self.__dict__.items()]})"
@@ -444,4 +404,53 @@ class FeatureBaseModel(BaseModel):
         examples=[
             "OpenStudioLandscapes.Kitsu.definitions",
         ],
+    )
+
+
+# This is the Feature Base Model
+# DO NOT INSTANCE THIS DIRECTLY
+# use Config Subclass instead
+class FeatureBaseModel(_FeatureBaseModel):
+    """
+    Base class for the Feature Config.
+
+    All features inherit from this class.
+
+    Concept is described here:
+    - https://stackoverflow.com/a/50099920/2207196
+
+    ---
+
+    An instance of this model has to be a singleton class.
+    There can only be one ConfigEngine instance.
+
+    References:
+        - https://www.geeksforgeeks.org/python/singleton-pattern-in-python-a-complete-guide/
+
+    ---
+
+    _FeatureBaseModel is "just" an intermediate class so that the
+    classvar of this class can be typed as _FeatureBaseModel.
+    FeatureBaseModel can not reference itself in its classvars.
+    Todo: maybe there are other ways around this.
+    """
+
+    subclasses: ClassVar[Dict] = {}
+
+    def __init_subclass__(cls, **kwargs):
+        """
+
+        This method is called when a subclass is instantiated.
+        The instance will then be added to the base class subclasses list.
+
+        Args:
+            **kwargs:
+        """
+        super().__init_subclass__(**kwargs)
+        # NOT UNIQUE: cls.__name__ = 'Config'
+        # HENCE, USING: cls.feature_name = 'OpenStudioLandscapes-VERT'
+        cls.subclasses[cls.feature_name] = cls
+
+    config_parent: _FeatureBaseModel = Field(
+        default=None,
     )

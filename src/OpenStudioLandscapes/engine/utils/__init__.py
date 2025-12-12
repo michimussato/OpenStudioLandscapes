@@ -30,7 +30,6 @@ import pathlib
 import shlex
 import time
 from typing import Any, Dict, List, MutableMapping, Tuple, Union
-from pydantic import BaseModel
 
 import git
 import yaml
@@ -333,27 +332,77 @@ def expand_dict_vars(
     return dict_to_expand
 
 
+# def serialize_dict(
+#     context: Union[AssetExecutionContext, OpExecutionContext],
+#     d: Dict,
+#     d_: Dict = None,
+# ) -> Dict:
+#     if d_ is None:
+#         d_ = {}
+#
+#     for k, v in d.items():
+#
+#         context.log.error(f"{k = }")
+#         context.log.error(f"{type(v) = }")
+#         context.log.error(f"{v = }")
+#         if isinstance(v, Dict):
+#             d_[k] = serialize_dict(
+#                 context=context,
+#                 d=v,
+#                 d_=d_,
+#             )
+#         elif isinstance(v, BaseModel):
+#             d_[k] = serialize_dict(
+#                 context=context,
+#                 d=json.loads(v.model_dump_json(indent=2, fallback=str)),
+#                 d_=d_,
+#             )
+#             # d_dump = json.loads(v.model_dump_json(indent=2, fallback=str))
+#             # if isinstance(d_dump, dict):
+#             #     d_[k] = serialize_dict(
+#             #         context=context,
+#             #         d=d_dump,
+#             #         d_=d_,
+#             #     )
+#             # else:
+#             #     d_[k] = d_dump
+#         elif isinstance(v, enum.Enum):
+#             d_[k] = v.value
+#         elif isinstance(v, pathlib.PosixPath):
+#             d_[k] = v.as_posix()
+#         else:
+#             d_[k] = v
+#
+#     return d_
+
+
+
 # Todo
 #  - [ ] write a decent serializer
 def metadatavalues_from_dict(
     context: Union[AssetExecutionContext, OpExecutionContext],
-    d_serialized: Union[str, MutableMapping],
-) -> MutableMapping[str, MetadataValue]:
-    if isinstance(d_serialized, str):
-        d_serialized = json.loads(d_serialized)
+    d: Dict,
+) -> Dict:
+
+    d_serialized = json.loads(
+        json.dumps(
+            d,
+            indent=2,
+            default=str,
+        )
+    )
 
     metadata = {}
 
+    metadata["OUT"] = MetadataValue.json(d_serialized)
+
     for k, v in d_serialized.items():
         context.log.debug(f"{type(v) = } ({v = })")
-        if isinstance(v, BaseModel):
-            metadata[k] = MetadataValue.md(
-                f"```yaml\n{v.model_dump_json(indent=2)}\n```"
-            )
-        elif isinstance(v, pathlib.PosixPath):
-            metadata[k] = MetadataValue.path(v)
-        else:
-            metadata[k] = MetadataValue.json(v)
+        metadata[k] = MetadataValue.json(v)
+        # if isinstance(v, pathlib.PosixPath):
+        #     metadata[k] = MetadataValue.path(v)
+        # else:
+        #     metadata[k] = MetadataValue.json(v)
 
     return metadata
 

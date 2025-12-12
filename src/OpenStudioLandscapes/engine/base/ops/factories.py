@@ -96,14 +96,12 @@ def factory_feature_out(
             value=kwargs,
         )
 
-        kwargs_str = json.loads(json.dumps(kwargs, default=str))
-
         yield AssetMaterialization(
             asset_key=context.asset_key_for_output(output_name),
             metadata={
                 **metadatavalues_from_dict(
                     context=context,
-                    d_serialized=kwargs_str,
+                    d=kwargs,
                 ),
             },
         )
@@ -463,14 +461,12 @@ def factory_group_in(
 
         assert bool(kwargs) == False
 
-        group_out_str = json.loads(json.dumps(group_out, default=str))
-
         yield AssetMaterialization(
             asset_key=context.asset_key,
             metadata={
                 **metadatavalues_from_dict(
                     context=context,
-                    d_serialized=group_out_str,
+                    d=group_out,
                 ),
             },
         )

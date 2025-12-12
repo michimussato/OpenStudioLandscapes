@@ -271,7 +271,7 @@ def CONFIG(
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.md(f"```json\n{json.dumps(config_validated.model_dump(mode='json'), indent=2, default=str)}\n```"),
+            "__".join(context.asset_key.path): MetadataValue.md(f"```yaml\n{yaml.safe_dump(json.loads(config_validated.model_dump_json(fallback=str, indent=2)))}\n```"),
             # "config_yml_path": MetadataValue.path(config_yml_object),
             # "config_dict": MetadataValue.md(f"```json\n{json.dumps(config_dict, indent=2, default=str)}\n```"),
             # "config_dict_expanded": MetadataValue.md(f"```json\n{json.dumps(config_expanded, indent=2, default=str)}\n```"),
