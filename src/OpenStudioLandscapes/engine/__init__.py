@@ -2,7 +2,7 @@ import sys
 from importlib import metadata
 from pathlib import Path
 
-if sys.version_info[:2] >= (3, 9):
+if sys.version_info[:2] >= (3, 11):
     # TODO: Import directly (no need for conditional) when `python_requires = >= 3.8`
     from importlib.metadata import (  # pragma: no cover
         Distribution,
@@ -10,7 +10,7 @@ if sys.version_info[:2] >= (3, 9):
         version,
     )
 else:
-    raise RuntimeError("Python version >= 3.9 required.")
+    raise RuntimeError("Python version >= 3.11 required.")
 
 try:
     # Change here if project is renamed and does not equal the package name

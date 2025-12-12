@@ -6,7 +6,8 @@ from importlib.metadata import Distribution
 from typing import ClassVar, Dict, List
 
 from dagster import (
-    get_dagster_logger,
+    AssetIn,
+    get_dagster_logger, AssetKey,
 )
 from pydantic import (
     BaseModel,
@@ -341,6 +342,18 @@ class FeatureBaseModel(BaseModel):
     distribution: Distribution = Field(
         default=None,
     )
+
+    # # Dagster Attributes
+    # # dagster_compose_scope_in: AssetIn = Field(
+    # #     default=None,
+    # # )
+    # @property
+    # def dagster_compose_scope_in(self) -> AssetIn:
+    #     key = "Kitsu"
+    #     ret = AssetIn(
+    #         AssetKey([key, "feature_out"])
+    #     )
+    #     return ret
 
     # EXPANDABLE PATHS
     @property

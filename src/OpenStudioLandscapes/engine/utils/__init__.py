@@ -526,7 +526,7 @@ def get_str_env(
     return _env
 
 
-def get_compose_scopes(
+def get_all_compose_scopes(
     usable_features: Dict[str, discovery.OpenStudioLandscapesDiscoveredFeature],
 ) -> set:
     compose_scopes = []
@@ -554,15 +554,16 @@ def get_dynamic_ins(
 
     """
 
-    compose_scopes: set = get_compose_scopes(usable_features=imported_features)
+    compose_scopes: set = get_all_compose_scopes(usable_features=imported_features)
     LOGGER.info(f"{compose_scopes = }")
 
     def _add_module(_module, compose_scope) -> None:
         split = _module.split(".")
         namespace = split[2]  # OpenStudioLandscapes
         key = split[3]  # key = "Ayon"
-        feature_ins[compose_scope][f"{namespace}_{key}"] = AssetIn(
-            AssetKey([key, "feature_out"])
+        dist_name = f"{namespace}_{key}"
+        feature_ins[compose_scope][dist_name] = AssetIn(
+            AssetKey([dist_name, "feature_out"])
         )
         return None
 
@@ -575,11 +576,12 @@ def get_dynamic_ins(
         feature: discovery.OpenStudioLandscapesDiscoveredFeature
         for package, feature in imported_features.items():
             LOGGER.error(f"{feature = }")
+            # feature = OpenStudioLandscapesDiscoveredFeature(definitions='OpenStudioLandscapes.Watchtower.definitions', definitions_object=<module 'OpenStudioLandscapes.Watchtower.definitions' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Watchtower/src/OpenStudioLandscapes/Watchtower/definitions.py'>, models='OpenStudioLandscapes.Watchtower.config.models', models_object=<module 'OpenStudioLandscapes.Watchtower.config.models' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Watchtower/src/OpenStudioLandscapes/Watchtower/config/models.py'>, config=Feature(['env=None', "config_engine=openstudiolandscapes__docker_config=DockerConfigModel(use_registry=True, no_cache=False, docker_registry_config=DockerRegistryConfig(docker_push=True, docker_pull=True, docker_repository_name='openstudiolandscapes', docker_registry_access='public', docker_registry_protocol='https', docker_registry_fqdn='registry.openstudiolandscapes.lan', docker_registry_port=5000, docker_registry_username='registry-user', docker_registry_password='registry-password')) openstudiolandscapes__repository_root=PosixPath('{REPOSITORY_ROOT}') openstudiolandscapes__domain_lan='openstudiolandscapes.lan'", 'config_parent=None', 'distribution=<importlib.metadata.PathDistribution object at 0x7fe9b764ad10>', 'enabled=True', 'compose_scope=default', 'feature_name=OpenStudioLandscapes-Watchtower', 'group_name=watchtower', "key_prefixes=['Watchtower']", 'docker_compose={DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml', 'definitions=OpenStudioLandscapes.Watchtower.definitions', 'watchtower_port_host=4000', 'watchtower_port_container=80']))
 
             if feature.config.compose_scope == compose_scope:
-                LOGGER.error(f"{compose_scope = }")
+                LOGGER.info(f"{compose_scope = }")
+                # compose_scope = 'default'
 
-                # feature = {'package': 'OpenStudioLandscapes-VERT.src.OpenStudioLandscapes.VERT', 'discovered_model': OpenStudioLandscapesDiscoveredFeature(definitions='OpenStudioLandscapes.VERT.definitions', models='OpenStudioLandscapes.VERT.config.models'), 'models': <module 'OpenStudioLandscapes.VERT.config.models' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-VERT/src/OpenStudioLandscapes/VERT/config/models.py'>, 'definitions': <module 'OpenStudioLandscapes.VERT.definitions' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-VERT/src/OpenStudioLandscapes/VERT/definitions.py'>, 'Config': Config(enabled=True, registry=<DockerRegistryProtocol.http: 'http'>, compose_scope='default', feature_name='OpenStudioLandscapes-VERT', group_name='VERT', key_prefixes=['VERT'], docker_compose='{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml', definitions='OpenStudioLandscapes.VERT.definitions', docker_compose_override='{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.override.yml', vert_port_container=80, vert_port_host=3344, repository_url='https://github.com/VERT-sh/VERT.git', repository_branch='main', repository_subdir='VERT', docker_compose_yml='docker-compose.yml', docker_compose_worker_yml='docker-compose.worker.yml')}
                 module = package
 
                 _add_module(_module=module, compose_scope=compose_scope)

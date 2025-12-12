@@ -27,7 +27,7 @@ e_ = expand_dict_vars(
 # ComposeScope Definitions
 imports_engine.extend(
     [
-        # "OpenStudioLandscapes.engine.compose_scopes.default.definitions",
+        "OpenStudioLandscapes.engine.compose_scopes.default.definitions",
         # "OpenStudioLandscapes.engine.compose_scopes.license_server.definitions",
         # "OpenStudioLandscapes.engine.compose_scopes.worker.definitions",
     ]
