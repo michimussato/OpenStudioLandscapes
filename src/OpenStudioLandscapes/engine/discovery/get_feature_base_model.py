@@ -1,5 +1,4 @@
-from importlib.metadata import Distribution
-from typing import Dict
+from typing import Dict, Type
 
 from dagster import (
 AssetExecutionContext,
@@ -11,7 +10,7 @@ from OpenStudioLandscapes.engine.discovery import discovery
 def get_feature_base_model(
         context: AssetExecutionContext,
         discovered_models: Dict[str, discovery.OpenStudioLandscapesDiscoveredFeature],
-        distribution: Distribution,
+        search_instance_type: Type[discovery.FeatureBaseModel,]
 ) -> discovery.FeatureBaseModel:
     """
     We are not create a new Config object for this Feature. It
@@ -21,20 +20,23 @@ def get_feature_base_model(
     Find the OpenStudioLandscapesFeature from the discovered models
     that matches the package name and return its Config object.
 
+    As all Feature Config objects are subclasses of
+    discovery.OpenStudioLandscapesFeature and also singletons,
+    there will always only be one Config object of type
+    <search_instance_type>.
+
     Returns:
-        discovery.OpenStudioLandscapesFeature
+        Subclass of discovery.OpenStudioLandscapesFeature
 
     Raises:
         ValueError
     """
 
-    # Todo
-    #  - [ ] This is a bit of a naive approach and could be done better
-
     for package, feature in discovered_models.items():
-        if feature.config.distribution.name == distribution.name:
-            feature_config: discovery.FeatureBaseModel = feature.config
+        feature_config: discovery.FeatureBaseModel = feature.config
+        if isinstance(feature_config, search_instance_type):
             return feature_config
     else:
-        context.log.error(f"No Config found for {distribution.name}")
-        raise ValueError(f"No Config found for {distribution.name}")
+        msg = f"No Config object of type {type(search_instance_type)} found."
+        context.log.error(msg)
+        raise ValueError(msg)

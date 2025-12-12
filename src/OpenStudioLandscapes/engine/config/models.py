@@ -2,7 +2,6 @@ import enum
 import os
 import re
 import pathlib
-import textwrap
 from importlib.metadata import Distribution
 from typing import List, Dict, ClassVar
 
@@ -18,10 +17,7 @@ from dagster import (
     get_dagster_logger,
 )
 
-# import OpenStudioLandscapes.engine.discovery.discovery as discovery
-
 LOG = get_dagster_logger(__name__)
-
 
 """
 Resources:
@@ -32,51 +28,13 @@ Resources:
 - https://docs.pydantic.dev/2.0/usage/models/
 """
 
-
 # Todo
 #  - [ ] Learn about serialization
 #        - https://docs.pydantic.dev/latest/concepts/serialization/
 
 
-CONFIG_STR = textwrap.dedent(
-    """
-    # openstudiolandscapes__repository_root: "{REPOSITORY_ROOT}"  # maybe use GIT_ROOT?
-    openstudiolandscapes__repository_root: "{GIT_ROOT}"  # maybe use GIT_ROOT?
-    # openstudiolandscapes__configstore_root: "~/.config/OpenStudioLandscapes/config-store"
-    
-    openstudiolandscapes__domain_lan: "openstudiolandscapes.lan"
-    #openstudiolandscapes__domain_wan: "openstudiolandscapes.cloud-ip.cc"
-    #
-    #openstudiolandscapes__su_method: "su"
-    #
-    ##openstudiolandscapes__docker_config: "local_registry"
-    #openstudiolandscapes__docker_config: "localhost"
-    #
-    #openstudiolandscapes__attach_pangolin_site_to_compose_scope: true
-    
-    
-    
-    openstudiolandscapes__docker_config:
-      use_registry: true
-    #  no_cache: true
-      # If `use_registry` is false,
-      # `docker_registry_config` values are ignored.
-      docker_registry_config:
-        docker_push: true  # Is this necessary?
-        docker_pull: true  # Is this necessary?
-        # docker_use_local: false  # What is this for?
-        docker_repository_name: "OpenStudioLandscapes"  # will be converted to all lowercase
-    #    docker_registry_access: "public"
-    #    docker_registry_protocol: "https"
-        docker_registry_fqdn: "registry.openstudiolandscapes.lan"
-    #    docker_registry_port: 5000
-        docker_registry_username: "registry-user"
-        docker_registry_password: "registry-password"
-    
-    # For testing
-    illegal_option: 1234
-    """
-)
+config_default = pathlib.Path(__file__).parent.joinpath("config_default.yml")
+CONFIG_STR = config_default.read_text()
 
 
 class DockerRegistryProtocol(enum.StrEnum):
@@ -189,7 +147,6 @@ class DockerRegistryConfig(BaseModel):
 
 
 class DockerConfigModel(BaseModel):
-
     use_registry: bool = Field(
         default=False,
         description="Enable use of local or remote registry: push/pull images to registry like hub.docker.io.",
@@ -288,7 +245,26 @@ class ConfigEngine(BaseModel):
     #     return value
 
 
-class _FeatureBaseModel(BaseModel):
+# This is the Feature Base Model
+# DO NOT INSTANCE THIS DIRECTLY
+# use Config Subclass instead
+class FeatureBaseModel(BaseModel):
+    """
+    Base class for the Feature Config.
+
+    All features inherit from this class.
+
+    Concept is described here:
+    - https://stackoverflow.com/a/50099920/2207196
+
+    ---
+
+    An instance of this model has to be a singleton class.
+    There can only be one ConfigEngine instance.
+
+    References:
+        - https://www.geeksforgeeks.org/python/singleton-pattern-in-python-a-complete-guide/
+    """
     # ModuleType Fields:
     # pydantic.errors.PydanticSchemaGenerationError:
     #   Unable to generate pydantic-core schema for <class 'module'>.
@@ -303,7 +279,7 @@ class _FeatureBaseModel(BaseModel):
     )
 
     def __new__(cls, *args, **kwargs):
-        if cls is _FeatureBaseModel:
+        if cls is FeatureBaseModel:
             # Prevent direct instantiation
             # References:
             # - https://stackoverflow.com/a/7990308/2207196
@@ -312,8 +288,24 @@ class _FeatureBaseModel(BaseModel):
                 f"Only children of '{cls.__name__}' may be instantiated"
             )
         if not hasattr(cls, 'instance'):
-            cls.instance = super(_FeatureBaseModel, cls).__new__(cls)
+            cls.instance = super(FeatureBaseModel, cls).__new__(cls)
         return cls.instance
+
+    subclasses: ClassVar[Dict] = {}
+
+    def __init_subclass__(cls, **kwargs):
+        """
+
+        This method is called when a subclass is instantiated.
+        The instance will then be added to the base class subclasses list.
+
+        Args:
+            **kwargs:
+        """
+        super().__init_subclass__(**kwargs)
+        # NOT UNIQUE: cls.__name__ = 'Config'
+        # HENCE, USING: cls.feature_name = 'OpenStudioLandscapes-VERT'
+        cls.subclasses[cls.feature_name] = cls
 
     def __repr__(self):
         return f"Feature({[f'{k}={v}' for k, v in self.__dict__.items()]})"
@@ -326,6 +318,13 @@ class _FeatureBaseModel(BaseModel):
     )
 
     config_engine: ConfigEngine = Field(
+        default=None,
+    )
+
+    # Forward Annotation
+    # Reference:
+    # - https://docs.pydantic.dev/latest/concepts/forward_annotations/
+    config_parent: 'FeatureBaseModel' = Field(
         default=None,
     )
 
@@ -404,53 +403,4 @@ class _FeatureBaseModel(BaseModel):
         examples=[
             "OpenStudioLandscapes.Kitsu.definitions",
         ],
-    )
-
-
-# This is the Feature Base Model
-# DO NOT INSTANCE THIS DIRECTLY
-# use Config Subclass instead
-class FeatureBaseModel(_FeatureBaseModel):
-    """
-    Base class for the Feature Config.
-
-    All features inherit from this class.
-
-    Concept is described here:
-    - https://stackoverflow.com/a/50099920/2207196
-
-    ---
-
-    An instance of this model has to be a singleton class.
-    There can only be one ConfigEngine instance.
-
-    References:
-        - https://www.geeksforgeeks.org/python/singleton-pattern-in-python-a-complete-guide/
-
-    ---
-
-    _FeatureBaseModel is "just" an intermediate class so that the
-    classvar of this class can be typed as _FeatureBaseModel.
-    FeatureBaseModel can not reference itself in its classvars.
-    Todo: maybe there are other ways around this.
-    """
-
-    subclasses: ClassVar[Dict] = {}
-
-    def __init_subclass__(cls, **kwargs):
-        """
-
-        This method is called when a subclass is instantiated.
-        The instance will then be added to the base class subclasses list.
-
-        Args:
-            **kwargs:
-        """
-        super().__init_subclass__(**kwargs)
-        # NOT UNIQUE: cls.__name__ = 'Config'
-        # HENCE, USING: cls.feature_name = 'OpenStudioLandscapes-VERT'
-        cls.subclasses[cls.feature_name] = cls
-
-    config_parent: _FeatureBaseModel = Field(
-        default=None,
     )
