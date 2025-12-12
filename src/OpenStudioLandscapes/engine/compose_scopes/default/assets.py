@@ -27,7 +27,8 @@ from OpenStudioLandscapes.engine.common_assets.group_out_compose_scope import (
     get_group_out,
 )
 from OpenStudioLandscapes.engine.common_assets.compose_scope import (
-    get_compose_scope_group,
+get_compose_scope_group_test, get_compose_scope_group__features_in,
+get_compose_scope_group__CONFIG
 )
 from OpenStudioLandscapes.engine.common_assets.scrape_networks import (
     get_scrape_networks,
@@ -71,7 +72,7 @@ if bool(feature_ins):
 
         # for i in range(5):
 
-        compose_scope_group = get_compose_scope_group(
+        compose_scope_group = get_compose_scope_group_test(
             # ASSET_HEADER=ASSET_HEADER_COMPOSE,
             ASSET_HEADER={
                 "group_name": f"TEST_GROUP_COMPOSE_{compose_scope}",
@@ -81,6 +82,28 @@ if bool(feature_ins):
         )
 
         compose_scope_asset_defs.append(compose_scope_group)
+
+        compose_scope_group__features_in = get_compose_scope_group__features_in(
+            # ASSET_HEADER=ASSET_HEADER_COMPOSE,
+            ASSET_HEADER={
+                "group_name": f"TEST_GROUP_COMPOSE_{compose_scope}",
+                "key_prefix": ["Compose_Scope", f"Group_{compose_scope}"],
+                "compute_kind": "python",
+            },
+        )
+
+        compose_scope_asset_defs.append(compose_scope_group__features_in)
+
+        compose_scope_group_CONFIG = get_compose_scope_group__CONFIG(
+            # ASSET_HEADER=ASSET_HEADER_COMPOSE,
+            ASSET_HEADER={
+                "group_name": f"TEST_GROUP_COMPOSE_{compose_scope}",
+                "key_prefix": ["Compose_Scope", f"Group_{compose_scope}"],
+                "compute_kind": "python",
+            },
+        )
+
+        compose_scope_asset_defs.append(compose_scope_group_CONFIG)
 
         if compose_scope != ["default", "test"][0]:
             continue
