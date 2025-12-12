@@ -26,6 +26,9 @@ from OpenStudioLandscapes.engine.base.ops import (
 from OpenStudioLandscapes.engine.common_assets.group_out_compose_scope import (
     get_group_out,
 )
+from OpenStudioLandscapes.engine.common_assets.compose_scope import (
+    get_compose_scope_group,
+)
 from OpenStudioLandscapes.engine.common_assets.scrape_networks import (
     get_scrape_networks,
 )
@@ -391,3 +394,20 @@ if bool(feature_ins):
                 ),
             },
         )
+
+        asset_defs = []
+
+        for i in range(5):
+
+            # asset_defs = []
+
+            compose_scope_group = get_compose_scope_group(
+                # ASSET_HEADER=ASSET_HEADER_COMPOSE,
+                ASSET_HEADER={
+                    "group_name": f"TEST_GROUP_COMPOSE_{i}",
+                    "key_prefix": ["Compose_Scope", f"Group_{i}"],
+                    "compute_kind": "python",
+                },
+            )
+
+            asset_defs.append(compose_scope_group)
