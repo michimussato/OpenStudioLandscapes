@@ -1,10 +1,10 @@
 import enum
 import json
-import textwrap
 import pathlib
-import yaml
-from typing import Any, Dict, Generator, MutableMapping, List
+import textwrap
+from typing import Any, Dict, Generator, List, MutableMapping
 
+import yaml
 from dagster import (
     AssetExecutionContext,
     AssetIn,
@@ -14,31 +14,32 @@ from dagster import (
     MetadataValue,
     Output,
     asset,
-    get_dagster_logger
+    get_dagster_logger,
 )
 
 LOGGER = get_dagster_logger(__name__)
 
+import OpenStudioLandscapes.engine.discovery.discovery as discovery
 from OpenStudioLandscapes.engine.base.ops import (
     op_docker_compose_graph,
 )
-from OpenStudioLandscapes.engine.common_assets.group_out_compose_scope import get_group_out
+from OpenStudioLandscapes.engine.common_assets.group_out_compose_scope import (
+    get_group_out,
+)
 from OpenStudioLandscapes.engine.common_assets.scrape_networks import (
     get_scrape_networks,
 )
 from OpenStudioLandscapes.engine.compose_scopes.default.constants import (
     ATTACH_SITE_TO_COMPOSE_SCOPE,
 )
-from OpenStudioLandscapes.engine.constants import *
-import OpenStudioLandscapes.engine.discovery.discovery as discovery
-from OpenStudioLandscapes.engine.enums import *
-from OpenStudioLandscapes.engine.utils import *
-from OpenStudioLandscapes.engine.utils.pangolin import *
-
 from OpenStudioLandscapes.engine.config.models import (
     ComposeScopeBaseModel,
     FeatureBaseModel,
 )
+from OpenStudioLandscapes.engine.constants import *
+from OpenStudioLandscapes.engine.enums import *
+from OpenStudioLandscapes.engine.utils import *
+from OpenStudioLandscapes.engine.utils.pangolin import *
 
 # Todo:
 #  - [ ] get assets from common_assets
@@ -69,7 +70,6 @@ if bool(feature_ins):
         LOGGER.error(f"{compose_scope = }")
         LOGGER.error(f"{features = }")
 
-
         GROUP_COMPOSE = f"ComposeScope_{compose_scope}"
         KEY_COMPOSE = [GROUP_COMPOSE]
 
@@ -92,21 +92,20 @@ if bool(feature_ins):
                 If the custom `config.yml` does not exist, it
                 will be created locally containing default options.
                 """
-            )
+            ),
         )
         def CONFIG(
             context: AssetExecutionContext,
             features_in: dict,  # pylint: disable=redefined-outer-name
         ) -> Generator[
-            Output[ComposeScopeBaseModel]
-            | AssetMaterialization,
+            Output[ComposeScopeBaseModel] | AssetMaterialization,
             None,
             None,
         ]:
 
-            env: dict = features_in.pop('env_base', {})
+            env: dict = features_in.pop("env_base", {})
 
-            CONFIG = ComposeScopeBaseModel(
+            config = ComposeScopeBaseModel(
                 **{
                     "compose_scope": compose_scope,
                     "docker_compose": pathlib.Path(
@@ -120,15 +119,16 @@ if bool(feature_ins):
                 },
             )
 
-            yield Output(CONFIG)
+            yield Output(config)
 
             yield AssetMaterialization(
                 asset_key=context.asset_key,
                 metadata={
-                    "__".join(context.asset_key.path): MetadataValue.md(f"```json\n{json.dumps(CONFIG.model_dump(mode='json'), indent=2, default=str)}\n```"),
+                    "__".join(context.asset_key.path): MetadataValue.md(
+                        f"```json\n{json.dumps(config.model_dump(mode='json'), indent=2, default=str)}\n```"
+                    ),
                 },
             )
-
 
         # Todo
         #  - [ ] Move to factory
@@ -175,7 +175,7 @@ if bool(feature_ins):
         ]:
             """ """
 
-            env: dict = features_in.pop('env_base', {})
+            env: dict = features_in.pop("env_base", {})
 
             # Todo:
             #  - [ ] Duplicated code `OpenStudioLandscapes.engine.base.ops.factories.factory_scrape_networks`
@@ -184,7 +184,9 @@ if bool(feature_ins):
             # context.log.debug(f"Popping: {features_in.pop('env_base', {}) = }")
             context.log.debug(f"Popping: {features_in.pop('config_engine', {}) = }")
             context.log.debug(f"Popping: {features_in.pop('docker_image', {}) = }")
-            context.log.debug(f"Popping: {features_in.pop('docker_config_json', {}) = }")
+            context.log.debug(
+                f"Popping: {features_in.pop('docker_config_json', {}) = }"
+            )
 
             DOCKER_COMPOSE: pathlib.Path = CONFIG.docker_compose
 
@@ -216,7 +218,7 @@ if bool(feature_ins):
                     "project_directory": rel_path.parent.as_posix(),
                     "path": [
                         rel_path.as_posix(),
-                    ]
+                    ],
                 }
 
                 includes.append(include_)
@@ -246,7 +248,9 @@ if bool(feature_ins):
                     "__".join(context.asset_key.path): MetadataValue.json(
                         docker_dict_include
                     ),
-                    "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml_include}\n```"),
+                    "docker_yaml": MetadataValue.md(
+                        f"```yaml\n{docker_yaml_include}\n```"
+                    ),
                     "includes": MetadataValue.json(includes),
                     "OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE": MetadataValue.bool(
                         CONFIG.attach_pangolin_site_to_compose_scope,
@@ -379,7 +383,9 @@ if bool(feature_ins):
             group_name=ASSET_HEADER_COMPOSE["group_name"],
             key_prefix=ASSET_HEADER_COMPOSE["key_prefix"],
             keys_by_input_name={
-                "group_out": AssetKey([*ASSET_HEADER_COMPOSE["key_prefix"], "group_out"]),
+                "group_out": AssetKey(
+                    [*ASSET_HEADER_COMPOSE["key_prefix"], "group_out"]
+                ),
                 "compose_project_name": AssetKey(
                     [*ASSET_HEADER_COMPOSE["key_prefix"], "compose_project_name"]
                 ),

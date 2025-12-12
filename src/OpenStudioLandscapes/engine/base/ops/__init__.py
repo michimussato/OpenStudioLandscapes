@@ -22,13 +22,13 @@ from dagster import (
 )
 from docker_compose_graph.docker_compose_graph import DockerComposeGraph
 
+from OpenStudioLandscapes.engine.config.models import (
+    ComposeScopeBaseModel,
+    FeatureBaseModel,
+)
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.utils import *
-from OpenStudioLandscapes.engine.config.models import (
-    FeatureBaseModel,
-    ComposeScopeBaseModel,
-)
 
 
 # Todo

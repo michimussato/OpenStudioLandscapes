@@ -17,12 +17,12 @@ from dagster import (
     asset,
 )
 
-from OpenStudioLandscapes.engine.config.models import DockerConfigModel, ConfigEngine
+from OpenStudioLandscapes.engine.config import dist
+from OpenStudioLandscapes.engine.config.models import ConfigEngine, DockerConfigModel
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.policies.retry import build_docker_image_retry_policy
 from OpenStudioLandscapes.engine.utils import *
 from OpenStudioLandscapes.engine.utils.docker import *
-from OpenStudioLandscapes.engine.config import dist
 
 
 @asset(
@@ -106,9 +106,7 @@ def apt_packages(
     **ASSET_HEADER_BASE,
     ins={
         "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
-        "CONFIG": AssetIn(
-            AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"])
-        ),
+        "CONFIG": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"])),
         "docker_config_json": AssetIn(
             AssetKey([*ASSET_HEADER_BASE["key_prefix"], "docker_config_json"])
         ),
@@ -259,14 +257,16 @@ def build_docker_image(
         docker_config_json=docker_config_json,
         docker_file=docker_file,
         tags=tags_full_str,
-        pull=docker_config.use_registry and docker_config.docker_registry_config.docker_pull,
+        pull=docker_config.use_registry
+        and docker_config.docker_registry_config.docker_pull,
         no_cache=docker_config.no_cache,
     )
 
     cmds.append(cmd_build)
 
-    if docker_config.use_registry \
-            and docker_config.docker_registry_config.docker_push :  # or not_push
+    if (
+        docker_config.use_registry and docker_config.docker_registry_config.docker_push
+    ):  # or not_push
         cmds_push = docker_push_cmd(
             context=context,
             docker_config_json=docker_config_json,
@@ -307,9 +307,7 @@ def build_docker_image(
     },
     ins={
         "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
-        "CONFIG": AssetIn(
-            AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"])
-        ),
+        "CONFIG": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"])),
         "docker_config_json": AssetIn(
             AssetKey([*ASSET_HEADER_BASE["key_prefix"], "docker_config_json"])
         ),
@@ -341,10 +339,18 @@ def group_out_base(
     out_dict["env_base"] = env
     out_dict["config_engine"]: ConfigEngine = CONFIG
     out_dict["docker_config"] = docker_config.docker_registry_config.model_dump()
-    out_dict["docker_config"]["docker_repository"] = docker_config.docker_registry_config.docker_repository_name
-    out_dict["docker_config"]["docker_repository_type"] = docker_config.docker_registry_config.docker_registry_access
-    out_dict["docker_config"]["docker_registry_url"] = docker_config.docker_registry_config.docker_registry_fqdn
-    out_dict["docker_config"]["docker_use_local"] = not docker_config.docker_registry_config.docker_push
+    out_dict["docker_config"][
+        "docker_repository"
+    ] = docker_config.docker_registry_config.docker_repository_name
+    out_dict["docker_config"][
+        "docker_repository_type"
+    ] = docker_config.docker_registry_config.docker_registry_access
+    out_dict["docker_config"][
+        "docker_registry_url"
+    ] = docker_config.docker_registry_config.docker_registry_fqdn
+    out_dict["docker_config"][
+        "docker_use_local"
+    ] = not docker_config.docker_registry_config.docker_push
     out_dict["docker_config_json"] = docker_config_json
     out_dict["docker_image"] = build_docker_image
 
@@ -355,7 +361,7 @@ def group_out_base(
         metadata=metadatavalues_from_dict(
             context=context,
             d=out_dict,
-        )
+        ),
     )
 
 
@@ -363,9 +369,7 @@ def group_out_base(
     **ASSET_HEADER_BASE,
     ins={
         "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
-        "CONFIG": AssetIn(
-            AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"])
-        ),
+        "CONFIG": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"])),
     },
 )
 def docker_config_json(

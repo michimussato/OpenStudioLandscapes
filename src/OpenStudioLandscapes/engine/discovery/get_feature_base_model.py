@@ -1,16 +1,16 @@
 from typing import Dict, Type
 
 from dagster import (
-AssetExecutionContext,
+    AssetExecutionContext,
 )
 
 from OpenStudioLandscapes.engine.discovery import discovery
 
 
 def get_feature_base_model(
-        context: AssetExecutionContext,
-        discovered_models: Dict[str, discovery.OpenStudioLandscapesDiscoveredFeature],
-        search_instance_type: Type[discovery.FeatureBaseModel,]
+    context: AssetExecutionContext,
+    discovered_models: Dict[str, discovery.OpenStudioLandscapesDiscoveredFeature],
+    search_instance_type: Type[discovery.FeatureBaseModel,],
 ) -> discovery.FeatureBaseModel:
     """
     We are not create a new Config object for this Feature. It

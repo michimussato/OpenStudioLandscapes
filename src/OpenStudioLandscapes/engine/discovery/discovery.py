@@ -3,23 +3,22 @@ This is the Feature discovery engine for OpenStudioLandscapes.
 """
 
 import importlib
-
+import os
+import pathlib
 from importlib import metadata
 from importlib.metadata import Distribution
-import os
-import git
 from types import ModuleType
-import pathlib
-from typing import List, Tuple, Dict
+from typing import Dict, List, Tuple
 
+import git
 import yaml
 from dagster import get_dagster_logger
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 from setuptools import find_namespace_packages
 
-from OpenStudioLandscapes.engine.config.models import FeatureBaseModel, ConfigEngine
-from OpenStudioLandscapes.engine.config.models import CONFIG_STR as ENGINE_CONFIG_STR
 from OpenStudioLandscapes.engine import dist as dist_engine
+from OpenStudioLandscapes.engine.config.models import CONFIG_STR as ENGINE_CONFIG_STR
+from OpenStudioLandscapes.engine.config.models import ConfigEngine, FeatureBaseModel
 
 LOGGER = get_dagster_logger(__name__)
 
@@ -48,8 +47,9 @@ OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT: pathlib.Path = pathlib.Path(
 
 REPO_INITIALIZED = False
 
+
 def init_config_store(
-        root: pathlib.Path,
+    root: pathlib.Path,
 ) -> Tuple[git.Repo, bool]:
     # Get Git repo
     try:
@@ -70,10 +70,16 @@ def init_config_store(
 
 
 if not OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.expanduser().exists():
-    OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.expanduser().mkdir(parents=True, exist_ok=True)
-    LOGGER.info(f"Repo dir created: {OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.expanduser().as_posix()}.")
+    OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.expanduser().mkdir(
+        parents=True, exist_ok=True
+    )
+    LOGGER.info(
+        f"Repo dir created: {OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.expanduser().as_posix()}."
+    )
 
-config_store_repo, fresh_repo = init_config_store(OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT)
+config_store_repo, fresh_repo = init_config_store(
+    OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT
+)
 
 
 def get_config_engine() -> ConfigEngine:
@@ -125,7 +131,9 @@ config_engine = get_config_engine()
 
 
 def get_namespace_packages(where=pathlib.Path.cwd() / ".features") -> List[str]:
-    LOGGER.info("Getting installed OpenStudioLandscapes namespace packages from '%s'...", where)
+    LOGGER.info(
+        "Getting installed OpenStudioLandscapes namespace packages from '%s'...", where
+    )
     namespace_packages = find_namespace_packages(
         where=where,
         include=["*src.OpenStudioLandscapes.*"],
@@ -136,7 +144,10 @@ def get_namespace_packages(where=pathlib.Path.cwd() / ".features") -> List[str]:
 
 
 def get_definitions_path(namespace_package) -> str:
-    LOGGER.info("Converting namespace package path to definitions path: '%s'...", namespace_package)
+    LOGGER.info(
+        "Converting namespace package path to definitions path: '%s'...",
+        namespace_package,
+    )
     definitions_path = ".".join(
         [
             namespace_package.rsplit(".", 2)[-2],
@@ -149,7 +160,9 @@ def get_definitions_path(namespace_package) -> str:
 
 
 def get_models_path(namespace_package) -> str:
-    LOGGER.info("Converting namespace package path to models path: '%s'...", namespace_package)
+    LOGGER.info(
+        "Converting namespace package path to models path: '%s'...", namespace_package
+    )
     definitions_path = ".".join(
         [
             namespace_package.rsplit(".", 2)[-2],
@@ -193,8 +206,8 @@ class OpenStudioLandscapesDiscoveredFeature(BaseModel):
 
 
 def try_import_discovered(
-        package: str,
-        discovered_model: OpenStudioLandscapesDiscoveredFeature,
+    package: str,
+    discovered_model: OpenStudioLandscapesDiscoveredFeature,
 ) -> Tuple[ModuleType, ModuleType]:
     """Try to import a discovered model from a package."""
 
@@ -222,9 +235,7 @@ for package in get_namespace_packages():
         "definitions": get_definitions_path(package),
         "models": get_models_path(package),
     }
-    module = OpenStudioLandscapesDiscoveredFeature(
-        **feature_dict
-    )
+    module = OpenStudioLandscapesDiscoveredFeature(**feature_dict)
     # 'OpenStudioLandscapes-Kitsu.src.OpenStudioLandscapes.Kitsu':
     #     OpenStudioLandscapesDiscoveredFeature(
     #         definitions='OpenStudioLandscapes.Kitsu.definitions',
@@ -235,9 +246,7 @@ for package in get_namespace_packages():
     try:
         models_object, definitions_object = try_import_discovered(package, module)
     except ImportError as e:
-        LOGGER.error(
-            "Feature import failed: '%s'" % package
-        )
+        LOGGER.error("Feature import failed: '%s'" % package)
         continue
 
     module.definitions_object = definitions_object
@@ -268,11 +277,9 @@ def get_config_dict_feature(
     # Create the `config.yml` for the feature
     # with the default `CONFIG_STR` if
     # it does not exist
-    config_yml_feature: pathlib.Path = (
-        OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.joinpath(
-            distribution.name,
-            "config.yml",
-        )
+    config_yml_feature: pathlib.Path = OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.joinpath(
+        distribution.name,
+        "config.yml",
     )
     LOGGER.info(f"{config_yml_feature = }")
     config_yml_feature_expanded = config_yml_feature.expanduser()
@@ -334,7 +341,9 @@ for package, feature in DISCOVERED_MODELS.items():
     #
     # The `OpenStudioLandscapes.<FEATURE>.config.models.Config` itself inherits
     # from `OpenStudioLandscapes.engine.config.models.FeatureBaseModel`.
-    config_model_object: FeatureBaseModel = feature.models_object.Config(**config_dict_feature)
+    config_model_object: FeatureBaseModel = feature.models_object.Config(
+        **config_dict_feature
+    )
     LOGGER.info(f"{config_model_object = }")
     feature.config = config_model_object
 

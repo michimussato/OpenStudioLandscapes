@@ -1,10 +1,14 @@
 import sys
-from pathlib import Path
 from importlib import metadata
+from pathlib import Path
 
 if sys.version_info[:2] >= (3, 9):
     # TODO: Import directly (no need for conditional) when `python_requires = >= 3.8`
-    from importlib.metadata import PackageNotFoundError, version, Distribution  # pragma: no cover
+    from importlib.metadata import (  # pragma: no cover
+        Distribution,
+        PackageNotFoundError,
+        version,
+    )
 else:
     raise RuntimeError("Python version >= 3.9 required.")
 

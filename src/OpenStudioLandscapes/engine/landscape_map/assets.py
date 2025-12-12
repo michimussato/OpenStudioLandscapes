@@ -1,5 +1,4 @@
 import base64
-import pathlib
 import shutil
 import subprocess
 from typing import Any, Generator
@@ -16,10 +15,10 @@ from dagster import (
 )
 from pydot import Dot
 
+from OpenStudioLandscapes.engine.config import dist
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.discovery.discovery import *
 from OpenStudioLandscapes.engine.enums import *
-from OpenStudioLandscapes.engine.config import dist
 
 # Dynamic inputs based on the imported
 # third party code locations

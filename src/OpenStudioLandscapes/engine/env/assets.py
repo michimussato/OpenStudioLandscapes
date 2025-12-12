@@ -1,16 +1,15 @@
 import getpass
+import json
 import pathlib
 import socket
-import yaml
-import json
 import tempfile
 import textwrap
 import uuid
 from datetime import datetime
 from typing import Generator, MutableMapping
-from pydantic_core._pydantic_core import ValidationError
 
 import pytz
+import yaml
 from dagster import (
     AssetExecutionContext,
     AssetIn,
@@ -23,11 +22,11 @@ from dagster import (
     multi_asset,
 )
 
+import OpenStudioLandscapes.engine.discovery.discovery as discovery
 from OpenStudioLandscapes.engine import exceptions
+from OpenStudioLandscapes.engine.config.models import CONFIG_STR, ConfigEngine
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.utils import *
-from OpenStudioLandscapes.engine.config.models import ConfigEngine, CONFIG_STR
-import OpenStudioLandscapes.engine.discovery.discovery as discovery
 
 
 @asset(
@@ -196,9 +195,9 @@ def dot_features(
 @asset(
     **ASSET_HEADER_BASE_ENV,
     ins={
-        "env": AssetIn(
-            AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"]),
-        ),
+        # "env": AssetIn(
+        #     AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"]),
+        # ),
     },
     description=textwrap.dedent(
         f"""
@@ -214,67 +213,27 @@ For reference, the default `config.yml` looks as follows:
 {CONFIG_STR}
 ```
 """
-    )
+    ),
 )
 def CONFIG(
     context: AssetExecutionContext,
-    env: dict,  # pylint: disable=redefined-outer-name
+    # env: dict,  # pylint: disable=redefined-outer-name
 ) -> Generator[
-    Output[ConfigEngine]
-    | AssetMaterialization,
+    Output[ConfigEngine] | AssetMaterialization,
     None,
     None,
 ]:
 
-    # config_default_ = yaml.safe_load(CONFIG_STR)
-
-    # This is valid as we checked it already
-    # config_base = ConfigEngine(**config_default_)
-
-    # # https://jsschools.com/python/5-powerful-python-libraries-for-efficient-file-han/
-    # config_yml_object = config_base.openstudiolandscapes__configstore_root.expanduser().resolve() / dist.name / "config.yml"
-    # if not config_yml_object.exists():
-    #     config_yml_object.parent.mkdir(parents=True, exist_ok=True)
-    #     config_yml_object.touch(exist_ok=True)
-    #     config_yml_object.write_text(CONFIG_STR)
-    # config_dict: dict = yaml.safe_load(config_yml_object.read_text())
-
-    # context.log.error(f"{config_dict = }")
-    # config_dict = {'openstudiolandscapes__repository_root': '{REPOSITORY_ROOT}', 'openstudiolandscapes__configstore_root': '~/.config/OpenStudioLandscapes/config-store', 'openstudiolandscapes__domain_lan': 'openstudiolandscapes.lan', 'openstudiolandscapes__docker_config': {'use_registry': True, 'docker_registry_config': {'docker_push': True, 'docker_pull': True, 'docker_repository_name': 'OpenStudioLandscapes', 'docker_registry_fqdn': 'registry.openstudiolandscapes.lan', 'docker_registry_username': 'registry-user', 'docker_registry_password': 'registry-password'}}, 'illegal_option': 1234}
-    # context.log.error(f"{env = }")
-    # env = {'GIT_ROOT': '/home/michael/git/repos/OpenStudioLandscapes', 'DOT_LANDSCAPES': '/home/michael/git/repos/OpenStudioLandscapes/.landscapes', 'DOT_SHARED_VOLUMES': '.shared_volumes', 'DOT_FEATURES': '/home/michael/git/repos/OpenStudioLandscapes/.features', 'DOT_OVERRIDES': '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-12-09-03-03-05-32bc816edf7f49438b6a19030e82d0dc/.overrides', 'AUTHOR': 'michimussato@gmail.com', 'CREATED_BY': 'michael', 'CREATED_ON': 'lenovo', 'CREATED_AT': '2025-12-09_03-03-11', 'TIMEZONE': 'Europe/Zurich', 'DEFAULT_CONFIG_DBPATH': '/data/configdb', 'PYTHON_MAJ': '3', 'PYTHON_MIN': '11', 'PYTHON_PAT': '11', 'LANDSCAPE': '2025-12-09-03-03-05-32bc816edf7f49438b6a19030e82d0dc'}
-
-    # config_store_validated.model_dump(mode="python")
-
-    # config_expanded = expand_dict_vars(
-    #     dict_to_expand=config_dict.copy(),
-    #     kv=env,
-    # )
-
     config_validated = discovery.get_config_engine()
-
-    # try:
-    #     context.log.info(f"Validating: {config_expanded = }")
-    #     config_validated = ConfigEngine(**config_expanded)
-    #     context.log.debug(f"Validated.")
-    # except ValidationError as err:
-    #     context.log.error(
-    #         "Config Validation failed. "
-    #         f"The parsed config for "
-    #         f"{dist.name} contains "
-    #         "errors, missing and/or illegal parameters."
-    #     )
-    #     raise ValidationError from err
 
     yield Output(config_validated)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.md(f"```yaml\n{yaml.safe_dump(json.loads(config_validated.model_dump_json(fallback=str, indent=2)))}\n```"),
-            # "config_yml_path": MetadataValue.path(config_yml_object),
-            # "config_dict": MetadataValue.md(f"```json\n{json.dumps(config_dict, indent=2, default=str)}\n```"),
-            # "config_dict_expanded": MetadataValue.md(f"```json\n{json.dumps(config_expanded, indent=2, default=str)}\n```"),
+            "__".join(context.asset_key.path): MetadataValue.md(
+                f"```yaml\n{yaml.safe_dump(json.loads(config_validated.model_dump_json(fallback=str, indent=2)))}\n```"
+            ),
         },
     )
 

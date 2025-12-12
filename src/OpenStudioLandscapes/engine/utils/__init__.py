@@ -42,8 +42,8 @@ from dagster import (
     get_dagster_logger,
 )
 
-from OpenStudioLandscapes.engine.config.models import DockerConfigModel
 import OpenStudioLandscapes.engine.discovery.discovery as discovery
+from OpenStudioLandscapes.engine.config.models import DockerConfigModel
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.exceptions import (
     ComposeScopeException,
@@ -185,8 +185,9 @@ def parse_docker_image_path(
     context.log.debug(f"{type(docker_config) = }")
 
     if not isinstance(docker_config, DockerConfigModel):
-        raise TypeError("`docker_config` must be a DockerConfigModel. "
-                        f"{type(docker_config) = }")
+        raise TypeError(
+            "`docker_config` must be a DockerConfigModel. " f"{type(docker_config) = }"
+        )
 
     image_on_localhost_only = not docker_config.use_registry
 
@@ -235,7 +236,9 @@ def parse_docker_image_path(
 
 
 def get_compose_scope(
-    context: Union[OpExecutionContext, AssetExecutionContext],  # Todo: necessary? -> Yes: `OpenStudioLandscapes.engine.base.ops.op_constants`
+    context: Union[
+        OpExecutionContext, AssetExecutionContext
+    ],  # Todo: necessary? -> Yes: `OpenStudioLandscapes.engine.base.ops.op_constants`
     features: MutableMapping,
     name: str,
 ) -> str:
@@ -374,7 +377,6 @@ def expand_dict_vars(
 #             d_[k] = v
 #
 #     return d_
-
 
 
 # Todo
@@ -525,7 +527,8 @@ def get_str_env(
 
 
 def get_compose_scopes(
-        usable_features: Dict[str, discovery.OpenStudioLandscapesDiscoveredFeature]) -> set:
+    usable_features: Dict[str, discovery.OpenStudioLandscapesDiscoveredFeature],
+) -> set:
     compose_scopes = []
 
     package: str
@@ -558,7 +561,9 @@ def get_dynamic_ins(
         split = _module.split(".")
         namespace = split[2]  # OpenStudioLandscapes
         key = split[3]  # key = "Ayon"
-        feature_ins[compose_scope][f"{namespace}_{key}"] = AssetIn(AssetKey([key, "feature_out"]))
+        feature_ins[compose_scope][f"{namespace}_{key}"] = AssetIn(
+            AssetKey([key, "feature_out"])
+        )
         return None
 
     feature_ins = {}
@@ -661,7 +666,9 @@ def create_image(
     tags_full_str = [f"{image_prefixes}{image_name}:{tag}" for tag in tags]
     context.log.debug(f"{tags_full_str = }")
 
-    localhost_only = docker_config.use_registry and docker_config.docker_registry_config.docker_push
+    localhost_only = (
+        docker_config.use_registry and docker_config.docker_registry_config.docker_push
+    )
     context.log.debug(f"{localhost_only = }")
 
     cmd_build = docker_build_cmd(
@@ -669,7 +676,8 @@ def create_image(
         docker_config_json=docker_config_json,
         docker_file=docker_file,
         tags=tags_full_str,
-        pull=docker_config.use_registry and docker_config.docker_registry_config.docker_pull,
+        pull=docker_config.use_registry
+        and docker_config.docker_registry_config.docker_pull,
         no_cache=docker_config.no_cache,
     )
 

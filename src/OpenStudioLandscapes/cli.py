@@ -1,11 +1,10 @@
 import argparse
 import logging
-import subprocess
-import signal
 import shutil
-import textwrap
-
+import signal
+import subprocess
 import sys
+import textwrap
 
 __author__ = "Michael Mussato"
 __copyright__ = "Michael Mussato"
@@ -190,13 +189,18 @@ def checks(args):
         # },
     }
 
-    LOGGER.info("Dependencies: %s." % ", ".join(f"{k} ({v['executable']})" for k, v in sys_deps.items()))
+    LOGGER.info(
+        "Dependencies: %s."
+        % ", ".join(f"{k} ({v['executable']})" for k, v in sys_deps.items())
+    )
 
     for dep, params in sys_deps.items():
 
         LOGGER.info("Checking for system dependency: '%s'..." % dep)
         try:
-            assert shutil.which(params["executable"]) is not None, "Dependency '%s' is not installed" % f"{dep} ({params['executable']})"
+            assert shutil.which(params["executable"]) is not None, (
+                "Dependency '%s' is not installed" % f"{dep} ({params['executable']})"
+            )
         except AssertionError as e:
             msg = textwrap.dedent(
                 """
@@ -241,7 +245,7 @@ def main(args):
 
 # https://stackoverflow.com/a/1112350/2207196
 def signal_handler(sig, frame):
-    LOGGER.warning('You pressed Ctrl+C!')
+    LOGGER.warning("You pressed Ctrl+C!")
     LOGGER.debug(f"{sig = }")
     LOGGER.debug(f"{frame = }")
 

@@ -27,9 +27,13 @@ from dagster import (
 )
 from docker_compose_graph.utils import *
 
+from OpenStudioLandscapes.engine.config.models import (
+    ConfigEngine,
+    DockerConfigModel,
+    FeatureBaseModel,
+)
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.utils import *
-from OpenStudioLandscapes.engine.config.models import DockerConfigModel, ConfigEngine, FeatureBaseModel
 
 # https://github.com/yaml/pyyaml/issues/722#issuecomment-1969292770
 yaml.SafeDumper.add_multi_representer(
@@ -69,10 +73,10 @@ def factory_feature_out(
 
         # Todo
         #  - [ ] I can't serialize this nested BaseModel yet
-        config_parent = kwargs['group_in'].pop('config_parent')
+        config_parent = kwargs["group_in"].pop("config_parent")
 
         # context.log.debug(f"Popping: {kwargs.pop('env') = }")
-        group_in: dict = kwargs.pop('group_in')
+        group_in: dict = kwargs.pop("group_in")
         kwargs["group_in"] = group_in
 
         # I want
@@ -295,11 +299,15 @@ def factory_docker_config(
         group_in = kwargs.pop("group_in")
         context.log.debug(group_in)
         config_engine: ConfigEngine = group_in.pop("config_engine")
-        docker_config: DockerConfigModel = config_engine.openstudiolandscapes__docker_config
+        docker_config: DockerConfigModel = (
+            config_engine.openstudiolandscapes__docker_config
+        )
 
         if not isinstance(docker_config, DockerConfigModel):
-            raise TypeError(f"Migrate to `DockerConfigModel`. "
-                            f"Current type: {type(docker_config)}")
+            raise TypeError(
+                f"Migrate to `DockerConfigModel`. "
+                f"Current type: {type(docker_config)}"
+            )
 
         context.log.debug(docker_config)
 
@@ -444,7 +452,6 @@ def factory_group_in(
         context.log.debug(f"{group_out = }")
 
         group_out["feature_out_parent"] = group_out.pop("feature_out", {})
-
 
         if "config" in group_out:
             # rename "config" to "config_parent"

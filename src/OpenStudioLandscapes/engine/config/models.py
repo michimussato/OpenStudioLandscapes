@@ -1,20 +1,19 @@
 import enum
 import os
-import re
 import pathlib
+import re
 from importlib.metadata import Distribution
-from typing import List, Dict, ClassVar
-
-from pydantic import (
-    BaseModel,
-    PositiveInt,
-    field_validator,
-    Field,
-    ConfigDict,
-)
+from typing import ClassVar, Dict, List
 
 from dagster import (
     get_dagster_logger,
+)
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    PositiveInt,
+    field_validator,
 )
 
 LOG = get_dagster_logger(__name__)
@@ -51,8 +50,7 @@ class ComposeScopeBaseModel(BaseModel):
     compose_scope: str = Field()
     attach_pangolin_site_to_compose_scope: bool = Field(
         default=False,
-        description="Do you want the ComposeScope to dial in to "
-                    "a Pangolin site?",
+        description="Do you want the ComposeScope to dial in to " "a Pangolin site?",
     )
     docker_compose: pathlib.Path = Field(
         description="The path to the `docker-compose.yml` file.",
@@ -73,9 +71,16 @@ class DockerRegistryConfig(BaseModel):
       "docker_use_local": false
     }
     """
-    docker_push: bool = Field(description="Run `docker` commands with the `--push` flag.")
-    docker_pull: bool = Field(description="Run `docker` commands with the `--pull` flag.")
-    docker_repository_name: str = Field(default="openstudiolandscapes", description="The registry repository name.")
+
+    docker_push: bool = Field(
+        description="Run `docker` commands with the `--push` flag."
+    )
+    docker_pull: bool = Field(
+        description="Run `docker` commands with the `--pull` flag."
+    )
+    docker_repository_name: str = Field(
+        default="openstudiolandscapes", description="The registry repository name."
+    )
     docker_registry_access: DockerRegistryAccess = Field(
         default="public",
         examples=["public", "private"],
@@ -91,7 +96,9 @@ class DockerRegistryConfig(BaseModel):
         default=5000,
         description="The port the Docker Registry server is listening on.",
     )
-    docker_registry_username: str = Field(description="The username of the Docker registry.")
+    docker_registry_username: str = Field(
+        description="The username of the Docker registry."
+    )
     # Todo: docker_registry_password: SecretStr = Field(description="The password of the Docker registry.")
     #  Error:
     #  $ /usr/local/bin/docker --config /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-12-06-12-17-15-0a7941b92f824ef49f91c51870d89728/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json push registry.openstudiolandscapes.lan:5000/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-12-06-12-17-15-0a7941b92f824ef49f91c51870d89728
@@ -135,7 +142,9 @@ class DockerRegistryConfig(BaseModel):
     #  63856c8ccf1c: Waiting
     #  470b66ea5123: Waiting
     #  unauthorized: authentication required
-    docker_registry_password: str = Field(description="The password of the Docker registry.")
+    docker_registry_password: str = Field(
+        description="The password of the Docker registry."
+    )
 
     @field_validator("docker_repository_name")
     @classmethod
@@ -168,7 +177,7 @@ class ConfigEngine(BaseModel):
     """
 
     def __new__(cls, *args, **kwargs):
-        if not hasattr(cls, 'instance'):
+        if not hasattr(cls, "instance"):
             cls.instance = super(ConfigEngine, cls).__new__(cls)
         return cls.instance
 
@@ -180,7 +189,7 @@ class ConfigEngine(BaseModel):
         default=pathlib.Path(
             os.environ.get(
                 "OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT",
-                default="~/git/repos/OpenStudioLandscapes"
+                default="~/git/repos/OpenStudioLandscapes",
             )
         )
     )
@@ -265,6 +274,7 @@ class FeatureBaseModel(BaseModel):
     References:
         - https://www.geeksforgeeks.org/python/singleton-pattern-in-python-a-complete-guide/
     """
+
     # ModuleType Fields:
     # pydantic.errors.PydanticSchemaGenerationError:
     #   Unable to generate pydantic-core schema for <class 'module'>.
@@ -287,7 +297,7 @@ class FeatureBaseModel(BaseModel):
                 f"Do not instance this class directly. "
                 f"Only children of '{cls.__name__}' may be instantiated"
             )
-        if not hasattr(cls, 'instance'):
+        if not hasattr(cls, "instance"):
             cls.instance = super(FeatureBaseModel, cls).__new__(cls)
         return cls.instance
 
@@ -324,7 +334,7 @@ class FeatureBaseModel(BaseModel):
     # Forward Annotation
     # Reference:
     # - https://docs.pydantic.dev/latest/concepts/forward_annotations/
-    config_parent: 'FeatureBaseModel' = Field(
+    config_parent: "FeatureBaseModel" = Field(
         default=None,
     )
 
@@ -341,7 +351,14 @@ class FeatureBaseModel(BaseModel):
                 default="~/.config/OpenStudioLandscapes/config-store",
             )
         )
-        ret = pathlib.Path(OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.expanduser() / self.feature_name / "config.yml")
+        ret = pathlib.Path(
+            OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT
+            .expanduser()
+            .joinpath(
+                self.feature_name,
+                "config.yml",
+            )
+        )
         ret.parent.mkdir(parents=True, exist_ok=True)
         return ret
 
@@ -378,15 +395,16 @@ class FeatureBaseModel(BaseModel):
 
     key_prefixes: List[str] = Field()
     docker_compose: pathlib.Path = Field(
-        default=pathlib.Path("{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml"),
+        default=pathlib.Path(
+            "{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml"
+        ),
         description="The path to the `docker-compose.yml` file.",
     )
 
     @property
     def docker_compose_expanded(self) -> pathlib.Path:
         ret = pathlib.Path(
-            self.docker_compose
-            .expanduser()
+            self.docker_compose.expanduser()
             .as_posix()
             .format(
                 **{
