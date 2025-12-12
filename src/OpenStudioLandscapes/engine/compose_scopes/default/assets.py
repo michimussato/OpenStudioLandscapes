@@ -61,11 +61,26 @@ feature_ins = get_dynamic_ins(
 LOGGER.error(f"{feature_ins = }")
 # feature_ins = {'default': {'OpenStudioLandscapes_Kitsu': AssetIn(key=AssetKey(['Kitsu', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>), 'OpenStudioLandscapes_Watchtower': AssetIn(key=AssetKey(['Watchtower', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>), 'OpenStudioLandscapes_VERT': AssetIn(key=AssetKey(['VERT', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>)}}
 
+compose_scope_asset_defs = []
+
 if bool(feature_ins):
 
     for compose_scope, features in feature_ins.items():
         # Todo
         #  - [ ] This most likely needs a factory
+
+        # for i in range(5):
+
+        compose_scope_group = get_compose_scope_group(
+            # ASSET_HEADER=ASSET_HEADER_COMPOSE,
+            ASSET_HEADER={
+                "group_name": f"TEST_GROUP_COMPOSE_{compose_scope}",
+                "key_prefix": ["Compose_Scope", f"Group_{compose_scope}"],
+                "compute_kind": "python",
+            },
+        )
+
+        compose_scope_asset_defs.append(compose_scope_group)
 
         if compose_scope != ["default", "test"][0]:
             continue
@@ -394,20 +409,3 @@ if bool(feature_ins):
                 ),
             },
         )
-
-        asset_defs = []
-
-        for i in range(5):
-
-            # asset_defs = []
-
-            compose_scope_group = get_compose_scope_group(
-                # ASSET_HEADER=ASSET_HEADER_COMPOSE,
-                ASSET_HEADER={
-                    "group_name": f"TEST_GROUP_COMPOSE_{i}",
-                    "key_prefix": ["Compose_Scope", f"Group_{i}"],
-                    "compute_kind": "python",
-                },
-            )
-
-            asset_defs.append(compose_scope_group)
