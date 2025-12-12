@@ -343,17 +343,22 @@ class FeatureBaseModel(BaseModel):
         default=None,
     )
 
-    # # Dagster Attributes
-    # # dagster_compose_scope_in: AssetIn = Field(
-    # #     default=None,
-    # # )
-    # @property
-    # def dagster_compose_scope_in(self) -> AssetIn:
-    #     key = "Kitsu"
-    #     ret = AssetIn(
-    #         AssetKey([key, "feature_out"])
-    #     )
-    #     return ret
+    # Dagster Attributes
+    key_prefixes: List[str] = Field()
+    group_name: str = Field(
+        frozen=True,
+    )
+
+    @property
+    def dagster_compose_scope_in(self) -> AssetIn:
+        # if self.asset_header is None:
+        #     raise ValueError("`dagster_asset_header` not set")
+
+        default_name_feature_out = "feature_out"
+        ret = AssetIn(
+            AssetKey([*self.key_prefixes, default_name_feature_out])
+        )
+        return ret
 
     # EXPANDABLE PATHS
     @property
@@ -385,12 +390,12 @@ class FeatureBaseModel(BaseModel):
         default="default",
         examples=["default", "license_server", "worker"],
     )
+    # Todo
+    #  - [ ] how is this derived?
+    #  - [ ] combine with key_prefixes/group_name?
     feature_name: str = Field(
         description="The name of the feature.",
         examples=["OpenStudioLandscapes-Kitsu", "OpenStudioLandscapes-VERT"],
-        frozen=True,
-    )
-    group_name: str = Field(
         frozen=True,
     )
 
@@ -404,9 +409,8 @@ class FeatureBaseModel(BaseModel):
 
         regex_pattern = f"[{chars_to_replace}]"
         transformed_value = re.sub(regex_pattern, replace_with, value)
-        return transformed_value.lower()
+        return transformed_value  # .lower()
 
-    key_prefixes: List[str] = Field()
     docker_compose: pathlib.Path = Field(
         default=pathlib.Path(
             "{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml"

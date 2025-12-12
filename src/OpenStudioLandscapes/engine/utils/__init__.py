@@ -557,34 +557,26 @@ def get_dynamic_ins(
     compose_scopes: set = get_all_compose_scopes(usable_features=imported_features)
     LOGGER.info(f"{compose_scopes = }")
 
-    def _add_module(_module, compose_scope) -> None:
-        split = _module.split(".")
-        namespace = split[2]  # OpenStudioLandscapes
-        key = split[3]  # key = "Ayon"
-        dist_name = f"{namespace}_{key}"
-        feature_ins[compose_scope][dist_name] = AssetIn(
-            AssetKey([dist_name, "feature_out"])
-        )
-        return None
-
     feature_ins = {}
 
-    for compose_scope in compose_scopes:
-        feature_ins[compose_scope] = {}
+    package: str
+    feature: discovery.OpenStudioLandscapesDiscoveredFeature
+    for package, feature in imported_features.items():
+        LOGGER.info(f"{feature = }")
+        # feature = OpenStudioLandscapesDiscoveredFeature(definitions='OpenStudioLandscapes.Watchtower.definitions', definitions_object=<module 'OpenStudioLandscapes.Watchtower.definitions' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Watchtower/src/OpenStudioLandscapes/Watchtower/definitions.py'>, models='OpenStudioLandscapes.Watchtower.config.models', models_object=<module 'OpenStudioLandscapes.Watchtower.config.models' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Watchtower/src/OpenStudioLandscapes/Watchtower/config/models.py'>, config=Feature(['env=None', "config_engine=openstudiolandscapes__docker_config=DockerConfigModel(use_registry=True, no_cache=False, docker_registry_config=DockerRegistryConfig(docker_push=True, docker_pull=True, docker_repository_name='openstudiolandscapes', docker_registry_access='public', docker_registry_protocol='https', docker_registry_fqdn='registry.openstudiolandscapes.lan', docker_registry_port=5000, docker_registry_username='registry-user', docker_registry_password='registry-password')) openstudiolandscapes__repository_root=PosixPath('{REPOSITORY_ROOT}') openstudiolandscapes__domain_lan='openstudiolandscapes.lan'", 'config_parent=None', 'distribution=<importlib.metadata.PathDistribution object at 0x7fe9b764ad10>', 'enabled=True', 'compose_scope=default', 'feature_name=OpenStudioLandscapes-Watchtower', 'group_name=watchtower', "key_prefixes=['Watchtower']", 'docker_compose={DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml', 'definitions=OpenStudioLandscapes.Watchtower.definitions', 'watchtower_port_host=4000', 'watchtower_port_container=80']))
 
-        package: str
-        feature: discovery.OpenStudioLandscapesDiscoveredFeature
-        for package, feature in imported_features.items():
-            LOGGER.error(f"{feature = }")
-            # feature = OpenStudioLandscapesDiscoveredFeature(definitions='OpenStudioLandscapes.Watchtower.definitions', definitions_object=<module 'OpenStudioLandscapes.Watchtower.definitions' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Watchtower/src/OpenStudioLandscapes/Watchtower/definitions.py'>, models='OpenStudioLandscapes.Watchtower.config.models', models_object=<module 'OpenStudioLandscapes.Watchtower.config.models' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Watchtower/src/OpenStudioLandscapes/Watchtower/config/models.py'>, config=Feature(['env=None', "config_engine=openstudiolandscapes__docker_config=DockerConfigModel(use_registry=True, no_cache=False, docker_registry_config=DockerRegistryConfig(docker_push=True, docker_pull=True, docker_repository_name='openstudiolandscapes', docker_registry_access='public', docker_registry_protocol='https', docker_registry_fqdn='registry.openstudiolandscapes.lan', docker_registry_port=5000, docker_registry_username='registry-user', docker_registry_password='registry-password')) openstudiolandscapes__repository_root=PosixPath('{REPOSITORY_ROOT}') openstudiolandscapes__domain_lan='openstudiolandscapes.lan'", 'config_parent=None', 'distribution=<importlib.metadata.PathDistribution object at 0x7fe9b764ad10>', 'enabled=True', 'compose_scope=default', 'feature_name=OpenStudioLandscapes-Watchtower', 'group_name=watchtower', "key_prefixes=['Watchtower']", 'docker_compose={DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml', 'definitions=OpenStudioLandscapes.Watchtower.definitions', 'watchtower_port_host=4000', 'watchtower_port_container=80']))
+        compose_scope = feature.config.compose_scope
+        group_name = feature.config.group_name
+        key_prefixes = feature.config.key_prefixes
 
-            if feature.config.compose_scope == compose_scope:
-                LOGGER.info(f"{compose_scope = }")
-                # compose_scope = 'default'
+        asset_in = feature.config.dagster_compose_scope_in
 
-                module = package
+        if compose_scope not in feature_ins:
+            feature_ins[compose_scope]: Dict = {}
 
-                _add_module(_module=module, compose_scope=compose_scope)
+        feature_ins[compose_scope][group_name] = asset_in
+
+        LOGGER.info(f"{feature_ins[compose_scope][group_name] = }")
 
     # feature_ins = {'default': {'OpenStudioLandscapes_Kitsu': AssetIn(key=AssetKey(['Kitsu', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>), 'OpenStudioLandscapes_Watchtower': AssetIn(key=AssetKey(['Watchtower', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>)}, 'test': {'OpenStudioLandscapes_VERT': AssetIn(key=AssetKey(['VERT', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>)}}
     return feature_ins
