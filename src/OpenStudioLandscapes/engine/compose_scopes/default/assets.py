@@ -161,6 +161,7 @@ if bool(feature_ins):
         compose_scope_group__group_out = get_compose_scope_group__group_out(
             # ASSET_HEADER=ASSET_HEADER_COMPOSE,
             ASSET_HEADER=ASSET_HEADER,
+            compose_scope=compose_scope,
         )
 
         compose_scope_asset_defs.append(compose_scope_group__group_out)
