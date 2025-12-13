@@ -618,6 +618,9 @@ def factory_compose_scope__features_in(
         #
         # asset_key__group_out_base = context.asset_key_for_input("group_out_base")
         group_out_base: Dict = kwargs.pop("group_out_base")
+        env_base: Dict = group_out_base.pop("env_base")
+        config_engine: ConfigEngine = group_out_base.pop("config_engine")
+        docker_config_json: pathlib.Path = group_out_base.pop("docker_config_json")
         #
         # config_engine: ConfigEngine = group_out_base.pop("config_engine")
         #
@@ -639,14 +642,14 @@ def factory_compose_scope__features_in(
         #
         # context.pdb.set_trace()
 
-        context.log.info(f"{group_out_base = }")
-        context.log.info(f"{kwargs = }")
+        # context.log.info(f"{group_out_base = }")
+        # context.log.info(f"{kwargs = }")
 
-        env_base = group_out_base.pop("env_base")
+        # env_base = group_out_base.pop("env_base")
+        #
+        # config_engine: ConfigEngine = group_out_base.pop("config_engine")
 
-        config_engine: ConfigEngine = group_out_base.pop("config_engine")
-
-        docker_config_json: pathlib.Path = group_out_base.pop("docker_config_json")
+        # docker_config_json: pathlib.Path = group_out_base.pop("docker_config_json")
 
         docker_compose_yaml: Dict[str, str] = {}
         docker_compose: Dict[str, Any] = {}

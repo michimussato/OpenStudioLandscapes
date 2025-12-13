@@ -1,3 +1,5 @@
+from typing import Dict
+
 from dagster import (
     AssetKey,
     AssetsDefinition,
@@ -69,23 +71,37 @@ from OpenStudioLandscapes.engine.constants import ASSET_HEADER_BASE
 
 def get_compose_scope_group__features_in(
     # *,
-    ASSET_HEADER: dict,
+    ASSET_HEADER: Dict,
+    features: Dict,
     # group_out_base,
     # compose_scope: str,
 ) -> AssetsDefinition:
+
+    dynamic_ins = {}
+    dynamic_keys_by_input_name = {}
+
+    # feature_out_ins_op = {}
+    # feature_out_ins_asset = {}
+    k: str
+    v: AssetKey
+    for k, v in features.items():
+        dynamic_ins[k] = In()
+        dynamic_keys_by_input_name[k] = v
 
     compose_scope_op__features_in = factory_compose_scope__features_in(
         # compose_scope=compose_scope,
         # group_out_base=group_out_base,
         name=f"op_compose_scope__features_in__{ASSET_HEADER['group_name']}",
         ins={
-            "group_out_base": In(dict),
+            "group_out_base": In(Dict),
+            # "features": In(Dict),
+            **dynamic_ins,
             # "compose_maps": In(list),
             # "CONFIG": In(FeatureBaseModel),
             # # "group_in": In(dict)
         },
         out={
-            "features_in": Out(dict),
+            "features_in": Out(Dict),
             # "test_output_2": Out(dict),
         },
     )
@@ -110,6 +126,8 @@ def get_compose_scope_group__features_in(
         key_prefix=ASSET_HEADER["key_prefix"],
         keys_by_input_name={
             "group_out_base": AssetKey([*ASSET_HEADER_BASE["key_prefix"], "group_out_base"]),
+            **dynamic_keys_by_input_name,
+            # *features,
             # "compose_networks": AssetKey(
             #     [*ASSET_HEADER["key_prefix"], "compose_networks"]
             # ),
