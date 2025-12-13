@@ -27,8 +27,14 @@ from OpenStudioLandscapes.engine.common_assets.group_out_compose_scope import (
     get_group_out,
 )
 from OpenStudioLandscapes.engine.common_assets.compose_scope import (
-get_compose_scope_group_test, get_compose_scope_group__features_in,
-get_compose_scope_group__CONFIG
+get_compose_scope_group_test,
+get_compose_scope_group__features_in,
+get_compose_scope_group__CONFIG,
+get_compose_scope_group__scrape_networks,
+get_compose_scope_group__compose,
+get_compose_scope_group__docker_compose_graph,
+get_compose_scope_group__cmd,
+get_compose_scope_group__group_out,
 )
 from OpenStudioLandscapes.engine.common_assets.scrape_networks import (
     get_scrape_networks,
@@ -64,46 +70,92 @@ LOGGER.error(f"{feature_ins = }")
 
 compose_scope_asset_defs = []
 
+COMPOSE_SCOPE_GROUP_PREFIX = "ComposeScope_DEV"
+
 if bool(feature_ins):
 
     for compose_scope, features in feature_ins.items():
         # Todo
         #  - [ ] This most likely needs a factory
 
+        ASSET_HEADER = {
+            "group_name": f"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}",
+            "key_prefix": ["ComposeScopes", f"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}"],
+            "compute_kind": "python",
+        }
+
         # for i in range(5):
 
-        compose_scope_group = get_compose_scope_group_test(
-            # ASSET_HEADER=ASSET_HEADER_COMPOSE,
-            ASSET_HEADER={
-                "group_name": f"TEST_GROUP_COMPOSE_{compose_scope}",
-                "key_prefix": ["Compose_Scope", f"Group_{compose_scope}"],
-                "compute_kind": "python",
-            },
-        )
+        # # multi_asset test
+        # compose_scope_group = get_compose_scope_group_test(
+        #     # ASSET_HEADER=ASSET_HEADER_COMPOSE,
+        #     ASSET_HEADER=ASSET_HEADER,
+        # )
+        #
+        # compose_scope_asset_defs.append(compose_scope_group)
 
-        compose_scope_asset_defs.append(compose_scope_group)
-
+        # features_in
         compose_scope_group__features_in = get_compose_scope_group__features_in(
             # ASSET_HEADER=ASSET_HEADER_COMPOSE,
-            ASSET_HEADER={
-                "group_name": f"TEST_GROUP_COMPOSE_{compose_scope}",
-                "key_prefix": ["Compose_Scope", f"Group_{compose_scope}"],
-                "compute_kind": "python",
-            },
+            ASSET_HEADER=ASSET_HEADER,
         )
 
         compose_scope_asset_defs.append(compose_scope_group__features_in)
 
-        compose_scope_group_CONFIG = get_compose_scope_group__CONFIG(
+        # CONFIG
+        compose_scope_group__CONFIG = get_compose_scope_group__CONFIG(
             # ASSET_HEADER=ASSET_HEADER_COMPOSE,
-            ASSET_HEADER={
-                "group_name": f"TEST_GROUP_COMPOSE_{compose_scope}",
-                "key_prefix": ["Compose_Scope", f"Group_{compose_scope}"],
-                "compute_kind": "python",
-            },
+            ASSET_HEADER=ASSET_HEADER,
         )
 
-        compose_scope_asset_defs.append(compose_scope_group_CONFIG)
+        compose_scope_asset_defs.append(compose_scope_group__CONFIG)
+
+        # scrape_networks
+        compose_scope_group_scrape__networks = get_compose_scope_group__scrape_networks(
+            # ASSET_HEADER=ASSET_HEADER_COMPOSE,
+            ASSET_HEADER=ASSET_HEADER,
+        )
+
+        compose_scope_asset_defs.append(compose_scope_group_scrape__networks)
+
+        # compose
+        compose_scope_group__compose = get_compose_scope_group__compose(
+            # ASSET_HEADER=ASSET_HEADER_COMPOSE,
+            ASSET_HEADER=ASSET_HEADER,
+        )
+
+        compose_scope_asset_defs.append(compose_scope_group__compose)
+
+        # docker_compose_graph
+        # - docker_compose_graph
+        # - docker_compose_graph_dot
+        compose_scope_group__docker_compose_graph = get_compose_scope_group__docker_compose_graph(
+            # ASSET_HEADER=ASSET_HEADER_COMPOSE,
+            ASSET_HEADER=ASSET_HEADER,
+        )
+
+        compose_scope_asset_defs.append(compose_scope_group__docker_compose_graph)
+
+        # cmd
+        # - cmd_append
+        # - cmd_extend
+        compose_scope_group__cmd = get_compose_scope_group__cmd(
+            # ASSET_HEADER=ASSET_HEADER_COMPOSE,
+            ASSET_HEADER=ASSET_HEADER,
+        )
+
+        compose_scope_asset_defs.append(compose_scope_group__cmd)
+
+        # group_out
+        # - group_out
+        # - compose_project_name
+        # - docker_compose_commands
+        compose_scope_group__group_out = get_compose_scope_group__group_out(
+            # ASSET_HEADER=ASSET_HEADER_COMPOSE,
+            ASSET_HEADER=ASSET_HEADER,
+        )
+
+        compose_scope_asset_defs.append(compose_scope_group__group_out)
 
         if compose_scope != ["default", "test"][0]:
             continue
