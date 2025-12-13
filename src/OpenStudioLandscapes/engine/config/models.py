@@ -53,9 +53,28 @@ class ComposeScopeBaseModel(BaseModel):
         default=False,
         description="Do you want the ComposeScope to dial in to " "a Pangolin site?",
     )
+
+    # env: Dict = Field(
+    #     default=None,
+    # )
+
     docker_compose: pathlib.Path = Field(
         description="The path to the `docker-compose.yml` file.",
     )
+
+    # @property
+    # def docker_compose_expanded(self) -> pathlib.Path:
+    #     ret = pathlib.Path(
+    #         self.docker_compose.expanduser()
+    #         .as_posix()
+    #         .format(
+    #             **{
+    #                 # "FEATURE": self.feature_name,
+    #                 **self.env,
+    #             }
+    #         )
+    #     )
+    #     return ret
 
 
 class DockerRegistryConfig(BaseModel):

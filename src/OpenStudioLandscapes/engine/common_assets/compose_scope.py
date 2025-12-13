@@ -199,48 +199,37 @@ def get_compose_scope_group__scrape_networks(
     ASSET_HEADER: dict,
 ) -> AssetsDefinition:
 
-    compose_scope_op__scrape_networks = factory_compose_scope__scrape_networks(
+    compose_scope_op__scrape_networks: OpDefinition = factory_compose_scope__scrape_networks(
         name=f"op_compose_scope__scrape_networks__{ASSET_HEADER['group_name']}",
         ins={
             "features_in": In(dict),
-            # "compose_networks": In(dict),
-            # "compose_maps": In(list),
-            # "CONFIG": In(FeatureBaseModel),
-            # # "group_in": In(dict)
         },
         out={
             "scrape_networks": Out(dict),
-            # "test_output_2": Out(dict),
         },
     )
 
-    compose_scope__scrape_networks = AssetsDefinition.from_op(
+    compose_scope__scrape_networks: AssetsDefinition = AssetsDefinition.from_op(
         compose_scope_op__scrape_networks,
-        # Todo:
-        #  - [ ] Change to AssetKey
-        # tags_by_output_name={
-        #     # "compose": {
-        #     #     "compose": "third_party",
-        #     # },
-        # },
-        keys_by_output_name={
-            # "scrape_networks": AssetKey(
-            #     [*ASSET_HEADER["key_prefix"], "scrape_networks"]
-            # ),
-        },
+        can_subset=False,
         group_name=ASSET_HEADER["group_name"],
         key_prefix=ASSET_HEADER["key_prefix"],
-        keys_by_input_name={
-            # "compose_networks": AssetKey(
-            #     [*ASSET_HEADER["key_prefix"], "compose_networks"]
-            # ),
-            # "compose_maps": AssetKey([*ASSET_HEADER["key_prefix"], "compose_maps"]),
-            # "CONFIG": AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
-            # # "group_in": AssetKey([*ASSET_HEADER["key_prefix"], "group_in"]),
+        keys_by_output_name={
+            "scrape_networks": AssetKey(
+                [*ASSET_HEADER["key_prefix"], "scrape_networks"]
+            ),
         },
         # keys_by_input_name={
-        #     "features_in": AssetKey([*ASSET_HEADER["key_prefix"], "features_in"]),
+        #     # "compose_networks": AssetKey(
+        #     #     [*ASSET_HEADER["key_prefix"], "compose_networks"]
+        #     # ),
+        #     # "compose_maps": AssetKey([*ASSET_HEADER["key_prefix"], "compose_maps"]),
+        #     # "CONFIG": AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
+        #     # # "group_in": AssetKey([*ASSET_HEADER["key_prefix"], "group_in"]),
         # },
+        keys_by_input_name={
+            "features_in": AssetKey([*ASSET_HEADER["key_prefix"], "features_in"]),
+        },
     )
 
     return compose_scope__scrape_networks

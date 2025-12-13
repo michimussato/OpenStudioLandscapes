@@ -798,6 +798,7 @@ def factory_compose_scope__CONFIG(
 
         config = ComposeScopeBaseModel(
             **{
+                "env": env,
                 "compose_scope": compose_scope,
                 "docker_compose": pathlib.Path(
                     f"{env['DOT_LANDSCAPES']}",
@@ -924,26 +925,87 @@ def factory_compose_scope__scrape_networks(
         #     },
         # )
 
-        # @multi_asset
-        #################
-        # TEST_OUTPUT_1 #
-        #################
+        context.log.debug(f"{kwargs = }")
+
+        features_in = kwargs.pop("features_in")
+        del kwargs
+        context.log.debug(f"{features_in = }")
+
+        # Todo:
+        #  - [ ] Duplicated code `OpenStudioLandscapes.engine.base.ops.factories.factory_scrape_networks`
+        #  - [ ] Duplicated code `OpenStudioLandscapes.engine.compose_scopes.default.assets.compose`
+
+        # I want to remove
+        # - env_base
+        # - docker_config
+        # - docker_image
+        # - docker_config_json
+        # from features_in
+        context.log.debug(f"Popping: {features_in.pop('env_base', {}) = }")
+        context.log.debug(f"Popping: {features_in.pop('config_engine', {}) = }")
+        context.log.debug(f"Popping: {features_in.pop('docker_image', {}) = }")
+        context.log.debug(f"Popping: {features_in.pop('docker_config_json', {}) = }")
+
+        networks_dict: Dict = {}
+
+        for feature, data in features_in.items():
+            context.log.info(f"{features_in[feature] = }")
+            CONFIG: FeatureBaseModel = data.pop("config")
+            compose_file: pathlib.Path = CONFIG.docker_compose_expanded
+
+            network_dict = get_networks_dict(
+                context=context,
+                compose_file=compose_file,
+            )
+
+            networks_dict.update(network_dict)
+
+        networks_dict_yaml = yaml.safe_dump(networks_dict)
 
         output_name = "scrape_networks"
 
-        # if "docker_compose_graph" in context.selected_output_names:
-
         yield Output(
             output_name=output_name,
-            value=None,
+            value=networks_dict,
         )
 
         yield AssetMaterialization(
             asset_key=context.asset_key_for_output(output_name),
             metadata={
-                "__".join(
-                    context.asset_key_for_output(output_name).path
-                ): MetadataValue.bool(False),
+                "__".join(context.asset_key.path): MetadataValue.json(networks_dict),
+                "networks_dict_yaml": MetadataValue.md(
+                    f"```yaml\n{networks_dict_yaml}\n```"
+                ),
+                # **metadatavalues_from_dict(
+                #     context=context,
+                #     d_serialized=json.dumps(networks_dict, default=str),
+                # ),
+            },
+        )
+
+        # @multi_asset
+        ###################
+        # scrape_networks #
+        ###################
+
+        output_name = "scrape_networks"
+
+        yield Output(
+            output_name=output_name,
+            value=networks_dict,
+        )
+
+        yield AssetMaterialization(
+            asset_key=context.asset_key_for_output(output_name),
+            metadata={
+                "__".join(context.asset_key.path): MetadataValue.json(networks_dict),
+                "networks_dict_yaml": MetadataValue.md(
+                    f"```yaml\n{networks_dict_yaml}\n```"
+                ),
+                # **metadatavalues_from_dict(
+                #     context=context,
+                #     d_serialized=json.dumps(networks_dict, default=str),
+                # ),
             },
         )
 
