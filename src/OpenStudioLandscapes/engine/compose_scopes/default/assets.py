@@ -129,6 +129,7 @@ if bool(feature_ins):
         compose_scope_group__compose = get_compose_scope_group__compose(
             # ASSET_HEADER=ASSET_HEADER_COMPOSE,
             ASSET_HEADER=ASSET_HEADER,
+            compose_scope=compose_scope,
         )
 
         compose_scope_asset_defs.append(compose_scope_group__compose)
@@ -163,6 +164,8 @@ if bool(feature_ins):
         )
 
         compose_scope_asset_defs.append(compose_scope_group__group_out)
+
+        # OLD STUFF BELOW
 
         if compose_scope != ["default", "test"][0]:
             continue
@@ -298,7 +301,7 @@ if bool(feature_ins):
             for feature, data in features_in.items():
                 CONFIG_: FeatureBaseModel = data["config"]
                 context.log.info(f"{CONFIG_.feature_name = }")
-                compose_file = CONFIG_.docker_compose
+                compose_file = CONFIG_.docker_compose_expanded
                 compose_files.append(compose_file)
 
             includes = []

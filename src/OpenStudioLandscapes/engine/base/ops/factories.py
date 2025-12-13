@@ -45,6 +45,7 @@ from OpenStudioLandscapes.engine.utils import *
 from OpenStudioLandscapes.engine.compose_scopes.default.constants import (
     ATTACH_SITE_TO_COMPOSE_SCOPE,
 )
+from OpenStudioLandscapes.engine.utils.pangolin import add_newt_service_to_compose_scope
 
 # https://github.com/yaml/pyyaml/issues/722#issuecomment-1969292770
 yaml.SafeDumper.add_multi_representer(
@@ -195,7 +196,7 @@ def factory_scrape_networks(
         for feature, data in features_in.items():
             context.log.info(f"{features_in[feature] = }")
             CONFIG: FeatureBaseModel = data.pop("config")
-            compose_file: pathlib.Path = CONFIG.docker_compose
+            compose_file: pathlib.Path = CONFIG.docker_compose_expanded
 
             network_dict = get_networks_dict(
                 context=context,
@@ -781,7 +782,7 @@ def factory_compose_scope__CONFIG(
         context: OpExecutionContext,
         # compose_scope: str = "default",
         **kwargs,
-    ):
+    ) -> Generator[Output | AssetMaterialization | Any, Any, None]:
         """
         """
         # # context.asset_key_for_input("group_out_base")
@@ -880,6 +881,7 @@ def factory_compose_scope__CONFIG(
 
 
 def factory_compose_scope__scrape_networks(
+    # compose_scope: str,
     name="op_compose_scope_factory__scrape_networks",
     ins=None,
     **kwargs,
@@ -903,7 +905,7 @@ def factory_compose_scope__scrape_networks(
     def _op_compose_scope__scrape_networks(
         context: OpExecutionContext,
         **kwargs,
-    ):
+    ) -> Generator[Output | AssetMaterialization | Any, Any, None]:
         """
         """
 
@@ -930,6 +932,7 @@ def factory_compose_scope__scrape_networks(
         features_in = kwargs.pop("features_in")
         del kwargs
         context.log.debug(f"{features_in = }")
+        env: Dict = features_in.pop('env_base')
 
         # Todo:
         #  - [ ] Duplicated code `OpenStudioLandscapes.engine.base.ops.factories.factory_scrape_networks`
@@ -941,10 +944,10 @@ def factory_compose_scope__scrape_networks(
         # - docker_image
         # - docker_config_json
         # from features_in
-        context.log.debug(f"Popping: {features_in.pop('env_base', {}) = }")
-        context.log.debug(f"Popping: {features_in.pop('config_engine', {}) = }")
-        context.log.debug(f"Popping: {features_in.pop('docker_image', {}) = }")
-        context.log.debug(f"Popping: {features_in.pop('docker_config_json', {}) = }")
+        # context.log.debug(f"Popping: {features_in.pop('env_base') = }")
+        # context.log.debug(f"Popping: {features_in.pop('config_engine') = }")
+        # context.log.debug(f"Popping: {features_in.pop('docker_image') = }")
+        context.log.debug(f"Popping: {features_in.pop('docker_config_json') = }")
 
         networks_dict: Dict = {}
 
@@ -962,26 +965,26 @@ def factory_compose_scope__scrape_networks(
 
         networks_dict_yaml = yaml.safe_dump(networks_dict)
 
-        output_name = "scrape_networks"
-
-        yield Output(
-            output_name=output_name,
-            value=networks_dict,
-        )
-
-        yield AssetMaterialization(
-            asset_key=context.asset_key_for_output(output_name),
-            metadata={
-                "__".join(context.asset_key.path): MetadataValue.json(networks_dict),
-                "networks_dict_yaml": MetadataValue.md(
-                    f"```yaml\n{networks_dict_yaml}\n```"
-                ),
-                # **metadatavalues_from_dict(
-                #     context=context,
-                #     d_serialized=json.dumps(networks_dict, default=str),
-                # ),
-            },
-        )
+        # output_name = "scrape_networks"
+        #
+        # yield Output(
+        #     output_name=output_name,
+        #     value=networks_dict,
+        # )
+        #
+        # yield AssetMaterialization(
+        #     asset_key=context.asset_key_for_output(output_name),
+        #     metadata={
+        #         "__".join(context.asset_key.path): MetadataValue.json(networks_dict),
+        #         "networks_dict_yaml": MetadataValue.md(
+        #             f"```yaml\n{networks_dict_yaml}\n```"
+        #         ),
+        #         # **metadatavalues_from_dict(
+        #         #     context=context,
+        #         #     d_serialized=json.dumps(networks_dict, default=str),
+        #         # ),
+        #     },
+        # )
 
         # @multi_asset
         ###################
@@ -1035,6 +1038,7 @@ def factory_compose_scope__scrape_networks(
 
 
 def factory_compose_scope__compose(
+    compose_scope: str,
     name="op_compose_scope_factory__compose",
     ins=None,
     **kwargs,
@@ -1058,9 +1062,84 @@ def factory_compose_scope__compose(
     def _op_compose_scope__compose(
         context: OpExecutionContext,
         **kwargs,
-    ):
+    ) -> Generator[Output | AssetMaterialization | Any, Any, None]:
         """
         """
+
+        context.log.error(f"{kwargs = }")
+        CONFIG: ComposeScopeBaseModel = kwargs["CONFIG"]
+        features_in = kwargs.pop("features_in")
+        scrape_networks: Dict = kwargs.pop("scrape_networks")
+
+        env: dict = features_in.pop("env_base")
+
+        # config_engine: ConfigEngine = kwargs.pop("config_engine")
+        # docker_image: Dict = kwargs.pop("docker_image")
+        docker_config_json: pathlib.Path = features_in.pop("docker_config_json")
+        # features_in: Dict = kwargs.pop("features_in")
+
+        # Todo:
+        #  - [ ] Duplicated code `OpenStudioLandscapes.engine.base.ops.factories.factory_scrape_networks`
+        #  - [ ] Duplicated code `OpenStudioLandscapes.engine.compose_scopes.default.assets.compose`
+
+        # context.log.debug(f"Popping: {features_in.pop('env_base', {}) = }")
+        # context.log.debug(f"Popping: {features_in.pop('config_engine', {}) = }")
+        # context.log.debug(f"Popping: {features_in.pop('docker_image', {}) = }")
+        # context.log.debug(
+        #     f"Popping: {features_in.pop('docker_config_json', {}) = }"
+        # )
+
+        DOCKER_COMPOSE: pathlib.Path = CONFIG.docker_compose
+
+        DOCKER_COMPOSE.parent.mkdir(parents=True, exist_ok=True)
+
+        compose_files = []
+        _compose_networks = set()
+
+        for feature, data in features_in.items():
+            CONFIG_: FeatureBaseModel = data["config"]
+            context.log.info(f"{CONFIG_.feature_name = }")
+            compose_file = CONFIG_.docker_compose_expanded
+            compose_files.append(compose_file)
+
+        includes = []
+        dot_landscapes = pathlib.Path(env["DOT_LANDSCAPES"])
+
+        # Convert absolute paths in `include` to
+        # relative ones
+        for path in compose_files:
+            rel_path = get_relative_path_via_common_root(
+                context=context,
+                path_src=DOCKER_COMPOSE,
+                path_dst=pathlib.Path(path),
+                path_common_root=dot_landscapes,
+            )
+
+            include_ = {
+                "project_directory": rel_path.parent.as_posix(),
+                "path": [
+                    rel_path.as_posix(),
+                ],
+            }
+
+            includes.append(include_)
+
+        docker_dict_include: Dict = {"include": includes}
+
+        if CONFIG.attach_pangolin_site_to_compose_scope:
+
+            add_newt_service_to_compose_scope(
+                scrape_networks=scrape_networks,
+                docker_dict_include=docker_dict_include,
+                compose_scope=compose_scope,
+                landscape_id=env["LANDSCAPE"],
+            )
+
+        docker_yaml_include = yaml.safe_dump(docker_dict_include)
+
+        # Write docker-compose.yaml
+        with open(DOCKER_COMPOSE, mode="w", encoding="utf-8") as fw:
+            fw.write(docker_yaml_include)
 
         # @asset
         # yield Output(
@@ -1091,7 +1170,7 @@ def factory_compose_scope__compose(
 
         yield Output(
             output_name=output_name,
-            value=None,
+            value=docker_dict_include,
         )
 
         yield AssetMaterialization(
@@ -1099,7 +1178,16 @@ def factory_compose_scope__compose(
             metadata={
                 "__".join(
                     context.asset_key_for_output(output_name).path
-                ): MetadataValue.bool(False),
+                ): MetadataValue.json(
+                    docker_dict_include
+                ),
+                "docker_yaml": MetadataValue.md(
+                    f"```yaml\n{docker_yaml_include}\n```"
+                ),
+                "includes": MetadataValue.json(includes),
+                "OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE": MetadataValue.bool(
+                    CONFIG.attach_pangolin_site_to_compose_scope,
+                ),
             },
         )
 
@@ -1152,7 +1240,7 @@ def factory_compose_scope__docker_compose_graph(
     def _op_compose_scope__docker_compose_graph(
         context: OpExecutionContext,
         **kwargs,
-    ):
+    ) -> Generator[Output | AssetMaterialization | Any, Any, None]:
         """
         """
 
@@ -1246,7 +1334,7 @@ def factory_compose_scope__cmd(
     def _op_compose_scope__cmd(
         context: OpExecutionContext,
         **kwargs,
-    ):
+    ) -> Generator[Output | AssetMaterialization | Any, Any, None]:
         """
         """
 
@@ -1340,7 +1428,7 @@ def factory_compose_scope__group_out(
     def _op_compose_scope__group_out(
         context: OpExecutionContext,
         **kwargs,
-    ):
+    ) -> Generator[Output | AssetMaterialization | Any, Any, None]:
         """
         """
 
