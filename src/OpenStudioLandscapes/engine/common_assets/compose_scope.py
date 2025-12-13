@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, List
 
 from dagster import (
     AssetKey,
@@ -196,16 +196,16 @@ def get_compose_scope_group__CONFIG(
 
 
 def get_compose_scope_group__scrape_networks(
-    ASSET_HEADER: dict,
+    ASSET_HEADER: Dict,
 ) -> AssetsDefinition:
 
     compose_scope_op__scrape_networks: OpDefinition = factory_compose_scope__scrape_networks(
         name=f"op_compose_scope__scrape_networks__{ASSET_HEADER['group_name']}",
         ins={
-            "features_in": In(dict),
+            "features_in": In(Dict),
         },
         out={
-            "scrape_networks": Out(dict),
+            "scrape_networks": Out(Dict),
         },
     )
 
@@ -228,7 +228,7 @@ def get_compose_scope_group__scrape_networks(
 
 
 def get_compose_scope_group__compose(
-    ASSET_HEADER: dict,
+    ASSET_HEADER: Dict,
     compose_scope: str,
 ) -> AssetsDefinition:
 
@@ -236,8 +236,8 @@ def get_compose_scope_group__compose(
         compose_scope=compose_scope,
         name=f"op_compose_scope__compose__{ASSET_HEADER['group_name']}",
         ins={
-            "features_in": In(dict),
-            "scrape_networks": In(dict),
+            "features_in": In(Dict),
+            "scrape_networks": In(Dict),
             "CONFIG": In(ComposeScopeBaseModel),
             # "compose_networks": In(dict),
             # "compose_maps": In(list),
@@ -245,7 +245,7 @@ def get_compose_scope_group__compose(
             # # "group_in": In(dict)
         },
         out={
-            "compose": Out(dict),
+            "compose": Out(Dict),
             # "test_output_2": Out(dict),
         },
     )
@@ -261,11 +261,6 @@ def get_compose_scope_group__compose(
         #     #     "compose": "third_party",
         #     # },
         # },
-        keys_by_output_name={
-            # "scrape_networks": AssetKey(
-            #     [*ASSET_HEADER["key_prefix"], "scrape_networks"]
-            # ),
-        },
         keys_by_input_name={
             # "compose_networks": AssetKey(
             #     [*ASSET_HEADER["key_prefix"], "compose_networks"]
@@ -273,6 +268,14 @@ def get_compose_scope_group__compose(
             # "compose_maps": AssetKey([*ASSET_HEADER["key_prefix"], "compose_maps"]),
             # "CONFIG": AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
             # # "group_in": AssetKey([*ASSET_HEADER["key_prefix"], "group_in"]),
+        },
+        keys_by_output_name={
+            "compose": AssetKey(
+                [*ASSET_HEADER["key_prefix"], "compose"]
+            ),
+            # "scrape_networks": AssetKey(
+            #     [*ASSET_HEADER["key_prefix"], "scrape_networks"]
+            # ),
         },
         # keys_by_input_name={
         #     "features_in": AssetKey([*ASSET_HEADER["key_prefix"], "features_in"]),
@@ -283,14 +286,14 @@ def get_compose_scope_group__compose(
 
 
 def get_compose_scope_group__docker_compose_graph(
-    ASSET_HEADER: dict,
+    ASSET_HEADER: Dict,
 ) -> AssetsDefinition:
 
     compose_scope_op__docker_compose_graph = factory_compose_scope__docker_compose_graph(
         name=f"op_compose_scope__docker_compose_graph__{ASSET_HEADER['group_name']}",
         ins={
-            "group_out": In(dict),
-            "compose_project_name": In(dict),
+            "group_out": In(Dict),
+            "compose_project_name": In(Dict),
             # "compose_networks": In(dict),
             # "compose_maps": In(list),
             # "CONFIG": In(FeatureBaseModel),
@@ -335,22 +338,25 @@ def get_compose_scope_group__docker_compose_graph(
 
 
 def get_compose_scope_group__cmd(
-    ASSET_HEADER: dict,
+    ASSET_HEADER: Dict,
 ) -> AssetsDefinition:
 
-    compose_scope_op__cmd = factory_compose_scope__cmd(
+    compose_scope_op__cmd: OpDefinition = factory_compose_scope__cmd(
         name=f"op_compose_scope__cmd__{ASSET_HEADER['group_name']}",
         ins={
             # "features_in": In(dict),
         },
         out={
-            "cmd_append": Out(dict),
-            "cmd_extend": Out(dict),
+            "cmd_append": Out(Dict),
+            "cmd_extend": Out(List),
         },
     )
 
-    compose_scope__cmd = AssetsDefinition.from_op(
+    compose_scope__cmd: AssetsDefinition = AssetsDefinition.from_op(
         compose_scope_op__cmd,
+        can_subset=False,
+        group_name=ASSET_HEADER["group_name"],
+        key_prefix=ASSET_HEADER["key_prefix"],
         # Todo:
         #  - [ ] Change to AssetKey
         # tags_by_output_name={
@@ -358,13 +364,6 @@ def get_compose_scope_group__cmd(
         #     #     "compose": "third_party",
         #     # },
         # },
-        keys_by_output_name={
-            # "scrape_networks": AssetKey(
-            #     [*ASSET_HEADER["key_prefix"], "scrape_networks"]
-            # ),
-        },
-        group_name=ASSET_HEADER["group_name"],
-        key_prefix=ASSET_HEADER["key_prefix"],
         keys_by_input_name={
             # "compose_networks": AssetKey(
             #     [*ASSET_HEADER["key_prefix"], "compose_networks"]
@@ -372,6 +371,17 @@ def get_compose_scope_group__cmd(
             # "compose_maps": AssetKey([*ASSET_HEADER["key_prefix"], "compose_maps"]),
             # "CONFIG": AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
             # # "group_in": AssetKey([*ASSET_HEADER["key_prefix"], "group_in"]),
+        },
+        keys_by_output_name={
+            "cmd_append": AssetKey(
+                [*ASSET_HEADER["key_prefix"], "cmd_append"]
+            ),
+            "cmd_extend": AssetKey(
+                [*ASSET_HEADER["key_prefix"], "cmd_extend"]
+            ),
+            # "scrape_networks": AssetKey(
+            #     [*ASSET_HEADER["key_prefix"], "scrape_networks"]
+            # ),
         },
         # keys_by_input_name={
         #     "features_in": AssetKey([*ASSET_HEADER["key_prefix"], "features_in"]),

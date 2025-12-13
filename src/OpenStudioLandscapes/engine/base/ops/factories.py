@@ -1361,13 +1361,15 @@ def factory_compose_scope__cmd(
         # TEST_OUTPUT_1 #
         #################
 
+        ret_cmd_append = {"cmd": [], "exclude_from_quote": []}
+
         output_name = "cmd_append"
 
         # if "docker_compose_graph" in context.selected_output_names:
 
         yield Output(
             output_name=output_name,
-            value=None,
+            value=ret_cmd_append,
         )
 
         yield AssetMaterialization(
@@ -1375,7 +1377,7 @@ def factory_compose_scope__cmd(
             metadata={
                 "__".join(
                     context.asset_key_for_output(output_name).path
-                ): MetadataValue.bool(False),
+                ): MetadataValue.json(ret_cmd_append),
             },
         )
 
@@ -1385,11 +1387,13 @@ def factory_compose_scope__cmd(
 
         output_name = "cmd_extend"
 
+        ret_cmd_extend = []
+
         # if "docker_compose_graph" in context.selected_output_names:
 
         yield Output(
             output_name=output_name,
-            value=None,
+            value=ret_cmd_extend,
         )
 
         yield AssetMaterialization(
@@ -1397,7 +1401,7 @@ def factory_compose_scope__cmd(
             metadata={
                 "__".join(
                     context.asset_key_for_output(output_name).path
-                ): MetadataValue.bool(True),
+                ): MetadataValue.json(ret_cmd_append),
             },
         )
 
