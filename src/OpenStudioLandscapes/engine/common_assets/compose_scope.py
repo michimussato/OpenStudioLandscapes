@@ -1,6 +1,7 @@
 import pathlib
 from typing import Dict, List
 
+import pydot
 from dagster import (
     AssetKey,
     AssetsDefinition,
@@ -293,23 +294,23 @@ def get_compose_scope_group__docker_compose_graph(
     ASSET_HEADER: Dict,
 ) -> AssetsDefinition:
 
-    compose_scope_op__docker_compose_graph = factory_compose_scope__docker_compose_graph(
+    compose_scope_op__docker_compose_graph: OpDefinition = factory_compose_scope__docker_compose_graph(
         name=f"op_compose_scope__docker_compose_graph__{ASSET_HEADER['group_name']}",
         ins={
-            "group_out": In(Dict),
-            "compose_project_name": In(Dict),
+            "group_out": In(pathlib.Path),
+            "compose_project_name": In(str),
             # "compose_networks": In(dict),
             # "compose_maps": In(list),
             # "CONFIG": In(FeatureBaseModel),
             # # "group_in": In(dict)
         },
         out={
-            "docker_compose_graph": Out(dict),
-            "docker_compose_graph_dot": Out(dict),
+            "docker_compose_graph": Out(pydot.Dot),
+            "docker_compose_graph_dot": Out(pathlib.Path),
         },
     )
 
-    compose_scope__docker_compose_graph = AssetsDefinition.from_op(
+    compose_scope__docker_compose_graph: AssetsDefinition = AssetsDefinition.from_op(
         compose_scope_op__docker_compose_graph,
         group_name=ASSET_HEADER["group_name"],
         key_prefix=ASSET_HEADER["key_prefix"],
