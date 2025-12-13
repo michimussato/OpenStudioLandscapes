@@ -17,7 +17,7 @@ from OpenStudioLandscapes.engine.base.ops.factories import factory_compose_scope
 from OpenStudioLandscapes.engine.base.ops.factories import factory_compose_scope__docker_compose_graph
 from OpenStudioLandscapes.engine.base.ops.factories import factory_compose_scope__cmd
 from OpenStudioLandscapes.engine.base.ops.factories import factory_compose_scope__group_out
-from OpenStudioLandscapes.engine.config.models import FeatureBaseModel, ComposeScopeBaseModel
+from OpenStudioLandscapes.engine.config.models import ComposeScopeBaseModel
 from OpenStudioLandscapes.engine.constants import ASSET_HEADER_BASE
 
 
@@ -80,8 +80,6 @@ def get_compose_scope_group__features_in(
     dynamic_ins = {}
     dynamic_keys_by_input_name = {}
 
-    # feature_out_ins_op = {}
-    # feature_out_ins_asset = {}
     k: str
     v: AssetIn
     for k, v in features.items():
@@ -89,21 +87,13 @@ def get_compose_scope_group__features_in(
         dynamic_keys_by_input_name[k] = v.key
 
     compose_scope_op__features_in: OpDefinition = factory_compose_scope__features_in(
-        # compose_scope=compose_scope,
-        # group_out_base=group_out_base,
-        # asset_header=ASSET_HEADER,
         name=f"op_compose_scope__features_in__{ASSET_HEADER['group_name']}",
         ins={
             "group_out_base": In(Dict),
-            # "features": In(Dict),
             **dynamic_ins,
-            # "compose_maps": In(list),
-            # "CONFIG": In(FeatureBaseModel),
-            # # "group_in": In(dict)
         },
         out={
             "features_in": Out(Dict),
-            # "test_output_2": Out(dict),
         },
     )
 
@@ -111,34 +101,11 @@ def get_compose_scope_group__features_in(
         compose_scope_op__features_in,
         group_name=ASSET_HEADER["group_name"],
         key_prefix=ASSET_HEADER["key_prefix"],
-        # group_out_base=group_out_base,
-        # compose_scope=compose_scope,
-        # Todo:
-        #  - [ ] Change to AssetKey
-        # tags_by_output_name={
-        #     # "compose": {
-        #     #     "compose": "third_party",
-        #     # },
-        # },
         keys_by_input_name={
             "group_out_base": AssetKey([*ASSET_HEADER_BASE["key_prefix"], "group_out_base"]),
             **dynamic_keys_by_input_name,
-            # *features,
-            # "compose_networks": AssetKey(
-            #     [*ASSET_HEADER["key_prefix"], "compose_networks"]
-            # ),
-            # "compose_maps": AssetKey([*ASSET_HEADER["key_prefix"], "compose_maps"]),
-            # "CONFIG": AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
-            # # "group_in": AssetKey([*ASSET_HEADER["key_prefix"], "group_in"]),
         },
-        keys_by_output_name={
-            # "scrape_networks": AssetKey(
-            #     [*ASSET_HEADER["key_prefix"], "scrape_networks"]
-            # ),
-        },
-        # keys_by_input_name={
-        #     "features_in": AssetKey([*ASSET_HEADER["key_prefix"], "features_in"]),
-        # },
+        keys_by_output_name={},
     )
 
     return compose_scope__features_in
@@ -155,13 +122,9 @@ def get_compose_scope_group__CONFIG(
         asset_header=ASSET_HEADER,
         ins={
             "features_in": In(Dict),
-            # "compose_maps": In(list),
-            # "CONFIG": In(FeatureBaseModel),
-            # # "group_in": In(dict)
         },
         out={
             "CONFIG": Out(ComposeScopeBaseModel),
-            # "test_output_2": Out(dict),
         },
     )
 
@@ -169,29 +132,8 @@ def get_compose_scope_group__CONFIG(
         compose_scope_op__CONFIG,
         group_name=ASSET_HEADER["group_name"],
         key_prefix=ASSET_HEADER["key_prefix"],
-        # Todo:
-        #  - [ ] Change to AssetKey
-        # tags_by_output_name={
-        #     # "compose": {
-        #     #     "compose": "third_party",
-        #     # },
-        # },
-        keys_by_input_name={
-            # "compose_networks": AssetKey(
-            #     [*ASSET_HEADER["key_prefix"], "compose_networks"]
-            # ),
-            # "compose_maps": AssetKey([*ASSET_HEADER["key_prefix"], "compose_maps"]),
-            # "CONFIG": AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
-            # # "group_in": AssetKey([*ASSET_HEADER["key_prefix"], "group_in"]),
-        },
-        keys_by_output_name={
-            # "scrape_networks": AssetKey(
-            #     [*ASSET_HEADER["key_prefix"], "scrape_networks"]
-            # ),
-        },
-        # keys_by_input_name={
-        #     "features_in": AssetKey([*ASSET_HEADER["key_prefix"], "features_in"]),
-        # },
+        keys_by_input_name={},
+        keys_by_output_name={},
     )
 
     return compose_scope__CONFIG
@@ -216,14 +158,8 @@ def get_compose_scope_group__scrape_networks(
         can_subset=False,
         group_name=ASSET_HEADER["group_name"],
         key_prefix=ASSET_HEADER["key_prefix"],
-        keys_by_input_name={
-            "features_in": AssetKey([*ASSET_HEADER["key_prefix"], "features_in"]),
-        },
-        keys_by_output_name={
-            "scrape_networks": AssetKey(
-                [*ASSET_HEADER["key_prefix"], "scrape_networks"]
-            ),
-        },
+        keys_by_input_name={},
+        keys_by_output_name={},
     )
 
     return compose_scope__scrape_networks
@@ -241,14 +177,9 @@ def get_compose_scope_group__compose(
             "features_in": In(Dict),
             "scrape_networks": In(Dict),
             "CONFIG": In(ComposeScopeBaseModel),
-            # "compose_networks": In(dict),
-            # "compose_maps": In(list),
-            # "CONFIG": In(FeatureBaseModel),
-            # # "group_in": In(dict)
         },
         out={
             "compose": Out(Dict),
-            # "test_output_2": Out(dict),
         },
     )
 
@@ -256,35 +187,8 @@ def get_compose_scope_group__compose(
         compose_scope_op__compose,
         group_name=ASSET_HEADER["group_name"],
         key_prefix=ASSET_HEADER["key_prefix"],
-        # Todo:
-        #  - [ ] Change to AssetKey
-        # tags_by_output_name={
-        #     # "compose": {
-        #     #     "compose": "third_party",
-        #     # },
-        # },
-        keys_by_input_name={
-            # "features_in": AssetKey(
-            #     [*ASSET_HEADER["key_prefix"], "features_in"]
-            # ),
-            # "scrape_networks": AssetKey(
-            #     [*ASSET_HEADER["key_prefix"], "scrape_networks"]
-            # ),
-            # "CONFIG": AssetKey(
-            #     [*ASSET_HEADER["key_prefix"], "CONFIG"]
-            # ),
-        },
-        keys_by_output_name={
-            "compose": AssetKey(
-                [*ASSET_HEADER["key_prefix"], "compose"]
-            ),
-            # "scrape_networks": AssetKey(
-            #     [*ASSET_HEADER["key_prefix"], "scrape_networks"]
-            # ),
-        },
-        # keys_by_input_name={
-        #     "features_in": AssetKey([*ASSET_HEADER["key_prefix"], "features_in"]),
-        # },
+        keys_by_input_name={},
+        keys_by_output_name={},
     )
 
     return compose_scope__compose
@@ -299,10 +203,6 @@ def get_compose_scope_group__docker_compose_graph(
         ins={
             "group_out": In(pathlib.Path),
             "compose_project_name": In(str),
-            # "compose_networks": In(dict),
-            # "compose_maps": In(list),
-            # "CONFIG": In(FeatureBaseModel),
-            # # "group_in": In(dict)
         },
         out={
             "docker_compose_graph": Out(pydot.Dot),
@@ -314,29 +214,8 @@ def get_compose_scope_group__docker_compose_graph(
         compose_scope_op__docker_compose_graph,
         group_name=ASSET_HEADER["group_name"],
         key_prefix=ASSET_HEADER["key_prefix"],
-        # Todo:
-        #  - [ ] Change to AssetKey
-        # tags_by_output_name={
-        #     # "compose": {
-        #     #     "compose": "third_party",
-        #     # },
-        # },
-        keys_by_input_name={
-            # "group_out": AssetKey(
-            #     [*ASSET_HEADER["key_prefix"], "group_out"]
-            # ),
-            # "compose_project_name": AssetKey(
-            #     [*ASSET_HEADER["key_prefix"], "compose_project_name"]
-            # ),
-        },
-        keys_by_output_name={
-            # "docker_compose_graph": AssetKey(
-            #     [*ASSET_HEADER["key_prefix"], "docker_compose_graph"]
-            # ),
-            # "docker_compose_graph_dot": AssetKey(
-            #     [*ASSET_HEADER["key_prefix"], "docker_compose_graph_dot"]
-            # ),
-        },
+        keys_by_input_name={},
+        keys_by_output_name={},
     )
 
     return compose_scope__docker_compose_graph
@@ -348,9 +227,7 @@ def get_compose_scope_group__cmd(
 
     compose_scope_op__cmd: OpDefinition = factory_compose_scope__cmd(
         name=f"op_compose_scope__cmd__{ASSET_HEADER['group_name']}",
-        ins={
-            # "features_in": In(dict),
-        },
+        ins={},
         out={
             "cmd_append": Out(Dict),
             "cmd_extend": Out(List),
@@ -362,32 +239,8 @@ def get_compose_scope_group__cmd(
         can_subset=False,
         group_name=ASSET_HEADER["group_name"],
         key_prefix=ASSET_HEADER["key_prefix"],
-        # Todo:
-        #  - [ ] Change to AssetKey
-        # tags_by_output_name={
-        #     # "compose": {
-        #     #     "compose": "third_party",
-        #     # },
-        # },
-        keys_by_input_name={
-            # "compose_networks": AssetKey(
-            #     [*ASSET_HEADER["key_prefix"], "compose_networks"]
-            # ),
-            # "compose_maps": AssetKey([*ASSET_HEADER["key_prefix"], "compose_maps"]),
-            # "CONFIG": AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
-            # # "group_in": AssetKey([*ASSET_HEADER["key_prefix"], "group_in"]),
-        },
-        keys_by_output_name={
-            # "cmd_append": AssetKey(
-            #     [*ASSET_HEADER["key_prefix"], "cmd_append"]
-            # ),
-            # "cmd_extend": AssetKey(
-            #     [*ASSET_HEADER["key_prefix"], "cmd_extend"]
-            # ),
-        },
-        # keys_by_input_name={
-        #     "features_in": AssetKey([*ASSET_HEADER["key_prefix"], "features_in"]),
-        # },
+        keys_by_input_name={},
+        keys_by_output_name={},
     )
 
     return compose_scope__cmd
@@ -419,32 +272,8 @@ def get_compose_scope_group__group_out(
         compose_scope_op__group_out,
         group_name=ASSET_HEADER["group_name"],
         key_prefix=ASSET_HEADER["key_prefix"],
-        # Todo:
-        #  - [ ] Change to AssetKey
-        # tags_by_output_name={
-        #     # "compose": {
-        #     #     "compose": "third_party",
-        #     # },
-        # },
-        keys_by_input_name={
-            # "compose_networks": AssetKey(
-            #     [*ASSET_HEADER["key_prefix"], "compose_networks"]
-            # ),
-            # "compose_maps": AssetKey([*ASSET_HEADER["key_prefix"], "compose_maps"]),
-            # "CONFIG": AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
-            # # "group_in": AssetKey([*ASSET_HEADER["key_prefix"], "group_in"]),
-        },
-        keys_by_output_name={
-            # "group_out": AssetKey(
-            #     [*ASSET_HEADER["key_prefix"], "group_out"]
-            # ),
-            # "compose_project_name": AssetKey(
-            #     [*ASSET_HEADER["key_prefix"], "compose_project_name"]
-            # ),
-            # "docker_compose_commands": AssetKey(
-            #     [*ASSET_HEADER["key_prefix"], "docker_compose_commands"]
-            # ),
-        },
+        keys_by_input_name={},
+        keys_by_output_name={},
     )
 
     return compose_scope__group_out

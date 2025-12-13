@@ -1,8 +1,5 @@
 __all__ = [
-    "factory_scrape_networks",
     "factory_feature_out",
-    "factory_feature_in",
-    "factory_docker_config",
     "factory_compose",
     "factory_group_in",
     # "factory_compose_scope_test",
@@ -37,7 +34,7 @@ from dagster import (
     OpDefinition,
     OpExecutionContext,
     Output,
-    op, AssetKey,
+    op,
 )
 from docker_compose_graph.utils import *
 
@@ -130,221 +127,6 @@ def factory_feature_out(
         )
 
     return _op_feature_out
-
-
-def factory_scrape_networks(
-    name="op_scrape_networks_from_factory",
-    ins=None,
-    **kwargs,
-) -> OpDefinition:
-    """
-    https://docs.dagster.io/guides/build/ops#op-factory
-
-    Args:
-        name (str): The name of the new op.
-        ins (Dict[str, In]): Any Ins for the new op. Default: None.
-
-    Returns:
-        function: The new op.
-    """
-
-    @op(
-        name=name,
-        ins=ins,
-        description=textwrap.dedent(
-            """
-            Recursively scrape a hierarchical (`include`) Docker Compose 
-            YAML tree for `networks` at the root level, as in:
-            
-            ```yaml
-            networks:
-              kitsu:
-                name: network_kitsu
-            ```
-            
-            This is needed for the Pangolin `newt` service so that
-            it can discover services.
-            
-            See:
-            - [https://github.com/fosrl/newt]()
-            - [https://docs.pangolin.net/manage/sites/install-site#docker-installation]()
-            """
-        ),
-        **kwargs,
-    )
-    def _op_scrape_networks(
-        context: OpExecutionContext,
-        **kwargs,
-    ):
-
-        context.log.debug(f"{kwargs = }")
-
-        features_in = kwargs.pop("features_in")
-        del kwargs
-        context.log.debug(f"{features_in = }")
-
-        # Todo:
-        #  - [ ] Duplicated code `OpenStudioLandscapes.engine.base.ops.factories.factory_scrape_networks`
-        #  - [ ] Duplicated code `OpenStudioLandscapes.engine.compose_scopes.default.assets.compose`
-
-        # I want to remove
-        # - env_base
-        # - docker_config
-        # - docker_image
-        # - docker_config_json
-        # from features_in
-        context.log.debug(f"Popping: {features_in.pop('env_base', {}) = }")
-        context.log.debug(f"Popping: {features_in.pop('config_engine', {}) = }")
-        context.log.debug(f"Popping: {features_in.pop('docker_image', {}) = }")
-        context.log.debug(f"Popping: {features_in.pop('docker_config_json', {}) = }")
-
-        networks_dict: Dict = {}
-
-        for feature, data in features_in.items():
-            context.log.info(f"{features_in[feature] = }")
-            CONFIG: FeatureBaseModel = data.pop("config")
-            compose_file: pathlib.Path = CONFIG.docker_compose_expanded
-
-            network_dict = get_networks_dict(
-                context=context,
-                compose_file=compose_file,
-            )
-
-            networks_dict.update(network_dict)
-
-        networks_dict_yaml = yaml.safe_dump(networks_dict)
-
-        output_name = "scrape_networks"
-
-        yield Output(
-            output_name=output_name,
-            value=networks_dict,
-        )
-
-        yield AssetMaterialization(
-            asset_key=context.asset_key_for_output(output_name),
-            metadata={
-                "__".join(context.asset_key.path): MetadataValue.json(networks_dict),
-                "networks_dict_yaml": MetadataValue.md(
-                    f"```yaml\n{networks_dict_yaml}\n```"
-                ),
-                # **metadatavalues_from_dict(
-                #     context=context,
-                #     d_serialized=json.dumps(networks_dict, default=str),
-                # ),
-            },
-        )
-
-    return _op_scrape_networks
-
-
-def factory_feature_in(
-    name="op_feature_in_from_factory",
-    ins=None,
-    **kwargs,
-) -> OpDefinition:
-    """
-    https://docs.dagster.io/guides/build/ops#op-factory
-
-    Args:
-        name (str): The name of the new op.
-        ins (Dict[str, In]): Any Ins for the new op. Default: None.
-
-    Returns:
-        function: The new op.
-    """
-
-    @op(
-        name=name,
-        ins=ins,
-        **kwargs,
-    )
-    def _op_feature_in(
-        context: OpExecutionContext,
-        **kwargs,
-    ):
-
-        output_name = "feature_out"
-
-        yield Output(
-            output_name=output_name,
-            value=kwargs,
-        )
-
-        kwargs_json = json.dumps(kwargs, default=str)
-
-        yield AssetMaterialization(
-            asset_key=context.asset_key_for_output(output_name),
-            metadata={
-                "__".join(context.asset_key.path): MetadataValue.json(kwargs_json),
-                **metadatavalues_from_dict(
-                    context=context,
-                    d_serialized=kwargs_json,
-                ),
-            },
-        )
-
-    return _op_feature_in
-
-
-def factory_docker_config(
-    name="op_docker_config_from_factory",
-    ins=None,
-    # out=None,
-    **kwargs,
-) -> OpDefinition:
-    """
-    https://docs.dagster.io/guides/build/ops#op-factory
-
-    Args:
-        name (str): The name of the new op.
-        ins (Dict[str, In]): Any Ins for the new op. Default: None.
-
-    Returns:
-        function: The new op.
-    """
-
-    @op(
-        name=name,
-        ins=ins,
-        **kwargs,
-    )
-    def _op_docker_config(
-        context: OpExecutionContext,
-        **kwargs,
-    ):
-
-        # Untangle the input kwargs:
-        group_in = kwargs.pop("group_in")
-        context.log.debug(group_in)
-        config_engine: ConfigEngine = group_in.pop("config_engine")
-        docker_config: DockerConfigModel = (
-            config_engine.openstudiolandscapes__docker_config
-        )
-
-        if not isinstance(docker_config, DockerConfigModel):
-            raise TypeError(
-                f"Migrate to `DockerConfigModel`. "
-                f"Current type: {type(docker_config)}"
-            )
-
-        context.log.debug(docker_config)
-
-        output_name = "docker_config"
-
-        yield Output(
-            output_name=output_name,
-            value=docker_config,
-        )
-
-        yield AssetMaterialization(
-            asset_key=context.asset_key_for_output(output_name),
-            metadata={
-                "docker_config": MetadataValue.json(docker_config.model_dump()),
-            },
-        )
-
-    return _op_docker_config
 
 
 def factory_compose(
@@ -907,6 +689,25 @@ def factory_compose_scope__scrape_networks(
     @op(
         name=name,
         ins=ins,
+        description=textwrap.dedent(
+            """
+            Recursively scrape a hierarchical (`include`) Docker Compose 
+            YAML tree for `networks` at the root level, as in:
+            
+            ```yaml
+            networks:
+              kitsu:
+                name: network_kitsu
+            ```
+            
+            This is needed for the Pangolin `newt` service so that
+            it can discover services.
+            
+            See:
+            - [https://github.com/fosrl/newt]()
+            - [https://docs.pangolin.net/manage/sites/install-site#docker-installation]()
+            """
+        ),
         **kwargs,
     )
     def _op_compose_scope__scrape_networks(
