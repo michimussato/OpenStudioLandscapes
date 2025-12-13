@@ -173,6 +173,7 @@ def get_compose_scope_group__scrape_networks(
     compose_scope_op__scrape_networks = factory_compose_scope__scrape_networks(
         name=f"op_compose_scope__scrape_networks__{ASSET_HEADER['group_name']}",
         ins={
+            "features_in": In(dict),
             # "compose_networks": In(dict),
             # "compose_maps": In(list),
             # "CONFIG": In(FeatureBaseModel),
@@ -223,6 +224,9 @@ def get_compose_scope_group__compose(
     compose_scope_op__compose = factory_compose_scope__compose(
         name=f"op_compose_scope__compose__{ASSET_HEADER['group_name']}",
         ins={
+            "features_in": In(dict),
+            "scrape_networks": In(dict),
+            "CONFIG": In(dict),
             # "compose_networks": In(dict),
             # "compose_maps": In(list),
             # "CONFIG": In(FeatureBaseModel),
@@ -273,6 +277,8 @@ def get_compose_scope_group__docker_compose_graph(
     compose_scope_op__docker_compose_graph = factory_compose_scope__docker_compose_graph(
         name=f"op_compose_scope__docker_compose_graph__{ASSET_HEADER['group_name']}",
         ins={
+            "group_out": In(dict),
+            "compose_project_name": In(dict),
             # "compose_networks": In(dict),
             # "compose_maps": In(list),
             # "CONFIG": In(FeatureBaseModel),
@@ -323,10 +329,7 @@ def get_compose_scope_group__cmd(
     compose_scope_op__cmd = factory_compose_scope__cmd(
         name=f"op_compose_scope__cmd__{ASSET_HEADER['group_name']}",
         ins={
-            # "compose_networks": In(dict),
-            # "compose_maps": In(list),
-            # "CONFIG": In(FeatureBaseModel),
-            # # "group_in": In(dict)
+            # "features_in": In(dict),
         },
         out={
             "cmd_append": Out(dict),
@@ -373,6 +376,11 @@ def get_compose_scope_group__group_out(
     compose_scope_op__group_out = factory_compose_scope__group_out(
         name=f"op_compose_scope__group_out__{ASSET_HEADER['group_name']}",
         ins={
+            "features_in": In(dict),
+            "CONFIG": In(dict),
+            "cmd_append": In(dict),
+            "cmd_extend": In(dict),
+            "compose": In(dict),
             # "compose_networks": In(dict),
             # "compose_maps": In(list),
             # "CONFIG": In(FeatureBaseModel),
