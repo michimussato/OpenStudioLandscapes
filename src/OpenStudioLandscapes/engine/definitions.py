@@ -14,8 +14,8 @@ LOGGER = get_dagster_logger(__name__)
 imports_engine = [
     "OpenStudioLandscapes.engine.base.definitions",
     "OpenStudioLandscapes.engine.env.definitions",
-    # "OpenStudioLandscapes.engine.landscape_map.definitions",
-    # "OpenStudioLandscapes.engine.distributable.definitions",
+    "OpenStudioLandscapes.engine.landscape_map.definitions",
+    "OpenStudioLandscapes.engine.distributable.definitions",
 ]
 
 e_ = expand_dict_vars(
@@ -25,12 +25,10 @@ e_ = expand_dict_vars(
 
 
 # ComposeScope Definitions
-imports_engine.extend(
-    [
-        "OpenStudioLandscapes.engine.compose_scopes.default.definitions",
-        # "OpenStudioLandscapes.engine.compose_scopes.license_server.definitions",
-        # "OpenStudioLandscapes.engine.compose_scopes.worker.definitions",
-    ]
+# Todo
+#  - [ ] no need for a list anymore. Compose Scope networks are dynamic now.
+imports_engine.append(
+    "OpenStudioLandscapes.engine.compose_scopes.default.definitions",
 )
 
 

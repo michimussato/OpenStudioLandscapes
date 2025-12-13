@@ -409,6 +409,36 @@ class FeatureBaseModel(BaseModel):
         default="default",
         examples=["default", "license_server", "worker"],
     )
+
+    @field_validator("compose_scope")
+    @classmethod
+    def validate__compose_scope(cls, value: str) -> str:
+        """
+        ComposeScope names must be:
+        - lowercase
+        and may not contain
+        - spaces
+        - periods
+        - commas
+
+        All illegal characters are replaced with underscores.
+
+        Args:
+            value: str
+
+        Returns:
+            str
+
+        """
+        # Methods:
+        # - https://blog.finxter.com/5-best-ways-to-replace-a-list-of-characters-in-a-string-with-python/
+        chars_to_replace = " .,-"
+        replace_with = "_"
+
+        regex_pattern = f"[{chars_to_replace}]"
+        transformed_value = re.sub(regex_pattern, replace_with, value)
+        return transformed_value.lower()
+
     # Todo
     #  - [ ] how is this derived?
     #  - [ ] combine with key_prefixes/group_name?

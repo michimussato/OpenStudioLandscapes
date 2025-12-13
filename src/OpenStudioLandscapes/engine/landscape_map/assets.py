@@ -1,4 +1,5 @@
 import base64
+import enum
 import shutil
 import subprocess
 from typing import Any, Generator
@@ -17,30 +18,51 @@ from pydot import Dot
 
 from OpenStudioLandscapes.engine.config import dist
 from OpenStudioLandscapes.engine.constants import *
+from OpenStudioLandscapes.engine.discovery import discovery
 from OpenStudioLandscapes.engine.discovery.discovery import *
 from OpenStudioLandscapes.engine.enums import *
+from OpenStudioLandscapes.engine.compose_scopes.default.assets import COMPOSE_SCOPE_GROUP_PREFIX
+from OpenStudioLandscapes.engine.utils import get_dynamic_ins
 
-# Dynamic inputs based on the imported
-# third party code locations
-# Todo
-#  - [ ] can we leverage OpenStudioLandscapes.engine.utils.get_dynamic_ins()
-#        here somehow?
+
+feature_ins = get_dynamic_ins(
+    imported_features=discovery.DISCOVERED_MODELS,
+)
+
+
+LOGGER.error(f"{feature_ins = }")
+# feature_ins = {'default': {'OpenStudioLandscapes_Kitsu': AssetIn(key=AssetKey(['Kitsu', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>), 'OpenStudioLandscapes_Watchtower': AssetIn(key=AssetKey(['Watchtower', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>), 'OpenStudioLandscapes_VERT': AssetIn(key=AssetKey(['VERT', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>)}}
+
+
 ins = {}
 compose_scopes = set()
 
-for feature in IMPORTABLE_FEATURES:
-    enabled = feature["enabled"]
-    if not enabled:
-        continue
-    compose_scope = feature["compose_scope"]
+compose_scope: str
+feature: Dict[str, AssetIn]
+for compose_scope, _ in feature_ins.items():
+    # get_dynamic_ins() filters for enabled Features already
     if compose_scope in compose_scopes:
         continue
     compose_scopes.update(compose_scope)
-    ins[f"compose_scope_{compose_scope}"] = AssetIn(
+    ins[f"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}"] = AssetIn(
         AssetKey(
-            [f"{PREFIX_COMPOSE_SCOPE}_{compose_scope}", "docker_compose_graph_dot"]
+            # ComposeScopes / ComposeScope_DEV_default / docker_compose_graph_dot
+            ["ComposeScopes", f"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}", "docker_compose_graph_dot"]
         )
     )
+
+# ASSET_HEADER = {
+#     "group_name": f"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}",
+#     "key_prefix": ["ComposeScopes", f"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}"],
+#     "compute_kind": "python",
+# }
+
+
+# https://github.com/yaml/pyyaml/issues/722#issuecomment-1969292770
+yaml.SafeDumper.add_multi_representer(
+    enum.Enum,
+    yaml.representer.SafeRepresenter.represent_str,
+)
 
 
 if bool(ins):
