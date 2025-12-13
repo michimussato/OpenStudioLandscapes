@@ -166,7 +166,7 @@ if bool(feature_ins):
 
         compose_scope_asset_defs.append(compose_scope_group__group_out)
 
-        # OLD STUFF BELOW
+        # LEGACY STUFF BELOW
 
         if compose_scope != ["default", "test"][0]:
             continue
