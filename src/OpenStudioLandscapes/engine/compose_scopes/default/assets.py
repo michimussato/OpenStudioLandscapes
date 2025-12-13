@@ -27,7 +27,7 @@ from OpenStudioLandscapes.engine.common_assets.group_out_compose_scope import (
     get_group_out,
 )
 from OpenStudioLandscapes.engine.common_assets.compose_scope import (
-get_compose_scope_group_test,
+# get_compose_scope_group_test,
 get_compose_scope_group__features_in,
 get_compose_scope_group__CONFIG,
 get_compose_scope_group__scrape_networks,
@@ -98,6 +98,8 @@ if bool(feature_ins):
         compose_scope_group__features_in = get_compose_scope_group__features_in(
             # ASSET_HEADER=ASSET_HEADER_COMPOSE,
             ASSET_HEADER=ASSET_HEADER,
+            # group_out_base=
+            # compose_scope=compose_scope,
         )
 
         compose_scope_asset_defs.append(compose_scope_group__features_in)
@@ -106,6 +108,7 @@ if bool(feature_ins):
         compose_scope_group__CONFIG = get_compose_scope_group__CONFIG(
             # ASSET_HEADER=ASSET_HEADER_COMPOSE,
             ASSET_HEADER=ASSET_HEADER,
+            compose_scope=compose_scope,
         )
 
         compose_scope_asset_defs.append(compose_scope_group__CONFIG)

@@ -5,7 +5,7 @@ __all__ = [
     "factory_docker_config",
     "factory_compose",
     "factory_group_in",
-    "factory_compose_scope_test",
+    # "factory_compose_scope_test",
     "factory_compose_scope__features_in",
     "factory_compose_scope__CONFIG",
     "factory_compose_scope__scrape_networks",
@@ -22,7 +22,7 @@ import pathlib
 import textwrap
 from collections import ChainMap
 from functools import reduce
-from typing import Dict
+from typing import Dict, Union, Any, Generator
 
 import yaml
 from dagster import (
@@ -31,7 +31,7 @@ from dagster import (
     OpDefinition,
     OpExecutionContext,
     Output,
-    op,
+    op, AssetKey,
 )
 from docker_compose_graph.utils import *
 
@@ -489,101 +489,103 @@ def factory_group_in(
     return _op_group_in
 
 
-def factory_compose_scope_test(
-    name="op_compose_scope_factory",
-    ins=None,
-    **kwargs,
-) -> OpDefinition:
-    """
-    https://docs.dagster.io/guides/build/ops#op-factory
-
-    Args:
-        name (str): The name of the new op.
-        ins (Dict[str, In]): Any Ins for the new op. Default: None.
-
-    Returns:
-        function: The new op.
-    """
-
-    @op(
-        name=name,
-        ins=ins,
-        **kwargs,
-    )
-    def _op_compose_scope(
-        context: OpExecutionContext,
-        **kwargs,
-    ):
-        """
-        """
-
-        # @asset
-        # yield Output(
-        #     output_name="group_in",
-        #     value=None,
-        # )
-        #
-        # assert bool(kwargs) == False
-        #
-        # yield AssetMaterialization(
-        #     asset_key=context.asset_key,
-        #     metadata={
-        #         **metadatavalues_from_dict(
-        #             context=context,
-        #             d=group_out,
-        #         ),
-        #     },
-        # )
-
-        # @multi_asset
-        #################
-        # TEST_OUTPUT_1 #
-        #################
-
-        output_name = "multi_asset__test_output_1"
-
-        # if "docker_compose_graph" in context.selected_output_names:
-
-        yield Output(
-            output_name=output_name,
-            value=None,
-        )
-
-        yield AssetMaterialization(
-            asset_key=context.asset_key_for_output(output_name),
-            metadata={
-                "__".join(
-                    context.asset_key_for_output(output_name).path
-                ): MetadataValue.bool(False),
-            },
-        )
-
-        #################
-        # TEST_OUTPUT_2 #
-        #################
-
-        output_name = "multi_asset__test_output_2"
-
-        # if "docker_compose_graph" in context.selected_output_names:
-
-        yield Output(
-            output_name=output_name,
-            value=None,
-        )
-
-        yield AssetMaterialization(
-            asset_key=context.asset_key_for_output(output_name),
-            metadata={
-                "__".join(
-                    context.asset_key_for_output(output_name).path
-                ): MetadataValue.bool(True),
-            },
-        )
-
-    return _op_compose_scope
+# def factory_compose_scope_test(
+#     name="op_compose_scope_factory",
+#     ins=None,
+#     **kwargs,
+# ) -> OpDefinition:
+#     """
+#     https://docs.dagster.io/guides/build/ops#op-factory
+#
+#     Args:
+#         name (str): The name of the new op.
+#         ins (Dict[str, In]): Any Ins for the new op. Default: None.
+#
+#     Returns:
+#         function: The new op.
+#     """
+#
+#     @op(
+#         name=name,
+#         ins=ins,
+#         **kwargs,
+#     )
+#     def _op_compose_scope(
+#         context: OpExecutionContext,
+#         **kwargs,
+#     ):
+#         """
+#         """
+#
+#         # @asset
+#         # yield Output(
+#         #     output_name="group_in",
+#         #     value=None,
+#         # )
+#         #
+#         # assert bool(kwargs) == False
+#         #
+#         # yield AssetMaterialization(
+#         #     asset_key=context.asset_key,
+#         #     metadata={
+#         #         **metadatavalues_from_dict(
+#         #             context=context,
+#         #             d=group_out,
+#         #         ),
+#         #     },
+#         # )
+#
+#         # @multi_asset
+#         #################
+#         # TEST_OUTPUT_1 #
+#         #################
+#
+#         output_name = "multi_asset__test_output_1"
+#
+#         # if "docker_compose_graph" in context.selected_output_names:
+#
+#         yield Output(
+#             output_name=output_name,
+#             value=None,
+#         )
+#
+#         yield AssetMaterialization(
+#             asset_key=context.asset_key_for_output(output_name),
+#             metadata={
+#                 "__".join(
+#                     context.asset_key_for_output(output_name).path
+#                 ): MetadataValue.bool(False),
+#             },
+#         )
+#
+#         #################
+#         # TEST_OUTPUT_2 #
+#         #################
+#
+#         output_name = "multi_asset__test_output_2"
+#
+#         # if "docker_compose_graph" in context.selected_output_names:
+#
+#         yield Output(
+#             output_name=output_name,
+#             value=None,
+#         )
+#
+#         yield AssetMaterialization(
+#             asset_key=context.asset_key_for_output(output_name),
+#             metadata={
+#                 "__".join(
+#                     context.asset_key_for_output(output_name).path
+#                 ): MetadataValue.bool(True),
+#             },
+#         )
+#
+#     return _op_compose_scope
 
 
 def factory_compose_scope__features_in(
+    # *,
+    # group_out_base,
     name="op_compose_scope_factory__features_in",
     ins=None,
     **kwargs,
@@ -606,49 +608,115 @@ def factory_compose_scope__features_in(
     )
     def _op_compose_scope__features_in(
         context: OpExecutionContext,
+        # ins=ins,
         **kwargs,
-    ):
+    ) -> Generator[Output | AssetMaterialization | Any, Any, None]:
         """
         """
 
-        # @asset
-        # yield Output(
-        #     output_name="group_in",
-        #     value=None,
-        # )
+        # # ins = context.op.inputs()
         #
-        # assert bool(kwargs) == False
+        # asset_key__group_out_base = context.asset_key_for_input("group_out_base")
+        group_out_base: Dict = kwargs.pop("group_out_base")
         #
-        # yield AssetMaterialization(
-        #     asset_key=context.asset_key,
-        #     metadata={
-        #         **metadatavalues_from_dict(
-        #             context=context,
-        #             d=group_out,
-        #         ),
-        #     },
-        # )
+        # config_engine: ConfigEngine = group_out_base.pop("config_engine")
+        #
+        # # current_asset_key: AssetKey = context.asset_key
+        # # context.asset_key_for_output(['OpenStudioLandscapes_Base', 'group_out_base'])
+        # #
+        # # context.asset_key_for_input("group_out_base")
+        # #
+        # # context.asset_key_for_output("group_out_base")
+        #
+        # # group_out_base = context.asset_key_for_output(output_name="group_out_base")
+        #
+        # # ins = kwargs.pop("ins")
+        #
+        # # group_out_base: dict = kwargs.pop("group_out_base")
+        #
+        # context.log.error(f"{context = }")
+        # context.log.error(f"{dir(context) = }")
+        #
+        # context.pdb.set_trace()
+
+        context.log.info(f"{group_out_base = }")
+        context.log.info(f"{kwargs = }")
+
+        env_base = group_out_base.pop("env_base")
+
+        config_engine: ConfigEngine = group_out_base.pop("config_engine")
+
+        docker_config_json: pathlib.Path = group_out_base.pop("docker_config_json")
+
+        docker_compose_yaml: Dict[str, str] = {}
+        docker_compose: Dict[str, Any] = {}
+
+        for k, v in kwargs.items():
+            # remove
+            # - env_base
+            # - features
+            # - config_engine
+            # - docker_config_json
+            # from kwargs dicts
+            for d in [
+                "env",
+                "env_base",
+                "features",
+                "config_engine",  # pydantic.BaseModel in a nested dict is not JSON serializable yet
+                "docker_config_json",
+            ]:
+                if d in kwargs[k]:
+                    context.log.debug(f"Popping `{d}`: {kwargs[k].pop(d)}")
+
+            docker_compose[k] = str(kwargs[k]["compose"])
+
+        kwargs["env_base"] = env_base
+        kwargs["docker_config_json"] = docker_config_json
 
         # @multi_asset
-        #################
-        # TEST_OUTPUT_1 #
-        #################
+        ###############
+        # features_in #
+        ###############
 
         output_name = "features_in"
 
         # if "docker_compose_graph" in context.selected_output_names:
+        #
+        # yield Output(
+        #     output_name=output_name,
+        #     value=None,
+        # )
+
+        # yield AssetMaterialization(
+        #     asset_key=context.asset_key_for_output(output_name),
+        #     metadata={
+        #         "__".join(
+        #             context.asset_key_for_output(output_name).path
+        #         ): MetadataValue.bool(False),
+        #     },
+        # )
+
+
+
+
+
 
         yield Output(
             output_name=output_name,
-            value=None,
+            value=kwargs,
         )
+
+        kwargs_str = json.loads(json.dumps(kwargs, default=str))
 
         yield AssetMaterialization(
             asset_key=context.asset_key_for_output(output_name),
             metadata={
                 "__".join(
                     context.asset_key_for_output(output_name).path
-                ): MetadataValue.bool(False),
+                ): MetadataValue.json(kwargs_str),
+                "docker_compose_yaml": MetadataValue.json(docker_compose_yaml),
+                "docker_compose": MetadataValue.json(docker_compose),
+                # "kwargs": MetadataValue.json(kwargs_str),
             },
         )
 
@@ -678,6 +746,8 @@ def factory_compose_scope__features_in(
 
 
 def factory_compose_scope__CONFIG(
+    # *,
+    compose_scope,
     name="op_compose_scope_factory__CONFIG",
     ins=None,
     **kwargs,
@@ -700,10 +770,27 @@ def factory_compose_scope__CONFIG(
     )
     def _op_compose_scope__CONFIG(
         context: OpExecutionContext,
+        # compose_scope: str = "default",
         **kwargs,
     ):
         """
         """
+
+        env: dict = features_in.pop("env_base", {})
+
+        config = ComposeScopeBaseModel(
+            **{
+                "compose_scope": compose_scope,
+                "docker_compose": pathlib.Path(
+                    f"{env['DOT_LANDSCAPES']}",
+                    f"{env['LANDSCAPE']}",
+                    f"{ASSET_HEADER_COMPOSE['group_name']}",
+                    "docker_compose",
+                    "docker-compose.yml",
+                ),
+                "attach_pangolin_site_to_compose_scope": ATTACH_SITE_TO_COMPOSE_SCOPE,
+            },
+        )
 
         # @asset
         # yield Output(
