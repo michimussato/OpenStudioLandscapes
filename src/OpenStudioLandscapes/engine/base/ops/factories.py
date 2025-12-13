@@ -38,10 +38,13 @@ from docker_compose_graph.utils import *
 from OpenStudioLandscapes.engine.config.models import (
     ConfigEngine,
     DockerConfigModel,
-    FeatureBaseModel,
+    FeatureBaseModel, ComposeScopeBaseModel,
 )
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.utils import *
+from OpenStudioLandscapes.engine.compose_scopes.default.constants import (
+    ATTACH_SITE_TO_COMPOSE_SCOPE,
+)
 
 # https://github.com/yaml/pyyaml/issues/722#issuecomment-1969292770
 yaml.SafeDumper.add_multi_representer(
@@ -586,6 +589,7 @@ def factory_group_in(
 def factory_compose_scope__features_in(
     # *,
     # group_out_base,
+    # asset_header: Dict,
     name="op_compose_scope_factory__features_in",
     ins=None,
     **kwargs,
@@ -617,6 +621,7 @@ def factory_compose_scope__features_in(
         # # ins = context.op.inputs()
         #
         # asset_key__group_out_base = context.asset_key_for_input("group_out_base")
+        # asset_header: Dict = kwargs.pop("ASSET_HEADER")
         group_out_base: Dict = kwargs.pop("group_out_base")
         env_base: Dict = group_out_base.pop("env_base")
         config_engine: ConfigEngine = group_out_base.pop("config_engine")
@@ -651,7 +656,7 @@ def factory_compose_scope__features_in(
 
         # docker_config_json: pathlib.Path = group_out_base.pop("docker_config_json")
 
-        docker_compose_yaml: Dict[str, str] = {}
+        # docker_compose_yaml: Dict[str, str] = {}
         docker_compose: Dict[str, Any] = {}
 
         for k, v in kwargs.items():
@@ -717,7 +722,7 @@ def factory_compose_scope__features_in(
                 "__".join(
                     context.asset_key_for_output(output_name).path
                 ): MetadataValue.json(kwargs_str),
-                "docker_compose_yaml": MetadataValue.json(docker_compose_yaml),
+                # "docker_compose_yaml": MetadataValue.json(docker_compose_yaml),
                 "docker_compose": MetadataValue.json(docker_compose),
                 # "kwargs": MetadataValue.json(kwargs_str),
             },
@@ -750,7 +755,8 @@ def factory_compose_scope__features_in(
 
 def factory_compose_scope__CONFIG(
     # *,
-    compose_scope,
+    compose_scope: str,
+    asset_header: Dict,
     name="op_compose_scope_factory__CONFIG",
     ins=None,
     **kwargs,
@@ -778,6 +784,15 @@ def factory_compose_scope__CONFIG(
     ):
         """
         """
+        # # context.asset_key_for_input("group_out_base")
+        # #
+        # # context.asset_key_for_output("features_in")
+        #
+        # features_in = context.asset_key_for_output(output_name="group_out_base")
+
+        # asset_header: Dict = kwargs.pop("ASSET_HEADER")
+
+        features_in: Dict = kwargs.pop("features_in")
 
         env: dict = features_in.pop("env_base", {})
 
@@ -787,7 +802,7 @@ def factory_compose_scope__CONFIG(
                 "docker_compose": pathlib.Path(
                     f"{env['DOT_LANDSCAPES']}",
                     f"{env['LANDSCAPE']}",
-                    f"{ASSET_HEADER_COMPOSE['group_name']}",
+                    f"{asset_header['group_name']}",
                     "docker_compose",
                     "docker-compose.yml",
                 ),
@@ -814,9 +829,9 @@ def factory_compose_scope__CONFIG(
         # )
 
         # @multi_asset
-        #################
-        # TEST_OUTPUT_1 #
-        #################
+        ##########
+        # CONFIG #
+        ##########
 
         output_name = "CONFIG"
 
@@ -824,7 +839,7 @@ def factory_compose_scope__CONFIG(
 
         yield Output(
             output_name=output_name,
-            value=None,
+            value=config,
         )
 
         yield AssetMaterialization(
@@ -832,7 +847,9 @@ def factory_compose_scope__CONFIG(
             metadata={
                 "__".join(
                     context.asset_key_for_output(output_name).path
-                ): MetadataValue.bool(False),
+                ): MetadataValue.md(
+                    f"```json\n{json.dumps(config.model_dump(mode='json'), indent=2, default=str)}\n```"
+                ),
             },
         )
 

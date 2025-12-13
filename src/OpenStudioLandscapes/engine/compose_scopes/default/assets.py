@@ -74,17 +74,12 @@ COMPOSE_SCOPE_GROUP_PREFIX = "ComposeScope_DEV"
 
 if bool(feature_ins):
 
-    # features: Dict[str, AssetIn]
     for compose_scope, features in feature_ins.items():
         # Todo
         #  - [ ] This most likely needs a factory
 
-        features_for_factories = {k: v.key for k, v in features.items()}
-
         LOGGER.error(f"{features = }")
         # features = {'OpenStudioLandscapes_Kitsu': AssetIn(key=AssetKey(['OpenStudioLandscapes_Kitsu', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>), 'OpenStudioLandscapes_Watchtower': AssetIn(key=AssetKey(['OpenStudioLandscapes_Watchtower', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>)
-        LOGGER.error(f"{features_for_factories = }")
-        # features_for_factories = {'OpenStudioLandscapes_Kitsu': AssetKey(['OpenStudioLandscapes_Kitsu', 'feature_out']), 'OpenStudioLandscapes_Watchtower': AssetKey(['OpenStudioLandscapes_Watchtower', 'feature_out'])}
 
         ASSET_HEADER = {
             "group_name": f"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}",
@@ -106,7 +101,7 @@ if bool(feature_ins):
         compose_scope_group__features_in = get_compose_scope_group__features_in(
             # ASSET_HEADER=ASSET_HEADER_COMPOSE,
             ASSET_HEADER=ASSET_HEADER,
-            features=features_for_factories,
+            features=features,
             # group_out_base=
             # compose_scope=compose_scope,
         )

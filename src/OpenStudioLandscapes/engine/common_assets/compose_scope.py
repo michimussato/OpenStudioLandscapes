@@ -4,7 +4,7 @@ from dagster import (
     AssetKey,
     AssetsDefinition,
     In,
-    Out,
+    Out, AssetIn, OpDefinition,
 )
 
 # from OpenStudioLandscapes.engine.base.ops.factories import factory_compose_scope_test
@@ -15,7 +15,7 @@ from OpenStudioLandscapes.engine.base.ops.factories import factory_compose_scope
 from OpenStudioLandscapes.engine.base.ops.factories import factory_compose_scope__docker_compose_graph
 from OpenStudioLandscapes.engine.base.ops.factories import factory_compose_scope__cmd
 from OpenStudioLandscapes.engine.base.ops.factories import factory_compose_scope__group_out
-from OpenStudioLandscapes.engine.config.models import FeatureBaseModel
+from OpenStudioLandscapes.engine.config.models import FeatureBaseModel, ComposeScopeBaseModel
 from OpenStudioLandscapes.engine.constants import ASSET_HEADER_BASE
 
 
@@ -73,8 +73,6 @@ def get_compose_scope_group__features_in(
     # *,
     ASSET_HEADER: Dict,
     features: Dict,
-    # group_out_base,
-    # compose_scope: str,
 ) -> AssetsDefinition:
 
     dynamic_ins = {}
@@ -83,14 +81,15 @@ def get_compose_scope_group__features_in(
     # feature_out_ins_op = {}
     # feature_out_ins_asset = {}
     k: str
-    v: AssetKey
+    v: AssetIn
     for k, v in features.items():
-        dynamic_ins[k] = In()
-        dynamic_keys_by_input_name[k] = v
+        dynamic_ins[k] = In()  # In(<type>): type is not really relevant for now.
+        dynamic_keys_by_input_name[k] = v.key
 
-    compose_scope_op__features_in = factory_compose_scope__features_in(
+    compose_scope_op__features_in: OpDefinition = factory_compose_scope__features_in(
         # compose_scope=compose_scope,
         # group_out_base=group_out_base,
+        # asset_header=ASSET_HEADER,
         name=f"op_compose_scope__features_in__{ASSET_HEADER['group_name']}",
         ins={
             "group_out_base": In(Dict),
@@ -106,7 +105,7 @@ def get_compose_scope_group__features_in(
         },
     )
 
-    compose_scope__features_in = AssetsDefinition.from_op(
+    compose_scope__features_in: AssetsDefinition = AssetsDefinition.from_op(
         compose_scope_op__features_in,
         # group_out_base=group_out_base,
         # compose_scope=compose_scope,
@@ -144,26 +143,27 @@ def get_compose_scope_group__features_in(
 
 
 def get_compose_scope_group__CONFIG(
-    ASSET_HEADER: dict,
+    ASSET_HEADER: Dict,
     compose_scope: str,
 ) -> AssetsDefinition:
 
-    compose_scope_op__CONFIG = factory_compose_scope__CONFIG(
+    compose_scope_op__CONFIG: OpDefinition = factory_compose_scope__CONFIG(
         name=f"op_compose_scope__CONFIG__{ASSET_HEADER['group_name']}",
         compose_scope=compose_scope,
+        asset_header=ASSET_HEADER,
         ins={
-            "features_in": In(dict),
+            "features_in": In(Dict),
             # "compose_maps": In(list),
             # "CONFIG": In(FeatureBaseModel),
             # # "group_in": In(dict)
         },
         out={
-            "CONFIG": Out(dict),
+            "CONFIG": Out(ComposeScopeBaseModel),
             # "test_output_2": Out(dict),
         },
     )
 
-    compose_scope__CONFIG = AssetsDefinition.from_op(
+    compose_scope__CONFIG: AssetsDefinition = AssetsDefinition.from_op(
         compose_scope_op__CONFIG,
         # Todo:
         #  - [ ] Change to AssetKey
