@@ -2,7 +2,6 @@ __all__ = [
     "factory_feature_out",
     "factory_compose",
     "factory_group_in",
-    # "factory_compose_scope_test",
     "factory_compose_scope__features_in",
     "factory_compose_scope__CONFIG",
     "factory_compose_scope__scrape_networks",
@@ -282,104 +281,7 @@ def factory_group_in(
     return _op_group_in
 
 
-# def factory_compose_scope_test(
-#     name="op_compose_scope_factory",
-#     ins=None,
-#     **kwargs,
-# ) -> OpDefinition:
-#     """
-#     https://docs.dagster.io/guides/build/ops#op-factory
-#
-#     Args:
-#         name (str): The name of the new op.
-#         ins (Dict[str, In]): Any Ins for the new op. Default: None.
-#
-#     Returns:
-#         function: The new op.
-#     """
-#
-#     @op(
-#         name=name,
-#         ins=ins,
-#         **kwargs,
-#     )
-#     def _op_compose_scope(
-#         context: OpExecutionContext,
-#         **kwargs,
-#     ):
-#         """
-#         """
-#
-#         # @asset
-#         # yield Output(
-#         #     output_name="group_in",
-#         #     value=None,
-#         # )
-#         #
-#         # assert bool(kwargs) == False
-#         #
-#         # yield AssetMaterialization(
-#         #     asset_key=context.asset_key,
-#         #     metadata={
-#         #         **metadatavalues_from_dict(
-#         #             context=context,
-#         #             d=group_out,
-#         #         ),
-#         #     },
-#         # )
-#
-#         # @multi_asset
-#         #################
-#         # TEST_OUTPUT_1 #
-#         #################
-#
-#         output_name = "multi_asset__test_output_1"
-#
-#         # if "docker_compose_graph" in context.selected_output_names:
-#
-#         yield Output(
-#             output_name=output_name,
-#             value=None,
-#         )
-#
-#         yield AssetMaterialization(
-#             asset_key=context.asset_key_for_output(output_name),
-#             metadata={
-#                 "__".join(
-#                     context.asset_key_for_output(output_name).path
-#                 ): MetadataValue.bool(False),
-#             },
-#         )
-#
-#         #################
-#         # TEST_OUTPUT_2 #
-#         #################
-#
-#         output_name = "multi_asset__test_output_2"
-#
-#         # if "docker_compose_graph" in context.selected_output_names:
-#
-#         yield Output(
-#             output_name=output_name,
-#             value=None,
-#         )
-#
-#         yield AssetMaterialization(
-#             asset_key=context.asset_key_for_output(output_name),
-#             metadata={
-#                 "__".join(
-#                     context.asset_key_for_output(output_name).path
-#                 ): MetadataValue.bool(True),
-#             },
-#         )
-#
-#     return _op_compose_scope
-
-
 def factory_compose_scope__features_in(
-    # *,
-    # group_out_base,
-    # asset_header: Dict,
     name="op_compose_scope_factory__features_in",
     ins=None,
     **kwargs,
@@ -402,7 +304,6 @@ def factory_compose_scope__features_in(
     )
     def _op_compose_scope__features_in(
         context: OpExecutionContext,
-        # ins=ins,
         **kwargs,
     ) -> Generator[Output | AssetMaterialization | Any, Any, None]:
         """
@@ -416,37 +317,7 @@ def factory_compose_scope__features_in(
         env_base: Dict = group_out_base.pop("env_base")
         config_engine: ConfigEngine = group_out_base.pop("config_engine")
         docker_config_json: pathlib.Path = group_out_base.pop("docker_config_json")
-        #
-        # config_engine: ConfigEngine = group_out_base.pop("config_engine")
-        #
-        # # current_asset_key: AssetKey = context.asset_key
-        # # context.asset_key_for_output(['OpenStudioLandscapes_Base', 'group_out_base'])
-        # #
-        # # context.asset_key_for_input("group_out_base")
-        # #
-        # # context.asset_key_for_output("group_out_base")
-        #
-        # # group_out_base = context.asset_key_for_output(output_name="group_out_base")
-        #
-        # # ins = kwargs.pop("ins")
-        #
-        # # group_out_base: dict = kwargs.pop("group_out_base")
-        #
-        # context.log.error(f"{context = }")
-        # context.log.error(f"{dir(context) = }")
-        #
-        # context.pdb.set_trace()
 
-        # context.log.info(f"{group_out_base = }")
-        # context.log.info(f"{kwargs = }")
-
-        # env_base = group_out_base.pop("env_base")
-        #
-        # config_engine: ConfigEngine = group_out_base.pop("config_engine")
-
-        # docker_config_json: pathlib.Path = group_out_base.pop("docker_config_json")
-
-        # docker_compose_yaml: Dict[str, str] = {}
         docker_compose: Dict[str, Any] = {}
 
         for k, v in kwargs.items():
@@ -471,33 +342,11 @@ def factory_compose_scope__features_in(
         kwargs["env_base"] = env_base
         kwargs["docker_config_json"] = docker_config_json
 
-        # @multi_asset
         ###############
         # features_in #
         ###############
 
         output_name = "features_in"
-
-        # if "docker_compose_graph" in context.selected_output_names:
-        #
-        # yield Output(
-        #     output_name=output_name,
-        #     value=None,
-        # )
-
-        # yield AssetMaterialization(
-        #     asset_key=context.asset_key_for_output(output_name),
-        #     metadata={
-        #         "__".join(
-        #             context.asset_key_for_output(output_name).path
-        #         ): MetadataValue.bool(False),
-        #     },
-        # )
-
-
-
-
-
 
         yield Output(
             output_name=output_name,
@@ -518,33 +367,10 @@ def factory_compose_scope__features_in(
             },
         )
 
-        # #################
-        # # TEST_OUTPUT_2 #
-        # #################
-        #
-        # output_name = "test_output_2"
-        #
-        # # if "docker_compose_graph" in context.selected_output_names:
-        #
-        # yield Output(
-        #     output_name=output_name,
-        #     value=None,
-        # )
-        #
-        # yield AssetMaterialization(
-        #     asset_key=context.asset_key_for_output(output_name),
-        #     metadata={
-        #         "__".join(
-        #             context.asset_key_for_output(output_name).path
-        #         ): MetadataValue.bool(True),
-        #     },
-        # )
-
     return _op_compose_scope__features_in
 
 
 def factory_compose_scope__CONFIG(
-    # *,
     compose_scope: str,
     asset_header: Dict,
     name="op_compose_scope_factory__CONFIG",
@@ -569,18 +395,10 @@ def factory_compose_scope__CONFIG(
     )
     def _op_compose_scope__CONFIG(
         context: OpExecutionContext,
-        # compose_scope: str = "default",
         **kwargs,
     ) -> Generator[Output | AssetMaterialization | Any, Any, None]:
         """
         """
-        # # context.asset_key_for_input("group_out_base")
-        # #
-        # # context.asset_key_for_output("features_in")
-        #
-        # features_in = context.asset_key_for_output(output_name="group_out_base")
-
-        # asset_header: Dict = kwargs.pop("ASSET_HEADER")
 
         features_in: Dict = kwargs.pop("features_in")
 
@@ -601,32 +419,11 @@ def factory_compose_scope__CONFIG(
             },
         )
 
-        # @asset
-        # yield Output(
-        #     output_name="group_in",
-        #     value=None,
-        # )
-        #
-        # assert bool(kwargs) == False
-        #
-        # yield AssetMaterialization(
-        #     asset_key=context.asset_key,
-        #     metadata={
-        #         **metadatavalues_from_dict(
-        #             context=context,
-        #             d=group_out,
-        #         ),
-        #     },
-        # )
-
-        # @multi_asset
         ##########
         # CONFIG #
         ##########
 
         output_name = "CONFIG"
-
-        # if "docker_compose_graph" in context.selected_output_names:
 
         yield Output(
             output_name=output_name,
@@ -643,28 +440,6 @@ def factory_compose_scope__CONFIG(
                 ),
             },
         )
-
-        # #################
-        # # TEST_OUTPUT_2 #
-        # #################
-        #
-        # output_name = "test_output_2"
-        #
-        # # if "docker_compose_graph" in context.selected_output_names:
-        #
-        # yield Output(
-        #     output_name=output_name,
-        #     value=None,
-        # )
-        #
-        # yield AssetMaterialization(
-        #     asset_key=context.asset_key_for_output(output_name),
-        #     metadata={
-        #         "__".join(
-        #             context.asset_key_for_output(output_name).path
-        #         ): MetadataValue.bool(True),
-        #     },
-        # )
 
     return _op_compose_scope__CONFIG
 
@@ -717,24 +492,6 @@ def factory_compose_scope__scrape_networks(
         """
         """
 
-        # @asset
-        # yield Output(
-        #     output_name="group_in",
-        #     value=None,
-        # )
-        #
-        # assert bool(kwargs) == False
-        #
-        # yield AssetMaterialization(
-        #     asset_key=context.asset_key,
-        #     metadata={
-        #         **metadatavalues_from_dict(
-        #             context=context,
-        #             d=group_out,
-        #         ),
-        #     },
-        # )
-
         context.log.debug(f"{kwargs = }")
 
         features_in = kwargs.pop("features_in")
@@ -773,28 +530,6 @@ def factory_compose_scope__scrape_networks(
 
         networks_dict_yaml = yaml.safe_dump(networks_dict)
 
-        # output_name = "scrape_networks"
-        #
-        # yield Output(
-        #     output_name=output_name,
-        #     value=networks_dict,
-        # )
-        #
-        # yield AssetMaterialization(
-        #     asset_key=context.asset_key_for_output(output_name),
-        #     metadata={
-        #         "__".join(context.asset_key.path): MetadataValue.json(networks_dict),
-        #         "networks_dict_yaml": MetadataValue.md(
-        #             f"```yaml\n{networks_dict_yaml}\n```"
-        #         ),
-        #         # **metadatavalues_from_dict(
-        #         #     context=context,
-        #         #     d_serialized=json.dumps(networks_dict, default=str),
-        #         # ),
-        #     },
-        # )
-
-        # @multi_asset
         ###################
         # scrape_networks #
         ###################
@@ -813,34 +548,8 @@ def factory_compose_scope__scrape_networks(
                 "networks_dict_yaml": MetadataValue.md(
                     f"```yaml\n{networks_dict_yaml}\n```"
                 ),
-                # **metadatavalues_from_dict(
-                #     context=context,
-                #     d_serialized=json.dumps(networks_dict, default=str),
-                # ),
             },
         )
-
-        # #################
-        # # TEST_OUTPUT_2 #
-        # #################
-        #
-        # output_name = "test_output_2"
-        #
-        # # if "docker_compose_graph" in context.selected_output_names:
-        #
-        # yield Output(
-        #     output_name=output_name,
-        #     value=None,
-        # )
-        #
-        # yield AssetMaterialization(
-        #     asset_key=context.asset_key_for_output(output_name),
-        #     metadata={
-        #         "__".join(
-        #             context.asset_key_for_output(output_name).path
-        #         ): MetadataValue.bool(True),
-        #     },
-        # )
 
     return _op_compose_scope__scrape_networks
 
@@ -889,13 +598,6 @@ def factory_compose_scope__compose(
         # Todo:
         #  - [ ] Duplicated code `OpenStudioLandscapes.engine.base.ops.factories.factory_scrape_networks`
         #  - [ ] Duplicated code `OpenStudioLandscapes.engine.compose_scopes.default.assets.compose`
-
-        # context.log.debug(f"Popping: {features_in.pop('env_base', {}) = }")
-        # context.log.debug(f"Popping: {features_in.pop('config_engine', {}) = }")
-        # context.log.debug(f"Popping: {features_in.pop('docker_image', {}) = }")
-        # context.log.debug(
-        #     f"Popping: {features_in.pop('docker_config_json', {}) = }"
-        # )
 
         DOCKER_COMPOSE: pathlib.Path = CONFIG.docker_compose
 
@@ -949,32 +651,11 @@ def factory_compose_scope__compose(
         with open(DOCKER_COMPOSE, mode="w", encoding="utf-8") as fw:
             fw.write(docker_yaml_include)
 
-        # @asset
-        # yield Output(
-        #     output_name="group_in",
-        #     value=None,
-        # )
-        #
-        # assert bool(kwargs) == False
-        #
-        # yield AssetMaterialization(
-        #     asset_key=context.asset_key,
-        #     metadata={
-        #         **metadatavalues_from_dict(
-        #             context=context,
-        #             d=group_out,
-        #         ),
-        #     },
-        # )
-
-        # @multi_asset
         #################
         # TEST_OUTPUT_1 #
         #################
 
         output_name = "compose"
-
-        # if "docker_compose_graph" in context.selected_output_names:
 
         yield Output(
             output_name=output_name,
@@ -998,28 +679,6 @@ def factory_compose_scope__compose(
                 ),
             },
         )
-
-        # #################
-        # # TEST_OUTPUT_2 #
-        # #################
-        #
-        # output_name = "test_output_2"
-        #
-        # # if "docker_compose_graph" in context.selected_output_names:
-        #
-        # yield Output(
-        #     output_name=output_name,
-        #     value=None,
-        # )
-        #
-        # yield AssetMaterialization(
-        #     asset_key=context.asset_key_for_output(output_name),
-        #     metadata={
-        #         "__".join(
-        #             context.asset_key_for_output(output_name).path
-        #         ): MetadataValue.bool(True),
-        #     },
-        # )
 
     return _op_compose_scope__compose
 
@@ -1168,69 +827,6 @@ def factory_compose_scope__docker_compose_graph(
             },
         )
 
-        # @asset
-        # yield Output(
-        #     output_name="group_in",
-        #     value=None,
-        # )
-        #
-        # assert bool(kwargs) == False
-        #
-        # yield AssetMaterialization(
-        #     asset_key=context.asset_key,
-        #     metadata={
-        #         **metadatavalues_from_dict(
-        #             context=context,
-        #             d=group_out,
-        #         ),
-        #     },
-        # )
-
-        # # @multi_asset
-        # #################
-        # # TEST_OUTPUT_1 #
-        # #################
-        #
-        # output_name = "docker_compose_graph"
-        #
-        # # if "docker_compose_graph" in context.selected_output_names:
-        #
-        # yield Output(
-        #     output_name=output_name,
-        #     value=None,
-        # )
-        #
-        # yield AssetMaterialization(
-        #     asset_key=context.asset_key_for_output(output_name),
-        #     metadata={
-        #         "__".join(
-        #             context.asset_key_for_output(output_name).path
-        #         ): MetadataValue.bool(False),
-        #     },
-        # )
-        #
-        # #################
-        # # TEST_OUTPUT_2 #
-        # #################
-        #
-        # output_name = "docker_compose_graph_dot"
-        #
-        # # if "docker_compose_graph" in context.selected_output_names:
-        #
-        # yield Output(
-        #     output_name=output_name,
-        #     value=None,
-        # )
-        #
-        # yield AssetMaterialization(
-        #     asset_key=context.asset_key_for_output(output_name),
-        #     metadata={
-        #         "__".join(
-        #             context.asset_key_for_output(output_name).path
-        #         ): MetadataValue.bool(True),
-        #     },
-        # )
-
     return _op_compose_scope__docker_compose_graph
 
 
@@ -1262,25 +858,6 @@ def factory_compose_scope__cmd(
         """
         """
 
-        # @asset
-        # yield Output(
-        #     output_name="group_in",
-        #     value=None,
-        # )
-        #
-        # assert bool(kwargs) == False
-        #
-        # yield AssetMaterialization(
-        #     asset_key=context.asset_key,
-        #     metadata={
-        #         **metadatavalues_from_dict(
-        #             context=context,
-        #             d=group_out,
-        #         ),
-        #     },
-        # )
-
-        # @multi_asset
         ##############
         # cmd_append #
         ##############
@@ -1312,8 +889,6 @@ def factory_compose_scope__cmd(
         output_name = "cmd_extend"
 
         ret_cmd_extend = []
-
-        # if "docker_compose_graph" in context.selected_output_names:
 
         yield Output(
             output_name=output_name,
@@ -1738,8 +1313,6 @@ def factory_compose_scope__group_out(
         #############
 
         output_name = "group_out"
-
-        # if "docker_compose_graph" in context.selected_output_names:
 
         yield Output(
             output_name=output_name,
