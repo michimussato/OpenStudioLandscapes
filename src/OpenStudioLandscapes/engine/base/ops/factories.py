@@ -111,6 +111,8 @@ def factory_feature_out(
         #  - [ ] replace "group_out" (i.e. with "compose_yaml" or "feature_out")
         # kwargs["compose_yaml"] = kwargs["env"]["DOCKER_COMPOSE"]
 
+        context.log.debug(f"_op_feature_out {kwargs = }")
+
         output_name = "feature_out"
 
         yield Output(
@@ -252,7 +254,6 @@ def factory_group_in(
         # Access Enum value by key:
         # https://stackoverflow.com/a/38716384
         group_out: dict = kwargs.pop(GroupIn(kw_key))
-        context.log.debug(f"{group_out = }")
 
         group_out["feature_out_parent"] = group_out.pop("feature_out", {})
 
@@ -262,7 +263,7 @@ def factory_group_in(
         else:
             group_out["config_parent"] = None
 
-        context.log.debug(f"{group_out = }")
+        context.log.debug(f"_op_group_in {group_out = }")
 
         yield Output(
             output_name="group_in",

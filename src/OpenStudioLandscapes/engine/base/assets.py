@@ -354,6 +354,8 @@ def group_out_base(
     out_dict["docker_config_json"] = docker_config_json
     out_dict["docker_image"] = build_docker_image
 
+    context.log.debug(f"group_out_base {out_dict = }")
+
     yield Output(out_dict)
 
     yield AssetMaterialization(
@@ -435,3 +437,35 @@ def docker_config_json(
             "docker_auth": MetadataValue.json(docker_auth),
         },
     )
+
+
+# Debugging Asset
+enable = True
+if enable:
+    @asset(
+        ins={
+            "group_out_base": AssetIn(AssetKey(["OpenStudioLandscapes_Base", "group_out_base"])),
+            "kitsu_group_in": AssetIn(AssetKey(["OpenStudioLandscapes_Kitsu", "group_in"])),
+            "kitsu_feature_out": AssetIn(AssetKey(["OpenStudioLandscapes_Kitsu", "feature_out"])),
+            "watchtower_group_in": AssetIn(AssetKey(["OpenStudioLandscapes_Watchtower", "group_in"])),
+            "watchtower_feature_out": AssetIn(AssetKey(["OpenStudioLandscapes_Watchtower", "feature_out"])),
+        },
+    )
+    def compare(
+        context: AssetExecutionContext,
+        **kwargs: dict,
+    ):
+
+        context.log.error(f"{kwargs = }")
+
+        yield Output(kwargs)
+
+        yield AssetMaterialization(
+            asset_key=context.asset_key,
+            metadata={
+                # "__".join(context.asset_key.path): MetadataValue.json(
+                #     kwargs
+                # ),
+                "kwargs": MetadataValue.md(f"```json\n{json.dumps(kwargs, indent=2, default=str)}\n```"),
+            },
+        )
