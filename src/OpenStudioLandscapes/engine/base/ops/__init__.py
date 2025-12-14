@@ -506,7 +506,7 @@ def op_group_out(
     #  - [ ] unused because it's just a dependency to make
     #        sure that the compose files actually exist
     #        before compose-graph analyzes them
-    #  - [ ] use `OpenStudioLandscapes.engine.base.ops.factories.factory_compose_scope__cmd`
+    #  - [ ] DUPLICATE?? use `OpenStudioLandscapes.engine.base.ops.factories.factory_compose_scope__cmd`
     #        instead
     compose: dict,  # pylint: disable=redefined-outer-name
     group_in: dict,  # pylint: disable=redefined-outer-name

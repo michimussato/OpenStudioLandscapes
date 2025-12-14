@@ -1298,7 +1298,7 @@ def factory_compose_scope__group_out(
                         ).as_posix(),
                     ).replace(
                         # OpenStudioLandscapes_Base__docker_config_json
-                        pathlib.Path(env["DOT_LANDSCAPES"]).as_posix(),
+                        docker_config_json.as_posix(),
                         get_relative_path_via_common_root(
                             context=context,
                             path_src=script_cmd_docker_compose_up,
