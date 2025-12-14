@@ -1,14 +1,14 @@
-from typing import Dict, Type, List
+from typing import Dict, Type, List, Union
 
 from dagster import (
-    AssetExecutionContext,
+    AssetExecutionContext, OpExecutionContext,
 )
 
 from OpenStudioLandscapes.engine.discovery import discovery
 
 
 def get_feature_base_model(
-    context: AssetExecutionContext,
+    context: Union[OpExecutionContext, AssetExecutionContext],
     discovered_models: Dict[str, discovery.OpenStudioLandscapesDiscoveredFeature],
     search_instance_type: Type[discovery.FeatureBaseModel],
 ) -> discovery.FeatureBaseModel:

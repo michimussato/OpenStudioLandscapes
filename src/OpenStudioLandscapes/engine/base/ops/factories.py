@@ -23,6 +23,9 @@ import textwrap
 from collections import ChainMap
 from functools import reduce
 from typing import Dict, Union, Any, Generator, List
+
+from OpenStudioLandscapes.engine.discovery import discovery
+from OpenStudioLandscapes.engine.discovery.get_feature_base_model import get_feature_base_model
 from docker_compose_graph.docker_compose_graph import DockerComposeGraph
 
 import pydot
@@ -1447,6 +1450,88 @@ def factory_compose_scope__group_out(
         )
 
     return _op_compose_scope__group_out
+
+
+def factory__CONFIG(
+    CONFIG_STR: str,
+    search_model_of_type: discovery.FeatureBaseModel,
+    name="op_factory__CONFIG",
+    ins=None,
+    **kwargs,
+) -> OpDefinition:
+    """
+    https://docs.dagster.io/guides/build/ops#op-factory
+
+    Args:
+        name (str): The name of the new op.
+        ins (Dict[str, In]): Any Ins for the new op. Default: None.
+
+    Returns:
+        function: The new op.
+    """
+
+    @op(
+        name=name,
+        ins=ins,
+        description=textwrap.dedent(
+            f"""
+Reads options from a custom `config.yml`.
+If the custom `config.yml` does not exist, it 
+will be created locally containing default options.
+
+---
+
+For reference, the default `config.yml` looks as follows:
+        
+```yaml
+{CONFIG_STR}
+```
+"""
+        ),
+        **kwargs,
+    )
+    def _op__CONFIG(
+        context: OpExecutionContext,
+        **kwargs,
+    ):
+        """
+        """
+
+        group_in: dict = kwargs.get("env")
+
+        env: dict = group_in.pop("env")
+
+        config_validated: discovery.FeatureBaseModel = get_feature_base_model(
+            context=context,
+            discovered_models=discovery.DISCOVERED_MODELS,
+            search_instance_type=search_model_of_type,
+        )
+
+        config_validated.env = env
+
+        ##########
+        # CONFIG #
+        ##########
+
+        output_name = "CONFIG"
+
+        yield Output(
+            output_name=output_name,
+            value=config_validated,
+        )
+
+        yield AssetMaterialization(
+            asset_key=context.asset_key_for_output(output_name),
+            metadata={
+                "__".join(
+                    context.asset_key_for_output(output_name).path
+                    ): MetadataValue.md(
+                    f"```yaml\n{yaml.safe_dump(json.loads(config_validated.model_dump_json(fallback=str, indent=2)))}\n```"
+                ),
+            },
+        )
+
+    return _op__CONFIG
 
 
 # # TEMPLATE (FACTORY)

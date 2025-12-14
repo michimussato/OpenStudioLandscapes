@@ -111,6 +111,7 @@ if bool(feature_ins):
         # - group_out
         # - compose_project_name
         # - docker_compose_commands
+        #   -  scp -r /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-12-14-12-40-00-ef08f0b2149249128904260982ce5507/dist user@192.168.178.10:/home/user/git/repos/server/openstudiolandscapes/demo
         compose_scope_group__group_out = get_compose_scope_group__group_out(
             ASSET_HEADER=ASSET_HEADER,
             compose_scope=compose_scope,

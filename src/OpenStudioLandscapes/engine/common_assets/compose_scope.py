@@ -21,7 +21,6 @@ from OpenStudioLandscapes.engine.constants import ASSET_HEADER_BASE
 
 
 def get_compose_scope_group__features_in(
-    # *,
     ASSET_HEADER: Dict,
     features: Dict,
 ) -> AssetsDefinition:
