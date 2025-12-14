@@ -366,10 +366,10 @@ class FeatureBaseModel(BaseModel):
         return transformed_value.lower()
 
     # Todo
-    #  - [ ] how is this derived?
     #  - [ ] combine with key_prefixes/group_name?
     feature_name: str = Field(
-        description="The name of the feature.",
+        description="The name of the feature. It is derived from the "
+                    "`OpenStudioLandscapes.<Feature>.dist` attribute.",
         examples=["OpenStudioLandscapes-Kitsu", "OpenStudioLandscapes-VERT"],
         frozen=True,
     )
