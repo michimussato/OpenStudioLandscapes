@@ -58,16 +58,6 @@ if bool(feature_ins):
             "compute_kind": "python",
         }
 
-        # for i in range(5):
-
-        # # multi_asset test
-        # compose_scope_group = get_compose_scope_group_test(
-        #     # ASSET_HEADER=ASSET_HEADER_COMPOSE,
-        #     ASSET_HEADER=ASSET_HEADER,
-        # )
-        #
-        # compose_scope_asset_defs.append(compose_scope_group)
-
         # features_in
         compose_scope_group__features_in = get_compose_scope_group__features_in(
             ASSET_HEADER=ASSET_HEADER,

@@ -46,7 +46,7 @@ from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.utils import *
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.compose_scopes.default.constants import (
-    ATTACH_SITE_TO_COMPOSE_SCOPE,
+    ATTACH_PANGOLIN_SITE_TO_COMPOSE_SCOPE,
 )
 from OpenStudioLandscapes.engine.utils.pangolin import add_newt_service_to_compose_scope
 
@@ -415,7 +415,7 @@ def factory_compose_scope__CONFIG(
                     "docker_compose",
                     "docker-compose.yml",
                 ),
-                "attach_pangolin_site_to_compose_scope": ATTACH_SITE_TO_COMPOSE_SCOPE,
+                "attach_pangolin_site_to_compose_scope": ATTACH_PANGOLIN_SITE_TO_COMPOSE_SCOPE,
             },
         )
 
@@ -564,6 +564,7 @@ def factory_compose_scope__compose(
     https://docs.dagster.io/guides/build/ops#op-factory
 
     Args:
+        compose_scope: str
         name (str): The name of the new op.
         ins (Dict[str, In]): Any Ins for the new op. Default: None.
 
@@ -927,6 +928,56 @@ def factory_compose_scope__group_out(
     @op(
         name=name,
         ins=ins,
+        description=textwrap.dedent(
+            f"""
+            Environment variable  
+            > `OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE={ATTACH_PANGOLIN_SITE_TO_COMPOSE_SCOPE}`
+            
+            If `OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE` is `True`,
+            __set the following environment variables manually__ when launching the Landscape:
+            
+            > ```shell
+            > OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_{compose_scope.upper()}__NEWT_ID
+            > OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_{compose_scope.upper()}__NEWT_SECRET
+            > OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_{compose_scope.upper()}__PANGOLIN_ENDPOINT
+            > ```
+            
+            A successful registration is confirmed with the following log entry:
+            
+            > ```shell
+            > [...]
+            > INFO: 2025/12/14 10:59:49 Tunnel connection to server established successfully!
+            > [...]
+            > ```
+            
+            More about Pangolin Sites here
+            - [https://docs.pangolin.net/manage/sites]()
+            
+            ---
+            
+            Without setting these variables, the ComposeScope may work
+            and will result in the inability for the ComposeScope to 
+            register to the Pangolin Site.
+            
+            These are log messages you're potentially going to see:
+            
+            > ```shell
+            > [...]
+            > WARN[0000] The "OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_{compose_scope.upper()}__NEWT_ID" variable is not set. Defaulting to a blank string. 
+            > WARN[0000] The "OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_{compose_scope.upper()}__NEWT_SECRET" variable is not set. Defaulting to a blank string. 
+            > WARN[0000] The "OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_{compose_scope.upper()}__PANGOLIN_ENDPOINT" variable is not set. Defaulting to a blank string.
+            > [...]
+            > ```
+            
+            and
+            
+            > ```shell
+            > [...]
+            > ERROR: 2025/12/14 10:48:29 Failed to connect: failed to get token: failed to request new token: Post "/api/v1/auth/newt/get-token": unsupported protocol scheme "". Retrying in 3s...
+            > [...]
+            > ```
+            """
+        ),
         **kwargs,
     )
     def _op_compose_scope__group_out(
