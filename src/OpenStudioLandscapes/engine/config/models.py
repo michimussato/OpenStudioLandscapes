@@ -294,9 +294,16 @@ class FeatureBaseModel(BaseModel):
     )
 
     # Dagster Attributes
-    key_prefixes: List[str] = Field()
+    # Todo:
+    #  - [ ] set group_name (if not defined) to feature_name
+    #  - [ ] set key_prefixes (if not defined) to [feature_name]
     group_name: str = Field(
         frozen=True,
+        default=None,
+    )
+    key_prefixes: List[str] = Field(
+        frozen=True,
+        default=None,
     )
 
     @property
@@ -346,6 +353,7 @@ class FeatureBaseModel(BaseModel):
         - spaces
         - periods
         - commas
+        - hyphens
 
         All illegal characters are replaced with underscores.
 
@@ -374,9 +382,9 @@ class FeatureBaseModel(BaseModel):
         frozen=True,
     )
 
-    @field_validator("group_name")
+    @field_validator("feature_name")
     @classmethod
-    def validate(cls, value: str) -> str:
+    def validate__feature_name(cls, value: str) -> str:
         # Methods:
         # - https://blog.finxter.com/5-best-ways-to-replace-a-list-of-characters-in-a-string-with-python/
         chars_to_replace = " .,-"
