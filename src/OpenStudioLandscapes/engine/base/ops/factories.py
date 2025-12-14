@@ -863,11 +863,9 @@ def factory_compose_scope__cmd(
         # cmd_append #
         ##############
 
-        ret_cmd_append = {"cmd": [], "exclude_from_quote": []}
+        ret_cmd_append = {"cmd": [], "exclude_from_quote": ["$(which docker)"]}
 
         output_name = "cmd_append"
-
-        # if "docker_compose_graph" in context.selected_output_names:
 
         yield Output(
             output_name=output_name,
@@ -1024,7 +1022,7 @@ def factory_compose_scope__group_out(
         context.log.debug(group_names_by_key_dict)
 
         cmd_docker_compose_logs = [
-            shutil.which("docker"),
+            "$(which docker)",
             "--config",
             docker_config_json.as_posix(),
             "compose",
@@ -1040,7 +1038,7 @@ def factory_compose_scope__group_out(
         script_cmd_docker_compose_logs = DOCKER_COMPOSE.parent / "docker_compose_logs.sh"
 
         cmd_docker_compose_up = [
-            shutil.which("docker"),
+            "$(which docker)",
             "--config",
             docker_config_json.as_posix(),
             "compose",
@@ -1067,7 +1065,7 @@ def factory_compose_scope__group_out(
         script_cmd_docker_compose_up = DOCKER_COMPOSE.parent / "docker_compose_up.sh"
 
         cmd_docker_compose_restart = [
-            shutil.which("docker"),
+            "$(which docker)",
             "--config",
             docker_config_json.as_posix(),
             "compose",
@@ -1096,7 +1094,7 @@ def factory_compose_scope__group_out(
         )
 
         cmd_docker_compose_pull_up = [
-            shutil.which("docker"),
+            "$(which docker)",
             "--config",
             docker_config_json.as_posix(),
             "compose",
@@ -1116,7 +1114,7 @@ def factory_compose_scope__group_out(
         )
 
         cmd_docker_compose_down = [
-            shutil.which("docker"),
+            "$(which docker)",
             "--config",
             docker_config_json.as_posix(),
             "compose",
@@ -1133,7 +1131,7 @@ def factory_compose_scope__group_out(
 
         # Todo
         #  cmd_docker_exec_it = [
-        #      shutil.which("docker"),
+        #      "$(which docker)",
         #      "exec",
         #      "--tty",
         #      "--interactive",
@@ -1267,20 +1265,20 @@ def factory_compose_scope__group_out(
                 fw.write("\n")
                 fw.write("# Source Overrides defined in {LANDSCAPE}/.overrides\n")
                 fw.write('echo "Working Directory: $(pwd)"\n')
-                overrides_file = get_relative_path_via_common_root(
-                    context=context,
-                    path_src=script_cmd_docker_compose_up,
-                    path_dst=pathlib.Path(
-                        env["DOT_LANDSCAPES"],
-                        env.get("LANDSCAPE", "default"),
-                        ".overrides",
-                    ),
-                    path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
-                )
-                fw.write(f'echo "Sourcing {overrides_file.as_posix()} file..."\n')
-                fw.write(
-                    f'source {overrides_file.as_posix()} && echo "Sourced successfully." || echo "No .overrides file found."\n'
-                )
+                # overrides_file = get_relative_path_via_common_root(
+                #     context=context,
+                #     path_src=script_cmd_docker_compose_up,
+                #     path_dst=pathlib.Path(
+                #         env["DOT_LANDSCAPES"],
+                #         env.get("LANDSCAPE", "default"),
+                #         ".overrides",
+                #     ),
+                #     path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
+                # )
+                # fw.write(f'echo "Sourcing {overrides_file.as_posix()} file..."\n')
+                # fw.write(
+                #     f'source {overrides_file.as_posix()} && echo "Sourced successfully." || echo "No .overrides file found."\n'
+                # )
                 fw.write("\n")
 
                 cmd_str = " ".join(

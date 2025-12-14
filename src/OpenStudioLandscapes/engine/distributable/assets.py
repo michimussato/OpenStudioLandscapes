@@ -1,4 +1,5 @@
 import pathlib
+import textwrap
 import zipfile
 from pathlib import Path
 from typing import Any, Generator
@@ -64,8 +65,11 @@ def distributable(
 
     landscape_path = base_landscapes / landscape_id
 
+    tar_out = landscape_path / "dist"
+    tar_out.mkdir(parents=True, exist_ok=True)
+
     distributable_out = pathlib.Path(
-        landscape_path,
+        tar_out,
         f"{env.get('LANDSCAPE', 'default')}_distributable.zip",
     )
 
@@ -197,6 +201,19 @@ def distributable(
                     file_name=file_path,
                     arcname=file_path.relative_to(base_landscapes),
                 )
+
+        with open(tar_out / "extract.sh", "w") as extract_sh:
+            extract_sh.write(
+                textwrap.dedent(
+                    """\
+                    #!/usr/bin/env bash
+                    
+                    SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+                    unzip -d "${SCRIPT_DIR}" %s
+                    """
+                ) % distributable_out.name
+            )
 
     yield Output(distributable_out)
 
