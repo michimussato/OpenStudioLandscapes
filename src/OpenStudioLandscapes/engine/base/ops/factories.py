@@ -1455,6 +1455,7 @@ def factory_compose_scope__group_out(
 def factory__CONFIG(
     CONFIG_STR: str,
     search_model_of_type: discovery.FeatureBaseModel,
+    # config_parent: Union[discovery.FeatureBaseModel, None],
     name="op_factory__CONFIG",
     ins=None,
     **kwargs,
@@ -1497,7 +1498,12 @@ For reference, the default `config.yml` looks as follows:
         """
         """
 
-        group_in: dict = kwargs.get("env")
+        # if config_parent is None:
+        #     pass
+        # else:
+        #     pass
+
+        group_in: dict = kwargs.get("group_in")
 
         env: dict = group_in.pop("env")
 

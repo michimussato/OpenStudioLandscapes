@@ -15,12 +15,14 @@ def get_feature__CONFIG(
     ASSET_HEADER: Dict,
     CONFIG_STR: str,
     search_model_of_type: discovery.FeatureBaseModel,
+    # config_parent: Union[discovery.FeatureBaseModel, None],
 ) -> AssetsDefinition:
 
     compose_scope_op__features_in: OpDefinition = factory__CONFIG(
         name=f"op__CONFIG__{ASSET_HEADER['group_name']}",
         CONFIG_STR=CONFIG_STR,
         search_model_of_type=search_model_of_type,
+        # config_parent=config_parent,
         ins={
             "group_in": In(Dict),
         },
