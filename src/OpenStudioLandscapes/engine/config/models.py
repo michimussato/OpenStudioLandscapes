@@ -308,7 +308,7 @@ class FeatureBaseModel(BaseModel):
 
     @property
     def dagster_compose_scope_in(self) -> AssetIn:
-        default_name_feature_out = "feature_out"
+        default_name_feature_out = "feature_out_v2"
         ret = AssetIn(
             AssetKey([*self.key_prefixes, default_name_feature_out])
         )

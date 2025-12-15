@@ -7,6 +7,7 @@ from dagster import (
     AssetsDefinition,
     In,
     Out, AssetIn, OpDefinition,
+    get_dagster_logger
 )
 
 from OpenStudioLandscapes.engine.base.ops.factories import factory_compose_scope__features_in
@@ -18,6 +19,9 @@ from OpenStudioLandscapes.engine.base.ops.factories import factory_compose_scope
 from OpenStudioLandscapes.engine.base.ops.factories import factory_compose_scope__group_out
 from OpenStudioLandscapes.engine.config.models import ComposeScopeBaseModel
 from OpenStudioLandscapes.engine.constants import ASSET_HEADER_BASE
+from OpenStudioLandscapes.engine.link.models import OpenStudioLandscapesFeatureOut, OpenStudioLandscapesBaseOut
+
+LOGGER = get_dagster_logger(__name__)
 
 
 def get_compose_scope_group__features_in(
@@ -31,17 +35,20 @@ def get_compose_scope_group__features_in(
     k: str
     v: AssetIn
     for k, v in features.items():
-        dynamic_ins[k] = In()  # In(<type>): type is not really relevant for now.
+        LOGGER.error(f"{k = }")
+        LOGGER.error(f"{v = }")
+        dynamic_ins[k] = In(OpenStudioLandscapesFeatureOut)  # In(<type>): type is not really relevant for now.
         dynamic_keys_by_input_name[k] = v.key
 
     compose_scope_op__features_in: OpDefinition = factory_compose_scope__features_in(
         name=f"op_compose_scope__features_in__{ASSET_HEADER['group_name']}",
         ins={
-            "group_out_base": In(Dict),
+            # "group_out_base": In(OpenStudioLandscapesBaseOut),
             **dynamic_ins,
         },
         out={
             "features_in": Out(Dict),
+            # "group_out_base_2": Out(OpenStudioLandscapesBaseOut),
         },
     )
 
@@ -50,10 +57,13 @@ def get_compose_scope_group__features_in(
         group_name=ASSET_HEADER["group_name"],
         key_prefix=ASSET_HEADER["key_prefix"],
         keys_by_input_name={
-            "group_out_base": AssetKey([*ASSET_HEADER_BASE["key_prefix"], "group_out_base"]),
+            # "group_out_base": AssetKey([*ASSET_HEADER_BASE["key_prefix"], "group_out_base"]),
             **dynamic_keys_by_input_name,
         },
-        keys_by_output_name={},
+        keys_by_output_name={
+            # "features_in": AssetKey([*ASSET_HEADER["key_prefix"], "features_in"]),
+            # "group_out_base_2": AssetKey([*ASSET_HEADER["key_prefix"], "group_out_base"]),
+        },
     )
 
     return compose_scope__features_in
@@ -70,6 +80,7 @@ def get_compose_scope_group__CONFIG(
         asset_header=ASSET_HEADER,
         ins={
             "features_in": In(Dict),
+            "group_out_base": In(OpenStudioLandscapesBaseOut),
         },
         out={
             "CONFIG": Out(ComposeScopeBaseModel),
@@ -80,7 +91,10 @@ def get_compose_scope_group__CONFIG(
         compose_scope_op__CONFIG,
         group_name=ASSET_HEADER["group_name"],
         key_prefix=ASSET_HEADER["key_prefix"],
-        keys_by_input_name={},
+        keys_by_input_name={
+            "features_in": AssetKey([*ASSET_HEADER["key_prefix"], "features_in"]),
+            "group_out_base": AssetKey([*ASSET_HEADER_BASE["key_prefix"], "group_out_base"]),
+        },
         keys_by_output_name={},
     )
 
@@ -95,6 +109,7 @@ def get_compose_scope_group__scrape_networks(
         name=f"op_compose_scope__scrape_networks__{ASSET_HEADER['group_name']}",
         ins={
             "features_in": In(Dict),
+            # "group_out_base": In(OpenStudioLandscapesBaseOut),
         },
         out={
             "scrape_networks": Out(Dict),
@@ -106,7 +121,10 @@ def get_compose_scope_group__scrape_networks(
         can_subset=False,
         group_name=ASSET_HEADER["group_name"],
         key_prefix=ASSET_HEADER["key_prefix"],
-        keys_by_input_name={},
+        keys_by_input_name={
+            "features_in": AssetKey([*ASSET_HEADER["key_prefix"], "features_in"]),
+            # "group_out_base": AssetKey([*ASSET_HEADER_BASE["key_prefix"], "group_out_base"]),
+        },
         keys_by_output_name={},
     )
 
@@ -125,6 +143,7 @@ def get_compose_scope_group__compose(
             "features_in": In(Dict),
             "scrape_networks": In(Dict),
             "CONFIG": In(ComposeScopeBaseModel),
+            "group_out_base": In(OpenStudioLandscapesBaseOut),
         },
         out={
             "compose": Out(Dict),
@@ -135,7 +154,12 @@ def get_compose_scope_group__compose(
         compose_scope_op__compose,
         group_name=ASSET_HEADER["group_name"],
         key_prefix=ASSET_HEADER["key_prefix"],
-        keys_by_input_name={},
+        keys_by_input_name={
+            "features_in": AssetKey([*ASSET_HEADER["key_prefix"], "features_in"]),
+            "scrape_networks": AssetKey([*ASSET_HEADER["key_prefix"], "scrape_networks"]),
+            "CONFIG": AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
+            "group_out_base": AssetKey([*ASSET_HEADER_BASE["key_prefix"], "group_out_base"]),
+        },
         keys_by_output_name={},
     )
 
@@ -203,6 +227,7 @@ def get_compose_scope_group__group_out(
         name=f"op_compose_scope__group_out__{ASSET_HEADER['group_name']}",
         compose_scope=compose_scope,
         ins={
+            "group_out_base": In(OpenStudioLandscapesBaseOut),
             "features_in": In(Dict),
             "CONFIG": In(ComposeScopeBaseModel),
             "cmd_append": In(Dict[str, List]),
@@ -220,7 +245,14 @@ def get_compose_scope_group__group_out(
         compose_scope_op__group_out,
         group_name=ASSET_HEADER["group_name"],
         key_prefix=ASSET_HEADER["key_prefix"],
-        keys_by_input_name={},
+        keys_by_input_name={
+            "group_out_base": AssetKey([*ASSET_HEADER_BASE["key_prefix"], "group_out_base"]),
+            "features_in": AssetKey([*ASSET_HEADER["key_prefix"], "features_in"]),
+            "CONFIG": AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
+            "cmd_append": AssetKey([*ASSET_HEADER["key_prefix"], "cmd_append"]),
+            "cmd_extend": AssetKey([*ASSET_HEADER["key_prefix"], "cmd_extend"]),
+            "compose": AssetKey([*ASSET_HEADER["key_prefix"], "compose"]),
+        },
         keys_by_output_name={},
     )
 

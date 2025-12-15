@@ -440,34 +440,27 @@ def factory_compose_scope__features_in(
         #
         # asset_key__group_out_base = context.asset_key_for_input("group_out_base")
         # asset_header: Dict = kwargs.pop("ASSET_HEADER")
-        group_out_base: Dict = kwargs.pop("group_out_base")
-        env_base: Dict = group_out_base.pop("env_base")
-        config_engine: ConfigEngine = group_out_base.pop("config_engine")
-        docker_config_json: pathlib.Path = group_out_base.pop("docker_config_json")
+        # group_out_base: OpenStudioLandscapesBaseOut = kwargs.pop("group_out_base")
+        # env_base: Dict = group_out_base.env
+        # config_engine: ConfigEngine = group_out_base.config_engine
+        # docker_config_json: pathlib.Path = group_out_base.docker_config_json
 
         docker_compose: Dict[str, Any] = {}
 
+        metadata = {}
+
+        k: str
+        v: OpenStudioLandscapesFeatureOut
         for k, v in kwargs.items():
-            # remove
-            # - env_base
-            # - features
-            # - config_engine
-            # - docker_config_json
-            # from kwargs dicts
-            for d in [
-                "env",
-                "env_base",
-                "features",
-                "config_engine",  # pydantic.BaseModel in a nested dict is not JSON serializable yet
-                "docker_config_json",
-            ]:
-                if d in kwargs[k]:
-                    context.log.debug(f"Popping `{d}`: {kwargs[k].pop(d)}")
+            context.log.debug(f"{k = }")
+            context.log.debug(f"{v = }")
 
-            docker_compose[k] = str(kwargs[k]["compose"])
+            docker_compose[k] = v.compose
+            metadata[f"compose_{k}"] = MetadataValue.json(v.compose)
 
-        kwargs["env_base"] = env_base
-        kwargs["docker_config_json"] = docker_config_json
+
+        # kwargs["env_base"] = env_base
+        # kwargs["docker_config_json"] = docker_config_json
 
         ###############
         # features_in #
@@ -480,19 +473,30 @@ def factory_compose_scope__features_in(
             value=kwargs,
         )
 
-        kwargs_str = json.loads(json.dumps(kwargs, default=str))
-
         yield AssetMaterialization(
             asset_key=context.asset_key_for_output(output_name),
             metadata={
-                "__".join(
-                    context.asset_key_for_output(output_name).path
-                ): MetadataValue.json(kwargs_str),
-                # "docker_compose_yaml": MetadataValue.json(docker_compose_yaml),
-                "docker_compose": MetadataValue.json(docker_compose),
-                # "kwargs": MetadataValue.json(kwargs_str),
+                **metadata,
             },
         )
+
+        # ##################
+        # # group_out_base #
+        # ##################
+        #
+        # output_name = "group_out_base"
+        #
+        # yield Output(
+        #     output_name=output_name,
+        #     value=group_out_base,
+        # )
+        #
+        # yield AssetMaterialization(
+        #     asset_key=context.asset_key_for_output(output_name),
+        #     # metadata={
+        #     #     **metadata,
+        #     # },
+        # )
 
     return _op_compose_scope__features_in
 
@@ -527,9 +531,14 @@ def factory_compose_scope__CONFIG(
         """
         """
 
-        features_in: Dict = kwargs.pop("features_in")
+        context.log.debug(f"{kwargs = }")
 
-        env: dict = features_in.pop("env_base", {})
+        features_in: Dict = kwargs.pop("features_in")
+        context.log.debug(f"{features_in = }")
+
+        group_out_base: OpenStudioLandscapesBaseOut = kwargs.pop("group_out_base")
+
+        env: dict = group_out_base.env
 
         config = ComposeScopeBaseModel(
             **{
@@ -619,12 +628,14 @@ def factory_compose_scope__scrape_networks(
         """
         """
 
+        # group_out_base: OpenStudioLandscapesBaseOut = kwargs.pop("group_out_base")
+
         context.log.debug(f"{kwargs = }")
 
-        features_in = kwargs.pop("features_in")
+        features_in: Dict[str, OpenStudioLandscapesFeatureOut] = kwargs.pop("features_in")
         del kwargs
         context.log.debug(f"{features_in = }")
-        env: Dict = features_in.pop('env_base')
+        # env: Dict = group_out_base.env
 
         # Todo:
         #  - [ ] Duplicated code `OpenStudioLandscapes.engine.base.ops.factories.factory_scrape_networks`
@@ -639,13 +650,15 @@ def factory_compose_scope__scrape_networks(
         # context.log.debug(f"Popping: {features_in.pop('env_base') = }")
         # context.log.debug(f"Popping: {features_in.pop('config_engine') = }")
         # context.log.debug(f"Popping: {features_in.pop('docker_image') = }")
-        context.log.debug(f"Popping: {features_in.pop('docker_config_json') = }")
+        # context.log.debug(f"Popping: {features_in.pop('docker_config_json') = }")
 
         networks_dict: Dict = {}
 
+        # feature: str
+        # data: OpenStudioLandscapesFeatureOut
         for feature, data in features_in.items():
             context.log.info(f"{features_in[feature] = }")
-            CONFIG: FeatureBaseModel = data.pop("config")
+            CONFIG: FeatureBaseModel = data.config_feature
             compose_file: pathlib.Path = CONFIG.docker_compose_expanded
 
             network_dict = get_networks_dict(
@@ -711,16 +724,18 @@ def factory_compose_scope__compose(
         """
         """
 
+        group_out_base: OpenStudioLandscapesBaseOut = kwargs.pop("group_out_base")
+
         context.log.error(f"{kwargs = }")
-        CONFIG: ComposeScopeBaseModel = kwargs["CONFIG"]
-        features_in = kwargs.pop("features_in")
+        CONFIG: ComposeScopeBaseModel = kwargs.pop("CONFIG")
+        features_in: Dict[str, OpenStudioLandscapesFeatureOut] = kwargs.pop("features_in")
         scrape_networks: Dict = kwargs.pop("scrape_networks")
 
-        env: dict = features_in.pop("env_base")
+        env: dict = group_out_base.env
 
         # config_engine: ConfigEngine = kwargs.pop("config_engine")
         # docker_image: Dict = kwargs.pop("docker_image")
-        docker_config_json: pathlib.Path = features_in.pop("docker_config_json")
+        docker_config_json: pathlib.Path = group_out_base.docker_config_json
         # features_in: Dict = kwargs.pop("features_in")
 
         # Todo:
@@ -735,9 +750,9 @@ def factory_compose_scope__compose(
         _compose_networks = set()
 
         for feature, data in features_in.items():
-            CONFIG_: FeatureBaseModel = data["config"]
-            context.log.info(f"{CONFIG_.feature_name = }")
-            compose_file = CONFIG_.docker_compose_expanded
+            CONFIG_FEATURE: FeatureBaseModel = data.config_feature
+            context.log.info(f"{CONFIG_FEATURE.feature_name = }")
+            compose_file = CONFIG_FEATURE.docker_compose_expanded
             compose_files.append(compose_file)
 
         includes = []
@@ -1112,6 +1127,7 @@ def factory_compose_scope__group_out(
         """
         """
 
+        group_out_base: OpenStudioLandscapesBaseOut = kwargs.pop("group_out_base")
         compose = kwargs.pop("compose")
         cmd_append: Dict = kwargs.pop("cmd_append")
         cmd_extend: List = kwargs.pop("cmd_extend")
@@ -1120,8 +1136,8 @@ def factory_compose_scope__group_out(
 
         del compose
 
-        env: dict = features_in.pop("env_base")
-        docker_config_json: pathlib.Path = features_in.pop("docker_config_json")
+        env: dict = group_out_base.env
+        docker_config_json: pathlib.Path = group_out_base.docker_config_json
 
         cmd_append["exclude_from_quote"].extend(
             ComposeCmdExclusion.CMD_APPEND_ALWAYS_EXCLUDE_FROM_QUOTATION.value
