@@ -379,17 +379,12 @@ def factory_feature_in(
         """
 
         group_out_base: OpenStudioLandscapesBaseOut = kwargs.pop("group_out_base")
-        # parent_config = kwargs.pop("parent_config", None)
 
         feature_in_parent: Union[None, OpenStudioLandscapesFeatureOut] = kwargs.pop("feature_in_parent", None)
 
         feature_in: OpenStudioLandscapesFeatureIn = OpenStudioLandscapesFeatureIn(
             openstudiolandscapes_base=group_out_base,
             feature_in_parent=feature_in_parent,
-            # config=
-            # env=group_out_base.env,
-            # config_engine=group_out_base.config_engine,
-            # docker_config_json=group_out_base.docker_config_json,
         )
 
 

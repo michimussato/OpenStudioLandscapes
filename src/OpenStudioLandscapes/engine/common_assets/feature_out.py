@@ -46,23 +46,13 @@ def get_feature_out(
 
 def get_feature_out_v2(
     ASSET_HEADER: Dict,
-    # feature_out_ins: Dict,
 ) -> AssetsDefinition:
-
-    # feature_out_ins_op = {}
-    # feature_out_ins_asset = {}
-    # for k, v in feature_out_ins.items():
-    #     feature_out_ins_op[k] = In(v)
-    #     feature_out_ins_asset[k] = AssetKey([*ASSET_HEADER["key_prefix"], k])
 
     feature_out_op: OpDefinition = factory_feature_out_v2(
         name=f"op_feature_out_v2_{ASSET_HEADER['group_name']}",
-        # ins=feature_out_ins_op,
         ins={
-            # "compose_networks": In(dict),
             "compose": In(Dict),
             "CONFIG": In(discovery.FeatureBaseModel),
-            # "group_in": In(dict)
         },
         out={
             "feature_out_v2": Out(OpenStudioLandscapesFeatureOut),
@@ -75,7 +65,7 @@ def get_feature_out_v2(
         group_name=ASSET_HEADER["group_name"],
         keys_by_input_name={},
         keys_by_output_name={
-            # "feature_out": AssetKey([*ASSET_HEADER["key_prefix"], "feature_out"]),
+            "feature_out_v2": AssetKey([*ASSET_HEADER["key_prefix"], "feature_out_v2"]),
         },
     )
 

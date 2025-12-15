@@ -3,7 +3,7 @@ from typing import Dict, Any, Union
 
 from pydantic import BaseModel, Field
 
-from OpenStudioLandscapes.engine.config.models import ConfigEngine, DockerConfigModel, FeatureBaseModel
+from OpenStudioLandscapes.engine.config.models import ConfigEngine, FeatureBaseModel
 
 
 # class Port(
@@ -116,7 +116,6 @@ class OpenStudioLandscapesFeatureBasePort(
     compose: Union[None, Dict[str, Any]] = Field(
         default=None,
     )
-    # config: FeatureBaseModel
 
 
 
@@ -124,22 +123,15 @@ class OpenStudioLandscapesFeatureIn(
     OpenStudioLandscapesFeatureBasePort
 ):
     openstudiolandscapes_base: OpenStudioLandscapesBaseOut
-    # config_parent: Union[None, FeatureBaseModel] = Field(
-    #     default=None,
-    # )
-    feature_in_parent: Union[None, 'OpenStudioLandscapesFeatureIn'] = Field(
+
+    feature_in_parent: Union[None, 'OpenStudioLandscapesFeatureOut'] = Field(
         default=None,
     )
-    # feature_parent: Union[None, FeatureBaseModel] = Field(
-    #     default=None,
-    # )
-
 
 
 class OpenStudioLandscapesFeatureOut(
     OpenStudioLandscapesFeatureBasePort
 ):
-    # pass
     config_feature: FeatureBaseModel
 
 

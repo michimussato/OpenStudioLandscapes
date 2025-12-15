@@ -54,12 +54,7 @@ def get_group_in(
 def get_feature_in(
     ASSET_HEADER: Dict,
     ASSET_HEADER_BASE: Dict,
-    # parent_feature_in: Union[None, OpenStudioLandscapesFeatureIn],
     ASSET_HEADER_FEATURE_IN: Dict,
-    # ASSET_HEADER_PAPRENTS: List[Dict],
-    # Todo:
-    #  - [ ] To accept an input_name here is not very elegant
-    # input_name: str = "group_out_base",
 ) -> AssetsDefinition:
 
     if bool(ASSET_HEADER_FEATURE_IN):
@@ -68,7 +63,7 @@ def get_feature_in(
         }
 
         keys_parent = {
-            "feature_in_parent": AssetKey([ASSET_HEADER_FEATURE_IN["key_prefix"], "feature_out"])
+            "feature_in_parent": AssetKey([*ASSET_HEADER_FEATURE_IN["key_prefix"], "feature_out_v2"])
         }
 
     else:
@@ -91,8 +86,6 @@ def get_feature_in(
         group_in_op,
         can_subset=False,
         group_name=ASSET_HEADER["group_name"],
-        # key_prefix=ASSET_HEADER["key_prefix"]: This can be deceiving: Prefixes everything on top of all
-        # other Prefixes
         keys_by_input_name={
             "group_out_base": AssetKey([*ASSET_HEADER_BASE["key_prefix"], "group_out_base"]),
             **keys_parent,
