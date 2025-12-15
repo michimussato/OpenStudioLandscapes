@@ -24,8 +24,8 @@ def get_group_out(
             ),
         },
         keys_by_input_name={
-            "compose": AssetKey([*ASSET_HEADER["key_prefix"], "compose"]),
-            "group_in": AssetKey([*ASSET_HEADER["key_prefix"], "group_in"]),
+            # "compose": AssetKey([*ASSET_HEADER["key_prefix"], "compose"]),
+            "feature_in": AssetKey([*ASSET_HEADER["key_prefix"], "feature_in"]),
             "cmd_extend": AssetKey([*ASSET_HEADER["key_prefix"], "cmd_extend"]),
             "cmd_append": AssetKey([*ASSET_HEADER["key_prefix"], "cmd_append"]),
             "CONFIG": AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),

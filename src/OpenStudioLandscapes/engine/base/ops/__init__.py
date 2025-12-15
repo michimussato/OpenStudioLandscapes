@@ -20,10 +20,11 @@ from dagster import (
     Output,
     op,
 )
+
+from OpenStudioLandscapes.engine.link.models import OpenStudioLandscapesFeatureIn
 from docker_compose_graph.docker_compose_graph import DockerComposeGraph
 
 from OpenStudioLandscapes.engine.config.models import (
-    ComposeScopeBaseModel,
     FeatureBaseModel,
 )
 from OpenStudioLandscapes.engine.constants import *
@@ -486,8 +487,8 @@ def op_docker_compose_graph(
 @op(
     name="group_out",
     ins={
-        "compose": In(dict),
-        "group_in": In(dict),
+        # "compose": In(dict),
+        "feature_in": In(OpenStudioLandscapesFeatureIn),
         "cmd_extend": In(list),
         "cmd_append": In(dict[str, list]),
         "CONFIG": In(FeatureBaseModel),
@@ -508,8 +509,8 @@ def op_group_out(
     #        before compose-graph analyzes them
     #  - [ ] DUPLICATE?? use `OpenStudioLandscapes.engine.base.ops.factories.factory_compose_scope__cmd`
     #        instead
-    compose: dict,  # pylint: disable=redefined-outer-name
-    group_in: dict,  # pylint: disable=redefined-outer-name
+    # compose: dict,  # pylint: disable=redefined-outer-name
+    feature_in: OpenStudioLandscapesFeatureIn,  # pylint: disable=redefined-outer-name
     cmd_extend: list,  # pylint: disable=redefined-outer-name
     cmd_append: dict[str, list],  # pylint: disable=redefined-outer-name
     CONFIG: FeatureBaseModel,  # pylint: disable=redefined-outer-name
@@ -523,16 +524,16 @@ def op_group_out(
     None,
 ]:
 
-    del compose
-    context.log.debug(f"{group_in = }")
+    # del compose
+    # context.log.debug(f"{feature_in = }")
 
-    if "group_in" in group_in:
-        # Todo:
-        #  - [ ] this is a bit hacky
-        group_in = group_in["group_in"]
+    # if "group_in" in group_in:
+    #     # Todo:
+    #     #  - [ ] this is a bit hacky
+    #     group_in = group_in["group_in"]
 
-    env: dict = group_in.pop("env")
-    docker_config_json: pathlib.Path = group_in.pop("docker_config_json")
+    env: dict = feature_in.openstudiolandscapes_base.env
+    docker_config_json: pathlib.Path = feature_in.openstudiolandscapes_base.docker_config_json
 
     context.log.error(f"{docker_config_json = }")
 

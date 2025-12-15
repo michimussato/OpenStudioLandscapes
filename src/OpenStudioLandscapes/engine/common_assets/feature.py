@@ -9,6 +9,7 @@ OpDefinition,
 
 from OpenStudioLandscapes.engine.base.ops.factories import factory__CONFIG
 from OpenStudioLandscapes.engine.discovery import discovery
+from OpenStudioLandscapes.engine.link.models import OpenStudioLandscapesFeatureIn
 
 
 def get_feature__CONFIG(
@@ -24,7 +25,7 @@ def get_feature__CONFIG(
         search_model_of_type=search_model_of_type,
         # config_parent=config_parent,
         ins={
-            "group_in": In(Dict),
+            "feature_in": In(OpenStudioLandscapesFeatureIn),
         },
         out={
             "CONFIG": Out(discovery.FeatureBaseModel),

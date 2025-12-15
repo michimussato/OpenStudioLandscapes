@@ -17,9 +17,12 @@ from dagster import (
     asset,
 )
 
+from dagster._core.definitions.utils import DEFAULT_OUTPUT
+
 from OpenStudioLandscapes.engine.config import dist
 from OpenStudioLandscapes.engine.config.models import ConfigEngine, DockerConfigModel
 from OpenStudioLandscapes.engine.constants import *
+from OpenStudioLandscapes.engine.link.models import OpenStudioLandscapesBaseOut
 from OpenStudioLandscapes.engine.policies.retry import build_docker_image_retry_policy
 from OpenStudioLandscapes.engine.utils import *
 from OpenStudioLandscapes.engine.utils.docker import *
@@ -329,41 +332,31 @@ def group_out_base(
     CONFIG: ConfigEngine,  # pylint: disable=redefined-outer-name
     docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name
     build_docker_image: dict,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[dict[str, str | dict]] | AssetMaterialization, None, None]:
+) -> Generator[Output[OpenStudioLandscapesBaseOut] | AssetMaterialization, None, None]:
 
-    out_dict: dict = {}
+    group_out_base: OpenStudioLandscapesBaseOut = OpenStudioLandscapesBaseOut(
+        env=env,
+        config_engine=CONFIG,
+        docker_config_json=docker_config_json,
+        docker_image_base=build_docker_image,
+    )
 
-    docker_config: DockerConfigModel = CONFIG.openstudiolandscapes__docker_config
+    context.log.debug(f"group_out_base {group_out_base = }")
 
-    out_dict["env"] = env
-    out_dict["env_base"] = env
-    out_dict["config_engine"]: ConfigEngine = CONFIG
-    out_dict["docker_config"] = docker_config.docker_registry_config.model_dump()
-    out_dict["docker_config"][
-        "docker_repository"
-    ] = docker_config.docker_registry_config.docker_repository_name
-    out_dict["docker_config"][
-        "docker_repository_type"
-    ] = docker_config.docker_registry_config.docker_registry_access
-    out_dict["docker_config"][
-        "docker_registry_url"
-    ] = docker_config.docker_registry_config.docker_registry_fqdn
-    out_dict["docker_config"][
-        "docker_use_local"
-    ] = not docker_config.docker_registry_config.docker_push
-    out_dict["docker_config_json"] = docker_config_json
-    out_dict["docker_image"] = build_docker_image
+    output_name = DEFAULT_OUTPUT
 
-    context.log.debug(f"group_out_base {out_dict = }")
-
-    yield Output(out_dict)
+    yield Output(
+        output_name=output_name,
+        value=group_out_base,
+    )
 
     yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata=metadatavalues_from_dict(
-            context=context,
-            d=out_dict,
-        ),
+        asset_key=context.asset_key_for_output(output_name).path,
+        metadata={
+            "group_out_base": MetadataValue.md(
+                f"```json\n{group_out_base.model_dump_json(indent=2, fallback=str)}\n```"
+            ),
+        }
     )
 
 
@@ -440,15 +433,15 @@ def docker_config_json(
 
 
 # Debugging Asset
-enable = True
+enable = False
 if enable:
     @asset(
         ins={
             "group_out_base": AssetIn(AssetKey(["OpenStudioLandscapes_Base", "group_out_base"])),
             "kitsu_group_in": AssetIn(AssetKey(["OpenStudioLandscapes_Kitsu", "group_in"])),
             "kitsu_feature_out": AssetIn(AssetKey(["OpenStudioLandscapes_Kitsu", "feature_out"])),
-            "watchtower_group_in": AssetIn(AssetKey(["OpenStudioLandscapes_Watchtower", "group_in"])),
-            "watchtower_feature_out": AssetIn(AssetKey(["OpenStudioLandscapes_Watchtower", "feature_out"])),
+            # "watchtower_group_in": AssetIn(AssetKey(["OpenStudioLandscapes_Watchtower", "group_in"])),
+            # "watchtower_feature_out": AssetIn(AssetKey(["OpenStudioLandscapes_Watchtower", "feature_out"])),
         },
     )
     def compare(
@@ -467,5 +460,14 @@ if enable:
                 #     kwargs
                 # ),
                 "kwargs": MetadataValue.md(f"```json\n{json.dumps(kwargs, indent=2, default=str)}\n```"),
+                "kwargs_keys": MetadataValue.md(f"```json\n{json.dumps(list(kwargs.keys()), indent=2, default=str)}\n```"),
+                "group_out_base": MetadataValue.md(f"```json\n{json.dumps(kwargs['group_out_base'], indent=2, default=str)}\n```"),
+                "group_out_base_keys": MetadataValue.md(f"```json\n{json.dumps(list(kwargs['group_out_base'].keys()), indent=2, default=str)}\n```"),
+                "kitsu_feature_out": MetadataValue.md(f"```json\n{json.dumps(kwargs['kitsu_feature_out'], indent=2, default=str)}\n```"),
+                "kitsu_feature_out_keys": MetadataValue.md(f"```json\n{json.dumps(list(kwargs['kitsu_feature_out'].keys()), indent=2, default=str)}\n```"),
+                "watchtower_group_in": MetadataValue.md(f"```json\n{json.dumps(kwargs['watchtower_group_in'], indent=2, default=str)}\n```"),
+                "watchtower_group_in_keys": MetadataValue.md(f"```json\n{json.dumps(list(kwargs['watchtower_group_in'].keys()), indent=2, default=str)}\n```"),
+                "watchtower_feature_out": MetadataValue.md(f"```json\n{json.dumps(kwargs['watchtower_feature_out'], indent=2, default=str)}\n```"),
+                "watchtower_feature_out_keys": MetadataValue.md(f"```json\n{json.dumps(list(kwargs['watchtower_feature_out'].keys()), indent=2, default=str)}\n```"),
             },
         )

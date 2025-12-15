@@ -2,6 +2,7 @@ __all__ = [
     "factory_feature_out",
     "factory_compose",
     "factory_group_in",
+    "factory_feature_in",
     "factory_compose_scope__features_in",
     "factory_compose_scope__CONFIG",
     "factory_compose_scope__scrape_networks",
@@ -26,6 +27,8 @@ from typing import Dict, Union, Any, Generator, List
 
 from OpenStudioLandscapes.engine.discovery import discovery
 from OpenStudioLandscapes.engine.discovery.get_feature_base_model import get_feature_base_model
+from OpenStudioLandscapes.engine.link.models import OpenStudioLandscapesBaseOut, OpenStudioLandscapesFeatureIn, \
+    OpenStudioLandscapesFeatureOut
 from docker_compose_graph.docker_compose_graph import DockerComposeGraph
 
 import pydot
@@ -38,6 +41,9 @@ from dagster import (
     Output,
     op,
 )
+
+# from dagster._core.definitions.utils import DEFAULT_OUTPUT
+
 from docker_compose_graph.utils import *
 
 from OpenStudioLandscapes.engine.config.models import (
@@ -128,6 +134,63 @@ def factory_feature_out(
                     d=kwargs,
                 ),
             },
+        )
+
+    return _op_feature_out
+
+
+def factory_feature_out_v2(
+    name="op_feature_out_v2_from_factory",
+    ins=None,
+    **kwargs,
+) -> OpDefinition:
+    """
+    https://docs.dagster.io/guides/build/ops#op-factory
+
+    Args:
+        name (str): The name of the new op.
+        ins (Dict[str, In]): Any Ins for the new op. Default: None.
+
+    Returns:
+        function: The new op.
+    """
+
+    @op(
+        name=name,
+        ins=ins,
+        # code_version="2",
+        **kwargs,
+    )
+    def _op_feature_out(
+        context: OpExecutionContext,
+        **kwargs,
+    ):
+
+        # group_out_base: OpenStudioLandscapesBaseOut = kwargs.pop("group_out_base")
+        compose: Dict = kwargs.pop("compose")
+        CONFIG: discovery.FeatureBaseModel = kwargs.pop("CONFIG")
+
+        feature_out: OpenStudioLandscapesFeatureOut = OpenStudioLandscapesFeatureOut(
+            compose=compose,
+            config_feature=CONFIG,
+        )
+
+
+
+        output_name = "feature_out_v2"
+
+        yield Output(
+            output_name=output_name,
+            value=feature_out,
+        )
+
+        yield AssetMaterialization(
+            asset_key=context.asset_key_for_output(output_name).path,
+            metadata={
+                "feature_in": MetadataValue.md(
+                    f"```json\n{feature_out.model_dump_json(indent=2, fallback=str)}\n```"
+                ),
+            }
         )
 
     return _op_feature_out
@@ -283,6 +346,71 @@ def factory_group_in(
         )
 
     return _op_group_in
+
+
+def factory_feature_in(
+    name="op_feature_in_factory",
+    ins=None,
+    **kwargs,
+) -> OpDefinition:
+    """
+    https://docs.dagster.io/guides/build/ops#op-factory
+
+    Args:
+        name (str): The name of the new op.
+        ins (Dict[str, In]): Any Ins for the new op. Default: None.
+
+    Returns:
+        function: The new op.
+    """
+
+    @op(
+        name=name,
+        ins=ins,
+        **kwargs,
+    )
+    def _op_feature_in(
+        context: OpExecutionContext,
+        **kwargs,
+    ):
+        """
+        This is the entry point for a Feature.
+        Just forwards the data we get from the upstream `group_out` asset.
+        """
+
+        group_out_base: OpenStudioLandscapesBaseOut = kwargs.pop("group_out_base")
+        # parent_config = kwargs.pop("parent_config", None)
+
+        feature_in_parent: Union[None, OpenStudioLandscapesFeatureOut] = kwargs.pop("feature_in_parent", None)
+
+        feature_in: OpenStudioLandscapesFeatureIn = OpenStudioLandscapesFeatureIn(
+            openstudiolandscapes_base=group_out_base,
+            feature_in_parent=feature_in_parent,
+            # config=
+            # env=group_out_base.env,
+            # config_engine=group_out_base.config_engine,
+            # docker_config_json=group_out_base.docker_config_json,
+        )
+
+
+
+        output_name = "feature_in"
+
+        yield Output(
+            output_name=output_name,
+            value=feature_in,
+        )
+
+        yield AssetMaterialization(
+            asset_key=context.asset_key_for_output(output_name).path,
+            metadata={
+                "feature_in": MetadataValue.md(
+                    f"```json\n{feature_in.model_dump_json(indent=2, fallback=str)}\n```"
+                ),
+            }
+        )
+
+    return _op_feature_in
 
 
 def factory_compose_scope__features_in(
@@ -1504,9 +1632,9 @@ For reference, the default `config.yml` looks as follows:
         # else:
         #     pass
 
-        group_in: dict = kwargs.get("group_in")
+        feature_in: OpenStudioLandscapesFeatureIn = kwargs.get("feature_in")
 
-        env: dict = group_in.pop("env")
+        env: dict = feature_in.openstudiolandscapes_base.env
 
         config_validated: discovery.FeatureBaseModel = get_feature_base_model(
             context=context,
