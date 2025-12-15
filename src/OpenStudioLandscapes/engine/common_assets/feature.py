@@ -22,13 +22,14 @@ def get_feature__CONFIG(
         name=f"op__CONFIG__{ASSET_HEADER['group_name']}",
         CONFIG_STR=CONFIG_STR,
         search_model_of_type=search_model_of_type,
-        # config_parent=config_parent,
         ins={
             "feature_in": In(OpenStudioLandscapesFeatureIn),
         },
         out={
             "CONFIG": Out(discovery.FeatureBaseModel),
-            "CONFIG_PARENT": Out(discovery.FeatureBaseModel),
+            # Todo:
+            #  - [ ] Can we do this dynamically based on whether there is a parent?
+            # "CONFIG_PARENT": Out(discovery.FeatureBaseModel),
         },
     )
 
