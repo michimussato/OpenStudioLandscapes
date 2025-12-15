@@ -1677,6 +1677,34 @@ For reference, the default `config.yml` looks as follows:
             },
         )
 
+        # feature_in_parent: Union[None, OpenStudioLandscapesFeatureOut] = feature_in.feature_in_parent
+        #
+        # if feature_in_parent is not None:
+        #
+        #     config_validated_parent: discovery.FeatureBaseModel = feature_in_parent.config_feature
+        #
+        #     #################
+        #     # CONFIG_PARENT #
+        #     #################
+        #
+        #     output_name = "CONFIG_PARENT"
+        #
+        #     yield Output(
+        #         output_name=output_name,
+        #         value=config_validated_parent,
+        #     )
+        #
+        #     yield AssetMaterialization(
+        #         asset_key=context.asset_key_for_output(output_name),
+        #         metadata={
+        #             "__".join(
+        #                 context.asset_key_for_output(output_name).path
+        #                 ): MetadataValue.md(
+        #                 f"```yaml\n{yaml.safe_dump(json.loads(config_validated_parent.model_dump_json(fallback=str, indent=2)))}\n```"
+        #             ),
+        #         },
+        #     )
+
     return _op__CONFIG
 
 

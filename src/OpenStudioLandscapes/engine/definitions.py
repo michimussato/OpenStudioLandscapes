@@ -32,7 +32,7 @@ e_ = expand_dict_vars(
 # every module beneath it.
 imports_engine.extend(
     [
-        "OpenStudioLandscapes.engine.compose_scopes.default.definitions",
+        # "OpenStudioLandscapes.engine.compose_scopes.default.definitions",
         # "OpenStudioLandscapes.engine.landscape_map.definitions",
         # "OpenStudioLandscapes.engine.distributable.definitions",
     ]
