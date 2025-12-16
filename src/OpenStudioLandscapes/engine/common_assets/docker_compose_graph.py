@@ -1,3 +1,5 @@
+from typing import Dict
+
 from dagster import (
     AssetKey,
     AssetsDefinition,
@@ -7,10 +9,10 @@ from OpenStudioLandscapes.engine.base.ops import op_docker_compose_graph
 
 
 def get_docker_compose_graph(
-    ASSET_HEADER: dict,
+    ASSET_HEADER: Dict,
 ) -> AssetsDefinition:
 
-    docker_compose_graph = AssetsDefinition.from_op(
+    docker_compose_graph: AssetsDefinition = AssetsDefinition.from_op(
         op_docker_compose_graph,
         can_subset=False,
         group_name=ASSET_HEADER["group_name"],

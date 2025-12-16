@@ -100,7 +100,7 @@ def factory_feature_out(
         config_parent = kwargs["group_in"].pop("config_parent")
 
         # context.log.debug(f"Popping: {kwargs.pop('env') = }")
-        group_in: dict = kwargs.pop("group_in")
+        group_in: Dict = kwargs.pop("group_in")
         kwargs["group_in"] = group_in
 
         # I want
@@ -226,8 +226,6 @@ def factory_compose(
         compose_networks = kwargs.pop("compose_networks")
         compose_maps = kwargs.pop("compose_maps")
         CONFIG: FeatureBaseModel = kwargs.pop("CONFIG")
-        # group_in: dict = kwargs.pop("group_in")
-        # env: dict = group_in.pop("env")
 
         DOCKER_COMPOSE: pathlib.Path = CONFIG.docker_compose_expanded
         DOCKER_COMPOSE.parent.mkdir(parents=True, exist_ok=True)
@@ -260,6 +258,7 @@ def factory_compose(
             metadata={
                 "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
                 "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
+                "docker_compose_yaml": MetadataValue.path(DOCKER_COMPOSE),
                 # Todo: "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)),
             },
         )
@@ -316,7 +315,7 @@ def factory_group_in(
 
         # Access Enum value by key:
         # https://stackoverflow.com/a/38716384
-        group_out: dict = kwargs.pop(GroupIn(kw_key))
+        group_out: Dict = kwargs.pop(GroupIn(kw_key))
 
         group_out["feature_out_parent"] = group_out.pop("feature_out", {})
 
@@ -538,7 +537,7 @@ def factory_compose_scope__CONFIG(
 
         group_out_base: OpenStudioLandscapesBaseOut = kwargs.pop("group_out_base")
 
-        env: dict = group_out_base.env
+        env: Dict = group_out_base.env
 
         config = ComposeScopeBaseModel(
             **{
@@ -731,12 +730,7 @@ def factory_compose_scope__compose(
         features_in: Dict[str, OpenStudioLandscapesFeatureOut] = kwargs.pop("features_in")
         scrape_networks: Dict = kwargs.pop("scrape_networks")
 
-        env: dict = group_out_base.env
-
-        # config_engine: ConfigEngine = kwargs.pop("config_engine")
-        # docker_image: Dict = kwargs.pop("docker_image")
-        docker_config_json: pathlib.Path = group_out_base.docker_config_json
-        # features_in: Dict = kwargs.pop("features_in")
+        env: Dict = group_out_base.env
 
         # Todo:
         #  - [ ] Duplicated code `OpenStudioLandscapes.engine.base.ops.factories.factory_scrape_networks`
@@ -1136,7 +1130,7 @@ def factory_compose_scope__group_out(
 
         del compose
 
-        env: dict = group_out_base.env
+        env: Dict = group_out_base.env
         docker_config_json: pathlib.Path = group_out_base.docker_config_json
 
         cmd_append["exclude_from_quote"].extend(
@@ -1595,7 +1589,6 @@ def factory_compose_scope__group_out(
 def factory__CONFIG(
     CONFIG_STR: str,
     search_model_of_type: discovery.FeatureBaseModel,
-    # config_parent: Union[discovery.FeatureBaseModel, None],
     name="op_factory__CONFIG",
     ins=None,
     **kwargs,
@@ -1645,7 +1638,7 @@ For reference, the default `config.yml` looks as follows:
 
         feature_in: OpenStudioLandscapesFeatureIn = kwargs.get("feature_in")
 
-        env: dict = feature_in.openstudiolandscapes_base.env
+        env: Dict = feature_in.openstudiolandscapes_base.env
 
         config_validated: discovery.FeatureBaseModel = get_feature_base_model(
             context=context,
