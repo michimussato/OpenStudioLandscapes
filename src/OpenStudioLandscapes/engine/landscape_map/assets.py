@@ -22,6 +22,7 @@ from OpenStudioLandscapes.engine.discovery import discovery
 from OpenStudioLandscapes.engine.discovery.discovery import *
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.compose_scopes.default.assets import COMPOSE_SCOPE_GROUP_PREFIX
+from OpenStudioLandscapes.engine.link.models import OpenStudioLandscapesBaseOut
 from OpenStudioLandscapes.engine.utils import get_dynamic_ins
 
 
@@ -70,7 +71,7 @@ if bool(ins):
     @asset(
         **ASSET_HEADER_LANDSCAPE_MAP,
         ins={
-            "group_out": AssetIn(
+            "group_out_base": AssetIn(
                 AssetKey([*ASSET_HEADER_BASE["key_prefix"], str(GroupIn.BASE_IN)]),
             ),
             **ins,
@@ -78,13 +79,13 @@ if bool(ins):
     )
     def landscape_map(
         context: AssetExecutionContext,
-        group_out: dict,  # pylint: disable=redefined-outer-name
+        group_out_base: OpenStudioLandscapesBaseOut,  # pylint: disable=redefined-outer-name
         **kwargs,
     ) -> Generator[Output[Dot] | AssetMaterialization | Any, None, None]:
 
         context.log.debug(kwargs)
 
-        env = group_out.get("env", {})
+        env: Dict = group_out_base.env
 
         landscape_packed_out = pathlib.Path(
             env["DOT_LANDSCAPES"],

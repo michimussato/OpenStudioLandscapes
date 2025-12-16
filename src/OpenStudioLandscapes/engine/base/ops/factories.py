@@ -3,6 +3,7 @@ __all__ = [
     "factory_compose",
     "factory_group_in",
     "factory_feature_in",
+    "factory_feature_in_parent",
     "factory_compose_scope__features_in",
     "factory_compose_scope__CONFIG",
     "factory_compose_scope__scrape_networks",
@@ -23,12 +24,15 @@ import shutil
 import textwrap
 from collections import ChainMap
 from functools import reduce
-from typing import Dict, Union, Any, Generator, List
+from typing import Dict, Union, Any, Generator, List, Type
 
 from OpenStudioLandscapes.engine.discovery import discovery
 from OpenStudioLandscapes.engine.discovery.get_feature_base_model import get_feature_base_model
-from OpenStudioLandscapes.engine.link.models import OpenStudioLandscapesBaseOut, OpenStudioLandscapesFeatureIn, \
-    OpenStudioLandscapesFeatureOut
+from OpenStudioLandscapes.engine.link.models import (
+    OpenStudioLandscapesBaseOut,
+    OpenStudioLandscapesFeatureIn,
+    OpenStudioLandscapesFeatureOut,
+)
 from docker_compose_graph.docker_compose_graph import DockerComposeGraph
 
 import pydot
@@ -42,12 +46,9 @@ from dagster import (
     op,
 )
 
-# from dagster._core.definitions.utils import DEFAULT_OUTPUT
-
 from docker_compose_graph.utils import *
 
 from OpenStudioLandscapes.engine.config.models import (
-    ConfigEngine,
     DockerConfigModel,
     FeatureBaseModel, ComposeScopeBaseModel,
 )
@@ -386,8 +387,6 @@ def factory_feature_in(
             feature_in_parent=feature_in_parent,
         )
 
-
-
         output_name = "feature_in"
 
         yield Output(
@@ -405,6 +404,87 @@ def factory_feature_in(
         )
 
     return _op_feature_in
+
+
+def factory_feature_in_parent(
+    CONFIG_PARENT: Type[FeatureBaseModel],
+    name="op_feature_in_parent_factory",
+    ins=None,
+    **kwargs,
+) -> OpDefinition:
+    """
+    https://docs.dagster.io/guides/build/ops#op-factory
+
+    Args:
+        CONFIG_PARENT: FeatureBaseModel subclass
+        name (str): The name of the new op.
+        ins (Dict[str, In]): Any Ins for the new op. Default: None.
+
+    Returns:
+        function: The new op.
+    """
+
+    @op(
+        name=name,
+        ins=ins,
+        **kwargs,
+    )
+    def _op_feature_in_parent(
+        context: OpExecutionContext,
+        **kwargs,
+    ):
+        """
+        """
+
+        feature_in_parent: Union[None, OpenStudioLandscapesFeatureOut] = kwargs["feature_in"].feature_in_parent
+
+        config_parent: Union[None, CONFIG_PARENT] = feature_in_parent.config_feature
+
+        #####################
+        # feature_in_parent #
+        #####################
+
+        output_name = "feature_in_parent"
+
+        yield Output(
+            output_name=output_name,
+            value=feature_in_parent,
+        )
+
+        yield AssetMaterialization(
+            asset_key=context.asset_key_for_output(output_name),
+            metadata={
+                "__".join(
+                    context.asset_key_for_output(output_name).path
+                ): MetadataValue.md(
+                    f"```json\n{feature_in_parent.model_dump_json(indent=2, fallback=str)}\n```"
+                ),
+            },
+        )
+
+        #################
+        # CONFIG_PARENT #
+        #################
+
+        output_name = "CONFIG_PARENT"
+
+        yield Output(
+            output_name=output_name,
+            value=config_parent,
+        )
+
+        yield AssetMaterialization(
+            asset_key=context.asset_key_for_output(output_name),
+            metadata={
+                "__".join(
+                    context.asset_key_for_output(output_name).path
+                ): MetadataValue.md(
+                    f"```json\n{config_parent.model_dump_json(indent=2, fallback=str)}\n```"
+                ),
+            },
+        )
+
+    return _op_feature_in_parent
 
 
 def factory_compose_scope__features_in(
@@ -1588,7 +1668,7 @@ def factory_compose_scope__group_out(
 
 def factory__CONFIG(
     CONFIG_STR: str,
-    search_model_of_type: discovery.FeatureBaseModel,
+    search_model_of_type: Type[discovery.FeatureBaseModel],
     name="op_factory__CONFIG",
     ins=None,
     **kwargs,

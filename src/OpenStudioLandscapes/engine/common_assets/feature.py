@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Type
 
 from dagster import (
 AssetsDefinition,
@@ -15,7 +15,7 @@ from OpenStudioLandscapes.engine.link.models import OpenStudioLandscapesFeatureI
 def get_feature__CONFIG(
     ASSET_HEADER: Dict,
     CONFIG_STR: str,
-    search_model_of_type: discovery.FeatureBaseModel,
+    search_model_of_type: Type[discovery.FeatureBaseModel],
 ) -> AssetsDefinition:
 
     compose_scope_op__features_in: OpDefinition = factory__CONFIG(

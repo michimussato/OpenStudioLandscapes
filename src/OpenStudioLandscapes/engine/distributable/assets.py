@@ -2,7 +2,7 @@ import pathlib
 import textwrap
 import zipfile
 from pathlib import Path
-from typing import Any, Generator
+from typing import Any, Generator, Dict
 
 from dagster import (
     AssetExecutionContext,
@@ -16,6 +16,7 @@ from dagster import (
 
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.enums import *
+from OpenStudioLandscapes.engine.link.models import OpenStudioLandscapesBaseOut
 
 
 def add_file(
@@ -42,7 +43,7 @@ def add_file(
 @asset(
     **ASSET_HEADER_DISTRIBUTABLE,
     ins={
-        "group_out": AssetIn(
+        "group_out_base": AssetIn(
             AssetKey([*ASSET_HEADER_BASE["key_prefix"], str(GroupIn.BASE_IN)]),
         ),
     },
@@ -52,10 +53,10 @@ def add_file(
 )
 def distributable(
     context: AssetExecutionContext,
-    group_out: dict,  # pylint: disable=redefined-outer-name
+    group_out_base: OpenStudioLandscapesBaseOut,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[Path] | AssetMaterialization | Any, None, None]:
 
-    env = group_out.get("env", {})
+    env: Dict = group_out_base.env
 
     base_landscapes = pathlib.Path(env["DOT_LANDSCAPES"])
 
