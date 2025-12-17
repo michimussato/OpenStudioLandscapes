@@ -416,6 +416,8 @@ class FeatureBaseModel(BaseModel):
         return ret
 
     # dependencies: List[str] = Field(examples=["OpenStudioLandscapes-Kitsu"])
+    # Todo
+    #  - [ ] Is this still needed?
     definitions: str = Field(
         description="The path to the `definitions.py` file.",
         examples=[
