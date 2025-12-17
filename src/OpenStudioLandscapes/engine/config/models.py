@@ -84,12 +84,12 @@ class DockerRegistryConfig(BaseModel):
         default="openstudiolandscapes", description="The registry repository name."
     )
     docker_registry_access: DockerRegistryAccess = Field(
-        default="public",
-        examples=["public", "private"],
+        default=DockerRegistryAccess.public,
+        examples=[i.name for i in DockerRegistryAccess],
     )
     docker_registry_protocol: DockerRegistryProtocol = Field(
-        default="https",
-        examples=["http", "https"],
+        default=DockerRegistryProtocol.https,
+        examples=[i.name for i in DockerRegistryProtocol],
     )
     docker_registry_fqdn: str = Field(
         description="The fully qualified domain name of the Docker Registry server.",
