@@ -25,7 +25,12 @@ project:
   urls:
     Homepage: https://github.com/michimussato/OpenStudioLandscapes
   scripts:
+    # Run Dagster default
     openstudiolandscapes: "OpenStudioLandscapes.cli:run"
+    # Run Dagster job for example?
+    # Thinking about an entry point for
+    # cli interaction with Dagster
+    # openstudiolandscapes-cli: "OpenStudioLandscapes.cli:run_cli"
 tool:
   setuptools:
     include-package-data: true
