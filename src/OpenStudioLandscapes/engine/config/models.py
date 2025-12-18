@@ -75,13 +75,16 @@ class DockerRegistryConfig(BaseModel):
     """
 
     docker_push: bool = Field(
+        default=True,
         description="Run `docker` commands with the `--push` flag."
     )
     docker_pull: bool = Field(
+        default=True,
         description="Run `docker` commands with the `--pull` flag."
     )
     docker_repository_name: str = Field(
-        default="openstudiolandscapes", description="The registry repository name."
+        default="openstudiolandscapes",
+        description="The registry repository name."
     )
     docker_registry_access: DockerRegistryAccess = Field(
         default=DockerRegistryAccess.public,

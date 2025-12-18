@@ -663,9 +663,15 @@ def create_image(
     tags_full_str = [f"{image_prefixes}{image_name}:{tag}" for tag in tags]
     context.log.debug(f"{tags_full_str = }")
 
-    localhost_only = (
-        docker_config.use_registry and docker_config.docker_registry_config.docker_push
-    )
+    localhost_only = not docker_config.use_registry
+
+    if localhost_only:
+        pull = False
+        push = False
+    else:
+        pull = docker_config.docker_registry_config.docker_pull
+        push = docker_config.docker_registry_config.docker_push
+
     context.log.debug(f"{localhost_only = }")
 
     cmd_build = docker_build_cmd(
@@ -673,16 +679,13 @@ def create_image(
         docker_config_json=docker_config_json,
         docker_file=docker_file,
         tags=tags_full_str,
-        pull=docker_config.use_registry
-        and docker_config.docker_registry_config.docker_pull,
+        pull=pull,
         no_cache=docker_config.no_cache,
     )
 
     cmds.append(cmd_build)
 
-    if localhost_only:  # or not_push
-        pass
-    else:
+    if push:
         cmds_push = docker_push_cmd(
             context=context,
             docker_config_json=docker_config_json,
@@ -690,6 +693,8 @@ def create_image(
         )
 
         cmds.extend(cmds_push)
+    else:
+        pass
 
     context.log.info(f"{cmds = }")
 
