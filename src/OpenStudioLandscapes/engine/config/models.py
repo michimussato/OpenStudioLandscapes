@@ -334,6 +334,8 @@ class FeatureBaseModel(BaseModel):
         ret.parent.mkdir(parents=True, exist_ok=True)
         return ret
 
+    # Todo
+    #  - [ ] Maybe switch to disabled by default
     enabled: bool = Field(
         default=True,
         description="Whether the Feature is enabled or not.",
