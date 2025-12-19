@@ -7,7 +7,8 @@ from typing import ClassVar, Dict, List
 
 from dagster import (
     AssetIn,
-    get_dagster_logger, AssetKey,
+    AssetKey,
+    get_dagster_logger,
 )
 from pydantic import (
     BaseModel,
@@ -75,16 +76,13 @@ class DockerRegistryConfig(BaseModel):
     """
 
     docker_push: bool = Field(
-        default=True,
-        description="Run `docker` commands with the `--push` flag."
+        default=True, description="Run `docker` commands with the `--push` flag."
     )
     docker_pull: bool = Field(
-        default=True,
-        description="Run `docker` commands with the `--pull` flag."
+        default=True, description="Run `docker` commands with the `--pull` flag."
     )
     docker_repository_name: str = Field(
-        default="openstudiolandscapes",
-        description="The registry repository name."
+        default="openstudiolandscapes", description="The registry repository name."
     )
     docker_registry_access: DockerRegistryAccess = Field(
         default=DockerRegistryAccess.public,
@@ -312,9 +310,7 @@ class FeatureBaseModel(BaseModel):
     @property
     def dagster_compose_scope_in(self) -> AssetIn:
         default_name_feature_out = "feature_out_v2"
-        ret = AssetIn(
-            AssetKey([*self.key_prefixes, default_name_feature_out])
-        )
+        ret = AssetIn(AssetKey([*self.key_prefixes, default_name_feature_out]))
         return ret
 
     # EXPANDABLE PATHS
@@ -327,9 +323,7 @@ class FeatureBaseModel(BaseModel):
             )
         )
         ret = pathlib.Path(
-            OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT
-            .expanduser()
-            .joinpath(
+            OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.expanduser().joinpath(
                 self.feature_name,
                 "config.yml",
             )
@@ -382,7 +376,7 @@ class FeatureBaseModel(BaseModel):
     #  - [ ] combine with key_prefixes/group_name?
     feature_name: str = Field(
         description="The name of the feature. It is derived from the "
-                    "`OpenStudioLandscapes.<Feature>.dist` attribute.",
+        "`OpenStudioLandscapes.<Feature>.dist` attribute.",
         examples=["OpenStudioLandscapes-Kitsu", "OpenStudioLandscapes-VERT"],
         frozen=True,
     )

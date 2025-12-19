@@ -2,7 +2,7 @@ import pathlib
 import textwrap
 import zipfile
 from pathlib import Path
-from typing import Any, Generator, Dict
+from typing import Any, Dict, Generator
 
 from dagster import (
     AssetExecutionContext,
@@ -213,7 +213,8 @@ def distributable(
 
                     unzip -d "${SCRIPT_DIR}" %s
                     """
-                ) % distributable_out.name
+                )
+                % distributable_out.name
             )
 
     yield Output(distributable_out)

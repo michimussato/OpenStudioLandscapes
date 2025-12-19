@@ -1,10 +1,9 @@
 import pathlib
-from typing import Dict, Any, Union
+from typing import Any, Dict, Union
 
 from pydantic import BaseModel, Field
 
 from OpenStudioLandscapes.engine.config.models import ConfigEngine, FeatureBaseModel
-
 
 # class Port(
 #     BaseModel
@@ -52,9 +51,7 @@ from OpenStudioLandscapes.engine.config.models import ConfigEngine, FeatureBaseM
 
 # Example:
 # OpenStudioLandscapes_Base / group_out_base
-class OpenStudioLandscapesBaseOut(
-    BaseModel
-):
+class OpenStudioLandscapesBaseOut(BaseModel):
     # MAKE SINGLETON
     env: Dict[str, str]
     #   "env": {
@@ -110,28 +107,21 @@ class OpenStudioLandscapesBaseOut(
     # config_engine: ConfigEngine
 
 
-class OpenStudioLandscapesFeatureBasePort(
-    BaseModel
-):
+class OpenStudioLandscapesFeatureBasePort(BaseModel):
     compose: Union[None, Dict[str, Any]] = Field(
         default=None,
     )
 
 
-
-class OpenStudioLandscapesFeatureIn(
-    OpenStudioLandscapesFeatureBasePort
-):
+class OpenStudioLandscapesFeatureIn(OpenStudioLandscapesFeatureBasePort):
     openstudiolandscapes_base: OpenStudioLandscapesBaseOut
 
-    feature_in_parent: Union[None, 'OpenStudioLandscapesFeatureOut'] = Field(
+    feature_in_parent: Union[None, "OpenStudioLandscapesFeatureOut"] = Field(
         default=None,
     )
 
 
-class OpenStudioLandscapesFeatureOut(
-    OpenStudioLandscapesFeatureBasePort
-):
+class OpenStudioLandscapesFeatureOut(OpenStudioLandscapesFeatureBasePort):
     config_feature: FeatureBaseModel
 
 
@@ -140,5 +130,3 @@ class OpenStudioLandscapesFeatureOut(
 # ):
 #     openstudiolandscapes_base: OpenStudioLandscapesBaseOut
 #     features_in: Dict[str, OpenStudioLandscapesFeatureIn]
-
-

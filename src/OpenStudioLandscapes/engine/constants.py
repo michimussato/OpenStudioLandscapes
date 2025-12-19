@@ -16,6 +16,7 @@ from dagster._core.definitions.utils import DEFAULT_OUTPUT as DAGSTER_DEFAULT_OU
 LOGGER = get_dagster_logger(__name__)
 
 from OpenStudioLandscapes.engine.config.models import FeatureBaseModel
+
 ConfigParent: Union[None, FeatureBaseModel] = None
 
 DOCKER_PROGRESS = [

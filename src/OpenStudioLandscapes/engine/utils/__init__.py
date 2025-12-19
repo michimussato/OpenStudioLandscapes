@@ -28,12 +28,12 @@ import copy
 import json
 import os
 import pathlib
-import requests
 import shlex
 import time
 from typing import Any, Dict, List, MutableMapping, Tuple, Union
 
 import git
+import requests
 import yaml
 from dagster import (
     AssetExecutionContext,

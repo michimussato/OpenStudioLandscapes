@@ -3,23 +3,30 @@ from typing import Dict, List
 
 import pydot
 from dagster import (
+    AssetIn,
     AssetKey,
     AssetsDefinition,
     In,
-    Out, AssetIn, OpDefinition,
-    get_dagster_logger
+    OpDefinition,
+    Out,
+    get_dagster_logger,
 )
 
-from OpenStudioLandscapes.engine.base.ops.factories import factory_compose_scope__features_in
-from OpenStudioLandscapes.engine.base.ops.factories import factory_compose_scope__CONFIG
-from OpenStudioLandscapes.engine.base.ops.factories import factory_compose_scope__scrape_networks
-from OpenStudioLandscapes.engine.base.ops.factories import factory_compose_scope__compose
-from OpenStudioLandscapes.engine.base.ops.factories import factory_compose_scope__docker_compose_graph
-from OpenStudioLandscapes.engine.base.ops.factories import factory_compose_scope__cmd
-from OpenStudioLandscapes.engine.base.ops.factories import factory_compose_scope__group_out
+from OpenStudioLandscapes.engine.base.ops.factories import (
+    factory_compose_scope__cmd,
+    factory_compose_scope__compose,
+    factory_compose_scope__CONFIG,
+    factory_compose_scope__docker_compose_graph,
+    factory_compose_scope__features_in,
+    factory_compose_scope__group_out,
+    factory_compose_scope__scrape_networks,
+)
 from OpenStudioLandscapes.engine.config.models import ComposeScopeBaseModel
 from OpenStudioLandscapes.engine.constants import ASSET_HEADER_BASE
-from OpenStudioLandscapes.engine.link.models import OpenStudioLandscapesFeatureOut, OpenStudioLandscapesBaseOut
+from OpenStudioLandscapes.engine.link.models import (
+    OpenStudioLandscapesBaseOut,
+    OpenStudioLandscapesFeatureOut,
+)
 
 LOGGER = get_dagster_logger(__name__)
 
@@ -37,7 +44,9 @@ def get_compose_scope_group__features_in(
     for k, v in features.items():
         LOGGER.error(f"{k = }")
         LOGGER.error(f"{v = }")
-        dynamic_ins[k] = In(OpenStudioLandscapesFeatureOut)  # In(<type>): type is not really relevant for now.
+        dynamic_ins[k] = In(
+            OpenStudioLandscapesFeatureOut
+        )  # In(<type>): type is not really relevant for now.
         dynamic_keys_by_input_name[k] = v.key
 
     compose_scope_op__features_in: OpDefinition = factory_compose_scope__features_in(
@@ -93,7 +102,9 @@ def get_compose_scope_group__CONFIG(
         key_prefix=ASSET_HEADER["key_prefix"],
         keys_by_input_name={
             "features_in": AssetKey([*ASSET_HEADER["key_prefix"], "features_in"]),
-            "group_out_base": AssetKey([*ASSET_HEADER_BASE["key_prefix"], "group_out_base"]),
+            "group_out_base": AssetKey(
+                [*ASSET_HEADER_BASE["key_prefix"], "group_out_base"]
+            ),
         },
         keys_by_output_name={},
     )
@@ -105,15 +116,17 @@ def get_compose_scope_group__scrape_networks(
     ASSET_HEADER: Dict,
 ) -> AssetsDefinition:
 
-    compose_scope_op__scrape_networks: OpDefinition = factory_compose_scope__scrape_networks(
-        name=f"op_compose_scope__scrape_networks__{ASSET_HEADER['group_name']}",
-        ins={
-            "features_in": In(Dict),
-            # "group_out_base": In(OpenStudioLandscapesBaseOut),
-        },
-        out={
-            "scrape_networks": Out(Dict),
-        },
+    compose_scope_op__scrape_networks: OpDefinition = (
+        factory_compose_scope__scrape_networks(
+            name=f"op_compose_scope__scrape_networks__{ASSET_HEADER['group_name']}",
+            ins={
+                "features_in": In(Dict),
+                # "group_out_base": In(OpenStudioLandscapesBaseOut),
+            },
+            out={
+                "scrape_networks": Out(Dict),
+            },
+        )
     )
 
     compose_scope__scrape_networks: AssetsDefinition = AssetsDefinition.from_op(
@@ -156,9 +169,13 @@ def get_compose_scope_group__compose(
         key_prefix=ASSET_HEADER["key_prefix"],
         keys_by_input_name={
             "features_in": AssetKey([*ASSET_HEADER["key_prefix"], "features_in"]),
-            "scrape_networks": AssetKey([*ASSET_HEADER["key_prefix"], "scrape_networks"]),
+            "scrape_networks": AssetKey(
+                [*ASSET_HEADER["key_prefix"], "scrape_networks"]
+            ),
             "CONFIG": AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
-            "group_out_base": AssetKey([*ASSET_HEADER_BASE["key_prefix"], "group_out_base"]),
+            "group_out_base": AssetKey(
+                [*ASSET_HEADER_BASE["key_prefix"], "group_out_base"]
+            ),
         },
         keys_by_output_name={},
     )
@@ -170,16 +187,18 @@ def get_compose_scope_group__docker_compose_graph(
     ASSET_HEADER: Dict,
 ) -> AssetsDefinition:
 
-    compose_scope_op__docker_compose_graph: OpDefinition = factory_compose_scope__docker_compose_graph(
-        name=f"op_compose_scope__docker_compose_graph__{ASSET_HEADER['group_name']}",
-        ins={
-            "group_out": In(pathlib.Path),
-            "compose_project_name": In(str),
-        },
-        out={
-            "docker_compose_graph": Out(pydot.Dot),
-            "docker_compose_graph_dot": Out(pathlib.Path),
-        },
+    compose_scope_op__docker_compose_graph: OpDefinition = (
+        factory_compose_scope__docker_compose_graph(
+            name=f"op_compose_scope__docker_compose_graph__{ASSET_HEADER['group_name']}",
+            ins={
+                "group_out": In(pathlib.Path),
+                "compose_project_name": In(str),
+            },
+            out={
+                "docker_compose_graph": Out(pydot.Dot),
+                "docker_compose_graph_dot": Out(pathlib.Path),
+            },
+        )
     )
 
     compose_scope__docker_compose_graph: AssetsDefinition = AssetsDefinition.from_op(
@@ -246,7 +265,9 @@ def get_compose_scope_group__group_out(
         group_name=ASSET_HEADER["group_name"],
         key_prefix=ASSET_HEADER["key_prefix"],
         keys_by_input_name={
-            "group_out_base": AssetKey([*ASSET_HEADER_BASE["key_prefix"], "group_out_base"]),
+            "group_out_base": AssetKey(
+                [*ASSET_HEADER_BASE["key_prefix"], "group_out_base"]
+            ),
             "features_in": AssetKey([*ASSET_HEADER["key_prefix"], "features_in"]),
             "CONFIG": AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
             "cmd_append": AssetKey([*ASSET_HEADER["key_prefix"], "cmd_append"]),

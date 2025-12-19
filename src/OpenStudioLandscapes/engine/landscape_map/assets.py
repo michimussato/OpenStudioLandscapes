@@ -16,15 +16,16 @@ from dagster import (
 )
 from pydot import Dot
 
+from OpenStudioLandscapes.engine.compose_scopes.default.assets import (
+    COMPOSE_SCOPE_GROUP_PREFIX,
+)
 from OpenStudioLandscapes.engine.config import dist
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.discovery import discovery
 from OpenStudioLandscapes.engine.discovery.discovery import *
 from OpenStudioLandscapes.engine.enums import *
-from OpenStudioLandscapes.engine.compose_scopes.default.assets import COMPOSE_SCOPE_GROUP_PREFIX
 from OpenStudioLandscapes.engine.link.models import OpenStudioLandscapesBaseOut
 from OpenStudioLandscapes.engine.utils import get_dynamic_ins
-
 
 feature_ins = get_dynamic_ins(
     imported_features=discovery.DISCOVERED_MODELS,
@@ -48,7 +49,11 @@ for compose_scope, _ in feature_ins.items():
     ins[f"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}"] = AssetIn(
         AssetKey(
             # ComposeScopes / ComposeScope_DEV_default / docker_compose_graph_dot
-            ["ComposeScopes", f"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}", "docker_compose_graph_dot"]
+            [
+                "ComposeScopes",
+                f"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}",
+                "docker_compose_graph_dot",
+            ]
         )
     )
 

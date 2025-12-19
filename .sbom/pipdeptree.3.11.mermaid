@@ -16,7 +16,7 @@ flowchart TD
     coloredlogs["coloredlogs\n14.0"]
     colorlog["colorlog\n6.10.1"]
     cyclonedx-bom["cyclonedx-bom\n7.2.1"]
-    cyclonedx-python-lib["cyclonedx-python-lib\n11.5.0"]
+    cyclonedx-python-lib["cyclonedx-python-lib\n11.6.0"]
     dagster-graphql["dagster-graphql\n1.9.11"]
     dagster-pipes["dagster-pipes\n1.9.11"]
     dagster-postgres["dagster-postgres\n0.25.11"]
@@ -24,12 +24,15 @@ flowchart TD
     dagster["dagster\n1.9.11"]
     defusedxml["defusedxml\n0.7.1"]
     dependency-groups["dependency-groups\n1.3.1"]
+    deprecation["deprecation\n2.1.0"]
     distlib["distlib\n0.4.0"]
+    dnspython["dnspython\n2.8.0"]
     docker-compose-graph["docker-compose-graph\n1.0.0"]
     docstring-parser["docstring_parser\n0.17.0"]
-    filelock["filelock\n3.20.0"]
+    email-validator["email-validator\n2.3.0"]
+    filelock["filelock\n3.20.1"]
     fqdn["fqdn\n1.5.1"]
-    fsspec["fsspec\n2025.10.0"]
+    fsspec["fsspec\n2025.12.0"]
     gitdb["gitdb\n4.0.12"]
     gitpython["GitPython\n3.1.45"]
     gql["gql\n3.5.3"]
@@ -37,7 +40,7 @@ flowchart TD
     graphql-core["graphql-core\n3.2.6"]
     graphql-relay["graphql-relay\n3.2.0"]
     graphviz["graphviz\n0.21"]
-    greenlet["greenlet\n3.2.4"]
+    greenlet["greenlet\n3.3.0"]
     grpcio-health-checking["grpcio-health-checking\n1.71.2"]
     grpcio["grpcio\n1.76.0"]
     h11["h11\n0.16.0"]
@@ -66,7 +69,7 @@ flowchart TD
     pip-requirements-parser["pip-requirements-parser\n32.0.1"]
     pip["pip\n25.3"]
     pipdeptree["pipdeptree\n2.30.0"]
-    platformdirs["platformdirs\n4.5.0"]
+    platformdirs["platformdirs\n4.5.1"]
     propcache["propcache\n0.4.1"]
     protobuf["protobuf\n5.29.5"]
     psycopg2-binary["psycopg2-binary\n2.9.11"]
@@ -87,13 +90,13 @@ flowchart TD
     rfc3986-validator["rfc3986-validator\n0.1.1"]
     rfc3987-syntax["rfc3987-syntax\n1.1.0"]
     rich["rich\n14.2.0"]
-    rpds-py["rpds-py\n0.29.0"]
+    rpds-py["rpds-py\n0.30.0"]
     setuptools["setuptools\n80.9.0"]
     six["six\n1.17.0"]
     smmap["smmap\n5.0.2"]
     snakemd["SnakeMD\n2.4.0"]
     sortedcontainers["sortedcontainers\n2.4.0"]
-    sqlalchemy["SQLAlchemy\n2.0.44"]
+    sqlalchemy["SQLAlchemy\n2.0.45"]
     starlette["starlette\n0.50.0"]
     structlog["structlog\n25.5.0"]
     tabulate["tabulate\n0.9.0"]
@@ -102,10 +105,10 @@ flowchart TD
     tqdm["tqdm\n4.67.1"]
     typing-extensions["typing_extensions\n4.15.0"]
     typing-inspection["typing-inspection\n0.4.2"]
-    tzdata["tzdata\n2025.2"]
-    universal-pathlib["universal_pathlib\n0.3.6"]
+    tzdata["tzdata\n2025.3"]
+    universal-pathlib["universal_pathlib\n0.3.7"]
     uri-template["uri-template\n1.3.0"]
-    urllib3["urllib3\n2.5.0"]
+    urllib3["urllib3\n2.6.2"]
     uvicorn["uvicorn\n0.38.0"]
     uvloop["uvloop\n0.22.1"]
     virtualenv["virtualenv\n20.35.4"]
@@ -174,11 +177,14 @@ flowchart TD
     dagster-webserver -- ">=7.0,<9.0" --> click_0
     dagster-webserver -- "any" --> uvicorn
     dependency-groups -- "any" --> packaging
+    deprecation -- "any" --> packaging
     docker-compose-graph -- "any" --> graphviz
     docker-compose-graph -- "any" --> jinja2
     docker-compose-graph -- "any" --> pydot
     docker-compose-graph -- "any" --> python-dotenv
     docker-compose-graph -- "any" --> pyyaml
+    email-validator -- ">=2.0.0" --> dnspython
+    email-validator -- ">=2.0.0" --> idna
     gitdb -- ">=3.0.1,<6" --> smmap
     gitpython -- ">=4.0.1,<5" --> gitdb
     gql -- ">=1.11.1,<3.0" --> backoff
@@ -213,7 +219,9 @@ flowchart TD
     openstudiolandscapes -- "==0.25.11" --> dagster-postgres
     openstudiolandscapes -- "==1.9.11" --> dagster
     openstudiolandscapes -- "==1.9.11" --> dagster-webserver
+    openstudiolandscapes -- "any" --> deprecation
     openstudiolandscapes -- "any" --> docker-compose-graph
+    openstudiolandscapes -- "any" --> email-validator
     openstudiolandscapes -- "any" --> gitpython
     openstudiolandscapes -- "any" --> nox
     openstudiolandscapes -- "any" --> pydot

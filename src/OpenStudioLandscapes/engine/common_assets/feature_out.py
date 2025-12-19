@@ -4,10 +4,14 @@ from dagster import (
     AssetKey,
     AssetsDefinition,
     In,
-    Out, OpDefinition,
+    OpDefinition,
+    Out,
 )
 
-from OpenStudioLandscapes.engine.base.ops.factories import factory_feature_out, factory_feature_out_v2
+from OpenStudioLandscapes.engine.base.ops.factories import (
+    factory_feature_out,
+    factory_feature_out_v2,
+)
 from OpenStudioLandscapes.engine.discovery import discovery
 from OpenStudioLandscapes.engine.link.models import OpenStudioLandscapesFeatureOut
 

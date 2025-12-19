@@ -10,13 +10,13 @@ LOGGER = get_dagster_logger(__name__)
 
 import OpenStudioLandscapes.engine.discovery.discovery as discovery
 from OpenStudioLandscapes.engine.common_assets.compose_scope import (
-get_compose_scope_group__features_in,
-get_compose_scope_group__CONFIG,
-get_compose_scope_group__scrape_networks,
-get_compose_scope_group__compose,
-get_compose_scope_group__docker_compose_graph,
-get_compose_scope_group__cmd,
-get_compose_scope_group__group_out,
+    get_compose_scope_group__cmd,
+    get_compose_scope_group__compose,
+    get_compose_scope_group__CONFIG,
+    get_compose_scope_group__docker_compose_graph,
+    get_compose_scope_group__features_in,
+    get_compose_scope_group__group_out,
+    get_compose_scope_group__scrape_networks,
 )
 from OpenStudioLandscapes.engine.utils import *
 
@@ -54,7 +54,10 @@ if bool(feature_ins):
 
         ASSET_HEADER = {
             "group_name": f"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}",
-            "key_prefix": ["ComposeScopes", f"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}"],
+            "key_prefix": [
+                "ComposeScopes",
+                f"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}",
+            ],
             "compute_kind": "python",
         }
 
@@ -92,8 +95,10 @@ if bool(feature_ins):
         # docker_compose_graph
         # - docker_compose_graph
         # - docker_compose_graph_dot
-        compose_scope_group__docker_compose_graph = get_compose_scope_group__docker_compose_graph(
-            ASSET_HEADER=ASSET_HEADER,
+        compose_scope_group__docker_compose_graph = (
+            get_compose_scope_group__docker_compose_graph(
+                ASSET_HEADER=ASSET_HEADER,
+            )
         )
 
         compose_scope_asset_defs.append(compose_scope_group__docker_compose_graph)

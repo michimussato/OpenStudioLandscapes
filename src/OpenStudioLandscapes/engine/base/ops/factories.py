@@ -24,16 +24,7 @@ import shutil
 import textwrap
 from collections import ChainMap
 from functools import reduce
-from typing import Dict, Union, Any, Generator, List, Type
-
-from OpenStudioLandscapes.engine.discovery import discovery
-from OpenStudioLandscapes.engine.discovery.get_feature_base_model import get_feature_base_model
-from OpenStudioLandscapes.engine.link.models import (
-    OpenStudioLandscapesBaseOut,
-    OpenStudioLandscapesFeatureIn,
-    OpenStudioLandscapesFeatureOut,
-)
-from docker_compose_graph.docker_compose_graph import DockerComposeGraph
+from typing import Any, Dict, Generator, List, Type, Union
 
 import pydot
 import yaml
@@ -45,19 +36,29 @@ from dagster import (
     Output,
     op,
 )
-
+from docker_compose_graph.docker_compose_graph import DockerComposeGraph
 from docker_compose_graph.utils import *
 
-from OpenStudioLandscapes.engine.config.models import (
-    DockerConfigModel,
-    FeatureBaseModel, ComposeScopeBaseModel,
-)
-from OpenStudioLandscapes.engine.enums import *
-from OpenStudioLandscapes.engine.utils import *
-from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.compose_scopes.default.constants import (
     ATTACH_PANGOLIN_SITE_TO_COMPOSE_SCOPE,
 )
+from OpenStudioLandscapes.engine.config.models import (
+    ComposeScopeBaseModel,
+    DockerConfigModel,
+    FeatureBaseModel,
+)
+from OpenStudioLandscapes.engine.constants import *
+from OpenStudioLandscapes.engine.discovery import discovery
+from OpenStudioLandscapes.engine.discovery.get_feature_base_model import (
+    get_feature_base_model,
+)
+from OpenStudioLandscapes.engine.enums import *
+from OpenStudioLandscapes.engine.link.models import (
+    OpenStudioLandscapesBaseOut,
+    OpenStudioLandscapesFeatureIn,
+    OpenStudioLandscapesFeatureOut,
+)
+from OpenStudioLandscapes.engine.utils import *
 from OpenStudioLandscapes.engine.utils.pangolin import add_newt_service_to_compose_scope
 
 # https://github.com/yaml/pyyaml/issues/722#issuecomment-1969292770
@@ -176,8 +177,6 @@ def factory_feature_out_v2(
             config_feature=CONFIG,
         )
 
-
-
         output_name = "feature_out_v2"
 
         yield Output(
@@ -191,7 +190,7 @@ def factory_feature_out_v2(
                 "feature_in": MetadataValue.md(
                     f"```json\n{feature_out.model_dump_json(indent=2, fallback=str)}\n```"
                 ),
-            }
+            },
         )
 
     return _op_feature_out
@@ -380,7 +379,9 @@ def factory_feature_in(
 
         group_out_base: OpenStudioLandscapesBaseOut = kwargs.pop("group_out_base")
 
-        feature_in_parent: Union[None, OpenStudioLandscapesFeatureOut] = kwargs.pop("feature_in_parent", None)
+        feature_in_parent: Union[None, OpenStudioLandscapesFeatureOut] = kwargs.pop(
+            "feature_in_parent", None
+        )
 
         feature_in: OpenStudioLandscapesFeatureIn = OpenStudioLandscapesFeatureIn(
             openstudiolandscapes_base=group_out_base,
@@ -400,7 +401,7 @@ def factory_feature_in(
                 "feature_in": MetadataValue.md(
                     f"```json\n{feature_in.model_dump_json(indent=2, fallback=str)}\n```"
                 ),
-            }
+            },
         )
 
     return _op_feature_in
@@ -433,10 +434,11 @@ def factory_feature_in_parent(
         context: OpExecutionContext,
         **kwargs,
     ):
-        """
-        """
+        """ """
 
-        feature_in_parent: Union[None, OpenStudioLandscapesFeatureOut] = kwargs["feature_in"].feature_in_parent
+        feature_in_parent: Union[None, OpenStudioLandscapesFeatureOut] = kwargs[
+            "feature_in"
+        ].feature_in_parent
 
         config_parent: Union[None, CONFIG_PARENT] = feature_in_parent.config_feature
 
@@ -512,8 +514,7 @@ def factory_compose_scope__features_in(
         context: OpExecutionContext,
         **kwargs,
     ) -> Generator[Output | AssetMaterialization | Any, Any, None]:
-        """
-        """
+        """ """
 
         # # ins = context.op.inputs()
         #
@@ -536,7 +537,6 @@ def factory_compose_scope__features_in(
 
             docker_compose[k] = v.compose
             metadata[f"compose_{k}"] = MetadataValue.json(v.compose)
-
 
         # kwargs["env_base"] = env_base
         # kwargs["docker_config_json"] = docker_config_json
@@ -607,8 +607,7 @@ def factory_compose_scope__CONFIG(
         context: OpExecutionContext,
         **kwargs,
     ) -> Generator[Output | AssetMaterialization | Any, Any, None]:
-        """
-        """
+        """ """
 
         context.log.debug(f"{kwargs = }")
 
@@ -704,14 +703,15 @@ def factory_compose_scope__scrape_networks(
         context: OpExecutionContext,
         **kwargs,
     ) -> Generator[Output | AssetMaterialization | Any, Any, None]:
-        """
-        """
+        """ """
 
         # group_out_base: OpenStudioLandscapesBaseOut = kwargs.pop("group_out_base")
 
         context.log.debug(f"{kwargs = }")
 
-        features_in: Dict[str, OpenStudioLandscapesFeatureOut] = kwargs.pop("features_in")
+        features_in: Dict[str, OpenStudioLandscapesFeatureOut] = kwargs.pop(
+            "features_in"
+        )
         del kwargs
         context.log.debug(f"{features_in = }")
         # env: Dict = group_out_base.env
@@ -800,14 +800,15 @@ def factory_compose_scope__compose(
         context: OpExecutionContext,
         **kwargs,
     ) -> Generator[Output | AssetMaterialization | Any, Any, None]:
-        """
-        """
+        """ """
 
         group_out_base: OpenStudioLandscapesBaseOut = kwargs.pop("group_out_base")
 
         context.log.error(f"{kwargs = }")
         CONFIG: ComposeScopeBaseModel = kwargs.pop("CONFIG")
-        features_in: Dict[str, OpenStudioLandscapesFeatureOut] = kwargs.pop("features_in")
+        features_in: Dict[str, OpenStudioLandscapesFeatureOut] = kwargs.pop(
+            "features_in"
+        )
         scrape_networks: Dict = kwargs.pop("scrape_networks")
 
         env: Dict = group_out_base.env
@@ -884,12 +885,8 @@ def factory_compose_scope__compose(
             metadata={
                 "__".join(
                     context.asset_key_for_output(output_name).path
-                ): MetadataValue.json(
-                    docker_dict_include
-                ),
-                "docker_yaml": MetadataValue.md(
-                    f"```yaml\n{docker_yaml_include}\n```"
-                ),
+                ): MetadataValue.json(docker_dict_include),
+                "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml_include}\n```"),
                 "includes": MetadataValue.json(includes),
                 "OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE": MetadataValue.bool(
                     CONFIG.attach_pangolin_site_to_compose_scope,
@@ -924,9 +921,10 @@ def factory_compose_scope__docker_compose_graph(
     def _op_compose_scope__docker_compose_graph(
         context: OpExecutionContext,
         **kwargs,
-    ) -> Generator[Output[pydot.Dot] | Output[pathlib.Path] | AssetMaterialization, None, None]:
-        """
-        """
+    ) -> Generator[
+        Output[pydot.Dot] | Output[pathlib.Path] | AssetMaterialization, None, None
+    ]:
+        """ """
 
         group_out: pathlib.Path = kwargs.pop("group_out")
         compose_project_name: str = kwargs.pop("compose_project_name")
@@ -1072,8 +1070,7 @@ def factory_compose_scope__cmd(
         context: OpExecutionContext,
         **kwargs,
     ) -> Generator[Output | AssetMaterialization | Any, Any, None]:
-        """
-        """
+        """ """
 
         ##############
         # cmd_append #
@@ -1198,8 +1195,7 @@ def factory_compose_scope__group_out(
         context: OpExecutionContext,
         **kwargs,
     ) -> Generator[Output | AssetMaterialization | Any, Any, None]:
-        """
-        """
+        """ """
 
         group_out_base: OpenStudioLandscapesBaseOut = kwargs.pop("group_out_base")
         compose = kwargs.pop("compose")
@@ -1252,7 +1248,9 @@ def factory_compose_scope__group_out(
             "logs",
             "--follow",
         ]
-        script_cmd_docker_compose_logs = DOCKER_COMPOSE.parent / "docker_compose_logs.sh"
+        script_cmd_docker_compose_logs = (
+            DOCKER_COMPOSE.parent / "docker_compose_logs.sh"
+        )
 
         cmd_docker_compose_up = [
             "$(which docker)",
@@ -1344,7 +1342,9 @@ def factory_compose_scope__group_out(
             "down",
             "--remove-orphans",
         ]
-        script_cmd_docker_compose_down = DOCKER_COMPOSE.parent / "docker_compose_down.sh"
+        script_cmd_docker_compose_down = (
+            DOCKER_COMPOSE.parent / "docker_compose_down.sh"
+        )
 
         # Todo
         #  cmd_docker_exec_it = [
@@ -1536,7 +1536,9 @@ def factory_compose_scope__group_out(
 
             if script_dict["create_convenience_script"]:
                 docker_compose_scope = "__".join(
-                    context.asset_key_for_output(script_dict["asset_key_for_output"]).path
+                    context.asset_key_for_output(
+                        script_dict["asset_key_for_output"]
+                    ).path
                 )
                 script_cmd_convenience = pathlib.Path(
                     env["DOT_LANDSCAPES"],
@@ -1591,10 +1593,10 @@ def factory_compose_scope__group_out(
                 "__".join(
                     context.asset_key_for_output(output_name).path
                 ): MetadataValue.path(DOCKER_COMPOSE),
-                    "root_dir": MetadataValue.path(DOCKER_COMPOSE.parent),
-                    # "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
-                    "scripts": MetadataValue.json(scripts),
-                },
+                "root_dir": MetadataValue.path(DOCKER_COMPOSE.parent),
+                # "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
+                "scripts": MetadataValue.json(scripts),
+            },
         )
 
         ########################
@@ -1614,7 +1616,7 @@ def factory_compose_scope__group_out(
                 "__".join(
                     context.asset_key_for_output(output_name).path
                 ): MetadataValue.path(compose_project_name),
-                },
+            },
         )
 
         ###########################
@@ -1708,8 +1710,7 @@ For reference, the default `config.yml` looks as follows:
         context: OpExecutionContext,
         **kwargs,
     ):
-        """
-        """
+        """ """
 
         # if config_parent is None:
         #     pass
@@ -1744,7 +1745,7 @@ For reference, the default `config.yml` looks as follows:
             metadata={
                 "__".join(
                     context.asset_key_for_output(output_name).path
-                    ): MetadataValue.md(
+                ): MetadataValue.md(
                     f"```yaml\n{yaml.safe_dump(json.loads(config_validated.model_dump_json(fallback=str, indent=2)))}\n```"
                 ),
             },

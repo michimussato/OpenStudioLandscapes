@@ -8,7 +8,6 @@ from dagster import (
 from OpenStudioLandscapes.engine.base.ops.factories import factory_compose
 from OpenStudioLandscapes.engine.config.models import FeatureBaseModel
 
-
 # Todo:
 #  - compose_map factory
 

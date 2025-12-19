@@ -8,7 +8,7 @@ import os
 import pathlib
 import shlex
 import shutil
-from typing import Generator, List, MutableMapping, Union, Dict
+from typing import Dict, Generator, List, MutableMapping, Union
 
 import pydot
 from dagster import (
@@ -20,8 +20,6 @@ from dagster import (
     Output,
     op,
 )
-
-from OpenStudioLandscapes.engine.link.models import OpenStudioLandscapesFeatureIn
 from docker_compose_graph.docker_compose_graph import DockerComposeGraph
 
 from OpenStudioLandscapes.engine.config.models import (
@@ -29,6 +27,7 @@ from OpenStudioLandscapes.engine.config.models import (
 )
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.enums import *
+from OpenStudioLandscapes.engine.link.models import OpenStudioLandscapesFeatureIn
 from OpenStudioLandscapes.engine.utils import *
 
 
@@ -210,7 +209,9 @@ def op_group_out(
     del compose
 
     env: Dict = feature_in.openstudiolandscapes_base.env
-    docker_config_json: pathlib.Path = feature_in.openstudiolandscapes_base.docker_config_json
+    docker_config_json: pathlib.Path = (
+        feature_in.openstudiolandscapes_base.docker_config_json
+    )
 
     context.log.error(f"{docker_config_json = }")
 

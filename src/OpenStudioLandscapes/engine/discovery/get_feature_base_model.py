@@ -1,7 +1,8 @@
-from typing import Dict, Type, List, Union
+from typing import Dict, List, Type, Union
 
 from dagster import (
-    AssetExecutionContext, OpExecutionContext,
+    AssetExecutionContext,
+    OpExecutionContext,
 )
 
 from OpenStudioLandscapes.engine.discovery import discovery
@@ -42,12 +43,22 @@ def get_feature_base_model(
         else:
             return False
 
-    matches: List[discovery.FeatureBaseModel] = list(filter(filter_feature_config, discovered_models.values()))
+    matches: List[discovery.FeatureBaseModel] = list(
+        filter(filter_feature_config, discovered_models.values())
+    )
 
-    assert len(matches) == 1, "Config object of type %s not identifiable: %i items found." % (type(search_instance_type), len(matches))
+    assert (
+        len(matches) == 1
+    ), "Config object of type %s not identifiable: %i items found." % (
+        type(search_instance_type),
+        len(matches),
+    )
 
     ret: Type[search_instance_type] = matches[0].config
 
-    assert isinstance(ret, search_instance_type), "%s is not a Config %s object." % (type(ret), type(search_instance_type))
+    assert isinstance(ret, search_instance_type), "%s is not a Config %s object." % (
+        type(ret),
+        type(search_instance_type),
+    )
 
     return ret

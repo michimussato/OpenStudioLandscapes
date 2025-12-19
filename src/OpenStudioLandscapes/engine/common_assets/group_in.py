@@ -1,4 +1,4 @@
-from typing import Union, Dict, Type
+from typing import Dict, Type, Union
 
 from dagster import (
     AssetKey,
@@ -7,7 +7,11 @@ from dagster import (
     Out,
 )
 
-from OpenStudioLandscapes.engine.base.ops.factories import factory_group_in, factory_feature_in, factory_feature_in_parent
+from OpenStudioLandscapes.engine.base.ops.factories import (
+    factory_feature_in,
+    factory_feature_in_parent,
+    factory_group_in,
+)
 from OpenStudioLandscapes.engine.config.models import FeatureBaseModel
 from OpenStudioLandscapes.engine.link.models import (
     OpenStudioLandscapesBaseOut,
@@ -61,18 +65,17 @@ def get_feature_in(
 ) -> AssetsDefinition:
 
     if bool(ASSET_HEADER_FEATURE_IN):
-        out_parent = {
-            "feature_in_parent": In(OpenStudioLandscapesFeatureOut)
-        }
+        out_parent = {"feature_in_parent": In(OpenStudioLandscapesFeatureOut)}
 
         keys_parent = {
-            "feature_in_parent": AssetKey([*ASSET_HEADER_FEATURE_IN["key_prefix"], "feature_out_v2"])
+            "feature_in_parent": AssetKey(
+                [*ASSET_HEADER_FEATURE_IN["key_prefix"], "feature_out_v2"]
+            )
         }
 
     else:
         out_parent = {}
         keys_parent = {}
-
 
     feature_in_op = factory_feature_in(
         name=f"op_feature_in_{ASSET_HEADER['group_name']}",
@@ -90,7 +93,9 @@ def get_feature_in(
         can_subset=False,
         group_name=ASSET_HEADER["group_name"],
         keys_by_input_name={
-            "group_out_base": AssetKey([*ASSET_HEADER_BASE["key_prefix"], "group_out_base"]),
+            "group_out_base": AssetKey(
+                [*ASSET_HEADER_BASE["key_prefix"], "group_out_base"]
+            ),
             **keys_parent,
         },
         keys_by_output_name={
@@ -131,7 +136,9 @@ def get_feature_in_parent(
             "feature_in": AssetKey([*ASSET_HEADER["key_prefix"], "feature_in"]),
         },
         keys_by_output_name={
-            "feature_in_parent": AssetKey([*ASSET_HEADER["key_prefix"], "feature_in_parent"]),
+            "feature_in_parent": AssetKey(
+                [*ASSET_HEADER["key_prefix"], "feature_in_parent"]
+            ),
             "CONFIG_PARENT": AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG_PARENT"]),
         },
     )
