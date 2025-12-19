@@ -9,7 +9,6 @@ import git
 import nox
 import re
 import pathlib
-import requests
 import logging
 import platform
 from typing import Tuple
@@ -41,34 +40,6 @@ def _get_terminal_size() -> Tuple[int, int]:
     # https://stackoverflow.com/a/18243550
     cols, rows = shutil.get_terminal_size((80, 20))
     return cols, rows
-
-
-def download(
-    url: str,
-    dest_folder: pathlib.Path,
-) -> pathlib.Path:
-    if not dest_folder.exists():
-        dest_folder.mkdir(
-            parents=True, exist_ok=True
-        )  # create folder if it does not exist
-
-    filename = url.split("/")[-1].replace(" ", "_")  # be careful with file names
-    file_path = dest_folder / filename
-
-    r = requests.get(url, stream=True)
-    if r.ok:
-        logging.info("Saving to %s" % file_path.absolute().as_posix())
-        with open(file_path, "wb") as f:
-            for chunk in r.iter_content(chunk_size=1024 * 8):
-                if chunk:
-                    f.write(chunk)
-                    f.flush()
-                    os.fsync(f.fileno())
-        return file_path
-    else:  # HTTP status code 4XX/5XX
-        raise Exception(
-            "Download failed: status code {}\n{}".format(r.status_code, r.text)
-        )
 
 
 # nox Configuration & API
