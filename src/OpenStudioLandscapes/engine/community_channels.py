@@ -275,6 +275,20 @@ community_channels = {
     #     #     "channel_name": "",
     #     # },
     # },
+    # "OpenStudioLandscapes-OpenCue-Worker": {
+    #     "github": {
+    #         "repo_name": "OpenStudioLandscapes-OpenCue-Worker",
+    #     },
+    #     "discord": {
+    #         "channel_id": "",
+    #         "channel_name": "# openstudiolandscapes-opencue-worker",
+    #         "invite": "",
+    #     },
+    #     # "slack": {
+    #     #     "channel_id": "",
+    #     #     "channel_name": "",
+    #     # },
+    # },
     # "OpenStudioLandscapes-Grafana": {
     #     "github": {
     #         "repo_name": "OpenStudioLandscapes-Grafana",
