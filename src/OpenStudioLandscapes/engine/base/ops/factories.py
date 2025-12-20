@@ -253,10 +253,12 @@ def factory_compose(
             value=docker_dict,
         )
 
+        docker_dict_dump = json.dumps(docker_dict, indent=2, default=str)
+
         yield AssetMaterialization(
             asset_key=context.asset_key,
             metadata={
-                "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
+                "docker_json": MetadataValue.md(f"```json\n{docker_dict_dump}\n```"),
                 "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
                 "docker_compose_yaml": MetadataValue.path(DOCKER_COMPOSE),
                 # Todo: "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)),
