@@ -645,10 +645,11 @@ def create_image(
     image_name,
     image_prefixes,
     tags,
-    docker_image,
+    docker_image: Dict,
     docker_config: DockerConfigModel,
-    docker_config_json,
-    docker_file,
+    docker_config_json: pathlib.Path,
+    docker_file: pathlib.Path,
+    build_context: Union[None, pathlib.Path] = None,
 ):
 
     image_data = {
@@ -681,6 +682,7 @@ def create_image(
         tags=tags_full_str,
         pull=pull,
         no_cache=docker_config.no_cache,
+        build_context=build_context,
     )
 
     cmds.append(cmd_build)

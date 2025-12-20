@@ -10,7 +10,7 @@ import shlex
 import shutil
 import subprocess
 import threading
-from typing import Any, Generator, List
+from typing import Any, Generator, List, Union
 
 from dagster import AssetExecutionContext, get_dagster_logger
 
@@ -28,6 +28,7 @@ def docker_build_cmd(
     tags: list[str],
     pull: bool,
     no_cache: bool = False,
+    build_context: Union[None, pathlib.Path] = None,
 ) -> list:
 
     # with buildx, the target command could look like:
@@ -54,7 +55,7 @@ def docker_build_cmd(
         "--no-cache" if no_cache else None,
         # https://stackoverflow.com/a/11869360
         *[i(tag) for tag in tags for i in (lambda x: "--tag", lambda x: tag)],
-        docker_file.parent.as_posix(),
+        build_context.as_posix() if build_context else docker_file.parent.as_posix(),
     ]
 
     # As cmd_build_ can have falsy values, we filter them out
