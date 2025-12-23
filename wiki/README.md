@@ -191,7 +191,9 @@ root((OpenStudioLandscapes))
 
 # Dependencies
 
-See [Dependencies Overview](dependencies.md)
+See
+- [Reference System](installation/reference_system.md)
+- [Dependencies Overview](dependencies.md)
 
 # Usage
 
