@@ -6,6 +6,7 @@
 * [Structure](#structure)
   * [Single Landscape](#single-landscape)
   * [Multiple Landscapes](#multiple-landscapes)
+* [Dependencies](#dependencies)
 * [Usage](#usage)
   * [Configure Features](#configure-features)
   * [Run OpenStudioLandscapes](#run-openstudiolandscapes)
