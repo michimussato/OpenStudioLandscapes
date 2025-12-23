@@ -219,7 +219,7 @@ looks like, here's the deal:
 if you're into (like myself) dynamic, worry-free documentation of what
 you are actually working with, here's a Landscape Map of a Landscape:
 
-[![Demo Landscape](https://raw.githubusercontent.com/michimussato/OpenStudioLandscapes-Demo-Landscape/refs/heads/main/2025-07-10-22-36-50-47cd6c0a7dd141429707ab6d91190a27/Landscape_Map__Landscape_Map/Landscape_Map__landscape_map/Landscape_Map__landscape_map.svg)](https://github.com/michimussato/OpenStudioLandscapes-Demo-Landscape)
+![Demo Landscape](https://raw.githubusercontent.com/michimussato/OpenStudioLandscapes-Demo-Landscape/refs/heads/main/2025-07-10-22-36-50-47cd6c0a7dd141429707ab6d91190a27/Landscape_Map__Landscape_Map/Landscape_Map__landscape_map/Landscape_Map__landscape_map.svg)
 
 And the cool thing is, Dagster also does it's thing with the Asset
 descriptions! You'll be provided with one single command (just click 
