@@ -207,7 +207,7 @@ So, let's take the ComposeScope `license_server` for example.
 It provides three services:
 - `sesi-gcc-9-3-houdini-20`: A license server for Houdini
 - `nuke-rlm-8`: A license server for Nuke
-- `newt_service.compose_scope-license_server.2025-12-23-19-19-03-4346bdbc4d1c45c4a8a91948275b2086`: the NEWT service that wraps the two license servers
+- `newt_service.compose_scope-license_server.2025-12-23-19-19-03-4346bdbc4d1c45c4a8a91948275b2086`: the Pangolin NEWT service that wraps the two license servers
 
 ![2025-12-23_21-48.png](media/images/2025-12-23_21-48.png)
 
