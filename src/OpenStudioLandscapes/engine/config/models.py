@@ -215,6 +215,8 @@ class ConfigEngine(BaseModel):
         ),
     )
 
+    # Todo:
+    #  - [ ] do we need this?
     # this initilizes a 'GIT_ROOT' by the config.yml
     # not sure yet if this is really necessary.
     openstudiolandscapes__repository_root: pathlib.Path = Field(

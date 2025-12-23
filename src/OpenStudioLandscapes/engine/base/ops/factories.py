@@ -1693,7 +1693,7 @@ def factory__CONFIG(
         ins=ins,
         description=textwrap.dedent(
 f"""
-Reads options from a custom `config.yml`.
+Reads options from a `config.yml` on your hard drive.
 If the custom `config.yml` does not exist, it 
 will be created locally containing default options.
 
