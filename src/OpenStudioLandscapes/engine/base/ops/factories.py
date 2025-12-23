@@ -1692,14 +1692,14 @@ def factory__CONFIG(
         name=name,
         ins=ins,
         description=textwrap.dedent(
-            f"""
+f"""
 Reads options from a custom `config.yml`.
 If the custom `config.yml` does not exist, it 
 will be created locally containing default options.
 
 ---
 
-For reference, the default `config.yml` looks as follows:
+For reference, the default `Config` values are as follows:
         
 ```yaml
 {CONFIG_STR}

@@ -24,6 +24,7 @@ def get_config_str(
         sub_class_value = field_v.default
         annotation = field_v.annotation
         sub_class_description = str(field_v.description)
+        sub_class_examples = str(field_v.examples)
         LOGGER.debug(f"\t\tType: {annotation}")
         LOGGER.debug(f"\t\tValue: {sub_class_value}")
         LOGGER.debug(f"\t\tDescription: {sub_class_description}")
@@ -53,6 +54,9 @@ def get_config_str(
 
             doc_str += (f"# Sub Class Description:\n"
                         f"#     {sub_class_description}\n")
+
+            doc_str += (f"# Examples:\n"
+                        f"#     {sub_class_examples}\n")
 
         if base_class_value == sub_class_value:
             doc_str += f"\n\n"
