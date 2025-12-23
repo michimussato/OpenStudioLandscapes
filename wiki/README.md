@@ -211,8 +211,8 @@ and do not work out of the box. More info in the
 ![dagster_tree_default_features.png](../media/images/dagster_tree_default_features.png)
 
 Nevertheless, whether a Feature is enabled or not can be
-specified in `OpenStudioLandscapes.engine.features` or in the `OpenStudioLandscapes/.env` file
-(if you choose to use one - see `OpenStudioLandscapes/EXAMPLE.env` for more information).
+specified in its `config.yml` file located (by default) at
+`~/.config/OpenStudioLandscapes/OpenStudioLandscapes-<Feature>/`.
 
 ## Run OpenStudioLandscapes
 
