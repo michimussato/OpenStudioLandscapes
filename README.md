@@ -4,6 +4,23 @@
 
 <!-- TOC -->
 * [OpenStudioLandscapes](#openstudiolandscapes)
+  * [Brief](#brief)
+* [Get started](#get-started)
+  * [Clone Repository](#clone-repository)
+  * [Install Dependencies](#install-dependencies)
+  * [Install OpenStudioLandscapes](#install-openstudiolandscapes)
+  * [Add Features](#add-features)
+  * [Run OpenStudioLandscapes](#run-openstudiolandscapes)
+  * [Configure OpenStudioLandscapes](#configure-openstudiolandscapes)
+* [Q&A](#qa)
+  * [Who is OpenStudioLandscapes for?](#who-is-openstudiolandscapes-for)
+  * [Can OpenStudioLandscapes provide a solution for distributed teams?](#can-openstudiolandscapes-provide-a-solution-for-distributed-teams)
+  * [I don't see a lot of documentation for OpenStudioLandscapes. How can I gain insight?](#i-dont-see-a-lot-of-documentation-for-openstudiolandscapes-how-can-i-gain-insight)
+* [What problem does OpenStudioLandscapes solve?](#what-problem-does-openstudiolandscapes-solve)
+  * [So, tell me! What exactly does it produce?](#so-tell-me-what-exactly-does-it-produce)
+  * [I have zero understanding for bugs! Who can I blame?](#i-have-zero-understanding-for-bugs-who-can-i-blame)
+    * [Issues and feature requests](#issues-and-feature-requests)
+* [Documentation](#documentation)
 * [Community](#community)
 * [Current Feature Statuses](#current-feature-statuses)
 <!-- TOC -->
@@ -12,18 +29,20 @@
 
 # OpenStudioLandscapes
 
+## Brief
+
 Setup and launch custom production environments
 with Render Farm, Production Tracking, Automation
 and more - your 3D Animation
 and VFX Pipeline backbone - with ease, independence
 and scalability!
 The way YOU want it!
-YOU only!
-Exactly!
 
-This is not another Pipeline Tool. It is a tool
-to build a structured foundation for any Pipeline Tool
-you might decide to use at some point in your studio.
+> [!TIP]
+> 
+> This is not another Pipeline Tool. It is a tool
+> to build a structured foundation for any Pipeline Tool
+> you might decide to use at some point in your studio.
 
 An open source toolkit - a declarative build system - to
 easily create reproducible production environments based
@@ -40,10 +59,11 @@ made in the past. Stay flexible and adaptable
 with this modular and declarative system by reconfiguring
 any production environment with ease:
 - ✅ Easily add, edit, replace or remove services
-- ✅ Clone (or modify and clone) entire production Landscapes for testing, debugging or development
+- ✅ Duplicate entire production Landscapes for testing, debugging or development
 - ✅ Code as source of truth:
   - ✅ Always stay on top of things with Landscape Maps and node tree representations of Python code
   - ✅ Limit manual documentation to a bare minimum
+  - ✅ Git controlled config store
 - ✅ `OpenStudioLandscapes` is (primarily) powered by [Dagster](https://github.com/dagster-io/) and [Docker](https://github.com/docker)
 - ✅ Fully Python based
 - ✅ Build your own studio automation
@@ -51,32 +71,115 @@ any production environment with ease:
 - ✅ Do you like project based studio services?
   - ✅ No problem with OpenStudioLandscapes
 
-This platform is aimed towards small to medium-sized
-studios where only limited resources for Pipeline
+# Get started
+
+## Clone Repository
+
+```shell
+git clone https://github.com/michimussato/OpenStudioLandscapes.git \
+    && cd OpenStudioLandscapes
+```
+
+## Install Dependencies
+
+```shell
+make sys_deps_install
+```
+
+## Install OpenStudioLandscapes
+
+```shell
+make openstudiolandscapes_install
+```
+
+## Add Features
+
+Documentation is broken out into the individual Features.
+You will find direction on the `README.md` file of the Feature you're interested in.
+For example here: [OpenStudioLandscapes-Kitsu](https://github.com/michimussato/OpenStudioLandscapes-Kitsu?tab=readme-ov-file#install)
+
+A full list of available Features is available [here](#current-feature-statuses)
+
+## Run OpenStudioLandscapes
+
+```shell
+openstudiolandscapes
+```
+
+And head over to the Dagster Dev web UI:
+
+[http://127.0.0.1:3000/asset-groups]()
+
+> [!IMPORTANT]
+> 
+> If Dagster web UI is running on a different port
+> (default: `3000`), just make sure this is reflected in 
+> the URL you are trying to access.
+
+## Configure OpenStudioLandscapes
+
+By default, OpenStudioLandscapes creates 
+`~/.config/OpenStudioLandscapes`. All `config.yml` files
+will be placed inside this default config store.
+
+# Q&A
+
+## Who is OpenStudioLandscapes for?
+
+This platform is aimed towards students, one-man-shows and
+small to medium-sized studios where only limited resources for Pipeline
 Engineers and Technical Directors are available.
 This system allows those studios to share a common
-underlying system to build arbitrary pipeline tools
-on top with the ability to share them among others
-without sacrificing the technical freedom to implement
-highly studio specific and individual solutions if needed.
+underlying system. And whatever your individual pipeline needs are, 
+you can then build your tools on top of this common, stable, flexible and
+scalable system.
 
-The scope of this project are users with some technical skills with a
-desire for a pre-made solution to set up their production
-services and environments. OpenStudioLandscapes is therefore
-a somewhat opinionated solution for working environments that
-lack the fundamental skills and/or budgets to write a solution like
-OpenStudioLandscapes by themselves while being flexible enough
-for everyone *with* the technical skills to make their way through
-configuring a Landscape or even writing their own OpenStudioLandscapes
-Features for custom or proprietary services to fully fit their needs.
+The scope of this project are users with some technical skills. 
+OpenStudioLandscapes is intended to run on a Linux based 
+system and will remain to do so. However, if you are able to install
+Ubuntu as a virtual machine on a Windows PC, you're pretty much good to go.
 
-I guess this is a good starting point to open the project up to
-the animation and VFX community to find out where (or where else) 
-exactly the needs are to make sure small studios keep growing 
-in a (from a technical perspective) healthy way without ending up
-in a high "tech dept" dead end.
+## Can OpenStudioLandscapes provide a solution for distributed teams?
 
-What problem does OpenStudioLandscapes solve?
+Sure it can! OpenStudioLandscapes together with Pangolin can allow you
+to grant remote users access to your locally (or wherever your 
+[Landscape](wiki/terminology.md#table-of-contents) 
+will be running) hosted production tracking system
+for example.
+
+> [!TIP]
+> 
+> Acting as a service provider (which is what you are in this case) 
+> has its own unique set of challenges. 
+> [OpenStudioLandscapesHub](https://github.com/michimussato/openStudioLandscapesHub) 
+> is an attempt (WIP) to give you a basic infrastructure to minimize the barrier down
+> to a minimum.
+
+Pangolin allows for [Features](wiki/terminology.md#table-of-contents) of a single 
+[Landscape](wiki/terminology.md#table-of-contents) to be distributed across different
+sites via SSH tunnels (see also [OpenStudioLandscapes Compose Scopes](wiki/terminology.md#table-of-contents)).
+
+A good place to start to learn about Pangolin Sites are the 
+[Pangolin docs](https://docs.pangolin.net/manage/sites/understanding-sites).
+
+## I don't see a lot of documentation for OpenStudioLandscapes. How can I gain insight?
+
+OpenStudioLandscapes is build on [Dagster](https://docs.dagster.io/). 
+Dagster itself offers Markdown compatible
+descriptions for [Assets](https://docs.dagster.io/guides/build/assets/defining-assets).
+OpenStudioLandscapes aims to leverage this capability.
+
+> [!IMPORTANT]
+> 
+> This allows for dynamic documentation without having the need to compile static
+> documentation. Another good side effect is that you will find documentation and
+> information where you need it.
+> 
+> Example:
+> 
+> ![2025-12-23_20-04.png](media/images/2025-12-23_20-04.png)
+
+# What problem does OpenStudioLandscapes solve?
 
 What's separating the men from the boys is the production back bone.
 Large studios spent years and years of man (and woman) hours and
@@ -90,40 +193,62 @@ pre-made on-prem production environment at very little cost.
 The second problem it is trying to solve is one that you (as a small
 company) do not have **yet**. Ideally, before you start thinking about
 automating processes, you want to have a robust underlying system. 
-However, what usually happens is that
-studios build their systems (again, while they are still small with no 
-budget and/or understanding for professional automation) the other way around:
-they write their small scripts and build everything else around and on top of that. This
+However, what usually happens is that studios skip this crucial 
+step. This
 almost inevitably leads to tech dept in the future after growth has happened - 
-a house of cards built upside down. So, you wanna replace or remove your
-old little script that you wrote 5 years ago which is being used in so many
-places you can't even remember? There you have it. Better don't touch it. Better
-continue building your system around it. Right? Wrong! OpenStudioLandscapes
-is here to change that by making sure your **future you** is not going to 
-regret decisions of its **past you** by providing structure while keeping 
-systems and pipeline features as isolated (read: portable) as possible!
+a house of cards built upside down. 
 
-Now you're asking: **"So, tell me! What exactly does it produce? Is
-it even worth the hassle? And wtf is a Landscape?"**. Good you're asking! To get an idea
-what the actual output (or product if you will) of OpenStudioLandscapes
-looks like and what it can be used for, I have created a **ready-made, portable
-[Demo Landscape](https://github.com/michimussato/OpenStudioLandscapes-Demo-Landscape)**
-(well, OpenStudioLandscapes created it of course). No need to go through the installation process at all.
-Just clone the repository and follow the (very short) instructions. Here's a Landscape Map of
-the Demo Landscape:
+> [!CAUTION]
+> 
+> So, you wanna replace or remove your
+> old little script that you wrote 5 years ago which is being used in so many
+> places you can't even remember? There you have it. Better don't touch it. Better
+> continue building your system around it. Right? Wrong! 
+
+OpenStudioLandscapes is here to change that by making sure your 
+**future you** is not going to regret decisions of its **past you** 
+by providing structure while keeping systems and pipeline features 
+as isolated (read: portable) as possible!
+
+## So, tell me! What exactly does it produce?
+
+Good you're asking! To get an idea what the actual output 
+(or product if you will) of OpenStudioLandscapes
+looks like, here's the deal: 
+if you're into (like myself) dynamic, worry-free documentation of what
+you are actually working with, here's a Landscape Map of a Landscape:
 
 [![Demo Landscape](https://raw.githubusercontent.com/michimussato/OpenStudioLandscapes-Demo-Landscape/refs/heads/main/2025-07-10-22-36-50-47cd6c0a7dd141429707ab6d91190a27/Landscape_Map__Landscape_Map/Landscape_Map__landscape_map/Landscape_Map__landscape_map.svg)](https://github.com/michimussato/OpenStudioLandscapes-Demo-Landscape)
+
+And the cool thing is, Dagster also does it's thing with the Asset
+descriptions! You'll be provided with one single command (just click 
+it to copy it to your clipboard) to launch the diagrammed Landscape:
+
+![2025-12-23_20-22.png](media/images/2025-12-23_20-22.png)
+
+## I have zero understanding for bugs! Who can I blame?
 
 Bear in mind: OpenStudioLandscapes is a young project.
 There are still many items to be implemented (and potentially bug-fixed).
 I lack experience in many fields when it comes to software development. The documentation
-is not in a shape I would like to see it in. So, before adding features and Features to 
-OpenStudioLandscapes, I plan to work on stability, documentation and support. 
+is not in a shape I would like to see it in (dynamic, wherever possible). 
+So, before adding Features to OpenStudioLandscapes, I plan to work on stability, documentation and support. 
 To avoid filling in the wrong gaps, I would like to mainly fill in those 
 that are being asked for - and this is your part. Ask anything. Request anything.
 Suggest anything. Anything that leads to a better experience - without hiccups and without
 too much noise at the same time - from installation to usage. If your field of expertise
 can improve this project, please step forward and jump on board!
+
+### Issues and feature requests
+
+Feature requests and general issues can be posted here:
+- [Issues and feature requests](https://github.com/michimussato/OpenStudioLandscapes/issues)
+
+If you can isolate an issue to a specific Feature, each Feature has its own
+issue tracker as well. For example:
+- [Issues and feature requests for Feature OpenStudioLandscapes-Kitsu](https://github.com/michimussato/OpenStudioLandscapes-Kitsu/issues)
+
+# Documentation
 
 Now, it's time to head over to the [Wiki](wiki/README.md)!
 
