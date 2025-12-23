@@ -119,7 +119,8 @@ And head over to the Dagster Dev web UI:
 ## Configure OpenStudioLandscapes
 
 By default, OpenStudioLandscapes creates 
-`~/.config/OpenStudioLandscapes`. All `config.yml` files
+`~/.config/OpenStudioLandscapes` when `openstudiolandscapes` 
+is executed. All `config.yml` files
 will be placed inside this default config store.
 
 # Q&A
