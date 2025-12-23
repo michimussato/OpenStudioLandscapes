@@ -12,9 +12,12 @@
   * [Add Features](#add-features)
   * [Run OpenStudioLandscapes](#run-openstudiolandscapes)
   * [Configure OpenStudioLandscapes](#configure-openstudiolandscapes)
+    * [Environment Variables and Secrets](#environment-variables-and-secrets)
 * [Q&A](#qa)
   * [Who is OpenStudioLandscapes for?](#who-is-openstudiolandscapes-for)
   * [Can OpenStudioLandscapes provide a solution for distributed teams?](#can-openstudiolandscapes-provide-a-solution-for-distributed-teams)
+    * [TL; DR](#tl-dr)
+    * [OK, now I'm hooked...](#ok-now-im-hooked)
   * [I don't see a lot of documentation for OpenStudioLandscapes. How can I gain insight?](#i-dont-see-a-lot-of-documentation-for-openstudiolandscapes-how-can-i-gain-insight)
 * [What problem does OpenStudioLandscapes solve?](#what-problem-does-openstudiolandscapes-solve)
   * [So, tell me! What exactly does it produce?](#so-tell-me-what-exactly-does-it-produce)
@@ -123,6 +126,17 @@ By default, OpenStudioLandscapes creates
 is executed. All `config.yml` files
 will be placed inside this default config store.
 
+> [!TIP]
+> 
+> You can change the default location
+> by setting `OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT`.
+
+### Environment Variables and Secrets
+
+Dagster (and therefore OpenStudioLandscapes) reads a local
+`.env` file at the root of the OpenStudioLandscapes Git
+repository directory.
+
 # Q&A
 
 ## Who is OpenStudioLandscapes for?
@@ -142,6 +156,8 @@ Ubuntu as a virtual machine on a Windows PC, you're pretty much good to go.
 
 ## Can OpenStudioLandscapes provide a solution for distributed teams?
 
+### TL; DR
+
 Sure it can! OpenStudioLandscapes together with Pangolin can allow you
 to grant remote users access to your locally (or wherever your 
 [Landscape](wiki/terminology.md#table-of-contents) 
@@ -156,9 +172,69 @@ for example.
 > is an attempt (WIP) to give you a basic infrastructure to minimize the barrier down
 > to a minimum.
 
+### OK, now I'm hooked...
+
 Pangolin allows for [Features](wiki/terminology.md#table-of-contents) of a single 
 [Landscape](wiki/terminology.md#table-of-contents) to be distributed across different
 sites via SSH tunnels (see also [OpenStudioLandscapes Compose Scopes](wiki/terminology.md#table-of-contents)).
+
+For example, to wrap a Landscape with a Pangoline Site, you can 
+provide the required secrets as follows:
+
+> [!IMPORTANT]
+> 
+> Please note that Pangolin Sites can only wrap full Compose Scopes.
+> Compose Scopes can have arbitrary values, like `license_server` or
+> `production_tracking` etc.
+> Therefore, a dynamic Compose Scope name will also be assigned to 
+> the environment varibles that carry the secrets.
+> 
+> More about the relevant values here:
+> [Pangolin NEWT Variables](https://docs.pangolin.net/manage/sites/install-site#docker-compose)
+
+```shell
+# The PANGOLIN_ENDPOINT variable for the compose scope `license_server`:
+OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_LICENSE_SERVER__PANGOLIN_ENDPOINT="https://app.pangolin.net"
+
+# The NEWT_ID variable for the compose scope `license_server`:
+OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_LICENSE_SERVER__NEWT_ID="2ix2t8xk22ubpfy"
+
+# The NEWT_SECRET variable for the compose scope `license_server`:
+OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_LICENSE_SERVER__NEWT_SECRET="nnisrfsdfc7prqsp9ewo1dvtvci50j5uiqotez00dgap0ii2"
+```
+
+the resulting command to launch a Landscape that will connect as a Pangolin Site:
+
+```shell
+OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_LICENSE_SERVER__PANGOLIN_ENDPOINT="https://app.pangolin.net" \
+    && OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_LICENSE_SERVER__NEWT_ID="2ix2t8xk22ubpfy" \
+    && OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_LICENSE_SERVER__NEWT_SECRET="nnisrfsdfc7prqsp9ewo1dvtvci50j5uiqotez00dgap0ii2" \
+    && path/to/.landscapes/<LANDSCAPE_ID>/ComposeScope_license_server/docker_compose/docker_compose_up.sh
+```
+
+A successfully established connection and registration as a Pangolin Site will
+be presented in the Pangolin Admin Web UI:
+
+![2025-12-23_21-24.png](media/images/2025-12-23_21-24.png)
+
+The Pangolin Resources above Site provides will be shown on
+the Resources page:
+
+![2025-12-23_21-27.png](media/images/2025-12-23_21-27.png)
+
+And will populate the provided services (RLM license server
+in this case):
+
+![2025-12-23_21-28.png](media/images/2025-12-23_21-28.png)
+
+The RLM web UI is listening on port `4041` (actually the container
+port is the relevant one here):
+
+![2025-12-23_21-36.png](media/images/2025-12-23_21-36.png)
+
+And voila! SSL encrypted RLM license server web UI access:
+
+![2025-12-23_21-40.png](media/images/2025-12-23_21-40.png)
 
 A good place to start to learn about Pangolin Sites are the 
 [Pangolin docs](https://docs.pangolin.net/manage/sites/understanding-sites).
