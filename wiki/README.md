@@ -58,8 +58,7 @@ We might come back to Sphinx/ReadTheDocs at some point.
 
 Answer:
 - **Outdated Documentation**
-- **Fragmented Documentation**
-- **Parallel Documentation** (I'm sure there's also an official term for this...)
+- **Parallel Documentation** (I'm sure there's an official term for this...)
 
 All these *pretend* to be on top of things.
 
