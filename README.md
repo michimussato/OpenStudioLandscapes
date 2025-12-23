@@ -73,6 +73,7 @@ any production environment with ease:
   - ✅ and share it (scripts, packages etc.) across Landscapes
 - ✅ Do you like project based studio services?
   - ✅ No problem with OpenStudioLandscapes
+- ✅ Landscapes can run on a single host as well as on multiple hosts
 
 > [!IMPORTANT]
 > 
