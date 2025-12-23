@@ -62,8 +62,8 @@ def get_config_str(
 
             doc_str += (f"# Description:\n"
                         f"#     {sub_class_description}\n"
-                        f"# Required: {sub_class_required}\n"
-                        f"#     {sub_class_description}\n"
+                        f"# Required:\n"
+                        f"#     {sub_class_required}\n"
                         f"# Examples:\n"
                         f"#     {sub_class_examples}\n")
 
