@@ -60,7 +60,9 @@ Answer:
 - **Outdated Documentation**
 - **Parallel Documentation** (I'm sure there's an official term for this...)
 
-All these *pretend* to be on top of things.
+> [!WARNING]
+> 
+> These are deceiving because they *pretend* to be reliable as a source of truth.
 
 ---
 
