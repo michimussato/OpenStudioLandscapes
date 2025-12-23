@@ -1,3 +1,4 @@
+from multiprocessing.util import sub_debug
 from typing import Type
 
 import yaml
@@ -12,59 +13,71 @@ LOGGER = get_dagster_logger(__name__)
 def get_config_str(
         Config: Type[pydantic.BaseModel],
 ) -> str:
-    LOGGER.debug(Config.model_fields)
+    LOGGER.info(f"{Config.model_fields = }")
 
     doc_str = str()
 
+    field_k: str
+    field_v: pydantic.FieldInfo
+
     for field_k, field_v in Config.model_fields.items():
-        LOGGER.debug(f"Field name: {field_k}")
+        try:
+            LOGGER.info(f"{field_k = }")
+            LOGGER.info(f"{field_v.is_required() = }")
+            # LOGGER.debug(f"Field name: {field_k}")
 
-        LOGGER.debug(f"\tValues specified in Config:")
+            # LOGGER.debug(f"\tValues specified in Config:")
 
-        sub_class_value = field_v.default
-        annotation = field_v.annotation
-        sub_class_description = str(field_v.description)
-        sub_class_examples = str(field_v.examples)
-        LOGGER.debug(f"\t\tType: {annotation}")
-        LOGGER.debug(f"\t\tValue: {sub_class_value}")
-        LOGGER.debug(f"\t\tDescription: {sub_class_description}")
+            sub_class_required = field_v.is_required()
+            sub_class_value = field_v.default
+            sub_class_annotation = field_v.annotation
+            sub_class_description = str(field_v.description)
+            sub_class_examples = str(field_v.examples)
+            # LOGGER.debug(f"\t\tType: {annotation}")
+            # LOGGER.debug(f"\t\tValue: {sub_class_value}")
+            # LOGGER.debug(f"\t\tDescription: {sub_class_description}")
 
-        doc_str += f"# {''.rjust(len(field_k), '=')}\n"
-        doc_str += f"# {field_k}\n"
-        doc_str += f"# {''.rjust(len(field_k), '-')}\n"
-        doc_str += f"#\n"
-        doc_str += f"# Type: {annotation}\n"
+            doc_str += f"# {''.rjust(len(field_k), '=')}\n"
+            doc_str += f"# {field_k}\n"
+            doc_str += f"# {''.rjust(len(field_k), '-')}\n"
+            doc_str += f"#\n"
+            doc_str += f"# Type: {sub_class_annotation}\n"
 
-        if field_k in Config.__base__.model_fields:
-            # print(f"\tDefault Value: {Config.__base__.model_fields[field_k] = }")
-            base_class_value = Config.__base__.model_fields[field_k].default
-            base_class_annotation = Config.__base__.model_fields[field_k].annotation
-            base_class_description = Config.__base__.model_fields[field_k].description
-            LOGGER.debug(f"\t\tType: {base_class_annotation}")
-            LOGGER.debug(f"\t\tDefault Value: {base_class_value}")
-            LOGGER.debug(f"\t\tDefault Description: {base_class_description}")
+            if field_k in Config.__base__.model_fields:
+                # print(f"\tDefault Value: {Config.__base__.model_fields[field_k] = }")
+                base_class_required = Config.__base__.model_fields[field_k].is_required()
+                base_class_value = Config.__base__.model_fields[field_k].default
+                # base_class_annotation = Config.__base__.model_fields[field_k].annotation
+                base_class_description = Config.__base__.model_fields[field_k].description
+                # LOGGER.debug(f"\t\tType: {base_class_annotation}")
+                # LOGGER.debug(f"\t\tDefault Value: {base_class_value}")
+                # LOGGER.debug(f"\t\tDefault Description: {base_class_description}")
 
-            doc_str += (f"# Base Class:\n"
-                        f"#     Description:\n"
-                        f"#         {base_class_description}\n"
-                        f"#     Default value:\n"
-                        f"#         {base_class_value}\n")
+                doc_str += (f"# Base Class:\n"
+                            f"#     Required: {base_class_required}\n"
+                            f"#     Description:\n"
+                            f"#         {base_class_description}\n"
+                            f"#     Default value:\n"
+                            f"#         {base_class_value}\n")
 
-        else:
-
-            doc_str += (f"# Sub Class Description:\n"
-                        f"#     {sub_class_description}\n")
-
-            doc_str += (f"# Examples:\n"
+            doc_str += (f"# Description:\n"
+                        f"#     {sub_class_description}\n"
+                        f"# Required: {sub_class_required}\n"
+                        f"#     {sub_class_description}\n"
+                        f"# Examples:\n"
                         f"#     {sub_class_examples}\n")
 
-        if base_class_value == sub_class_value:
-            doc_str += f"\n\n"
-            continue
+            if base_class_value == sub_class_value:
+                doc_str += f"\n\n"
+                continue
 
-        kv = {field_k: sub_class_value}
+            kv = {field_k: sub_class_value}
 
-        doc_str += f"{yaml.safe_dump(json.loads(json.dumps(kv, indent=2, default=str)))}\n\n"
+            doc_str += f"{yaml.safe_dump(json.loads(json.dumps(kv, indent=2, default=str)))}\n\n"
+
+        except Exception as e:
+            LOGGER.error(f"{e}")
+            raise Exception from e
 
     return doc_str
 
