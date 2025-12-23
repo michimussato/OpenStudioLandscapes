@@ -147,7 +147,7 @@ will be placed inside this default config store.
 
 > [!TIP]
 > 
-> You can change the default location
+> You can change the default config store location
 > by setting `OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT`.
 
 ### Environment Variables and Secrets
