@@ -49,10 +49,13 @@ files aggregated in this Wiki - which is a constant work in progress.
 > - scripted (`nox -s readme`)
 > - graphically (images, [graphs & diagrams](https://mermaid.js.org/intro/))
  
-This might be a banality: OpenStudioLandscapes documentation aimes to be as 
-close to the truth as possible using *my limited resources*.
+This might be a banality: OpenStudioLandscapes documentation aims to
+reflect the truth as close and as quickly as possible using 
+*my limited resources*.
 
-We might come back to Sphinx/ReadTheDocs at some point.
+> [!NOTE]
+> 
+> We might come back to Sphinx/ReadTheDocs at some point.
 
 ## Question: What's worse than having no Documentation?
 
