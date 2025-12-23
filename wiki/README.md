@@ -56,7 +56,7 @@ We might come back to Sphinx/ReadTheDocs at some point.
 
 ## Question: What's worse than having no Documentation?
 
-Answer:
+Answer (from my own experience):
 - **Outdated Documentation**
 - **Parallel Documentation** (I'm sure there's an official term for this...)
 
