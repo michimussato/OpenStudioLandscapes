@@ -30,26 +30,10 @@ flowchart TB
         subgraph Sub Systems
             direction TB
 
-            subgraph zerotrustmfa[Zero Trust MFA]
-                direction TB
-                    teleport((Teleport))
-            end
-
             subgraph local-registry[Container Registry]
                 direction TB
-                    harbor((Harbor))
+                    registry((registry))
             end
-
-%%            subgraph Docker Registry
-%%                direction TB
-%%                dockerio((Docker.io))
-%%
-%%            end
-
-%%            subgraph DNS Server
-%%                direction TB
-%%                pihole((Pi-hole))
-%%            end
 
         end
 
@@ -77,25 +61,6 @@ flowchart TB
 %%        sudo(sudo)
 %%        docker(Docker)
 %%        python(python3.11)
-    end
-
-    subgraph external-registry[External Registries]
-        direction LR
-        alibaba(Alibaba Cloud ACR)
-        aws(Aws ECR)
-        azure(ACR)
-        dockerhub(Docker Hub)
-        dockerregistry(Docker Registry)
-        dtr(DTR)
-        github(Github GHCR)
-        gitlab(Gitlab)
-        google(Google GCR)
-        harbor_(Harbor)
-        huawei(Huawei SWR)
-        jfrog(JFrog Artifactory)
-        quay(Quay)
-        tencent(Tencent TCR)
-        volcengine(VolcEngine CR)
     end
 
     subgraph dns[DNS Server]
@@ -131,7 +96,6 @@ flowchart TB
             osl-opencue(OpenStudioLandscapes-OpenCue)
             osl-sesi-gcc-9-3-houdini-20(OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20)
             osl-syncthing(OpenStudioLandscapes-Syncthing)
-            osl-teleport(OpenStudioLandscapes-Teleport)
             osl-twingate(OpenStudioLandscapes-Twingate)
             osl-watchtower(OpenStudioLandscapes-Watchtower)
 %%            osl-watchtower -- requires --> osl-kitsu
@@ -139,7 +103,6 @@ flowchart TB
     end
 
 
-    harbor -. can replicate to .-> external-registry
 %%    OpenStudioLandscapes -. recommends .-> teleport
 %%    root -- requires --> docker
 %%    root -- requires --> python
