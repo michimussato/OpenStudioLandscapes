@@ -53,8 +53,9 @@ def get_config_str(
                 # LOGGER.debug(f"\t\tDefault Value: {base_class_value}")
                 # LOGGER.debug(f"\t\tDefault Description: {base_class_description}")
 
-                doc_str += (f"# Base Class:\n"
-                            f"#     Required: {base_class_required}\n"
+                doc_str += (f"# Base Class Info:\n"
+                            f"#     Required:\n"
+                            f"#         {base_class_required}\n"
                             f"#     Description:\n"
                             f"#         {base_class_description}\n"
                             f"#     Default value:\n"
