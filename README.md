@@ -74,6 +74,10 @@ any production environment with ease:
 - ✅ Do you like project based studio services?
   - ✅ No problem with OpenStudioLandscapes
 
+> [!IMPORTANT]
+> 
+> [Disclaimer](wiki/disclaimer.md)
+
 # Get started
 
 > [!CAUTION]
@@ -343,6 +347,14 @@ that are being asked for - and this is your part. Ask anything. Request anything
 Suggest anything. Anything that leads to a better experience - without hiccups and without
 too much noise at the same time - from installation to usage. If your field of expertise
 can improve this project, please step forward and jump on board!
+
+> [!TIP]
+> 
+> Now, in case you do feel inclined to blame *somebody*, here's
+> some info [About the Author](wiki/about_the_author.md).
+> 
+> Also, feel free to connect on [Discord](https://discord.com/invite/F6bDRWsHac)
+> for exchange.
 
 ### Issues and feature requests
 
