@@ -34,7 +34,7 @@ imports_engine.extend(
     [
         "OpenStudioLandscapes.engine.compose_scopes.default.definitions",
         "OpenStudioLandscapes.engine.landscape_map.definitions",
-        "OpenStudioLandscapes.engine.distributable.definitions",
+        # "OpenStudioLandscapes.engine.distributable.definitions",
     ]
 )
 
