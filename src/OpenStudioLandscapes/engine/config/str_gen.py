@@ -69,17 +69,22 @@ def get_config_str(
                         f"# Examples:\n"
                         f"#     {sub_class_examples}\n")
 
-            if base_class_value == sub_class_value:
-                doc_str += f"\n\n"
-                continue
+            try:
+                if base_class_value == sub_class_value:
+                    doc_str += f"\n\n"
+                    continue
 
-            # LOGGER.error(f"{sub_class_value = }")
-            # LOGGER.error(f"{type(sub_class_value) = }")
+            except UnboundLocalError as e:
+                LOGGER.warning(f"{e}")
 
             if isinstance(sub_class_value, PydanticUndefinedType):
                 kv = {field_k: "REQUIRED (CHANGE_ME)"}
             else:
-                kv = {field_k: sub_class_value}
+                if isinstance(sub_class_value, pydantic.BaseModel):
+                    v = json.loads(sub_class_value.model_dump_json(indent=2, fallback=str))
+                else:
+                    v = sub_class_value
+                kv = {field_k: v}
 
             doc_str += f"{yaml.safe_dump(json.loads(json.dumps(kv, indent=2, default=str)))}\n\n"
 

@@ -18,6 +18,8 @@ from pydantic import (
     field_validator,
 )
 
+from OpenStudioLandscapes.engine.config.str_gen import get_config_str
+
 LOG = get_dagster_logger(__name__)
 
 """
@@ -34,8 +36,8 @@ Resources:
 #        - https://docs.pydantic.dev/latest/concepts/serialization/
 
 
-config_default = pathlib.Path(__file__).parent.joinpath("config_default.yml")
-CONFIG_STR = config_default.read_text()
+# config_default = pathlib.Path(__file__).parent.joinpath("config_default.yml")
+# CONFIG_STR = config_default.read_text()
 
 
 class DockerRegistryProtocol(enum.StrEnum):
@@ -76,13 +78,16 @@ class DockerRegistryConfig(BaseModel):
     """
 
     docker_push: bool = Field(
-        default=True, description="Run `docker` commands with the `--push` flag."
+        default=True,
+        description="Run `docker` commands with the `--push` flag."
     )
     docker_pull: bool = Field(
-        default=True, description="Run `docker` commands with the `--pull` flag."
+        default=True,
+        description="Run `docker` commands with the `--pull` flag."
     )
     docker_repository_name: str = Field(
-        default="openstudiolandscapes", description="The registry repository name."
+        default="openstudiolandscapes",
+        description="The registry repository name."
     )
     docker_registry_access: DockerRegistryAccess = Field(
         default=DockerRegistryAccess.public,
@@ -93,6 +98,7 @@ class DockerRegistryConfig(BaseModel):
         examples=[i.name for i in DockerRegistryProtocol],
     )
     docker_registry_fqdn: str = Field(
+        default="registry.openstudiolandscapes.lan",
         description="The fully qualified domain name of the Docker Registry server.",
     )
     docker_registry_port: PositiveInt = Field(
@@ -100,6 +106,7 @@ class DockerRegistryConfig(BaseModel):
         description="The port the Docker Registry server is listening on.",
     )
     docker_registry_username: str = Field(
+        default="registry-user",
         description="The username of the Docker registry."
     )
     # Todo: docker_registry_password: SecretStr = Field(description="The password of the Docker registry.")
@@ -146,6 +153,7 @@ class DockerRegistryConfig(BaseModel):
     #  470b66ea5123: Waiting
     #  unauthorized: authentication required
     docker_registry_password: str = Field(
+        default="registry-password",
         description="The password of the Docker registry."
     )
 
@@ -184,7 +192,28 @@ class ConfigEngine(BaseModel):
             cls.instance = super(ConfigEngine, cls).__new__(cls)
         return cls.instance
 
-    openstudiolandscapes__docker_config: DockerConfigModel = Field()
+    openstudiolandscapes__docker_config: DockerConfigModel = Field(
+        default=DockerConfigModel(
+            **{
+                "use_registry": DockerConfigModel.model_fields['use_registry'].default,
+                "no_cache": DockerConfigModel.model_fields['no_cache'].default,
+                "docker_registry_config": DockerRegistryConfig(
+                    **{
+                        "docker_push": DockerRegistryConfig.model_fields['docker_push'].default,
+                        "docker_pull": DockerRegistryConfig.model_fields['docker_pull'].default,
+                        "docker_repository_name": DockerRegistryConfig.model_fields['docker_repository_name'].default,
+                        "docker_registry_access": DockerRegistryConfig.model_fields['docker_registry_access'].default,
+                        "docker_registry_protocol": DockerRegistryConfig.model_fields['docker_registry_protocol'].default,
+                        "docker_registry_fqdn": DockerRegistryConfig.model_fields['docker_registry_fqdn'].default,
+                        "docker_registry_port": DockerRegistryConfig.model_fields['docker_registry_port'].default,
+                        "docker_registry_username": DockerRegistryConfig.model_fields['docker_registry_username'].default,
+                        "docker_registry_password": DockerRegistryConfig.model_fields['docker_registry_password'].default,
+
+                    },
+                )
+            }
+        ),
+    )
 
     # this initilizes a 'GIT_ROOT' by the config.yml
     # not sure yet if this is really necessary.
@@ -194,7 +223,8 @@ class ConfigEngine(BaseModel):
                 "OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT",
                 default="~/git/repos/OpenStudioLandscapes",
             )
-        )
+        ),
+        description="The full (local) path to the OpenStudioLandscapes Git repository.",
     )
 
     openstudiolandscapes__domain_lan: str = Field(
@@ -413,3 +443,8 @@ class FeatureBaseModel(BaseModel):
             )
         )
         return ret
+
+
+CONFIG_STR = get_config_str(
+    Config=ConfigEngine,
+)
