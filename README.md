@@ -257,7 +257,7 @@ A good place to start to learn about Pangolin Sites are the
 OpenStudioLandscapes is build on [Dagster](https://docs.dagster.io/). 
 Dagster itself offers Markdown compatible
 descriptions for [Assets](https://docs.dagster.io/guides/build/assets/defining-assets).
-OpenStudioLandscapes aims to leverage this capability.
+OpenStudioLandscapes aims to leverage this capability wherever possible.
 
 > [!IMPORTANT]
 > 
