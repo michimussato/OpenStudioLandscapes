@@ -9,14 +9,12 @@
 ```mermaid
 %% https://mermaid-js.github.io/mermaid-live-editor
 flowchart TB
-%%    OpenStudioLandscapes((OpenStudioLandscapes))
     ubuntu((Ubuntu))
-%%    linux((Linux))
 
     subgraph osl[OpenStudioLandscapes]
         direction TB
 
-        subgraph Core
+        subgraph engine[engine]
             direction TB
 
             subgraph dagstersubgraph[Dagster]
@@ -24,7 +22,6 @@ flowchart TB
                 dagster((Dagster))
                 dagster-postgres((Postgres))
             end
-
         end
 
         subgraph Sub Systems
@@ -34,9 +31,7 @@ flowchart TB
                 direction TB
                     registry((registry))
             end
-
         end
-
     end
 
     dagster -- requires --> dagster-postgres
@@ -54,13 +49,6 @@ flowchart TB
             docker(Docker)
             python(python3.11)
         end
-%%        systemd(systemd)
-%%        make(make)
-%%        git(git)
-%%        graphviz(GraphViz)
-%%        sudo(sudo)
-%%        docker(Docker)
-%%        python(python3.11)
     end
 
     subgraph dns[DNS Server]
@@ -98,36 +86,13 @@ flowchart TB
             osl-syncthing(OpenStudioLandscapes-Syncthing)
             osl-twingate(OpenStudioLandscapes-Twingate)
             osl-watchtower(OpenStudioLandscapes-Watchtower)
-%%            osl-watchtower -- requires --> osl-kitsu
         end
     end
 
 
-%%    OpenStudioLandscapes -. recommends .-> teleport
-%%    root -- requires --> docker
-%%    root -- requires --> python
-%%    root -- requires --> systemd
-%%    root -- requires --> make
-%%    root -- requires --> git
-%%    root -- requires --> sudo
     osl -- requires --> linux
     osl -. recommends .-> dns
     osl -. provides .-> features
-%%    git -- requires --> linux
-%%    sudo -- requires --> linux
-%%    make -- requires --> linux
 
-%%    ubuntu -- provides --> git
-%%    ubuntu -- provides --> systemd
-%%    ubuntu -- provides --> make
-%%    ubuntu -- provides --> graphviz
-%%    ubuntu -- provides --> sudo
-%%    ubuntu -- provides --> python
-%%    ubuntu -- provides --> docker
     linux -. recommends .-> ubuntu
-
-
-
-%%    root -. recommends .-> utuntu
-%%    root -. recommends .-> pihole
 ```
