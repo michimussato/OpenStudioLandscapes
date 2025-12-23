@@ -1,5 +1,6 @@
-from multiprocessing.util import sub_debug
 from typing import Type
+
+from pydantic_core._pydantic_core import PydanticUndefinedType
 
 import yaml
 import json
@@ -72,7 +73,13 @@ def get_config_str(
                 doc_str += f"\n\n"
                 continue
 
-            kv = {field_k: sub_class_value}
+            # LOGGER.error(f"{sub_class_value = }")
+            # LOGGER.error(f"{type(sub_class_value) = }")
+
+            if isinstance(sub_class_value, PydanticUndefinedType):
+                kv = {field_k: "REQUIRED (CHANGE_ME)"}
+            else:
+                kv = {field_k: sub_class_value}
 
             doc_str += f"{yaml.safe_dump(json.loads(json.dumps(kv, indent=2, default=str)))}\n\n"
 
