@@ -3,15 +3,12 @@
 <!-- TOC -->
 * [Table Of Contents](#table-of-contents)
 * [A Word about Documentation](#a-word-about-documentation)
-* [Installation Process](#installation-process)
-  * [Overview](#overview)
 * [Structure](#structure)
   * [Single Landscape](#single-landscape)
   * [Multiple Landscapes](#multiple-landscapes)
 * [Usage](#usage)
   * [Configure Features](#configure-features)
   * [Run OpenStudioLandscapes](#run-openstudiolandscapes)
-    * [Manual Method](#manual-method)
     * [Create Landscape](#create-landscape)
   * [Docker Compose Graph](#docker-compose-graph)
 * [Contributors](#contributors)
@@ -27,6 +24,7 @@
 
 
 > [!TIP]
+> 
 > This Wiki can be easily interacted with in [Obsidian](https://obsidian.md/) after cloning the repository to your local drive.
 
 
@@ -41,79 +39,6 @@ The decision has been therefore made to simply continue with Markdown formatted
 files aggregated in this Wiki - which is a constant work in progress.
 
 We might come back to Sphinx/ReadTheDocs at some point.
-
----
-
-# Installation Process
-
-## Overview
-
-| Method                                                         | Status           | Potential Frustration Level | Type     | Info                                                                         |
-|----------------------------------------------------------------|------------------|-----------------------------|----------|------------------------------------------------------------------------------|
-| [Manual](installation/basic_installation.md#table-of-contents) | Work-in-Progress | **High**                    | Manual   | The advanced option for most Linux distros                                   |
-| [`make`](installation/basic_installation.md#table-of-contents) | To do            | **Low**                     | Manual   | The advanced option for most Linux distros                                   |
-
-```mermaid
-graph TB
-    %% Bug in Github:
-    %% https://github.com/orgs/community/discussions/106690#discussioncomment-14330873
-    installation_methods(Installation Methods)
-    manual((Manual))
-    click manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/v1.9.0-rc1/wiki/installation/basic_installation.md#basic-installation"
-    make((make))
-    %% click manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/v1.9.0-rc1/wiki/installation/basic_installation.md#basic-installation"
-
-    classDef clone_repo fill:#004f00;
-    clone_repo_manual[Clone OpenStudioLandscapes Repository]
-    click clone_repo_manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/v1.9.0-rc1/wiki/installation/basic_installation.md#clone-repository"
-    class clone_repo_manual,clone_repo_docker clone_repo;
-
-    classDef landscapes_root fill:#4c4c00;
-    landscapes_root_manual[Create Landscapes Root Directory]
-    click landscapes_root_manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/v1.9.0-rc1/wiki/installation/basic_installation.md#create-landscapes-root-directory"
-    click landscapes_root_script href "https://github.com/michimussato/OpenStudioLandscapes/blob/v1.9.0-rc1/wiki/installation/basic_installation.md#create-landscapes-root-directory"
-    class landscapes_root_manual,landscapes_root_docker landscapes_root
-
-    classDef install_python fill:#004c4c;
-    install_python_manual[Install Python 3.11]
-    click install_python_manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/v1.9.0-rc1/wiki/installation/basic_installation.md#install-python311"
-    class install_python_manual,install_python_docker install_python
-
-    classDef install_docker fill:#007cbc;
-    install_docker_manual[Install Docker]
-    click install_docker_manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/v1.9.0-rc1/wiki/installation/basic_installation.md#install-docker"
-    class install_docker_manual,install_docker_docker install_docker
-
-    classDef clone_features fill:#123456;
-    clone_features_manual[Clone Features]
-    click clone_features_manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/v1.9.0-rc1/wiki/installation/install_features.md#clone-features"
-    class clone_features_manual clone_features
-
-    classDef install_features fill:#654321;
-    install_features_manual[Install Features]
-    click install_features_manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/v1.9.0-rc1/wiki/installation/install_features.md#install-features-1"
-    class install_features_manual install_features
-
-    classDef run fill:#142536;
-    run_manual(Run OpenStudioLandscapes)
-    click run_manual href "https://github.com/michimussato/OpenStudioLandscapes/blob/v1.9.0-rc1/wiki/run_openstudiolandscapes/from_manual.md#up"
-    class run_manual,run_docker run
-
-    subgraph block_manual[Manual]
-        direction TB
-        manual --> clone_repo_manual --> landscapes_root_manual --> install_python_manual --> install_docker_manual --> clone_features_manual --> install_features_manual --> run_manual
-    end
-    style block_manual fill:#550000
-
-    subgraph block_make[make]
-        direction TB
-        make
-    end
-    style block_make fill:#000055
-
-    installation_methods --> block_manual
-    installation_methods --> block_make
-```
 
 ---
 
@@ -267,7 +192,8 @@ root((OpenStudioLandscapes))
 
 ## Configure Features
 
-By default, only
+By default, these Features (among others) are enabled
+and will be displayed in the Dagster node graph:
 
 - [OpenStudioLandscapes-Ayon](https://github.com/michimussato/OpenStudioLandscapes-Ayon)
 - [OpenStudioLandscapes-Dagster](https://github.com/michimussato/OpenStudioLandscapes-Dagster)
@@ -285,14 +211,6 @@ specified in `OpenStudioLandscapes.engine.features` or in the `OpenStudioLandsca
 (if you choose to use one - see `OpenStudioLandscapes/EXAMPLE.env` for more information).
 
 ## Run OpenStudioLandscapes
-
-### [Manual Method](installation/basic_installation.md#table-of-contents)
-
-[Run from manual installation](run_openstudiolandscapes/from_manual.md)
-
-and open the Dagster UI:
-
-[http://<ip_openstudiolandscapes_host>:3000/asset-groups]()
 
 ### Create Landscape
 
@@ -325,6 +243,7 @@ They are accessible from the Dagster UI.
 - Jonas Juhl Nielsen
 - Jean First
 - Lucerne University of Applied Sciences and Arts
+- Francesco Faranna
 
 ---
 
