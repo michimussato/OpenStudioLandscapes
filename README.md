@@ -203,7 +203,18 @@ OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_LICENSE_SERVER__NEWT_ID="2ix2
 OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_LICENSE_SERVER__NEWT_SECRET="nnisrfsdfc7prqsp9ewo1dvtvci50j5uiqotez00dgap0ii2"
 ```
 
-the resulting command to launch a Landscape that will connect as a Pangolin Site:
+So, let's take the ComposeScope `license_server` for example.
+It provides three services:
+- `sesi-gcc-9-3-houdini-20`: A license server for Houdini
+- `nuke-rlm-8`: A license server for Nuke
+- `newt_service.compose_scope-license_server.2025-12-23-19-19-03-4346bdbc4d1c45c4a8a91948275b2086`: the NEWT service that wraps the two license servers
+
+![2025-12-23_21-48.png](media/images/2025-12-23_21-48.png)
+
+![2025-12-23_21-51.png](media/images/2025-12-23_21-51.png)
+
+The resulting command to launch a Landscape that will connect as a Pangolin Site provided
+by Dagster:
 
 ```shell
 OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_LICENSE_SERVER__PANGOLIN_ENDPOINT="https://app.pangolin.net" \
@@ -232,7 +243,9 @@ port is the relevant one here):
 
 ![2025-12-23_21-36.png](media/images/2025-12-23_21-36.png)
 
-And voila! SSL encrypted RLM license server web UI access:
+And voilà! SSL encrypted RLM license server web UI
+accessible from the internet with user based authentication
+(provided by Pangolin):
 
 ![2025-12-23_21-40.png](media/images/2025-12-23_21-40.png)
 
