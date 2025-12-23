@@ -87,7 +87,7 @@ def get_config_str(
             LOGGER.error(f"{e}")
             raise Exception from e
 
-    return doc_str
+    return doc_str.rstrip()  # strip trailing newlines
 
 
 # if "__main__" == __name__:
