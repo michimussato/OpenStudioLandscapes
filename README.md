@@ -376,6 +376,8 @@ Now, it's time to head over to the [Wiki](wiki/README.md)!
 - [![LinkedIn](media/images/linkedin-square-blue-logo-15978.png)](https://www.linkedin.com/company/106731439/)
   - [#OpenStudioLandscapes](https://www.linkedin.com/search/results/all/?keywords=%23openstudiolandscapes)
 - [![Discord](media/images/discord-square-blue-logo-16000.png)](https://discord.gg/F6bDRWsHac)
+- Publications
+  - [World VFX Day - Spotlight: Michael Mussato, OpenStudioLandscapes](https://worldvfxday.com/2025/10/22/spotlight-michael-mussato-openstudiolandscapes/)
 
 [//]: # (Icons by https://www.iconpacks.net/free-icon-pack/free-social-media-network-logos-icon-pack-197.html)
 
