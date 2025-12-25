@@ -330,6 +330,15 @@ class FeatureBaseModel(BaseModel):
     # Todo:
     #  - [ ] set group_name (if not defined) to feature_name
     #  - [ ] set key_prefixes (if not defined) to [feature_name]
+    #  - [ ] validate using
+    #        - `dagster._core.definitions.utils.VALID_NAME_REGEX`
+    #        - `dagster._core.definitions.utils.VALID_NAME_REGEX_STR`
+    #  - [ ] Replace Chars Methods:
+    #        # - https://blog.finxter.com/5-best-ways-to-replace-a-list-of-characters-in-a-string-with-python/
+    #        chars_to_replace = " .,-"
+    #        replace_with = "_"
+    #        regex_pattern = f"[{chars_to_replace}]"
+    #        transformed_value = re.sub(regex_pattern, replace_with, value)
     group_name: str = Field(
         description="Dagster Group name. This will represent the group node name. "
                     "See https://docs.dagster.io/api/dagster/assets for "
@@ -415,18 +424,6 @@ class FeatureBaseModel(BaseModel):
         examples=["OpenStudioLandscapes-Kitsu", "OpenStudioLandscapes-VERT"],
         frozen=True,
     )
-
-    @field_validator("feature_name")
-    @classmethod
-    def validate__feature_name(cls, value: str) -> str:
-        # Methods:
-        # - https://blog.finxter.com/5-best-ways-to-replace-a-list-of-characters-in-a-string-with-python/
-        chars_to_replace = " .,-"
-        replace_with = "_"
-
-        regex_pattern = f"[{chars_to_replace}]"
-        transformed_value = re.sub(regex_pattern, replace_with, value)
-        return transformed_value  # .lower()
 
     docker_compose: pathlib.Path = Field(
         default=pathlib.Path(
