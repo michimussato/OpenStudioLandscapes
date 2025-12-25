@@ -122,6 +122,7 @@ different.
 ```shell
 git clone https://github.com/michimussato/OpenStudioLandscapes.git \
     && cd OpenStudioLandscapes
+# Check out a specific branch by:
 # git branch -a
 # git checkout <branch>
 ```
