@@ -105,7 +105,10 @@ any production environment with ease:
 > [!TIP]
 > 
 > You might have to install `git` first.
-> On Ubuntu: `sudo apt update && sudo apt install -y git`
+> On Ubuntu: 
+> ```shell
+> sudo apt update && sudo apt install -y git
+> ```
 
 ```shell
 git clone https://github.com/michimussato/OpenStudioLandscapes.git \
@@ -117,7 +120,10 @@ git clone https://github.com/michimussato/OpenStudioLandscapes.git \
 > [!TIP]
 > 
 > You might have to install `make` first.
-> On Ubuntu: `sudo apt update && sudo apt install -y make`
+> On Ubuntu: 
+> ```shell
+> sudo apt update && sudo apt install -y make
+> ```
 
 ```shell
 make sys_deps_install
