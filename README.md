@@ -11,6 +11,8 @@
   * [Install OpenStudioLandscapes](#install-openstudiolandscapes)
   * [Add Features](#add-features)
   * [Run OpenStudioLandscapes](#run-openstudiolandscapes)
+  * [Create Landscape](#create-landscape)
+  * [Launch the Landscape](#launch-the-landscape)
   * [Configure OpenStudioLandscapes](#configure-openstudiolandscapes)
     * [Environment Variables and Secrets](#environment-variables-and-secrets)
 * [Q&A](#qa)
@@ -206,8 +208,6 @@ source .venv/bin/activate
 openstudiolandscapes
 ```
 
-> 
-> 
 > If you see an error like this one:
 > 
 > ```shell
@@ -226,6 +226,8 @@ openstudiolandscapes
 > 127.0.0.1       openstudiolandscapes-dagster-postgres.openstudiolandscapes.lan
 > ```
 
+## Create Landscape
+
 And head over to the Dagster Dev web UI:
 
 [http://127.0.0.1:3000/asset-groups]()
@@ -237,6 +239,44 @@ And head over to the Dagster Dev web UI:
 > the URL you are trying to access.
 
 And click **Materialize All**.
+
+![2025-12-25_21-10.png](media/images/2025-12-25_21-10.png)
+
+## Launch the Landscape
+
+Navigate the Compose Scope Group (for example `default`) and select the
+`docker_compose_commands` Asset:
+
+![2025-12-25_21-16.png](media/images/2025-12-25_21-16.png)
+
+and click the command to copy it to the clipboard:
+
+![2025-12-25_21-19.png](media/images/2025-12-25_21-19.png)
+
+This command can then be pasted directly into a terminal 
+and executed:
+
+```
+user@user-VirtualBox:~/OpenStudioLandscapes$ /home/user/OpenStudioLandscapes/.landscapes/2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126/ComposeScope_DEV_default/docker_compose/docker_compose_up.sh
+~/OpenStudioLandscapes/.landscapes/2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126/ComposeScope_DEV_default/docker_compose ~/OpenStudioLandscapes
+Working Directory: /home/user/OpenStudioLandscapes/.landscapes/2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126/ComposeScope_DEV_default/docker_compose
+ Network OpenStudioLandscapes_Kitsu.compose_networks_network.2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126 Creating 
+ Network OpenStudioLandscapes_Kitsu.compose_networks_network.2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126 Created 
+ Network 2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126-default_default Creating 
+ Network 2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126-default_default Created 
+ Container kitsu-init-db.2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126 Creating 
+ Container kitsu-init-db.2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126 Created 
+ Container kitsu.2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126 Creating 
+ Container kitsu.2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126 Created 
+ Container kitsu-init-db.2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126 Starting 
+ Container kitsu-init-db.2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126 Started 
+ Container kitsu-init-db.2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126 Waiting 
+ Container kitsu-init-db.2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126 Exited 
+ Container kitsu.2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126 Starting 
+ Container kitsu.2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126 Started 
+kitsu.2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126  | Running Zou...
+[...]
+```
 
 ## Configure OpenStudioLandscapes
 
