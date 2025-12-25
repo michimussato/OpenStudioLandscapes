@@ -25,11 +25,11 @@ def docker_build_cmd(
     context: AssetExecutionContext,
     docker_config_json: pathlib.Path,
     docker_file: pathlib.Path,
-    tags: list[str],
+    tags: List[str],
     pull: bool,
     no_cache: bool = False,
     build_context: Union[None, pathlib.Path] = None,
-) -> list:
+) -> List:
 
     # with buildx, the target command could look like:
     # /usr/bin/docker buildx build \
@@ -70,8 +70,8 @@ def docker_build_cmd(
 def docker_push_cmd(
     context: AssetExecutionContext,
     docker_config_json: pathlib.Path,
-    tags_full: list[str],
-) -> list[list[str]]:
+    tags_full: List[str],
+) -> List[List[str]]:
 
     push_cmds = []
 
@@ -106,7 +106,7 @@ class OutputReader(threading.Thread):
 
 def execute_in_threads(
     command: str,
-) -> Generator[int | Any, None, None]:
+) -> Generator[str | Any, None, None]:
 
     process = subprocess.Popen(
         command,
@@ -125,6 +125,8 @@ def execute_in_threads(
     stderr_reader.start()
 
     while True:
+        # Todo:
+        #  - [ ] could run in two threads
         while not stdout_queue.empty():
             stdout = "stdout: %s" % stdout_queue.get()
             yield stdout
@@ -145,8 +147,8 @@ def execute_in_threads(
 
 def docker_process_cmds(
     context: AssetExecutionContext,
-    cmds: list[list[str]],
-) -> Generator[int | Any, Any, None]:
+    cmds: List[List[str]],
+) -> Generator[str | Any, Any, None]:
 
     for cmd in cmds:
 
@@ -160,7 +162,7 @@ def docker_process_cmds(
 
 def docker_do(
     context: AssetExecutionContext,
-    cmds: list[list[str]],
+    cmds: List[List[str]],
 ) -> List[str]:
     """
     Args:
