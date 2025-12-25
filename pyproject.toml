@@ -20,6 +20,7 @@ dependencies = [
     "dagster-webserver==1.9.11",
     "dagster==1.9.11",
     "docker-compose-graph @ git+https://github.com/michimussato/docker-compose-graph.git@v1.0.0",
+    "email-validator",
     "gitpython",
     "importlib-metadata; python_version<\"3.8\"",
     "nox",

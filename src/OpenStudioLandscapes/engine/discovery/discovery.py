@@ -137,6 +137,10 @@ def get_namespace_packages(where=pathlib.Path.cwd() / ".features") -> List[str]:
     namespace_packages = find_namespace_packages(
         where=where,
         include=["*src.OpenStudioLandscapes.*"],
+        exclude=[
+            "*.config",  # exclude src.OpenStudioLandscapes.<Feature>.config from module discovery (Todo: although I'm not yet sure if this must be excluded. Test!)
+            "*.doc",  # exclude src.OpenStudioLandscapes.<Feature>.doc from module discovery
+        ],
     )
     LOGGER.info(f"{namespace_packages = }")
     # ['OpenStudioLandscapes-NukeRLM-8.src.OpenStudioLandscapes.NukeRLM_8', ...]
@@ -215,16 +219,24 @@ def try_import_discovered(
     LOGGER.info(f"{discovered_model = }")
     try:
         _models = discovered_model.models
-        _definitions = discovered_model.definitions
         LOGGER.info(f"{_models = }")
-        LOGGER.info(f"{_definitions = }")
         models_object: ModuleType = importlib.import_module(_models)
-        definitions_object: ModuleType = importlib.import_module(_definitions)
         LOGGER.info("Feature models import successful: '%s'" % models_object)
-        LOGGER.info("Feature definitions import successful: '%s'" % definitions_object)
-        return models_object, definitions_object
+        # return models_object, definitions_object
     except (ModuleNotFoundError, AttributeError) as e:
+        # LOGGER.error(e)
         raise ImportError(e) from e
+    try:
+        _definitions = discovered_model.definitions
+        LOGGER.info(f"{_definitions = }")
+        definitions_object: ModuleType = importlib.import_module(_definitions)
+        LOGGER.info("Feature definitions import successful: '%s'" % definitions_object)
+        # return models_object, definitions_object
+    except (ModuleNotFoundError, AttributeError) as e:
+        # LOGGER.error(e)
+        raise ImportError(e) from e
+
+    return models_object, definitions_object
 
 
 DISCOVERED_MODELS = {}
@@ -244,9 +256,13 @@ for package in get_namespace_packages():
     #     ),
 
     try:
-        models_object, definitions_object = try_import_discovered(package, module)
+        models_object, definitions_object = try_import_discovered(
+            package=package,
+            discovered_model=module,
+        )
     except ImportError as e:
-        LOGGER.error("Feature import failed: '%s'" % package)
+        LOGGER.exception(e)
+        LOGGER.error("Feature import failed and won't be available: '%s'" % package)
         continue
 
     module.definitions_object = definitions_object
