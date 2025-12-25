@@ -113,10 +113,10 @@ different.
 
 > [!TIP]
 > 
-> You might have to install `git` first.
+> You might have to install `git` and `make` first.
 > On Ubuntu: 
 > ```shell
-> sudo apt update && sudo apt install -y git
+> sudo apt update && sudo apt install -y git make
 > ```
 
 ```shell
