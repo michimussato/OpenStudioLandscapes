@@ -371,7 +371,7 @@ def expand_dict_vars(
     #                         ^^^^^^^^^^^^^^
     #
     #   warnings.warn(f"Error loading repository location {location_name}:{error.to_string()}")
-    kv.pop("debian_chroot", {})
+    dict_to_expand.pop("debian_chroot", {})
 
     for k, v in dict_to_expand.items():
         if isinstance(v, str):
