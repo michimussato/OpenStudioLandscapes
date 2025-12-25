@@ -245,11 +245,11 @@ def get_compose_scope(
 
     feature_keys = features.keys()
 
-    LOGGER.error(f"{features = }")
+    LOGGER.info(f"{features = }")
 
     _module = name
     _parent = ".".join(_module.split(".")[:-1])
-    context.log.error(f"{_parent = }")
+    context.log.info(f"{_parent = }")
     _definitions = ".".join([_parent, "definitions"])
 
     COMPOSE_SCOPE = None
@@ -537,7 +537,7 @@ def get_all_compose_scopes(
     package: str
     feature: discovery.OpenStudioLandscapesDiscoveredFeature
     for package, feature in usable_features.items():
-        LOGGER.error(f"usable {feature = }")
+        LOGGER.info(f"Usable {feature = }")
         compose_scopes.append(feature.config.compose_scope)
     return set(compose_scopes)
 
