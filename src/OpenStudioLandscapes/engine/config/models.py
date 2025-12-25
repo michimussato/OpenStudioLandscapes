@@ -331,12 +331,15 @@ class FeatureBaseModel(BaseModel):
     #  - [ ] set group_name (if not defined) to feature_name
     #  - [ ] set key_prefixes (if not defined) to [feature_name]
     group_name: str = Field(
-        frozen=True,
-        default=None,
+        description="Dagster Group name. This will represent the group node name. "
+                    "See https://docs.dagster.io/api/dagster/assets for "
+                    "more information",
     )
     key_prefixes: List[str] = Field(
-        frozen=True,
-        default=None,
+        description="Dagster Asset key prefixes. This will be reflected in the nesting "
+                    "(directory structure) of the Asset. "
+                    "See https://docs.dagster.io/api/dagster/assets for "
+                    "more information",
     )
 
     @property

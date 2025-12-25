@@ -3,6 +3,7 @@ import logging
 import shutil
 import signal
 import subprocess
+
 import sys
 import textwrap
 
@@ -22,15 +23,28 @@ def run_openstudiolandscapes_postgres(args):
     LOGGER.info("OpenStudioLandscapes args: %s", args)
 
     # Simply use `nox` as the entry point:
-    subprocess.run(
+    # try:
+    result: subprocess.CompletedProcess = subprocess.run(
         [
             shutil.which("nox"),
             "--sessions",
             "dagster_postgres_up_detach",
             "dagster_postgres",
         ],
+        # stdout=subprocess.PIPE,
+        # stderr=subprocess.PIPE,
         shell=False,
     )
+
+    if result.returncode != 0:
+        LOGGER.error("OpenStudioLandscapes failed with return code: %s", result.returncode)
+        # LOGGER.debug(result.stdout.decode("utf-8"))
+        # LOGGER.debug(result.stderr.decode("utf-8"))
+        LOGGER.critical("Run `openstudiolandscapes` from within the Git repository "
+                        "root. Cannot proceed.")
+
+    # LOGGER.info(result.stderr)
+    # LOGGER.info(result.returncode)
 
 
 def run_openstudiolandscapes_mysql(args):
@@ -259,6 +273,9 @@ def signal_handler(sig, frame):
         shell=False,
     )
     LOGGER.info(f"Shut down successful.")
+
+    # Clean shut down with return code 0
+    sys.exit(0)
 
 
 signal.signal(signal.SIGINT, signal_handler)
