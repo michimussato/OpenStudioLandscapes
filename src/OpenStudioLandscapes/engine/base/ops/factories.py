@@ -1641,6 +1641,12 @@ def factory_compose_scope__group_out(
         yield AssetMaterialization(
             asset_key=context.asset_key_for_output(output_name),
             metadata={
+                "script_cmd_docker_compose_up": MetadataValue.path(
+                    script_cmd_docker_compose_up
+                ),
+                "script_cmd_docker_compose_down": MetadataValue.path(
+                    script_cmd_docker_compose_down
+                ),
                 "script_cmd_docker_compose_up_down": MetadataValue.path(
                     "; ".join(
                         [
@@ -1649,17 +1655,11 @@ def factory_compose_scope__group_out(
                         ]
                     )
                 ),
-                "script_cmd_docker_compose_up": MetadataValue.path(
-                    script_cmd_docker_compose_up
-                ),
                 "script_cmd_docker_compose_restart": MetadataValue.path(
                     script_cmd_docker_compose_restart
                 ),
                 "script_cmd_docker_compose_pull_up": MetadataValue.path(
                     script_cmd_docker_compose_pull_up
-                ),
-                "script_cmd_docker_compose_down": MetadataValue.path(
-                    script_cmd_docker_compose_down
                 ),
                 "script_cmd_docker_compose_logs": MetadataValue.path(
                     script_cmd_docker_compose_logs
