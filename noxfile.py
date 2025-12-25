@@ -991,9 +991,18 @@ def write_dagster_postgres_yml(
     service_name = "openstudiolandscapes-dagster-postgres"
     # network_name = service_name
     # container_name = service_name
-    host_name = ".".join(
-        [service_name, ENVIRONMENT_DAGSTER["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"]]
-    )
+    host_name_postgres = {
+        "localhost": "localhost",
+        # Not using "localhost" requires DNS setup:
+        # - DNS server which resolves the Dagster Postgres host
+        # or
+        # - /etc/hosts file entries
+        # Todo:
+        #  - [ ] is fqdn even necessary?
+        "fqdn": ".".join(
+            [service_name, ENVIRONMENT_DAGSTER["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"]]
+        ),
+    }["localhost"]
 
     # https://docs.dagster.io/guides/limiting-concurrency-in-data-pipelines
     dagster_postgres_dict = {
@@ -1015,7 +1024,7 @@ def write_dagster_postgres_yml(
                 "postgres_db": {
                     "username": ENVIRONMENT_DAGSTER["DAGSTER_POSTGRES_DB_USERNAME"],
                     "password": ENVIRONMENT_DAGSTER["DAGSTER_POSTGRES_DB_PASSWORD"],
-                    "hostname": host_name,
+                    "hostname": host_name_postgres,
                     "db_name": ENVIRONMENT_DAGSTER["DAGSTER_POSTGRES_DB_NAME"],
                     # Todo:
                     #  - [ ] Which one is it?
