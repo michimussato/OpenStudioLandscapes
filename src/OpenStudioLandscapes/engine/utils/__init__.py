@@ -316,6 +316,9 @@ def expand_dict_vars(
     ```
     """
 
+    # Todo:
+    #  - [ ] make sure $PS1 is not causing errors
+
     for k, v in dict_to_expand.items():
         if isinstance(v, str):
             try:

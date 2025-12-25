@@ -212,6 +212,8 @@ And head over to the Dagster Dev web UI:
 > (default: `3000`), just make sure this is reflected in 
 > the URL you are trying to access.
 
+And click **Materialize All**.
+
 ## Configure OpenStudioLandscapes
 
 By default, OpenStudioLandscapes creates 

@@ -206,7 +206,8 @@ setup_venv:
 
 openstudiolandscapes_update:
 	source .venv/bin/activate \
-		&& pip install -e .[dev] \
+		# && pip install -e .[dev] \
+		&& pip install -e . \
 		&& deactivate
 
 #add_aliases:
