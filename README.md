@@ -13,6 +13,7 @@
   * [Run OpenStudioLandscapes](#run-openstudiolandscapes)
   * [Create Landscape](#create-landscape)
   * [Launch the Landscape](#launch-the-landscape)
+  * [Shut the Landscape down](#shut-the-landscape-down)
   * [Configure OpenStudioLandscapes](#configure-openstudiolandscapes)
     * [Environment Variables and Secrets](#environment-variables-and-secrets)
 * [Q&A](#qa)
@@ -254,7 +255,7 @@ and click the command to copy it to the clipboard:
 ![2025-12-25_21-19.png](media/images/2025-12-25_21-19.png)
 
 This command can then be pasted directly into a terminal 
-and executed:
+and executed ("up" script):
 
 ```
 user@user-VirtualBox:~/OpenStudioLandscapes$ /home/user/OpenStudioLandscapes/.landscapes/2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126/ComposeScope_DEV_default/docker_compose/docker_compose_up.sh
@@ -276,6 +277,28 @@ Working Directory: /home/user/OpenStudioLandscapes/.landscapes/2025-12-25-20-51-
  Container kitsu.2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126 Started 
 kitsu.2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126  | Running Zou...
 [...]
+```
+
+## Shut the Landscape down
+
+("down" script)
+
+```
+user@user-VirtualBox:~/OpenStudioLandscapes$ /home/user/OpenStudioLandscapes/.landscapes/2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126/ComposeScope_DEV_default/docker_compose/docker_compose_down.sh 
+~/OpenStudioLandscapes/.landscapes/2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126/ComposeScope_DEV_default/docker_compose ~/OpenStudioLandscapes
+Working Directory: /home/user/OpenStudioLandscapes/.landscapes/2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126/ComposeScope_DEV_default/docker_compose
+ Container kitsu.2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126 Stopping 
+ Container kitsu.2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126 Stopped 
+ Container kitsu.2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126 Removing 
+ Container kitsu.2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126 Removed 
+ Container kitsu-init-db.2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126 Stopping 
+ Container kitsu-init-db.2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126 Stopped 
+ Container kitsu-init-db.2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126 Removing 
+ Container kitsu-init-db.2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126 Removed 
+ Network OpenStudioLandscapes_Kitsu.compose_networks_network.2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126 Removing 
+ Network 2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126-default_default Removing 
+ Network OpenStudioLandscapes_Kitsu.compose_networks_network.2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126 Removed 
+ Network 2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126-default_default Removed
 ```
 
 ## Configure OpenStudioLandscapes
