@@ -316,6 +316,63 @@ def expand_dict_vars(
     ```
     """
 
+    # Remove weird elements from kv:
+    #
+    # Stack Trace:
+    #   File "/home/user/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_grpc/server.py", line 417, in __init__
+    #     self._loaded_repositories: Optional[LoadedRepositories] = LoadedRepositories(
+    #                                                               ^^^^^^^^^^^^^^^^^^^
+    #   File "/home/user/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_grpc/server.py", line 239, in __init__
+    #     with user_code_error_boundary(
+    #   File "/usr/local/lib/python3.11/contextlib.py", line 158, in __exit__
+    #     self.gen.throw(typ, value, traceback)
+    #   File "/home/user/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/errors.py", line 299, in user_code_error_boundary
+    #     raise new_error from e
+    #
+    # The above exception was caused by the following exception:
+    # OpenStudioLandscapes.engine.exceptions.OpenStudioLandscapesException: Could not expand dict_to_expand[k] = '(.venv) \\[\\e]0;\\u@\\h: \\w\\a\\]${debian_chroot:+($debian_chroot)}\\[\\033[01;32m\\]\\u@\\h\\[\\033[00m\\]:\\[\\033[01;34m\\]\\w\\[\\033[00m\\]\\$ ' in dict_to_expand = environ({'SHELL': '/bin/bash', 'SESSION_MANAGER': 'local/user-VirtualBox:@/tmp/.ICE-unix/2312,unix/user-VirtualBox:/tmp/.ICE-unix/2312', 'QT_ACCESSIBILITY': '1', 'COLORTERM': 'truecolor', 'XDG_CONFIG_DIRS': '/etc/xdg/xdg-ubuntu:/etc/xdg', 'SSH_AGENT_LAUNCHER': 'gnome-keyring', 'XDG_MENU_PREFIX': 'gnome-', 'GNOME_DESKTOP_SESSION_ID': 'this-is-deprecated', 'LC_ADDRESS': 'de_CH.UTF-8', 'GNOME_SHELL_SESSION_MODE': 'ubuntu', 'LC_NAME': 'de_CH.UTF-8', 'SSH_AUTH_SOCK': '/run/user/1000/keyring/ssh', 'XMODIFIERS': '@im=ibus', 'DESKTOP_SESSION': 'ubuntu', 'LC_MONETARY': 'de_CH.UTF-8', 'GTK_MODULES': 'gail:atk-bridge', 'PWD': '/home/user/git/repos/OpenStudioLandscapes', 'LOGNAME': 'user', 'XDG_SESSION_DESKTOP': 'ubuntu', 'XDG_SESSION_TYPE': 'wayland', 'SYSTEMD_EXEC_PID': '2334', 'XAUTHORITY': '/run/user/1000/.mutter-Xwaylandauth.JMG7H3', 'HOME': '/home/user', 'USERNAME': 'user', 'IM_CONFIG_PHASE': '1', 'LC_PAPER': 'de_CH.UTF-8', 'LANG': 'en_US.UTF-8', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:', 'XDG_CURRENT_DESKTOP': 'ubuntu:GNOME', 'VIRTUAL_ENV': '/home/user/git/repos/OpenStudioLandscapes/.nox/dagster_postgres', 'VTE_VERSION': '6800', 'WAYLAND_DISPLAY': 'wayland-0', 'GNOME_TERMINAL_SCREEN': '/org/gnome/Terminal/screen/1c736953_78ae_4ba1_9e84_3f0fa75b1d3b', 'GNOME_SETUP_DISPLAY': ':1', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'XDG_SESSION_CLASS': 'user', 'TERM': 'xterm-256color', 'LC_IDENTIFICATION': 'de_CH.UTF-8', 'LESSOPEN': '| /usr/bin/lesspipe %s', 'USER': 'user', 'GNOME_TERMINAL_SERVICE': ':1.103', 'DISPLAY': ':0', 'SHLVL': '1', 'LC_TELEPHONE': 'de_CH.UTF-8', 'QT_IM_MODULE': 'ibus', 'LC_MEASUREMENT': 'de_CH.UTF-8', 'VIRTUAL_ENV_PROMPT': '(.venv) ', 'XDG_RUNTIME_DIR': '/run/user/1000', 'PS1': '(.venv) \\[\\e]0;\\u@\\h: \\w\\a\\]${debian_chroot:+($debian_chroot)}\\[\\033[01;32m\\]\\u@\\h\\[\\033[00m\\]:\\[\\033[01;34m\\]\\w\\[\\033[00m\\]\\$ ', 'LC_TIME': 'de_CH.UTF-8', 'XDG_DATA_DIRS': '/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop', 'PATH': '/home/user/git/repos/OpenStudioLandscapes/.nox/dagster_postgres/bin:/home/user/git/repos/OpenStudioLandscapes/.venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin', 'GDMSESSION': 'ubuntu', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'LC_NUMERIC': 'de_CH.UTF-8', 'OLDPWD': '/home/user', '_': '/home/user/git/repos/OpenStudioLandscapes/.venv/bin/openstudiolandscapes', 'NOX_CURRENT_SESSION': 'dagster_postgres', 'DAGSTER_HOME': '/home/user/git/repos/OpenStudioLandscapes/.dagster-postgres', 'DAGSTER_IS_DEV_CLI': '1'})
+    #
+    # Stack Trace:
+    #   File "/home/user/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/errors.py", line 289, in user_code_error_boundary
+    #     yield
+    #   File "/home/user/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_grpc/server.py", line 250, in __init__
+    #     loadable_targets = get_loadable_targets(
+    #                        ^^^^^^^^^^^^^^^^^^^^^
+    #   File "/home/user/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_grpc/utils.py", line 51, in get_loadable_targets
+    #     else loadable_targets_from_python_module(module_name, working_directory)
+    #          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    #   File "/home/user/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/workspace/autodiscovery.py", line 33, in loadable_targets_from_python_module
+    #     module = load_python_module(
+    #              ^^^^^^^^^^^^^^^^^^^
+    #   File "/home/user/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/code_pointer.py", line 135, in load_python_module
+    #     return importlib.import_module(module_name)
+    #            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    #   File "/usr/local/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    #     return _bootstrap._gcd_import(name[level:], package, level)
+    #            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    #   File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+    #   File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+    #   File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+    #   File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+    #   File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+    #   File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+    #   File "/home/user/git/repos/OpenStudioLandscapes/src/OpenStudioLandscapes/engine/definitions.py", line 19, in <module>
+    #     e_ = expand_dict_vars(
+    #          ^^^^^^^^^^^^^^^^^
+    #   File "/home/user/git/repos/OpenStudioLandscapes/src/OpenStudioLandscapes/engine/utils/__init__.py", line 324, in expand_dict_vars
+    #     raise OpenStudioLandscapesException(
+    #
+    # The above exception was caused by the following exception:
+    # KeyError: 'debian_chroot'
+    #
+    # Stack Trace:
+    #   File "/home/user/git/repos/OpenStudioLandscapes/src/OpenStudioLandscapes/engine/utils/__init__.py", line 322, in expand_dict_vars
+    #     dict_to_expand[k] = v.format(**kv)
+    #                         ^^^^^^^^^^^^^^
+    #
+    #   warnings.warn(f"Error loading repository location {location_name}:{error.to_string()}")
+    kv.pop("debian_chroot", {})
+
     for k, v in dict_to_expand.items():
         if isinstance(v, str):
             try:

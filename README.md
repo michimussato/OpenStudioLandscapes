@@ -9,7 +9,6 @@
   * [Clone Repository](#clone-repository)
   * [Install Dependencies](#install-dependencies)
   * [Install OpenStudioLandscapes](#install-openstudiolandscapes)
-  * [Reboot System](#reboot-system)
   * [Add Features](#add-features)
   * [Run OpenStudioLandscapes](#run-openstudiolandscapes)
   * [Configure OpenStudioLandscapes](#configure-openstudiolandscapes)
@@ -145,15 +144,7 @@ make sys_deps_install
 > E: Unable to acquire the dpkg frontend lock (/var/lib/dpkg/lock-frontend), is another process using it?
 > ```
 > indicates that Ubuntu is running an unattended (automatic) system update in 
-> the background. Wait for it to finish and try this command again.
-
-## Install OpenStudioLandscapes
-
-```shell
-make openstudiolandscapes_install
-```
-
-## Reboot System
+> the background. Wait for it to finish and try above command again.
 
 ```shell
 sudo reboot
@@ -162,12 +153,16 @@ sudo reboot
 > [!IMPORTANT]
 > 
 > And verify that the user is member of the `docker` group:
+> 
 > ```
 > $ groups
 > user adm cdrom sudo dip plugdev lpadmin lxd sambashare docker
 > ```
 
+## Install OpenStudioLandscapes
+
 ```shell
+# cd OpenStudioLandscapes
 make openstudiolandscapes_install
 ```
 
@@ -182,6 +177,8 @@ A full list of available Features is available [here](#current-feature-statuses)
 ## Run OpenStudioLandscapes
 
 ```shell
+# cd OpenStudioLandscapes
+source .venv/bin/activate
 openstudiolandscapes
 ```
 
