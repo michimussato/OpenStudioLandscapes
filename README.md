@@ -81,6 +81,16 @@ any production environment with ease:
 
 # Get started
 
+> [!WARNING]
+> 
+> The following installation process **_will_** modify your system!
+
+The reference system is [Ubuntu 22.04 LTS (Jammy Jellyfish)](wiki/installation/reference_system.md).
+
+Other distros do work (OpenStudioLandscapes was developed on an
+Arch based Linux distro), however, the installation process **will** be
+different.
+
 > [!CAUTION]
 > 
 > Installation and execution of OpenStudioLandscapes as **must**
@@ -95,10 +105,6 @@ any production environment with ease:
 > > possible system security compromise.  See the documentation for
 > > more information on how to properly start the server.
 > > ```
-
-> [!WARNING]
-> 
-> The following installation process **_will_** modify your system!
 
 ## Clone Repository
 
