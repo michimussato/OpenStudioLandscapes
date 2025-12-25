@@ -374,6 +374,8 @@ def expand_dict_vars(
     dict_to_expand.pop("debian_chroot", {})
 
     for k, v in dict_to_expand.items():
+        if k in ["debian_root"]:
+            continue
         if isinstance(v, str):
             try:
                 dict_to_expand[k] = v.format(**kv)
