@@ -109,8 +109,6 @@ different.
 > > more information on how to properly start the server.
 > > ```
 
-## Clone Repository
-
 > [!TIP]
 > 
 > You might have to install `git` and `make` first.
@@ -119,20 +117,14 @@ different.
 > sudo apt update && sudo apt install -y git make
 > ```
 
+## Clone Repository
+
 ```shell
 git clone https://github.com/michimussato/OpenStudioLandscapes.git \
     && cd OpenStudioLandscapes
 ```
 
 ## Install Dependencies
-
-> [!TIP]
-> 
-> You might have to install `make` first.
-> On Ubuntu: 
-> ```shell
-> sudo apt update && sudo apt install -y make
-> ```
 
 ```shell
 make sys_deps_install
