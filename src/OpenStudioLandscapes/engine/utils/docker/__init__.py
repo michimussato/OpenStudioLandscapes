@@ -12,7 +12,7 @@ import subprocess
 import threading
 from typing import Any, Generator, List, Union
 
-from dagster import AssetExecutionContext, get_dagster_logger
+from dagster import AssetExecutionContext, get_dagster_logger, OpExecutionContext
 
 LOGGER = get_dagster_logger(__name__)
 
@@ -22,7 +22,7 @@ class OpenStudioLandscapesDockerException(Exception):
 
 
 def docker_build_cmd(
-    context: AssetExecutionContext,
+    context: Union[OpExecutionContext, AssetExecutionContext],
     docker_config_json: pathlib.Path,
     docker_file: pathlib.Path,
     tags: List[str],
@@ -68,7 +68,7 @@ def docker_build_cmd(
 
 
 def docker_push_cmd(
-    context: AssetExecutionContext,
+    context: Union[OpExecutionContext, AssetExecutionContext],
     docker_config_json: pathlib.Path,
     tags_full: List[str],
 ) -> List[List[str]]:
@@ -146,7 +146,7 @@ def execute_in_threads(
 
 
 def docker_process_cmds(
-    context: AssetExecutionContext,
+    context: Union[OpExecutionContext, AssetExecutionContext],
     cmds: List[List[str]],
 ) -> Generator[str | Any, Any, None]:
 
@@ -161,12 +161,12 @@ def docker_process_cmds(
 
 
 def docker_do(
-    context: AssetExecutionContext,
+    context: Union[OpExecutionContext, AssetExecutionContext],
     cmds: List[List[str]],
 ) -> List[str]:
     """
     Args:
-        context: AssetExecutionContext
+        context: Union[OpExecutionContext, AssetExecutionContext]
         cmds: list of commands to execute
 
     Returns:
