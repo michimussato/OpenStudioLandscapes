@@ -9,6 +9,7 @@
   * [Clone Repository](#clone-repository)
   * [Install Dependencies](#install-dependencies)
   * [Install OpenStudioLandscapes](#install-openstudiolandscapes)
+  * [Reboot System](#reboot-system)
   * [Add Features](#add-features)
   * [Run OpenStudioLandscapes](#run-openstudiolandscapes)
   * [Configure OpenStudioLandscapes](#configure-openstudiolandscapes)
@@ -147,6 +148,24 @@ make sys_deps_install
 > the background. Wait for it to finish and try this command again.
 
 ## Install OpenStudioLandscapes
+
+```shell
+make openstudiolandscapes_install
+```
+
+## Reboot System
+
+```shell
+sudo reboot
+```
+
+> [!IMPORTANT]
+> 
+> And verify that the user is member of the `docker` group:
+> ```
+> $ groups
+> user adm cdrom sudo dip plugdev lpadmin lxd sambashare docker
+> ```
 
 ```shell
 make openstudiolandscapes_install
