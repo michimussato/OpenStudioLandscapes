@@ -96,7 +96,16 @@ any production environment with ease:
 > > more information on how to properly start the server.
 > > ```
 
+> [!WARNING]
+> 
+> The following installation process **_will_** modify your system!
+
 ## Clone Repository
+
+> [!TIP]
+> 
+> You might have to install `git` first.
+> On Ubuntu: `sudo apt update && sudo apt install -y git`
 
 ```shell
 git clone https://github.com/michimussato/OpenStudioLandscapes.git \
@@ -105,9 +114,25 @@ git clone https://github.com/michimussato/OpenStudioLandscapes.git \
 
 ## Install Dependencies
 
+> [!TIP]
+> 
+> You might have to install `make` first.
+> On Ubuntu: `sudo apt update && sudo apt install -y make`
+
 ```shell
 make sys_deps_install
 ```
+
+> [!TIP]
+> 
+> The following error message:
+> ```
+> E: Could not get lock /var/lib/dpkg/lock-frontend. It is held by process 5198 (unattended-upgr)
+> N: Be aware that removing the lock file is not a solution and may break your system.
+> E: Unable to acquire the dpkg frontend lock (/var/lib/dpkg/lock-frontend), is another process using it?
+> ```
+> indicates that Ubuntu is running an unattended (automatic) system update in 
+> the background. Wait for it to finish and try this command again.
 
 ## Install OpenStudioLandscapes
 
