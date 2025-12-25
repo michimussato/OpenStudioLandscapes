@@ -1482,22 +1482,7 @@ def factory_compose_scope__group_out(
                 fw.write("\n")
                 fw.write('pushd "${SCRIPT_DIR}" || exit 1\n')
                 fw.write("\n")
-                fw.write("# Source Overrides defined in {LANDSCAPE}/.overrides\n")
                 fw.write('echo "Working Directory: $(pwd)"\n')
-                # overrides_file = get_relative_path_via_common_root(
-                #     context=context,
-                #     path_src=script_cmd_docker_compose_up,
-                #     path_dst=pathlib.Path(
-                #         env["DOT_LANDSCAPES"],
-                #         env.get("LANDSCAPE", "default"),
-                #         ".overrides",
-                #     ),
-                #     path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
-                # )
-                # fw.write(f'echo "Sourcing {overrides_file.as_posix()} file..."\n')
-                # fw.write(
-                #     f'source {overrides_file.as_posix()} && echo "Sourced successfully." || echo "No .overrides file found."\n'
-                # )
                 fw.write("\n")
 
                 cmd_str = " ".join(
