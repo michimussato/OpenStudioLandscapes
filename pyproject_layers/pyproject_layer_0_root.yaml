@@ -19,11 +19,11 @@ project:
   dependencies:
   - importlib-metadata; python_version<"3.8"
   - dagster==1.9.11  # https://release-1-9-13.archive.dagster-docs.io/
-  - deprecation  # https://deprecation.readthedocs.io/en/latest/
+  # - deprecation  # https://deprecation.readthedocs.io/en/latest/
   - gitpython  # https://gitpython.readthedocs.io/en/latest/
   - PyYAML  # https://pyyaml.org/wiki/PyYAMLDocumentation
   - snakemd  # https://www.snakemd.io/en/latest/docs/
-  - email-validator
+  # - email-validator
   # docker-compose-graph is needed because of yaml_tags.overrides
   - docker-compose-graph @ git+https://github.com/michimussato/docker-compose-graph.git@v1.0.0
   dynamic:
