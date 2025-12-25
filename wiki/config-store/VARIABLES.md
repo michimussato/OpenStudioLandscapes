@@ -1,4 +1,6 @@
-
+<!-- TOC -->
+* [Variable that can expand](#variable-that-can-expand)
+<!-- TOC -->
 
 ---
 
