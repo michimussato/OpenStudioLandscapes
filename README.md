@@ -122,6 +122,8 @@ different.
 ```shell
 git clone https://github.com/michimussato/OpenStudioLandscapes.git \
     && cd OpenStudioLandscapes
+# git branch -a
+# git checkout <branch>
 ```
 
 ## Install Dependencies
