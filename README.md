@@ -416,7 +416,10 @@ OpenStudioLandscapes aims to leverage this capability wherever possible.
 > [!TIP]
 > 
 > More Dagster related information and references to resources can be found directly on the 
-> [OpenStudioLandscapes-Dagster Feature README](https://github.com/michimussato/OpenStudioLandscapes-Dagster#external-resources).
+> [OpenStudioLandscapes-Dagster Feature README](https://github.com/michimussato/OpenStudioLandscapes-Dagster#external-resources),
+> In particular, the
+> [Getting Started with Dagster](https://github.com/michimussato/OpenStudioLandscapes-Dagster##getting-started-with-dagster)
+> section is a good place to start.
 
 > [!IMPORTANT]
 > 
