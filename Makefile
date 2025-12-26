@@ -37,13 +37,12 @@ endif
 sys_deps_install: \
 	disable_unattended \
 	install_deps \
-	install_gh_cli \
 	install_python \
 	prepare_install_docker \
-	install_docker \
+	install_docker
 
 disable_unattended:
-	echo "Starting prep..."
+	# echo "Starting prep..."
 	sudo systemctl disable --now unattended-upgrades
 
 install_deps:
