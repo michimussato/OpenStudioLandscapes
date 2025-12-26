@@ -215,7 +215,7 @@ And head over to the Dagster Dev web UI:
 
 And click **Materialize All**.
 
-![2025-12-25_21-10.png](media/images/2025-12-25_21-10.png)
+![materialize_all.png](media/images/materialize_all.png)
 
 ## Launch the Landscape
 

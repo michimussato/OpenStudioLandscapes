@@ -63,7 +63,8 @@ Answers (from my own experience):
 - **Outdated Documentation**
 - **Parallel Documentation** (The same thing documented in multiple places - I'm sure there's an official term for this...)
 
-These are deceiving because they *pretend* to be reliable as a source of truth.
+These are deceiving because they *pretend* to be reliable as a source of truth - 
+and these are also my main focuses to avoid (not quite there yet, but working on it).
 
 ---
 
@@ -224,7 +225,8 @@ See
 ## Configure Features
 
 By default, these Features (among others) are enabled
-and will be displayed in the Dagster node graph:
+and will be displayed in the Dagster node graph (provided they
+are installed):
 
 - [OpenStudioLandscapes-Ayon](https://github.com/michimussato/OpenStudioLandscapes-Ayon)
 - [OpenStudioLandscapes-Dagster](https://github.com/michimussato/OpenStudioLandscapes-Dagster)
