@@ -123,8 +123,8 @@ different.
 git clone https://github.com/michimussato/OpenStudioLandscapes.git \
     && cd OpenStudioLandscapes
 # Check out a specific branch by:
-# git branch -a
-# git checkout <branch>
+# List branches: git branch -a
+# Checkout branch: git checkout <branch>
 ```
 
 ## Install Dependencies
@@ -135,64 +135,18 @@ make sys_deps_install
 
 > [!TIP]
 > 
-> The following error message:
+> Messages like:
 > ```
 > E: Could not get lock /var/lib/dpkg/lock-frontend. It is held by process 5198 (unattended-upgr)
 > N: Be aware that removing the lock file is not a solution and may break your system.
 > E: Unable to acquire the dpkg frontend lock (/var/lib/dpkg/lock-frontend), is another process using it?
 > ```
-> indicates that Ubuntu is running an unattended (automatic) system update in 
-> the background. Wait for it to finish and try above command again.
-> To disable unattended updates, you can issue this command:
-> ```shell
-> sudo systemctl disable --now unattended-upgrades
+> or
 > ```
-
-[//]: # (> [!TIP])
-
-[//]: # (> )
-
-[//]: # (> The following error message:)
-
-[//]: # (> ```)
-
-[//]: # (> [...])
-
-[//]: # (> # https://github.com/cli/cli/blob/trunk/docs/install_linux.md#debian)
-
-[//]: # (> &#40;type -p wget >/dev/null || &#40;sudo apt update && sudo apt install wget -y&#41;&#41; \)
-
-[//]: # (> 	  && sudo mkdir -p -m 755 /etc/apt/keyrings \)
-
-[//]: # (> 	  && out=$&#40;mktemp&#41; && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \)
-
-[//]: # (> 	  && cat $out | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \)
-
-[//]: # (> 	  && sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \)
-
-[//]: # (> 	  && sudo mkdir -p -m 755 /etc/apt/sources.list.d \)
-
-[//]: # (> 	  && echo "deb [arch=$&#40;dpkg --print-architecture&#41; signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \)
-
-[//]: # (> 	  && sudo apt update \)
-
-[//]: # (> 	  && sudo apt install gh -y)
-
-[//]: # (> failed: Connection timed out.)
-
-[//]: # (> failed: Connection timed out.)
-
-[//]: # (> [...])
-
-[//]: # (> ```)
-
-[//]: # (> is related to an external connectivity issue. Try again later.)
-
-[//]: # (> )
-
-[//]: # (> Todo)
-
-[//]: # (>  - [ ] do we need `gh`?)
+> Waiting for cache lock: Could not get lock /var/lib/dpkg/lock-frontend. It is held by process 3450 (unattended-upgr)
+> ```
+> indicates that Ubuntu is running an unattended (automatic) system update in 
+> the background. Take a look at the [Reference System](wiki/installation/reference_system.md#unattended-upgrades)
 
 ```shell
 sudo reboot
@@ -210,7 +164,7 @@ sudo reboot
 ## Install OpenStudioLandscapes
 
 ```shell
-# cd OpenStudioLandscapes
+# Make sure you are back in the repository directory: cd OpenStudioLandscapes
 make openstudiolandscapes_install
 ```
 

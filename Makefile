@@ -1,7 +1,4 @@
 # env
-# OPENSTUDIOLANDSCAPES__REPO_ROOT=~/git/repos/OpenStudioLandscapes
-# VERSION_TAG=v1.6.0-rc1
-
 -include .env
 
 SHELL := $(shell which bash)
@@ -25,25 +22,11 @@ PYTHON_PAT := 11
 endif
 
 
-#install: \
-#		disable_unattended \
-#		install_deps \
-#		install_gh_cli \
-#		install_python \
-#		install_docker \
-#		edit_hosts_file
-
-
 sys_deps_install: \
-	disable_unattended \
 	install_deps \
 	install_python \
 	prepare_install_docker \
 	install_docker
-
-disable_unattended:
-	# echo "Starting prep..."
-	sudo systemctl disable --now unattended-upgrades
 
 install_deps:
 	sudo apt-get update
@@ -57,42 +40,6 @@ install_deps:
 		graphviz
 	sudo apt-get clean
 	sudo systemctl enable --now ssh
-
-install_gh_cli:
-	# https://github.com/cli/cli/blob/trunk/docs/install_linux.md#debian
-	(type -p wget >/dev/null || (sudo apt update && sudo apt install wget -y)) \
-		&& sudo mkdir -p -m 755 /etc/apt/keyrings \
-		&& out=$$(mktemp) && wget -nv -O$$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
-		&& cat $$out | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
-		&& sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
-		&& sudo mkdir -p -m 755 /etc/apt/sources.list.d \
-		&& echo "deb [arch=$$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-		&& sudo apt update \
-		&& sudo apt install gh -y
-
-	gh --version
-
-# Ref
-# (type -p wget >/dev/null || (sudo apt update && sudo apt install wget -y)) \
-#	&& sudo mkdir -p -m 755 /etc/apt/keyrings \
-#	&& out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
-#	&& cat $out | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
-#	&& sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
-#	&& sudo mkdir -p -m 755 /etc/apt/sources.list.d \
-#	&& echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-#	&& sudo apt update \
-#	&& sudo apt install gh -y
-#
-# Actual
-# (type -p wget >/dev/null || (sudo apt update && sudo apt install wget -y)) \
-#	&& sudo mkdir -p -m 755 /etc/apt/keyrings \
-#	&& out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
-#	&& cat $out | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
-#	&& sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
-#	&& sudo mkdir -p -m 755 /etc/apt/sources.list.d \
-#	&& echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-#	&& sudo apt update \
-#	&& sudo apt install gh -y
 
 install_python:
 	sudo apt-get install --no-install-recommends -y \
@@ -123,7 +70,6 @@ prepare_install_docker:
 	# https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user
 	sudo groupadd --force --gid 959 docker
 	sudo usermod --append --groups docker $${USER}
-
 
 install_docker:
 	# https://docs.docker.com/engine/install/ubuntu/
@@ -156,9 +102,6 @@ install_docker:
 	sudo systemctl status --no-pager --full docker.service
 	sudo systemctl status --no-pager --full containerd.service
 
-	# sudo systemctl enable --now docker.service
-	# sudo systemctl enable --now containerd.service
-
 edit_hosts_file:
 	for fqdn in \
 		openstudiolandscapes-dagster.${OPENSTUDIOLANDSCAPES__DOMAIN_LAN} \
@@ -181,16 +124,6 @@ openstudiolandscapes_install:
 		&& pip install -e .[dev] \
 		&& deactivate
 
-openstudiolandscapes_features_clone:
-	source .venv/bin/activate \
-		&& nox -s clone_features \
-		&& deactivate
-
-openstudiolandscapes_features_install:
-	source .venv/bin/activate \
-		&& nox -s install_features_into_engine \
-		&& deactivate
-
 ###############################################################################
 
 
@@ -208,25 +141,6 @@ openstudiolandscapes_update:
 		# && pip install -e .[dev] \
 		&& pip install -e . \
 		&& deactivate
-
-#add_aliases:
-#	# Escape dots
-#	# Working syntax:
-#	# sed -i -e '$asource /home/user/git/repos/OpenStudioLandscapes/\.openstudiolandscapesrc' -e '/source \/home\/user\/git\/repos\/OpenStudioLandscapes\/\.openstudiolandscapesrc/d' /home/user/.bashrc
-#	# $ echo "your/string" | sed 's/\//\\\//g'
-#	# your\/string
-#	sed -i -e '$$asource ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT}/\.openstudiolandscapesrc' -e '/source ${REPLACED}\/\.openstudiolandscapesrc/d' "$${HOME}/.bashrc"
-
-#up:
-#	source .venv/bin/activate \
-#		&& nox --sessions dagster_postgres_up_detach dagster_postgres \
-#		&& deactivate
-#
-#down:
-#	source .venv/bin/activate \
-#		&& nox --sessions dagster_postgres_down \
-#		&& deactivate
-
 ###############################################################################
 
 ###############################################################################
@@ -249,38 +163,6 @@ nox_checkout:
 		&& nox --sessions checkout_branch
 
 ###############################################################################
-
-#reboot:
-#	read -r -e -p "Reboot now? " choice_reboot
-#	[[ "$choice_reboot" == [Yy]* ]] \
-#		&& sudo systemctl reboot \
-#		|| echo "Ok, let\'s reboot later."
-
-#initial_checks:
-##	#$ make initial_checks
-##	#mkdir -p /home/user/git/repos/OpenStudioLandscapes || sudo mkdir -p /home/user/git/repos/OpenStudioLandscapes
-##	#if [  -eq 0 ]; then
-##	#/bin/sh: 1: Syntax error: end of file unexpected (expecting "fi")
-##	#make: *** [Makefile:216: initial_checks] Error 2
-##	mkdir -p ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT}
-##	# sudo mkdir -p ${OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT}
-#
-#	UID := $(shell id -u)
-#	ifeq ($(UID),0)
-#		echo "Operation not permitted."
-#		echo
-#		echo "This OpenStudioLandscapes installer must not be executed as user root!"
-#		echo "Re-run as regular user."
-#		echo
-#		exit 1
-#	endif
-#
-##	if ! groups $$USER | grep -qw "docker"; then;\
-##		sudo groupadd --force --gid 959 docker || exit 1;\
-##		sudo usermod --append --groups docker "$${USER}" || exit 1;\
-##		echo "User $$USER has been added to group \`docker\`.";\
-##		echo "Reboot now and re-run this scrip.";\
-##	fi
 
 help:
 	# https://stackoverflow.com/a/26339924
