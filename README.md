@@ -533,7 +533,7 @@ you can run and use your Landscapes without OpenStudioLandscapes. OpenStudioLand
 **only** creates them. The Landscapes themselves, however, depend on Docker 
 and other third party tools for example. Those tools are _**de facto**_ industry standard.
 
-When were talking about Features: same thing. For example, Kitsu community is growing 
+When we're talking about Features: same thing. For example, Kitsu community is growing 
 and being dependent on in long term is becoming less risky. However, what if there is a new 
 kid in five years time? Or - like with 
 [Deadline entering "Maintenance Mode"](https://docs.thinkboxsoftware.com/products/deadline/10.4/1_User%20Manual/manual/maintenance-mode-faq.html) - 
@@ -541,7 +541,7 @@ a tool gets deprecated?
 
 This is exactly were OpenStudioLandscapes can shine: swap one render manager for another
 with minimal effort. Adjust your infrastructure in case you _**want**_ to. And sometimes also
-simply because you _**have**_ to. A template (work in progress) is provided for developers to integrate new Features:
+simply because you _**have**_ to. A Feature template (work in progress) is provided for developers to integrate new Features:
 [OpenStudioLandscapes-Template](https://github.com/michimussato/OpenStudioLandscapes-Template?tab=readme-ov-file#create-new-feature-from-this-template).
 
 ## I have zero understanding for bugs! Who can I blame?
