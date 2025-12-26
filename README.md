@@ -520,7 +520,8 @@ a tool gets deprecated?
 
 This is exactly were OpenStudioLandscapes can shine: swap one render manager for another
 with minimal effort. Adjust your infrastructure in case you _**want**_ to. And sometimes also
-simply because you _**have**_ to.
+simply because you _**have**_ to. A template (work in progress) is provided for developers to integrate new Features:
+[OpenStudioLandscapes-Template](https://github.com/michimussato/OpenStudioLandscapes-Template?tab=readme-ov-file#create-new-feature-from-this-template).
 
 ## I have zero understanding for bugs! Who can I blame?
 
