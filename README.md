@@ -337,8 +337,9 @@ for example.
 across different sites via SSH tunnels (see also 
 [OpenStudioLandscapes Compose Scopes](wiki/terminology.md#table-of-contents)).
 
-For example, to wrap a Landscape with a Pangoline Site, you can 
-provide the required secrets as follows:
+For example, to wrap a Landscape with a 
+[Pangoline Site](https://docs.pangolin.net/manage/sites/understanding-sites), 
+you can provide the required secrets as follows:
 
 > [!IMPORTANT]
 > 
@@ -407,9 +408,6 @@ accessible from the internet with user based authentication
 (provided by Pangolin):
 
 ![2025-12-23_21-40.png](media/images/2025-12-23_21-40.png)
-
-A good place to start to learn about Pangolin Sites are the 
-[Pangolin docs](https://docs.pangolin.net/manage/sites/understanding-sites).
 
 ## I don't see a lot of documentation for OpenStudioLandscapes. How can I gain insight?
 
