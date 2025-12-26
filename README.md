@@ -331,9 +331,11 @@ for example.
 
 ### OK, now I'm hooked...
 
-Pangolin allows for [Features](wiki/terminology.md#table-of-contents) of a single 
-[Landscape](wiki/terminology.md#table-of-contents) to be distributed across different
-sites via SSH tunnels (see also [OpenStudioLandscapes Compose Scopes](wiki/terminology.md#table-of-contents)).
+[Pangolin](https://docs.pangolin.net/) allows for 
+[Features](wiki/terminology.md#table-of-contents) of a single 
+[Landscape](wiki/terminology.md#table-of-contents) to be distributed 
+across different sites via SSH tunnels (see also 
+[OpenStudioLandscapes Compose Scopes](wiki/terminology.md#table-of-contents)).
 
 For example, to wrap a Landscape with a Pangoline Site, you can 
 provide the required secrets as follows:
@@ -341,8 +343,8 @@ provide the required secrets as follows:
 > [!IMPORTANT]
 > 
 > Please note that Pangolin Sites can only wrap full Compose Scopes.
-> Compose Scopes can have arbitrary values, like `license_server` or
-> `production_tracking` etc.
+> Compose Scopes can have arbitrary names, like `license_server` or
+> `production_tracking` for example.
 > Therefore, a dynamic Compose Scope name will also be assigned to 
 > the environment varibles that carry the secrets.
 > 
