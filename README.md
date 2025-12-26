@@ -424,7 +424,7 @@ OpenStudioLandscapes aims to leverage this capability wherever possible.
 > 
 > ![2025-12-23_20-04.png](media/images/2025-12-23_20-04.png)
 
-# What problem does OpenStudioLandscapes solve?
+## What problem does OpenStudioLandscapes solve?
 
 What's separating the men from the boys is the production back bone.
 Large studios spent years and years of man (and woman) hours and
