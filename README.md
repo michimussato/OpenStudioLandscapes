@@ -16,6 +16,7 @@
   * [Shut the Landscape down](#shut-the-landscape-down)
   * [Configure OpenStudioLandscapes](#configure-openstudiolandscapes)
     * [Environment Variables and Secrets](#environment-variables-and-secrets)
+  * [Update OpenStudioLandscapes Engine and Features](#update-openstudiolandscapes-engine-and-features)
 * [Q&A](#qa)
   * [Who is OpenStudioLandscapes for?](#who-is-openstudiolandscapes-for)
   * [Can OpenStudioLandscapes provide a solution for distributed teams?](#can-openstudiolandscapes-provide-a-solution-for-distributed-teams)
@@ -313,6 +314,26 @@ will be placed inside this default config store.
 Dagster (and therefore OpenStudioLandscapes) reads a local
 `.env` file at the root of the OpenStudioLandscapes Git
 repository directory.
+
+## Update OpenStudioLandscapes Engine and Features
+
+To update OpenStudioLandscapes and all your Features,
+you can run the following code snippet. This is a work in progress
+solution and the update process is planned
+to be facilitated with future updates.
+
+```shell
+# cd OpenStudioLandscapes
+git pull
+
+pushd .features || exit 1
+
+for d in ./*; do
+    git -C ${d} pull;
+done
+
+popd || exit 1
+```
 
 # Q&A
 
