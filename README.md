@@ -515,7 +515,7 @@ and other third party tools for example. Those tools are _**de facto**_ industry
 When were talking about Features: same thing. For example, Kitsu community is growing 
 and being dependent on in long term is becoming less risky. However, what if there is a new 
 kid in five years time? Or - like with 
-[Deadline](https://docs.thinkboxsoftware.com/products/deadline/10.4/1_User%20Manual/manual/maintenance-mode-faq.html) - 
+[Deadline entering "Maintenance Mode"](https://docs.thinkboxsoftware.com/products/deadline/10.4/1_User%20Manual/manual/maintenance-mode-faq.html) - 
 a tool gets deprecated?
 
 This is exactly were OpenStudioLandscapes can shine: swap one render manager for another
