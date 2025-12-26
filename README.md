@@ -337,6 +337,9 @@ for example.
 across different sites via SSH tunnels (see also 
 [OpenStudioLandscapes Compose Scopes](wiki/terminology.md#table-of-contents)).
 
+<details>
+<summary>Show More Information</summary>
+
 For example, to wrap a Landscape with a 
 [Pangoline Site](https://docs.pangolin.net/manage/sites/understanding-sites), 
 you can provide the required secrets as follows:
@@ -425,6 +428,8 @@ OpenStudioLandscapes aims to leverage this capability wherever possible.
 > Example:
 > 
 > ![2025-12-23_20-04.png](media/images/2025-12-23_20-04.png)
+
+</details>
 
 # What problem does OpenStudioLandscapes solve?
 
