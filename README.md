@@ -122,8 +122,10 @@ different.
 git clone https://github.com/michimussato/OpenStudioLandscapes.git \
     && cd OpenStudioLandscapes
 # Check out a specific branch by:
-# List branches: git branch -a
-# Checkout branch: git checkout <branch>
+# List branches: 
+# git branch -a
+# Checkout branch: 
+# git checkout <branch>
 ```
 
 ## Install Dependencies
@@ -156,14 +158,32 @@ sudo reboot
 > And verify that the user is member of the `docker` group:
 > 
 > ```
-> $ groups
+> $ groups ${USER}
 > user adm cdrom sudo dip plugdev lpadmin lxd sambashare docker
 > ```
+
+> [!TIP]
+> 
+> If you get error(s) similar to these:
+> ```
+> [...]
+> unable to get image 'docker.io/postgres:17': permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get "http://%2Fvar%2Frun%2Fdocker.sock/v1.51/images/docker.io/postgres:17/json": dial unix /var/run/docker.sock: connect: permission denied
+> [...]
+> ```
+> or
+> ```
+> permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get "http://%2Fvar%2Frun%2Fdocker.sock/v1.51/containers/json?all=1&filters=%7B%22label%22%3A%7B%22com.docker.compose.config-hash%22%3Atrue%2C%22com.docker.compose.oneoff%3DFalse%22%3Atrue%2C%22com.docker.compose.project%3Dopenstudiolandscapes-dagster-postgres%22%3Atrue%7D%7D": dial unix /var/run/docker.sock: connect: permission denied
+> ```
+> you forgot to reboot your system - just reboot to fix this.
+> 
+> Background: adding a user to a group (namely `docker`) takes effect
+> only _**after**_ the next successful login.
 
 ## Install OpenStudioLandscapes
 
 ```shell
-# Make sure you are back in the repository directory: cd OpenStudioLandscapes
+# Make sure you are back in the repository directory: 
+# cd OpenStudioLandscapes
 make openstudiolandscapes_install
 ```
 
