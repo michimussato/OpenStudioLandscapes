@@ -226,8 +226,8 @@ See
 
 ## Configure Features
 
-By default, these Features (among others) are enabled
-and will be displayed in the Dagster node graph (provided they
+By default, these Features ([among others](../README.md#current-feature-statuses))
+are enabled and will be displayed in the Dagster node graph (provided they
 are installed):
 
 - [OpenStudioLandscapes-Ayon](https://github.com/michimussato/OpenStudioLandscapes-Ayon)
