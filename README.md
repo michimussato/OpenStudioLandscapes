@@ -23,6 +23,7 @@
   * [I don't see a lot of documentation for OpenStudioLandscapes. How can I gain insight?](#i-dont-see-a-lot-of-documentation-for-openstudiolandscapes-how-can-i-gain-insight)
   * [What problem does OpenStudioLandscapes solve?](#what-problem-does-openstudiolandscapes-solve)
   * [So, tell me! What exactly does it produce?](#so-tell-me-what-exactly-does-it-produce)
+  * [OpenStudioLandscapes long term dependency hell: out of the frying pan into the fire?](#openstudiolandscapes-long-term-dependency-hell-out-of-the-frying-pan-into-the-fire)
   * [I have zero understanding for bugs! Who can I blame?](#i-have-zero-understanding-for-bugs-who-can-i-blame)
     * [Issues and feature requests](#issues-and-feature-requests)
 * [Documentation](#documentation)
@@ -500,6 +501,26 @@ descriptions! You'll be provided with one single command (just click
 it to copy it to your clipboard) to launch the diagrammed Landscape:
 
 ![2025-12-23_20-22.png](media/images/2025-12-23_20-22.png)
+
+## OpenStudioLandscapes long term dependency hell: out of the frying pan into the fire?
+
+In [Brief](#brief) I was writing about staying flexible and independent.
+What happens if OpenStudioLandscapes disappears as a project? Can I rely on it
+long term? I can't predict the future and we'll see about the projects' adoption. 
+OpenStudioLandscapes itself does **not** make you dependent on it as much as you think:
+you can run and use your Landscapes without OpenStudioLandscapes. OpenStudioLandscapes
+**only** creates them. The Landscapes themselves, however, depend on Docker 
+and other third party tools for example. Those tools are _**de facto**_ industry standard.
+
+When were talking about Features: same thing. For example, Kitsu community is growing 
+and being dependent on in long term is becoming less risky. However, what if there is a new 
+kid in five years time? Or - like with 
+[Deadline](https://docs.thinkboxsoftware.com/products/deadline/10.4/1_User%20Manual/manual/maintenance-mode-faq.html) - 
+a tool gets deprecated?
+
+This is exactly were OpenStudioLandscapes can shine: swap one render manager for another
+with minimal effort. Adjust your infrastructure in case you _**want**_ to. And sometimes also
+simply because you _**have**_ to.
 
 ## I have zero understanding for bugs! Who can I blame?
 
