@@ -53,7 +53,7 @@ files aggregated in this Wiki - which is a constant work in progress.
 > - scripted (`nox -s readme`)
 > - graphically (images, [graphs & diagrams](https://mermaid.js.org/intro/))
  
-This might seem like a banality: OpenStudioLandscapes documentation aims to
+This might state the obvious: OpenStudioLandscapes documentation aims to
 reflect the truth as close and as quickly as possible using 
 *my limited resources*.
 
