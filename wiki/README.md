@@ -61,7 +61,7 @@ reflect the truth as close and as quickly as possible using
 
 Answer (from my own experience):
 - **Outdated Documentation**
-- **Parallel Documentation** (I'm sure there's an official term for this...)
+- **Parallel Documentation** (The same thing documented in multiple places - I'm sure there's an official term for this...)
 
 > [!WARNING]
 > 
