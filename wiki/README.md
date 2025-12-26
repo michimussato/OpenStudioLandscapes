@@ -59,7 +59,7 @@ reflect the truth as close and as quickly as possible using
 
 ## Question: What's worse than having no Documentation?
 
-Answer (from my own experience):
+Answers (from my own experience):
 - **Outdated Documentation**
 - **Parallel Documentation** (The same thing documented in multiple places - I'm sure there's an official term for this...)
 
