@@ -413,14 +413,6 @@ Dagster itself offers Markdown compatible
 descriptions for [Assets](https://docs.dagster.io/guides/build/assets/defining-assets).
 OpenStudioLandscapes aims to leverage this capability wherever possible.
 
-> [!TIP]
-> 
-> More Dagster related information and references to resources can be found directly on the 
-> [OpenStudioLandscapes-Dagster Feature README](https://github.com/michimussato/OpenStudioLandscapes-Dagster#external-resources),
-> In particular, the
-> [Getting Started with Dagster](https://github.com/michimussato/OpenStudioLandscapes-Dagster##getting-started-with-dagster)
-> section is a good place to start.
-
 > [!IMPORTANT]
 > 
 > This allows for dynamic documentation without having the need to compile static
@@ -430,6 +422,17 @@ OpenStudioLandscapes aims to leverage this capability wherever possible.
 > Example:
 > 
 > ![2025-12-23_20-04.png](media/images/2025-12-23_20-04.png)
+
+A bit more context about the how and why can be found [here](wiki/README.md#a-word-about-documentation).
+
+> [!TIP]
+> 
+> More Dagster related information and references to resources can be found directly on the 
+> [OpenStudioLandscapes-Dagster Feature README](https://github.com/michimussato/OpenStudioLandscapes-Dagster#external-resources).
+> 
+> To get a good understanding of how to work with Dagster, the
+> [Getting Started with Dagster](https://github.com/michimussato/OpenStudioLandscapes-Dagster##getting-started-with-dagster)
+> section in particular is a good place to start.
 
 ## What problem does OpenStudioLandscapes solve?
 
