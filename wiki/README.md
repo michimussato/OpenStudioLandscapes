@@ -63,9 +63,7 @@ Answer (from my own experience):
 - **Outdated Documentation**
 - **Parallel Documentation** (The same thing documented in multiple places - I'm sure there's an official term for this...)
 
-> [!WARNING]
-> 
-> These are deceiving because they *pretend* to be reliable as a source of truth.
+These are deceiving because they *pretend* to be reliable as a source of truth.
 
 ---
 
