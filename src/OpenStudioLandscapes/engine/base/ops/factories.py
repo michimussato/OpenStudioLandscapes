@@ -806,7 +806,7 @@ def factory_compose_scope__compose(
 
         group_out_base: OpenStudioLandscapesBaseOut = kwargs.pop("group_out_base")
 
-        context.log.error(f"{kwargs = }")
+        context.log.debug(f"{kwargs = }")
         CONFIG: ComposeScopeBaseModel = kwargs.pop("CONFIG")
         features_in: Dict[str, OpenStudioLandscapesFeatureOut] = kwargs.pop(
             "features_in"
@@ -957,7 +957,7 @@ def factory_compose_scope__docker_compose_graph(
                 format="svg",
             )
         except FileNotFoundError as e:
-            context.log.error(e)
+            context.log.exception(e)
             raise FileNotFoundError("Is Graphviz installed?") from e
 
         with open(svg, "rb") as fr:
@@ -977,7 +977,7 @@ def factory_compose_scope__docker_compose_graph(
                 format="png",
             )
         except FileNotFoundError as e:
-            context.log.error(e)
+            context.log.exception(e)
             raise FileNotFoundError("Is Graphviz installed?") from e
 
         # SLOW
@@ -998,7 +998,7 @@ def factory_compose_scope__docker_compose_graph(
                 format="dot",
             )
         except FileNotFoundError as e:
-            context.log.error(e)
+            context.log.exception(e)
             raise FileNotFoundError("Is Graphviz installed?") from e
 
         ########################
