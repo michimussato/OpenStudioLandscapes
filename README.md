@@ -396,7 +396,14 @@ across different sites via SSH tunnels (see also
 
 For example, to wrap a Landscape with a 
 [Pangoline Site](https://docs.pangolin.net/manage/sites/understanding-sites), 
-you can provide the required secrets as follows:
+you can run **OpenStudioLandscape** with the following environment variable
+
+```shell
+OPENSTUDIOLANDSCAPES__ATTACH_PANGOLIN_SITE_TO_COMPOSE_SCOPE=1
+```
+
+and then provide the required secrets to the Landscape Compose Scope
+[`up`](#launch-the-landscape) command environment as follows:
 
 > [!IMPORTANT]
 > 
