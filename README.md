@@ -11,10 +11,11 @@
   * [Install OpenStudioLandscapes](#install-openstudiolandscapes)
   * [Add Features](#add-features)
   * [Run OpenStudioLandscapes](#run-openstudiolandscapes)
-  * [Create Landscape](#create-landscape)
-  * [Launch the Landscape](#launch-the-landscape)
-  * [Shut the Landscape down](#shut-the-landscape-down)
-  * [Configure OpenStudioLandscapes](#configure-openstudiolandscapes)
+    * [Launch OpenStudioLandscapes](#launch-openstudiolandscapes)
+    * [Create Landscape](#create-landscape)
+    * [Launch the Landscape](#launch-the-landscape)
+      * [Shut the Landscape down](#shut-the-landscape-down)
+    * [Configure OpenStudioLandscapes](#configure-openstudiolandscapes)
     * [Environment Variables and Secrets](#environment-variables-and-secrets)
   * [Update OpenStudioLandscapes Engine and Features](#update-openstudiolandscapes-engine-and-features)
 * [Q&A](#qa)
@@ -199,6 +200,22 @@ A full list of available Features is available [here](#current-feature-statuses)
 
 ## Run OpenStudioLandscapes
 
+The video tutorial will give you a good, basic understanding of how to
+- launch **OpenStudioLandscapes**
+- interact with Dagster
+- create a Landscape
+- inspect a Landscape and individual Features with Landscape Maps
+- launch a Landscape
+
+[![OpenStudioLandscapes 101](https://img.youtube.com/vi/lKT0q1_gZvM/0.jpg)](https://www.youtube.com/watch?v=lKT0q1_gZvM)
+
+The video includes the following steps (among others):
+- [Launch OpenStudioLandscapes](#launch-openstudiolandscapes)
+- [Create Landscape](#create-landscape)
+- [Launch the Landscape](#launch-the-landscape)
+
+### Launch OpenStudioLandscapes
+
 ```shell
 # cd OpenStudioLandscapes
 source .venv/bin/activate
@@ -223,7 +240,7 @@ openstudiolandscapes
 > 127.0.0.1       openstudiolandscapes-dagster-postgres.openstudiolandscapes.lan
 > ```
 
-## Create Landscape
+### Create Landscape
 
 And head over to the Dagster Dev web UI:
 
@@ -239,7 +256,7 @@ And click **Materialize All**.
 
 ![materialize_all.png](media/images/materialize_all.png)
 
-## Launch the Landscape
+### Launch the Landscape
 
 Navigate the Compose Scope Group (for example `default`) and select the
 `docker_compose_commands` Asset:
@@ -275,7 +292,7 @@ kitsu.2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126  | Running Zou...
 [...]
 ```
 
-## Shut the Landscape down
+#### Shut the Landscape down
 
 ("down" script)
 
@@ -297,7 +314,7 @@ Working Directory: /home/user/OpenStudioLandscapes/.landscapes/2025-12-25-20-51-
  Network 2025-12-25-20-51-33-e2d28dae9d3a4deaa7844363dce61126-default_default Removed
 ```
 
-## Configure OpenStudioLandscapes
+### Configure OpenStudioLandscapes
 
 By default, **OpenStudioLandscapes** creates 
 `~/.config/OpenStudioLandscapes` when `openstudiolandscapes` 
@@ -542,7 +559,7 @@ you can run and use your Landscapes without **OpenStudioLandscapes**. **OpenStud
 and other third party tools for example. Those tools are _**de facto**_ industry standard.
 
 When we're talking about Features: same thing. For example, Kitsu community is growing 
-and being dependent on in long term is becoming less risky. 
+and being dependent on it long term is becoming less risky. 
 
 > [!IMPORTANT]
 > 
