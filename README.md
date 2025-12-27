@@ -71,12 +71,12 @@ any production environment with ease:
   - ✅ Always stay on top of things with Landscape Maps and node tree representations of Python code
   - ✅ Limit manual documentation to a bare minimum
   - ✅ Git controlled config store
-- ✅ `OpenStudioLandscapes` is (primarily) powered by [Dagster](https://github.com/dagster-io/) and [Docker](https://github.com/docker)
+- ✅ **OpenStudioLandscapes** is (primarily) powered by [Dagster](https://github.com/dagster-io/) and [Docker](https://github.com/docker)
 - ✅ Fully Python based
 - ✅ Build your own studio automation
   - ✅ and share it (scripts, packages etc.) across Landscapes
 - ✅ Do you like project based studio services?
-  - ✅ No problem with OpenStudioLandscapes
+  - ✅ No problem with **OpenStudioLandscapes**
 - ✅ Landscapes can run on a single host as well as on multiple hosts
 
 > [!IMPORTANT]
@@ -91,13 +91,13 @@ any production environment with ease:
 
 The reference system is [Ubuntu 22.04 LTS (Jammy Jellyfish)](wiki/installation/reference_system.md).
 
-Other distros do work (OpenStudioLandscapes was developed on an
+Other distros do work (**OpenStudioLandscapes** was developed on an
 Arch based Linux distro), however, the installation process **will** be
 different.
 
 > [!CAUTION]
 > 
-> Installation and execution of OpenStudioLandscapes as **must
+> Installation and execution of **OpenStudioLandscapes** as **must
 > be performed as normal (unprivileged) user**.
 > Doing so as user `root` may result in a non-functional 
 > setup ([https://github.com/michimussato/OpenStudioLandscapes/issues/2]()).
@@ -299,7 +299,7 @@ Working Directory: /home/user/OpenStudioLandscapes/.landscapes/2025-12-25-20-51-
 
 ## Configure OpenStudioLandscapes
 
-By default, OpenStudioLandscapes creates 
+By default, **OpenStudioLandscapes** creates 
 `~/.config/OpenStudioLandscapes` when `openstudiolandscapes` 
 is executed. All `config.yml` files
 will be placed inside this default config store.
@@ -311,13 +311,13 @@ will be placed inside this default config store.
 
 ### Environment Variables and Secrets
 
-Dagster (and therefore OpenStudioLandscapes) reads a local
-`.env` file at the root of the OpenStudioLandscapes Git
+Dagster (and therefore **OpenStudioLandscapes**) reads a local
+`.env` file at the root of the **OpenStudioLandscapes** Git
 repository directory.
 
 ## Update OpenStudioLandscapes Engine and Features
 
-To update OpenStudioLandscapes and all your Features,
+To update **OpenStudioLandscapes** and all your Features,
 you can run the following code snippet. This is a work in progress
 solution and the update process is planned
 to be facilitated with future updates.
@@ -348,13 +348,13 @@ you can then build your tools on top of this common, stable, flexible and
 scalable system.
 
 The scope of this project are users with some technical skills. 
-OpenStudioLandscapes is intended to run on a Linux based 
+**OpenStudioLandscapes** is intended to run on a Linux based 
 system and will remain to do so. However, if you are able to install
 Ubuntu as a virtual machine on a Windows PC, you're pretty much good to go.
 
 ## Can OpenStudioLandscapes provide a solution for distributed teams?
 
-Sure it can! OpenStudioLandscapes together with Pangolin can allow you
+Sure it can! **OpenStudioLandscapes** together with Pangolin can allow you
 to grant remote users access to your locally (or wherever your 
 [Landscape](wiki/terminology.md#table-of-contents) 
 will be running) hosted production tracking system
@@ -450,10 +450,10 @@ accessible from the internet with user based authentication
 
 ## I don't see a lot of documentation for OpenStudioLandscapes. How can I gain insight?
 
-OpenStudioLandscapes is build on [Dagster](https://docs.dagster.io/). 
+**OpenStudioLandscapes** is build on [Dagster](https://docs.dagster.io/). 
 Dagster itself offers Markdown compatible
 descriptions for [Assets](https://docs.dagster.io/guides/build/assets/defining-assets).
-OpenStudioLandscapes aims to leverage this capability wherever possible.
+**OpenStudioLandscapes** aims to leverage this capability wherever possible.
 
 > [!IMPORTANT]
 > 
@@ -473,7 +473,7 @@ A bit more context about the how and why can be found [here](wiki/README.md#a-wo
 > [OpenStudioLandscapes-Dagster Feature README](https://github.com/michimussato/OpenStudioLandscapes-Dagster#external-resources).
 > 
 > To get a good understanding of how to work with Dagster, the
-> [Getting Started with Dagster](https://github.com/michimussato/OpenStudioLandscapes-Dagster##getting-started-with-dagster)
+> [Getting Started with Dagster](https://github.com/michimussato/OpenStudioLandscapes-Dagster#getting-started-with-dagster)
 > section in particular is a good place to start.
 
 ## What problem does OpenStudioLandscapes solve?
@@ -483,7 +483,7 @@ Large studios spent years and years of man (and woman) hours and
 millions of dollars to build robust automation to support their 
 production while smaller ones are (in those regards - no matter
 how recent and advanced the tools they use are) decades behind.
-So, in one sense, OpenStudioLandscapes is a time machine by giving you 
+So, in one sense, **OpenStudioLandscapes** is a time machine by giving you 
 the ability to jump a few years ahead of yourself by giving you a 
 pre-made on-prem production environment at very little cost.
 
@@ -502,7 +502,7 @@ a house of cards built upside down.
 > places you can't even remember? There you have it. Better don't touch it. Better
 > continue building your system around it. Right? Wrong! 
 
-OpenStudioLandscapes is here to change that by making sure your 
+**OpenStudioLandscapes** is here to change that by making sure your 
 **future you** is not going to regret decisions of its **past you** 
 by providing structure while keeping systems and pipeline features 
 as isolated (read: portable) as possible!
@@ -510,9 +510,17 @@ as isolated (read: portable) as possible!
 ## So, tell me! What exactly does it produce?
 
 Good you're asking! To get an idea what the actual output 
-(or product if you will) of OpenStudioLandscapes
-looks like, here's the deal: 
-if you're into (like myself) dynamic, worry-free documentation of what
+(or product if you will) of **OpenStudioLandscapes**
+looks like, here's the deal: **OpenStudioLandscapes** generates
+a hierarchical tree of `docker-compose.yaml` files - basically as many
+individual trees as there are Compose Scopes. For some Features, Docker 
+images and (sometimes) pre-configured `docker-compose.yaml` files already
+exist and **OpenStudioLandscapes** will use those. For other services, there
+is neither a Docker image nor `docker-compose.yaml` files. In those cases,
+**OpenStudioLandscapes** generates both dynamically. 
+
+On top of that, **OpenStudioLandscapes** creates diagrams - visual representations - 
+of all your services. If you're into (like myself) dynamic, worry-free documentation of what
 you are actually working with, here's a Landscape Map of a Landscape:
 
 ![Demo Landscape](https://raw.githubusercontent.com/michimussato/OpenStudioLandscapes-Demo-Landscape/refs/heads/main/2025-07-10-22-36-50-47cd6c0a7dd141429707ab6d91190a27/Landscape_Map__Landscape_Map/Landscape_Map__landscape_map/Landscape_Map__landscape_map.svg)
@@ -526,10 +534,10 @@ it to copy it to your clipboard) to launch the diagrammed Landscape:
 ## OpenStudioLandscapes long term dependency hell: out of the frying pan into the fire?
 
 In [Brief](#brief) I was writing about staying flexible and independent.
-What happens if OpenStudioLandscapes disappears as a project? Can I rely on it
+What happens if **OpenStudioLandscapes** disappears as a project? Can I rely on it
 long term? I can't predict the future and we'll see about the projects' adoption. 
-OpenStudioLandscapes itself does **not** make you dependent on it as much as you think:
-you can run and use your Landscapes without OpenStudioLandscapes. OpenStudioLandscapes
+**OpenStudioLandscapes** itself does **not** make you dependent on it as much as you think:
+you can run and use your Landscapes without **OpenStudioLandscapes**. **OpenStudioLandscapes**
 **only** creates them. The Landscapes themselves, however, depend on Docker 
 and other third party tools for example. Those tools are _**de facto**_ industry standard.
 
@@ -542,7 +550,7 @@ and being dependent on in long term is becoming less risky.
 > [Deadline entering "Maintenance Mode"](https://docs.thinkboxsoftware.com/products/deadline/10.4/1_User%20Manual/manual/maintenance-mode-faq.html) - 
 > a third party tool gets deprecated?
 
-This is exactly were OpenStudioLandscapes can shine: swap one render manager for another
+This is exactly were **OpenStudioLandscapes** can shine: swap one render manager for another
 with minimal effort. Adjust your infrastructure in case you _**want**_ to. And sometimes also
 simply because you _**have**_ to. 
 
@@ -553,11 +561,11 @@ simply because you _**have**_ to.
 
 ## I have zero understanding for bugs! Who can I blame?
 
-Bear in mind: OpenStudioLandscapes is a young project.
+Bear in mind: **OpenStudioLandscapes** is a young project.
 There are still many items to be implemented (and potentially bug-fixed).
 I lack experience in many fields when it comes to software development. The documentation
 is not in a shape I would like to see it in (dynamic, wherever possible). 
-So, before adding Features to OpenStudioLandscapes, I plan to work on stability, documentation and support. 
+So, before adding Features to **OpenStudioLandscapes**, I plan to work on stability, documentation and support. 
 To avoid filling in the wrong gaps, I would like to mainly fill in those 
 that are being asked for - and this is your part. Ask anything. Request anything.
 Suggest anything. Anything that leads to a better experience - without hiccups and without
