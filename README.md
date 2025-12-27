@@ -612,7 +612,6 @@ Now, it's time to head over to the [Wiki](wiki/README.md)!
 
 # Community
 
-- [![YouTube](media/images/youtube-square-red-logo-15975.png)](https://youtube.com/@openstudiolandscapes)
 - [![LinkedIn](media/images/linkedin-square-blue-logo-15978.png)](https://www.linkedin.com/company/106731439/)
   - [#OpenStudioLandscapes](https://www.linkedin.com/search/results/all/?keywords=%23openstudiolandscapes)
 - [![Discord](media/images/discord-square-blue-logo-16000.png)](https://discord.gg/F6bDRWsHac)
