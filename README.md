@@ -27,6 +27,7 @@
   * [So, tell me! What exactly does it produce?](#so-tell-me-what-exactly-does-it-produce)
   * [OpenStudioLandscapes long term dependency hell: out of the frying pan into the fire?](#openstudiolandscapes-long-term-dependency-hell-out-of-the-frying-pan-into-the-fire)
   * [I have zero understanding for bugs! Who can I blame?](#i-have-zero-understanding-for-bugs-who-can-i-blame)
+  * [I don't like Pipeline!](#i-dont-like-pipeline)
     * [Issues and feature requests](#issues-and-feature-requests)
 * [Documentation](#documentation)
 * [Community](#community)
@@ -49,9 +50,11 @@ The way YOU want it!
 
 > [!TIP]
 > 
-> This is not another Pipeline Tool. It is a tool
-> to build a structured foundation for any Pipeline Tool
-> you might decide to use at some point in your studio.
+> **OpenStudioLandscapes** is not _another_ Pipeline Tool.
+> It is not _another_ application to dictate _how_ you have to work. 
+> **OpenStudioLandscapes** is here to help you build a structured 
+> foundation for any Pipeline Tool you might decide to use 
+> at some point in your studio.
 
 An open source toolkit - a declarative build system - to
 easily create reproducible production environments based
@@ -585,6 +588,26 @@ simply because you _**have**_ to.
 > 
 > A Feature template (work in progress) is provided for developers to integrate new Features:
 > [OpenStudioLandscapes-Template](https://github.com/michimussato/OpenStudioLandscapes-Template?tab=readme-ov-file#create-new-feature-from-this-template).
+
+## I don't like Pipeline! I'm a free thinker and I don't like boudaries!
+
+The reputation of _pipeline_ can be ambiguous. On one hand, 
+it's here to increase efficiency. On the other hand, it does
+so limiting options - by forcing us to work within specific guidelines. 
+
+Again, **OpenStudioLandscapes** will not (and cannot) tell you how you work and which 
+workflow the hole grail is. This is up to you and your team. With **OpenStudioLandscapes**
+you just set the playground in that sense. 
+
+> [!IMPORTANT]
+> 
+> Which render manager is the one most suitable for your environment? Do you want to use 
+> multiple production tracking systems side by side? This is where **OpenStudioLandscapes**
+> can assist you: 
+> 
+> getting those systems up and running quickly and cleanly - _**how**_ you
+> configure and use them is not **OpenStudioLandscapes**' choice to make. It's yours and 
+> yours alone.
 
 ## I have zero understanding for bugs! Who can I blame?
 
