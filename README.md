@@ -667,7 +667,7 @@ Now, it's time to head over to the [Wiki](wiki/README.md)!
 
 ## Unmaintained (archived)
 
-> [!TIP]
+> [!NOTE]
 > 
 > Features listed here could be re-activated based on demand.
 
