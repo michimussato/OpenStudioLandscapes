@@ -44,9 +44,9 @@
 ## Brief
 
 Setup and launch custom production environments
-with Render Farm, Production Tracking, Automation
+with render farm, production tracking, automation
 and more - your 3D Animation
-and VFX Pipeline backbone - with ease, independence
+and VFX pipeline backbone - with ease, independence
 and scalability!
 The way YOU want it!
 
@@ -345,8 +345,8 @@ popd || exit 1
 ## Who is OpenStudioLandscapes for?
 
 This platform is aimed towards students, one-man-shows and
-small to medium-sized studios where only limited resources for Pipeline
-Engineers and Technical Directors are available.
+small to medium-sized studios where only limited resources for pipeline
+engineers and technical directors are available.
 This system allows those studios to share a common
 underlying system. And whatever your individual pipeline needs are, 
 you can then build your tools on top of this common, stable, flexible and
@@ -492,7 +492,7 @@ A bit more context about the how and why can be found [here](wiki/README.md#a-wo
 
 ## What problem does OpenStudioLandscapes solve?
 
-What's separating the men from the boys is the production back bone.
+What's separating the men from the boys is the production backbone.
 Large studios spent years and years of man (and woman) hours and
 millions of dollars to build robust automation to support their 
 production while smaller ones are (in those regards - no matter
