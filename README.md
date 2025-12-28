@@ -34,6 +34,7 @@
 * [Publications](#publications)
 * [Current Feature Statuses](#current-feature-statuses)
   * [Maintained](#maintained)
+  * [Template](#template)
   * [Unmaintained (archived)](#unmaintained-archived)
 <!-- TOC -->
 
