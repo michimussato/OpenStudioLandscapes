@@ -226,24 +226,6 @@ source .venv/bin/activate
 openstudiolandscapes
 ```
 
-> If you see an error like this one:
-> 
-> ```shell
-> (Background on this error at: https://sqlalche.me/e/20/e3q8)
-> WARNING:root:Retrying failed database connection: (psycopg2.OperationalError) connection to server at "openstudiolandscapes-dagster-postgres.openstudiolandscapes.lan" (192.168.178.195), port 2345 failed: Connection refused
-> 	Is the server running on that host and accepting TCP/IP connections?
-> ```
-> 
-> This indicates that PostgreSQL server is not reachable by its DNS name.
-> Todo: no obvious need to expose PostgreSQL server in Docker Compose.
-> 
-> You can add the following entries to your `/etc/hosts` file:
-> 
-> ```shell
-> 127.0.0.1       openstudiolandscapes-dagster.openstudiolandscapes.lan
-> 127.0.0.1       openstudiolandscapes-dagster-postgres.openstudiolandscapes.lan
-> ```
-
 ### Create Landscape
 
 And head over to the Dagster Dev web UI:
