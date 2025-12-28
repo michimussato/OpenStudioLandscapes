@@ -2,7 +2,6 @@
 # OpenStudioLandscapesUtil-ReadmeGenerator
 
 # discord = "https://discord.com/channels/1357343453364748419"
-# slack = "https://app.slack.com/client/T08L6M6L0S3"
 
 community_channels = {
     "OpenStudioLandscapes": {
