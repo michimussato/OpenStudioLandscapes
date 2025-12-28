@@ -33,6 +33,8 @@
 * [Community](#community)
 * [Publications](#publications)
 * [Current Feature Statuses](#current-feature-statuses)
+  * [Maintained](#maintained)
+  * [Unmaintained (archived)](#unmaintained-archived)
 <!-- TOC -->
 
 ---
@@ -638,6 +640,8 @@ Now, it's time to head over to the [Wiki](wiki/README.md)!
 
 # Current Feature Statuses
 
+## Maintained
+
 | Feature                                                                                                                      | Public | Maintained | Enabled by default (if installed) | Default Compose Scope | External Resources |
 |------------------------------------------------------------------------------------------------------------------------------|--------|------------|-----------------------------------|-----------------------|--------------------|
 | [OpenStudioLandscapes-Ayon](https://github.com/michimussato/OpenStudioLandscapes-Ayon)                                       | ✅      | ✅          | ✅                                 | `default`             | ✅                  |
@@ -656,8 +660,15 @@ Now, it's time to head over to the [Wiki](wiki/README.md)!
 | [OpenStudioLandscapes-RustDeskServer](https://github.com/michimussato/OpenStudioLandscapes-RustDeskServer)                   | ✅      | ✅          | ✅                                 | `default`             | ✅                  |
 | [OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20](https://github.com/michimussato/OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20) | ❌      | ✅          | ❌                                 | `license_server`      | ❌                  |
 | [OpenStudioLandscapes-Syncthing](https://github.com/michimussato/OpenStudioLandscapes-Syncthing)                             | ✅      | ✅          | ✅                                 | `default`             | ✅                  |
-| [OpenStudioLandscapes-Teleport](https://github.com/michimussato/OpenStudioLandscapes-Teleport)                               | ✅      | ❌          | ❌                                 | `default`             | ✅                  |
 | [OpenStudioLandscapes-Twingate](https://github.com/michimussato/OpenStudioLandscapes-Twingate)                               | ❌      | ✅          | ❌                                 | `default`             | ✅                  |
 | [OpenStudioLandscapes-Watchtower](https://github.com/michimussato/OpenStudioLandscapes-Watchtower)                           | ❌      | ✅          | ❌                                 | `default`             | ❌                  |
 | [OpenStudioLandscapes-VERT](https://github.com/michimussato/OpenStudioLandscapes-VERT)                                       | ✅      | ✅          | ✅                                 | `default`             | ✅                  |
 | [OpenStudioLandscapes-Template](https://github.com/michimussato/OpenStudioLandscapes-Template)                               | ✅      | ✅          | ❌                                 | `default`              | ✅                  |
+
+## Unmaintained (archived)
+
+> [!TIP]
+> 
+> Features listed here could be re-activated based on demand.
+
+- [OpenStudioLandscapes-Teleport](https://github.com/michimussato/OpenStudioLandscapes-Teleport)
