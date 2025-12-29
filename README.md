@@ -156,7 +156,7 @@ make sys_deps_install
 > ```
 > Waiting for cache lock: Could not get lock /var/lib/dpkg/lock-frontend. It is held by process 3450 (unattended-upgr)
 > ```
-> indicates that Ubuntu is running an unattended (automatic) system update in 
+> indicate that Ubuntu is running an unattended (automatic) system update in 
 > the background. Take a look at the [Reference System](wiki/installation/reference_system.md#unattended-upgrades)
 
 ```shell
