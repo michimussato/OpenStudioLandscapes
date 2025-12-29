@@ -3,7 +3,6 @@ import logging
 import shutil
 import signal
 import subprocess
-
 import sys
 import textwrap
 
@@ -37,11 +36,15 @@ def run_openstudiolandscapes_postgres(args):
     )
 
     if result.returncode != 0:
-        LOGGER.error("OpenStudioLandscapes failed with return code: %s", result.returncode)
+        LOGGER.error(
+            "OpenStudioLandscapes failed with return code: %s", result.returncode
+        )
         # LOGGER.debug(result.stdout.decode("utf-8"))
         # LOGGER.debug(result.stderr.decode("utf-8"))
-        LOGGER.critical("Run `openstudiolandscapes` from within the Git repository "
-                        "root. Cannot proceed.")
+        LOGGER.critical(
+            "Run `openstudiolandscapes` from within the Git repository "
+            "root. Cannot proceed."
+        )
 
     # LOGGER.info(result.stderr)
     # LOGGER.info(result.returncode)

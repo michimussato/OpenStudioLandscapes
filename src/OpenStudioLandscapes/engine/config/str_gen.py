@@ -1,18 +1,16 @@
+import json
 from typing import Type
 
-from pydantic_core._pydantic_core import PydanticUndefinedType
-
-import yaml
-import json
 import pydantic
-
+import yaml
 from dagster import get_dagster_logger
+from pydantic_core._pydantic_core import PydanticUndefinedType
 
 LOGGER = get_dagster_logger(__name__)
 
 
 def get_config_str(
-        Config: Type[pydantic.BaseModel],
+    Config: Type[pydantic.BaseModel],
 ) -> str:
     LOGGER.info(f"{Config.model_fields = }")
 
@@ -46,28 +44,36 @@ def get_config_str(
 
             if field_k in Config.__base__.model_fields:
                 # print(f"\tDefault Value: {Config.__base__.model_fields[field_k] = }")
-                base_class_required = Config.__base__.model_fields[field_k].is_required()
+                base_class_required = Config.__base__.model_fields[
+                    field_k
+                ].is_required()
                 base_class_value = Config.__base__.model_fields[field_k].default
                 # base_class_annotation = Config.__base__.model_fields[field_k].annotation
-                base_class_description = Config.__base__.model_fields[field_k].description
+                base_class_description = Config.__base__.model_fields[
+                    field_k
+                ].description
                 # LOGGER.debug(f"\t\tType: {base_class_annotation}")
                 # LOGGER.debug(f"\t\tDefault Value: {base_class_value}")
                 # LOGGER.debug(f"\t\tDefault Description: {base_class_description}")
 
-                doc_str += (f"# Base Class Info:\n"
-                            f"#     Required:\n"
-                            f"#         {base_class_required}\n"
-                            f"#     Description:\n"
-                            f"#         {base_class_description}\n"
-                            f"#     Default value:\n"
-                            f"#         {base_class_value}\n")
+                doc_str += (
+                    f"# Base Class Info:\n"
+                    f"#     Required:\n"
+                    f"#         {base_class_required}\n"
+                    f"#     Description:\n"
+                    f"#         {base_class_description}\n"
+                    f"#     Default value:\n"
+                    f"#         {base_class_value}\n"
+                )
 
-            doc_str += (f"# Description:\n"
-                        f"#     {sub_class_description}\n"
-                        f"# Required:\n"
-                        f"#     {sub_class_required}\n"
-                        f"# Examples:\n"
-                        f"#     {sub_class_examples}\n")
+            doc_str += (
+                f"# Description:\n"
+                f"#     {sub_class_description}\n"
+                f"# Required:\n"
+                f"#     {sub_class_required}\n"
+                f"# Examples:\n"
+                f"#     {sub_class_examples}\n"
+            )
 
             try:
                 if base_class_value == sub_class_value:
@@ -81,7 +87,9 @@ def get_config_str(
                 kv = {field_k: "REQUIRED (CHANGE_ME)"}
             else:
                 if isinstance(sub_class_value, pydantic.BaseModel):
-                    v = json.loads(sub_class_value.model_dump_json(indent=2, fallback=str))
+                    v = json.loads(
+                        sub_class_value.model_dump_json(indent=2, fallback=str)
+                    )
                 else:
                     v = sub_class_value
                 kv = {field_k: v}

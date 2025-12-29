@@ -78,16 +78,13 @@ class DockerRegistryConfig(BaseModel):
     """
 
     docker_push: bool = Field(
-        default=True,
-        description="Run `docker` commands with the `--push` flag."
+        default=True, description="Run `docker` commands with the `--push` flag."
     )
     docker_pull: bool = Field(
-        default=True,
-        description="Run `docker` commands with the `--pull` flag."
+        default=True, description="Run `docker` commands with the `--pull` flag."
     )
     docker_repository_name: str = Field(
-        default="openstudiolandscapes",
-        description="The registry repository name."
+        default="openstudiolandscapes", description="The registry repository name."
     )
     docker_registry_access: DockerRegistryAccess = Field(
         default=DockerRegistryAccess.public,
@@ -106,8 +103,7 @@ class DockerRegistryConfig(BaseModel):
         description="The port the Docker Registry server is listening on.",
     )
     docker_registry_username: str = Field(
-        default="registry-user",
-        description="The username of the Docker registry."
+        default="registry-user", description="The username of the Docker registry."
     )
     # Todo: docker_registry_password: SecretStr = Field(description="The password of the Docker registry.")
     #  Error:
@@ -153,8 +149,7 @@ class DockerRegistryConfig(BaseModel):
     #  470b66ea5123: Waiting
     #  unauthorized: authentication required
     docker_registry_password: str = Field(
-        default="registry-password",
-        description="The password of the Docker registry."
+        default="registry-password", description="The password of the Docker registry."
     )
 
     @field_validator("docker_repository_name")
@@ -195,22 +190,39 @@ class ConfigEngine(BaseModel):
     openstudiolandscapes__docker_config: DockerConfigModel = Field(
         default=DockerConfigModel(
             **{
-                "use_registry": DockerConfigModel.model_fields['use_registry'].default,
-                "no_cache": DockerConfigModel.model_fields['no_cache'].default,
+                "use_registry": DockerConfigModel.model_fields["use_registry"].default,
+                "no_cache": DockerConfigModel.model_fields["no_cache"].default,
                 "docker_registry_config": DockerRegistryConfig(
                     **{
-                        "docker_push": DockerRegistryConfig.model_fields['docker_push'].default,
-                        "docker_pull": DockerRegistryConfig.model_fields['docker_pull'].default,
-                        "docker_repository_name": DockerRegistryConfig.model_fields['docker_repository_name'].default,
-                        "docker_registry_access": DockerRegistryConfig.model_fields['docker_registry_access'].default,
-                        "docker_registry_protocol": DockerRegistryConfig.model_fields['docker_registry_protocol'].default,
-                        "docker_registry_fqdn": DockerRegistryConfig.model_fields['docker_registry_fqdn'].default,
-                        "docker_registry_port": DockerRegistryConfig.model_fields['docker_registry_port'].default,
-                        "docker_registry_username": DockerRegistryConfig.model_fields['docker_registry_username'].default,
-                        "docker_registry_password": DockerRegistryConfig.model_fields['docker_registry_password'].default,
-
+                        "docker_push": DockerRegistryConfig.model_fields[
+                            "docker_push"
+                        ].default,
+                        "docker_pull": DockerRegistryConfig.model_fields[
+                            "docker_pull"
+                        ].default,
+                        "docker_repository_name": DockerRegistryConfig.model_fields[
+                            "docker_repository_name"
+                        ].default,
+                        "docker_registry_access": DockerRegistryConfig.model_fields[
+                            "docker_registry_access"
+                        ].default,
+                        "docker_registry_protocol": DockerRegistryConfig.model_fields[
+                            "docker_registry_protocol"
+                        ].default,
+                        "docker_registry_fqdn": DockerRegistryConfig.model_fields[
+                            "docker_registry_fqdn"
+                        ].default,
+                        "docker_registry_port": DockerRegistryConfig.model_fields[
+                            "docker_registry_port"
+                        ].default,
+                        "docker_registry_username": DockerRegistryConfig.model_fields[
+                            "docker_registry_username"
+                        ].default,
+                        "docker_registry_password": DockerRegistryConfig.model_fields[
+                            "docker_registry_password"
+                        ].default,
                     },
-                )
+                ),
             }
         ),
     )
@@ -341,14 +353,14 @@ class FeatureBaseModel(BaseModel):
     #        transformed_value = re.sub(regex_pattern, replace_with, value)
     group_name: str = Field(
         description="Dagster Group name. This will represent the group node name. "
-                    "See https://docs.dagster.io/api/dagster/assets for "
-                    "more information",
+        "See https://docs.dagster.io/api/dagster/assets for "
+        "more information",
     )
     key_prefixes: List[str] = Field(
         description="Dagster Asset key prefixes. This will be reflected in the nesting "
-                    "(directory structure) of the Asset. "
-                    "See https://docs.dagster.io/api/dagster/assets for "
-                    "more information",
+        "(directory structure) of the Asset. "
+        "See https://docs.dagster.io/api/dagster/assets for "
+        "more information",
     )
 
     @property

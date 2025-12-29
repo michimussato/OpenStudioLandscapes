@@ -18,8 +18,10 @@ from OpenStudioLandscapes.engine.common_assets.compose_scope import (
     get_compose_scope_group__group_out,
     get_compose_scope_group__scrape_networks,
 )
+from OpenStudioLandscapes.engine.compose_scopes.default.constants import (
+    COMPOSE_SCOPE_GROUP_PREFIX,
+)
 from OpenStudioLandscapes.engine.utils import *
-from OpenStudioLandscapes.engine.compose_scopes.default.constants import COMPOSE_SCOPE_GROUP_PREFIX
 
 # Todo:
 #  - [ ] get assets from common_assets

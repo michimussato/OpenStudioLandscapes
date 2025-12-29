@@ -12,7 +12,7 @@ import subprocess
 import threading
 from typing import Any, Generator, List, Union
 
-from dagster import AssetExecutionContext, get_dagster_logger, OpExecutionContext
+from dagster import AssetExecutionContext, OpExecutionContext, get_dagster_logger
 
 LOGGER = get_dagster_logger(__name__)
 
