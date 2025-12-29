@@ -134,7 +134,8 @@ def get_namespace_packages(where=pathlib.Path.cwd() / ".features") -> List[str]:
     LOGGER.info(
         "Getting installed OpenStudioLandscapes namespace packages from '%s'...", where
     )
-    namespace_packages = find_namespace_packages(
+
+    namespace_packages_ = find_namespace_packages(
         where=where,
         include=["*src.OpenStudioLandscapes.*"],
         exclude=[
@@ -142,8 +143,15 @@ def get_namespace_packages(where=pathlib.Path.cwd() / ".features") -> List[str]:
             "*.doc",  # exclude src.OpenStudioLandscapes.<Feature>.doc from module discovery
         ],
     )
-    LOGGER.info(f"{namespace_packages = }")
+    LOGGER.info(f"{namespace_packages_ = }")
     # ['OpenStudioLandscapes-NukeRLM-8.src.OpenStudioLandscapes.NukeRLM_8', ...]
+
+    # Just take the final part of the namespace package ('NukeRLM_8') an
+    # prepend 'OpenStudioLandscapes'
+    namespace_packages = [f"OpenStudioLandscapes.{i.split('.')[-1]}" for i in namespace_packages_]
+
+    LOGGER.info(f"{namespace_packages = }")
+    # ['OpenStudioLandscapes.NukeRLM_8', ...]
     return namespace_packages
 
 
@@ -284,7 +292,7 @@ def get_config_dict_feature(
     package: str,
     feature: OpenStudioLandscapesDiscoveredFeature,
 ) -> Dict:
-    distribution: Distribution = metadata.distribution(package.partition(".")[0])
+    distribution: Distribution = metadata.distribution(package)
 
     # Create the `config.yml` for the feature
     # with the default `CONFIG_STR` if
