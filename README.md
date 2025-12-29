@@ -30,7 +30,7 @@
   * [I have zero understanding for bugs! Who can I blame?](#i-have-zero-understanding-for-bugs-who-can-i-blame)
     * [Issues and feature requests](#issues-and-feature-requests)
   * [How can I support this Project?](#how-can-i-support-this-project)
-    * [Help wanted: Package Release Strategy](#help-wanted-package-release-strategy)
+    * [Call for Help: Package Release Strategy](#call-for-help-package-release-strategy)
 * [Documentation](#documentation)
 * [Community](#community)
 * [Publications](#publications)
