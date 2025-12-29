@@ -56,7 +56,7 @@ community_channels = {
             "repo_name": "OpenStudioLandscapes-Deadline-10-2",
         },
         "discord": {
-            "channel_id": "1358017409276973088",
+            "channel_name": "# openstudiolandscapes-deadline-10-2",
             "invite": "https://discord.gg/p2UjxHk4Y3",
         },
     },
@@ -67,7 +67,7 @@ community_channels = {
             "repo_name": "OpenStudioLandscapes-Deadline-10-2-Worker",
         },
         "discord": {
-            "channel_id": "1358024594409259059",
+            "channel_name": "# openstudiolandscapes-deadline-10-2-worker",
             "invite": "https://discord.gg/ttkbfkzUmf",
         },
     },
@@ -78,7 +78,7 @@ community_channels = {
             "repo_name": "OpenStudioLandscapes-filebrowser",
         },
         "discord": {
-            "channel_id": "1364746200175083520",
+            "channel_name": "# openstudiolandscapes-filebrowser",
             "invite": "https://discord.gg/stzNsZBmwk",
         },
     },
@@ -111,7 +111,7 @@ community_channels = {
             "repo_name": "OpenStudioLandscapes-Grafana",
         },
         "discord": {
-            "channel_id": "1379800002179760159",
+            "channel_name": "# openstudiolandscapes-grafana",
             "invite": "https://discord.gg/gEDQ8vJWDb",
         },
     },
