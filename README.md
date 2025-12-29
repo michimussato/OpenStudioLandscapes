@@ -29,7 +29,7 @@
   * [I don't like Pipeline! I'm a free thinker and I don't like boudaries!](#i-dont-like-pipeline-im-a-free-thinker-and-i-dont-like-boudaries)
   * [I have zero understanding for bugs! Who can I blame?](#i-have-zero-understanding-for-bugs-who-can-i-blame)
     * [Issues and feature requests](#issues-and-feature-requests)
-  * [How can I help?](#how-can-i-help)
+  * [How can I support this Project?](#how-can-i-support-this-project)
     * [Help wanted: Package Release Strategy](#help-wanted-package-release-strategy)
 * [Documentation](#documentation)
 * [Community](#community)
@@ -626,20 +626,20 @@ If you can isolate an issue to a specific Feature, each Feature has its own
 issue tracker as well. For example:
 - [Issues and feature requests for Feature OpenStudioLandscapes-Kitsu](https://github.com/michimussato/OpenStudioLandscapes-Kitsu/issues)
 
-## How can I help?
+## How can I support this Project?
 
 If you feel like this is a project you would like to support, feel free 
 to join! There are, however, some specific areas where I am looking
 for help in particular:
 
-### Help wanted: Package Release Strategy
+### Call for Help: Package Release Strategy
 
 I do not have a clue how to best set up and release the components of 
 **OpenStudioLandscapes**. I did think about `git submodules` to make
 sure that dependencies are set to the correct versions/commits. A different
 approach was using `git` tags. None of which seems to be easy to handle across 
 multiple repositories. Will a monorepo solve this problem without introducing new
-difficulties?
+difficulties? Please, share your thoughts and experiences!
 
 [Discussion](https://github.com/michimussato/OpenStudioLandscapes/discussions/55)
 
