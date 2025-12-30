@@ -105,7 +105,7 @@ Other distros do work (**OpenStudioLandscapes** was developed on an
 Arch based Linux distro), however, the installation process **will** be
 different.
 
-> [!CAUTION]
+> [!IMPORTANT]
 > 
 > Installation and execution of **OpenStudioLandscapes** as **must
 > be performed as normal (unprivileged) user**.
