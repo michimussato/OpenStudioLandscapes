@@ -240,7 +240,7 @@ And head over to the Dagster Dev web UI:
 
 [http://127.0.0.1:3000/asset-groups]()
 
-> [!IMPORTANT]
+> [!NOTE]
 > 
 > If Dagster web UI is running on a different port
 > (default: `3000`), just make sure this is reflected in 
