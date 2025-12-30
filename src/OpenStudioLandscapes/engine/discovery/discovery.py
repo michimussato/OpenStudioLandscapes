@@ -148,7 +148,9 @@ def get_namespace_packages(where=pathlib.Path.cwd() / ".features") -> List[str]:
 
     # Just take the final part of the namespace package ('NukeRLM_8') an
     # prepend 'OpenStudioLandscapes'
-    namespace_packages = [f"OpenStudioLandscapes.{i.split('.')[-1]}" for i in namespace_packages_]
+    namespace_packages = [
+        f"OpenStudioLandscapes.{i.split('.')[-1]}" for i in namespace_packages_
+    ]
 
     LOGGER.info(f"{namespace_packages = }")
     # ['OpenStudioLandscapes.NukeRLM_8', ...]
