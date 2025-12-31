@@ -72,18 +72,6 @@ docker/.volumes/.landscapes/*/
 !.dagster-postgres/.gitkeep
 tmp*/
 
-# Harbor
-!.harbor/
-
-.harbor/data/*
-!.harbor/data/.gitkeep
-
-.harbor/bin/*
-!.harbor/bin/.gitkeep
-
-.harbor/download/*
-!.harbor/download/.gitkeep
-
 # Pi-hole
 .pi-hole/*
 !.pi-hole/.gitkeep
@@ -117,9 +105,3 @@ docker/.volumes/dagster/dagster-home/*
 
 docker/.volumes/postgres-dagster/*
 !docker/.volumes/postgres-dagster/.gitkeep
-
-# Teleport
-.teleport/*
-!.teleport/.gitkeep
-src/OpenStudioLandscapes/engine/teleport/custom_services.py
-src/OpenStudioLandscapes/engine/teleport/custom_services.yml
