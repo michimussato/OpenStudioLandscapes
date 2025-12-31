@@ -137,6 +137,17 @@ community_channels = {
             "invite": "https://discord.gg/qAYYsKYF6V",
         },
     },
+    "OpenStudioLandscapes-n8n": {
+        "enabled": True,
+        "public": True,
+        "github": {
+            "repo_name": "OpenStudioLandscapes-n8n",
+        },
+        "discord": {
+            "channel_name": "# openstudiolandscapes-n8n",
+            "invite": "https://discord.gg/yFYrG999wE",
+        },
+    },
     "OpenStudioLandscapes-NukeRLM-8": {
         "enabled": False,
         "public": False,
