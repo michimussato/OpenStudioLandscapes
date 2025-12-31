@@ -41,11 +41,7 @@ src/OpenStudioLandscapes/engine/enums.py:95:0: C0115: Missing class docstring (m
 src/OpenStudioLandscapes/engine/enums.py:95:0: R0903: Too few public methods (0/2) (too-few-public-methods)
 ************* Module OpenStudioLandscapes.engine.definitions
 src/OpenStudioLandscapes/engine/definitions.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-src/OpenStudioLandscapes/engine/definitions.py:7:0: R0402: Use 'from OpenStudioLandscapes.engine.discovery import discovery' instead (consider-using-from-import)
-src/OpenStudioLandscapes/engine/definitions.py:9:0: W0401: Wildcard import OpenStudioLandscapes.engine.utils (wildcard-import)
-src/OpenStudioLandscapes/engine/definitions.py:1:0: W0611: Unused import copy (unused-import)
-src/OpenStudioLandscapes/engine/definitions.py:3:0: W0611: Unused import os (unused-import)
-src/OpenStudioLandscapes/engine/definitions.py:9:0: W0614: Unused import(s) json, pathlib, shlex, time, git, requests, yaml, cmd_list_to_str, get_pip_install_str, get_apt_install_str, get_copy_str, get_wget_str, get_git_root, get_configs_root, get_data_root, get_bin_root, get_image_name, parse_docker_image_path, get_compose_scope, get_feature_config, expand_dict_vars, metadatavalues_from_dict, get_relative_path_via_common_root, get_bool_env, get_str_env, get_all_compose_scopes, get_dynamic_ins, get_image_metadata, create_image, get_networks_dict, get_docker_compose_names, download_file, Any, Dict, List, MutableMapping, Tuple, Union, AssetExecutionContext, MetadataValue, OpExecutionContext, DockerConfigModel, enum, GroupIn, OpenStudioLandscapesConfig, FeatureVolumeType, ComposeCmdExclusion, DockerComposeNetworkMode, DockerComposeRestartPolicy, DockerComposeDependsOnPolicy, DockerComposePolicies, ComposeScopeException, OpenStudioLandscapesException, queue, shutil, subprocess, threading, OpenStudioLandscapesDockerException, docker_build_cmd, docker_push_cmd, OutputReader, execute_in_threads, docker_process_cmds, docker_do and Generator from wildcard import of OpenStudioLandscapes.engine.utils (unused-wildcard-import)
+src/OpenStudioLandscapes/engine/definitions.py:5:0: R0402: Use 'from OpenStudioLandscapes.engine.discovery import discovery' instead (consider-using-from-import)
 ************* Module OpenStudioLandscapes.engine.constants
 src/OpenStudioLandscapes/engine/constants.py:33:0: C0301: Line too long (142/100) (line-too-long)
 src/OpenStudioLandscapes/engine/constants.py:31:1: W0511: Todo (fixme)
@@ -55,7 +51,7 @@ src/OpenStudioLandscapes/engine/constants.py:20:0: C0103: Constant name "ConfigP
 ************* Module OpenStudioLandscapes.engine.community_channels
 src/OpenStudioLandscapes/engine/community_channels.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 ************* Module OpenStudioLandscapes.engine.__init__
-src/OpenStudioLandscapes/engine/__init__.py:6:5: W0511: TODO: Import directly (no need for conditional) when `python_requires = >= 3.8` (fixme)
+src/OpenStudioLandscapes/engine/__init__.py:10:5: W0511: TODO: Import directly (no need for conditional) when `python_requires = >= 3.8` (fixme)
 ************* Module OpenStudioLandscapes.engine
 src/OpenStudioLandscapes/engine/__init__.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 ************* Module OpenStudioLandscapes.engine.link.models
@@ -601,179 +597,183 @@ src/OpenStudioLandscapes/engine/env/definitions.py:1:0: C0114: Missing module do
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[395:486]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1393:1484]
-            "asset_key_for_output": "docker_compose_commands",
-        },
-        {
-            "script": script_cmd_docker_compose_restart,
-            "cmd": cmd_docker_compose_restart,
-            # Todo
-            #  - [ ] "create_convenience_script": True causes the following error (looks like only one can be True):
-            # dagster._core.errors.DagsterExecutionStepExecutionError: Error occurred while executing op "group_out_4":
-            #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/execution/plan/execute_plan.py", line 245, in dagster_event_sequence_for_step
-            #     yield from check.generator(step_events)
-            #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/execution/plan/execute_step.py", line 501, in core_dagster_event_sequence_for_step
-            #     for user_event in _step_output_error_checked_user_event_sequence(
-            #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/execution/plan/execute_step.py", line 184, in _step_output_error_checked_user_event_sequence
-            #     for user_event in user_event_sequence:
-            #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/execution/plan/execute_step.py", line 88, in _process_asset_results_to_events
-            #     for user_event in user_event_sequence:
-            #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/execution/plan/compute.py", line 190, in execute_core_compute
-            #     for step_output in _yield_compute_results(step_context, inputs, compute_fn, compute_context):
-            #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/execution/plan/compute.py", line 159, in _yield_compute_results
-            #     for event in iterate_with_context(
-            #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_utils/__init__.py", line 478, in iterate_with_context
-            #     with context_fn():
-            #   File "/usr/lib/python3.11/contextlib.py", line 158, in __exit__
-            #     self.gen.throw(typ, value, traceback)
-            #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/execution/plan/utils.py", line 86, in op_execution_error_boundary
-            #     raise error_cls(
-            # The above exception was caused by the following exception:
-            # dagster._check.functions.CheckError: Failure condition: Output 'cmd_docker_compose_restart' has no asset
-            #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/execution/plan/utils.py", line 56, in op_execution_error_boundary
-            #     yield
-            #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_utils/__init__.py", line 480, in iterate_with_context
-            #     next_output = next(iterator)
-            #                   ^^^^^^^^^^^^^^
-            #   File "/home/michael/git/repos/OpenStudioLandscapes/src/OpenStudioLandscapes/engine/base/ops/__init__.py", line 1413, in op_group_out
-            #     _write_script(script_dict)
-            #   File "/home/michael/git/repos/OpenStudioLandscapes/src/OpenStudioLandscapes/engine/base/ops/__init__.py", line 1377, in _write_script
-            #     context.asset_key_for_output(script_dict["asset_key_for_output"]).path
-            #     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-            #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/execution/context/op_execution_context.py", line 592, in asset_key_for_output
-            #     check.failed(f"Output '{output_name}' has no asset")
-            #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_check/functions.py", line 1696, in failed
-            #     raise CheckError(f"Failure condition: {desc}")
-            "create_convenience_script": False,
-            "asset_key_for_output": "cmd_docker_compose_restart",
-        },
-        {
-            "script": script_cmd_docker_compose_pull_up,
-            "cmd": cmd_docker_compose_pull_up,
-            "create_convenience_script": False,
-            "asset_key_for_output": "cmd_docker_compose_pull_up",
-        },
-        {
-            "script": script_cmd_docker_compose_down,
-            "cmd": cmd_docker_compose_down,
-            "create_convenience_script": False,
-            "asset_key_for_output": "cmd_docker_compose_down",
-        },
-        {
-            "script": script_cmd_docker_compose_logs,
-            "cmd": cmd_docker_compose_logs,
-            "create_convenience_script": False,
-            "asset_key_for_output": "cmd_docker_compose_logs",
-        },
-    ]
+                "asset_key_for_output": "docker_compose_commands",
+            },
+            {
+                "script": script_cmd_docker_compose_restart,
+                "cmd": cmd_docker_compose_restart,
+                # Todo
+                #  - [ ] "create_convenience_script": True causes the following error (looks like only one can be True):
+                # dagster._core.errors.DagsterExecutionStepExecutionError: Error occurred while executing op "group_out_4":
+                #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/execution/plan/execute_plan.py", line 245, in dagster_event_sequence_for_step
+                #     yield from check.generator(step_events)
+                #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/execution/plan/execute_step.py", line 501, in core_dagster_event_sequence_for_step
+                #     for user_event in _step_output_error_checked_user_event_sequence(
+                #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/execution/plan/execute_step.py", line 184, in _step_output_error_checked_user_event_sequence
+                #     for user_event in user_event_sequence:
+                #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/execution/plan/execute_step.py", line 88, in _process_asset_results_to_events
+                #     for user_event in user_event_sequence:
+                #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/execution/plan/compute.py", line 190, in execute_core_compute
+                #     for step_output in _yield_compute_results(step_context, inputs, compute_fn, compute_context):
+                #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/execution/plan/compute.py", line 159, in _yield_compute_results
+                #     for event in iterate_with_context(
+                #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_utils/__init__.py", line 478, in iterate_with_context
+                #     with context_fn():
+                #   File "/usr/lib/python3.11/contextlib.py", line 158, in __exit__
+                #     self.gen.throw(typ, value, traceback)
+                #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/execution/plan/utils.py", line 86, in op_execution_error_boundary
+                #     raise error_cls(
+                # The above exception was caused by the following exception:
+                # dagster._check.functions.CheckError: Failure condition: Output 'cmd_docker_compose_restart' has no asset
+                #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/execution/plan/utils.py", line 56, in op_execution_error_boundary
+                #     yield
+                #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_utils/__init__.py", line 480, in iterate_with_context
+                #     next_output = next(iterator)
+                #                   ^^^^^^^^^^^^^^
+                #   File "/home/michael/git/repos/OpenStudioLandscapes/src/OpenStudioLandscapes/engine/base/ops/__init__.py", line 1413, in op_group_out
+                #     _write_script(script_dict)
+                #   File "/home/michael/git/repos/OpenStudioLandscapes/src/OpenStudioLandscapes/engine/base/ops/__init__.py", line 1377, in _write_script
+                #     context.asset_key_for_output(script_dict["asset_key_for_output"]).path
+                #     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/execution/context/op_execution_context.py", line 592, in asset_key_for_output
+                #     check.failed(f"Output '{output_name}' has no asset")
+                #   File "/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_check/functions.py", line 1696, in failed
+                #     raise CheckError(f"Failure condition: {desc}")
+                "create_convenience_script": False,
+                "asset_key_for_output": "cmd_docker_compose_restart",
+            },
+            {
+                "script": script_cmd_docker_compose_pull_up,
+                "cmd": cmd_docker_compose_pull_up,
+                "create_convenience_script": False,
+                "asset_key_for_output": "cmd_docker_compose_pull_up",
+            },
+            {
+                "script": script_cmd_docker_compose_down,
+                "cmd": cmd_docker_compose_down,
+                "create_convenience_script": False,
+                "asset_key_for_output": "cmd_docker_compose_down",
+            },
+            {
+                "script": script_cmd_docker_compose_logs,
+                "cmd": cmd_docker_compose_logs,
+                "create_convenience_script": False,
+                "asset_key_for_output": "cmd_docker_compose_logs",
+            },
+        ]
 
-    def _write_script(
-        script_dict: Dict[str, Union[str, List, pathlib.Path]],
-    ):
-        """
-        This writes the launch scripts that contain the commands to handle Landscapes (up/down etc.).
-        If we are not working in Dagster (or the Materializations have been removed, there is
-        no other way to reproduce the actual commands other than storing them in these scripts.
-        Convenience scripts get created at the root level of a Landscape and point the launch scripts
-        themselves. They *should* be portable, hence, the SCRIPT_DIR varible inside the scripts
-        is dynamic and, from there, all paths need to be relative to that variable.
-        """
+        def _write_script(
+            script_dict: Dict[str, Union[str, List, pathlib.Path]],
+        ):
+            """
+            This writes the launch scripts that contain the commands to handle Landscapes (up/down etc.).
+            If we are not working in Dagster (or the Materializations have been removed, there is
+            no other way to reproduce the actual commands other than storing them in these scripts.
+            Convenience scripts get created at the root level of a Landscape and point the launch scripts
+            themselves. They *should* be portable, hence, the SCRIPT_DIR varible inside the scripts
+            is dynamic and, from there, all paths need to be relative to that variable.
+            """
 
-        context.log.debug(f"{script_dict = }")
+            context.log.debug(f"{script_dict = }")
 
-        with open(
-            file=script_dict["script"],
-            mode="w",
-            encoding="utf-8",
-        ) as fw:
-
-            context.log.debug(f"Writing script: {script_dict['script'].as_posix()}")
-
-            fw.write(docker_script["script"])
-            fw.write("\n")
-            fw.write('pushd "${SCRIPT_DIR}" || exit 1\n')
-            fw.write("\n") (duplicate-code)
-src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
-==OpenStudioLandscapes.engine.base.ops.__init__:[502:542]
-==OpenStudioLandscapes.engine.base.ops.factories:[1485:1525]
-            fw.write("\n")
-
-            cmd_str = " ".join(
-                shlex.quote(s) if not s in cmd_append["exclude_from_quote"] else s
-                for s in script_dict["cmd"]
-            )
-
-            fw.write(
-                f"{cmd_str}\n".replace(
-                    # docker-compose.yml
-                    DOCKER_COMPOSE.as_posix(),
-                    get_relative_path_via_common_root(
-                        context=context,
-                        path_src=script_cmd_docker_compose_up,
-                        path_dst=DOCKER_COMPOSE,
-                        path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
-                    ).as_posix(),
-                ).replace(
-                    # OpenStudioLandscapes_Base__docker_config_json
-                    docker_config_json.as_posix(),
-                    get_relative_path_via_common_root(
-                        context=context,
-                        path_src=script_cmd_docker_compose_up,
-                        path_dst=docker_config_json,
-                        path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
-                    ).as_posix(),
-                )
-            )
-            fw.write("popd || exit 1\n")
-            fw.write("\n")
-            fw.write("exit 0;\n")
-        os.chmod(
-            script_dict["script"],
-            mode=os.stat(script_dict["script"]).st_mode | 0o111,
-        )
-
-        scripts.append(script_dict["script"].as_posix())
-
-        if script_dict["create_convenience_script"]:
-            docker_compose_scope = "__".join( (duplicate-code)
-src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
-==OpenStudioLandscapes.engine.base.ops.__init__:[543:580]
-==OpenStudioLandscapes.engine.base.ops.factories:[1528:1569]
-            )
-            script_cmd_convenience = pathlib.Path(
-                env["DOT_LANDSCAPES"],
-                env.get("LANDSCAPE", "default"),
-                f"{docker_compose_scope}.sh",
-            )
-            rel_path = get_relative_path_via_common_root(
-                context=context,
-                path_src=script_cmd_convenience,
-                path_dst=script_dict["script"],
-                path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
-            )
             with open(
-                file=script_cmd_convenience,
+                file=script_dict["script"],
                 mode="w",
                 encoding="utf-8",
             ) as fw:
 
-                context.log.debug(
-                    f"Writing convenience script: {script_cmd_convenience.as_posix()}"
-                )
+                context.log.debug(f"Writing script: {script_dict['script'].as_posix()}")
 
                 fw.write(docker_script["script"])
                 fw.write("\n")
                 fw.write('pushd "${SCRIPT_DIR}" || exit 1\n')
-                fw.write(f"{rel_path.as_posix()}\n")
+                fw.write("\n") (duplicate-code)
+src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
+==OpenStudioLandscapes.engine.base.ops.__init__:[502:542]
+==OpenStudioLandscapes.engine.base.ops.factories:[1485:1525]
+                fw.write("\n")
+
+                cmd_str = " ".join(
+                    shlex.quote(s) if not s in cmd_append["exclude_from_quote"] else s
+                    for s in script_dict["cmd"]
+                )
+
+                fw.write(
+                    f"{cmd_str}\n".replace(
+                        # docker-compose.yml
+                        DOCKER_COMPOSE.as_posix(),
+                        get_relative_path_via_common_root(
+                            context=context,
+                            path_src=script_cmd_docker_compose_up,
+                            path_dst=DOCKER_COMPOSE,
+                            path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
+                        ).as_posix(),
+                    ).replace(
+                        # OpenStudioLandscapes_Base__docker_config_json
+                        docker_config_json.as_posix(),
+                        get_relative_path_via_common_root(
+                            context=context,
+                            path_src=script_cmd_docker_compose_up,
+                            path_dst=docker_config_json,
+                            path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
+                        ).as_posix(),
+                    )
+                )
                 fw.write("popd || exit 1\n")
                 fw.write("\n")
                 fw.write("exit 0;\n")
             os.chmod(
-                script_cmd_convenience,
-                mode=os.stat(script_cmd_convenience).st_mode | 0o111,
+                script_dict["script"],
+                mode=os.stat(script_dict["script"]).st_mode | 0o111,
             )
 
-    for script_dict in script_dicts:
-        _write_script(script_dict)
+            scripts.append(script_dict["script"].as_posix())
+
+            if script_dict["create_convenience_script"]:
+                docker_compose_scope = "__".join( (duplicate-code)
+src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
+==OpenStudioLandscapes.engine.base.ops.__init__:[543:580]
+==OpenStudioLandscapes.engine.base.ops.factories:[1528:1569]
+                )
+                script_cmd_convenience = pathlib.Path(
+                    env["DOT_LANDSCAPES"],
+                    env.get("LANDSCAPE", "default"),
+                    f"{docker_compose_scope}.sh",
+                )
+                rel_path = get_relative_path_via_common_root(
+                    context=context,
+                    path_src=script_cmd_convenience,
+                    path_dst=script_dict["script"],
+                    path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
+                )
+                with open(
+                    file=script_cmd_convenience,
+                    mode="w",
+                    encoding="utf-8",
+                ) as fw:
+
+                    context.log.debug(
+                        f"Writing convenience script: {script_cmd_convenience.as_posix()}"
+                    )
+
+                    fw.write(docker_script["script"])
+                    fw.write("\n")
+                    fw.write('pushd "${SCRIPT_DIR}" || exit 1\n')
+                    fw.write(f"{rel_path.as_posix()}\n")
+                    fw.write("popd || exit 1\n")
+                    fw.write("\n")
+                    fw.write("exit 0;\n")
+                os.chmod(
+                    script_cmd_convenience,
+                    mode=os.stat(script_cmd_convenience).st_mode | 0o111,
+                )
+
+        for script_dict in script_dicts:
+            _write_script(script_dict)
+
+        #############
+        # group_out #
+        #############
  (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[55:81]
@@ -807,55 +807,55 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[234:258]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1228:1252]
-    )
+        )
 
-    group_names_by_key_dict = context.assets_def.group_names_by_key
-    # Results in:
-    # Single Output:
-    # {AssetKey(['OpenCue', 'group_out']): 'OpenCue'}
-    # Multiple Outputs:
-    # {AssetKey(['Compose_default', 'group_out']): 'Compose_default', AssetKey(['Compose_default', 'compose_project_name']): 'Compose_default'}
-    context.log.debug(group_names_by_key_dict)
+        group_names_by_key_dict = context.assets_def.group_names_by_key
+        # Results in:
+        # Single Output:
+        # {AssetKey(['OpenCue', 'group_out']): 'OpenCue'}
+        # Multiple Outputs:
+        # {AssetKey(['Compose_default', 'group_out']): 'Compose_default', AssetKey(['Compose_default', 'compose_project_name']): 'Compose_default'}
+        context.log.debug(group_names_by_key_dict)
 
-    cmd_docker_compose_logs = [
-        "$(which docker)",
-        "--config",
-        docker_config_json.as_posix(),
-        "compose",
-        "--progress",
-        DOCKER_PROGRESS,
-        "--file",
-        DOCKER_COMPOSE.as_posix(),
-        "--project-name",
-        compose_project_name,
-        "logs",
-        "--follow",
-    ] (duplicate-code)
+        cmd_docker_compose_logs = [
+            "$(which docker)",
+            "--config",
+            docker_config_json.as_posix(),
+            "compose",
+            "--progress",
+            DOCKER_PROGRESS,
+            "--file",
+            DOCKER_COMPOSE.as_posix(),
+            "--project-name",
+            compose_project_name,
+            "logs",
+            "--follow",
+        ] (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[362:384]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1360:1382]
-        docker_script = dict()
-        scripts = []
+    docker_script = dict()
+    scripts = []
 
-        docker_script["exe"] = shutil.which("bash")
-        docker_script["script"] = str()
+    docker_script["exe"] = shutil.which("bash")
+    docker_script["script"] = str()
 
-        docker_script["script"] += f"#!{docker_script['exe']}\n"
-        docker_script[
-            "script"
-        ] += f"# AUTO-GENERATED by Dagster Asset {'__'.join(context.asset_key_for_output('group_out').path)}\n"
-        docker_script["script"] += "\n"
-        docker_script[
-            "script"
-        ] += 'SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )\n'
-        docker_script["script"] += "\n"
+    docker_script["script"] += f"#!{docker_script['exe']}\n"
+    docker_script[
+        "script"
+    ] += f"# AUTO-GENERATED by Dagster Asset {'__'.join(context.asset_key_for_output('group_out').path)}\n"
+    docker_script["script"] += "\n"
+    docker_script[
+        "script"
+    ] += 'SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )\n'
+    docker_script["script"] += "\n"
 
-        script_dicts = [
-            # A convenience script is a script at the {DOT_LANDSCAPES}/{LANDSCAPE_ID}
-            # root that wraps another script.
-            {
-                "script": script_cmd_docker_compose_up,
-                "cmd": cmd_docker_compose_up, (duplicate-code)
+    script_dicts = [
+        # A convenience script is a script at the {DOT_LANDSCAPES}/{LANDSCAPE_ID}
+        # root that wraps another script.
+        {
+            "script": script_cmd_docker_compose_up,
+            "cmd": cmd_docker_compose_up, (duplicate-code)
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[82:101]
 ==OpenStudioLandscapes.engine.base.ops.factories:[960:979]
@@ -998,97 +998,97 @@ src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 f
 src/OpenStudioLandscapes/engine/env/__init__.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[260:350]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1256:1346]
-    cmd_docker_compose_up = [
-        "$(which docker)",
-        "--config",
-        docker_config_json.as_posix(),
-        "compose",
-        "--progress",
-        DOCKER_PROGRESS,
-        "--file",
-        DOCKER_COMPOSE.as_posix(),
-        "--project-name",
-        compose_project_name,
-        "up",
-        "--remove-orphans",
-        # Todo
-        #  - [ ] `cmd_extend` seems to have no effect
-        #        this can't be intentional...
-        *{
-            "cmd_extend": cmd_extend,
-            "detach": ["--detach"],
-            "nothing": [],
-        }["detach"],
-        *cmd_append["cmd"],
-        "&&",
-        *cmd_docker_compose_logs,
-    ]
-    script_cmd_docker_compose_up = DOCKER_COMPOSE.parent / "docker_compose_up.sh"
+        cmd_docker_compose_up = [
+            "$(which docker)",
+            "--config",
+            docker_config_json.as_posix(),
+            "compose",
+            "--progress",
+            DOCKER_PROGRESS,
+            "--file",
+            DOCKER_COMPOSE.as_posix(),
+            "--project-name",
+            compose_project_name,
+            "up",
+            "--remove-orphans",
+            # Todo
+            #  - [ ] `cmd_extend` seems to have no effect
+            #        this can't be intentional...
+            *{
+                "cmd_extend": cmd_extend,
+                "detach": ["--detach"],
+                "nothing": [],
+            }["detach"],
+            *cmd_append["cmd"],
+            "&&",
+            *cmd_docker_compose_logs,
+        ]
+        script_cmd_docker_compose_up = DOCKER_COMPOSE.parent / "docker_compose_up.sh"
 
-    cmd_docker_compose_restart = [
-        "$(which docker)",
-        "--config",
-        docker_config_json.as_posix(),
-        "compose",
-        "--progress",
-        DOCKER_PROGRESS,
-        "--file",
-        DOCKER_COMPOSE.as_posix(),
-        "--project-name",
-        compose_project_name,
-        "restart",
-        # "--remove-orphans",
-        # Todo
-        #  - [ ] `cmd_extend` seems to have no effect
-        #        this can't be intentional...
-        *{
-            "cmd_extend": cmd_extend,
-            "detach": ["--detach"],
-            "nothing": [],
-        }["nothing"],
-        # *cmd_append["cmd"],
-        # "&&",
-        # *cmd_docker_compose_logs,
-    ]
-    script_cmd_docker_compose_restart = (
-        DOCKER_COMPOSE.parent / "docker_compose_restart.sh"
-    )
+        cmd_docker_compose_restart = [
+            "$(which docker)",
+            "--config",
+            docker_config_json.as_posix(),
+            "compose",
+            "--progress",
+            DOCKER_PROGRESS,
+            "--file",
+            DOCKER_COMPOSE.as_posix(),
+            "--project-name",
+            compose_project_name,
+            "restart",
+            # "--remove-orphans",
+            # Todo
+            #  - [ ] `cmd_extend` seems to have no effect
+            #        this can't be intentional...
+            *{
+                "cmd_extend": cmd_extend,
+                "detach": ["--detach"],
+                "nothing": [],
+            }["nothing"],
+            # *cmd_append["cmd"],
+            # "&&",
+            # *cmd_docker_compose_logs,
+        ]
+        script_cmd_docker_compose_restart = (
+            DOCKER_COMPOSE.parent / "docker_compose_restart.sh"
+        )
 
-    cmd_docker_compose_pull_up = [
-        "$(which docker)",
-        "--config",
-        docker_config_json.as_posix(),
-        "compose",
-        "--progress",
-        DOCKER_PROGRESS,
-        "--file",
-        DOCKER_COMPOSE.as_posix(),
-        "--project-name",
-        compose_project_name,
-        "pull",
-        "--ignore-pull-failures",
-        "&&",
-        *cmd_docker_compose_up,
-    ]
-    script_cmd_docker_compose_pull_up = (
-        DOCKER_COMPOSE.parent / "docker_compose_pull_up.sh"
-    )
+        cmd_docker_compose_pull_up = [
+            "$(which docker)",
+            "--config",
+            docker_config_json.as_posix(),
+            "compose",
+            "--progress",
+            DOCKER_PROGRESS,
+            "--file",
+            DOCKER_COMPOSE.as_posix(),
+            "--project-name",
+            compose_project_name,
+            "pull",
+            "--ignore-pull-failures",
+            "&&",
+            *cmd_docker_compose_up,
+        ]
+        script_cmd_docker_compose_pull_up = (
+            DOCKER_COMPOSE.parent / "docker_compose_pull_up.sh"
+        )
 
-    cmd_docker_compose_down = [
-        "$(which docker)",
-        "--config",
-        docker_config_json.as_posix(),
-        "compose",
-        "--progress",
-        DOCKER_PROGRESS,
-        "--file",
-        DOCKER_COMPOSE.as_posix(),
-        "--project-name",
-        compose_project_name,
-        "down",
-        "--remove-orphans",
-    ] (duplicate-code)
+        cmd_docker_compose_down = [
+            "$(which docker)",
+            "--config",
+            docker_config_json.as_posix(),
+            "compose",
+            "--progress",
+            DOCKER_PROGRESS,
+            "--file",
+            DOCKER_COMPOSE.as_posix(),
+            "--project-name",
+            compose_project_name,
+            "down",
+            "--remove-orphans",
+        ] (duplicate-code)
 
 ------------------------------------------------------------------
-Your code has been rated at 6.55/10 (previous run: 7.05/10, -0.50)
+Your code has been rated at 6.57/10 (previous run: 7.06/10, -0.49)
 
