@@ -1,12 +1,9 @@
-import copy
 import importlib
-import os
 
 from dagster import Definitions, get_dagster_logger
 
 import OpenStudioLandscapes.engine.discovery.discovery as discovery
 from OpenStudioLandscapes.engine.config.models import FeatureBaseModel
-from OpenStudioLandscapes.engine.utils import *
 
 LOGGER = get_dagster_logger(__name__)
 
@@ -15,11 +12,6 @@ imports_engine = [
     "OpenStudioLandscapes.engine.base.definitions",
     "OpenStudioLandscapes.engine.env.definitions",
 ]
-
-# e_ = expand_dict_vars(
-#     dict_to_expand=copy.deepcopy(os.environ),
-#     kv=os.environ,
-# )
 
 
 # Additional Definitions
