@@ -107,9 +107,9 @@ different.
 
 > [!IMPORTANT]
 > 
-> Installation and execution of **OpenStudioLandscapes** as **must
-> be performed as normal (unprivileged) user**.
-> Doing so as user `root` may result in a non-functional 
+> Installation and execution of **OpenStudioLandscapes** as `root` is not allowed
+> and **must be performed as normal (unprivileged) user**.
+> Doing so as `root` **will** result in a non-functional 
 > setup ([https://github.com/michimussato/OpenStudioLandscapes/issues/2]()).
 > 
 > > Error message:
