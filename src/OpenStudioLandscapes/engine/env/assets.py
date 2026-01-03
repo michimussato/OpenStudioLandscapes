@@ -29,6 +29,8 @@ from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.utils import *
 
 
+# Todo
+#  - [ ] Move this to ConfigEngine?
 @asset(
     **ASSET_HEADER_BASE_ENV,
 )
@@ -48,6 +50,8 @@ def git_root(
     )
 
 
+# Todo
+#  - [ ] Move this to ConfigEngine?
 @asset(
     **ASSET_HEADER_BASE_ENV,
 )
@@ -75,6 +79,8 @@ def landscape_id(
     )
 
 
+# Todo
+#  - [ ] Move this to ConfigEngine?
 @asset(
     **ASSET_HEADER_BASE_ENV,
     ins={
@@ -161,6 +167,8 @@ def dot_landscapes(
     )
 
 
+# Todo
+#  - [ ] Move this to ConfigEngine?
 @asset(
     **ASSET_HEADER_BASE_ENV,
     ins={
@@ -194,11 +202,7 @@ def dot_features(
 
 @asset(
     **ASSET_HEADER_BASE_ENV,
-    ins={
-        # "env": AssetIn(
-        #     AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"]),
-        # ),
-    },
+    ins={},
     description=textwrap.dedent(
         f"""
 Reads options from a custom `config.yml`.
@@ -310,17 +314,6 @@ def env(
         # Todo
         #  - [ ] move TIMEZONE to config.yml
         "TIMEZONE": str(tz),
-        # "IMAGE_PREFIX": "michimussato",
-        # Todo:
-        #  - [ ] Where is this being used?
-        "DEFAULT_CONFIG_DBPATH": "/data/configdb",
-        # "OPENSTUDIOLANDSCAPES__DOMAIN_LAN": EnvVar(
-        #     "OPENSTUDIOLANDSCAPES__DOMAIN_LAN"
-        # ).get_value(),
-        # "OPENSTUDIOLANDSCAPES__DOMAIN_WAN": EnvVar(
-        #     "OPENSTUDIOLANDSCAPES__DOMAIN_WAN"
-        # ).get_value(),
-        # https://vfxplatform.com/
         "PYTHON_MAJ": "3",
         "PYTHON_MIN": "11",
         "PYTHON_PAT": "11",
