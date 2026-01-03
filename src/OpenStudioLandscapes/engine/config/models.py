@@ -111,41 +111,7 @@ class DockerRegistryConfig(BaseModel):
     #  The push refers to repository [registry.openstudiolandscapes.lan:5000/openstudiolandscapes/openstudiolandscapes_base_build_docker_image]
     #  f63ce67a7c61: Preparing
     #  f570bf7dffd1: Waiting
-    #  190c42798dae: Waiting
-    #  16035682a394: Waiting
-    #  c8fa3aa32373: Waiting
-    #  37f6c938862f: Waiting
-    #  3713e6602b1c: Waiting
-    #  5f70bf18a086: Waiting
-    #  f414c81675d7: Waiting
-    #  3a7a3de43f27: Waiting
-    #  9b7574765262: Waiting
-    #  e3a9ac4f35d1: Waiting
-    #  814a4cc3f847: Waiting
-    #  82ebc9df533a: Waiting
-    #  04d8d56cf576: Waiting
-    #  40f81487c646: Waiting
-    #  5a1c3461da13: Waiting
-    #  7db9cbeb8f44: Waiting
-    #  46297afc02d3: Waiting
-    #  475e9b631c20: Waiting
-    #  ba5b5fb59128: Waiting
-    #  ca51a7a2856a: Waiting
-    #  dc863ccfdead: Waiting
-    #  85597d481860: Waiting
-    #  93079f5ed46d: Waiting
-    #  e94f415811a7: Waiting
-    #  32e97507fefc: Waiting
-    #  9a00c67ce6ea: Waiting
-    #  12e839af3df7: Waiting
-    #  c1a487dda8ca: Waiting
-    #  a319b73b6720: Waiting
-    #  23a30637df68: Waiting
-    #  a2a119fe7b9c: Waiting
-    #  904ab20e9bbc: Waiting
-    #  b91b4f675656: Waiting
-    #  d24a6c37ccbe: Waiting
-    #  63856c8ccf1c: Waiting
+    #  [...]
     #  470b66ea5123: Waiting
     #  unauthorized: authentication required
     docker_registry_password: str = Field(
@@ -171,6 +137,15 @@ class DockerConfigModel(BaseModel):
         description="Run `docker` commands with the `--no-cache` flag.",
     )
     docker_registry_config: DockerRegistryConfig = Field()
+
+
+# class SudoMethod(enum.StrEnum):
+#     # Todo
+#     #  - [ ] implement `su`
+#     #  - [ ] Also see OpenStudioLandscapes-Deadline-10-2 model
+#     # SU = "su"
+#     SUDO = "sudo"
+#     PKEXEC = "pkexec"
 
 
 class ConfigEngine(BaseModel):
@@ -227,19 +202,35 @@ class ConfigEngine(BaseModel):
         ),
     )
 
-    # Todo:
-    #  - [ ] do we need this?
-    # this initilizes a 'GIT_ROOT' by the config.yml
-    # not sure yet if this is really necessary.
-    openstudiolandscapes__repository_root: pathlib.Path = Field(
-        default=pathlib.Path(
-            os.environ.get(
-                "OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT",
-                default="~/git/repos/OpenStudioLandscapes",
-            )
-        ),
-        description="The full (local) path to the OpenStudioLandscapes Git repository.",
-    )
+    # # Todo:
+    # #  - [ ] do we need this?
+    # # this initilizes a 'GIT_ROOT' by the config.yml
+    # # not sure yet if this is really necessary.
+    # openstudiolandscapes__repository_root: pathlib.Path = Field(
+    #     default=pathlib.Path(
+    #         os.environ.get(
+    #             "OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT",
+    #             default="~/git/repos/OpenStudioLandscapes",
+    #         )
+    #     ),
+    #     description="The full (local) path to the OpenStudioLandscapes Git repository.",
+    # )
+
+    # sudo_method: SudoMethod = Field(
+    #     default=SudoMethod.PKEXEC,
+    #     description=f"Setting up the MongoDB for {dist.name} requires you to "
+    #     f"some commands to be executed as a privileged user. Usually, "
+    #     f"`sudo` is fine and does not human interaction, however, "
+    #     f"it requires the `sudo` password to exist in the `SUDO_PASS` "
+    #     f"environment variable (`.env`). Same applies to `su`, while `su` "
+    #     f"is available in Linux distros by default. "
+    #     f"`pkexec` is *mostly* available on Linux systems with GUI's (Gnome, "
+    #     f"KDE etc.) and is the cleanest way to grant `root` privileges. "
+    #     f"It is does not require you to share your secrets in a "
+    #     f"`.env` file as you will be prompted interactively to enter the "
+    #     f"password before the commands are executed.",
+    #     examples=[i.name for i in SudoMethod],
+    # )
 
     openstudiolandscapes__domain_lan: str = Field(
         default=os.environ.get(
