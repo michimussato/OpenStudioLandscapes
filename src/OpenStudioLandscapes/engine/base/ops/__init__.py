@@ -213,7 +213,7 @@ def op_group_out(
         feature_in.openstudiolandscapes_base.docker_config_json
     )
 
-    context.log.error(f"{docker_config_json = }")
+    context.log.debug(f"{docker_config_json = }")
 
     cmd_append["exclude_from_quote"].extend(
         ComposeCmdExclusion.CMD_APPEND_ALWAYS_EXCLUDE_FROM_QUOTATION.value
@@ -224,7 +224,7 @@ def op_group_out(
     #  - [ ] Is this necessary here?
     DOCKER_COMPOSE.parent.mkdir(parents=True, exist_ok=True)
 
-    context.log.error(f"{DOCKER_COMPOSE = }")
+    context.log.debug(f"{DOCKER_COMPOSE = }")
 
     context.log.debug(context.asset_key_for_output("group_out"))
     context.log.debug(context.asset_key_for_output("compose_project_name"))
