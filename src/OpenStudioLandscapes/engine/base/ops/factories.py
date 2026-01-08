@@ -41,6 +41,7 @@ from docker_compose_graph.utils import *
 
 from OpenStudioLandscapes.engine.compose_scopes.default.constants import (
     ATTACH_PANGOLIN_SITE_TO_COMPOSE_SCOPE,
+    ATTACH_GRAFANA_ALLOY_TO_COMPOSE_SCOPE,
 )
 from OpenStudioLandscapes.engine.config.models import (
     ComposeScopeBaseModel,
@@ -632,6 +633,7 @@ def factory_compose_scope__CONFIG(
                     "docker-compose.yml",
                 ),
                 "attach_pangolin_site_to_compose_scope": ATTACH_PANGOLIN_SITE_TO_COMPOSE_SCOPE,
+                "attach_pangolin_site_to_compose_scope": ATTACH_GRAFANA_ALLOY_TO_COMPOSE_SCOPE,
             },
         )
 

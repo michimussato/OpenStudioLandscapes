@@ -6,4 +6,10 @@ ATTACH_PANGOLIN_SITE_TO_COMPOSE_SCOPE = bool(
     )
 )
 
+ATTACH_GRAFANA_ALLOY_TO_COMPOSE_SCOPE = bool(
+    int(
+        os.environ.get("ATTACH_GRAFANA_ALLOY_TO_COMPOSE_SCOPE", 0)
+    )
+)
+
 COMPOSE_SCOPE_GROUP_PREFIX = "ComposeScope"

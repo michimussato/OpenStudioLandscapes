@@ -4,6 +4,7 @@
   * [Cleanup](#cleanup)
     * [Prune All](#prune-all)
     * [`hosts` file in Container](#hosts-file-in-container)
+  * [Issues](#issues)
 <!-- TOC -->
 
 ---

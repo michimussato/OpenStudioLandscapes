@@ -56,6 +56,10 @@ class ComposeScopeBaseModel(BaseModel):
         default=False,
         description="Do you want the ComposeScope to dial in to " "a Pangolin site?",
     )
+    attach_grafana_alloy_to_compose_scope: bool = Field(
+        default=False,
+        description="Do you want the ComposeScope to to collect Grafana metrics?",
+    )
 
     docker_compose: pathlib.Path = Field(
         description="The path to the `docker-compose.yml` file.",
