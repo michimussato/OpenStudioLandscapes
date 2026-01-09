@@ -21,6 +21,7 @@ from OpenStudioLandscapes.engine.base.ops.factories import (
     factory_compose_scope__group_out,
     factory_compose_scope__scrape_networks,
 )
+from OpenStudioLandscapes.engine.compose_scopes.default.constants import *
 from OpenStudioLandscapes.engine.config.models import ComposeScopeBaseModel
 from OpenStudioLandscapes.engine.constants import ASSET_HEADER_BASE
 from OpenStudioLandscapes.engine.link.models import (
@@ -149,15 +150,54 @@ def get_compose_scope_group__compose(
     compose_scope: str,
 ) -> AssetsDefinition:
 
+    ins = {
+        "features_in": In(Dict),
+        "scrape_networks": In(Dict),
+        "CONFIG": In(ComposeScopeBaseModel),
+        "group_out_base": In(OpenStudioLandscapesBaseOut),
+    }
+
+    keys_by_input_name = {
+        "features_in": AssetKey([*ASSET_HEADER["key_prefix"], "features_in"]),
+        "scrape_networks": AssetKey(
+            [*ASSET_HEADER["key_prefix"], "scrape_networks"]
+        ),
+        "CONFIG": AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
+        "group_out_base": AssetKey(
+            [*ASSET_HEADER_BASE["key_prefix"], "group_out_base"]
+        ),
+    }
+
+    if ATTACH_PANGOLIN_SITE_TO_COMPOSE_SCOPE:
+        ins.update(
+            {
+                "wrapper_newt": In(Dict),
+            }
+        )
+
+        keys_by_input_name.update(
+            {
+                "wrapper_newt": AssetKey([*ASSET_HEADER["key_prefix"], "wrapper_newt"])
+            }
+        )
+
+    if ATTACH_GRAFANA_ALLOY_TO_COMPOSE_SCOPE:
+        ins.update(
+            {
+                "wrapper_alloy": In(Dict),
+            }
+        )
+
+        keys_by_input_name.update(
+            {
+                "wrapper_alloy": AssetKey([*ASSET_HEADER["key_prefix"], "wrapper_alloy"])
+            }
+        )
+
     compose_scope_op__compose: OpDefinition = factory_compose_scope__compose(
         compose_scope=compose_scope,
         name=f"op_compose_scope__compose__{ASSET_HEADER['group_name']}",
-        ins={
-            "features_in": In(Dict),
-            "scrape_networks": In(Dict),
-            "CONFIG": In(ComposeScopeBaseModel),
-            "group_out_base": In(OpenStudioLandscapesBaseOut),
-        },
+        ins=ins,
         out={
             "compose": Out(Dict),
         },
@@ -167,16 +207,7 @@ def get_compose_scope_group__compose(
         compose_scope_op__compose,
         group_name=ASSET_HEADER["group_name"],
         key_prefix=ASSET_HEADER["key_prefix"],
-        keys_by_input_name={
-            "features_in": AssetKey([*ASSET_HEADER["key_prefix"], "features_in"]),
-            "scrape_networks": AssetKey(
-                [*ASSET_HEADER["key_prefix"], "scrape_networks"]
-            ),
-            "CONFIG": AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
-            "group_out_base": AssetKey(
-                [*ASSET_HEADER_BASE["key_prefix"], "group_out_base"]
-            ),
-        },
+        keys_by_input_name=keys_by_input_name,
         keys_by_output_name={},
     )
 

@@ -1,11 +1,10 @@
-from typing import Any, Dict, List, LiteralString, Required, TypedDict, Union
+from typing import Any, Dict, List, Required, TypedDict, Union
 
 from dagster import AssetExecutionContext, OpExecutionContext
 
 from OpenStudioLandscapes.engine.enums import *
 
 __all__ = [
-    "get_pangolin_newt_service_skeleton",
     "get_network_dicts",
 ]
 
@@ -34,6 +33,7 @@ class DockerComposeServiceDefinition(TypedDict, total=False):
     volumes: List[str]
     networks: List[str]
     ports: List[str]
+    command: List[str]
     network_mode: DockerComposeNetworkMode
     restart: DockerComposeRestartPolicy
 
@@ -104,35 +104,6 @@ class DockerComposeNetworkDefinition(TypedDict, total=False):
 
 
 # Services
-
-
-def get_pangolin_newt_service_skeleton(
-    compose_scope: str,
-    unique_suffix: str,
-) -> DockerComposeServiceDefinition:
-    _service: DockerComposeServiceDefinition = {
-        "image": "docker.io/fosrl/newt",
-        "container_name": f"newt_container.{unique_suffix}",
-        "restart": DockerComposePolicies.RESTART_POLICY.ALWAYS,
-        "environment": {
-            "PANGOLIN_ENDPOINT": "${OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_%s__PANGOLIN_ENDPOINT}"
-            % compose_scope.upper(),
-            "NEWT_ID": "${OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_%s__NEWT_ID}"
-            % compose_scope.upper(),
-            "NEWT_SECRET": "${OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_%s__NEWT_SECRET}"
-            % compose_scope.upper(),
-            "ACCEPT_CLIENTS": "${OPENSTUDIOLANDSCAPES__PANGOLIN_SITE_%s__ACCEPT_CLIENTS:-false}"
-            % compose_scope.upper(),
-            # "ACCEPT_CLIENTS": True,
-            "DOCKER_SOCKET": "/var/run/docker.sock",
-        },
-        "volumes": [
-            "/var/run/docker.sock:/var/run/docker.sock",
-        ],
-        "networks": [],
-    }
-
-    return _service
 
 
 def get_network_dicts(

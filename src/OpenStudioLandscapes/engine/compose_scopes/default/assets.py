@@ -4,6 +4,8 @@ from typing import Dict
 import yaml
 from dagster import (
     get_dagster_logger,
+    AssetIn,
+    AssetKey,
 )
 
 LOGGER = get_dagster_logger(__name__)
@@ -18,8 +20,10 @@ from OpenStudioLandscapes.engine.common_assets.compose_scope import (
     get_compose_scope_group__group_out,
     get_compose_scope_group__scrape_networks,
 )
-from OpenStudioLandscapes.engine.compose_scopes.default.constants import (
-    COMPOSE_SCOPE_GROUP_PREFIX,
+from OpenStudioLandscapes.engine.compose_scopes.default.constants import *
+from OpenStudioLandscapes.engine.compose_scopes.default.simple_factories import (
+    simple_factory_newt,
+    simple_factory_alloy,
 )
 from OpenStudioLandscapes.engine.utils import *
 
@@ -124,3 +128,35 @@ if bool(feature_ins):
         )
 
         compose_scope_asset_defs.append(compose_scope_group__group_out)
+
+        if ATTACH_PANGOLIN_SITE_TO_COMPOSE_SCOPE:
+
+            spec = {}
+
+            wrapper_newt = simple_factory_newt(
+                ASSET_HEADER=ASSET_HEADER,
+                compose_scope=compose_scope,
+                name="wrapper_newt",
+                ins={
+                    "CONFIG": AssetIn(AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"])),
+                    "scrape_networks": AssetIn(AssetKey([*ASSET_HEADER["key_prefix"], "scrape_networks"])),
+                },
+            )
+
+            compose_scope_asset_defs.append(wrapper_newt)
+
+        if ATTACH_GRAFANA_ALLOY_TO_COMPOSE_SCOPE:
+
+            spec = {}
+
+            wrapper_alloy = simple_factory_alloy(
+                ASSET_HEADER=ASSET_HEADER,
+                compose_scope=compose_scope,
+                name="wrapper_alloy",
+                ins={
+                    "CONFIG": AssetIn(AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"])),
+                    "alloy_config": AssetIn(AssetKey(["OpenStudioLandscapes_Grafana", "alloy_config"])),
+                },
+            )
+
+            compose_scope_asset_defs.append(wrapper_alloy)

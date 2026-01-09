@@ -60,7 +60,6 @@ from OpenStudioLandscapes.engine.link.models import (
     OpenStudioLandscapesFeatureOut,
 )
 from OpenStudioLandscapes.engine.utils import *
-from OpenStudioLandscapes.engine.utils.pangolin import add_newt_service_to_compose_scope
 
 # https://github.com/yaml/pyyaml/issues/722#issuecomment-1969292770
 yaml.SafeDumper.add_multi_representer(
@@ -633,7 +632,7 @@ def factory_compose_scope__CONFIG(
                     "docker-compose.yml",
                 ),
                 "attach_pangolin_site_to_compose_scope": ATTACH_PANGOLIN_SITE_TO_COMPOSE_SCOPE,
-                "attach_pangolin_site_to_compose_scope": ATTACH_GRAFANA_ALLOY_TO_COMPOSE_SCOPE,
+                "attach_grafana_alloy_to_compose_scope": ATTACH_GRAFANA_ALLOY_TO_COMPOSE_SCOPE,
             },
         )
 
@@ -856,16 +855,9 @@ def factory_compose_scope__compose(
 
             includes.append(include_)
 
-        docker_dict_include: Dict = {"include": includes}
-
-        if CONFIG.attach_pangolin_site_to_compose_scope:
-
-            add_newt_service_to_compose_scope(
-                scrape_networks=scrape_networks,
-                docker_dict_include=docker_dict_include,
-                compose_scope=compose_scope,
-                landscape_id=env["LANDSCAPE"],
-            )
+        docker_dict_include: Dict = {
+            "include": includes,
+        }
 
         docker_yaml_include = yaml.safe_dump(docker_dict_include)
 
@@ -873,9 +865,9 @@ def factory_compose_scope__compose(
         with open(DOCKER_COMPOSE, mode="w", encoding="utf-8") as fw:
             fw.write(docker_yaml_include)
 
-        #################
-        # TEST_OUTPUT_1 #
-        #################
+        ###########
+        # COMPOSE #
+        ###########
 
         output_name = "compose"
 
@@ -892,9 +884,12 @@ def factory_compose_scope__compose(
                 ): MetadataValue.json(docker_dict_include),
                 "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml_include}\n```"),
                 "includes": MetadataValue.json(includes),
-                "OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE": MetadataValue.bool(
-                    CONFIG.attach_pangolin_site_to_compose_scope,
-                ),
+                # "OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE": MetadataValue.bool(
+                #     CONFIG.attach_pangolin_site_to_compose_scope,
+                # ),
+                # "OPENSTUDIOLANDSCAPES__ATTACH_GRAFANA_ALLOY_TO_COMPOSE_SCOPE": MetadataValue.bool(
+                #     CONFIG.attach_grafana_alloy_to_compose_scope,
+                # ),
             },
         )
 

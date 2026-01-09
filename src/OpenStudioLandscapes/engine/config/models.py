@@ -65,6 +65,23 @@ class ComposeScopeBaseModel(BaseModel):
         description="The path to the `docker-compose.yml` file.",
     )
 
+    env: Dict = Field(
+        default=None,
+    )
+
+    @property
+    def docker_compose_expanded(self) -> pathlib.Path:
+        ret = pathlib.Path(
+            self.docker_compose.expanduser()
+            .as_posix()
+            .format(
+                **self.env,
+            )
+        )
+        return ret
+
+
+
 
 class DockerRegistryConfig(BaseModel):
     """

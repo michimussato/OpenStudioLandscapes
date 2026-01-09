@@ -82,6 +82,10 @@ class DockerComposeRestartPolicy(enum.StrEnum):
     ALWAYS = "always"
     NO = "no"
     ON_FAILURE = "on-failure"  # no `max_retries` option yet
+    ON_FAILURE_2 = "on-failure:2"  # no `max_retries` option yet
+    ON_FAILURE_3 = "on-failure:3"  # no `max_retries` option yet
+    ON_FAILURE_5 = "on-failure:5"  # no `max_retries` option yet
+    ON_FAILURE_10 = "on-failure:10"  # no `max_retries` option yet
     UNLESS_STOPPED = "unless-stopped"
 
 
