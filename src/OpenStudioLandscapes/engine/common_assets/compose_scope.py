@@ -152,16 +152,16 @@ def get_compose_scope_group__compose(
 
     ins = {
         "features_in": In(Dict),
-        "scrape_networks": In(Dict),
+        # "scrape_networks": In(Dict),
         "CONFIG": In(ComposeScopeBaseModel),
         "group_out_base": In(OpenStudioLandscapesBaseOut),
     }
 
     keys_by_input_name = {
         "features_in": AssetKey([*ASSET_HEADER["key_prefix"], "features_in"]),
-        "scrape_networks": AssetKey(
-            [*ASSET_HEADER["key_prefix"], "scrape_networks"]
-        ),
+        # "scrape_networks": AssetKey(
+        #     [*ASSET_HEADER["key_prefix"], "scrape_networks"]
+        # ),
         "CONFIG": AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
         "group_out_base": AssetKey(
             [*ASSET_HEADER_BASE["key_prefix"], "group_out_base"]

@@ -812,7 +812,7 @@ def factory_compose_scope__compose(
         features_in: Dict[str, OpenStudioLandscapesFeatureOut] = kwargs.pop(
             "features_in"
         )
-        scrape_networks: Dict = kwargs.pop("scrape_networks")
+        # scrape_networks: Dict = kwargs.pop("scrape_networks")
 
         env: Dict = group_out_base.env
 
@@ -859,7 +859,23 @@ def factory_compose_scope__compose(
             "include": includes,
         }
 
-        docker_yaml_include = yaml.safe_dump(docker_dict_include)
+        # if "wrapper_alloy" in kwargs:
+        wrapper_alloy = kwargs.pop("wrapper_alloy", {})
+
+        # if "wrapper_newt" in kwargs:
+        wrapper_newt = kwargs.pop("wrapper_newt", {})
+
+        docker_chainmap = ChainMap(
+            wrapper_alloy,
+            wrapper_newt,
+            docker_dict_include,
+        )
+
+        docker_chainmap_dict = reduce(deep_merge, docker_chainmap.maps)
+        #
+        # docker_yaml = yaml.dump(docker_chainmap_dict)
+
+        docker_yaml_include = yaml.safe_dump(docker_chainmap_dict)
 
         # Write docker-compose.yaml
         with open(DOCKER_COMPOSE, mode="w", encoding="utf-8") as fw:
@@ -873,7 +889,7 @@ def factory_compose_scope__compose(
 
         yield Output(
             output_name=output_name,
-            value=docker_dict_include,
+            value=docker_chainmap_dict,
         )
 
         yield AssetMaterialization(
@@ -881,7 +897,7 @@ def factory_compose_scope__compose(
             metadata={
                 "__".join(
                     context.asset_key_for_output(output_name).path
-                ): MetadataValue.json(docker_dict_include),
+                ): MetadataValue.json(docker_chainmap_dict),
                 "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml_include}\n```"),
                 "includes": MetadataValue.json(includes),
                 # "OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE": MetadataValue.bool(
