@@ -27,81 +27,81 @@ from OpenStudioLandscapes.engine.utils import *
 from OpenStudioLandscapes.engine.utils.docker import *
 
 
-@asset(
-    **ASSET_HEADER_BASE,
-)
-def pip_packages(
-    context: AssetExecutionContext,
-) -> Generator[Output[List] | AssetMaterialization, None, None]:
-    """ """
+# @asset(
+#     **ASSET_HEADER_BASE,
+# )
+# def pip_packages(
+#     context: AssetExecutionContext,
+# ) -> Generator[Output[List] | AssetMaterialization, None, None]:
+#     """ """
+#
+#     _pip_packages: list = [
+#         # Content moved to OpenStudioLandscapes.Dagster.assets.pip_packages
+#         # Todo:
+#         #  - [ ] enable OpenStudioLandscapes after making it public
+#         #  - [x] maybe move dagster stuff to dagster image?
+#     ]
+#
+#     yield Output(_pip_packages)
+#
+#     yield AssetMaterialization(
+#         asset_key=context.asset_key,
+#         metadata={
+#             "__".join(context.asset_key.path): MetadataValue.json(_pip_packages),
+#         },
+#     )
 
-    _pip_packages: list = [
-        # Content moved to OpenStudioLandscapes.Dagster.assets.pip_packages
-        # Todo:
-        #  - [ ] enable OpenStudioLandscapes after making it public
-        #  - [x] maybe move dagster stuff to dagster image?
-    ]
 
-    yield Output(_pip_packages)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(_pip_packages),
-        },
-    )
-
-
-@asset(
-    **ASSET_HEADER_BASE,
-)
-def apt_packages(
-    context: AssetExecutionContext,
-) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
-    """ """
-
-    _apt_packages = {}
-
-    _apt_packages["base"] = [
-        "git",
-        "ca-certificates",
-        "htop",
-        "file",
-        "tzdata",
-        "curl",
-        "wget",
-        "ffmpeg",
-        "xvfb",
-        "libegl1",
-        "libsm6",
-        "libglu1-mesa",
-        "libxss1",
-    ]
-
-    _apt_packages["build_python311"] = [
-        "build-essential",
-        "pkg-config",
-        "zlib1g-dev",
-        "libncurses5-dev",
-        "libgdbm-dev",
-        "libnss3-dev",
-        "libssl-dev",
-        "libreadline-dev",
-        "libffi-dev",
-        "libsqlite3-dev",
-        "libbz2-dev",
-        "iproute2",
-        "liblzma-dev",
-    ]
-
-    yield Output(_apt_packages)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(_apt_packages),
-        },
-    )
+# @asset(
+#     **ASSET_HEADER_BASE,
+# )
+# def apt_packages(
+#     context: AssetExecutionContext,
+# ) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
+#     """ """
+#
+#     _apt_packages = {}
+#
+#     _apt_packages["base"] = [
+#         "git",
+#         "ca-certificates",
+#         "htop",
+#         "file",
+#         "tzdata",
+#         "curl",
+#         "wget",
+#         "ffmpeg",
+#         "xvfb",
+#         "libegl1",
+#         "libsm6",
+#         "libglu1-mesa",
+#         "libxss1",
+#     ]
+#
+#     _apt_packages["build_python311"] = [
+#         "build-essential",
+#         "pkg-config",
+#         "zlib1g-dev",
+#         "libncurses5-dev",
+#         "libgdbm-dev",
+#         "libnss3-dev",
+#         "libssl-dev",
+#         "libreadline-dev",
+#         "libffi-dev",
+#         "libsqlite3-dev",
+#         "libbz2-dev",
+#         "iproute2",
+#         "liblzma-dev",
+#     ]
+#
+#     yield Output(_apt_packages)
+#
+#     yield AssetMaterialization(
+#         asset_key=context.asset_key,
+#         metadata={
+#             "__".join(context.asset_key.path): MetadataValue.json(_apt_packages),
+#         },
+#     )
 
 
 @asset(
@@ -112,12 +112,12 @@ def apt_packages(
         "docker_config_json": AssetIn(
             AssetKey([*ASSET_HEADER_BASE["key_prefix"], "docker_config_json"])
         ),
-        "apt_packages": AssetIn(
-            AssetKey([*ASSET_HEADER_BASE["key_prefix"], "apt_packages"])
-        ),
-        "pip_packages": AssetIn(
-            AssetKey([*ASSET_HEADER_BASE["key_prefix"], "pip_packages"])
-        ),
+        # "apt_packages": AssetIn(
+        #     AssetKey([*ASSET_HEADER_BASE["key_prefix"], "apt_packages"])
+        # ),
+        # "pip_packages": AssetIn(
+        #     AssetKey([*ASSET_HEADER_BASE["key_prefix"], "pip_packages"])
+        # ),
     },
     retry_policy=build_docker_image_retry_policy,
 )
@@ -126,8 +126,8 @@ def build_docker_image(
     env: dict,  # pylint: disable=redefined-outer-name
     CONFIG: ConfigEngine,  # pylint: disable=redefined-outer-name
     docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name
-    apt_packages: dict[str, list[str]],  # pylint: disable=redefined-outer-name
-    pip_packages: list,  # pylint: disable=redefined-outer-name
+    # apt_packages: dict[str, list[str]],  # pylint: disable=redefined-outer-name
+    # pip_packages: list,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict[str, str | list[str]]] | AssetMaterialization, None, None]:
     """ """
 
@@ -161,14 +161,14 @@ def build_docker_image(
     context.log.debug(f"{tags = }")
 
     apt_install_str_base: str = get_apt_install_str(
-        apt_install_packages=apt_packages["base"],
+        apt_install_packages=CONFIG.apt_packages_base,
     )
 
     apt_install_str_build_python311: str = get_apt_install_str(
-        apt_install_packages=apt_packages["build_python311"],
+        apt_install_packages=CONFIG.apt_packages_build_python311,
     )
 
-    pip_install_str: str = get_pip_install_str(pip_install_packages=pip_packages)
+    pip_install_str: str = get_pip_install_str(pip_install_packages=CONFIG.pip_packages)
 
     # @formatter:off
     docker_file_str = textwrap.dedent(

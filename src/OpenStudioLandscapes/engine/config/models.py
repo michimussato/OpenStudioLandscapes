@@ -223,6 +223,54 @@ class ConfigEngine(BaseModel):
         ),
     )
 
+    apt_packages_base: List = Field(
+        default=[
+            "git",
+            "ca-certificates",
+            "htop",
+            "file",
+            "tzdata",
+            "curl",
+            "wget",
+            "ffmpeg",
+            "xvfb",
+            "libegl1",
+            "libsm6",
+            "libglu1-mesa",
+            "libxss1",
+        ],
+        frozen=True,
+    )
+
+    apt_packages_build_python311: List = Field(
+        default=[
+            "build-essential",
+            "pkg-config",
+            "zlib1g-dev",
+            "libncurses5-dev",
+            "libgdbm-dev",
+            "libnss3-dev",
+            "libssl-dev",
+            "libreadline-dev",
+            "libffi-dev",
+            "libsqlite3-dev",
+            "libbz2-dev",
+            "iproute2",
+            "liblzma-dev",
+        ],
+        frozen=True,
+    )
+
+    pip_packages: List = Field(
+        default=[
+            # Content moved to OpenStudioLandscapes.Dagster.assets.pip_packages
+            # Todo:
+            #  - [ ] enable OpenStudioLandscapes after making it public
+            #  - [x] maybe move dagster stuff to dagster image?
+        ],
+        frozen=True,
+    )
+
     # # Todo:
     # #  - [ ] do we need this?
     # # this initilizes a 'GIT_ROOT' by the config.yml
