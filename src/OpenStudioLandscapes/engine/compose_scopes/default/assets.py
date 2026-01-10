@@ -24,6 +24,7 @@ from OpenStudioLandscapes.engine.compose_scopes.default.constants import *
 from OpenStudioLandscapes.engine.compose_scopes.default.simple_factories import (
     simple_factory_newt,
     simple_factory_alloy,
+    simple_factory_node_exporter,
 )
 from OpenStudioLandscapes.engine.utils import *
 
@@ -129,34 +130,43 @@ if bool(feature_ins):
 
         compose_scope_asset_defs.append(compose_scope_group__group_out)
 
-        if ATTACH_PANGOLIN_SITE_TO_COMPOSE_SCOPE:
+        # Todo
+        #  - [ ] find a more programmatic implementation
+        #        - use specs
 
-            spec = {}
+        # spec = {}
 
-            wrapper_newt = simple_factory_newt(
-                ASSET_HEADER=ASSET_HEADER,
-                compose_scope=compose_scope,
-                name="wrapper_newt",
-                ins={
-                    "CONFIG": AssetIn(AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"])),
-                    "scrape_networks": AssetIn(AssetKey([*ASSET_HEADER["key_prefix"], "scrape_networks"])),
-                },
-            )
+        wrapper_newt = simple_factory_newt(
+            ASSET_HEADER=ASSET_HEADER,
+            compose_scope=compose_scope,
+            name="wrapper_newt",
+            ins={
+                "CONFIG": AssetIn(AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"])),
+                "scrape_networks": AssetIn(AssetKey([*ASSET_HEADER["key_prefix"], "scrape_networks"])),
+            },
+        )
+        compose_scope_asset_defs.append(wrapper_newt)
 
-            compose_scope_asset_defs.append(wrapper_newt)
+        # spec = {}
+        wrapper_alloy = simple_factory_alloy(
+            ASSET_HEADER=ASSET_HEADER,
+            compose_scope=compose_scope,
+            name="wrapper_alloy",
+            ins={
+                "CONFIG": AssetIn(AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"])),
+                "scrape_networks": AssetIn(AssetKey([*ASSET_HEADER["key_prefix"], "scrape_networks"])),
+                "alloy_config": AssetIn(AssetKey(["OpenStudioLandscapes_Grafana", "alloy_config"])),
+            },
+        )
+        compose_scope_asset_defs.append(wrapper_alloy)
 
-        if ATTACH_GRAFANA_ALLOY_TO_COMPOSE_SCOPE:
-
-            spec = {}
-
-            wrapper_alloy = simple_factory_alloy(
-                ASSET_HEADER=ASSET_HEADER,
-                compose_scope=compose_scope,
-                name="wrapper_alloy",
-                ins={
-                    "CONFIG": AssetIn(AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"])),
-                    "alloy_config": AssetIn(AssetKey(["OpenStudioLandscapes_Grafana", "alloy_config"])),
-                },
-            )
-
-            compose_scope_asset_defs.append(wrapper_alloy)
+        # spec = {}
+        wrapper_node_exporter = simple_factory_node_exporter(
+            ASSET_HEADER=ASSET_HEADER,
+            compose_scope=compose_scope,
+            name="wrapper_node_exporter",
+            ins={
+                "CONFIG": AssetIn(AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"])),
+            },
+        )
+        compose_scope_asset_defs.append(wrapper_node_exporter)

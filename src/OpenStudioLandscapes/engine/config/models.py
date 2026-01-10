@@ -51,14 +51,42 @@ class DockerRegistryAccess(enum.StrEnum):
 
 
 class ComposeScopeBaseModel(BaseModel):
+
     compose_scope: str = Field()
+
     attach_pangolin_site_to_compose_scope: bool = Field(
-        default=False,
-        description="Do you want the ComposeScope to dial in to " "a Pangolin site?",
+        default=bool(
+            int(
+                os.environ.get("OPENSTUDIOLANDSCAPES__ATTACH_PANGOLIN_SITE_TO_COMPOSE_SCOPE", 0)
+            )
+        ),
+        description="Do you want the ComposeScope to dial in to a Pangolin Site?",
     )
+
     attach_grafana_alloy_to_compose_scope: bool = Field(
-        default=False,
-        description="Do you want the ComposeScope to to collect Grafana metrics?",
+        default=bool(
+            int(
+                os.environ.get("OPENSTUDIOLANDSCAPES__ATTACH_GRAFANA_ALLOY_TO_COMPOSE_SCOPE", 0)
+            )
+        ),
+        description="Do you want the ComposeScope to to populate Alloy metrics?",
+    )
+    grafana_alloy_listen_address: str = Field(
+        default="0.0.0.0:12345",
+        description="Do you want the ComposeScope to to populate Alloy metrics?",
+    )
+
+    attach_node_exporter_to_compose_scope: bool = Field(
+        default=bool(
+            int(
+                os.environ.get("OPENSTUDIOLANDSCAPES__ATTACH_NODE_EXPORTER_TO_COMPOSE_SCOPE", 0)
+            )
+        ),
+        description="Do you want the ComposeScope to to collect Node Exporter metrics?",
+    )
+    grafana_node_exporter_listen_address: str = Field(
+        default="0.0.0.0:9100",
+        description="Do you want the ComposeScope to to populate Alloy metrics?",
     )
 
     docker_compose: pathlib.Path = Field(
@@ -79,8 +107,6 @@ class ComposeScopeBaseModel(BaseModel):
             )
         )
         return ret
-
-
 
 
 class DockerRegistryConfig(BaseModel):

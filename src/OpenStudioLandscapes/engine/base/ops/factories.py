@@ -39,10 +39,6 @@ from dagster import (
 from docker_compose_graph.docker_compose_graph import DockerComposeGraph
 from docker_compose_graph.utils import *
 
-from OpenStudioLandscapes.engine.compose_scopes.default.constants import (
-    ATTACH_PANGOLIN_SITE_TO_COMPOSE_SCOPE,
-    ATTACH_GRAFANA_ALLOY_TO_COMPOSE_SCOPE,
-)
 from OpenStudioLandscapes.engine.config.models import (
     ComposeScopeBaseModel,
     DockerConfigModel,
@@ -631,8 +627,6 @@ def factory_compose_scope__CONFIG(
                     "docker_compose",
                     "docker-compose.yml",
                 ),
-                "attach_pangolin_site_to_compose_scope": ATTACH_PANGOLIN_SITE_TO_COMPOSE_SCOPE,
-                "attach_grafana_alloy_to_compose_scope": ATTACH_GRAFANA_ALLOY_TO_COMPOSE_SCOPE,
             },
         )
 
@@ -859,14 +853,21 @@ def factory_compose_scope__compose(
             "include": includes,
         }
 
+        # Todo
+        #  - [ ] this is not very elegant yet...
+
         # if "wrapper_alloy" in kwargs:
         wrapper_alloy = kwargs.pop("wrapper_alloy", {})
 
         # if "wrapper_newt" in kwargs:
         wrapper_newt = kwargs.pop("wrapper_newt", {})
 
+        # if "wrapper_node_exporter" in kwargs:
+        wrapper_node_exporter = kwargs.pop("wrapper_node_exporter", {})
+
         docker_chainmap = ChainMap(
             wrapper_alloy,
+            wrapper_node_exporter,
             wrapper_newt,
             docker_dict_include,
         )
@@ -900,12 +901,6 @@ def factory_compose_scope__compose(
                 ): MetadataValue.json(docker_chainmap_dict),
                 "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml_include}\n```"),
                 "includes": MetadataValue.json(includes),
-                # "OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE": MetadataValue.bool(
-                #     CONFIG.attach_pangolin_site_to_compose_scope,
-                # ),
-                # "OPENSTUDIOLANDSCAPES__ATTACH_GRAFANA_ALLOY_TO_COMPOSE_SCOPE": MetadataValue.bool(
-                #     CONFIG.attach_grafana_alloy_to_compose_scope,
-                # ),
             },
         )
 
@@ -1157,7 +1152,7 @@ def factory_compose_scope__group_out(
         description=textwrap.dedent(
             f"""
             Environment variable  
-            > `OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE={ATTACH_PANGOLIN_SITE_TO_COMPOSE_SCOPE}`
+            > `OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE={bool(int(os.environ.get('OPENSTUDIOLANDSCAPES__ATTACH_PANGOLIN_SITE_TO_COMPOSE_SCOPE', 0)))}`
             
             If `OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE` is `True`,
             __set the following environment variables manually__ when launching the Landscape:
