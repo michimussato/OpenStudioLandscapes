@@ -24,6 +24,7 @@
     * [OK, now I'm hooked...](#ok-now-im-hooked)
   * [I don't see a lot of documentation for OpenStudioLandscapes. How can I gain insight?](#i-dont-see-a-lot-of-documentation-for-openstudiolandscapes-how-can-i-gain-insight)
   * [What problem does OpenStudioLandscapes solve?](#what-problem-does-openstudiolandscapes-solve)
+  * [How is OpenStudioLandscapes different from other potential solutions?](#how-is-openstudiolandscapes-different-from-other-potential-solutions)
   * [So, tell me! What exactly does it produce?](#so-tell-me-what-exactly-does-it-produce)
   * [OpenStudioLandscapes long term dependency hell: out of the frying pan into the fire?](#openstudiolandscapes-long-term-dependency-hell-out-of-the-frying-pan-into-the-fire)
   * [I don't like Pipeline! I'm a free thinker and I don't like boudaries!](#i-dont-like-pipeline-im-a-free-thinker-and-i-dont-like-boudaries)
@@ -526,6 +527,29 @@ a house of cards built upside down.
 **future you** is not going to regret decisions of its **past you** 
 by providing structure while keeping systems and pipeline features 
 as isolated (read: portable) as possible!
+
+## How is OpenStudioLandscapes different from other potential solutions?
+
+**OpenStudioLandscapes** provides an opinionated platform for different services
+that are commonly used in animation and VFX productions - the learning curve for
+deployment and configuration can be quite substantion for every individual 
+service - and I'm no expert in most of them. The **OpenStudioLandscapes**
+project has no control over these third party services. A side effect of this is that
+there is no common way of orchestration and deployment for these services:
+
+- some services are containerized, others are not
+- different services come with different OS and package dependencies
+
+**OpenStudioLandscapes** tries to flatten the learning curve for all services
+by providing functional Features based on _common_ defaults so that you get a
+full production Landscape up and running quickly. However, if special configuration
+applies to your environment, **OpenStudioLandscapes** still tries to maintain this
+possibility.
+
+I'm sure the same functionality can be achieved with other tools like Kubernetes, Ansible 
+and different orchestrators. However, a combination of Docker, Docker Compose
+and Dagster has proven (so far) to be the best match for fast development, self documentation
+and maintenance.
 
 ## So, tell me! What exactly does it produce?
 
