@@ -532,7 +532,7 @@ as isolated (read: portable) as possible!
 
 **OpenStudioLandscapes** provides an opinionated platform for different services
 that are commonly used in animation and VFX productions - the learning curve for
-deployment and configuration can be quite substantion for every individual 
+deployment and configuration can be quite substantial for every individual 
 service - and I'm no expert in most of them. The **OpenStudioLandscapes**
 project has no control over these third party services. A side effect of this is that
 there is no common way of orchestration and deployment for these services:
