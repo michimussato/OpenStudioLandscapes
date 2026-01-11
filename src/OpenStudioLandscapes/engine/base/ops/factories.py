@@ -862,12 +862,8 @@ def factory_compose_scope__compose(
         # if "wrapper_newt" in kwargs:
         wrapper_newt = kwargs.pop("wrapper_newt", {})
 
-        # if "wrapper_node_exporter" in kwargs:
-        wrapper_node_exporter = kwargs.pop("wrapper_node_exporter", {})
-
         docker_chainmap = ChainMap(
             wrapper_alloy,
-            wrapper_node_exporter,
             wrapper_newt,
             docker_dict_include,
         )

@@ -160,7 +160,6 @@ def get_compose_scope_group__compose(
             "group_out_base": In(OpenStudioLandscapesBaseOut),
             "wrapper_newt": In(Dict),
             "wrapper_alloy": In(Dict),
-            "wrapper_node_exporter": In(Dict),
         },
         out={
             "compose": Out(Dict),
@@ -182,7 +181,6 @@ def get_compose_scope_group__compose(
             ),
             "wrapper_newt": AssetKey([*ASSET_HEADER["key_prefix"], "wrapper_newt"]),
             "wrapper_alloy": AssetKey([*ASSET_HEADER["key_prefix"], "wrapper_alloy"]),
-            "wrapper_node_exporter": AssetKey([*ASSET_HEADER["key_prefix"], "wrapper_node_exporter"]),
         },
         keys_by_output_name={},
     )

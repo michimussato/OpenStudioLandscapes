@@ -24,7 +24,6 @@ from OpenStudioLandscapes.engine.compose_scopes.default.constants import *
 from OpenStudioLandscapes.engine.compose_scopes.default.simple_factories import (
     simple_factory_newt,
     simple_factory_alloy,
-    simple_factory_node_exporter,
 )
 from OpenStudioLandscapes.engine.utils import *
 
@@ -159,14 +158,3 @@ if bool(feature_ins):
             },
         )
         compose_scope_asset_defs.append(wrapper_alloy)
-
-        # spec = {}
-        wrapper_node_exporter = simple_factory_node_exporter(
-            ASSET_HEADER=ASSET_HEADER,
-            compose_scope=compose_scope,
-            name="wrapper_node_exporter",
-            ins={
-                "CONFIG": AssetIn(AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"])),
-            },
-        )
-        compose_scope_asset_defs.append(wrapper_node_exporter)
