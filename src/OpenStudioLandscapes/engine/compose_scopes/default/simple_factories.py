@@ -17,6 +17,7 @@ from OpenStudioLandscapes.engine.config.models import ComposeScopeBaseModel
 from OpenStudioLandscapes.engine.enums import DockerComposePolicies, DockerComposeNetworkMode
 from OpenStudioLandscapes.engine.utils import get_relative_path_via_common_root
 from OpenStudioLandscapes.engine.utils.docker.compose_dicts import DockerComposeServiceDefinition
+from OpenStudioLandscapes.engine.compose_scopes.default.constants import *
 
 
 def simple_factory_newt(
@@ -241,8 +242,7 @@ def simple_factory_alloy(
             alloy_data = pathlib.Path(
                 env["DOT_LANDSCAPES"],
                 env.get("LANDSCAPE", "default"),
-                compose_scope,
-                # "__".join(context.asset_key.path),
+                f"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}",
                 "alloy",
                 "data",
             )
