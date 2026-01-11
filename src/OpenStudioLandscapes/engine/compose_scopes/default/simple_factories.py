@@ -211,6 +211,7 @@ def simple_factory_alloy(
             - [Monitor Docker Containers](https://grafana.com/docs/alloy/latest/monitor/monitor-docker-containers/)
             - [Use Alloy to send logs to Loki](https://grafana.com/docs/alloy/latest/tutorials/send-logs-to-loki/)
             - [Use Alloy to send metrics to Prometheus](https://grafana.com/docs/alloy/latest/tutorials/send-metrics-to-prometheus/)
+            - [Christian Lempa](https://www.youtube.com/watch?v=E654LPrkCjo)
             """
         ),
     )
@@ -237,9 +238,19 @@ def simple_factory_alloy(
             #     unique_suffix=_unique_suffix,
             # )
 
+            alloy_data = pathlib.Path(
+                env["DOT_LANDSCAPES"],
+                env.get("LANDSCAPE", "default"),
+                compose_scope,
+                # "__".join(context.asset_key.path),
+                "alloy",
+                "data",
+            )
+
             volumes_dict = {
                 "volumes": [
                     f"{alloy_config.as_posix()}:/etc/alloy/config.alloy:ro",
+                    f"{alloy_data.as_posix()}:/var/lib/alloy/data",
                 ]
             }
 
@@ -265,11 +276,23 @@ def simple_factory_alloy(
             volumes_dict = {
                 "volumes": [
                     *_volume_relative,
+                    # Non relative paths:
+                    "/:/rootfs:ro",
+                    "/var/run/docker.sock:/var/run/docker.sock",
+                    "/run:/run:ro",
+                    "/var/log:/var/log:ro",
+                    "/sys:/sys:ro",
+                    "/var/lib/docker:/var/lib/docker:ro",
+                    "/run/udev/data:/run/udev/data:ro",
                 ]
             }
 
+            # combination of
+            # - https://github.com/grafana/alloy-scenarios/blob/main/docker-monitoring/docker-compose-linux.yml
+            # - https://www.youtube.com/watch?v=E654LPrkCjo
             service_dict: DockerComposeServiceDefinition = {
                 "image": "docker.io/grafana/alloy:latest",
+                # "privileged": True,
                 "container_name": f"alloy_container.{_unique_suffix}",
                 "restart": DockerComposePolicies.RESTART_POLICY.ON_FAILURE_3,
                 # "environment": {},
@@ -280,13 +303,13 @@ def simple_factory_alloy(
                     "/etc/alloy/config.alloy",
                 ],
                 **volumes_dict,
-                "network_mode": DockerComposePolicies.NETWORK_MODE.HOST,
-                # "networks": [
-                #     *scrape_networks.keys()
-                # ],
-                # "ports": [
-                #     "12345:12345",
-                # ],
+                # "network_mode": DockerComposePolicies.NETWORK_MODE.HOST,
+                "networks": [
+                    *scrape_networks.keys()
+                ],
+                "ports": [
+                    "12345:12345",
+                ],
             }
 
             unique_alloy_service = f"alloy_service.{_unique_suffix}"

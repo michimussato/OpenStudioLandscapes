@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Required, TypedDict, Union
+from typing import Any, Dict, List, Required, TypedDict, Union, Optional
 
 from dagster import AssetExecutionContext, OpExecutionContext
 
@@ -28,6 +28,7 @@ __all__ = [
 
 class DockerComposeServiceDefinition(TypedDict, total=False):
     environment: Dict[str, Any]
+    privileged: Optional[bool]
     container_name: Required[str]
     image: Required[str]
     volumes: List[str]
