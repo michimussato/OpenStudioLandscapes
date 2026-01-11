@@ -88,6 +88,7 @@ def simple_factory_newt(
             service_dict: DockerComposeServiceDefinition = {
                 "image": "docker.io/fosrl/newt",
                 "container_name": f"newt_container.{_unique_suffix}",
+                "hostname": f"newt-{compose_scope}",
                 "restart": DockerComposePolicies.RESTART_POLICY.ALWAYS,
                 "environment": {
                     "PANGOLIN_ENDPOINT": "${OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_%s__PANGOLIN_ENDPOINT}"
@@ -294,6 +295,10 @@ def simple_factory_alloy(
                 "image": "docker.io/grafana/alloy:latest",
                 # "privileged": True,
                 "container_name": f"alloy_container.{_unique_suffix}",
+                # Some fixed hostname is needed.
+                # Otherwise, the Grafana references in Dashboards no longer work.
+                # Not setting a hostname means that a random name will be assigned.
+                "hostname": f"alloy-{compose_scope}",
                 "restart": DockerComposePolicies.RESTART_POLICY.ON_FAILURE_3,
                 # "environment": {},
                 "command": [

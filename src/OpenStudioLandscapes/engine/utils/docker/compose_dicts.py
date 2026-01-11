@@ -30,6 +30,7 @@ class DockerComposeServiceDefinition(TypedDict, total=False):
     environment: Dict[str, Any]
     privileged: Optional[bool]
     container_name: Required[str]
+    hostname: Optional[str]
     image: Required[str]
     volumes: List[str]
     networks: List[str]
