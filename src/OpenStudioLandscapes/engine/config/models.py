@@ -76,14 +76,6 @@ class ComposeScopeBaseModel(BaseModel):
         description="Do you want the ComposeScope to to populate Alloy metrics?",
     )
 
-    attach_node_exporter_to_compose_scope: bool = Field(
-        default=bool(
-            int(
-                os.environ.get("OPENSTUDIOLANDSCAPES__ATTACH_NODE_EXPORTER_TO_COMPOSE_SCOPE", 0)
-            )
-        ),
-        description="Do you want the ComposeScope to to collect Node Exporter metrics?",
-    )
     grafana_node_exporter_listen_address: str = Field(
         default="0.0.0.0:9100",
         description="Do you want the ComposeScope to to populate Alloy metrics?",
