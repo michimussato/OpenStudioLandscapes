@@ -31,6 +31,8 @@ class DockerComposeServiceDefinition(TypedDict, total=False):
     privileged: Optional[bool]
     container_name: Required[str]
     hostname: Optional[str]
+    domainname: Optional[str]
+    depends_on: Optional[Dict[str, Dict[str, DockerComposeDependsOnPolicy]]]
     image: Required[str]
     volumes: List[str]
     networks: List[str]
