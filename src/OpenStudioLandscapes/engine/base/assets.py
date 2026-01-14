@@ -175,7 +175,10 @@ def build_docker_image(
         """\
         # {auto_generated}
         # {dagster_url}
-        FROM ubuntu:20.04 AS {image_name}
+        
+        ################################################################################
+        # Multi Stage: Stage 1
+        FROM ubuntu:20.04 AS builder
         LABEL authors="{AUTHOR}"
 
         ARG DEBIAN_FRONTEND=noninteractive
@@ -198,15 +201,27 @@ def build_docker_image(
         RUN cd Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT} && ./configure --enable-optimizations  # Todo: --prefix  # https://stackoverflow.com/questions/11307465/destdir-and-prefix-of-make
         RUN cd Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT} && make -j $(nproc)
         RUN cd Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT} && make altinstall  # altinstall instead of install because the later command will overwrite the default system python3 binary.
+        
+        ################################################################################        
+        # Multi Stage: Stage 2
+        FROM ubuntu:20.04 AS {image_name}
+        LABEL authors="{AUTHOR}"
+
+        ARG DEBIAN_FRONTEND=noninteractive
+
+        ENV CONTAINER_TIMEZONE={TIMEZONE}
+        ENV SET_CONTAINER_TIMEZONE=true
+
+        RUN apt-get update && apt-get upgrade -y
+
+        {apt_install_str_base}
+        
+        COPY --from=builder "/usr" "/usr"
 
         RUN python{PYTHON_MAJ}.{PYTHON_MIN} -m pip install --upgrade pip setuptools setuptools_scm wheel
 
         {pip_install_str}
-        # RUN thinkbox-ssl-gen --help
-
-        RUN rm -rf /build/python
-
-        RUN apt-get clean
+        # Todo? RUN thinkbox-ssl-gen --help
 
         ENTRYPOINT []
         """
