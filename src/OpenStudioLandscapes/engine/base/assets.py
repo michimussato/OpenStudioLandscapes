@@ -178,7 +178,7 @@ def build_docker_image(
         
         ################################################################################
         # Multi Stage: Stage 1
-        FROM ubuntu:20.04 AS builder
+        FROM ubuntu:20.04 AS base
         LABEL authors="{AUTHOR}"
 
         ARG DEBIAN_FRONTEND=noninteractive
@@ -189,6 +189,10 @@ def build_docker_image(
         RUN apt-get update && apt-get upgrade -y
 
         {apt_install_str_base}
+        
+        ################################################################################
+        # Multi Stage: Stage 2
+        FROM base AS builder
 
         {apt_install_str_build_python311}
 
@@ -203,25 +207,14 @@ def build_docker_image(
         RUN cd Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT} && make altinstall  # altinstall instead of install because the later command will overwrite the default system python3 binary.
         
         ################################################################################        
-        # Multi Stage: Stage 2
-        FROM ubuntu:20.04 AS {image_name}
-        LABEL authors="{AUTHOR}"
-
-        ARG DEBIAN_FRONTEND=noninteractive
-
-        ENV CONTAINER_TIMEZONE={TIMEZONE}
-        ENV SET_CONTAINER_TIMEZONE=true
-
-        RUN apt-get update && apt-get upgrade -y
-
-        {apt_install_str_base}
+        # Multi Stage: Stage 3
+        FROM base AS {image_name}
         
         COPY --from=builder "/usr" "/usr"
 
         RUN python{PYTHON_MAJ}.{PYTHON_MIN} -m pip install --upgrade pip setuptools setuptools_scm wheel
 
         {pip_install_str}
-        # Todo? RUN thinkbox-ssl-gen --help
 
         ENTRYPOINT []
         """
