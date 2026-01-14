@@ -71,13 +71,16 @@ class ComposeScopeBaseModel(BaseModel):
         ),
         description="Do you want the ComposeScope to to populate Alloy metrics?",
     )
-    grafana_alloy_listen_address: str = Field(
-        default="0.0.0.0:12345",
+    grafana_alloy_listen_port_host: PositiveInt = Field(
+        default=12345,
         description="Do you want the ComposeScope to to populate Alloy metrics?",
     )
-
-    grafana_node_exporter_listen_address: str = Field(
-        default="0.0.0.0:9100",
+    grafana_alloy_listen_port_container: PositiveInt = Field(
+        default=12345,
+        description="Do you want the ComposeScope to to populate Alloy metrics?",
+    )
+    grafana_alloy_listen_address: str = Field(
+        default="0.0.0.0",
         description="Do you want the ComposeScope to to populate Alloy metrics?",
     )
 
@@ -256,6 +259,7 @@ class ConfigEngine(BaseModel):
             "libsm6",
             "libglu1-mesa",
             "libxss1",
+            "sudo",
         ],
         frozen=True,
     )

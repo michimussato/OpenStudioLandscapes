@@ -10,7 +10,7 @@ from dagster import (
     AssetMaterialization,
     AssetsDefinition,
     AssetExecutionContext,
-    MetadataValue,
+    MetadataValue, AssetIn,
 )
 
 from OpenStudioLandscapes.engine.config.models import ComposeScopeBaseModel
@@ -161,10 +161,11 @@ def simple_factory_newt(
 
 
 def simple_factory_alloy(
-        ASSET_HEADER,
-        compose_scope,
-        name,
-        ins,
+        ASSET_HEADER: Dict,
+        compose_scope: str,
+        port_range_pool: set,
+        name: str,
+        ins: Dict[str, AssetIn],
 ) -> AssetsDefinition:
 
     @asset(
@@ -285,15 +286,25 @@ def simple_factory_alloy(
                     "/sys:/sys:ro",
                     "/var/lib/docker:/var/lib/docker:ro",
                     "/run/udev/data:/run/udev/data:ro",
+                    # [ ] /dev/disk/:/dev/disk:ro
+                    # [ ] /dev/zfs/:/dev/zfs:ro
                 ]
             }
+
+            # Avoid port conflicts:
+            # - https://christian-schou.com/blog/how-port-mapping-works-in-docker-compose/
+            # - https://labex.io/tutorials/docker-how-to-solve-docker-network-port-conflicts-493644
+            if len(port_range_pool) <= 1:
+                port_mapping = f"{CONFIG.grafana_alloy_listen_port_host}:{CONFIG.grafana_alloy_listen_port_container}"
+            else:
+                port_mapping = f"{CONFIG.grafana_alloy_listen_port_host}-{CONFIG.grafana_alloy_listen_port_host + len(port_range_pool) - 1}:{CONFIG.grafana_alloy_listen_port_container}"
 
             # combination of
             # - https://github.com/grafana/alloy-scenarios/blob/main/docker-monitoring/docker-compose-linux.yml
             # - https://www.youtube.com/watch?v=E654LPrkCjo
             service_dict: DockerComposeServiceDefinition = {
                 "image": "docker.io/grafana/alloy:latest",
-                # "privileged": True,
+                "privileged": True,
                 "container_name": f"alloy_container.{_unique_suffix}",
                 # Some fixed hostname is needed.
                 # Otherwise, the Grafana references in Dashboards no longer work.
@@ -303,7 +314,7 @@ def simple_factory_alloy(
                 # "environment": {},
                 "command": [
                     "run",
-                    f"--server.http.listen-addr={CONFIG.grafana_alloy_listen_address}",
+                    f"--server.http.listen-addr={CONFIG.grafana_alloy_listen_address}:{CONFIG.grafana_alloy_listen_port_container}",
                     "--storage.path=/var/lib/alloy/data",
                     "/etc/alloy/config.alloy",
                 ],
@@ -313,7 +324,7 @@ def simple_factory_alloy(
                     *scrape_networks.keys()
                 ],
                 "ports": [
-                    "12345:12345",
+                    port_mapping,
                 ],
             }
 

@@ -46,6 +46,8 @@ LOGGER.info(f"{feature_ins = }")
 
 compose_scope_asset_defs = []
 
+compose_scopes = set(feature_ins.keys())
+
 if bool(feature_ins):
 
     compose_scope: str
@@ -150,6 +152,7 @@ if bool(feature_ins):
         wrapper_alloy = simple_factory_alloy(
             ASSET_HEADER=ASSET_HEADER,
             compose_scope=compose_scope,
+            port_range_pool=compose_scopes,
             name="wrapper_alloy",
             ins={
                 "CONFIG": AssetIn(AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"])),
