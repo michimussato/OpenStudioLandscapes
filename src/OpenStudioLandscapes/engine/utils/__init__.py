@@ -98,10 +98,23 @@ def get_apt_install_str(
 
 
 def get_copy_str(
-    temp_dir: str,
-    copy_packages: MutableMapping[str, str],
+    temp_dir: pathlib.Path,
+    copy_packages: Dict[str, pathlib.Path],
     mode: Union[int | None] = None,
 ) -> str:
+    """
+    Copies the files required for the build to
+    the Dockerfile context so that they are actually
+    accessible from within the context.
+
+    Args:
+        temp_dir: pathlib.Path
+        copy_packages:
+        mode:
+
+    Returns:
+        copy_str: str
+    """
     # Todo:
     #  - [ ] COPY vs. ADD?
     copy_str: str = str()
@@ -111,7 +124,7 @@ def get_copy_str(
     # _mode = "" if mode is None else f"--chmod={str(mode).zfill(4)}"
     _mode = "" if mode is None else str(mode).zfill(4)
     for copy_package in copy_packages.keys():
-        copy_str += f"COPY ./{pathlib.Path(temp_dir).name}/{copy_package} .\n"
+        copy_str += f"COPY ./{temp_dir.name}/{copy_package} .\n"
         if bool(_mode):
             copy_str += f"RUN chmod {str(mode).zfill(4)} {copy_package}\n"
 
