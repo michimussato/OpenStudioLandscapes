@@ -77,21 +77,30 @@ def get_pip_install_str(
 
 def get_apt_install_str(
     apt_install_packages: List[str],
+    single_run_layer: bool = True,
 ) -> str:
-    apt_install_str: str = str()
-    for apt_package in apt_install_packages:
-        apt_install_str += (
-            # "RUN apt-get install -y --no-install-recommends '%s'\n" % apt_package
-            f"RUN apt-get install -y --no-install-recommends '{apt_package}'\n"
-        )
+    if bool(apt_install_packages):
+        if single_run_layer:
+            # Use Single RUN layer for all packages
+            # Ref: https://github.com/michimussato/OpenStudioLandscapes/issues/4
+            apt_install_str: str = f"RUN apt-get update && apt-get install -y --no-install-recommends {' '.join(apt_install_packages)}"
+        else:
+            apt_install_str: str = str()
+            for apt_package in apt_install_packages:
+                apt_install_str += (
+                    # "RUN apt-get install -y --no-install-recommends '%s'\n" % apt_package
+                    f"RUN apt-get install -y --no-install-recommends '{apt_package}'\n"
+                )
+        return apt_install_str
 
-    return apt_install_str
+    else:
+        return ""
 
 
 def get_copy_str(
     temp_dir: str,
     copy_packages: MutableMapping[str, str],
-    mode: [int | None] = None,
+    mode: Union[int | None] = None,
 ) -> str:
     # Todo:
     #  - [ ] COPY vs. ADD?
