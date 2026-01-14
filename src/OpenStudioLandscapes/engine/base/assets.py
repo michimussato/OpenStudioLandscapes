@@ -112,12 +112,6 @@ from OpenStudioLandscapes.engine.utils.docker import *
         "docker_config_json": AssetIn(
             AssetKey([*ASSET_HEADER_BASE["key_prefix"], "docker_config_json"])
         ),
-        # "apt_packages": AssetIn(
-        #     AssetKey([*ASSET_HEADER_BASE["key_prefix"], "apt_packages"])
-        # ),
-        # "pip_packages": AssetIn(
-        #     AssetKey([*ASSET_HEADER_BASE["key_prefix"], "pip_packages"])
-        # ),
     },
     retry_policy=build_docker_image_retry_policy,
 )
@@ -126,8 +120,6 @@ def build_docker_image(
     env: dict,  # pylint: disable=redefined-outer-name
     CONFIG: ConfigEngine,  # pylint: disable=redefined-outer-name
     docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name
-    # apt_packages: dict[str, list[str]],  # pylint: disable=redefined-outer-name
-    # pip_packages: list,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict[str, str | list[str]]] | AssetMaterialization, None, None]:
     """ """
 

@@ -330,6 +330,11 @@ class ConfigEngine(BaseModel):
         )
     )
 
+    openstudiolandscapes__human_readable_ids: bool = Field(
+        default=True,
+        description="Use `human-readable-id` (https://github.com/Karol-G/human-readable-id) to generate Landscape ID.",
+    )
+
 
 # This is the Feature Base Model
 # DO NOT INSTANCE THIS DIRECTLY

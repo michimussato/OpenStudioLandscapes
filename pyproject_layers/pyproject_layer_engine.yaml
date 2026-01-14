@@ -4,6 +4,7 @@ project:
   - dagster-webserver==1.9.11
   - dagster-postgres==0.25.11
   - nox
+  - human-readable-id
   description: A Toolkit to create dynamic Animation and VFX studio environments for
     robust automation and pipelines.
   name: OpenStudioLandscapes

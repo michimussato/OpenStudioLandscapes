@@ -8,6 +8,7 @@ import uuid
 from datetime import datetime
 from typing import Generator, MutableMapping
 
+from human_readable_id import generate_hrid
 import pytz
 import yaml
 from dagster import (
@@ -54,19 +55,38 @@ def git_root(
 #  - [ ] Move this to ConfigEngine?
 @asset(
     **ASSET_HEADER_BASE_ENV,
+    ins={
+        "CONFIG": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"])),
+    },
 )
 def landscape_id(
     context: AssetExecutionContext,
+    CONFIG: ConfigEngine,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[MutableMapping[str, str]] | AssetMaterialization, None, None]:
 
     now = datetime.now()
 
+    now_prefix = datetime.strftime(now, '%Y-%m-%d_%H-%M-%S')
+
+    if CONFIG.openstudiolandscapes__human_readable_ids:
+        id_ = generate_hrid(
+            words=4,
+            separator="-",
+            numbers=0,
+        )
+
+    else:
+        id_ = uuid.uuid4().hex
+
+    landscape_id = "__".join(
+        [
+            now_prefix,
+            id_,
+        ]
+    )
+
     landscape_stamp = {
-        "LANDSCAPE": f"{datetime.strftime(now, '%Y-%m-%d_%H-%M-%S')}__{uuid.uuid4().hex}".replace(
-            "__", "_"
-        ).replace(
-            "_", "-"
-        ),
+        "LANDSCAPE": landscape_id,
     }
 
     yield Output(landscape_stamp)
@@ -74,7 +94,7 @@ def landscape_id(
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(landscape_stamp),
+            "LANDSCAPE": MetadataValue.path(landscape_stamp["LANDSCAPE"]),
         },
     )
 
