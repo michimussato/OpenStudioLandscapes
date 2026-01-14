@@ -186,6 +186,11 @@ def build_docker_image(
         ENV CONTAINER_TIMEZONE={TIMEZONE}
         ENV SET_CONTAINER_TIMEZONE=true
 
+        ENV LC_ALL=C.UTF-8
+        ENV LANG=C.UTF-8
+
+        SHELL ["/bin/bash", "-c"]
+
         RUN apt-get update && apt-get upgrade -y
 
         {apt_install_str_base}
