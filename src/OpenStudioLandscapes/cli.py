@@ -339,7 +339,10 @@ def main(args):
         LOGGER.info(
             f"\n\nInstall Feature with:\n"
             f"\t`{install_cmd}`\n"
-            f"\tIn Dagster: 'Reload definitions`.\n\n"
+            f"\tIn Dagster: 'Reload definitions`.\n"
+            f"\tthis will create:\n"
+            f"\t- '<CONFIG_STORE>/{repo_name}/config.yml'\n"
+            f"\tEdit this file according to your needs.\n\n"
         )
 
         # result_ = subprocess.run(
