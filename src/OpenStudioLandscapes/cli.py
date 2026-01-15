@@ -335,9 +335,9 @@ def main(args):
         )
         LOGGER.info(f"Repo {repo} cloned.")
         LOGGER.info(
-            f"Install Feature with:\n"
-            f"\t`source {pathlib.Path(repo_engine.working_dir).joinpath('.venv', 'bin', 'activate')} && pip install --editable {repo.working_dir}`"
-            f"\tIn Dagster: 'Reload definitions`."
+            f"\n\nInstall Feature with:\n"
+            f"\t`source {pathlib.Path(repo_engine.working_dir).joinpath('.venv', 'bin', 'activate')} && pip install --editable {repo.working_dir}`\n"
+            f"\tIn Dagster: 'Reload definitions`.\n\n"
         )
         return
 
