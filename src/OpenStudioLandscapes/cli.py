@@ -125,15 +125,15 @@ def parse_args(args):
         required=True,
     )
 
-    subparser_install_feature.add_argument(
-        "--feature-name",
-        "-n",
-        dest="feature_name",
-        metavar="FEATURE_NAME",
-        # type=git.Repo,
-        type=str,
-        required=True,
-    )
+    # subparser_install_feature.add_argument(
+    #     "--feature-name",
+    #     "-n",
+    #     dest="feature_name",
+    #     metavar="FEATURE_NAME",
+    #     # type=git.Repo,
+    #     type=str,
+    #     required=True,
+    # )
 
     # parser.add_argument(
     #     "--uniform",
@@ -328,12 +328,17 @@ def main(args):
 
     elif any(sc == args.sub_command for sc in ["install-feature", "if"]):
         repo_engine = git.Repo(".")
+        repo_name = args.repo.split('/')[-1].replace('.git', '')
         repo = git.Repo().clone_from(
             url=args.repo,
-            to_path=pathlib.Path(repo_engine.working_dir).joinpath(".features", args.feature_name),
+            to_path=pathlib.Path(repo_engine.working_dir).joinpath(".features", repo_name),
         )
         LOGGER.info(f"Repo {repo} cloned.")
-        LOGGER.info(f"Install Feature with:\n\t`source {pathlib.Path(repo_engine.working_dir).joinpath('.venv', 'bin', 'activate')} && pip install --editable {repo.working_dir}`")
+        LOGGER.info(
+            f"Install Feature with:\n"
+            f"\t`source {pathlib.Path(repo_engine.working_dir).joinpath('.venv', 'bin', 'activate')} && pip install --editable {repo.working_dir}`"
+            f"\tIn Dagster: 'Reload definitions`."
+        )
         return
 
     run_openstudiolandscapes(args)
