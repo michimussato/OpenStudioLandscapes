@@ -1,4 +1,7 @@
 import argparse
+import pathlib
+
+import git
 import logging
 import shutil
 import signal
@@ -93,16 +96,15 @@ def parse_args(args):
         const=logging.DEBUG,
     )
 
-    # parser.add_argument(
-    #     "--video",
-    #     dest="video",
-    #     metavar="VIDEO",
-    #     default=None,
-    #     type=pathlib.Path,
-    #     required=True,
-    #     help=f"Video file.",
-    # )
-    #
+    parser.add_argument(
+        "--pull",
+        dest="pull",
+        default=False,
+        action="store_true",
+        required=False,
+        help="git pull.",
+    )
+
     # parser.add_argument(
     #     "--uniform",
     #     dest="uniform",
@@ -256,6 +258,40 @@ def main(args):
     LOGGER.info(f"Launching OpenStudioLandscapes...")
 
     checks(args)
+
+    if args.pull:
+
+        repos = {
+            "engine": None,
+            "features": {},
+        }
+
+        LOGGER.info("Updating OpenStudioLandscapes...")
+        repo = git.Repo(".")
+        repos["engine"] = repo
+        LOGGER.debug(f"{repo = }")
+        git_cmd = repo.git
+        if repo.is_dirty():
+            LOGGER.error("Can't update: repo has uncommitted changes.")
+            status = git_cmd.status()
+            LOGGER.debug(status)
+        for d in pathlib.Path(repo.working_tree_dir).joinpath(".features").iterdir():
+            if d.is_file():
+                continue
+            LOGGER.debug(f"{d = }")
+            repo_feature = git.Repo(d)
+            LOGGER.error(f"{repo_feature.working_dir = }")
+            repos["features"][pathlib.Path(repo_feature.working_dir).name] = repo_feature
+            LOGGER.debug(f"{repo_feature = }")
+            git_cmd_feature = repo_feature.git
+            if repo_feature.is_dirty():
+                LOGGER.error("Can't update: repo has uncommitted changes.")
+                status_feature = git_cmd_feature.status()
+                LOGGER.debug(status_feature)
+            else:
+                git_cmd_feature.pull()
+        # repo.git.pull()
+        return repos
 
     run_openstudiolandscapes(args)
 
