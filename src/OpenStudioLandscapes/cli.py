@@ -274,20 +274,20 @@ def main(args):
         if repo.is_dirty():
             LOGGER.error("Can't update: repo has uncommitted changes.")
             status = git_cmd.status()
-            LOGGER.debug(status)
+            LOGGER.info(status)
         for d in pathlib.Path(repo.working_tree_dir).joinpath(".features").iterdir():
             if d.is_file():
                 continue
             LOGGER.debug(f"{d = }")
             repo_feature = git.Repo(d)
-            LOGGER.error(f"{repo_feature.working_dir = }")
+            LOGGER.info(f"{repo_feature.working_dir = }")
             repos["features"][pathlib.Path(repo_feature.working_dir).name] = repo_feature
-            LOGGER.debug(f"{repo_feature = }")
+            LOGGER.info(f"{repo_feature = }")
             git_cmd_feature = repo_feature.git
             if repo_feature.is_dirty():
                 LOGGER.error("Can't update: repo has uncommitted changes.")
                 status_feature = git_cmd_feature.status()
-                LOGGER.debug(status_feature)
+                LOGGER.info(status_feature)
             else:
                 git_cmd_feature.pull()
         # repo.git.pull()
