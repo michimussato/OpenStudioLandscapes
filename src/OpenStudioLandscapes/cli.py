@@ -342,17 +342,17 @@ def main(args):
             f"\tIn Dagster: 'Reload definitions`.\n\n"
         )
 
-        result_ = subprocess.run(
-            install_cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            shell=True,
-            cwd=pathlib.Path(repo_engine.working_dir),
-        )
-
-        result = result_.stdout.decode().strip()
-
-        LOGGER.info(f"{result = }")
+        # result_ = subprocess.run(
+        #     install_cmd,
+        #     stdout=subprocess.PIPE,
+        #     stderr=subprocess.STDOUT,
+        #     shell=True,
+        #     cwd=pathlib.Path(repo_engine.working_dir),
+        # )
+        #
+        # result = result_.stdout.decode().strip()
+        #
+        # LOGGER.info(f"{result = }")
 
         return
 
