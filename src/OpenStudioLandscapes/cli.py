@@ -334,11 +334,26 @@ def main(args):
             to_path=pathlib.Path(repo_engine.working_dir).joinpath(".features", repo_name),
         )
         LOGGER.info(f"Repo {repo} cloned.")
+        install_cmd = f"source {pathlib.Path(repo_engine.working_dir).joinpath('.venv', 'bin', 'activate')} && pip install --editable {repo.working_dir}"
+
         LOGGER.info(
             f"\n\nInstall Feature with:\n"
-            f"\t`source {pathlib.Path(repo_engine.working_dir).joinpath('.venv', 'bin', 'activate')} && pip install --editable {repo.working_dir}`\n"
+            f"\t`{install_cmd}`\n"
             f"\tIn Dagster: 'Reload definitions`.\n\n"
         )
+
+        result_ = subprocess.run(
+            install_cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            shell=True,
+            cwd=pathlib.Path(repo_engine.working_dir),
+        )
+
+        result = result_.stdout.decode().strip()
+
+        LOGGER.info(f"{result = }")
+
         return
 
     run_openstudiolandscapes(args)
