@@ -125,6 +125,16 @@ def parse_args(args):
         required=True,
     )
 
+    subparser_install_feature.add_argument(
+        "--feature-name",
+        "-n",
+        dest="feature_name",
+        metavar="FEATURE_NAME",
+        # type=git.Repo,
+        type=str,
+        required=True,
+    )
+
     # parser.add_argument(
     #     "--uniform",
     #     dest="uniform",
@@ -320,10 +330,10 @@ def main(args):
         repo_engine = git.Repo(".")
         repo = git.Repo().clone_from(
             url=args.repo,
-            to_path=pathlib.Path(repo_engine.working_dir).joinpath(".features"),
+            to_path=pathlib.Path(repo_engine.working_dir).joinpath(".features", args.feature_name),
         )
         LOGGER.info(f"Repo {repo} cloned.")
-        LOGGER.info(f"Install Feature with:\n\t`source {pathlib.Path(repo_engine.working_dir).joinpath(['.venv', 'bin', 'activate'])} && pip install --editable {repo.working_dir}`")
+        LOGGER.info(f"Install Feature with:\n\t`source {pathlib.Path(repo_engine.working_dir).joinpath('.venv', 'bin', 'activate')} && pip install --editable {repo.working_dir}`")
         return
 
     run_openstudiolandscapes(args)
