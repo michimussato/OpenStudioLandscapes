@@ -105,6 +105,26 @@ def parse_args(args):
         help="git pull.",
     )
 
+    subparsers = parser.add_subparsers(
+        dest="sub_command",
+        required=False,
+    )
+
+    subparser_install_feature = subparsers.add_parser(
+        "install-feature",
+        aliases=["if"],
+    )
+
+    subparser_install_feature.add_argument(
+        "--repo",
+        "-r",
+        dest="repo",
+        metavar="REPO",
+        # type=git.Repo,
+        type=str,
+        required=True,
+    )
+
     # parser.add_argument(
     #     "--uniform",
     #     dest="uniform",
@@ -294,7 +314,17 @@ def main(args):
             else:
                 git_cmd_feature.pull()
         # repo.git.pull()
-        return repos
+        return
+
+    elif any(sc == args.sub_command for sc in ["install-feature", "if"]):
+        repo_engine = git.Repo(".")
+        repo = git.Repo().clone_from(
+            url=args.repo,
+            to_path=pathlib.Path(repo_engine.working_dir).joinpath(".features"),
+        )
+        LOGGER.info(f"Repo {repo} cloned.")
+        LOGGER.info(f"Install Feature with:\n\t`source {pathlib.Path(repo_engine.working_dir).joinpath(['.venv', 'bin', 'activate'])} && pip install --editable {repo.working_dir}`")
+        return
 
     run_openstudiolandscapes(args)
 
