@@ -275,6 +275,9 @@ def main(args):
             LOGGER.error("Can't update: repo has uncommitted changes.")
             status = git_cmd.status()
             LOGGER.info(status)
+        else:
+            git_cmd.pull()
+
         for d in pathlib.Path(repo.working_tree_dir).joinpath(".features").iterdir():
             if d.is_file():
                 continue
