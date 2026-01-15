@@ -17,6 +17,7 @@ There are many options.
 sudo rsync --mkpath -rhav 2026-01-14_23-03-18__omniscient-rust-morning-mare/OpenStudioLandscapes-Kitsu/data/ .persistent/OpenStudioLandscapes-Kitsu/data/
 sudo mv 2026-01-14_23-03-18__omniscient-rust-morning-mare/OpenStudioLandscapes-Kitsu/data 2026-01-14_23-03-18__omniscient-rust-morning-mare/OpenStudioLandscapes-Kitsu/data.bak
 ln --force --symbolic --relative --target-directory $(pwd)/2026-01-14_23-03-18__omniscient-rust-morning-mare/OpenStudioLandscapes-Kitsu/ $(pwd)/.persistent/OpenStudioLandscapes-Kitsu/data
+# sudo rm -rf 2026-01-14_23-03-18__omniscient-rust-morning-mare/OpenStudioLandscapes-Kitsu/data.bak
 ```
 
 ```
