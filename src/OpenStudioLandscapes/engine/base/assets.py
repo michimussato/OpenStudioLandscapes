@@ -211,10 +211,6 @@ def build_docker_image(
             && tar -xvf Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}.tgz \\
             && rm Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}.tgz
 
-        # Todo: 
-        #  - [x] --prefix  
-        #        - https://stackoverflow.com/questions/11307465/destdir-and-prefix-of-make
-        #
         # altinstall instead of install because the later command will overwrite the default system python3 binary.
         RUN pushd Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT} \\
             && ./configure --enable-optimizations --prefix /opt/python{PYTHON_MAJ}.{PYTHON_MIN} \\
