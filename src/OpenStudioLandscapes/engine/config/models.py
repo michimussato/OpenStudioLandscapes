@@ -252,6 +252,7 @@ class ConfigEngine(BaseModel):
             "file",
             "tzdata",
             "curl",
+            # "less",
             "wget",
             "ffmpeg",
             "xvfb",

@@ -162,6 +162,10 @@ def build_docker_image(
 
     pip_install_str: str = get_pip_install_str(pip_install_packages=CONFIG.pip_packages)
 
+    # Ubuntu -> minimal deb
+    # - https://askubuntu.com/a/445496
+    # - https://hub.docker.com/_/debian
+
     # @formatter:off
     docker_file_str = textwrap.dedent(
         """\
@@ -170,7 +174,12 @@ def build_docker_image(
         
         ################################################################################
         # Multi Stage: Stage 1
-        FROM ubuntu:20.04 AS base
+        # 1.05GB
+        # FROM docker.io/ubuntu:20.04 AS base
+        # FROM docker.io/phusion/baseimage:focal-1.2.0 AS base  # 1.52GB
+        # FROM docker.io/debian:bullseye AS base  # 1.34GB
+        # 1GB
+        FROM docker.io/debian:bullseye-slim AS base
         LABEL authors="{AUTHOR}"
 
         ARG DEBIAN_FRONTEND=noninteractive
@@ -183,7 +192,9 @@ def build_docker_image(
 
         SHELL ["/bin/bash", "-c"]
 
-        RUN apt-get update && apt-get upgrade -y
+        # This would reduce storage
+        # 1.26GB -> 1.25GB
+        RUN apt-get update && apt-get upgrade -y && apt-get -y autoremove --purge && apt-get -y clean && apt-get autoclean
 
         {apt_install_str_base}
         
@@ -195,21 +206,35 @@ def build_docker_image(
 
         WORKDIR /build/python
 
-        RUN curl "https://www.python.org/ftp/python/{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}/Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}.tgz" -o Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}.tgz
-        RUN file Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}.tgz
-        RUN tar -xvf Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}.tgz
+        RUN curl "https://www.python.org/ftp/python/{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}/Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}.tgz" -o Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}.tgz \\
+            && file Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}.tgz \\
+            && tar -xvf Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}.tgz \\
+            && rm Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}.tgz
 
-        RUN cd Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT} && ./configure --enable-optimizations  # Todo: --prefix  # https://stackoverflow.com/questions/11307465/destdir-and-prefix-of-make
-        RUN cd Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT} && make -j $(nproc)
-        RUN cd Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT} && make altinstall  # altinstall instead of install because the later command will overwrite the default system python3 binary.
-        
+        # Todo: 
+        #  - [x] --prefix  
+        #        - https://stackoverflow.com/questions/11307465/destdir-and-prefix-of-make
+        #
+        # altinstall instead of install because the later command will overwrite the default system python3 binary.
+        RUN pushd Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT} \\
+            && ./configure --enable-optimizations --prefix /opt/python{PYTHON_MAJ}.{PYTHON_MIN} \\
+            && make -j $(nproc) \\
+            && make altinstall \\
+            && popd \\
+            && rm -rf Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}
+            
         ################################################################################        
         # Multi Stage: Stage 3
         FROM base AS {image_name}
         
-        COPY --from=builder "/usr" "/usr"
+        COPY --from=builder "/opt/python{PYTHON_MAJ}.{PYTHON_MIN}" "/opt/python{PYTHON_MAJ}.{PYTHON_MIN}"
+            
+        ENV PATH="$PATH:/opt/python{PYTHON_MAJ}.{PYTHON_MIN}/bin"
+        
+        RUN echo $PATH
 
-        RUN python{PYTHON_MAJ}.{PYTHON_MIN} -m pip install --upgrade pip setuptools setuptools_scm wheel
+        RUN python{PYTHON_MAJ}.{PYTHON_MIN} -m pip install --upgrade pip setuptools setuptools_scm wheel \\
+            && python{PYTHON_MAJ}.{PYTHON_MIN} -m pip cache purge
 
         {pip_install_str}
 

@@ -64,15 +64,29 @@ def cmd_list_to_str(
 def get_pip_install_str(
     pip_install_packages: List[str],
     python_str: str = "python{PYTHON_MAJ}.{PYTHON_MIN}",
+    single_run_layer: bool = True,
 ) -> str:
-    pip_install_str: str = str()
-    for pip_package in pip_install_packages:
-        pip_install_str += "RUN %s -m pip install --root-user-action=ignore '%s'\n" % (
-            python_str,
-            pip_package,
-        )
+    if bool(pip_install_packages):
+        if single_run_layer:
+            pip_install_str: str = "RUN %s -m pip install --root-user-action=ignore '%s'" % (
+                python_str,
+                ' '.join(pip_install_packages),
+            )
+            pip_install_str += " && %s -m pip cache purge" % (
+                python_str
+            )
+        else:
+            pip_install_str: str = str()
+            for pip_package in pip_install_packages:
+                pip_install_str += "RUN %s -m pip install --root-user-action=ignore '%s'\n" % (
+                    python_str,
+                    pip_package,
+                )
 
-    return pip_install_str
+        return pip_install_str
+
+    else:
+        return ""
 
 
 def get_apt_install_str(
@@ -83,7 +97,11 @@ def get_apt_install_str(
         if single_run_layer:
             # Use Single RUN layer for all packages
             # Ref: https://github.com/michimussato/OpenStudioLandscapes/issues/4
-            apt_install_str: str = f"RUN apt-get update && apt-get install -y --no-install-recommends {' '.join(apt_install_packages)}"
+            apt_install_str: str = f"RUN apt-get update && apt-get -y install --no-install-recommends {' '.join(apt_install_packages)}"
+            apt_install_str += " && apt-get -y autoremove --purge"
+            apt_install_str += " && apt-get -y clean"
+            apt_install_str += " && apt-get -y autoclean"
+
         else:
             apt_install_str: str = str()
             for apt_package in apt_install_packages:
