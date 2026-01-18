@@ -352,9 +352,9 @@ class ConfigEngine(BaseModel):
         examples=[i.value for i in SudoMethod],
     )
 
-    test_attr: str = Field(
-        default="hello world",
-    )
+    # test_attr: str = Field(
+    #     default="hello world",
+    # )
 
 
 # This is the Feature Base Model
