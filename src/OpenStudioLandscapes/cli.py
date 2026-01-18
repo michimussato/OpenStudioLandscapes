@@ -1,6 +1,7 @@
 import argparse
 import os
 import pathlib
+from typing import Union
 
 import git
 import logging
@@ -177,7 +178,7 @@ def parse_args(args):
     parser.add_argument(
         "--landscapes-root",
         dest="landscapes_root",
-        type=pathlib.Path,
+        type=Union[pathlib.Path, None],
         metavar="OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT",
         default=pathlib.Path(
                 os.environ.get(
