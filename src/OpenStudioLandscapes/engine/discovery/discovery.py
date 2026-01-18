@@ -41,7 +41,7 @@ LOGGER.info("Start bootstrapping...")
 OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT: pathlib.Path = pathlib.Path(
     os.environ.get(
         "OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT",
-        default="~/.config/OpenStudioLandscapes/config-store",
+        # default="~/.config/OpenStudioLandscapes/config-store",
     )
 )
 

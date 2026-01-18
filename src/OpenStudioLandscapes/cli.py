@@ -1,4 +1,5 @@
 import argparse
+import os
 import pathlib
 
 import git
@@ -23,6 +24,22 @@ LOGGER = logging.getLogger(__name__)
 def run_openstudiolandscapes_postgres(args):
     LOGGER.info("Welcome!")
     LOGGER.info("OpenStudioLandscapes args: %s", args)
+
+    if bool(int(args.attach_grafana_alloy_to_compose_scope)):
+        os.environ["OPENSTUDIOLANDSCAPES__ATTACH_GRAFANA_ALLOY_TO_COMPOSE_SCOPE"] = "1"
+    if bool(int(args.attach_pangolin_site_to_compose_scope)):
+        os.environ["OPENSTUDIOLANDSCAPES__ATTACH_PANGOLIN_SITE_TO_COMPOSE_SCOPE"] = "1"
+    if bool(int(args.run_as_systemd_unit)):
+        os.environ["OPENSTUDIOLANDSCAPES__RUN_AS_SYSTEMD_UNIT"] = "1"
+    if bool(int(args.run_as_systemd_unit)):
+        os.environ["OPENSTUDIOLANDSCAPES__RUN_AS_SYSTEMD_UNIT"] = "1"
+    if args.domain_wan is not None:
+        os.environ["OPENSTUDIOLANDSCAPES__DOMAIN_WAN"] = args.domain_wan
+
+    os.environ["OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT"] = args.config_store.as_posix()
+
+    if args.landscapes_root is not None:
+        os.environ["OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT"] = args.landscapes_root.as_posix()
 
     # Simply use `nox` as the entry point:
     # try:
@@ -97,12 +114,81 @@ def parse_args(args):
     )
 
     parser.add_argument(
-        "--pull",
-        dest="pull",
-        default=False,
-        action="store_true",
+        "--attach-grafana-alloy-to-compose-scope",
+        dest="attach_grafana_alloy_to_compose_scope",
+        metavar="OPENSTUDIOLANDSCAPES__ATTACH_GRAFANA_ALLOY_TO_COMPOSE_SCOPE",
+        default=os.environ.get("OPENSTUDIOLANDSCAPES__ATTACH_GRAFANA_ALLOY_TO_COMPOSE_SCOPE", "0"),
+        action="store_const",
+        const="1",
+        help="Attach Alloy container to Compose Scope.",
+    )
+
+    parser.add_argument(
+        "--attach-pangolin-site-to-compose-scope",
+        dest="attach_pangolin_site_to_compose_scope",
+        metavar="OPENSTUDIOLANDSCAPES__ATTACH_PANGOLIN_SITE_TO_COMPOSE_SCOPE",
+        default=os.environ.get("OPENSTUDIOLANDSCAPES__ATTACH_PANGOLIN_SITE_TO_COMPOSE_SCOPE", "0"),
+        action="store_const",
+        const="1",
         required=False,
-        help="git pull.",
+        help="Attach Newt container to Compose Scope.",
+    )
+
+    parser.add_argument(
+        "--run-as-systemd-unit",
+        dest="run_as_systemd_unit",
+        metavar="OPENSTUDIOLANDSCAPES__RUN_AS_SYSTEMD_UNIT",
+        default=os.environ.get("OPENSTUDIOLANDSCAPES__RUN_AS_SYSTEMD_UNIT", "0"),
+        action="store_const",
+        const="1",
+        required=False,
+        help="If specified, the discovery service will *not* wait for "
+             "human interaction for incomplete "
+             "`conifg.yml` files to be fixed.",
+    )
+
+    parser.add_argument(
+        "--domain-wan",
+        dest="domain_wan",
+        type=str,
+        metavar="OPENSTUDIOLANDSCAPES__DOMAIN_WAN",
+        default=os.environ.get("OPENSTUDIOLANDSCAPES__DOMAIN_WAN", None),
+        # action="store_true",
+        required=False,
+        help="Set the WAN domain name (i.e. openstudiolandscapes.com).",
+    )
+
+    parser.add_argument(
+        "--config-store",
+        dest="config_store",
+        type=pathlib.Path,
+        metavar="OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT",
+        default=pathlib.Path(
+                os.environ.get(
+                "OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT",
+                "~/.config/OpenStudioLandscapes/config-store",
+            )
+        ),
+        # action="store_true",
+        required=False,
+        help="Set the configuration store path.",
+    )
+
+    parser.add_argument(
+        "--landscapes-root",
+        dest="landscapes_root",
+        type=pathlib.Path,
+        metavar="OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT",
+        default=pathlib.Path(
+                os.environ.get(
+                "OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT",
+                None,
+            )
+        ),
+        # action="store_true",
+        required=False,
+        help="Set the Landscape root path. A `.landscapes` "
+             "subdirectory will be created and used.",
     )
 
     subparsers = parser.add_subparsers(
@@ -110,9 +196,21 @@ def parse_args(args):
         required=False,
     )
 
+    subparser_update = subparsers.add_parser(
+        "update",
+    )
+
+    # subparser_update.add_argument(
+    #     "--pull",
+    #     dest="pull",
+    #     default=False,
+    #     action="store_true",
+    #     required=False,
+    #     help="git pull.",
+    # )
+
     subparser_install_feature = subparsers.add_parser(
         "install-feature",
-        aliases=["if"],
     )
 
     subparser_install_feature.add_argument(
@@ -289,7 +387,7 @@ def main(args):
 
     checks(args)
 
-    if args.pull:
+    if any(sc == args.sub_command for sc in ["update"]):
 
         repos = {
             "engine": None,
