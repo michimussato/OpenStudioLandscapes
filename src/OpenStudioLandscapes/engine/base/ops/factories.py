@@ -1689,6 +1689,9 @@ will be created locally containing default options.
 ---
 
 For reference, the default `Config` values are as follows:
+
+> __These default `Config` values **do not reflect your
+> actual configuration** specified in the `config.yml` file.__
         
 ```yaml
 {CONFIG_STR}

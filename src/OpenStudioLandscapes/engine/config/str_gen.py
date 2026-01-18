@@ -12,6 +12,10 @@ LOGGER = get_dagster_logger(__name__)
 def get_config_str(
     Config: Type[pydantic.BaseModel],
 ) -> str:
+    # Todo:
+    #  This implementation is error prone.
+    #  Maybe there are better ways to create documentation.
+    #  - [ ] multi-line descriptions cause problems
     LOGGER.info(f"{Config.model_fields = }")
 
     doc_str = str()
@@ -41,6 +45,8 @@ def get_config_str(
             doc_str += f"# {''.rjust(len(field_k), '-')}\n"
             doc_str += f"#\n"
             doc_str += f"# Type: {sub_class_annotation}\n"
+
+            base_class_value = ""
 
             if field_k in Config.__base__.model_fields:
                 # print(f"\tDefault Value: {Config.__base__.model_fields[field_k] = }")

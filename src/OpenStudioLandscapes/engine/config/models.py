@@ -181,13 +181,13 @@ class DockerConfigModel(BaseModel):
     docker_registry_config: DockerRegistryConfig = Field()
 
 
-# class SudoMethod(enum.StrEnum):
-#     # Todo
-#     #  - [ ] implement `su`
-#     #  - [ ] Also see OpenStudioLandscapes-Deadline-10-2 model
-#     # SU = "su"
-#     SUDO = "sudo"
-#     PKEXEC = "pkexec"
+class SudoMethod(enum.StrEnum):
+    # Todo
+    #  - [ ] implement `su`
+    #  - [ ] Also see OpenStudioLandscapes ConfigEngine model
+    # SU = "su"
+    SUDO = "sudo"
+    PKEXEC = "pkexec"
 
 
 class ConfigEngine(BaseModel):
@@ -334,6 +334,26 @@ class ConfigEngine(BaseModel):
     openstudiolandscapes__human_readable_ids: bool = Field(
         default=True,
         description="Use `human-readable-id` (https://github.com/Karol-G/human-readable-id) to generate Landscape ID.",
+    )
+
+    sudo_method: SudoMethod = Field(
+        default=SudoMethod.SUDO,
+        description=f"Usually, `sudo` is fine and does not require human interaction, however, "
+        f"it requires the `sudo` password to exist in the `SUDO_PASS` "
+        f"environment variable (`.env`). Same applies to `su` (not implemented), while `su` "
+        f"is available in Linux distros by default. "
+        f"`pkexec` is *mostly* available on Linux systems with GUI's (Gnome, "
+        f"KDE etc.) and is the cleanest way to grant `root` privileges. "
+        f"It is does not require you to share your secrets in a "
+        f"`.env` file as you will be prompted interactively to enter the "
+        f"password before the commands are executed. However, `pkexec` can only "
+        f"be used when direct access to the operating system with a "
+        f"GUI is available.",
+        examples=[i.value for i in SudoMethod],
+    )
+
+    test_attr: str = Field(
+        default="hello world",
     )
 
 
