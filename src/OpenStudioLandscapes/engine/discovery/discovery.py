@@ -19,6 +19,7 @@ from setuptools import find_namespace_packages
 from OpenStudioLandscapes.engine import dist as dist_engine
 from OpenStudioLandscapes.engine.config.models import CONFIG_STR as ENGINE_CONFIG_STR
 from OpenStudioLandscapes.engine.config.models import ConfigEngine, FeatureBaseModel
+from OpenStudioLandscapes.engine.exceptions import OpenStudioLandscapesException
 
 LOGGER = get_dagster_logger(__name__)
 
@@ -115,7 +116,7 @@ def get_config_engine() -> ConfigEngine:
         else:
             while True:
                 # Todo
-                #  - [ ] implement logic to add new keys to the config.yml if
+                #  - [ ] implement better logic to add new keys to the config.yml if
                 #        the model has changed.
 
                 config_engine_blueprint_dict_ = yaml.safe_load(ENGINE_CONFIG_STR)
@@ -127,61 +128,34 @@ def get_config_engine() -> ConfigEngine:
                 engine_config_str_test: str = engine_config_yml_expanded.read_text()
 
                 engine_config_dict_test: Dict = yaml.safe_load(engine_config_str_test)
-                # config_engine_test: ConfigEngine = ConfigEngine(**engine_config_dict_test)
 
-                for key in config_engine_blueprint_dict_.keys():
+                for key_ in config_engine_blueprint_dict_.keys():
                     try:
-                        assert key in engine_config_dict_test
-                    except AssertionError as err:
-                        LOGGER.error(f"Key `{key}` not found in {engine_config_yml_expanded.as_posix()} "
-                                     f"and no default value defined by the model.")
-                        LOGGER.error(f"Possible values for key `{key}` are: {config_engine_blueprint.model_fields[key].examples} "
-                                     f"of type {config_engine_blueprint.model_fields[key].annotation}. \n"
-                                     f"For reference of all fields, see `ConfigEngine` in "
-                                     f"https://github.com/michimussato/OpenStudioLandscapes/blob/main/src/OpenStudioLandscapes/engine/config/models.py."
-                                     f"")
-                        input("Add the key manually and press enter to continue")
+                        assert key_ in engine_config_dict_test
+                    except AssertionError as err_:
+                        LOGGER.error(f"Required key `{key_}` not found in {engine_config_yml_expanded.as_posix()}. "
+                                     f"Discovery impossible until fixed.")
+
+                        if bool(int(os.environ.get("OPENSTUDIOLANDSCAPES__RUN_AS_SYSTEMD_UNIT", default=0))):
+                            raise OpenStudioLandscapesException() from err_
+                        else:
+                            LOGGER.error(f"Possible values for key `{key_}` are: {config_engine_blueprint.model_fields[key_].examples} "
+                                         f"of type {config_engine_blueprint.model_fields[key].annotation}. \n"
+                                         f"For reference of all fields, see `ConfigEngine` in "
+                                         f"https://github.com/michimussato/OpenStudioLandscapes/blob/main/src/OpenStudioLandscapes/engine/config/models.py."
+                                         f"")
+                            input("Add the key manually and press enter to continue")
                         break
 
                 else:
                     break
 
-                # LOGGER.error(f"{config_engine_blueprint = }")
-                # LOGGER.error(f"{config_engine_test = }")
-
-                # config_engine_blueprint_dict = json.loads(config_engine_blueprint.model_dump_json(fallback=str))
-                # LOGGER.error(f"{config_engine_blueprint_dict = }")
-                # LOGGER.error(f"{engine_config_dict_test      = }")
-                #
-                # # diff_models = dict(
-                # #     set.difference(
-                # #         *(set(d.keys()) for d in [
-                # #             config_engine_blueprint.__dict__,
-                # #             config_engine_test.__dict__,
-                # #         ])
-                # #     )
-                # # )
-                #
-                # diff_dicts = dict(
-                #     set.difference(
-                #         *(set(d.keys()) for d in [
-                #             set(config_engine_blueprint_dict.keys()),
-                #             set(engine_config_dict_test.keys()),
-                #         ])
-                #     )
-                # )
-                #
-                # # raise Exception(diff_models)
-                # raise Exception(diff_dicts)
-                #
-                # pass
-
         # Read the `config.yml` as a str
         engine_config_str: str = engine_config_yml_expanded.read_text()
 
-        engine_config_dict: Dict = yaml.safe_load(engine_config_str)
+        engine_config_dict_: Dict = yaml.safe_load(engine_config_str)
 
-        return engine_config_dict
+        return engine_config_dict_
 
     engine_config_dict = get_config_dict()
 
@@ -422,6 +396,52 @@ for package, feature in DISCOVERED_MODELS.items():
     except ImportError as e:
         LOGGER.error(f"`CONFIG_STR` for {package} not found. Ignoring.")
         continue
+
+    while True:
+        # Todo
+        #  - [ ] implement better logic to add new keys to the config.yml if
+        #        the model has changed.
+
+        config_feature_blueprint_dict_ = yaml.safe_load(feature.models_object.CONFIG_STR)
+        config_feature_blueprint: FeatureBaseModel = feature.models_object.Config(
+            **config_feature_blueprint_dict_
+        )
+
+        # Read the `config.yml` as a str
+        distribution: Distribution = metadata.distribution(package)
+        config_yml_feature: pathlib.Path = OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.joinpath(
+            distribution.name,
+            "config.yml",
+        )
+        LOGGER.info(f"{config_yml_feature = }")
+        config_yml_feature_expanded = config_yml_feature.expanduser()
+        feature_config_str_test: str = config_yml_feature_expanded.read_text()
+
+        feature_config_dict_test: Dict = yaml.safe_load(feature_config_str_test)
+
+        for key in config_feature_blueprint_dict_.keys():
+            # if not config_feature_blueprint.model_fields[key].is_required:
+            #     continue
+            try:
+                assert key in feature_config_dict_test
+            except AssertionError as err:
+                LOGGER.error(f"Required key `{key}` not found in {config_yml_feature_expanded.as_posix()}. "
+                             f"Discovery impossible until fixed.")
+
+                if bool(int(os.environ.get("OPENSTUDIOLANDSCAPES__RUN_AS_SYSTEMD_UNIT", default=0))):
+                    raise OpenStudioLandscapesException() from err
+                else:
+                    LOGGER.error(
+                        f"Possible values for key `{key}` are: {config_feature_blueprint.model_fields[key].examples} "
+                        f"of type {config_feature_blueprint.model_fields[key].annotation}. \n"
+                        f"For reference of all fields, see "
+                        f"https://github.com/michimussato/OpenStudioLandscapes-{distribution.name}#default-configuration."
+                        f"")
+                    input("Add the key manually and press enter to continue")
+                break
+
+        else:
+            break
 
     # Config is the `OpenStudioLandscapes.<FEATURE>.config.models.Config` object.
     #

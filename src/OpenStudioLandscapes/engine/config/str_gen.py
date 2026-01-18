@@ -4,7 +4,6 @@ from typing import Type
 import pydantic
 import yaml
 from dagster import get_dagster_logger
-from pydantic_core._pydantic_core import PydanticUndefinedType
 
 LOGGER = get_dagster_logger(__name__)
 
@@ -89,16 +88,16 @@ def get_config_str(
             except UnboundLocalError as e:
                 LOGGER.warning(f"{e}")
 
-            if isinstance(sub_class_value, PydanticUndefinedType):
-                kv = {field_k: "REQUIRED (CHANGE_ME)"}
+            # if isinstance(sub_class_value, PydanticUndefinedType):
+            #     kv = {field_k: "<NOT SET> (CHANGE_ME)"}
+            # else:
+            if isinstance(sub_class_value, pydantic.BaseModel):
+                v = json.loads(
+                    sub_class_value.model_dump_json(indent=2, fallback=str)
+                )
             else:
-                if isinstance(sub_class_value, pydantic.BaseModel):
-                    v = json.loads(
-                        sub_class_value.model_dump_json(indent=2, fallback=str)
-                    )
-                else:
-                    v = sub_class_value
-                kv = {field_k: v}
+                v = sub_class_value
+            kv = {field_k: v}
 
             doc_str += f"{yaml.safe_dump(json.loads(json.dumps(kv, indent=2, default=str)))}\n\n"
 
