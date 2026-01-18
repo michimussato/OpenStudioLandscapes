@@ -37,10 +37,10 @@ def run_openstudiolandscapes_postgres(args):
     if args.domain_wan is not None:
         os.environ["OPENSTUDIOLANDSCAPES__DOMAIN_WAN"] = args.domain_wan
 
-    os.environ["OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT"] = args.config_store.as_posix()
+    os.environ["OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT"] = args.config_store
 
     if args.landscapes_root is not None:
-        os.environ["OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT"] = args.landscapes_root.as_posix()
+        os.environ["OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT"] = args.landscapes_root
 
     # Simply use `nox` as the entry point:
     # try:
@@ -162,13 +162,11 @@ def parse_args(args):
     parser.add_argument(
         "--config-store",
         dest="config_store",
-        type=pathlib.Path,
+        type=str,
         metavar="OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT",
-        default=pathlib.Path(
-                os.environ.get(
-                "OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT",
-                "~/.config/OpenStudioLandscapes/config-store",
-            )
+        default=os.environ.get(
+            "OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT",
+            "~/.config/OpenStudioLandscapes/config-store",
         ),
         # action="store_true",
         required=False,
@@ -178,13 +176,11 @@ def parse_args(args):
     parser.add_argument(
         "--landscapes-root",
         dest="landscapes_root",
-        type=Union[pathlib.Path, None],
+        type=str,
         metavar="OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT",
-        default=pathlib.Path(
-                os.environ.get(
-                "OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT",
-                None,
-            )
+        default=os.environ.get(
+            "OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT",
+            None,
         ),
         # action="store_true",
         required=False,
