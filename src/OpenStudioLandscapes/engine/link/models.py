@@ -1,5 +1,5 @@
 import pathlib
-from typing import Any, Dict, Union
+from typing import Any, Dict, Union, List
 
 from pydantic import BaseModel, Field
 
@@ -78,3 +78,11 @@ class OpenStudioLandscapesFeatureIn(OpenStudioLandscapesFeatureBasePort):
 
 class OpenStudioLandscapesFeatureOut(OpenStudioLandscapesFeatureBasePort):
     config_feature: FeatureBaseModel
+
+    cmd_extend: Union[None, List] = Field(
+        default=None,
+    )
+
+    cmd_append: Union[None, Dict] = Field(
+        default=None,
+    )

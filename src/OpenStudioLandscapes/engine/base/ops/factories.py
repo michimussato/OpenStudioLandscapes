@@ -1,6 +1,7 @@
 __all__ = [
-    "factory_feature_out",
+    "factory_feature_out_v2",
     "factory_compose",
+    "factory_cmd",
     "factory_group_in",
     "factory_feature_in",
     "factory_feature_in_parent",
@@ -11,6 +12,7 @@ __all__ = [
     "factory_compose_scope__docker_compose_graph",
     "factory_compose_scope__cmd",
     "factory_compose_scope__group_out",
+    "factory__CONFIG",
 ]
 
 import base64
@@ -64,77 +66,77 @@ yaml.SafeDumper.add_multi_representer(
 )
 
 
-def factory_feature_out(
-    name="op_feature_out_from_factory",
-    ins=None,
-    **kwargs,
-) -> OpDefinition:
-    """
-    https://docs.dagster.io/guides/build/ops#op-factory
-
-    Args:
-        name (str): The name of the new op.
-        ins (Dict[str, In]): Any Ins for the new op. Default: None.
-
-    Returns:
-        function: The new op.
-    """
-
-    @op(
-        name=name,
-        ins=ins,
-        **kwargs,
-    )
-    def _op_feature_out(
-        context: OpExecutionContext,
-        **kwargs,
-    ):
-
-        context.log.debug(f"{kwargs.keys() = }")
-        context.log.debug(f"{kwargs['group_in'].keys() = }")
-
-        # Todo
-        #  - [ ] I can't serialize this nested BaseModel yet
-        config_parent = kwargs["group_in"].pop("config_parent")
-
-        # context.log.debug(f"Popping: {kwargs.pop('env') = }")
-        group_in: Dict = kwargs.pop("group_in")
-        kwargs["group_in"] = group_in
-
-        # I want
-        # - env_base
-        # - features
-        # - docker_config
-        # - docker_config_json
-        # to stay in the root level
-        # of the dict
-        CONFIG: FeatureBaseModel = kwargs.pop("CONFIG")
-        kwargs["config"] = CONFIG
-
-        # Todo
-        #  - [ ] replace "group_out" (i.e. with "compose_yaml" or "feature_out")
-        # kwargs["compose_yaml"] = kwargs["env"]["DOCKER_COMPOSE"]
-
-        context.log.debug(f"_op_feature_out {kwargs = }")
-
-        output_name = "feature_out"
-
-        yield Output(
-            output_name=output_name,
-            value=kwargs,
-        )
-
-        yield AssetMaterialization(
-            asset_key=context.asset_key_for_output(output_name),
-            metadata={
-                **metadatavalues_from_dict(
-                    context=context,
-                    d=kwargs,
-                ),
-            },
-        )
-
-    return _op_feature_out
+# def factory_feature_out(
+#     name="op_feature_out_from_factory",
+#     ins=None,
+#     **kwargs,
+# ) -> OpDefinition:
+#     """
+#     https://docs.dagster.io/guides/build/ops#op-factory
+#
+#     Args:
+#         name (str): The name of the new op.
+#         ins (Dict[str, In]): Any Ins for the new op. Default: None.
+#
+#     Returns:
+#         function: The new op.
+#     """
+#
+#     @op(
+#         name=name,
+#         ins=ins,
+#         **kwargs,
+#     )
+#     def _op_feature_out(
+#         context: OpExecutionContext,
+#         **kwargs,
+#     ):
+#
+#         context.log.debug(f"{kwargs.keys() = }")
+#         context.log.debug(f"{kwargs['group_in'].keys() = }")
+#
+#         # Todo
+#         #  - [ ] I can't serialize this nested BaseModel yet
+#         config_parent = kwargs["group_in"].pop("config_parent")
+#
+#         # context.log.debug(f"Popping: {kwargs.pop('env') = }")
+#         group_in: Dict = kwargs.pop("group_in")
+#         kwargs["group_in"] = group_in
+#
+#         # I want
+#         # - env_base
+#         # - features
+#         # - docker_config
+#         # - docker_config_json
+#         # to stay in the root level
+#         # of the dict
+#         CONFIG: FeatureBaseModel = kwargs.pop("CONFIG")
+#         kwargs["config"] = CONFIG
+#
+#         # Todo
+#         #  - [ ] replace "group_out" (i.e. with "compose_yaml" or "feature_out")
+#         # kwargs["compose_yaml"] = kwargs["env"]["DOCKER_COMPOSE"]
+#
+#         context.log.debug(f"_op_feature_out {kwargs = }")
+#
+#         output_name = "feature_out"
+#
+#         yield Output(
+#             output_name=output_name,
+#             value=kwargs,
+#         )
+#
+#         yield AssetMaterialization(
+#             asset_key=context.asset_key_for_output(output_name),
+#             metadata={
+#                 **metadatavalues_from_dict(
+#                     context=context,
+#                     d=kwargs,
+#                 ),
+#             },
+#         )
+#
+#     return _op_feature_out
 
 
 def factory_feature_out_v2(
@@ -167,10 +169,14 @@ def factory_feature_out_v2(
         # group_out_base: OpenStudioLandscapesBaseOut = kwargs.pop("group_out_base")
         compose: Dict = kwargs.pop("compose")
         CONFIG: discovery.FeatureBaseModel = kwargs.pop("CONFIG")
+        cmd_extend: List = kwargs.pop("cmd_extend")
+        cmd_append: Dict = kwargs.pop("cmd_append")
 
         feature_out: OpenStudioLandscapesFeatureOut = OpenStudioLandscapesFeatureOut(
             compose=compose,
             config_feature=CONFIG,
+            cmd_extend=cmd_extend,
+            cmd_append=cmd_append,
         )
 
         output_name = "feature_out_v2"
@@ -190,6 +196,79 @@ def factory_feature_out_v2(
         )
 
     return _op_feature_out
+
+
+def factory_cmd(
+    name="op_cmd_from_factory",
+    ins=None,
+    **kwargs,
+) -> OpDefinition:
+    """
+    https://docs.dagster.io/guides/build/ops#op-factory
+
+    Args:
+        name (str): The name of the new op.
+        ins (Dict[str, In]): Any Ins for the new op. Default: None.
+
+    Returns:
+        function: The new op.
+    """
+
+    @op(
+        name=name,
+        ins=ins,
+        **kwargs,
+    )
+    def _op__cmd(
+        context: OpExecutionContext,
+        **kwargs,
+    ):
+
+        ##############
+        # cmd_append #
+        ##############
+
+        ret_cmd_append = {"cmd": [], "exclude_from_quote": ["$(which docker)"]}
+
+        output_name = "cmd_append"
+
+        yield Output(
+            output_name=output_name,
+            value=ret_cmd_append,
+        )
+
+        yield AssetMaterialization(
+            asset_key=context.asset_key_for_output(output_name),
+            metadata={
+                "__".join(
+                    context.asset_key_for_output(output_name).path
+                ): MetadataValue.json(ret_cmd_append),
+            },
+        )
+
+        ##############
+        # cmd_extend #
+        ##############
+
+        output_name = "cmd_extend"
+
+        ret_cmd_extend = []
+
+        yield Output(
+            output_name=output_name,
+            value=ret_cmd_extend,
+        )
+
+        yield AssetMaterialization(
+            asset_key=context.asset_key_for_output(output_name),
+            metadata={
+                "__".join(
+                    context.asset_key_for_output(output_name).path
+                ): MetadataValue.json(ret_cmd_extend),
+            },
+        )
+
+    return _op__cmd
 
 
 def factory_compose(
@@ -1078,17 +1157,37 @@ def factory_compose_scope__cmd(
     ) -> Generator[Output | AssetMaterialization | Any, Any, None]:
         """ """
 
+        features_in = kwargs.pop("features_in")
+
+        cmd_extend: List[List] = []
+        cmd_append: List[Dict] = []
+
+        context.log.error(type(features_in))
+
+        feature: str
+        feature_out: OpenStudioLandscapesFeatureOut
+
+        for feature, feature_out in features_in.items():
+            context.log.debug(feature)
+            cmd_extend.append(feature_out.cmd_extend)
+            cmd_append.append(feature_out.cmd_append)
+
+        # cmd = zip(features_in["cmd_extend"], features_in["cmd_append"])
+
+        # cmd_extend: List[List] = []
+        # cmd_append: List[Dict] = []
+
         ##############
         # cmd_append #
         ##############
 
-        ret_cmd_append = {"cmd": [], "exclude_from_quote": ["$(which docker)"]}
+        # ret_cmd_append = {"cmd": [], "exclude_from_quote": ["$(which docker)"]}
 
         output_name = "cmd_append"
 
         yield Output(
             output_name=output_name,
-            value=ret_cmd_append,
+            value=cmd_append,
         )
 
         yield AssetMaterialization(
@@ -1096,7 +1195,7 @@ def factory_compose_scope__cmd(
             metadata={
                 "__".join(
                     context.asset_key_for_output(output_name).path
-                ): MetadataValue.json(ret_cmd_append),
+                ): MetadataValue.json(cmd_append),
             },
         )
 
@@ -1106,11 +1205,11 @@ def factory_compose_scope__cmd(
 
         output_name = "cmd_extend"
 
-        ret_cmd_extend = []
+        # ret_cmd_extend = []
 
         yield Output(
             output_name=output_name,
-            value=ret_cmd_extend,
+            value=cmd_extend,
         )
 
         yield AssetMaterialization(
@@ -1118,7 +1217,7 @@ def factory_compose_scope__cmd(
             metadata={
                 "__".join(
                     context.asset_key_for_output(output_name).path
-                ): MetadataValue.json(ret_cmd_extend),
+                ): MetadataValue.json(cmd_extend),
             },
         )
 
@@ -1205,19 +1304,27 @@ def factory_compose_scope__group_out(
 
         group_out_base: OpenStudioLandscapesBaseOut = kwargs.pop("group_out_base")
         compose = kwargs.pop("compose")
-        cmd_append: Dict = kwargs.pop("cmd_append")
-        cmd_extend: List = kwargs.pop("cmd_extend")
+        cmd_append: List[Dict] = kwargs.pop("cmd_append")
+        cmd_extend_: List[List] = kwargs.pop("cmd_extend")
         CONFIG: DockerConfigModel = kwargs.pop("CONFIG")
         features_in = kwargs.pop("features_in")
+
+        import itertools
+
+        # Flatten nested list and remove duplicate entries
+        cmd_extend: List = list(set(list(itertools.chain(*cmd_extend_))))
+
+        context.log.error(f"{cmd_append = }")
+        context.log.error(f"{cmd_extend = }")
 
         del compose
 
         env: Dict = group_out_base.env
         docker_config_json: pathlib.Path = group_out_base.docker_config_json
 
-        cmd_append["exclude_from_quote"].extend(
-            ComposeCmdExclusion.CMD_APPEND_ALWAYS_EXCLUDE_FROM_QUOTATION.value
-        )
+        # cmd_append["exclude_from_quote"].extend(
+        #     ComposeCmdExclusion.CMD_APPEND_ALWAYS_EXCLUDE_FROM_QUOTATION.value
+        # )
 
         DOCKER_COMPOSE: pathlib.Path = CONFIG.docker_compose
         # Todo:
@@ -1274,12 +1381,9 @@ def factory_compose_scope__group_out(
             # Todo
             #  - [ ] `cmd_extend` seems to have no effect
             #        this can't be intentional...
-            *{
-                "cmd_extend": cmd_extend,
-                "detach": ["--detach"],
-                "nothing": [],
-            }["detach"],
-            *cmd_append["cmd"],
+            *cmd_extend,
+            # zip(cmd_append, cmd_extend),
+            *[cmd_append_ for cmd_append_ in cmd_append],
             "&&",
             *cmd_docker_compose_logs,
         ]
@@ -1301,11 +1405,11 @@ def factory_compose_scope__group_out(
             # Todo
             #  - [ ] `cmd_extend` seems to have no effect
             #        this can't be intentional...
-            *{
-                "cmd_extend": cmd_extend,
-                "detach": ["--detach"],
-                "nothing": [],
-            }["nothing"],
+            # *{
+            #     "cmd_extend": cmd_extend,
+            #     "detach": ["--detach"],
+            #     "nothing": [],
+            # }["nothing"],
             # *cmd_append["cmd"],
             # "&&",
             # *cmd_docker_compose_logs,
@@ -1489,32 +1593,44 @@ def factory_compose_scope__group_out(
                 fw.write('echo "Working Directory: $(pwd)"\n')
                 fw.write("\n")
 
+                # cmd_str = str()
+                #
+                # for cmd_append_ in [cmd_append_["cmd"] for cmd_append_ in cmd_append]:
+                #     cmd_str += " ".join(
+                #         shlex.quote(s) if not s in cmd_append_["exclude_from_quote"] else s
+                #         for s in script_dict["cmd"]
+                #     )
+
                 cmd_str = " ".join(
-                    shlex.quote(s) if not s in cmd_append["exclude_from_quote"] else s
+                    shlex.quote(s) if not s in script_dict["exclude_from_quote"] else s
                     for s in script_dict["cmd"]
                 )
 
-                fw.write(
-                    f"{cmd_str}\n".replace(
-                        # docker-compose.yml
-                        DOCKER_COMPOSE.as_posix(),
-                        get_relative_path_via_common_root(
-                            context=context,
-                            path_src=script_cmd_docker_compose_up,
-                            path_dst=DOCKER_COMPOSE,
-                            path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
-                        ).as_posix(),
-                    ).replace(
-                        # OpenStudioLandscapes_Base__docker_config_json
-                        docker_config_json.as_posix(),
-                        get_relative_path_via_common_root(
-                            context=context,
-                            path_src=script_cmd_docker_compose_up,
-                            path_dst=docker_config_json,
-                            path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
-                        ).as_posix(),
-                    )
+                context.log.error(f"{cmd_str = }")
+
+                cmd_str_replaced = cmd_str.replace(
+                    # docker-compose.yml
+                    DOCKER_COMPOSE.as_posix(),
+                    get_relative_path_via_common_root(
+                        context=context,
+                        path_src=script_cmd_docker_compose_up,
+                        path_dst=DOCKER_COMPOSE,
+                        path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
+                    ).as_posix(),
+                ).replace(
+                    # OpenStudioLandscapes_Base__docker_config_json
+                    docker_config_json.as_posix(),
+                    get_relative_path_via_common_root(
+                        context=context,
+                        path_src=script_cmd_docker_compose_up,
+                        path_dst=docker_config_json,
+                        path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
+                    ).as_posix(),
                 )
+
+                context.log.error(f"{cmd_str_replaced = }")
+
+                fw.write(f"{cmd_str_replaced}\n")
                 fw.write("popd || exit 1\n")
                 fw.write("\n")
                 fw.write("exit 0;\n")
@@ -1565,6 +1681,7 @@ def factory_compose_scope__group_out(
                 )
 
         for script_dict in script_dicts:
+            # context.log.error(f"{script_dict = }")
             _write_script(script_dict)
 
         #############

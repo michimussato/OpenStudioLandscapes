@@ -18,7 +18,7 @@ def get_feature__CONFIG(
     search_model_of_type: Type[discovery.FeatureBaseModel],
 ) -> AssetsDefinition:
 
-    compose_scope_op__features_in: OpDefinition = factory__CONFIG(
+    feature_in_op__CONFIG: OpDefinition = factory__CONFIG(
         name=f"op__CONFIG__{ASSET_HEADER['group_name']}",
         CONFIG_STR=CONFIG_STR,
         search_model_of_type=search_model_of_type,
@@ -33,12 +33,12 @@ def get_feature__CONFIG(
         },
     )
 
-    compose_scope__features_in: AssetsDefinition = AssetsDefinition.from_op(
-        compose_scope_op__features_in,
+    feature_in__CONFIG: AssetsDefinition = AssetsDefinition.from_op(
+        feature_in_op__CONFIG,
         group_name=ASSET_HEADER["group_name"],
         key_prefix=ASSET_HEADER["key_prefix"],
         keys_by_input_name={},
         keys_by_output_name={},
     )
 
-    return compose_scope__features_in
+    return feature_in__CONFIG

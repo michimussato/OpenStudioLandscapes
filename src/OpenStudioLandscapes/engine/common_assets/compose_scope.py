@@ -223,10 +223,12 @@ def get_compose_scope_group__cmd(
 
     compose_scope_op__cmd: OpDefinition = factory_compose_scope__cmd(
         name=f"op_compose_scope__cmd__{ASSET_HEADER['group_name']}",
-        ins={},
+        ins={
+            "features_in": In(Dict),
+        },
         out={
-            "cmd_append": Out(Dict),
-            "cmd_extend": Out(List),
+            "cmd_append": Out(List[Dict]),
+            "cmd_extend": Out(List[List]),
         },
     )
 
@@ -235,7 +237,9 @@ def get_compose_scope_group__cmd(
         can_subset=False,
         group_name=ASSET_HEADER["group_name"],
         key_prefix=ASSET_HEADER["key_prefix"],
-        keys_by_input_name={},
+        keys_by_input_name={
+            "features_in": AssetKey([*ASSET_HEADER["key_prefix"], "features_in"]),
+        },
         keys_by_output_name={},
     )
 
@@ -254,8 +258,8 @@ def get_compose_scope_group__group_out(
             "group_out_base": In(OpenStudioLandscapesBaseOut),
             "features_in": In(Dict),
             "CONFIG": In(ComposeScopeBaseModel),
-            "cmd_append": In(Dict[str, List]),
-            "cmd_extend": In(List),
+            "cmd_append": In(List[Dict[str, List]]),
+            "cmd_extend": In(List[List]),
             "compose": In(Dict),
         },
         out={
