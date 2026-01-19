@@ -23,6 +23,7 @@ import os
 import pathlib
 import shlex
 import shutil
+import itertools
 import textwrap
 from collections import ChainMap
 from functools import reduce
@@ -1149,6 +1150,7 @@ def factory_compose_scope__cmd(
     @op(
         name=name,
         ins=ins,
+        description="Creates flattend versions of all `cmd_append` and `cmd_extend` assets",
         **kwargs,
     )
     def _op_compose_scope__cmd(
@@ -1159,8 +1161,9 @@ def factory_compose_scope__cmd(
 
         features_in = kwargs.pop("features_in")
 
-        cmd_extend: List[List] = []
-        cmd_append: List[Dict] = []
+        cmd_extend_: List[List] = []
+        cmd_append_cmd: List[Dict] = []
+        cmd_append_exclude: List[Dict] = []
 
         context.log.error(type(features_in))
 
@@ -1168,20 +1171,22 @@ def factory_compose_scope__cmd(
         feature_out: OpenStudioLandscapesFeatureOut
 
         for feature, feature_out in features_in.items():
-            context.log.debug(feature)
-            cmd_extend.append(feature_out.cmd_extend)
-            cmd_append.append(feature_out.cmd_append)
+            context.log.debug(f"{feature = }")
+            context.log.debug(f"{feature_out = }")
+            cmd_extend_.append(feature_out.cmd_extend)
+            cmd_append_cmd.extend(feature_out.cmd_append["cmd"])
+            cmd_append_exclude.extend(feature_out.cmd_append["exclude_from_quote"])
 
-        # cmd = zip(features_in["cmd_extend"], features_in["cmd_append"])
-
-        # cmd_extend: List[List] = []
-        # cmd_append: List[Dict] = []
+        # Flatten nested list and remove duplicate entries
+        cmd_extend: List = list(set(list(itertools.chain(*cmd_extend_))))
+        # Flatten nested dict
+        cmd_append: Dict = dict()
+        cmd_append["cmd"] = cmd_append_cmd
+        cmd_append["exclude_from_quote"] = cmd_append_exclude
 
         ##############
         # cmd_append #
         ##############
-
-        # ret_cmd_append = {"cmd": [], "exclude_from_quote": ["$(which docker)"]}
 
         output_name = "cmd_append"
 
@@ -1204,8 +1209,6 @@ def factory_compose_scope__cmd(
         ##############
 
         output_name = "cmd_extend"
-
-        # ret_cmd_extend = []
 
         yield Output(
             output_name=output_name,
@@ -1304,27 +1307,19 @@ def factory_compose_scope__group_out(
 
         group_out_base: OpenStudioLandscapesBaseOut = kwargs.pop("group_out_base")
         compose = kwargs.pop("compose")
-        cmd_append: List[Dict] = kwargs.pop("cmd_append")
-        cmd_extend_: List[List] = kwargs.pop("cmd_extend")
+        cmd_append: Dict = kwargs.pop("cmd_append")
+        cmd_extend: List = kwargs.pop("cmd_extend")
         CONFIG: DockerConfigModel = kwargs.pop("CONFIG")
         features_in = kwargs.pop("features_in")
-
-        import itertools
-
-        # Flatten nested list and remove duplicate entries
-        cmd_extend: List = list(set(list(itertools.chain(*cmd_extend_))))
-
-        context.log.error(f"{cmd_append = }")
-        context.log.error(f"{cmd_extend = }")
 
         del compose
 
         env: Dict = group_out_base.env
         docker_config_json: pathlib.Path = group_out_base.docker_config_json
 
-        # cmd_append["exclude_from_quote"].extend(
-        #     ComposeCmdExclusion.CMD_APPEND_ALWAYS_EXCLUDE_FROM_QUOTATION.value
-        # )
+        cmd_append["exclude_from_quote"].extend(
+            ComposeCmdExclusion.CMD_APPEND_ALWAYS_EXCLUDE_FROM_QUOTATION.value
+        )
 
         DOCKER_COMPOSE: pathlib.Path = CONFIG.docker_compose
         # Todo:
@@ -1381,9 +1376,12 @@ def factory_compose_scope__group_out(
             # Todo
             #  - [ ] `cmd_extend` seems to have no effect
             #        this can't be intentional...
-            *cmd_extend,
-            # zip(cmd_append, cmd_extend),
-            *[cmd_append_ for cmd_append_ in cmd_append],
+            *{
+                "cmd_extend": cmd_extend,
+                "detach": ["--detach"],
+                "nothing": [],
+            }["cmd_extend"],
+            *cmd_append["cmd"],
             "&&",
             *cmd_docker_compose_logs,
         ]
@@ -1405,11 +1403,11 @@ def factory_compose_scope__group_out(
             # Todo
             #  - [ ] `cmd_extend` seems to have no effect
             #        this can't be intentional...
-            # *{
-            #     "cmd_extend": cmd_extend,
-            #     "detach": ["--detach"],
-            #     "nothing": [],
-            # }["nothing"],
+            *{
+                "cmd_extend": cmd_extend,
+                "detach": ["--detach"],
+                "nothing": [],
+            }["nothing"],
             # *cmd_append["cmd"],
             # "&&",
             # *cmd_docker_compose_logs,
@@ -1592,14 +1590,6 @@ def factory_compose_scope__group_out(
                 fw.write("\n")
                 fw.write('echo "Working Directory: $(pwd)"\n')
                 fw.write("\n")
-
-                # cmd_str = str()
-                #
-                # for cmd_append_ in [cmd_append_["cmd"] for cmd_append_ in cmd_append]:
-                #     cmd_str += " ".join(
-                #         shlex.quote(s) if not s in cmd_append_["exclude_from_quote"] else s
-                #         for s in script_dict["cmd"]
-                #     )
 
                 cmd_str = " ".join(
                     shlex.quote(s) if not s in script_dict["exclude_from_quote"] else s

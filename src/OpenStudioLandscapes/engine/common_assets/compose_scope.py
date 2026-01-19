@@ -227,8 +227,8 @@ def get_compose_scope_group__cmd(
             "features_in": In(Dict),
         },
         out={
-            "cmd_append": Out(List[Dict]),
-            "cmd_extend": Out(List[List]),
+            "cmd_append": Out(Dict),
+            "cmd_extend": Out(List),
         },
     )
 
@@ -258,8 +258,8 @@ def get_compose_scope_group__group_out(
             "group_out_base": In(OpenStudioLandscapesBaseOut),
             "features_in": In(Dict),
             "CONFIG": In(ComposeScopeBaseModel),
-            "cmd_append": In(List[Dict[str, List]]),
-            "cmd_extend": In(List[List]),
+            "cmd_append": In(Dict[str, List]),
+            "cmd_extend": In(List),
             "compose": In(Dict),
         },
         out={
