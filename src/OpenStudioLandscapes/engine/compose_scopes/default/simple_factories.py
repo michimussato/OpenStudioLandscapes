@@ -35,7 +35,7 @@ def simple_factory_newt(
             """
             This wrapper is disabled by default.
             To enable it, launch OpenStudioLandscapes with
-            - `OPENSTUDIOLANDSCAPES__ATTACH_PANGOLIN_SITE_TO_COMPOSE_SCOPE=1`
+            - `OPENSTUDIOLANDSCAPES__ATTACH_PANGOLIN_SITE_TO_COMPOSE_SCOPE=1` or `--attach-pangolin-site-to-compose-scope`
             
             ---
             
@@ -176,7 +176,7 @@ def simple_factory_alloy(
             """
             This wrapper is disabled by default.
             To enable it, launch OpenStudioLandscapes with
-            - `OPENSTUDIOLANDSCAPES__ATTACH_GRAFANA_ALLOY_TO_COMPOSE_SCOPE=1`
+            - `OPENSTUDIOLANDSCAPES__ATTACH_GRAFANA_ALLOY_TO_COMPOSE_SCOPE=1` or `--attach-grafana-alloy-to-compose-scope`
             
             ---
             
