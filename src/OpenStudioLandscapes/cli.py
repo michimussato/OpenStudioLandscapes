@@ -410,13 +410,15 @@ def main(args):
             "features": {},
         }
 
-        LOGGER.info("Updating OpenStudioLandscapes...")
+        LOGGER.info("Updating OpenStudioLandscapes Engine and Features...")
         repo = git.Repo(".")
-        repos["engine"] = repo
         LOGGER.debug(f"{repo = }")
+        LOGGER.debug(f"{repo.working_dir = }")
+        LOGGER.info(f"Checking for {pathlib.Path(repo.working_dir).name} (Engine) updates...")
+        repos["engine"] = repo
         git_cmd = repo.git
         if repo.is_dirty():
-            LOGGER.error("Can't update: repo has uncommitted changes.")
+            LOGGER.critical("Can't update: repo has uncommitted changes.")
             status = git_cmd.status()
             LOGGER.info(status)
         else:
@@ -428,9 +430,10 @@ def main(args):
                 continue
             LOGGER.debug(f"{d = }")
             repo_feature = git.Repo(d)
-            LOGGER.info(f"{repo_feature.working_dir = }")
+            LOGGER.debug(f"{repo_feature = }")
+            LOGGER.debug(f"{repo_feature.working_dir = }")
+            LOGGER.info(f"Checking {pathlib.Path(repo_feature.working_dir).name} updates...")
             repos["features"][pathlib.Path(repo_feature.working_dir).name] = repo_feature
-            LOGGER.info(f"{repo_feature = }")
             git_cmd_feature = repo_feature.git
             if repo_feature.is_dirty():
                 LOGGER.error("Can't update: repo has uncommitted changes.")
