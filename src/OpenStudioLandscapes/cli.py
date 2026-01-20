@@ -1,7 +1,6 @@
 import argparse
 import os
 import pathlib
-from typing import Union
 
 import git
 import logging
@@ -72,6 +71,8 @@ def run_openstudiolandscapes_postgres(args):
 
     # LOGGER.info(result.stderr)
     # LOGGER.info(result.returncode)
+
+    # return result.returncode
 
 
 def run_openstudiolandscapes_mysql(args):
@@ -419,7 +420,8 @@ def main(args):
             status = git_cmd.status()
             LOGGER.info(status)
         else:
-            git_cmd.pull()
+            result = git_cmd.pull()
+            LOGGER.info(f"Changes: {result}")
 
         for d in pathlib.Path(repo.working_tree_dir).joinpath(".features").iterdir():
             if d.is_file():
@@ -435,7 +437,8 @@ def main(args):
                 status_feature = git_cmd_feature.status()
                 LOGGER.info(status_feature)
             else:
-                git_cmd_feature.pull()
+                result_feature = git_cmd_feature.pull()
+                LOGGER.info(f"Changes: {result_feature}")
         # repo.git.pull()
         return
 
@@ -473,6 +476,9 @@ def main(args):
         return
 
     run_openstudiolandscapes(args)
+    # ret = run_openstudiolandscapes(args)
+    #
+    # sys.exit(ret)
 
 
 # https://stackoverflow.com/a/1112350/2207196
