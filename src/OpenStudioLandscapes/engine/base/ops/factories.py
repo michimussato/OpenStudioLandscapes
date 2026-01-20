@@ -1385,6 +1385,29 @@ def factory_compose_scope__group_out(
             "&&",
             *cmd_docker_compose_logs,
         ]
+        # Results in something like:
+        # $(which docker) \
+        #     --config ../../../2026-01-20_00-42-28__clumsy-peaceful-volcano-sprite/OpenStudioLandscapes/OpenStudioLandscapes_Base__docker_config_json compose \
+        #     --progress plain \
+        #     --file ../../../2026-01-20_00-42-28__clumsy-peaceful-volcano-sprite/ComposeScope_worker/docker_compose/docker-compose.yml \
+        #     --project-name 2026-01-20_00-42-28__clumsy-peaceful-volcano-sprite-worker \
+        #     up \
+        #     --remove-orphans \
+        #     --detach \
+        #     && /usr/bin/sudo /usr/bin/nsenter \
+        #     --target $($(which docker) inspect -f '{{ .State.Pid }}' flamenco-worker-001.2026-01-20_00-42-28__clumsy-peaceful-volcano-sprite) \
+        #     --uts hostname $(hostname)-flamenco-worker-001 \
+        #     && /usr/bin/sudo /usr/bin/nsenter \
+        #     --target $($(which docker) inspect -f '{{ .State.Pid }}' opencue-rqd-worker-001.2026-01-20_00-42-28__clumsy-peaceful-volcano-sprite) \
+        #     --uts hostname $(hostname)-opencue-rqd-worker-001 \
+        #     && $(which docker) \
+        #     --config ../../../2026-01-20_00-42-28__clumsy-peaceful-volcano-sprite/OpenStudioLandscapes/OpenStudioLandscapes_Base__docker_config_json \
+        #     compose \
+        #     --progress plain \
+        #     --file ../../../2026-01-20_00-42-28__clumsy-peaceful-volcano-sprite/ComposeScope_worker/docker_compose/docker-compose.yml \
+        #     --project-name 2026-01-20_00-42-28__clumsy-peaceful-volcano-sprite-worker \
+        #     logs \
+        #     --follow
         script_cmd_docker_compose_up = DOCKER_COMPOSE.parent / "docker_compose_up.sh"
 
         cmd_docker_compose_restart = [
@@ -1592,7 +1615,7 @@ def factory_compose_scope__group_out(
                 fw.write("\n")
 
                 cmd_str = " ".join(
-                    shlex.quote(s) if not s in script_dict["exclude_from_quote"] else s
+                    shlex.quote(s) if not s in cmd_append["exclude_from_quote"] else s
                     for s in script_dict["cmd"]
                 )
 
