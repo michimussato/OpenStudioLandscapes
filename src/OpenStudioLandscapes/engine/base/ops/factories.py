@@ -44,7 +44,6 @@ from docker_compose_graph.utils import *
 
 from OpenStudioLandscapes.engine.config.models import (
     ComposeScopeBaseModel,
-    DockerConfigModel,
     FeatureBaseModel,
 )
 from OpenStudioLandscapes.engine.constants import *
@@ -1309,12 +1308,12 @@ def factory_compose_scope__group_out(
         compose = kwargs.pop("compose")
         cmd_append: Dict = kwargs.pop("cmd_append")
         cmd_extend: List = kwargs.pop("cmd_extend")
-        CONFIG: DockerConfigModel = kwargs.pop("CONFIG")
+        CONFIG: ComposeScopeBaseModel = kwargs.pop("CONFIG")
         features_in = kwargs.pop("features_in")
 
         del compose
 
-        env: Dict = group_out_base.env
+        env = CONFIG.env
         docker_config_json: pathlib.Path = group_out_base.docker_config_json
 
         cmd_append["exclude_from_quote"].extend(
@@ -1475,6 +1474,50 @@ def factory_compose_scope__group_out(
         ]
         script_cmd_docker_compose_down = (
             DOCKER_COMPOSE.parent / "docker_compose_down.sh"
+        )
+
+        systemd_unit = textwrap.dedent(
+            f"""
+            [Unit]
+            # More info on systemd specifiers:
+            # - https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html?__goaway_challenge=meta-refresh&__goaway_id=af831620b51d37fbc05006860cc19eca&__goaway_referer=https%3A%2F%2Fduckduckgo.com%2F#Specifiers
+            Description=OpenStudioLandscapes Worker Systemd Unit (%n) - {env['LANDSCAPE']}
+            After=docker.service
+            Wants=docker.service
+            ReloadPropagatedFrom=docker.service
+            
+            [Service]
+            Type=simple
+            Restart=always
+            #####################################################
+            # CHANGE ME:                                        #
+            # set SUDO_PASS= to the correct value               #
+            # Security concerns:                                #
+            # - this is a WIP approach and not final            #
+            # - will probably be changed to                     #
+            #   EnvironmentFile with root only read access      #
+            Environment="SUDO_PASS="
+            #####################################################
+            RestartSec=5
+            # WorkingDirectory=/data/share/nfs/.openstudiolandscapes/.landscapes
+            # for this service, the scripts need
+            ExecStart=/usr/bin/bash -lc "echo \${{SUDO_PASS}} | {script_cmd_docker_compose_up.as_posix()}"
+            ExecStop=/usr/bin/bash -lc "echo \${{SUDO_PASS}} | {script_cmd_docker_compose_down.as_posix()}"
+            
+            [Install]
+            WantedBy=multi-user.target
+            """
+        )
+
+        systemd_unit_shell = textwrap.dedent(
+            f"""
+            # Install systemd unit with:
+            sudo tee /etc/systemd/user/openstudiolandscapes-{compose_scope}@.service << EOF
+            {textwrap.indent(systemd_unit, prefix='            ')}
+            EOF
+            systemctl --user daemon-reload
+            systemd-analyze --user verify openstudiolandscapes-worker@${{USER}}.service
+            """
         )
 
         # Todo
@@ -1783,6 +1826,24 @@ def factory_compose_scope__group_out(
                 "script_cmd_docker_compose_logs": MetadataValue.path(
                     script_cmd_docker_compose_logs
                 ),
+            },
+        )
+
+        ################
+        # systemd_unit #
+        ################
+
+        output_name = "systemd_unit"
+
+        yield Output(
+            output_name=output_name,
+            value=systemd_unit,
+        )
+
+        yield AssetMaterialization(
+            asset_key=context.asset_key_for_output(output_name),
+            metadata={
+                "systemd_unit": MetadataValue.md(f"```ini\n{systemd_unit_shell}```"),
             },
         )
 

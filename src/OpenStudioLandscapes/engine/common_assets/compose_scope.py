@@ -266,6 +266,7 @@ def get_compose_scope_group__group_out(
             "group_out": Out(pathlib.Path),
             "compose_project_name": Out(str),
             "docker_compose_commands": Out(Dict[str, List]),
+            "systemd_unit": Out(str),
         },
     )
 
