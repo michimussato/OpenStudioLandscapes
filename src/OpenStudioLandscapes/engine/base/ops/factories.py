@@ -1516,7 +1516,11 @@ def factory_compose_scope__group_out(
             {textwrap.indent(systemd_unit, prefix='            ')}
             EOF
             systemctl --user daemon-reload
-            systemd-analyze --user verify openstudiolandscapes-worker@${{USER}}.service
+            systemd-analyze --user verify openstudiolandscapes-{compose_scope}@${{USER}}.service
+            # Enable Unit with:
+            # systemctl --user enable --now openstudiolandscapes-{compose_scope}@${{USER}}.service
+            # Check Journal with:
+            # journalctl --user -fu openstudiolandscapes-{compose_scope}@${{USER}}.service
             """
         )
 
