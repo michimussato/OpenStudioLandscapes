@@ -42,6 +42,9 @@ def run_openstudiolandscapes_postgres(args):
     if args.landscapes_root is not None:
         os.environ["OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT"] = args.landscapes_root
 
+    if args.landscapes_id is not None:
+        os.environ["OPENSTUDIOLANDSCAPES__LANDSCAPE_ID"] = args.landscapes_id
+
     # Simply use `nox` as the entry point:
     # try:
     result: subprocess.CompletedProcess = subprocess.run(
@@ -187,6 +190,20 @@ def parse_args(args):
         required=False,
         help="Set the Landscape root path. A `.landscapes` "
              "subdirectory will be created and used.",
+    )
+
+    parser.add_argument(
+        "--landscapes-id",
+        dest="landscapes_id",
+        type=str,
+        metavar="OPENSTUDIOLANDSCAPES__LANDSCAPE_ID",
+        default=os.environ.get(
+            "OPENSTUDIOLANDSCAPES__LANDSCAPE_ID",
+            None,
+        ),
+        # action="store_true",
+        required=False,
+        help="Lock the landscape_id to this value.",
     )
 
     subparsers = parser.add_subparsers(

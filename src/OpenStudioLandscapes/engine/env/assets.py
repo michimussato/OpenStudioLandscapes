@@ -1,5 +1,6 @@
 import getpass
 import json
+import os
 import pathlib
 import socket
 import tempfile
@@ -64,26 +65,30 @@ def landscape_id(
     CONFIG: ConfigEngine,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[MutableMapping[str, str]] | AssetMaterialization, None, None]:
 
-    now = datetime.now()
+    landscape_id = os.environ.get("OPENSTUDIOLANDSCAPES__LANDSCAPE_ID", None)
 
-    now_prefix = datetime.strftime(now, '%Y-%m-%d_%H-%M-%S')
+    if landscape_id is None:
 
-    if CONFIG.openstudiolandscapes__human_readable_ids:
-        id_ = generate_hrid(
-            words=4,
-            separator="-",
-            numbers=0,
+        now = datetime.now()
+
+        now_prefix = datetime.strftime(now, '%Y-%m-%d_%H-%M-%S')
+
+        if CONFIG.openstudiolandscapes__human_readable_ids:
+            id_ = generate_hrid(
+                words=4,
+                separator="-",
+                numbers=0,
+            )
+
+        else:
+            id_ = uuid.uuid4().hex
+
+        landscape_id = "__".join(
+            [
+                now_prefix,
+                id_,
+            ]
         )
-
-    else:
-        id_ = uuid.uuid4().hex
-
-    landscape_id = "__".join(
-        [
-            now_prefix,
-            id_,
-        ]
-    )
 
     landscape_stamp = {
         "LANDSCAPE": landscape_id,
