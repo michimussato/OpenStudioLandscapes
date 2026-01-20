@@ -1498,9 +1498,9 @@ def factory_compose_scope__group_out(
             #   EnvironmentFile with root only read access                 #
             #   like ~/.config/OpenStudioLandscapes/ComposeScope_default.env
             Environment="SUDO_PASS="
+            Environment="OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_{compose_scope.upper()}__PANGOLIN_ENDPOINT="
             Environment="OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_{compose_scope.upper()}__NEWT_ID="
             Environment="OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_{compose_scope.upper()}__NEWT_SECRET="
-            Environment="OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_{compose_scope.upper()}__PANGOLIN_ENDPOINT="
             ################################################################
             RestartSec=5
             # WorkingDirectory=/data/share/nfs/.openstudiolandscapes/.landscapes
