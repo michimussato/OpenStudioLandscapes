@@ -1489,15 +1489,19 @@ def factory_compose_scope__group_out(
             [Service]
             Type=simple
             Restart=always
-            #####################################################
-            # CHANGE ME:                                        #
-            # set SUDO_PASS= to the correct value               #
-            # Security concerns:                                #
-            # - this is a WIP approach and not final            #
-            # - will probably be changed to                     #
-            #   EnvironmentFile with root only read access      #
+            ################################################################
+            # CHANGE ME:                                                   #
+            # set SUDO_PASS= to the correct value                          #
+            # Security concerns:                                           #
+            # - this is a WIP approach and not final                       #
+            # - will probably be changed to                                #
+            #   EnvironmentFile with root only read access                 #
+            #   like ~/.config/OpenStudioLandscapes/ComposeScope_default.env
             Environment="SUDO_PASS="
-            #####################################################
+            Environment="OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_{compose_scope.upper()}__NEWT_ID="
+            Environment="OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_{compose_scope.upper()}__NEWT_SECRET="
+            Environment="OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_{compose_scope.upper()}__PANGOLIN_ENDPOINT="
+            ################################################################
             RestartSec=5
             # WorkingDirectory=/data/share/nfs/.openstudiolandscapes/.landscapes
             # for this service, the scripts need
