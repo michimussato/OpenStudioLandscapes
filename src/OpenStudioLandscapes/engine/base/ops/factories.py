@@ -1164,8 +1164,6 @@ def factory_compose_scope__cmd(
         cmd_append_cmd: List[Dict] = []
         cmd_append_exclude: List[Dict] = []
 
-        context.log.error(type(features_in))
-
         feature: str
         feature_out: OpenStudioLandscapesFeatureOut
 
@@ -1498,6 +1496,7 @@ def factory_compose_scope__group_out(
             #   EnvironmentFile with root only read access                   #
             #   like ~/.config/OpenStudioLandscapes/ComposeScope_default.env #
             Environment="SUDO_PASS="
+            # Environment="LANDSCAPE_ID=\${env['LANDSCAPE']}"
             Environment="OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_{compose_scope.upper()}__PANGOLIN_ENDPOINT="
             Environment="OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_{compose_scope.upper()}__NEWT_ID="
             Environment="OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_{compose_scope.upper()}__NEWT_SECRET="
@@ -1509,12 +1508,14 @@ def factory_compose_scope__group_out(
             ExecStop=/usr/bin/bash -lc "echo \${{SUDO_PASS}} | {script_cmd_docker_compose_down.as_posix()}"
             
             [Install]
-            WantedBy=multi-user.target
+            WantedBy=default.target
             """
         )
 
         systemd_unit_shell = textwrap.dedent(
             f"""
+            # Disable currently running Unit with:
+            systemctl --user disable --now openstudiolandscapes-{compose_scope}@${{USER}}.service
             # Install systemd unit with:
             sudo tee /etc/systemd/user/openstudiolandscapes-{compose_scope}@.service << EOF
             {textwrap.indent(systemd_unit, prefix='            ')}
@@ -1681,7 +1682,7 @@ def factory_compose_scope__group_out(
                     for s in script_dict["cmd"]
                 )
 
-                context.log.error(f"{cmd_str = }")
+                context.log.debug(f"{cmd_str = }")
 
                 cmd_str_replaced = cmd_str.replace(
                     # docker-compose.yml
@@ -1703,7 +1704,7 @@ def factory_compose_scope__group_out(
                     ).as_posix(),
                 )
 
-                context.log.error(f"{cmd_str_replaced = }")
+                context.log.debut(f"{cmd_str_replaced = }")
 
                 fw.write(f"{cmd_str_replaced}\n")
                 fw.write("popd || exit 1\n")
@@ -1756,7 +1757,6 @@ def factory_compose_scope__group_out(
                 )
 
         for script_dict in script_dicts:
-            # context.log.error(f"{script_dict = }")
             _write_script(script_dict)
 
         #############
