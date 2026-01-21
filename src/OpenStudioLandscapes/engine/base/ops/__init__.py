@@ -481,25 +481,14 @@ def op_group_out(
             context.log.debug(f"Writing script: {script_dict['script'].as_posix()}")
 
             fw.write(docker_script["script"])
+            fw.write("# Export environment variables required by *some* docker-compose files\n")
+            fw.write("# as well as /usr/bin/nsenter --uts hostname\n")
+            fw.write("HOSTNAME=$($(which hostname) --fqdn)\n")
+            fw.write("export HOSTNAME\n")
             fw.write("\n")
             fw.write('pushd "${SCRIPT_DIR}" || exit 1\n')
             fw.write("\n")
-            fw.write("# Source Overrides defined in {LANDSCAPE}/.overrides\n")
             fw.write('echo "Working Directory: $(pwd)"\n')
-            overrides_file = get_relative_path_via_common_root(
-                context=context,
-                path_src=script_cmd_docker_compose_up,
-                path_dst=pathlib.Path(
-                    env["DOT_LANDSCAPES"],
-                    env.get("LANDSCAPE", "default"),
-                    ".overrides",
-                ),
-                path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
-            )
-            fw.write(f'echo "Sourcing {overrides_file.as_posix()} file..."\n')
-            fw.write(
-                f'source {overrides_file.as_posix()} && echo "Sourced successfully." || echo "No .overrides file found."\n'
-            )
             fw.write("\n")
 
             cmd_str = " ".join(

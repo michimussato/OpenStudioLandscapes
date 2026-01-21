@@ -1489,14 +1489,14 @@ def factory_compose_scope__group_out(
             [Service]
             Type=simple
             Restart=always
-            ################################################################
-            # CHANGE ME:                                                   #
-            # set SUDO_PASS= to the correct value                          #
-            # Security concerns:                                           #
-            # - this is a WIP approach and not final                       #
-            # - will probably be changed to                                #
-            #   EnvironmentFile with root only read access                 #
-            #   like ~/.config/OpenStudioLandscapes/ComposeScope_default.env
+            ##################################################################
+            # CHANGE ME:                                                     #
+            # set SUDO_PASS= to the correct value                            #
+            # Security concerns:                                             #
+            # - this is a WIP approach and not final                         #
+            # - will probably be changed to                                  #
+            #   EnvironmentFile with root only read access                   #
+            #   like ~/.config/OpenStudioLandscapes/ComposeScope_default.env #
             Environment="SUDO_PASS="
             Environment="OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_{compose_scope.upper()}__PANGOLIN_ENDPOINT="
             Environment="OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_{compose_scope.upper()}__NEWT_ID="
@@ -1553,6 +1553,17 @@ def factory_compose_scope__group_out(
             "script"
         ] += 'SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )\n'
         docker_script["script"] += "\n"
+        docker_script[
+            "script"
+        ] += ("# Export environment variables required by *some* docker-compose files\n"
+              "# as well as /usr/bin/nsenter --uts hostname\n")
+        docker_script[
+            "script"
+        ] += "HOSTNAME=$($(which hostname) --fqdn)\n"
+        docker_script[
+            "script"
+        ] += "export HOSTNAME\n"
+        # docker_script["script"] += "\n"
 
         script_dicts = [
             # A convenience script is a script at the {DOT_LANDSCAPES}/{LANDSCAPE_ID}
