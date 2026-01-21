@@ -1704,7 +1704,7 @@ def factory_compose_scope__group_out(
                     ).as_posix(),
                 )
 
-                context.log.debut(f"{cmd_str_replaced = }")
+                context.log.debug(f"{cmd_str_replaced = }")
 
                 fw.write(f"{cmd_str_replaced}\n")
                 fw.write("popd || exit 1\n")
