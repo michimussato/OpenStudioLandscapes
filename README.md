@@ -243,6 +243,7 @@ usage: openstudiolandscapes [-h] [-v] [-vv] [--attach-grafana-alloy-to-compose-s
                             [--config-store OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT]
                             [--landscapes-root OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT]
                             [--landscapes-id OPENSTUDIOLANDSCAPES__LANDSCAPE_ID]
+                            [--skip-update-check | --auto-update]
                             {update,install-feature} ...
 
 positional arguments:
@@ -269,6 +270,8 @@ options:
                         used.
   --landscapes-id OPENSTUDIOLANDSCAPES__LANDSCAPE_ID
                         Lock the landscape_id to this value.
+  --skip-update-check   Skip checking for codebase updates.
+  --auto-update         Automatically pull codebase updates.
 ```
 
 ### Launch OpenStudioLandscapes

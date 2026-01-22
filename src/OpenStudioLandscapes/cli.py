@@ -1,14 +1,14 @@
 import argparse
+import logging
 import os
 import pathlib
-
-import git
-import logging
 import shutil
 import signal
 import subprocess
 import sys
 import textwrap
+
+import git
 
 __author__ = "Michael Mussato"
 __copyright__ = "Michael Mussato"
@@ -122,7 +122,9 @@ def parse_args(args):
         "--attach-grafana-alloy-to-compose-scope",
         dest="attach_grafana_alloy_to_compose_scope",
         metavar="OPENSTUDIOLANDSCAPES__ATTACH_GRAFANA_ALLOY_TO_COMPOSE_SCOPE",
-        default=os.environ.get("OPENSTUDIOLANDSCAPES__ATTACH_GRAFANA_ALLOY_TO_COMPOSE_SCOPE", "0"),
+        default=os.environ.get(
+            "OPENSTUDIOLANDSCAPES__ATTACH_GRAFANA_ALLOY_TO_COMPOSE_SCOPE", "0"
+        ),
         action="store_const",
         const="1",
         help="Attach Alloy container to Compose Scope.",
@@ -132,7 +134,9 @@ def parse_args(args):
         "--attach-pangolin-site-to-compose-scope",
         dest="attach_pangolin_site_to_compose_scope",
         metavar="OPENSTUDIOLANDSCAPES__ATTACH_PANGOLIN_SITE_TO_COMPOSE_SCOPE",
-        default=os.environ.get("OPENSTUDIOLANDSCAPES__ATTACH_PANGOLIN_SITE_TO_COMPOSE_SCOPE", "0"),
+        default=os.environ.get(
+            "OPENSTUDIOLANDSCAPES__ATTACH_PANGOLIN_SITE_TO_COMPOSE_SCOPE", "0"
+        ),
         action="store_const",
         const="1",
         required=False,
@@ -148,9 +152,9 @@ def parse_args(args):
         const="1",
         required=False,
         help="If specified, the discovery service will *not* wait for "
-             "human interaction for incomplete "
-             "`conifg.yml` files to be fixed. You will have to "
-             "monitor the logs (`journald`) in this case.",
+        "human interaction for incomplete "
+        "`conifg.yml` files to be fixed. You will have to "
+        "monitor the logs (`journald`) in this case.",
     )
 
     parser.add_argument(
@@ -190,7 +194,7 @@ def parse_args(args):
         # action="store_true",
         required=False,
         help="Set the Landscape root path. A `.landscapes` "
-             "subdirectory will be created and used.",
+        "subdirectory will be created and used.",
     )
 
     parser.add_argument(
@@ -205,6 +209,30 @@ def parse_args(args):
         # action="store_true",
         required=False,
         help="Lock the landscape_id to this value.",
+    )
+
+    update_group = parser.add_mutually_exclusive_group(required=False)
+
+    update_group.add_argument(
+        "--skip-update-check",
+        dest="skip_update_check",
+        # type=str,
+        # metavar="OPENSTUDIOLANDSCAPES__LANDSCAPE_ID",
+        default=False,
+        action="store_true",
+        required=False,
+        help="Skip checking for codebase updates.",
+    )
+
+    update_group.add_argument(
+        "--auto-update",
+        dest="auto_update",
+        # type=str,
+        # metavar="OPENSTUDIOLANDSCAPES__LANDSCAPE_ID",
+        default=False,
+        action="store_true",
+        required=False,
+        help="Automatically pull codebase updates.",
     )
 
     subparsers = parser.add_subparsers(
@@ -323,77 +351,147 @@ def setup_logging(loglevel):
 def checks(args):
     LOGGER.info("Checking OpenStudioLandscapes dependencies...")
 
-    sys_deps = {
-        "Docker": {
-            "executable": "docker",
-            "version": "version",
-            # "min": (3, 11, 11),
-            # "max": ()
-        },
-        "Graphviz": {
-            "executable": "dot",
-            "version": "-V",
-        },
-        "Git": {
-            "executable": "git",
-            "version": "--version",
-        },
-        "Python": {
-            "executable": "python3.11",
-            "version": "-V",
-        },
-        "Nox": {
-            "executable": "nox",
-            "version": "--version",
-        },
-        # "Foo": {
-        #     "executable": "foo",
-        #     "version": "-V",
-        # },
-    }
+    def check_sys_deps():
+        sys_deps = {
+            "Docker": {
+                "executable": "docker",
+                "version": "version",
+                # "min": (3, 11, 11),
+                # "max": ()
+            },
+            "Graphviz": {
+                "executable": "dot",
+                "version": "-V",
+            },
+            "Git": {
+                "executable": "git",
+                "version": "--version",
+            },
+            "Python": {
+                "executable": "python3.11",
+                "version": "-V",
+            },
+            "Nox": {
+                "executable": "nox",
+                "version": "--version",
+            },
+            # "Foo": {
+            #     "executable": "foo",
+            #     "version": "-V",
+            # },
+        }
 
-    LOGGER.info(
-        "Dependencies: %s."
-        % ", ".join(f"{k} ({v['executable']})" for k, v in sys_deps.items())
-    )
-
-    for dep, params in sys_deps.items():
-
-        LOGGER.info("Checking for system dependency: '%s'..." % dep)
-        try:
-            assert shutil.which(params["executable"]) is not None, (
-                "Dependency '%s' is not installed" % f"{dep} ({params['executable']})"
-            )
-        except AssertionError as e:
-            msg = textwrap.dedent(
-                """
-                #########################################################
-                Dependencies not fulfilled.
-                Maybe you forgot to run `make sys_deps_install`?
-                #########################################################
-                IMPORTANT: Reboot system after installing dependencies!!!
-                #########################################################
-                """
-            )
-            LOGGER.error(msg)
-            raise AssertionError(msg) from e
-
-        LOGGER.info("Dependency '%s' is installed." % dep)
-
-        LOGGER.info("Checking version...")
-        result = subprocess.run(
-            [
-                shutil.which(params["executable"]),
-                params["version"],
-            ],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            shell=False,
+        LOGGER.info(
+            "Dependencies: %s."
+            % ", ".join(f"{k} ({v['executable']})" for k, v in sys_deps.items())
         )
 
-        LOGGER.info("%s version is: `%s`" % (dep, result.stdout.decode().strip()))
+        for dep, params in sys_deps.items():
 
-    LOGGER.info("Done checking dependencies.")
+            LOGGER.info("Checking for system dependency: '%s'..." % dep)
+            try:
+                assert shutil.which(params["executable"]) is not None, (
+                    "Dependency '%s' is not installed"
+                    % f"{dep} ({params['executable']})"
+                )
+            except AssertionError as e:
+                msg = textwrap.dedent("""
+                    #########################################################
+                    Dependencies not fulfilled.
+                    Maybe you forgot to run `make sys_deps_install`?
+                    #########################################################
+                    IMPORTANT: Reboot system after installing dependencies!!!
+                    #########################################################
+                    """)
+                LOGGER.error(msg)
+                raise AssertionError(msg) from e
+
+            LOGGER.info("Dependency '%s' is installed." % dep)
+
+            LOGGER.info("Checking version...")
+            result = subprocess.run(
+                [
+                    shutil.which(params["executable"]),
+                    params["version"],
+                ],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                shell=False,
+            )
+
+            LOGGER.info("%s version is: `%s`" % (dep, result.stdout.decode().strip()))
+
+        LOGGER.info("Done checking dependencies.")
+
+    check_sys_deps()
+
+    def check_updates_available():
+        # https://knowledge.buka.sh/how-to-check-for-remote-git-changes-without-pulling/
+
+        # if any(sc == args.sub_command for sc in ["update"]):
+
+        repos = {
+            "engine": None,
+            "features": {},
+        }
+
+        LOGGER.info("Checking for OpenStudioLandscapes Engine and Features updates...")
+        repo = git.Repo(".")
+        LOGGER.debug(f"{repo = }")
+        LOGGER.debug(f"{repo.working_dir = }")
+        LOGGER.info(
+            f"Checking for {pathlib.Path(repo.working_dir).name} (Engine) updates..."
+        )
+        repos["engine"] = repo
+        git_cmd = repo.git
+        dirty = repo.is_dirty()
+        if dirty:
+            LOGGER.critical("Local repo has uncommitted changes.")
+            # status = git_cmd.status()
+            # LOGGER.info(status)
+        # else:
+        fetch = git_cmd.fetch()
+        LOGGER.info(f"Fetch: {fetch}")
+        status = git_cmd.status()
+        LOGGER.info(f"Status: {status}")
+        if args.auto_update:
+            if dirty:
+                LOGGER.critical("Repo is dirty, auto-update skipped.")
+            else:
+                result_pull = git_cmd.pull()
+                LOGGER.info(f"Changes: {result_pull}")
+
+        for d in pathlib.Path(repo.working_tree_dir).joinpath(".features").iterdir():
+            if d.is_file():
+                continue
+            LOGGER.debug(f"{d = }")
+            repo_feature = git.Repo(d)
+            LOGGER.debug(f"{repo_feature = }")
+            LOGGER.debug(f"{repo_feature.working_dir = }")
+            LOGGER.info(f"Checking for {pathlib.Path(repo_feature.working_dir).name} updates...")
+            repos["features"][pathlib.Path(repo_feature.working_dir).name] = repo_feature
+            git_cmd_feature = repo_feature.git
+            feature_dirty = repo_feature.is_dirty()
+            if feature_dirty:
+                LOGGER.critical("Can't update: repo has uncommitted changes.")
+                # status_feature = git_cmd_feature.status()
+                # LOGGER.info(status_feature)
+            # else:
+            fetch_feature = git_cmd_feature.fetch()
+            LOGGER.info(f"Fetch: {fetch_feature}")
+            status_feature = git_cmd_feature.status()
+            LOGGER.info(f"Status: {status_feature}")
+            if args.auto_update:
+                if dirty:
+                    LOGGER.critical("Repo is dirty, auto-update skipped.")
+                else:
+                    result_pull_feature = git_cmd_feature.pull()
+                    LOGGER.info(f"Changes: {result_pull_feature}")
+        # repo.git.pull()
+        return
+
+    if not args.skip_update_check:
+        check_updates_available()
 
 
 def main(args):
@@ -414,7 +512,9 @@ def main(args):
         repo = git.Repo(".")
         LOGGER.debug(f"{repo = }")
         LOGGER.debug(f"{repo.working_dir = }")
-        LOGGER.info(f"Checking for {pathlib.Path(repo.working_dir).name} (Engine) updates...")
+        LOGGER.info(
+            f"Checking for {pathlib.Path(repo.working_dir).name} (Engine) updates..."
+        )
         repos["engine"] = repo
         git_cmd = repo.git
         if repo.is_dirty():
@@ -432,11 +532,15 @@ def main(args):
             repo_feature = git.Repo(d)
             LOGGER.debug(f"{repo_feature = }")
             LOGGER.debug(f"{repo_feature.working_dir = }")
-            LOGGER.info(f"Checking {pathlib.Path(repo_feature.working_dir).name} updates...")
-            repos["features"][pathlib.Path(repo_feature.working_dir).name] = repo_feature
+            LOGGER.info(
+                f"Checking for {pathlib.Path(repo_feature.working_dir).name} updates..."
+            )
+            repos["features"][
+                pathlib.Path(repo_feature.working_dir).name
+            ] = repo_feature
             git_cmd_feature = repo_feature.git
             if repo_feature.is_dirty():
-                LOGGER.error("Can't update: repo has uncommitted changes.")
+                LOGGER.critical("Can't update: repo has uncommitted changes.")
                 status_feature = git_cmd_feature.status()
                 LOGGER.info(status_feature)
             else:
@@ -447,10 +551,12 @@ def main(args):
 
     elif any(sc == args.sub_command for sc in ["install-feature", "if"]):
         repo_engine = git.Repo(".")
-        repo_name = args.repo.split('/')[-1].replace('.git', '')
+        repo_name = args.repo.split("/")[-1].replace(".git", "")
         repo = git.Repo().clone_from(
             url=args.repo,
-            to_path=pathlib.Path(repo_engine.working_dir).joinpath(".features", repo_name),
+            to_path=pathlib.Path(repo_engine.working_dir).joinpath(
+                ".features", repo_name
+            ),
         )
         LOGGER.info(f"Repo {repo} cloned.")
         install_cmd = f"source {pathlib.Path(repo_engine.working_dir).joinpath('.venv', 'bin', 'activate')} && pip install --editable {repo.working_dir}"
@@ -513,11 +619,7 @@ def run():
 
 
 if __name__ == "__main__":
-    raise SystemExit(
-        textwrap.dedent(
-            """
+    raise SystemExit(textwrap.dedent("""
             Wrong entry point.
             Use `openstudiolandscapes --help` for more information.
-            """
-        )
-    )
+            """))
