@@ -481,7 +481,9 @@ def op_group_out(
             context.log.debug(f"Writing script: {script_dict['script'].as_posix()}")
 
             fw.write(docker_script["script"])
-            fw.write("# Export environment variables required by *some* docker-compose files\n")
+            fw.write(
+                "# Export environment variables required by *some* docker-compose files\n"
+            )
             fw.write("# as well as /usr/bin/nsenter --uts hostname\n")
             fw.write("HOSTNAME=$($(which hostname) --fqdn)\n")
             fw.write("export HOSTNAME\n")

@@ -9,7 +9,6 @@ import uuid
 from datetime import datetime
 from typing import Generator, MutableMapping
 
-from human_readable_id import generate_hrid
 import pytz
 import yaml
 from dagster import (
@@ -23,6 +22,7 @@ from dagster import (
     asset,
     multi_asset,
 )
+from human_readable_id import generate_hrid
 
 import OpenStudioLandscapes.engine.discovery.discovery as discovery
 from OpenStudioLandscapes.engine import exceptions
@@ -71,7 +71,7 @@ def landscape_id(
 
         now = datetime.now()
 
-        now_prefix = datetime.strftime(now, '%Y-%m-%d_%H-%M-%S')
+        now_prefix = datetime.strftime(now, "%Y-%m-%d_%H-%M-%S")
 
         if CONFIG.openstudiolandscapes__human_readable_ids:
             id_ = generate_hrid(
@@ -228,8 +228,7 @@ def dot_features(
 @asset(
     **ASSET_HEADER_BASE_ENV,
     ins={},
-    description=textwrap.dedent(
-        f"""
+    description=textwrap.dedent(f"""
 Reads options from a custom `config.yml`.
 If the custom `config.yml` does not exist, it 
 will be created locally containing default options.
@@ -241,8 +240,7 @@ For reference, the default `config.yml` looks as follows:
 ```yaml
 {CONFIG_STR}
 ```
-"""
-    ),
+"""),
 )
 def CONFIG(
     context: AssetExecutionContext,

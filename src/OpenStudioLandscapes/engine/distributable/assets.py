@@ -204,18 +204,13 @@ def distributable(
                 )
 
         with open(tar_out / "extract.sh", "w") as extract_sh:
-            extract_sh.write(
-                textwrap.dedent(
-                    """\
+            extract_sh.write(textwrap.dedent("""\
                     #!/usr/bin/env bash
                     
                     SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
                     unzip -d "${SCRIPT_DIR}" %s
-                    """
-                )
-                % distributable_out.name
-            )
+                    """) % distributable_out.name)
 
     yield Output(distributable_out)
 

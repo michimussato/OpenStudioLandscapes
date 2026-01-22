@@ -18,12 +18,12 @@ __all__ = [
 import base64
 import copy
 import enum
+import itertools
 import json
 import os
 import pathlib
 import shlex
 import shutil
-import itertools
 import textwrap
 from collections import ChainMap
 from functools import reduce
@@ -754,8 +754,7 @@ def factory_compose_scope__scrape_networks(
     @op(
         name=name,
         ins=ins,
-        description=textwrap.dedent(
-            """
+        description=textwrap.dedent("""
             Recursively scrape a hierarchical (`include`) Docker Compose 
             YAML tree for `networks` at the root level, as in:
             
@@ -771,8 +770,7 @@ def factory_compose_scope__scrape_networks(
             See:
             - [https://github.com/fosrl/newt]()
             - [https://docs.pangolin.net/manage/sites/install-site#docker-installation]()
-            """
-        ),
+            """),
         **kwargs,
     )
     def _op_compose_scope__scrape_networks(
@@ -1244,8 +1242,7 @@ def factory_compose_scope__group_out(
     @op(
         name=name,
         ins=ins,
-        description=textwrap.dedent(
-            f"""
+        description=textwrap.dedent(f"""
             Environment variable  
             > `OPENSTUDIOLANDSCAPES__ATTACH_SITE_TO_COMPOSE_SCOPE={bool(int(os.environ.get('OPENSTUDIOLANDSCAPES__ATTACH_PANGOLIN_SITE_TO_COMPOSE_SCOPE', 0)))}`
             
@@ -1292,8 +1289,7 @@ def factory_compose_scope__group_out(
             > ERROR: 2025/12/14 10:48:29 Failed to connect: failed to get token: failed to request new token: Post "/api/v1/auth/newt/get-token": unsupported protocol scheme "". Retrying in 3s...
             > [...]
             > ```
-            """
-        ),
+            """),
         **kwargs,
     )
     def _op_compose_scope__group_out(
@@ -1474,8 +1470,7 @@ def factory_compose_scope__group_out(
             DOCKER_COMPOSE.parent / "docker_compose_down.sh"
         )
 
-        systemd_unit = textwrap.dedent(
-            f"""
+        systemd_unit = textwrap.dedent(f"""
             [Unit]
             # More info on systemd specifiers:
             # - https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html?__goaway_challenge=meta-refresh&__goaway_id=af831620b51d37fbc05006860cc19eca&__goaway_referer=https%3A%2F%2Fduckduckgo.com%2F#Specifiers
@@ -1509,11 +1504,9 @@ def factory_compose_scope__group_out(
             
             [Install]
             WantedBy=default.target
-            """
-        )
+            """)
 
-        systemd_unit_shell = textwrap.dedent(
-            f"""
+        systemd_unit_shell = textwrap.dedent(f"""
             # Disable currently running Unit with:
             systemctl --user disable --now openstudiolandscapes-{compose_scope}@${{USER}}.service
             # Install systemd unit with:
@@ -1526,8 +1519,7 @@ def factory_compose_scope__group_out(
             # systemctl --user enable --now openstudiolandscapes-{compose_scope}@${{USER}}.service
             # Check Journal with:
             # journalctl --user -fu openstudiolandscapes-{compose_scope}@${{USER}}.service
-            """
-        )
+            """)
 
         # Todo
         #  cmd_docker_exec_it = [
@@ -1554,16 +1546,12 @@ def factory_compose_scope__group_out(
             "script"
         ] += 'SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )\n'
         docker_script["script"] += "\n"
-        docker_script[
-            "script"
-        ] += ("# Export environment variables required by *some* docker-compose files\n"
-              "# as well as /usr/bin/nsenter --uts hostname\n")
-        docker_script[
-            "script"
-        ] += "HOSTNAME=$($(which hostname) --fqdn)\n"
-        docker_script[
-            "script"
-        ] += "export HOSTNAME\n"
+        docker_script["script"] += (
+            "# Export environment variables required by *some* docker-compose files\n"
+            "# as well as /usr/bin/nsenter --uts hostname\n"
+        )
+        docker_script["script"] += "HOSTNAME=$($(which hostname) --fqdn)\n"
+        docker_script["script"] += "export HOSTNAME\n"
         # docker_script["script"] += "\n"
 
         script_dicts = [
@@ -1890,8 +1878,7 @@ def factory__CONFIG(
     @op(
         name=name,
         ins=ins,
-        description=textwrap.dedent(
-            f"""
+        description=textwrap.dedent(f"""
 Reads options from a `config.yml` on your hard drive.
 If the custom `config.yml` does not exist, it 
 will be created locally containing default options.
@@ -1906,8 +1893,7 @@ For reference, the default `Config` values are as follows:
 ```yaml
 {CONFIG_STR}
 ```
-"""
-        ),
+"""),
         **kwargs,
     )
     def _op__CONFIG(

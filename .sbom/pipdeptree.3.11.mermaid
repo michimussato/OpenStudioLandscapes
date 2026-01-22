@@ -1,15 +1,15 @@
 flowchart TD
     classDef missing stroke-dasharray: 5
-    alembic["alembic\n1.17.2"]
+    alembic["alembic\n1.18.1"]
     annotated-types["annotated-types\n0.7.0"]
     antlr4-python3-runtime["antlr4-python3-runtime\n4.13.2"]
-    anyio["anyio\n4.12.0"]
+    anyio["anyio\n4.12.1"]
     argcomplete["argcomplete\n3.6.3"]
     arrow["arrow\n1.4.0"]
     attrs["attrs\n25.4.0"]
     backoff["backoff\n2.2.1"]
     boolean-py["boolean.py\n5.0"]
-    certifi["certifi\n2025.11.12"]
+    certifi["certifi\n2026.1.4"]
     chardet["chardet\n5.2.0"]
     charset-normalizer["charset-normalizer\n3.4.4"]
     click_0["click\n8.3.1"]
@@ -29,11 +29,11 @@ flowchart TD
     docker-compose-graph["docker-compose-graph\n1.0.0.post1.dev4+g3b0ba2c26"]
     docstring-parser["docstring_parser\n0.17.0"]
     email-validator["email-validator\n2.3.0"]
-    filelock["filelock\n3.20.1"]
+    filelock["filelock\n3.20.3"]
     fqdn["fqdn\n1.5.1"]
-    fsspec["fsspec\n2025.12.0"]
+    fsspec["fsspec\n2026.1.0"]
     gitdb["gitdb\n4.0.12"]
-    gitpython["GitPython\n3.1.45"]
+    gitpython["GitPython\n3.1.46"]
     gql["gql\n3.5.3"]
     graphene["graphene\n3.4.3"]
     graphql-core["graphql-core\n3.2.6"]
@@ -44,6 +44,7 @@ flowchart TD
     grpcio["grpcio\n1.76.0"]
     h11["h11\n0.16.0"]
     httptools["httptools\n0.7.1"]
+    human-readable-id["human-readable-id\n0.0.3"]
     humanfriendly["humanfriendly\n10.0"]
     humanize["humanize\n4.15.0"]
     idna["idna\n3.11"]
@@ -51,7 +52,7 @@ flowchart TD
     jinja2["Jinja2\n3.1.6"]
     jsonpointer["jsonpointer\n3.0.0"]
     jsonschema-specifications["jsonschema-specifications\n2025.9.1"]
-    jsonschema["jsonschema\n4.25.1"]
+    jsonschema["jsonschema\n4.26.0"]
     lark["lark\n1.3.1"]
     license-expression["license-expression\n30.4.4"]
     lxml["lxml\n6.0.2"]
@@ -77,7 +78,7 @@ flowchart TD
     pydantic["pydantic\n2.12.5"]
     pydot["pydot\n4.0.1"]
     pygments["Pygments\n2.19.2"]
-    pyparsing["pyparsing\n3.3.1"]
+    pyparsing["pyparsing\n3.3.2"]
     python-dateutil["python-dateutil\n2.9.0.post0"]
     python-dotenv["python-dotenv\n1.2.1"]
     pytz["pytz\n2025.2"]
@@ -95,26 +96,26 @@ flowchart TD
     smmap["smmap\n5.0.2"]
     snakemd["SnakeMD\n2.4.0"]
     sortedcontainers["sortedcontainers\n2.4.0"]
-    sqlalchemy["SQLAlchemy\n2.0.45"]
-    starlette["starlette\n0.50.0"]
+    sqlalchemy["SQLAlchemy\n2.0.46"]
+    starlette["starlette\n0.52.1"]
     structlog["structlog\n25.5.0"]
     tabulate["tabulate\n0.9.0"]
-    tomli["tomli\n2.3.0"]
+    tomli["tomli\n2.4.0"]
     toposort["toposort\n1.10"]
     tqdm["tqdm\n4.67.1"]
     typing-extensions["typing_extensions\n4.15.0"]
     typing-inspection["typing-inspection\n0.4.2"]
     tzdata["tzdata\n2025.3"]
-    universal-pathlib["universal_pathlib\n0.3.7"]
+    universal-pathlib["universal_pathlib\n0.3.8"]
     uri-template["uri-template\n1.3.0"]
-    urllib3["urllib3\n2.6.2"]
+    urllib3["urllib3\n2.6.3"]
     uvicorn["uvicorn\n0.40.0"]
     uvloop["uvloop\n0.22.1"]
-    virtualenv["virtualenv\n20.35.4"]
+    virtualenv["virtualenv\n20.36.1"]
     watchdog["watchdog\n5.0.3"]
     watchfiles["watchfiles\n1.1.1"]
     webcolors["webcolors\n25.10.0"]
-    websockets["websockets\n15.0.1"]
+    websockets["websockets\n16.0"]
     yarl["yarl\n1.22.0"]
     alembic -- ">=1.4.0" --> sqlalchemy
     alembic -- ">=4.12" --> typing-extensions
@@ -199,8 +200,8 @@ flowchart TD
     grpcio-health-checking -- ">=5.26.1,<6.0dev" --> protobuf
     isoduration -- ">=0.15.0" --> arrow
     jinja2 -- ">=2.0" --> markupsafe
+    jsonschema -- ">=0.25.0" --> rpds-py
     jsonschema -- ">=0.28.4" --> referencing
-    jsonschema -- ">=0.7.1" --> rpds-py
     jsonschema -- ">=2023.03.6" --> jsonschema-specifications
     jsonschema -- ">=22.2.0" --> attrs
     jsonschema-specifications -- ">=0.31.0" --> referencing
@@ -220,6 +221,7 @@ flowchart TD
     openstudiolandscapes -- "any" --> docker-compose-graph
     openstudiolandscapes -- "any" --> email-validator
     openstudiolandscapes -- "any" --> gitpython
+    openstudiolandscapes -- "any" --> human-readable-id
     openstudiolandscapes -- "any" --> nox
     openstudiolandscapes -- "any" --> pydot
     openstudiolandscapes -- "any" --> pyyaml
@@ -258,7 +260,7 @@ flowchart TD
     uvicorn -- ">=0.8" --> h11
     uvicorn -- ">=7.0" --> click_0
     virtualenv -- ">=0.3.7,<1" --> distlib
-    virtualenv -- ">=3.12.2,<4" --> filelock
+    virtualenv -- ">=3.20.1,<4" --> filelock
     virtualenv -- ">=3.9.1,<5" --> platformdirs
     watchfiles -- ">=3.0.0" --> anyio
     yarl -- ">=0.2.1" --> propcache

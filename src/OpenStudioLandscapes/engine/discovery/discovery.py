@@ -133,17 +133,28 @@ def get_config_engine() -> ConfigEngine:
                     try:
                         assert key_ in engine_config_dict_test
                     except AssertionError as err_:
-                        LOGGER.error(f"Required key `{key_}` not found in {engine_config_yml_expanded.as_posix()}. "
-                                     f"Discovery impossible until fixed.")
+                        LOGGER.error(
+                            f"Required key `{key_}` not found in {engine_config_yml_expanded.as_posix()}. "
+                            f"Discovery impossible until fixed."
+                        )
 
-                        if bool(int(os.environ.get("OPENSTUDIOLANDSCAPES__RUN_AS_SYSTEMD_UNIT", default=0))):
+                        if bool(
+                            int(
+                                os.environ.get(
+                                    "OPENSTUDIOLANDSCAPES__RUN_AS_SYSTEMD_UNIT",
+                                    default=0,
+                                )
+                            )
+                        ):
                             raise OpenStudioLandscapesException() from err_
                         else:
-                            LOGGER.error(f"Possible values for key `{key_}` are: {config_engine_blueprint.model_fields[key_].examples} "
-                                         f"of type {config_engine_blueprint.model_fields[key].annotation}. \n"
-                                         f"For reference of all fields, see `ConfigEngine` in "
-                                         f"https://github.com/michimussato/OpenStudioLandscapes/blob/main/src/OpenStudioLandscapes/engine/config/models.py."
-                                         f"")
+                            LOGGER.error(
+                                f"Possible values for key `{key_}` are: {config_engine_blueprint.model_fields[key_].examples} "
+                                f"of type {config_engine_blueprint.model_fields[key].annotation}. \n"
+                                f"For reference of all fields, see `ConfigEngine` in "
+                                f"https://github.com/michimussato/OpenStudioLandscapes/blob/main/src/OpenStudioLandscapes/engine/config/models.py."
+                                f""
+                            )
                             input("Add the key manually and press enter to continue")
                         break
 
@@ -402,16 +413,20 @@ for package, feature in DISCOVERED_MODELS.items():
         #  - [ ] implement better logic to add new keys to the config.yml if
         #        the model has changed.
 
-        config_feature_blueprint_dict_ = yaml.safe_load(feature.models_object.CONFIG_STR)
+        config_feature_blueprint_dict_ = yaml.safe_load(
+            feature.models_object.CONFIG_STR
+        )
         config_feature_blueprint: FeatureBaseModel = feature.models_object.Config(
             **config_feature_blueprint_dict_
         )
 
         # Read the `config.yml` as a str
         distribution: Distribution = metadata.distribution(package)
-        config_yml_feature: pathlib.Path = OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.joinpath(
-            distribution.name,
-            "config.yml",
+        config_yml_feature: pathlib.Path = (
+            OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.joinpath(
+                distribution.name,
+                "config.yml",
+            )
         )
         LOGGER.info(f"{config_yml_feature = }")
         config_yml_feature_expanded = config_yml_feature.expanduser()
@@ -425,10 +440,18 @@ for package, feature in DISCOVERED_MODELS.items():
             try:
                 assert key in feature_config_dict_test
             except AssertionError as err:
-                LOGGER.error(f"Required key `{key}` not found in {config_yml_feature_expanded.as_posix()}. "
-                             f"Discovery impossible until fixed.")
+                LOGGER.error(
+                    f"Required key `{key}` not found in {config_yml_feature_expanded.as_posix()}. "
+                    f"Discovery impossible until fixed."
+                )
 
-                if bool(int(os.environ.get("OPENSTUDIOLANDSCAPES__RUN_AS_SYSTEMD_UNIT", default=0))):
+                if bool(
+                    int(
+                        os.environ.get(
+                            "OPENSTUDIOLANDSCAPES__RUN_AS_SYSTEMD_UNIT", default=0
+                        )
+                    )
+                ):
                     raise OpenStudioLandscapesException() from err
                 else:
                     LOGGER.error(
@@ -436,7 +459,8 @@ for package, feature in DISCOVERED_MODELS.items():
                         f"of type {config_feature_blueprint.model_fields[key].annotation}. \n"
                         f"For reference of all fields, see "
                         f"https://github.com/michimussato/OpenStudioLandscapes-{distribution.name}#default-configuration."
-                        f"")
+                        f""
+                    )
                     input("Add the key manually and press enter to continue")
                 break
 

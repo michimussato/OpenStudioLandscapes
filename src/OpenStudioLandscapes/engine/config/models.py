@@ -57,7 +57,9 @@ class ComposeScopeBaseModel(BaseModel):
     attach_pangolin_site_to_compose_scope: bool = Field(
         default=bool(
             int(
-                os.environ.get("OPENSTUDIOLANDSCAPES__ATTACH_PANGOLIN_SITE_TO_COMPOSE_SCOPE", 0)
+                os.environ.get(
+                    "OPENSTUDIOLANDSCAPES__ATTACH_PANGOLIN_SITE_TO_COMPOSE_SCOPE", 0
+                )
             )
         ),
         description="Do you want the ComposeScope to dial in to a Pangolin Site?",
@@ -66,7 +68,9 @@ class ComposeScopeBaseModel(BaseModel):
     attach_grafana_alloy_to_compose_scope: bool = Field(
         default=bool(
             int(
-                os.environ.get("OPENSTUDIOLANDSCAPES__ATTACH_GRAFANA_ALLOY_TO_COMPOSE_SCOPE", 0)
+                os.environ.get(
+                    "OPENSTUDIOLANDSCAPES__ATTACH_GRAFANA_ALLOY_TO_COMPOSE_SCOPE", 0
+                )
             )
         ),
         description="Do you want the ComposeScope to to populate Alloy metrics?",

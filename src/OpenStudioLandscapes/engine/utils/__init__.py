@@ -68,19 +68,23 @@ def get_pip_install_str(
 ) -> str:
     if bool(pip_install_packages):
         if single_run_layer:
-            pip_install_str: str = "RUN %s -m pip install --root-user-action=ignore %s" % (
-                python_str,
-                shlex.join(pip_install_packages),
+            pip_install_str: str = (
+                "RUN %s -m pip install --root-user-action=ignore %s"
+                % (
+                    python_str,
+                    shlex.join(pip_install_packages),
+                )
             )
-            pip_install_str += " && %s -m pip cache purge" % (
-                python_str
-            )
+            pip_install_str += " && %s -m pip cache purge" % (python_str)
         else:
             pip_install_str: str = str()
             for pip_package in pip_install_packages:
-                pip_install_str += "RUN %s -m pip install --root-user-action=ignore '%s'\n" % (
-                    python_str,
-                    pip_package,
+                pip_install_str += (
+                    "RUN %s -m pip install --root-user-action=ignore '%s'\n"
+                    % (
+                        python_str,
+                        pip_package,
+                    )
                 )
 
         return pip_install_str
@@ -97,7 +101,9 @@ def get_apt_install_str(
         if single_run_layer:
             # Use Single RUN layer for all packages
             # Ref: https://github.com/michimussato/OpenStudioLandscapes/issues/4
-            apt_install_str: str = f"RUN apt-get update && apt-get -y install --no-install-recommends {shlex.join(apt_install_packages)}"
+            apt_install_str: str = (
+                f"RUN apt-get update && apt-get -y install --no-install-recommends {shlex.join(apt_install_packages)}"
+            )
             apt_install_str += " && apt-get -y autoremove --purge"
             apt_install_str += " && apt-get -y clean"
             apt_install_str += " && apt-get -y autoclean"

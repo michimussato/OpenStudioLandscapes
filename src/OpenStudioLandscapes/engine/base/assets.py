@@ -26,7 +26,6 @@ from OpenStudioLandscapes.engine.policies.retry import build_docker_image_retry_
 from OpenStudioLandscapes.engine.utils import *
 from OpenStudioLandscapes.engine.utils.docker import *
 
-
 # @asset(
 #     **ASSET_HEADER_BASE,
 # )
@@ -167,8 +166,7 @@ def build_docker_image(
     # - https://hub.docker.com/_/debian
 
     # @formatter:off
-    docker_file_str = textwrap.dedent(
-        """\
+    docker_file_str = textwrap.dedent("""\
         # {auto_generated}
         # {dagster_url}
         
@@ -235,8 +233,7 @@ def build_docker_image(
         {pip_install_str}
 
         ENTRYPOINT []
-        """
-    ).format(
+        """).format(
         apt_install_str_base=apt_install_str_base,
         apt_install_str_build_python311=apt_install_str_build_python311,
         pip_install_str=pip_install_str.format(
@@ -343,13 +340,11 @@ def build_docker_image(
             AssetKey([*ASSET_HEADER_BASE["key_prefix"], "build_docker_image"]),
         ),
     },
-    description=textwrap.dedent(
-        """
+    description=textwrap.dedent("""
         This is the foundation. This assets provides all relevant environment information
         for subsequent assets and asset groups. All downstream assets consume this data and
         build their environment on top of this.
-        """
-    ),
+        """),
 )
 def group_out_base(
     context: AssetExecutionContext,

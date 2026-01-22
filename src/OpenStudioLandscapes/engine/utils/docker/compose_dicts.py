@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Required, TypedDict, Union, Optional
+from typing import Any, Dict, List, Optional, Required, TypedDict, Union
 
 from dagster import AssetExecutionContext, OpExecutionContext
 
