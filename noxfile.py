@@ -2378,206 +2378,206 @@ def menu_from_choices(
 #######################################################################################################################
 
 
-#######################################################################################################################
-# PR
-# Todo:
-#  - [x] gh_login
-#        See wiki/guides/release_strategy.md#pull-requests-gh
-#  - [ ] gh_pr_create
-#        See wiki/guides/release_strategy.md#create-pr
-#  - [ ] gh_pr_edit
-#        See wiki/guides/release_strategy.md#edit-pr
-#  - [ ] gh_pr_close
-#        See wiki/guides/release_strategy.md#close-pr
-#  - [ ] gh_pr_merge
-#  - [ ] gh_pr_close
-
-
-@nox.session(python=None, tags=["gh_login"])
-def gh_login(session):
-    """
-    GitHub CLI Login.
-    See wiki/guides/release_strategy.md#pull-requests-gh
-
-    Scope:
-    - [ ] Engine
-    - [ ] Features
-    """
-    # Ex:
-    # nox --session gh_login
-    # nox --tags gh_login
-
-    # sudo = False
-
-    cmds = []
-
-    gh = shutil.which("gh")
-
-    if bool(gh):
-
-        cmd_gh_login = [
-            gh,
-            "auth",
-            "login",
-            "--web",
-        ]
-        cmds.append(cmd_gh_login)
-
-        for cmd in cmds:
-
-            session.log(f"Running Command:\n\t{shlex.join(cmd)}")
-
-            session.run(
-                *cmd,
-                env=ENV,
-                external=True,
-                silent=SESSION_RUN_SILENT,
-            )
-
-    else:
-        msg = "No Github CLI Found."
-        session.skip(msg)
-
-
-# Todo:
-#  - [ ] refactor
-@nox.session(python=None, tags=["gh_pr_create"])
-@nox.parametrize(
-    "working_directory",
-    # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
-    [
-        nox.param(engine_dir.name, id=engine_dir.name),
-        *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED],
-    ],
-)
-def gh_pr_create(session, working_directory):
-    """
-    Create PR (draft) for OpenStudioLandscapes modules.
-    See wiki/guides/release_strategy.md#create-pr
-
-    Scope:
-    - [x] Engine
-    - [x] Features
-    """
-    # Ex:
-    # nox --session gh_pr_create
-    # nox --tags gh_pr_create
-
-    session.skip("Not implemented")
-
+# #######################################################################################################################
+# # PR
+# # Todo:
+# #  - [x] gh_login
+# #        See wiki/guides/release_strategy.md#pull-requests-gh
+# #  - [ ] gh_pr_create
+# #        See wiki/guides/release_strategy.md#create-pr
+# #  - [ ] gh_pr_edit
+# #        See wiki/guides/release_strategy.md#edit-pr
+# #  - [ ] gh_pr_close
+# #        See wiki/guides/release_strategy.md#close-pr
+# #  - [ ] gh_pr_merge
+# #  - [ ] gh_pr_close
 #
-#     # BRANCH
-#     repo = git.Repo(engine_dir.parent / working_directory)
-#     branches = repo.branches
 #
-#     branch = os.environ.get("BRANCH", None)
-#     if branch is None:
-#         input_message = "Branch:\n"
+# @nox.session(python=None, tags=["gh_login"])
+# def gh_login(session):
+#     """
+#     GitHub CLI Login.
+#     See wiki/guides/release_strategy.md#pull-requests-gh
 #
-#         branch = menu_from_choices(
-#             input_message=input_message,
-#             choices=branches,
-#             description="",
-#             manual_value=True,
-#         )
+#     Scope:
+#     - [ ] Engine
+#     - [ ] Features
+#     """
+#     # Ex:
+#     # nox --session gh_login
+#     # nox --tags gh_login
 #
-#         os.environ["BRANCH"] = branch
-#
-#     # DRY_RUN
-#     dry_run = os.environ.get("DRY_RUN", None)
-#     if dry_run is None:
-#         options = ["yes", "no"]
-#
-#         input_message = "Dry run:\n"
-#
-#         dry_run = menu_from_choices(
-#             input_message=input_message,
-#             choices=options,
-#             description="",
-#             manual_value=False,
-#         )
-#
-#         os.environ["DRY_RUN"] = dry_run
+#     # sudo = False
 #
 #     cmds = []
 #
 #     gh = shutil.which("gh")
 #
-#     # body_file = str(os.environ.get("BODY_FILE", ""))
-#     # session.log(f"{body_file = }")
-#
 #     if bool(gh):
 #
-#         cmd_gh_pr_create = [
+#         cmd_gh_login = [
 #             gh,
-#             "pr",
-#             "create",
-#             "--draft",
-#             "--title",
-#             branch,
-#             "--head",
-#             branch,
-#             "--base",
-#             GIT_MAIN_BRANCH,
-#             # Todo
-#             #  - [ ] --body-file
-#             "--body",
-#             "",
+#             "auth",
+#             "login",
+#             "--web",
 #         ]
-#         if dry_run == "yes":
-#             cmd_gh_pr_create.append("--dry-run")
-#         cmds.append(cmd_gh_pr_create)
+#         cmds.append(cmd_gh_login)
 #
-#         with session.chdir(engine_dir.parent / working_directory):
+#         for cmd in cmds:
 #
-#             session.log(
-#                 f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
+#             session.log(f"Running Command:\n\t{shlex.join(cmd)}")
+#
+#             session.run(
+#                 *cmd,
+#                 env=ENV,
+#                 external=True,
+#                 silent=SESSION_RUN_SILENT,
 #             )
-#
-#             if dry_run:
-#                 session.warn(f"DRY_RUN is set to {dry_run}")
-#
-#             for cmd in cmds:
-#
-#                 session.log(f"Running Command:\n\t{shlex.join(cmd)}")
-#
-#                 session.run(
-#                     *cmd,
-#                     env=ENV,
-#                     external=True,
-#                     silent=SESSION_RUN_SILENT,
-#                 )
 #
 #     else:
 #         msg = "No Github CLI Found."
 #         session.skip(msg)
-
-
-# Todo:
-#  - [ ] refactor
-@nox.session(python=None, tags=["gh_pr_set_mode"])
-@nox.parametrize(
-    "working_directory",
-    # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
-    [
-        nox.param(engine_dir.name, id=engine_dir.name),
-        *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED],
-    ],
-)
-def gh_pr_set_mode(session, working_directory):
-    """
-    Set mode for OpenStudioLandscapes PRs.
-    See wiki/guides/release_strategy.md#edit-pr
-
-    Scope:
-    - [x] Engine
-    - [x] Features
-    """
-    # Ex:
-    # nox --session gh_pr_set_mode
-    # nox --tags gh_pr_set_mode
-
-    session.skip("Not implemented")
+#
+#
+# # Todo:
+# #  - [ ] refactor
+# @nox.session(python=None, tags=["gh_pr_create"])
+# @nox.parametrize(
+#     "working_directory",
+#     # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
+#     [
+#         nox.param(engine_dir.name, id=engine_dir.name),
+#         *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED],
+#     ],
+# )
+# def gh_pr_create(session, working_directory):
+#     """
+#     Create PR (draft) for OpenStudioLandscapes modules.
+#     See wiki/guides/release_strategy.md#create-pr
+#
+#     Scope:
+#     - [x] Engine
+#     - [x] Features
+#     """
+#     # Ex:
+#     # nox --session gh_pr_create
+#     # nox --tags gh_pr_create
+#
+#     session.skip("Not implemented")
+#
+# #
+# #     # BRANCH
+# #     repo = git.Repo(engine_dir.parent / working_directory)
+# #     branches = repo.branches
+# #
+# #     branch = os.environ.get("BRANCH", None)
+# #     if branch is None:
+# #         input_message = "Branch:\n"
+# #
+# #         branch = menu_from_choices(
+# #             input_message=input_message,
+# #             choices=branches,
+# #             description="",
+# #             manual_value=True,
+# #         )
+# #
+# #         os.environ["BRANCH"] = branch
+# #
+# #     # DRY_RUN
+# #     dry_run = os.environ.get("DRY_RUN", None)
+# #     if dry_run is None:
+# #         options = ["yes", "no"]
+# #
+# #         input_message = "Dry run:\n"
+# #
+# #         dry_run = menu_from_choices(
+# #             input_message=input_message,
+# #             choices=options,
+# #             description="",
+# #             manual_value=False,
+# #         )
+# #
+# #         os.environ["DRY_RUN"] = dry_run
+# #
+# #     cmds = []
+# #
+# #     gh = shutil.which("gh")
+# #
+# #     # body_file = str(os.environ.get("BODY_FILE", ""))
+# #     # session.log(f"{body_file = }")
+# #
+# #     if bool(gh):
+# #
+# #         cmd_gh_pr_create = [
+# #             gh,
+# #             "pr",
+# #             "create",
+# #             "--draft",
+# #             "--title",
+# #             branch,
+# #             "--head",
+# #             branch,
+# #             "--base",
+# #             GIT_MAIN_BRANCH,
+# #             # Todo
+# #             #  - [ ] --body-file
+# #             "--body",
+# #             "",
+# #         ]
+# #         if dry_run == "yes":
+# #             cmd_gh_pr_create.append("--dry-run")
+# #         cmds.append(cmd_gh_pr_create)
+# #
+# #         with session.chdir(engine_dir.parent / working_directory):
+# #
+# #             session.log(
+# #                 f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
+# #             )
+# #
+# #             if dry_run:
+# #                 session.warn(f"DRY_RUN is set to {dry_run}")
+# #
+# #             for cmd in cmds:
+# #
+# #                 session.log(f"Running Command:\n\t{shlex.join(cmd)}")
+# #
+# #                 session.run(
+# #                     *cmd,
+# #                     env=ENV,
+# #                     external=True,
+# #                     silent=SESSION_RUN_SILENT,
+# #                 )
+# #
+# #     else:
+# #         msg = "No Github CLI Found."
+# #         session.skip(msg)
+#
+#
+# # Todo:
+# #  - [ ] refactor
+# @nox.session(python=None, tags=["gh_pr_set_mode"])
+# @nox.parametrize(
+#     "working_directory",
+#     # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
+#     [
+#         nox.param(engine_dir.name, id=engine_dir.name),
+#         *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED],
+#     ],
+# )
+# def gh_pr_set_mode(session, working_directory):
+#     """
+#     Set mode for OpenStudioLandscapes PRs.
+#     See wiki/guides/release_strategy.md#edit-pr
+#
+#     Scope:
+#     - [x] Engine
+#     - [x] Features
+#     """
+#     # Ex:
+#     # nox --session gh_pr_set_mode
+#     # nox --tags gh_pr_set_mode
+#
+#     session.skip("Not implemented")
 
 #     # BRANCH
 #     repo = git.Repo(engine_dir.parent / working_directory)
