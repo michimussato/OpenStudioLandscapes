@@ -248,6 +248,7 @@ usage: openstudiolandscapes [-h] [-v] [-vv] [--attach-grafana-alloy-to-compose-s
 
 positional arguments:
   {update,install-feature}
+    install-feature     Clone a feature from a given repository and print installation instructions.
 
 options:
   -h, --help            show this help message and exit
@@ -272,6 +273,22 @@ options:
                         Lock the landscape_id to this value.
   --skip-update-check   Skip checking for codebase updates.
   --auto-update         Automatically pull codebase updates.
+```
+
+#### Sub-Commands
+
+##### install-feature
+
+```
+# cd OpenStudioLandscapes
+# source .venv/bin/activate
+
+$ openstudiolandscapes install-feature --help
+usage: openstudiolandscapes install-feature [-h] --repo REPO
+
+options:
+  -h, --help            show this help message and exit
+  --repo REPO, -r REP
 ```
 
 ### Launch OpenStudioLandscapes

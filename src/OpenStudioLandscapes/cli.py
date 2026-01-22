@@ -255,6 +255,8 @@ def parse_args(args):
 
     subparser_install_feature = subparsers.add_parser(
         "install-feature",
+        help="Clone a feature from a given repository and "
+             "print installation instructions.",
     )
 
     subparser_install_feature.add_argument(
