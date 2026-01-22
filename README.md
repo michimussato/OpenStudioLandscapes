@@ -11,6 +11,7 @@
   * [Install OpenStudioLandscapes](#install-openstudiolandscapes)
   * [Add Features](#add-features)
   * [Run OpenStudioLandscapes](#run-openstudiolandscapes)
+    * [CLI](#cli)
     * [Launch OpenStudioLandscapes](#launch-openstudiolandscapes)
     * [Create Landscape](#create-landscape)
     * [Launch the Landscape](#launch-the-landscape)
@@ -227,6 +228,49 @@ The video includes the following steps (among others):
 - [Create Landscape](#create-landscape)
 - [Launch the Landscape](#launch-the-landscape)
 
+### CLI
+
+The following commandline options are available:
+
+```
+# cd OpenStudioLandscapes
+# source .venv/bin/activate
+
+$ openstudiolandscapes --help
+usage: openstudiolandscapes [-h] [-v] [-vv] [--attach-grafana-alloy-to-compose-scope]
+                            [--attach-pangolin-site-to-compose-scope] [--run-as-systemd-unit]
+                            [--domain-wan OPENSTUDIOLANDSCAPES__DOMAIN_WAN]
+                            [--config-store OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT]
+                            [--landscapes-root OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT]
+                            [--landscapes-id OPENSTUDIOLANDSCAPES__LANDSCAPE_ID]
+                            {update,install-feature} ...
+
+positional arguments:
+  {update,install-feature}
+
+options:
+  -h, --help            show this help message and exit
+  -v, --verbose         set loglevel to INFO
+  -vv, --very-verbose   set loglevel to DEBUG
+  --attach-grafana-alloy-to-compose-scope
+                        Attach Alloy container to Compose Scope.
+  --attach-pangolin-site-to-compose-scope
+                        Attach Newt container to Compose Scope.
+  --run-as-systemd-unit
+                        If specified, the discovery service will *not* wait for human interaction for
+                        incomplete `conifg.yml` files to be fixed. You will have to monitor the logs
+                        (`journald`) in this case.
+  --domain-wan OPENSTUDIOLANDSCAPES__DOMAIN_WAN
+                        Set the WAN domain name (i.e. openstudiolandscapes.com).
+  --config-store OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT
+                        Set the configuration store path.
+  --landscapes-root OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT
+                        Set the Landscape root path. A `.landscapes` subdirectory will be created and
+                        used.
+  --landscapes-id OPENSTUDIOLANDSCAPES__LANDSCAPE_ID
+                        Lock the landscape_id to this value.
+```
+
 ### Launch OpenStudioLandscapes
 
 ```shell
@@ -234,6 +278,16 @@ The video includes the following steps (among others):
 source .venv/bin/activate
 openstudiolandscapes
 ```
+
+> [!TIP]
+> 
+> The default location for all Landscapes is
+> with the local Git checkout:
+> `OpenStudioLandscapes/.landscapes`.
+> You can change this behavior by specifying a custom
+> Landscapes root with `--landscapes-root=~/MyOpenStudioLandscapes`
+> (please note: a `.landscapes` directory will be created 
+> inside the directory you specified).
 
 ### Create Landscape
 
@@ -248,6 +302,13 @@ And head over to the Dagster Dev web UI:
 > the URL you are trying to access.
 
 And click **Materialize All**.
+
+> [!TIP]
+> 
+> Every time you **Materialize All**, a new Landscape ID and
+> therefore a new Landscape directory structure will be generated
+> If you want to lock Landscape ID generation or edit a specific
+> Landscape ID, you can specify `--landscapes-id=My-Custom-Landscape`
 
 ![materialize_all.png](media/images/materialize_all.png)
 
@@ -319,7 +380,7 @@ will be placed inside this default config store.
 > [!TIP]
 > 
 > You can change the default config store location
-> by setting `OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT`.
+> by specifying `--config-store=~/.config/OpenStudioLandscape/my-other-config-root`.
 
 ### Environment Variables and Secrets
 
@@ -330,22 +391,29 @@ repository directory.
 ## Update OpenStudioLandscapes Engine and Features
 
 To update **OpenStudioLandscapes** and all your Features,
-you can run the following code snippet. This is a work in progress
-solution and the update process is planned
-to be facilitated with future updates.
+you can run the following code snippet. 
 
 ```shell
 # cd OpenStudioLandscapes
-git pull
-
-pushd .features || exit 1
-
-for d in ./*; do
-    git -C ${d} pull;
-done
-
-popd || exit 1
+source .venv/bin/activate
+openstudiolandscapes update
 ```
+
+> [!NOTE]
+> 
+> The following error
+> ```
+> # cd OpenStudioLandscapes
+> $ openstudiolandscapes update
+> usage: openstudiolandscapes [-h] [-v] [-vv]
+> openstudiolandscapes: error: unrecognized arguments: update
+> ```
+> means that your codebase is too old. To fix this, run
+> ```shell
+> # cd OpenStudioLandscapes
+> git pull
+> ```
+> and your codebase should contain the necessary functionality.
 
 # Q&A
 
