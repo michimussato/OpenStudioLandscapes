@@ -552,6 +552,9 @@ def main(args):
         return
 
     elif any(sc == args.sub_command for sc in ["install-feature", "if"]):
+        # Todo
+        #  - [ ] rename install-feature to clone-feature, cause that's essentially what it is
+        #  - [ ] for dependent Features, make sure to also install the parent (i.e. for Workers)
         repo_engine = git.Repo(".")
         repo_name = args.repo.split("/")[-1].replace(".git", "")
         repo = git.Repo().clone_from(
