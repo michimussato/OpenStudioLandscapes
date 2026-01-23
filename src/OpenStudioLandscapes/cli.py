@@ -256,7 +256,7 @@ def parse_args(args):
     subparser_install_feature = subparsers.add_parser(
         "install-feature",
         help="Clone a feature from a given repository and "
-             "print installation instructions.",
+        "print installation instructions.",
     )
 
     # Todo
@@ -473,8 +473,12 @@ def checks(args):
             repo_feature = git.Repo(d)
             LOGGER.debug(f"{repo_feature = }")
             LOGGER.debug(f"{repo_feature.working_dir = }")
-            LOGGER.info(f"Checking for {pathlib.Path(repo_feature.working_dir).name} updates...")
-            repos["features"][pathlib.Path(repo_feature.working_dir).name] = repo_feature
+            LOGGER.info(
+                f"Checking for {pathlib.Path(repo_feature.working_dir).name} updates..."
+            )
+            repos["features"][
+                pathlib.Path(repo_feature.working_dir).name
+            ] = repo_feature
             git_cmd_feature = repo_feature.git
             feature_dirty = repo_feature.is_dirty()
             if feature_dirty:

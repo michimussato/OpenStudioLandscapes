@@ -20,13 +20,13 @@ from OpenStudioLandscapes.engine.common_assets.compose_scope import (
     get_compose_scope_group__group_out,
     get_compose_scope_group__scrape_networks,
 )
+from OpenStudioLandscapes.engine.compose_scopes import GRAFANA_AVAILABLE
 from OpenStudioLandscapes.engine.compose_scopes.default.constants import *
 from OpenStudioLandscapes.engine.compose_scopes.default.simple_factories import (
     simple_factory_alloy,
     simple_factory_newt,
 )
 from OpenStudioLandscapes.engine.utils import *
-from OpenStudioLandscapes.engine.compose_scopes import GRAFANA_AVAILABLE
 
 # Todo:
 #  - [ ] get assets from common_assets
@@ -158,7 +158,9 @@ if bool(feature_ins):
                 port_range_pool=compose_scopes,
                 name="wrapper_alloy",
                 ins={
-                    "CONFIG": AssetIn(AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"])),
+                    "CONFIG": AssetIn(
+                        AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"])
+                    ),
                     "scrape_networks": AssetIn(
                         AssetKey([*ASSET_HEADER["key_prefix"], "scrape_networks"])
                     ),
@@ -169,6 +171,8 @@ if bool(feature_ins):
             )
             compose_scope_asset_defs.append(wrapper_alloy)
         else:
-            LOGGER.critical(f"Alloy wrapper is not available in Compose Scopes. "
-                            f"Install `OpenStudioLandscapes-Grafana` Feature "
-                            f"to unlock this functionality.")
+            LOGGER.critical(
+                f"Alloy wrapper is not available in Compose Scopes. "
+                f"Install `OpenStudioLandscapes-Grafana` Feature "
+                f"to unlock this functionality."
+            )

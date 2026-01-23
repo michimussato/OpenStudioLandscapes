@@ -158,7 +158,7 @@
       "version": "0.0.0"
     },
     {
-      "bom-ref": "BomRef.11281006284724182.8552776917238256",
+      "bom-ref": "BomRef.022043445738359257.34025628798874186",
       "description": "A Toolkit to create dynamic Animation and VFX studio environments for robust automation and pipelines.",
       "externalReferences": [
         {
@@ -3293,7 +3293,7 @@
       "version": "0.30.0"
     },
     {
-      "bom-ref": "setuptools==80.9.0",
+      "bom-ref": "setuptools==80.10.1",
       "description": "Easily download, build, install, upgrade, and uninstall Python packages",
       "externalReferences": [
         {
@@ -3321,9 +3321,9 @@
         }
       ],
       "name": "setuptools",
-      "purl": "pkg:pypi/setuptools@80.9.0",
+      "purl": "pkg:pypi/setuptools@80.10.1",
       "type": "library",
-      "version": "80.9.0"
+      "version": "80.10.1"
     },
     {
       "bom-ref": "six==1.17.0",
@@ -4130,6 +4130,44 @@
       "version": "16.0"
     },
     {
+      "bom-ref": "wheel==0.46.3",
+      "description": "Command line tool for manipulating wheel files",
+      "externalReferences": [
+        {
+          "comment": "from packaging metadata Project-URL: Documentation",
+          "type": "documentation",
+          "url": "https://wheel.readthedocs.io/"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Issue Tracker",
+          "type": "issue-tracker",
+          "url": "https://github.com/pypa/wheel/issues"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Source",
+          "type": "other",
+          "url": "https://github.com/pypa/wheel"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Changelog",
+          "type": "release-notes",
+          "url": "https://wheel.readthedocs.io/en/stable/news.html"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "acknowledgement": "declared",
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "wheel",
+      "purl": "pkg:pypi/wheel@0.46.3",
+      "type": "library",
+      "version": "0.46.3"
+    },
+    {
       "bom-ref": "yarl==1.22.0",
       "description": "Yet another URL library",
       "externalReferences": [
@@ -4232,8 +4270,7 @@
         "human-readable-id==0.0.3",
         "nox==2025.11.12",
         "pipdeptree==2.30.0",
-        "pydot==4.0.1",
-        "setuptools==80.9.0"
+        "pydot==4.0.1"
       ],
       "ref": "OpenStudioLandscapes==0.0.0"
     },
@@ -4281,6 +4318,9 @@
       "ref": "anyio==4.12.1"
     },
     {
+      "dependsOn": [
+        "wheel==0.46.3"
+      ],
       "ref": "argcomplete==3.6.3"
     },
     {
@@ -4397,7 +4437,7 @@
         "pytz==2025.2",
         "requests==2.32.5",
         "rich==14.2.0",
-        "setuptools==80.9.0",
+        "setuptools==80.10.1",
         "six==1.17.0",
         "structlog==25.5.0",
         "tabulate==0.9.0",
@@ -4426,7 +4466,8 @@
     },
     {
       "dependsOn": [
-        "idna==3.11"
+        "idna==3.11",
+        "wheel==0.46.3"
       ],
       "ref": "dnspython==2.8.0"
     },
@@ -4437,7 +4478,7 @@
         "graphviz==0.21",
         "pydot==4.0.1",
         "python-dotenv==1.2.1",
-        "setuptools==80.9.0"
+        "setuptools==80.10.1"
       ],
       "ref": "docker-compose-graph==1.0.0.post1.dev4+g3b0ba2c26"
     },
@@ -4508,11 +4549,14 @@
       "ref": "graphql-relay==3.2.0"
     },
     {
+      "dependsOn": [
+        "wheel==0.46.3"
+      ],
       "ref": "graphviz==0.21"
     },
     {
       "dependsOn": [
-        "setuptools==80.9.0"
+        "setuptools==80.10.1"
       ],
       "ref": "greenlet==3.3.0"
     },
@@ -4626,7 +4670,8 @@
     {
       "dependsOn": [
         "SQLAlchemy==2.0.46",
-        "setuptools==80.9.0"
+        "setuptools==80.10.1",
+        "wheel==0.46.3"
       ],
       "ref": "packageurl-python==0.17.6"
     },
@@ -4774,9 +4819,10 @@
         "pip==25.3",
         "platformdirs==4.5.1",
         "tomli==2.4.0",
-        "virtualenv==20.36.1"
+        "virtualenv==20.36.1",
+        "wheel==0.46.3"
       ],
-      "ref": "setuptools==80.9.0"
+      "ref": "setuptools==80.10.1"
     },
     {
       "ref": "six==1.17.0"
@@ -4861,7 +4907,7 @@
     },
     {
       "dependsOn": [
-        "setuptools==80.9.0"
+        "setuptools==80.10.1"
       ],
       "ref": "uvloop==0.22.1"
     },
@@ -4871,7 +4917,7 @@
         "filelock==3.20.3",
         "packaging==25.0",
         "platformdirs==4.5.1",
-        "setuptools==80.9.0",
+        "setuptools==80.10.1",
         "typing_extensions==4.15.0"
       ],
       "ref": "virtualenv==20.36.1"
@@ -4896,6 +4942,13 @@
     },
     {
       "dependsOn": [
+        "packaging==25.0",
+        "setuptools==80.10.1"
+      ],
+      "ref": "wheel==0.46.3"
+    },
+    {
+      "dependsOn": [
         "idna==3.11",
         "multidict==6.7.0",
         "propcache==0.4.1"
@@ -4904,7 +4957,7 @@
     }
   ],
   "metadata": {
-    "timestamp": "2026-01-22T08:54:09.229929+00:00",
+    "timestamp": "2026-01-23T10:01:53.395051+00:00",
     "tools": {
       "components": [
         {
@@ -5008,7 +5061,7 @@
       ]
     }
   },
-  "serialNumber": "urn:uuid:2891b538-60f7-4054-9e27-ad8a47312457",
+  "serialNumber": "urn:uuid:2ab3be47-07e6-45ef-affc-1d20a42a20dc",
   "version": 1,
   "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
   "bomFormat": "CycloneDX",

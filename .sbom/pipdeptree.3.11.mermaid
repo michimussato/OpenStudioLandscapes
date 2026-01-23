@@ -91,7 +91,7 @@ flowchart TD
     rfc3987-syntax["rfc3987-syntax\n1.1.0"]
     rich["rich\n14.2.0"]
     rpds-py["rpds-py\n0.30.0"]
-    setuptools["setuptools\n80.9.0"]
+    setuptools["setuptools\n80.10.1"]
     six["six\n1.17.0"]
     smmap["smmap\n5.0.2"]
     snakemd["SnakeMD\n2.4.0"]
@@ -116,6 +116,7 @@ flowchart TD
     watchfiles["watchfiles\n1.1.1"]
     webcolors["webcolors\n25.10.0"]
     websockets["websockets\n16.0"]
+    wheel["wheel\n0.46.3"]
     yarl["yarl\n1.22.0"]
     alembic -- ">=1.4.0" --> sqlalchemy
     alembic -- ">=4.12" --> typing-extensions
@@ -263,6 +264,7 @@ flowchart TD
     virtualenv -- ">=3.20.1,<4" --> filelock
     virtualenv -- ">=3.9.1,<5" --> platformdirs
     watchfiles -- ">=3.0.0" --> anyio
+    wheel -- ">=24.0" --> packaging
     yarl -- ">=0.2.1" --> propcache
     yarl -- ">=2.0" --> idna
     yarl -- ">=4.0" --> multidict
