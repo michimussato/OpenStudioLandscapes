@@ -1,4 +1,3 @@
-import shlex
 import shutil
 import os
 import tempfile
@@ -69,14 +68,23 @@ SESSION_RUN_SILENT = False
 # or
 # nox --tag [TAG] [TAG] [...]
 nox.options.sessions = [
-    "coverage",  # Todo
+    # "coverage",  # Todo
     "pyproject_engine",
     "pyproject_features",
     "sbom",
     "lint",
     "readme",
-    "release",  # Todo
-    "testing",  # Todo
+    # "release",  # Todo
+    # "testing",  # Todo
+]
+
+SESSION_PIP_UPGRADE = [
+    "pip",
+    "install",
+    "--upgrade",
+    "pip",
+    "setuptools",
+    "wheel",
 ]
 
 BATCH_EXCLUDED = []
@@ -671,11 +679,7 @@ def create_venv_features(session):
                     cmd2 = [
                         ".venv/bin/python",
                         "-m",
-                        "pip",
-                        "install",
-                        "--upgrade",
-                        "pip",
-                        "setuptools",
+                        *SESSION_PIP_UPGRADE,
                     ]
 
                     if sudo:
@@ -740,12 +744,7 @@ def install_features_into_engine(session):
     session.run(
         ".venv/bin/python",
         "-m",
-        "pip",
-        "install",
-        "--upgrade",
-        # "--force-reinstall",
-        "pip",
-        "setuptools",
+        *SESSION_PIP_UPGRADE,
         external=True,
         silent=SESSION_RUN_SILENT,
     )
@@ -1521,6 +1520,11 @@ def sbom(session, working_directory):
             silent=SESSION_INSTALL_SILENT,
         )
 
+        session.run(
+            *SESSION_PIP_UPGRADE,
+            silent=SESSION_INSTALL_SILENT,
+        )
+
         sbom_dir = pathlib.Path.cwd() / ".sbom"
         sbom_dir.mkdir(parents=True, exist_ok=True)
 
@@ -1558,78 +1562,78 @@ def sbom(session, working_directory):
 #######################################################################################################################
 
 
-#######################################################################################################################
-# Coverage
-@nox.session(python=PYTHON_TEST_VERSIONS, tags=["coverage"])
-@nox.parametrize(
-    "working_directory",
-    # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
-    [
-        nox.param(engine_dir.name, id=engine_dir.name),
-        *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED],
-    ],
-)
-def coverage(session, working_directory):
-    """
-    Runs coverage (not implemented).
-
-    Scope:
-    - [x] Engine
-    - [x] Features
-    """
-    # Ex:
-    # nox --session coverage
-    # nox --tags coverage
-
-    session.skip("Not implemented")
-
-    sudo = False
-
-    with session.chdir(engine_dir.parent / working_directory):
-
-        session.log(
-            f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
-        )
-
-        session.install(
-            "--no-cache-dir",
-            "-e",
-            ".[coverage]",
-            silent=SESSION_INSTALL_SILENT,
-        )
-
-        session.run(
-            "coverage",
-            "run",
-            "--source",
-            "src",
-            "-m",
-            "pytest",
-            "-sv",
-            env=ENV,
-            # external=True,
-            silent=SESSION_RUN_SILENT,
-        )  # ./.coverage
-        session.run(
-            "coverage",
-            "report",
-            # external=True,
-            silent=SESSION_RUN_SILENT,
-        )  # report to console
-        # session.run("coverage", "json", "-o", ".coverage", "coverage.json")  # report to json
-        session.run(
-            "coverage",
-            "json",
-            "-o",
-            "coverage.json",
-            # external=True,
-            silent=SESSION_RUN_SILENT,
-        )  # report to json
-        # session.run("coverage", "xml")  # ./coverage.xml
-        # session.run("coverage", "html")  # ./htmlcov/
-
-
-#######################################################################################################################
+# #######################################################################################################################
+# # Coverage
+# @nox.session(python=PYTHON_TEST_VERSIONS, tags=["coverage"])
+# @nox.parametrize(
+#     "working_directory",
+#     # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
+#     [
+#         nox.param(engine_dir.name, id=engine_dir.name),
+#         *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED],
+#     ],
+# )
+# def coverage(session, working_directory):
+#     """
+#     Runs coverage (not implemented).
+#
+#     Scope:
+#     - [x] Engine
+#     - [x] Features
+#     """
+#     # Ex:
+#     # nox --session coverage
+#     # nox --tags coverage
+#
+#     session.skip("Not implemented")
+#
+#     sudo = False
+#
+#     with session.chdir(engine_dir.parent / working_directory):
+#
+#         session.log(
+#             f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
+#         )
+#
+#         session.install(
+#             "--no-cache-dir",
+#             "-e",
+#             ".[coverage]",
+#             silent=SESSION_INSTALL_SILENT,
+#         )
+#
+#         session.run(
+#             "coverage",
+#             "run",
+#             "--source",
+#             "src",
+#             "-m",
+#             "pytest",
+#             "-sv",
+#             env=ENV,
+#             # external=True,
+#             silent=SESSION_RUN_SILENT,
+#         )  # ./.coverage
+#         session.run(
+#             "coverage",
+#             "report",
+#             # external=True,
+#             silent=SESSION_RUN_SILENT,
+#         )  # report to console
+#         # session.run("coverage", "json", "-o", ".coverage", "coverage.json")  # report to json
+#         session.run(
+#             "coverage",
+#             "json",
+#             "-o",
+#             "coverage.json",
+#             # external=True,
+#             silent=SESSION_RUN_SILENT,
+#         )  # report to json
+#         # session.run("coverage", "xml")  # ./coverage.xml
+#         # session.run("coverage", "html")  # ./htmlcov/
+#
+#
+# #######################################################################################################################
 
 
 #######################################################################################################################
@@ -1667,6 +1671,11 @@ def lint(session, working_directory):
             "--no-cache-dir",
             "-e",
             ".[lint]",
+            silent=SESSION_INSTALL_SILENT,
+        )
+
+        session.run(
+            *SESSION_PIP_UPGRADE,
             silent=SESSION_INSTALL_SILENT,
         )
 
@@ -1753,56 +1762,56 @@ def lint(session, working_directory):
 #######################################################################################################################
 
 
-#######################################################################################################################
-# Testing
-@nox.session(python=PYTHON_TEST_VERSIONS, tags=["testing"])
-@nox.parametrize(
-    "working_directory",
-    # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
-    [
-        nox.param(engine_dir.name, id=engine_dir.name),
-        *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED],
-    ],
-)
-def testing(session, working_directory):
-    """
-    Runs pytests (not implemented).
-
-    Scope:
-    - [x] Engine
-    - [x] Features
-    """
-    # Ex:
-    # nox --session testing
-    # nox --tags testing
-
-    session.skip("Not implemented")
-
-    sudo = False
-
-    with session.chdir(engine_dir.parent / working_directory):
-
-        session.log(
-            f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
-        )
-
-        session.install(
-            "--no-cache-dir",
-            "-e",
-            ".[testing]",
-            silent=SESSION_INSTALL_SILENT,
-        )
-
-        session.run(
-            "pytest",
-            *session.posargs,
-            env=ENV,
-            # external=True,
-            silent=SESSION_RUN_SILENT,
-        )
-
-
-#######################################################################################################################
+# #######################################################################################################################
+# # Testing
+# @nox.session(python=PYTHON_TEST_VERSIONS, tags=["testing"])
+# @nox.parametrize(
+#     "working_directory",
+#     # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
+#     [
+#         nox.param(engine_dir.name, id=engine_dir.name),
+#         *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED],
+#     ],
+# )
+# def testing(session, working_directory):
+#     """
+#     Runs pytests (not implemented).
+#
+#     Scope:
+#     - [x] Engine
+#     - [x] Features
+#     """
+#     # Ex:
+#     # nox --session testing
+#     # nox --tags testing
+#
+#     session.skip("Not implemented")
+#
+#     sudo = False
+#
+#     with session.chdir(engine_dir.parent / working_directory):
+#
+#         session.log(
+#             f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
+#         )
+#
+#         session.install(
+#             "--no-cache-dir",
+#             "-e",
+#             ".[testing]",
+#             silent=SESSION_INSTALL_SILENT,
+#         )
+#
+#         session.run(
+#             "pytest",
+#             *session.posargs,
+#             env=ENV,
+#             # external=True,
+#             silent=SESSION_RUN_SILENT,
+#         )
+#
+#
+# #######################################################################################################################
 
 
 #######################################################################################################################
@@ -1840,6 +1849,11 @@ def readme(session, working_directory):
             "--no-cache-dir",
             "-e",
             ".[readme]",
+            silent=SESSION_INSTALL_SILENT,
+        )
+
+        session.run(
+            *SESSION_PIP_UPGRADE,
             silent=SESSION_INSTALL_SILENT,
         )
 
@@ -1889,6 +1903,11 @@ def pyproject_engine(session):
     )
 
     session.run(
+        *SESSION_PIP_UPGRADE,
+        silent=SESSION_INSTALL_SILENT,
+    )
+
+    session.run(
         "openstudiolandscapesutil-versionbumper",
         "yamls-to-toml",
         "--root-yaml",
@@ -1932,6 +1951,11 @@ def pyproject_features(session, working_directory):
         silent=SESSION_INSTALL_SILENT,
     )
 
+    session.run(
+        *SESSION_PIP_UPGRADE,
+        silent=SESSION_INSTALL_SILENT,
+    )
+
     with session.chdir(engine_dir.parent / working_directory):
 
         session.log(
@@ -1955,69 +1979,69 @@ def pyproject_features(session, working_directory):
 #######################################################################################################################
 
 
-#######################################################################################################################
-# Release
-# Todo
-@nox.session(python=PYTHON_TEST_VERSIONS, tags=["release"])
-@nox.parametrize(
-    "working_directory",
-    # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
-    [
-        nox.param(engine_dir.name, id=engine_dir.name),
-        *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED],
-    ],
-)
-def release(session, working_directory):
-    """
-    Build and release to a repository (not implemented).
-
-    Scope:
-    - [x] Engine
-    - [x] Features
-    """
-    # Ex:
-    # nox --session release
-    # nox --tags release
-
-    session.skip("Not implemented")
-
-    sudo = False
-
-    with session.chdir(engine_dir.parent / working_directory):
-
-        session.log(
-            f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
-        )
-
-        session.install(
-            "--no-cache-dir",
-            "-e",
-            ".[release]",
-            silent=SESSION_INSTALL_SILENT,
-        )
-
-        pypi_user: str = os.environ.get("PYPI_USER")
-        pypi_pass: str = os.environ.get("PYPI_PASS")
-        if not pypi_user or not pypi_pass:
-            session.error(
-                "Environment variables for release: PYPI_USER, PYPI_PASS are missing!",
-            )
-        session.run("poetry", "install", external=True)
-        session.run("poetry", "build", external=True)
-        session.run(
-            "poetry",
-            "publish",
-            "-r",
-            "testpypi",
-            "-u",
-            pypi_user,
-            "-p",
-            pypi_pass,
-            external=True,
-        )
-
-
-#######################################################################################################################
+# #######################################################################################################################
+# # Release
+# # Todo
+# @nox.session(python=PYTHON_TEST_VERSIONS, tags=["release"])
+# @nox.parametrize(
+#     "working_directory",
+#     # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
+#     [
+#         nox.param(engine_dir.name, id=engine_dir.name),
+#         *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED],
+#     ],
+# )
+# def release(session, working_directory):
+#     """
+#     Build and release to a repository (not implemented).
+#
+#     Scope:
+#     - [x] Engine
+#     - [x] Features
+#     """
+#     # Ex:
+#     # nox --session release
+#     # nox --tags release
+#
+#     session.skip("Not implemented")
+#
+#     sudo = False
+#
+#     with session.chdir(engine_dir.parent / working_directory):
+#
+#         session.log(
+#             f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
+#         )
+#
+#         session.install(
+#             "--no-cache-dir",
+#             "-e",
+#             ".[release]",
+#             silent=SESSION_INSTALL_SILENT,
+#         )
+#
+#         pypi_user: str = os.environ.get("PYPI_USER")
+#         pypi_pass: str = os.environ.get("PYPI_PASS")
+#         if not pypi_user or not pypi_pass:
+#             session.error(
+#                 "Environment variables for release: PYPI_USER, PYPI_PASS are missing!",
+#             )
+#         session.run("poetry", "install", external=True)
+#         session.run("poetry", "build", external=True)
+#         session.run(
+#             "poetry",
+#             "publish",
+#             "-r",
+#             "testpypi",
+#             "-u",
+#             pypi_user,
+#             "-p",
+#             pypi_pass,
+#             external=True,
+#         )
+#
+#
+# #######################################################################################################################
 
 
 def menu_from_choices(
