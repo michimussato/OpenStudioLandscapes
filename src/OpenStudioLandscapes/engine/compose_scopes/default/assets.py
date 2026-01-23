@@ -26,6 +26,7 @@ from OpenStudioLandscapes.engine.compose_scopes.default.simple_factories import 
     simple_factory_newt,
 )
 from OpenStudioLandscapes.engine.utils import *
+from OpenStudioLandscapes.engine.compose_scopes import GRAFANA_AVAILABLE
 
 # Todo:
 #  - [ ] get assets from common_assets
@@ -136,7 +137,6 @@ if bool(feature_ins):
         #        - use specs
 
         # spec = {}
-
         wrapper_newt = simple_factory_newt(
             ASSET_HEADER=ASSET_HEADER,
             compose_scope=compose_scope,
@@ -151,19 +151,24 @@ if bool(feature_ins):
         compose_scope_asset_defs.append(wrapper_newt)
 
         # spec = {}
-        wrapper_alloy = simple_factory_alloy(
-            ASSET_HEADER=ASSET_HEADER,
-            compose_scope=compose_scope,
-            port_range_pool=compose_scopes,
-            name="wrapper_alloy",
-            ins={
-                "CONFIG": AssetIn(AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"])),
-                "scrape_networks": AssetIn(
-                    AssetKey([*ASSET_HEADER["key_prefix"], "scrape_networks"])
-                ),
-                "alloy_config": AssetIn(
-                    AssetKey(["OpenStudioLandscapes_Grafana", "alloy_config"])
-                ),
-            },
-        )
-        compose_scope_asset_defs.append(wrapper_alloy)
+        if GRAFANA_AVAILABLE:
+            wrapper_alloy = simple_factory_alloy(
+                ASSET_HEADER=ASSET_HEADER,
+                compose_scope=compose_scope,
+                port_range_pool=compose_scopes,
+                name="wrapper_alloy",
+                ins={
+                    "CONFIG": AssetIn(AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"])),
+                    "scrape_networks": AssetIn(
+                        AssetKey([*ASSET_HEADER["key_prefix"], "scrape_networks"])
+                    ),
+                    "alloy_config": AssetIn(
+                        AssetKey(["OpenStudioLandscapes_Grafana", "alloy_config"])
+                    ),
+                },
+            )
+            compose_scope_asset_defs.append(wrapper_alloy)
+        else:
+            LOGGER.critical(f"Alloy wrapper is not available in Compose Scopes. "
+                            f"Install `OpenStudioLandscapes-Grafana` Feature "
+                            f"to unlock this functionality.")

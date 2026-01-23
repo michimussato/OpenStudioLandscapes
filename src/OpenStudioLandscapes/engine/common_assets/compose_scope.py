@@ -22,6 +22,7 @@ from OpenStudioLandscapes.engine.base.ops.factories import (
     factory_compose_scope__scrape_networks,
 )
 from OpenStudioLandscapes.engine.compose_scopes.default.constants import *
+from OpenStudioLandscapes.engine.compose_scopes import GRAFANA_AVAILABLE
 from OpenStudioLandscapes.engine.config.models import ComposeScopeBaseModel
 from OpenStudioLandscapes.engine.constants import ASSET_HEADER_BASE
 from OpenStudioLandscapes.engine.link.models import (
@@ -150,16 +151,26 @@ def get_compose_scope_group__compose(
     compose_scope: str,
 ) -> AssetsDefinition:
 
+    # The wrapper_alloy asset availability depends on whether or not
+    # OpenStudioLandscapes-Grafana is installed or not
+    ins_alloy = keys_by_input_name_alloy = {}
+    if GRAFANA_AVAILABLE:
+        ins_alloy = {
+            "wrapper_alloy": In(Dict),
+        }
+        keys_by_input_name_alloy = {
+            "wrapper_alloy": AssetKey([*ASSET_HEADER["key_prefix"], "wrapper_alloy"])
+        }
+
     compose_scope_op__compose: OpDefinition = factory_compose_scope__compose(
         compose_scope=compose_scope,
         name=f"op_compose_scope__compose__{ASSET_HEADER['group_name']}",
         ins={
             "features_in": In(Dict),
-            # "scrape_networks": In(Dict),
             "CONFIG": In(ComposeScopeBaseModel),
             "group_out_base": In(OpenStudioLandscapesBaseOut),
             "wrapper_newt": In(Dict),
-            "wrapper_alloy": In(Dict),
+            **ins_alloy,
         },
         out={
             "compose": Out(Dict),
@@ -172,15 +183,12 @@ def get_compose_scope_group__compose(
         key_prefix=ASSET_HEADER["key_prefix"],
         keys_by_input_name={
             "features_in": AssetKey([*ASSET_HEADER["key_prefix"], "features_in"]),
-            # "scrape_networks": AssetKey(
-            #     [*ASSET_HEADER["key_prefix"], "scrape_networks"]
-            # ),
             "CONFIG": AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
             "group_out_base": AssetKey(
                 [*ASSET_HEADER_BASE["key_prefix"], "group_out_base"]
             ),
             "wrapper_newt": AssetKey([*ASSET_HEADER["key_prefix"], "wrapper_newt"]),
-            "wrapper_alloy": AssetKey([*ASSET_HEADER["key_prefix"], "wrapper_alloy"]),
+            **keys_by_input_name_alloy,
         },
         keys_by_output_name={},
     )
