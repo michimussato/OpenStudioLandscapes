@@ -9,18 +9,19 @@ project:
     robust automation and pipelines.
   name: OpenStudioLandscapes
   optional-dependencies:
-    pyproject:
-    - OpenStudioLandscapesUtil-VersionBumper @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-VersionBumper.git
+#    pyproject:
+#    - OpenStudioLandscapesUtil-VersionBumper @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-VersionBumper.git
     dev:
-    - OpenStudioLandscapes[testing]
+    # - OpenStudioLandscapes[testing]
     - OpenStudioLandscapes[lint]
-    - OpenStudioLandscapes[nox]
+    # - OpenStudioLandscapes[nox]
     - OpenStudioLandscapes[sbom]
-    - OpenStudioLandscapes[coverage]
+    # - OpenStudioLandscapes[coverage]
     - OpenStudioLandscapes[readme]
+    - OpenStudioLandscapes[pyproject]
     - OpenStudioLandscapesUtil-VersionBumper @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-VersionBumper.git
-    nox:
-    - OpenStudioLandscapes[testing]
+    # nox:
+    # - OpenStudioLandscapes[testing]
     sbom:
     - OpenStudioLandscapes[graphviz]
   urls:

@@ -1,22 +1,32 @@
 project:
-  dependencies:
-  - OpenStudioLandscapes @ git+https://github.com/michimussato/OpenStudioLandscapes
+  # dependencies:
+  # - OpenStudioLandscapes @ git+https://github.com/michimussato/OpenStudioLandscapes
   optional-dependencies:
+    optional-base: []
+    # - OpenStudioLandscapes @ git+https://github.com/michimussato/OpenStudioLandscapes.git
     # lint:
+    # - OpenStudioLandscapes @ git+https://github.com/michimussato/OpenStudioLandscapes.git
+    # release:
     # - OpenStudioLandscapes @ git+https://github.com/michimussato/OpenStudioLandscapes.git
     # nox:
     # - OpenStudioLandscapes @ git+https://github.com/michimussato/OpenStudioLandscapes.git
-    pyproject:
-    - OpenStudioLandscapesUtil-VersionBumper @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-VersionBumper.git
+#    pyproject:
+#    - OpenStudioLandscapesUtil-VersionBumper @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-VersionBumper.git
     # readme:
     # - OpenStudioLandscapes @ git+https://github.com/michimussato/OpenStudioLandscapes.git
     # sbom:
     # - OpenStudioLandscapes @ git+https://github.com/michimussato/OpenStudioLandscapes.git
+    # coverage:
+    # - OpenStudioLandscapes @ git+https://github.com/michimussato/OpenStudioLandscapes.git
+    # testing:
+    # - OpenStudioLandscapes @ git+https://github.com/michimussato/OpenStudioLandscapes.git
+#    pyproject_features:
+#    - OpenStudioLandscapes @ git+https://github.com/michimussato/OpenStudioLandscapes.git
 tool:
   setuptools:
     include-package-data: true
-    # This translates to:
-    # package-dir = {"" = "src"}
     package-dir:
+      # This translates to:
+      # package-dir = {"" = "src"}
       ? ''
       : src

@@ -66,9 +66,11 @@ project:
     # `pip install OpenStudioLandscapes[PDF]` like:
     # PDF = ReportLab; RXP
     # Add here test requirements (semicolon/line-separated)
-    coverage:
-    - coverage  # https://coverage.readthedocs.io/en/latest/
-    - pytest  # https://docs.pytest.org/en/stable/
+    pyproject:
+    - OpenStudioLandscapesUtil-VersionBumper @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-VersionBumper.git
+    # coverage:
+    # - coverage  # https://coverage.readthedocs.io/en/latest/
+    # - pytest  # https://docs.pytest.org/en/stable/
     graphviz:
     - graphviz  # https://graphviz.readthedocs.io/en/stable/
     - pipdeptree  # https://github.com/tox-dev/pipdeptree
@@ -77,16 +79,17 @@ project:
     - isort  # https://pycqa.github.io/isort/index.html
     - pre-commit  # https://pre-commit.com/
     - pylint  # https://docs.pylint.org/
-    nox:
-    - nox  # https://nox.thea.codes/en/stable/index.html
+    # nox:
+    # - nox  # https://nox.thea.codes/en/stable/index.html
     readme:
     - OpenStudioLandscapesUtil-ReadmeGenerator @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-ReadmeGenerator.git
     sbom:
     - cyclonedx-bom  # https://cyclonedx-bom-tool.readthedocs.io/en/latest/
-    testing:
-    - setuptools
-    - pytest  # https://docs.pytest.org/en/stable/
-    - pytest-cov  # https://pytest-cov.readthedocs.io/en/latest/
+    # Not Implemented
+    # testing:
+    # - setuptools
+    # - pytest  # https://docs.pytest.org/en/stable/
+    # - pytest-cov  # https://pytest-cov.readthedocs.io/en/latest/
   readme:
     # Change if running only on Windows, Mac or Linux (comma-separated)
     # Add here all kinds of additional classifiers as defined under
