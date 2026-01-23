@@ -43,18 +43,12 @@ requires-python = ">=3.11"
 [project.entry-points]
 
 [project.optional-dependencies]
-coverage = [
-    "coverage",
-    "pytest",
-]
 dev = [
     "OpenStudioLandscapesUtil-VersionBumper @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-VersionBumper.git",
-    "OpenStudioLandscapes[coverage]",
     "OpenStudioLandscapes[lint]",
-    "OpenStudioLandscapes[nox]",
+    "OpenStudioLandscapes[pyproject]",
     "OpenStudioLandscapes[readme]",
     "OpenStudioLandscapes[sbom]",
-    "OpenStudioLandscapes[testing]",
 ]
 graphviz = [
     "graphviz",
@@ -66,10 +60,6 @@ lint = [
     "pre-commit",
     "pylint",
 ]
-nox = [
-    "OpenStudioLandscapes[testing]",
-    "nox",
-]
 pyproject = [
     "OpenStudioLandscapesUtil-VersionBumper @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-VersionBumper.git",
 ]
@@ -79,11 +69,6 @@ readme = [
 sbom = [
     "OpenStudioLandscapes[graphviz]",
     "cyclonedx-bom",
-]
-testing = [
-    "pytest",
-    "pytest-cov",
-    "setuptools",
 ]
 
 [project.readme]
