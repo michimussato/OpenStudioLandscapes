@@ -259,6 +259,9 @@ def parse_args(args):
              "print installation instructions.",
     )
 
+    # Todo
+    #  - [ ] set branch, default=main `--branch`
+
     subparser_install_feature.add_argument(
         "--repo",
         "-r",
