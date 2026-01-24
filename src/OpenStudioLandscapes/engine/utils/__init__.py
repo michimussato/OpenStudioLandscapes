@@ -25,6 +25,7 @@ __all__ = [
 ]
 
 import copy
+import datetime
 import json
 import os
 import pathlib
@@ -65,6 +66,7 @@ def get_pip_install_str(
     pip_install_packages: List[str],
     python_str: str = "python{PYTHON_MAJ}.{PYTHON_MIN}",
     single_run_layer: bool = True,
+    bust_cache: bool = False,
 ) -> str:
     if bool(pip_install_packages):
         if single_run_layer:
@@ -76,6 +78,10 @@ def get_pip_install_str(
                 )
             )
             pip_install_str += " && %s -m pip cache purge" % (python_str)
+            if bust_cache:
+                pip_install_str += (
+                    f" && echo \"Cache busted at {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\"\n"
+                )
         else:
             pip_install_str: str = str()
             for pip_package in pip_install_packages:
@@ -85,6 +91,10 @@ def get_pip_install_str(
                         python_str,
                         pip_package,
                     )
+                )
+            if bust_cache:
+                pip_install_str += (
+                    f"RUN echo \"Cache busted at {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\"\n"
                 )
 
         return pip_install_str
