@@ -66,7 +66,7 @@ def get_pip_install_str(
     pip_install_packages: List[str],
     python_str: str = "python{PYTHON_MAJ}.{PYTHON_MIN}",
     single_run_layer: bool = True,
-    bust_cache: bool = False,
+    bust_cache: bool = False,  # https://medium.com/@aleksej.gudkov/how-to-disable-cache-in-docker-build-a-complete-guide-372e20507ed9
 ) -> str:
     if bool(pip_install_packages):
         if single_run_layer:
@@ -81,6 +81,7 @@ def get_pip_install_str(
             if bust_cache:
                 pip_install_str += (
                     f" && echo \"Cache busted at {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\"\n"
+                    # f" && echo \"Cache busted at $(date)\"\n"
                 )
         else:
             pip_install_str: str = str()
@@ -95,6 +96,7 @@ def get_pip_install_str(
             if bust_cache:
                 pip_install_str += (
                     f"RUN echo \"Cache busted at {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\"\n"
+                    # f"RUN echo \"Cache busted at $(date)\"\n"
                 )
 
         return pip_install_str
