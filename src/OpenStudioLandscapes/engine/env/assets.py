@@ -6,7 +6,7 @@ import socket
 import tempfile
 import textwrap
 import uuid
-from datetime import datetime
+import datetime
 from typing import Generator, MutableMapping
 
 import pytz
@@ -69,9 +69,9 @@ def landscape_id(
 
     if landscape_id is None:
 
-        now = datetime.now()
+        now = datetime.datetime.now()
 
-        now_prefix = datetime.strftime(now, "%Y-%m-%d_%H-%M-%S")
+        now_prefix = datetime.datetime.strftime(now, "%Y-%m-%d_%H-%M-%S")
 
         if CONFIG.openstudiolandscapes__human_readable_ids:
             id_ = generate_hrid(
@@ -333,7 +333,7 @@ def env(
         "AUTHOR": "michimussato@gmail.com",
         "CREATED_BY": str(getpass.getuser()),
         "CREATED_ON": str(socket.gethostname()),
-        "CREATED_AT": str(datetime.strftime(datetime.now(), "%Y-%m-%d_%H-%M-%S")),
+        "CREATED_AT": str(datetime.datetime.strftime(datetime.datetime.now(), "%Y-%m-%d_%H-%M-%S")),
         # Todo
         #  - [ ] move TIMEZONE to config.yml
         "TIMEZONE": str(tz),
