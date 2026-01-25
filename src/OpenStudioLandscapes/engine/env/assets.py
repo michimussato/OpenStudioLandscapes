@@ -1,3 +1,4 @@
+import datetime
 import getpass
 import json
 import os
@@ -6,7 +7,6 @@ import socket
 import tempfile
 import textwrap
 import uuid
-import datetime
 from typing import Generator, MutableMapping
 
 import pytz
@@ -333,7 +333,9 @@ def env(
         "AUTHOR": "michimussato@gmail.com",
         "CREATED_BY": str(getpass.getuser()),
         "CREATED_ON": str(socket.gethostname()),
-        "CREATED_AT": str(datetime.datetime.strftime(datetime.datetime.now(), "%Y-%m-%d_%H-%M-%S")),
+        "CREATED_AT": str(
+            datetime.datetime.strftime(datetime.datetime.now(), "%Y-%m-%d_%H-%M-%S")
+        ),
         # Todo
         #  - [ ] move TIMEZONE to config.yml
         "TIMEZONE": str(tz),

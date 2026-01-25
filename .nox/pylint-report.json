@@ -5447,19 +5447,6 @@
         "message-id": "C0116"
     },
     {
-        "type": "error",
-        "module": "OpenStudioLandscapes.engine.config.models",
-        "obj": "ComposeScopeBaseModel.docker_compose_expanded",
-        "line": 107,
-        "column": 12,
-        "endLine": 107,
-        "endColumn": 42,
-        "path": "src/OpenStudioLandscapes/engine/config/models.py",
-        "symbol": "no-member",
-        "message": "Instance of 'FieldInfo' has no 'expanduser' member",
-        "message-id": "E1101"
-    },
-    {
         "type": "convention",
         "module": "OpenStudioLandscapes.engine.config.models",
         "obj": "DockerRegistryConfig.lowercase_docker_repository_name",
@@ -5757,19 +5744,6 @@
         "symbol": "missing-function-docstring",
         "message": "Missing function or method docstring",
         "message-id": "C0116"
-    },
-    {
-        "type": "error",
-        "module": "OpenStudioLandscapes.engine.config.models",
-        "obj": "FeatureBaseModel.docker_compose_expanded",
-        "line": 559,
-        "column": 12,
-        "endLine": 559,
-        "endColumn": 42,
-        "path": "src/OpenStudioLandscapes/engine/config/models.py",
-        "symbol": "no-member",
-        "message": "Instance of 'FieldInfo' has no 'expanduser' member",
-        "message-id": "E1101"
     },
     {
         "type": "convention",
@@ -7972,7 +7946,7 @@
         "type": "warning",
         "module": "OpenStudioLandscapes.engine.env.assets",
         "obj": "",
-        "line": 337,
+        "line": 339,
         "column": 9,
         "endLine": null,
         "endColumn": null,
@@ -8086,32 +8060,6 @@
         "message-id": "W0621"
     },
     {
-        "type": "error",
-        "module": "OpenStudioLandscapes.engine.env.assets",
-        "obj": "landscape_id",
-        "line": 72,
-        "column": 14,
-        "endLine": 72,
-        "endColumn": 26,
-        "path": "src/OpenStudioLandscapes/engine/env/assets.py",
-        "symbol": "no-member",
-        "message": "Module 'datetime' has no 'now' member",
-        "message-id": "E1101"
-    },
-    {
-        "type": "error",
-        "module": "OpenStudioLandscapes.engine.env.assets",
-        "obj": "landscape_id",
-        "line": 74,
-        "column": 21,
-        "endLine": 74,
-        "endColumn": 38,
-        "path": "src/OpenStudioLandscapes/engine/env/assets.py",
-        "symbol": "no-member",
-        "message": "Module 'datetime' has no 'strftime' member",
-        "message-id": "E1101"
-    },
-    {
         "type": "convention",
         "module": "OpenStudioLandscapes.engine.env.assets",
         "obj": "dot_landscapes",
@@ -8203,32 +8151,6 @@
         "message-id": "C0103"
     },
     {
-        "type": "error",
-        "module": "OpenStudioLandscapes.engine.env.assets",
-        "obj": "env",
-        "line": 336,
-        "column": 26,
-        "endLine": 336,
-        "endColumn": 43,
-        "path": "src/OpenStudioLandscapes/engine/env/assets.py",
-        "symbol": "no-member",
-        "message": "Module 'datetime' has no 'strftime' member",
-        "message-id": "E1101"
-    },
-    {
-        "type": "error",
-        "module": "OpenStudioLandscapes.engine.env.assets",
-        "obj": "env",
-        "line": 336,
-        "column": 44,
-        "endLine": 336,
-        "endColumn": 56,
-        "path": "src/OpenStudioLandscapes/engine/env/assets.py",
-        "symbol": "no-member",
-        "message": "Module 'datetime' has no 'now' member",
-        "message-id": "E1101"
-    },
-    {
         "type": "warning",
         "module": "OpenStudioLandscapes.engine.env.assets",
         "obj": "",
@@ -8290,7 +8212,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/__init__.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[234:258]\n==OpenStudioLandscapes.engine.base.ops.factories:[1332:1356]\n    )\n\n    group_names_by_key_dict = context.assets_def.group_names_by_key\n    # Results in:\n    # Single Output:\n    # {AssetKey(['OpenCue', 'group_out']): 'OpenCue'}\n    # Multiple Outputs:\n    # {AssetKey(['Compose_default', 'group_out']): 'Compose_default', AssetKey(['Compose_default', 'compose_project_name']): 'Compose_default'}\n    context.log.debug(group_names_by_key_dict)\n\n    cmd_docker_compose_logs = [\n        \"$(which docker)\",\n        \"--config\",\n        docker_config_json.as_posix(),\n        \"compose\",\n        \"--progress\",\n        DOCKER_PROGRESS,\n        \"--file\",\n        DOCKER_COMPOSE.as_posix(),\n        \"--project-name\",\n        compose_project_name,\n        \"logs\",\n        \"--follow\",\n    ]",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[234:258]\n==OpenStudioLandscapes.engine.base.ops.factories:[1332:1356]\n        )\n\n        group_names_by_key_dict = context.assets_def.group_names_by_key\n        # Results in:\n        # Single Output:\n        # {AssetKey(['OpenCue', 'group_out']): 'OpenCue'}\n        # Multiple Outputs:\n        # {AssetKey(['Compose_default', 'group_out']): 'Compose_default', AssetKey(['Compose_default', 'compose_project_name']): 'Compose_default'}\n        context.log.debug(group_names_by_key_dict)\n\n        cmd_docker_compose_logs = [\n            \"$(which docker)\",\n            \"--config\",\n            docker_config_json.as_posix(),\n            \"compose\",\n            \"--progress\",\n            DOCKER_PROGRESS,\n            \"--file\",\n            DOCKER_COMPOSE.as_posix(),\n            \"--project-name\",\n            compose_project_name,\n            \"logs\",\n            \"--follow\",\n        ]",
         "message-id": "R0801"
     },
     {
@@ -8329,7 +8251,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/__init__.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[245:255]\n==OpenStudioLandscapes.engine.base.ops.factories:[1361:1371]\n            \"$(which docker)\",\n            \"--config\",\n            docker_config_json.as_posix(),\n            \"compose\",\n            \"--progress\",\n            DOCKER_PROGRESS,\n            \"--file\",\n            DOCKER_COMPOSE.as_posix(),\n            \"--project-name\",\n            compose_project_name,",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[245:255]\n==OpenStudioLandscapes.engine.base.ops.factories:[1361:1371]\n        \"$(which docker)\",\n        \"--config\",\n        docker_config_json.as_posix(),\n        \"compose\",\n        \"--progress\",\n        DOCKER_PROGRESS,\n        \"--file\",\n        DOCKER_COMPOSE.as_posix(),\n        \"--project-name\",\n        compose_project_name,",
         "message-id": "R0801"
     },
     {
@@ -8394,7 +8316,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/__init__.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[260:280]\n==OpenStudioLandscapes.engine.base.ops.factories:[1360:1380]\n    cmd_docker_compose_up = [\n        \"$(which docker)\",\n        \"--config\",\n        docker_config_json.as_posix(),\n        \"compose\",\n        \"--progress\",\n        DOCKER_PROGRESS,\n        \"--file\",\n        DOCKER_COMPOSE.as_posix(),\n        \"--project-name\",\n        compose_project_name,\n        \"up\",\n        \"--remove-orphans\",\n        # Todo\n        #  - [ ] `cmd_extend` seems to have no effect\n        #        this can't be intentional...\n        *{\n            \"cmd_extend\": cmd_extend,\n            \"detach\": [\"--detach\"],\n            \"nothing\": [],",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[260:280]\n==OpenStudioLandscapes.engine.base.ops.factories:[1360:1380]\n        cmd_docker_compose_up = [\n            \"$(which docker)\",\n            \"--config\",\n            docker_config_json.as_posix(),\n            \"compose\",\n            \"--progress\",\n            DOCKER_PROGRESS,\n            \"--file\",\n            DOCKER_COMPOSE.as_posix(),\n            \"--project-name\",\n            compose_project_name,\n            \"up\",\n            \"--remove-orphans\",\n            # Todo\n            #  - [ ] `cmd_extend` seems to have no effect\n            #        this can't be intentional...\n            *{\n                \"cmd_extend\": cmd_extend,\n                \"detach\": [\"--detach\"],\n                \"nothing\": [],",
         "message-id": "R0801"
     }
 ]
