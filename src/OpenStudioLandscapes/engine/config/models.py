@@ -303,36 +303,6 @@ class ConfigEngine(BaseModel):
         frozen=True,
     )
 
-    # # Todo:
-    # #  - [ ] do we need this?
-    # # this initilizes a 'GIT_ROOT' by the config.yml
-    # # not sure yet if this is really necessary.
-    # openstudiolandscapes__repository_root: pathlib.Path = Field(
-    #     default=pathlib.Path(
-    #         os.environ.get(
-    #             "OPENSTUDIOLANDSCAPES__REPOSITORY_ROOT",
-    #             default="~/git/repos/OpenStudioLandscapes",
-    #         )
-    #     ),
-    #     description="The full (local) path to the OpenStudioLandscapes Git repository.",
-    # )
-
-    # sudo_method: SudoMethod = Field(
-    #     default=SudoMethod.PKEXEC,
-    #     description=f"Setting up the MongoDB for {dist.name} requires you to "
-    #     f"some commands to be executed as a privileged user. Usually, "
-    #     f"`sudo` is fine and does not human interaction, however, "
-    #     f"it requires the `sudo` password to exist in the `SUDO_PASS` "
-    #     f"environment variable (`.env`). Same applies to `su`, while `su` "
-    #     f"is available in Linux distros by default. "
-    #     f"`pkexec` is *mostly* available on Linux systems with GUI's (Gnome, "
-    #     f"KDE etc.) and is the cleanest way to grant `root` privileges. "
-    #     f"It is does not require you to share your secrets in a "
-    #     f"`.env` file as you will be prompted interactively to enter the "
-    #     f"password before the commands are executed.",
-    #     examples=[i.name for i in SudoMethod],
-    # )
-
     openstudiolandscapes__domain_lan: str = Field(
         default=os.environ.get(
             "OPENSTUDIOLANDSCAPES__DOMAIN_LAN",
@@ -361,21 +331,19 @@ class ConfigEngine(BaseModel):
         examples=[i.value for i in SudoMethod],
     )
 
-    # This raises errors:
+    # This raises errors because the factory ConfigEngine is instanced directly
+    # without being subclassed:
     # global_bind_volumes: List = Field(
     #     default_factory=list,
     # )
     global_bind_volumes: List[str] = []
 
-    # This raises errors:
+    # This raises errors because the factory ConfigEngine is instanced directly
+    # without being subclassed:
     # global_environment_variables: Dict = Field(
     #     default_factory=dict,
     # )
     global_environment_variables: Dict[str, str] = {}
-
-    # test_attr: str = Field(
-    #     default="hello world",
-    # )
 
 
 # This is the Feature Base Model
@@ -450,6 +418,18 @@ class FeatureBaseModel(BaseModel):
 
     env: Dict = Field(
         default=None,
+    )
+
+    # This does not raise errors because each Feature subclasses this class.
+    local_bind_volumes: List[str] = Field(
+        default_factory=list,
+        description="Here you can define Feature specific, arbitrary, absolute bind volume mappings.",
+    )
+
+    # This does not raise errors because each Feature subclasses this class.
+    local_environment_variables: Dict[str, str] = Field(
+        default_factory=dict,
+        description="Here you can define Feature specific, arbitrary environment variables.",
     )
 
     config_engine: ConfigEngine = Field(
