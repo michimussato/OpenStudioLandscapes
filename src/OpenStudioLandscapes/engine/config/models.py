@@ -96,6 +96,11 @@ class ComposeScopeBaseModel(BaseModel):
         default=None,
     )
 
+    # Forward Annotation
+    config_engine: "ConfigEngine" = Field(
+        default=None,
+    )
+
     @property
     def docker_compose_expanded(self) -> pathlib.Path:
         ret = pathlib.Path(
@@ -355,6 +360,18 @@ class ConfigEngine(BaseModel):
         f"GUI is available.",
         examples=[i.value for i in SudoMethod],
     )
+
+    # This raises errors:
+    # global_bind_volumes: List = Field(
+    #     default_factory=list,
+    # )
+    global_bind_volumes: List[str] = []
+
+    # This raises errors:
+    # global_environment_variables: Dict = Field(
+    #     default_factory=dict,
+    # )
+    global_environment_variables: Dict[str, str] = {}
 
     # test_attr: str = Field(
     #     default="hello world",

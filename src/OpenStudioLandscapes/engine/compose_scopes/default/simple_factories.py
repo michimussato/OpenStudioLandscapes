@@ -1,38 +1,44 @@
 import json
 import pathlib
 import textwrap
-from typing import Any, Generator, Dict
+from typing import Any, Dict, Generator
 
 import yaml
 from dagster import (
-    asset,
-    Output,
+    AssetExecutionContext,
+    AssetIn,
     AssetMaterialization,
     AssetsDefinition,
-    AssetExecutionContext,
-    MetadataValue, AssetIn,
+    MetadataValue,
+    Output,
+    asset,
 )
 
-from OpenStudioLandscapes.engine.config.models import ComposeScopeBaseModel
-from OpenStudioLandscapes.engine.enums import DockerComposePolicies, DockerComposeNetworkMode
-from OpenStudioLandscapes.engine.utils import get_relative_path_via_common_root
-from OpenStudioLandscapes.engine.utils.docker.compose_dicts import DockerComposeServiceDefinition
 from OpenStudioLandscapes.engine.compose_scopes.default.constants import *
+from OpenStudioLandscapes.engine.config.models import ComposeScopeBaseModel, ConfigEngine
+from OpenStudioLandscapes.engine.enums import (
+    DockerComposeNetworkMode,
+    DockerComposePolicies,
+)
+from OpenStudioLandscapes.engine.link.models import OpenStudioLandscapesBaseOut
+from OpenStudioLandscapes.engine.utils import get_relative_path_via_common_root
+from OpenStudioLandscapes.engine.utils.docker.compose_dicts import (
+    DockerComposeServiceDefinition,
+)
 
 
 def simple_factory_newt(
-        ASSET_HEADER,
-        compose_scope,
-        name,
-        ins,
+    ASSET_HEADER,
+    compose_scope,
+    name,
+    ins,
 ) -> AssetsDefinition:
 
     @asset(
         **ASSET_HEADER,
         name=name,
         ins=ins,
-        description=textwrap.dedent(
-            """
+        description=textwrap.dedent("""
             This wrapper is disabled by default.
             To enable it, launch OpenStudioLandscapes with
             - `OPENSTUDIOLANDSCAPES__ATTACH_PANGOLIN_SITE_TO_COMPOSE_SCOPE=1` or `--attach-pangolin-site-to-compose-scope`
@@ -66,15 +72,18 @@ def simple_factory_newt(
             More info on the 
             - `ComposeScopes / ComposeScope_<COMPOSE_SCOPE> / docker_compose_commands`
             Assets.
-            """
-        ),
+            """),
     )
     def _asset(
-            context: AssetExecutionContext,
-            **kwargs,
+        context: AssetExecutionContext,
+        **kwargs,
     ) -> Generator[Output[Any] | AssetMaterialization | Any, Any, None]:
 
         CONFIG: ComposeScopeBaseModel = kwargs.pop("CONFIG")
+
+        # group_out_base: OpenStudioLandscapesBaseOut = kwargs.pop("group_out_base")
+        # # env_base: Dict = group_out_base.env
+        # config_engine: ConfigEngine = group_out_base.config_engine
 
         if CONFIG.attach_pangolin_site_to_compose_scope:
 
@@ -92,19 +101,30 @@ def simple_factory_newt(
                 "restart": DockerComposePolicies.RESTART_POLICY.ALWAYS,
                 "environment": {
                     "PANGOLIN_ENDPOINT": "${OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_%s__PANGOLIN_ENDPOINT}"
-                                         % compose_scope.upper(),
+                    % compose_scope.upper(),
                     "NEWT_ID": "${OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_%s__NEWT_ID}"
-                               % compose_scope.upper(),
+                    % compose_scope.upper(),
                     "NEWT_SECRET": "${OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_%s__NEWT_SECRET}"
-                                   % compose_scope.upper(),
+                    % compose_scope.upper(),
                     "ACCEPT_CLIENTS": "${OPENSTUDIOLANDSCAPES__PANGOLIN_SITE_%s__ACCEPT_CLIENTS:-false}"
-                                      % compose_scope.upper(),
+                    % compose_scope.upper(),
                     # "ACCEPT_CLIENTS": True,
                     "DOCKER_SOCKET": "/var/run/docker.sock",
+                    **CONFIG.config_engine.global_environment_variables,
                 },
-                "volumes": [
-                    "/var/run/docker.sock:/var/run/docker.sock",
-                ],
+                "volumes": list(
+                    {
+                        "/var/run/docker.sock:/var/run/docker.sock",
+                        *CONFIG.config_engine.global_bind_volumes,
+                    }
+                ),
+                # "command": [
+                #     "newt",
+                #     # -ping-interval string
+                #     #         Interval for pinging the server (default 3s) (default "3s")
+                #     #   -ping-timeout string
+                #     #                 Timeout for each ping (default 5s) (default "5s")
+                # ],
                 "networks": [],
             }
 
@@ -151,8 +171,12 @@ def simple_factory_newt(
         yield AssetMaterialization(
             asset_key=context.asset_key,
             metadata={
-                "enabled": MetadataValue.bool(CONFIG.attach_pangolin_site_to_compose_scope),
-                "service": MetadataValue.md(f"```json\n{json.dumps(service, indent=2, default=str)}\n```"),
+                "enabled": MetadataValue.bool(
+                    CONFIG.attach_pangolin_site_to_compose_scope
+                ),
+                "service": MetadataValue.md(
+                    f"```json\n{json.dumps(service, indent=2, default=str)}\n```"
+                ),
                 "compose_yaml": MetadataValue.md(f"```yaml\n{compose_yaml}\n```"),
             },
         )
@@ -161,19 +185,18 @@ def simple_factory_newt(
 
 
 def simple_factory_alloy(
-        ASSET_HEADER: Dict,
-        compose_scope: str,
-        port_range_pool: set,
-        name: str,
-        ins: Dict[str, AssetIn],
+    ASSET_HEADER: Dict,
+    compose_scope: str,
+    port_range_pool: set,
+    name: str,
+    ins: Dict[str, AssetIn],
 ) -> AssetsDefinition:
 
     @asset(
         **ASSET_HEADER,
         name=name,
         ins=ins,
-        description=textwrap.dedent(
-            """
+        description=textwrap.dedent("""
             This wrapper is disabled by default.
             To enable it, launch OpenStudioLandscapes with
             - `OPENSTUDIOLANDSCAPES__ATTACH_GRAFANA_ALLOY_TO_COMPOSE_SCOPE=1` or `--attach-grafana-alloy-to-compose-scope`
@@ -215,12 +238,11 @@ def simple_factory_alloy(
             - [Use Alloy to send logs to Loki](https://grafana.com/docs/alloy/latest/tutorials/send-logs-to-loki/)
             - [Use Alloy to send metrics to Prometheus](https://grafana.com/docs/alloy/latest/tutorials/send-metrics-to-prometheus/)
             - [Christian Lempa](https://www.youtube.com/watch?v=E654LPrkCjo)
-            """
-        ),
+            """),
     )
     def _asset(
-            context: AssetExecutionContext,
-            **kwargs,
+        context: AssetExecutionContext,
+        **kwargs,
     ) -> Generator[Output[Any] | AssetMaterialization | Any, Any, None]:
 
         CONFIG: ComposeScopeBaseModel = kwargs.pop("CONFIG")
@@ -276,19 +298,22 @@ def simple_factory_alloy(
                 )
 
             volumes_dict = {
-                "volumes": [
-                    *_volume_relative,
-                    # Non relative paths:
-                    "/:/rootfs:ro",
-                    "/var/run/docker.sock:/var/run/docker.sock",
-                    "/run:/run:ro",
-                    "/var/log:/var/log:ro",
-                    "/sys:/sys:ro",
-                    "/var/lib/docker:/var/lib/docker:ro",
-                    "/run/udev/data:/run/udev/data:ro",
-                    # [ ] /dev/disk/:/dev/disk:ro
-                    # [ ] /dev/zfs/:/dev/zfs:ro
-                ]
+                "volumes": list(
+                    {
+                        *_volume_relative,
+                         # Non relative paths:
+                         "/:/rootfs:ro",
+                         "/var/run/docker.sock:/var/run/docker.sock",
+                         "/run:/run:ro",
+                         "/var/log:/var/log:ro",
+                         "/sys:/sys:ro",
+                         "/var/lib/docker:/var/lib/docker:ro",
+                         "/run/udev/data:/run/udev/data:ro",
+                        # [ ] /dev/disk/:/dev/disk:ro
+                        # [ ] /dev/zfs/:/dev/zfs:ro
+                        *CONFIG.config_engine.global_bind_volumes,
+                    }
+                )
             }
 
             # Avoid port conflicts:
@@ -311,7 +336,9 @@ def simple_factory_alloy(
                 # Not setting a hostname means that a random name will be assigned.
                 "hostname": f"alloy-{compose_scope}",
                 "restart": DockerComposePolicies.RESTART_POLICY.ON_FAILURE_3,
-                # "environment": {},
+                "environment": {
+                    **CONFIG.config_engine.global_environment_variables,
+                },
                 "command": [
                     "run",
                     f"--server.http.listen-addr={CONFIG.grafana_alloy_listen_address}:{CONFIG.grafana_alloy_listen_port_container}",
@@ -320,9 +347,7 @@ def simple_factory_alloy(
                 ],
                 **volumes_dict,
                 # "network_mode": DockerComposePolicies.NETWORK_MODE.HOST,
-                "networks": [
-                    *scrape_networks.keys()
-                ],
+                "networks": [*scrape_networks.keys()],
                 "ports": [
                     port_mapping,
                 ],
@@ -366,9 +391,13 @@ def simple_factory_alloy(
         yield AssetMaterialization(
             asset_key=context.asset_key,
             metadata={
-                "enabled": MetadataValue.bool(CONFIG.attach_grafana_alloy_to_compose_scope),
+                "enabled": MetadataValue.bool(
+                    CONFIG.attach_grafana_alloy_to_compose_scope
+                ),
                 "alloy_config": MetadataValue.path(alloy_config),
-                "service": MetadataValue.md(f"```json\n{json.dumps(service, indent=2, default=str)}\n```"),
+                "service": MetadataValue.md(
+                    f"```json\n{json.dumps(service, indent=2, default=str)}\n```"
+                ),
                 "compose_yaml": MetadataValue.md(f"```yaml\n{compose_yaml}\n```"),
             },
         )

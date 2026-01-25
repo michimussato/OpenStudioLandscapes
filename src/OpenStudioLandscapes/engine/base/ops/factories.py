@@ -44,7 +44,7 @@ from docker_compose_graph.utils import *
 
 from OpenStudioLandscapes.engine.config.models import (
     ComposeScopeBaseModel,
-    FeatureBaseModel,
+    FeatureBaseModel, ConfigEngine,
 )
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.discovery import discovery
@@ -692,6 +692,9 @@ def factory_compose_scope__CONFIG(
         context.log.debug(f"{features_in = }")
 
         group_out_base: OpenStudioLandscapesBaseOut = kwargs.pop("group_out_base")
+        context.log.debug(f"{group_out_base = }")
+
+        config_engine: ConfigEngine = group_out_base.config_engine
 
         env: Dict = group_out_base.env
 
@@ -706,6 +709,7 @@ def factory_compose_scope__CONFIG(
                     "docker_compose",
                     "docker-compose.yml",
                 ),
+                "config_engine": config_engine,
             },
         )
 
