@@ -104,7 +104,7 @@ class ComposeScopeBaseModel(BaseModel):
     @property
     def docker_compose_expanded(self) -> pathlib.Path:
         ret = pathlib.Path(
-            self.docker_compose.expanduser()
+            self.docker_compose.expanduser()  # pylint: disable=E1101
             .as_posix()
             .format(
                 **self.env,
@@ -556,7 +556,7 @@ class FeatureBaseModel(BaseModel):
     @property
     def docker_compose_expanded(self) -> pathlib.Path:
         ret = pathlib.Path(
-            self.docker_compose.expanduser()
+            self.docker_compose.expanduser()  # pylint: disable=E1101
             .as_posix()
             .format(
                 **{
