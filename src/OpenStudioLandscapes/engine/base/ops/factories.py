@@ -44,7 +44,8 @@ from docker_compose_graph.utils import *
 
 from OpenStudioLandscapes.engine.config.models import (
     ComposeScopeBaseModel,
-    FeatureBaseModel, ConfigEngine,
+    ConfigEngine,
+    FeatureBaseModel,
 )
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.discovery import discovery

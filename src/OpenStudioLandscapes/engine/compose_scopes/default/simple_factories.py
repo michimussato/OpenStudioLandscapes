@@ -15,7 +15,10 @@ from dagster import (
 )
 
 from OpenStudioLandscapes.engine.compose_scopes.default.constants import *
-from OpenStudioLandscapes.engine.config.models import ComposeScopeBaseModel, ConfigEngine
+from OpenStudioLandscapes.engine.config.models import (
+    ComposeScopeBaseModel,
+    ConfigEngine,
+)
 from OpenStudioLandscapes.engine.enums import (
     DockerComposeNetworkMode,
     DockerComposePolicies,
@@ -301,14 +304,14 @@ def simple_factory_alloy(
                 "volumes": list(
                     {
                         *_volume_relative,
-                         # Non relative paths:
-                         "/:/rootfs:ro",
-                         "/var/run/docker.sock:/var/run/docker.sock",
-                         "/run:/run:ro",
-                         "/var/log:/var/log:ro",
-                         "/sys:/sys:ro",
-                         "/var/lib/docker:/var/lib/docker:ro",
-                         "/run/udev/data:/run/udev/data:ro",
+                        # Non relative paths:
+                        "/:/rootfs:ro",
+                        "/var/run/docker.sock:/var/run/docker.sock",
+                        "/run:/run:ro",
+                        "/var/log:/var/log:ro",
+                        "/sys:/sys:ro",
+                        "/var/lib/docker:/var/lib/docker:ro",
+                        "/run/udev/data:/run/udev/data:ro",
                         # [ ] /dev/disk/:/dev/disk:ro
                         # [ ] /dev/zfs/:/dev/zfs:ro
                         *CONFIG.config_engine.global_bind_volumes,
