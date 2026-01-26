@@ -20,7 +20,6 @@ from pydantic import (
     field_validator,
 )
 
-from OpenStudioLandscapes.engine.config.str_gen import get_config_str
 
 LOG = get_dagster_logger(__name__)
 
