@@ -112,7 +112,9 @@ def get_config_engine() -> ConfigEngine:
         # it does not exist
         if not engine_config_yml_expanded.exists():
             engine_config_yml_expanded.parent.mkdir(parents=True, exist_ok=True)
-            engine_config_yml_expanded.write_text(yaml.safe_dump(yaml.safe_load(ENGINE_CONFIG_STR)))
+            engine_config_yml_expanded.write_text(
+                yaml.safe_dump(yaml.safe_load(ENGINE_CONFIG_STR))
+            )
 
         dict_from_model: Dict = yaml.safe_load(ENGINE_CONFIG_STR)
         dict_from_config: Dict = yaml.safe_load(engine_config_yml_expanded.read_text())
@@ -125,11 +127,13 @@ def get_config_engine() -> ConfigEngine:
             **dict_from_config,
         }
 
-        config_engine: ConfigEngine = ConfigEngine(
-            **dict_updated
-        )
+        config_engine: ConfigEngine = ConfigEngine(**dict_updated)
 
-        engine_config_yml_expanded.write_text(yaml.safe_dump(json.loads(config_engine.model_dump_json(indent=2, fallback=str))))
+        engine_config_yml_expanded.write_text(
+            yaml.safe_dump(
+                json.loads(config_engine.model_dump_json(indent=2, fallback=str))
+            )
+        )
 
         # Read the `config.yml` as a str
         engine_config_str: str = engine_config_yml_expanded.read_text()
@@ -334,7 +338,9 @@ def get_config_dict_feature(
         except (KeyError, AttributeError) as e:
             raise ImportError(e) from e
 
-        config_yml_feature_expanded.write_text(yaml.safe_dump(yaml.safe_load(CONFIG_STR)))
+        config_yml_feature_expanded.write_text(
+            yaml.safe_dump(yaml.safe_load(CONFIG_STR))
+        )
 
     # Read the `config.yml` as a str
     config_str_feature: str = config_yml_feature_expanded.read_text()

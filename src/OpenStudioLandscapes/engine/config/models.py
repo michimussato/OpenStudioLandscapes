@@ -21,7 +21,6 @@ from pydantic import (
     field_validator,
 )
 
-
 LOG = get_dagster_logger(__name__)
 
 """
@@ -164,7 +163,9 @@ class BaseConfig(BaseModel):
                 #     kv = {field_k: "<NOT SET> (CHANGE_ME)"}
                 # else:
                 if isinstance(sub_class_value, pydantic.BaseModel):
-                    v = json.loads(sub_class_value.model_dump_json(indent=2, fallback=str))
+                    v = json.loads(
+                        sub_class_value.model_dump_json(indent=2, fallback=str)
+                    )
                 else:
                     v = sub_class_value
                 kv = {field_k: v}
