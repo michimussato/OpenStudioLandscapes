@@ -114,10 +114,10 @@ def get_config_engine() -> ConfigEngine:
             engine_config_yml_expanded.parent.mkdir(parents=True, exist_ok=True)
             engine_config_yml_expanded.write_text(yaml.safe_dump(yaml.safe_load(ENGINE_CONFIG_STR)))
 
-        dict_from_model = yaml.safe_load(ENGINE_CONFIG_STR)
-        dict_from_config = yaml.safe_load(engine_config_yml_expanded.read_text())
+        dict_from_model: Dict = yaml.safe_load(ENGINE_CONFIG_STR)
+        dict_from_config: Dict = yaml.safe_load(engine_config_yml_expanded.read_text())
 
-        dict_updated = {
+        dict_updated: Dict = {
             # use the model dict as base
             # with all the (also the new ones) defaults
             **dict_from_model,
@@ -334,7 +334,7 @@ def get_config_dict_feature(
         except (KeyError, AttributeError) as e:
             raise ImportError(e) from e
 
-        config_yml_feature_expanded.write_text(CONFIG_STR)
+        config_yml_feature_expanded.write_text(yaml.safe_dump(yaml.safe_load(CONFIG_STR)))
 
     # Read the `config.yml` as a str
     config_str_feature: str = config_yml_feature_expanded.read_text()
@@ -373,76 +373,27 @@ for package, feature in DISCOVERED_MODELS.items():
     # )
 
     try:
-        config_dict_feature = get_config_dict_feature(package, feature)
+        dict_from_config_feature = get_config_dict_feature(package, feature)
     except ImportError as e:
         LOGGER.error(f"`CONFIG_STR` for {package} not found. Ignoring.")
         continue
 
-    while True:
-        # Todo
-        #  - [ ] implement better logic to add new keys to the config.yml if
-        #        the model has changed.
+    dict_from_model_feature: Dict = yaml.safe_load(feature.models_object.CONFIG_STR)
 
-        config_feature_blueprint_dict_ = yaml.safe_load(
-            feature.models_object.CONFIG_STR
-        )
-        config_feature_blueprint: FeatureBaseModel = feature.models_object.Config(
-            **config_feature_blueprint_dict_
-        )
-
-        # Read the `config.yml` as a str
-        distribution: Distribution = metadata.distribution(package)
-        config_yml_feature: pathlib.Path = (
-            OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.joinpath(
-                distribution.name,
-                "config.yml",
-            )
-        )
-        LOGGER.info(f"{config_yml_feature = }")
-        config_yml_feature_expanded = config_yml_feature.expanduser()
-        feature_config_str_test: str = config_yml_feature_expanded.read_text()
-
-        feature_config_dict_test: Dict = yaml.safe_load(feature_config_str_test)
-
-        for key in config_feature_blueprint_dict_.keys():
-            # if not config_feature_blueprint.model_fields[key].is_required:
-            #     continue
-            try:
-                assert key in feature_config_dict_test
-            except AssertionError as err:
-                LOGGER.error(
-                    f"Required key `{key}` not found in {config_yml_feature_expanded.as_posix()}. "
-                    f"Discovery impossible until fixed."
-                )
-
-                if bool(
-                    int(
-                        os.environ.get(
-                            "OPENSTUDIOLANDSCAPES__RUN_AS_SYSTEMD_UNIT", default=0
-                        )
-                    )
-                ):
-                    raise OpenStudioLandscapesException() from err
-                else:
-                    LOGGER.error(
-                        f"Possible values for key `{key}` are: {config_feature_blueprint.model_fields[key].examples} "
-                        f"of type {config_feature_blueprint.model_fields[key].annotation}. \n"
-                        f"For reference of all fields, see "
-                        f"https://github.com/michimussato/OpenStudioLandscapes-{distribution.name}#default-configuration."
-                        f""
-                    )
-                    input("Add the key manually and press enter to continue")
-                break
-
-        else:
-            break
+    dict_updated_feature: Dict = {
+        # use the model dict as base
+        # with all the (also the new ones) defaults
+        **dict_from_model_feature,
+        # and override the values with values from the config if set
+        **dict_from_config_feature,
+    }
 
     # Config is the `OpenStudioLandscapes.<FEATURE>.config.models.Config` object.
     #
     # The `OpenStudioLandscapes.<FEATURE>.config.models.Config` itself inherits
     # from `OpenStudioLandscapes.engine.config.models.FeatureBaseModel`.
     config_model_object: FeatureBaseModel = feature.models_object.Config(
-        **config_dict_feature
+        **dict_updated_feature
     )
     LOGGER.info(f"{config_model_object = }")
     feature.config = config_model_object
