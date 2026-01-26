@@ -2,9 +2,11 @@ import enum
 import os
 import pathlib
 import re
+import textwrap
 from importlib.metadata import Distribution
 from typing import ClassVar, Dict, List
 
+import pydantic
 from dagster import (
     AssetIn,
     AssetKey,
@@ -50,7 +52,85 @@ class DockerRegistryAccess(enum.StrEnum):
     private = "private"
 
 
-class ComposeScopeBaseModel(BaseModel):
+class BaseConfig(BaseModel):
+
+    @classmethod
+    def get_docs(cls) -> str:
+        """
+        Implementation based on
+        https://trhallam.github.io/trhallam/blog/pydantic-yaml-config/#comments-for-repetitive-fields
+
+        This is a naive approach but works for now.
+
+        Examples:
+
+            from OpenStudioLandscapes.engine.config.models import ConfigEngine as Config
+            print(Config.get_docs())
+
+            from OpenStudioLandscapes.Kitsu.config.models import Config
+            print(Config.get_docs())
+
+
+        Returns:
+            str:
+
+        """
+
+        # doc = []
+        class_name = cls.__name__
+        docs = f"{''.rjust(len(class_name), '=')}\n"
+        docs += f"{class_name}\n"
+        docs += f"{''.rjust(len(class_name), '-')}\n"
+        docs += "\n"
+        docs += "Docstring:\n"
+        docs += textwrap.dedent(str(cls.__doc__))
+        docs += "\n\n"
+        fields = []
+
+        field: str
+        meta: pydantic.FieldInfo
+        for field, meta in cls.model_fields.items():
+
+            field_str = str()
+
+            field_str += f"{field}\n"
+            field_str += f"{''.rjust(len(field), '-')}\n"
+
+            if field in cls.__base__.model_fields:
+                base_class_name = cls.__base__.__name__
+
+                field_str += f"Base Model\n"
+                field_str += f"{''.rjust(len(field), '|')}\n"
+
+                # fields.append(
+                #     f"{field}\n"
+                #     f"{''.rjust(len(field), '-')}\n"
+                # field_str += # f"Field:\n\t{field}\n"
+                field_str += f"||\t{base_class_name} - Description:\n||\t\t{str(cls.__base__.model_fields[field].description)}\n"
+                # field_str += # f"Annotation:\n\t{meta.annotation}\n"
+                field_str += f"||\t{base_class_name} - Default:\n||\t\t{cls.__base__.model_fields[field].default}\n"
+                field_str += f"||\t{base_class_name} - Is required:\n||\t\t{cls.__base__.model_fields[field].is_required()}\n"
+                field_str += f"||\t{base_class_name} - Examples:\n||\t\t{str(cls.__base__.model_fields[field].examples)}\n"
+                field_str += f"{''.rjust(len(field), '|')}\n"
+                # )
+
+            # fields.append(
+                # f"{field}\n"
+                # f"{''.rjust(len(field), '-')}\n"
+                # f"Field:\n\t{field}\n"
+            field_str += f"Description:\n\t{str(meta.description)}\n"
+            field_str += f"Annotation:\n\t{meta.annotation}\n"
+            field_str += f"Default:\n\t{meta.default}\n"
+            field_str += f"Is required:\n\t{meta.is_required()}\n"
+            field_str += f"Examples:\n\t{str(meta.examples)}\n"
+            # )
+
+            fields.append(field_str)
+
+        return str(docs + "\n\n".join(fields)).rstrip()  # strip trailing newlines
+
+
+class ComposeScopeBaseModel(BaseConfig):
 
     compose_scope: str = Field()
 
@@ -113,7 +193,7 @@ class ComposeScopeBaseModel(BaseModel):
         return ret
 
 
-class DockerRegistryConfig(BaseModel):
+class DockerRegistryConfig(BaseConfig):
     """
     A current, valid DockerConfig:
     {
@@ -178,7 +258,7 @@ class DockerRegistryConfig(BaseModel):
         return value.lower()
 
 
-class DockerConfigModel(BaseModel):
+class DockerConfigModel(BaseConfig):
     use_registry: bool = Field(
         default=False,
         description="Enable use of local or remote registry: push/pull images to registry like hub.docker.io.",
@@ -199,7 +279,7 @@ class SudoMethod(enum.StrEnum):
     PKEXEC = "pkexec"
 
 
-class ConfigEngine(BaseModel):
+class ConfigEngine(BaseConfig):
     """
     An instance of this model has to be a singleton class.
     There can only be one ConfigEngine instance.
@@ -214,6 +294,7 @@ class ConfigEngine(BaseModel):
         return cls.instance
 
     openstudiolandscapes__docker_config: DockerConfigModel = Field(
+        description="The Docker Configuration for OpenStudioLandscapes.",
         default=DockerConfigModel(
             **{
                 "use_registry": DockerConfigModel.model_fields["use_registry"].default,
@@ -349,7 +430,7 @@ class ConfigEngine(BaseModel):
 # This is the Feature Base Model
 # DO NOT INSTANCE THIS DIRECTLY
 # use Config Subclass instead
-class FeatureBaseModel(BaseModel):
+class FeatureBaseModel(BaseConfig):
     """
     Base class for the Feature Config.
 
@@ -568,6 +649,6 @@ class FeatureBaseModel(BaseModel):
         return ret
 
 
-CONFIG_STR = get_config_str(
-    Config=ConfigEngine,
-)
+# Todo:
+#  - [ ] add to README.md
+CONFIG_STR = ConfigEngine.get_docs()
