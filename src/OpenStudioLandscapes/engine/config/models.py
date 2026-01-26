@@ -1,12 +1,13 @@
 import enum
+import json
 import os
 import pathlib
 import re
-import textwrap
 from importlib.metadata import Distribution
 from typing import ClassVar, Dict, List
 
 import pydantic
+import yaml
 from dagster import (
     AssetIn,
     AssetKey,
@@ -75,58 +76,106 @@ class BaseConfig(BaseModel):
 
         """
 
-        # doc = []
-        class_name = cls.__name__
-        docs = f"{''.rjust(len(class_name), '=')}\n"
-        docs += f"{class_name}\n"
-        docs += f"{''.rjust(len(class_name), '-')}\n"
-        docs += "\n"
-        docs += "Docstring:\n"
-        docs += textwrap.dedent(str(cls.__doc__))
-        docs += "\n\n"
-        fields = []
+        # # doc = []
+        # class_name = cls.__name__
+        # docs = f"# {''.rjust(len(class_name), '=')}\n"
+        # docs += f"# {class_name}\n"
+        # docs += f"# {''.rjust(len(class_name), '-')}\n"
+        # docs += "# \n"
+        # docs += "# Docstring:\n"
+        # docs += "".join([f"# {l}\n" for l in textwrap.dedent(str(cls.__doc__)).split("\n")])
+        # docs += "# \n\n"
+        # fields = []
 
-        field: str
-        meta: pydantic.FieldInfo
-        for field, meta in cls.model_fields.items():
+        LOG.info(f"{cls.model_fields = }")
 
-            field_str = str()
+        doc_str = str()
 
-            field_str += f"{field}\n"
-            field_str += f"{''.rjust(len(field), '-')}\n"
+        field_k: str
+        field_v: pydantic.FieldInfo
 
-            if field in cls.__base__.model_fields:
-                base_class_name = cls.__base__.__name__
+        for field_k, field_v in cls.model_fields.items():
+            try:
+                LOG.info(f"{field_k = }")
+                LOG.info(f"{field_v.is_required() = }")
+                # LOGGER.debug(f"Field name: {field_k}")
 
-                field_str += f"Base Model\n"
-                field_str += f"{''.rjust(len(field), '|')}\n"
+                # LOGGER.debug(f"\tValues specified in Config:")
 
-                # fields.append(
-                #     f"{field}\n"
-                #     f"{''.rjust(len(field), '-')}\n"
-                # field_str += # f"Field:\n\t{field}\n"
-                field_str += f"||\t{base_class_name} - Description:\n||\t\t{str(cls.__base__.model_fields[field].description)}\n"
-                # field_str += # f"Annotation:\n\t{meta.annotation}\n"
-                field_str += f"||\t{base_class_name} - Default:\n||\t\t{cls.__base__.model_fields[field].default}\n"
-                field_str += f"||\t{base_class_name} - Is required:\n||\t\t{cls.__base__.model_fields[field].is_required()}\n"
-                field_str += f"||\t{base_class_name} - Examples:\n||\t\t{str(cls.__base__.model_fields[field].examples)}\n"
-                field_str += f"{''.rjust(len(field), '|')}\n"
-                # )
+                sub_class_required = field_v.is_required()
+                sub_class_value = field_v.default
+                sub_class_annotation = field_v.annotation
+                sub_class_description = str(field_v.description)
+                sub_class_examples = str(field_v.examples)
+                # LOGGER.debug(f"\t\tType: {annotation}")
+                # LOGGER.debug(f"\t\tValue: {sub_class_value}")
+                # LOGGER.debug(f"\t\tDescription: {sub_class_description}")
 
-            # fields.append(
-                # f"{field}\n"
-                # f"{''.rjust(len(field), '-')}\n"
-                # f"Field:\n\t{field}\n"
-            field_str += f"Description:\n\t{str(meta.description)}\n"
-            field_str += f"Annotation:\n\t{meta.annotation}\n"
-            field_str += f"Default:\n\t{meta.default}\n"
-            field_str += f"Is required:\n\t{meta.is_required()}\n"
-            field_str += f"Examples:\n\t{str(meta.examples)}\n"
-            # )
+                doc_str += f"# {''.rjust(len(field_k), '=')}\n"
+                doc_str += f"# {field_k}\n"
+                doc_str += f"# {''.rjust(len(field_k), '-')}\n"
+                doc_str += f"#\n"
+                doc_str += f"# Type: {sub_class_annotation}\n"
 
-            fields.append(field_str)
+                base_class_value = ""
 
-        return str(docs + "\n\n".join(fields)).rstrip()  # strip trailing newlines
+                if field_k in cls.__base__.model_fields:
+                    # print(f"\tDefault Value: {Config.__base__.model_fields[field_k] = }")
+                    base_class_required = cls.__base__.model_fields[
+                        field_k
+                    ].is_required()
+                    base_class_value = cls.__base__.model_fields[field_k].default
+                    # base_class_annotation = Config.__base__.model_fields[field_k].annotation
+                    base_class_description = cls.__base__.model_fields[
+                        field_k
+                    ].description
+                    # LOGGER.debug(f"\t\tType: {base_class_annotation}")
+                    # LOGGER.debug(f"\t\tDefault Value: {base_class_value}")
+                    # LOGGER.debug(f"\t\tDefault Description: {base_class_description}")
+
+                    doc_str += (
+                        f"# Base Class Info:\n"
+                        f"#     Required:\n"
+                        f"#         {base_class_required}\n"
+                        f"#     Description:\n"
+                        f"#         {base_class_description}\n"
+                        f"#     Default value:\n"
+                        f"#         {base_class_value}\n"
+                    )
+
+                doc_str += (
+                    f"# Description:\n"
+                    f"#     {sub_class_description}\n"
+                    f"# Required:\n"
+                    f"#     {sub_class_required}\n"
+                    f"# Examples:\n"
+                    f"#     {sub_class_examples}\n"
+                )
+
+                try:
+                    if base_class_value == sub_class_value:
+                        doc_str += f"\n\n"
+                        continue
+
+                except UnboundLocalError as e:
+                    LOG.warning(f"{e}")
+
+                # if isinstance(sub_class_value, PydanticUndefinedType):
+                #     kv = {field_k: "<NOT SET> (CHANGE_ME)"}
+                # else:
+                if isinstance(sub_class_value, pydantic.BaseModel):
+                    v = json.loads(sub_class_value.model_dump_json(indent=2, fallback=str))
+                else:
+                    v = sub_class_value
+                kv = {field_k: v}
+
+                doc_str += f"{yaml.safe_dump(json.loads(json.dumps(kv, indent=2, default=str)))}\n\n"
+
+            except Exception as e:
+                LOG.error(f"{e}")
+                raise Exception from e
+
+        return doc_str.rstrip()  # strip trailing newlines
 
 
 class ComposeScopeBaseModel(BaseConfig):
