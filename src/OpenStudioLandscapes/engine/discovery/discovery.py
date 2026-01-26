@@ -3,6 +3,7 @@ This is the Feature discovery engine for OpenStudioLandscapes.
 """
 
 import importlib
+import json
 import os
 import pathlib
 from importlib import metadata
@@ -111,55 +112,24 @@ def get_config_engine() -> ConfigEngine:
         # it does not exist
         if not engine_config_yml_expanded.exists():
             engine_config_yml_expanded.parent.mkdir(parents=True, exist_ok=True)
-            engine_config_yml_expanded.write_text(ENGINE_CONFIG_STR)
+            engine_config_yml_expanded.write_text(yaml.safe_dump(yaml.safe_load(ENGINE_CONFIG_STR)))
 
-        else:
-            while True:
-                # Todo
-                #  - [ ] implement better logic to add new keys to the config.yml if
-                #        the model has changed.
+        dict_from_model = yaml.safe_load(ENGINE_CONFIG_STR)
+        dict_from_config = yaml.safe_load(engine_config_yml_expanded.read_text())
 
-                config_engine_blueprint_dict_ = yaml.safe_load(ENGINE_CONFIG_STR)
-                config_engine_blueprint: ConfigEngine = ConfigEngine(
-                    **config_engine_blueprint_dict_
-                )
+        dict_updated = {
+            # use the model dict as base
+            # with all the (also the new ones) defaults
+            **dict_from_model,
+            # and override the values with values from the config if set
+            **dict_from_config,
+        }
 
-                # Read the `config.yml` as a str
-                engine_config_str_test: str = engine_config_yml_expanded.read_text()
+        config_engine: ConfigEngine = ConfigEngine(
+            **dict_updated
+        )
 
-                engine_config_dict_test: Dict = yaml.safe_load(engine_config_str_test)
-
-                for key_ in config_engine_blueprint_dict_.keys():
-                    try:
-                        assert key_ in engine_config_dict_test
-                    except AssertionError as err_:
-                        LOGGER.error(
-                            f"Required key `{key_}` not found in {engine_config_yml_expanded.as_posix()}. "
-                            f"Discovery impossible until fixed."
-                        )
-
-                        if bool(
-                            int(
-                                os.environ.get(
-                                    "OPENSTUDIOLANDSCAPES__RUN_AS_SYSTEMD_UNIT",
-                                    default=0,
-                                )
-                            )
-                        ):
-                            raise OpenStudioLandscapesException() from err_
-                        else:
-                            LOGGER.error(
-                                f"Possible values for key `{key_}` are: {config_engine_blueprint.model_fields[key_].examples} "
-                                f"of type {config_engine_blueprint.model_fields[key].annotation}. \n"
-                                f"For reference of all fields, see `ConfigEngine` in "
-                                f"https://github.com/michimussato/OpenStudioLandscapes/blob/main/src/OpenStudioLandscapes/engine/config/models.py."
-                                f""
-                            )
-                            input("Add the key manually and press enter to continue")
-                        break
-
-                else:
-                    break
+        engine_config_yml_expanded.write_text(yaml.safe_dump(json.loads(config_engine.model_dump_json(indent=2, fallback=str))))
 
         # Read the `config.yml` as a str
         engine_config_str: str = engine_config_yml_expanded.read_text()
