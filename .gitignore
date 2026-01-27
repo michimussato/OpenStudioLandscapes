@@ -33,8 +33,6 @@ tags
 htmlcov/*
 .coverage
 .coverage.*
-.tox/*/
-.nox/*/
 junit*.xml
 coverage.xml
 .pytest_cache/
@@ -71,6 +69,12 @@ docker/.volumes/.landscapes/*/
 .dagster-postgres/*
 !.dagster-postgres/.gitkeep
 tmp*/
+
+# Nox
+.nox/*
+!.nox/.gitkeep
+!.nox/pylint-report.json
+!.nox/pylint-report.txt
 
 # Pi-hole
 .pi-hole/*
