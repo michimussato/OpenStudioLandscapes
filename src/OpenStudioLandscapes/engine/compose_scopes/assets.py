@@ -21,8 +21,8 @@ from OpenStudioLandscapes.engine.common_assets.compose_scope import (
     get_compose_scope_group__scrape_networks,
 )
 from OpenStudioLandscapes.engine.compose_scopes import GRAFANA_AVAILABLE
-from OpenStudioLandscapes.engine.compose_scopes.default.constants import *
-from OpenStudioLandscapes.engine.compose_scopes.default.simple_factories import (
+from OpenStudioLandscapes.engine.compose_scopes.constants import *
+from OpenStudioLandscapes.engine.compose_scopes.simple_factories import (
     simple_factory_alloy,
     simple_factory_newt,
 )

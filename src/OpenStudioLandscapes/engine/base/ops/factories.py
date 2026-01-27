@@ -1523,7 +1523,7 @@ def factory_compose_scope__group_out(
             # Enable Unit with:
             # systemctl --user enable --now openstudiolandscapes-{compose_scope}@${{USER}}.service
             # Check Journal with:
-            # journalctl --user -fu openstudiolandscapes-{compose_scope}@${{USER}}.service
+            # journalctl --user --output cat -fu openstudiolandscapes-{compose_scope}@${{USER}}.service
             """)
 
         # Todo

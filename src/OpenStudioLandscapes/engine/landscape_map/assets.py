@@ -16,7 +16,7 @@ from dagster import (
 )
 from pydot import Dot
 
-from OpenStudioLandscapes.engine.compose_scopes.default.assets import (
+from OpenStudioLandscapes.engine.compose_scopes.assets import (
     COMPOSE_SCOPE_GROUP_PREFIX,
 )
 from OpenStudioLandscapes.engine.config import dist

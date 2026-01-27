@@ -3,16 +3,16 @@ from dagster import (
     load_assets_from_modules,
 )
 
-import OpenStudioLandscapes.engine.compose_scopes.default.assets
-import OpenStudioLandscapes.engine.compose_scopes.default.constants
+import OpenStudioLandscapes.engine.compose_scopes.assets
+import OpenStudioLandscapes.engine.compose_scopes.constants
 
 assets = load_assets_from_modules(
-    modules=[OpenStudioLandscapes.engine.compose_scopes.default.assets]
+    modules=[OpenStudioLandscapes.engine.compose_scopes.assets]
 )
 
 if bool(assets):
     constants = load_assets_from_modules(
-        [OpenStudioLandscapes.engine.compose_scopes.default.constants]
+        [OpenStudioLandscapes.engine.compose_scopes.constants]
     )
 else:
     # This prevents constants asset from showing up it the

@@ -14,16 +14,14 @@ from dagster import (
     asset,
 )
 
-from OpenStudioLandscapes.engine.compose_scopes.default.constants import *
+from OpenStudioLandscapes.engine.compose_scopes.constants import *
 from OpenStudioLandscapes.engine.config.models import (
     ComposeScopeBaseModel,
-    ConfigEngine,
 )
 from OpenStudioLandscapes.engine.enums import (
     DockerComposeNetworkMode,
     DockerComposePolicies,
 )
-from OpenStudioLandscapes.engine.link.models import OpenStudioLandscapesBaseOut
 from OpenStudioLandscapes.engine.utils import get_relative_path_via_common_root
 from OpenStudioLandscapes.engine.utils.docker.compose_dicts import (
     DockerComposeServiceDefinition,
