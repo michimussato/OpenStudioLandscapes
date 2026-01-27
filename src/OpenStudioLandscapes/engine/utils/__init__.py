@@ -578,8 +578,10 @@ def get_str_env(
 
     _env = os.environ[env]
     if not bool(_env):
-        LOGGER.warning(f"Environment variable {env = } is set but has empty value. "
-                       f"Setting value to {default = }")
+        LOGGER.warning(
+            f"Environment variable {env = } is set but has empty value. "
+            f"Setting value to {default = }"
+        )
         _env = default
 
     return _env

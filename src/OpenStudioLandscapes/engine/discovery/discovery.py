@@ -29,8 +29,8 @@ LOGGER.info("Start bootstrapping...")
 
 
 def update_config_yml(
-        config_yml_expanded: pathlib.Path,
-        config: Union[ConfigEngine, FeatureBaseModel],
+    config_yml_expanded: pathlib.Path,
+    config: Union[ConfigEngine, FeatureBaseModel],
 ) -> None:
 
     yaml_str: str = yaml.safe_dump(
@@ -46,7 +46,6 @@ def update_config_yml(
         config_yml_expanded.write_text(yaml_str)
 
     return None
-
 
 
 # def has_handle(
