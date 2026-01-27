@@ -573,15 +573,14 @@ def get_str_env(
     # whereas we want:
     # os.getenv("EMPTY_VAR") or "some_value"
 
-    try:
-        _env = os.environ[env]
-        if not bool(_env):
-            raise KeyError(
-                f"Environment Variable {env} is set but has no value:" f"{_env = }"
-            )
-    except KeyError as e:
+    if env not in os.environ:
+        return default
+
+    _env = os.environ[env]
+    if not bool(_env):
+        LOGGER.warning(f"Environment variable {env = } is set but has empty value. "
+                       f"Setting value to {default = }")
         _env = default
-        LOGGER.warning(e)
 
     return _env
 

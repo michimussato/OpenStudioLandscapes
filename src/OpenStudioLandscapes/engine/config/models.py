@@ -226,8 +226,11 @@ class ComposeScopeBaseModel(BaseConfig):
     )
 
     # Forward Annotation
+    # Reference:
+    # - https://docs.pydantic.dev/latest/concepts/forward_annotations/
     config_engine: "ConfigEngine" = Field(
         default=None,
+        exclude=True,
     )
 
     @property
@@ -446,7 +449,7 @@ class ConfigEngine(BaseConfig):
     )
 
     sudo_method: SudoMethod = Field(
-        default=SudoMethod.SUDO,
+        default=SudoMethod.PKEXEC,  # Defaults to PKEXEC so that SUDO_PASS is always optional
         description=f"Usually, `sudo` is fine and does not require human interaction, however, "
         f"it requires the `sudo` password to exist in the `SUDO_PASS` "
         f"environment variable (`.env`). Same applies to `su` (not implemented), while `su` "
@@ -547,7 +550,7 @@ class FeatureBaseModel(BaseConfig):
         return f"{self.feature_name}"
 
     env: Dict = Field(
-        default=None,
+        default_factory=dict,
     )
 
     # This does not raise errors because each Feature subclasses this class.
@@ -564,17 +567,14 @@ class FeatureBaseModel(BaseConfig):
 
     config_engine: ConfigEngine = Field(
         default=None,
-    )
-
-    # Forward Annotation
-    # Reference:
-    # - https://docs.pydantic.dev/latest/concepts/forward_annotations/
-    config_parent: "FeatureBaseModel" = Field(
-        default=None,
+        # Exclude Field from Model Serialization
+        exclude=True,
     )
 
     distribution: Distribution = Field(
         default=None,
+        # Exclude Field from Model Serialization
+        exclude=True,
     )
 
     # Dagster Attributes

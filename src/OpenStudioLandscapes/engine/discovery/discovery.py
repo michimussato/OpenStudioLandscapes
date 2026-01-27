@@ -9,7 +9,7 @@ import pathlib
 from importlib import metadata
 from importlib.metadata import Distribution
 from types import ModuleType
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Union
 
 import git
 import yaml
@@ -26,6 +26,47 @@ LOGGER = get_dagster_logger(__name__)
 
 
 LOGGER.info("Start bootstrapping...")
+
+
+def update_config_yml(
+        config_yml_expanded: pathlib.Path,
+        config: Union[ConfigEngine, FeatureBaseModel],
+) -> None:
+
+    yaml_str: str = yaml.safe_dump(
+        json.loads(config.model_dump_json(indent=2, fallback=str))
+    )
+    LOGGER.debug(f"{yaml_str = }")
+
+    if config_yml_expanded.read_text() == yaml_str:
+        # No need to update the file contents
+        LOGGER.debug(f"File contents have not changed.")
+    else:
+        LOGGER.info(f"Updating file contents of {config_yml_expanded.as_posix()}...")
+        config_yml_expanded.write_text(yaml_str)
+
+    return None
+
+
+
+# def has_handle(
+#     fpath: pathlib.Path,
+# ):
+#     # Checks if a file is currently open (aka. has a handle)
+#     for proc in psutil.process_iter():
+#         try:
+#             for item in proc.open_files():
+#                 if fpath == item.path:
+#                     LOGGER.debug(f"File currently opened by process: {fpath.as_posix()}")
+#                     return True
+#         except psutil.AccessDenied as access_denied:
+#             LOGGER.debug(f"Access denied: {access_denied}")
+#         except psutil.NoSuchProcess as no_such_process:
+#             LOGGER.debug(f"No such process: {no_such_process}")
+#         except FileNotFoundError as file_not_found:
+#             LOGGER.debug(f"File not found: {file_not_found}")
+#
+#     return False
 
 
 # Important
@@ -112,6 +153,7 @@ def get_config_engine() -> ConfigEngine:
         # it does not exist
         if not engine_config_yml_expanded.exists():
             engine_config_yml_expanded.parent.mkdir(parents=True, exist_ok=True)
+
             engine_config_yml_expanded.write_text(
                 yaml.safe_dump(yaml.safe_load(ENGINE_CONFIG_STR))
             )
@@ -129,10 +171,9 @@ def get_config_engine() -> ConfigEngine:
 
         config_engine: ConfigEngine = ConfigEngine(**dict_updated)
 
-        engine_config_yml_expanded.write_text(
-            yaml.safe_dump(
-                json.loads(config_engine.model_dump_json(indent=2, fallback=str))
-            )
+        update_config_yml(
+            config_yml_expanded=engine_config_yml_expanded,
+            config=config_engine,
         )
 
         # Read the `config.yml` as a str
@@ -313,6 +354,18 @@ for package in get_namespace_packages():
 LOGGER.info(f"{DISCOVERED_MODELS = }")
 
 
+def get_feature_config_yml(
+    package: str,
+) -> pathlib.Path:
+    distribution: Distribution = metadata.distribution(package)
+
+    config_yml_feature: pathlib.Path = OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.joinpath(
+        distribution.name,
+        "config.yml",
+    )
+    return config_yml_feature
+
+
 def get_config_dict_feature(
     package: str,
     feature: OpenStudioLandscapesDiscoveredFeature,
@@ -322,10 +375,7 @@ def get_config_dict_feature(
     # Create the `config.yml` for the feature
     # with the default `CONFIG_STR` if
     # it does not exist
-    config_yml_feature: pathlib.Path = OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.joinpath(
-        distribution.name,
-        "config.yml",
-    )
+    config_yml_feature: pathlib.Path = get_feature_config_yml(package)
     LOGGER.info(f"{config_yml_feature = }")
     config_yml_feature_expanded = config_yml_feature.expanduser()
 
@@ -347,6 +397,7 @@ def get_config_dict_feature(
     LOGGER.info(f"{config_str_feature = }")
 
     config_dict_feature: Dict = yaml.safe_load(config_str_feature)
+    LOGGER.info(f"{config_dict_feature = }")
 
     # Also inject the ConfigEngine object
     config_dict_feature["config_engine"] = config_engine
@@ -404,6 +455,14 @@ for package, feature in DISCOVERED_MODELS.items():
     LOGGER.info(f"{config_model_object = }")
     feature.config = config_model_object
 
+    config_yml_feature: pathlib.Path = get_feature_config_yml(package)
+    LOGGER.info(f"{config_yml_feature = }")
+    config_yml_feature_expanded = config_yml_feature.expanduser()
+
+    update_config_yml(
+        config_yml_expanded=config_yml_feature_expanded,
+        config=feature.config,
+    )
 
 LOGGER.info(f"{FeatureBaseModel.subclasses = }")
 #  FeatureBaseModel.subclasses =
