@@ -12,6 +12,8 @@
   * [Add Features](#add-features)
   * [Run OpenStudioLandscapes](#run-openstudiolandscapes)
     * [CLI](#cli)
+      * [Sub-Commands](#sub-commands)
+        * [install-feature](#install-feature)
     * [Launch OpenStudioLandscapes](#launch-openstudiolandscapes)
     * [Create Landscape](#create-landscape)
     * [Launch the Landscape](#launch-the-landscape)
@@ -241,6 +243,7 @@ usage: openstudiolandscapes [-h] [-v] [-vv] [--attach-grafana-alloy-to-compose-s
                             [--attach-pangolin-site-to-compose-scope] [--run-as-systemd-unit]
                             [--domain-wan OPENSTUDIOLANDSCAPES__DOMAIN_WAN]
                             [--config-store OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT]
+                            [--config-store-vcs OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS]
                             [--landscapes-root OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT]
                             [--landscapes-id OPENSTUDIOLANDSCAPES__LANDSCAPE_ID]
                             [--skip-update-check | --auto-update]
@@ -269,6 +272,10 @@ options:
   --landscapes-root OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT
                         Set the Landscape root path. A `.landscapes` subdirectory will be created and
                         used.
+  --config-store-vcs OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS
+                        If the config store is part of a Git repository already, you can specify the 
+                        path to the repo here. Defaults to the same value like 
+                        `OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT`.
   --landscapes-id OPENSTUDIOLANDSCAPES__LANDSCAPE_ID
                         Lock the landscape_id to this value.
   --skip-update-check   Skip checking for codebase updates.
