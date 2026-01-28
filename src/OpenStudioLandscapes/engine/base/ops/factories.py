@@ -1529,7 +1529,7 @@ def factory_compose_scope__group_out(
             # Install systemd service with:
             
             systemctl --user disable --now openstudiolandscapes-{compose_scope}@${{USER}}.service
-            sudo tee /usr/lib/systemd/user/openstudiolandscapes-{compose_scope}@.service << EOF
+            sudo tee /etc/systemd/user/openstudiolandscapes-{compose_scope}@.service << EOF
             {textwrap.indent(systemd_unit, prefix='            ')}
             EOF
             
