@@ -1483,7 +1483,7 @@ def factory_compose_scope__group_out(
             # {urllib.parse.quote(f"http://localhost:3000/asset-groups/%s" % '%2F'.join(asset_key_systemd_unit), safe=":/%")}
             # More info on systemd specifiers:
             # - https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html?__goaway_challenge=meta-refresh&__goaway_id=af831620b51d37fbc05006860cc19eca&__goaway_referer=https%3A%2F%2Fduckduckgo.com%2F#Specifiers
-            Description=OpenStudioLandscapes Worker Systemd Unit (%n) - {env['LANDSCAPE']}
+            Description=OpenStudioLandscapes Compose Scope "{compose_scope}" Systemd Unit (%n) - {env['LANDSCAPE']}
             After=docker.service
             Wants=docker.service
             ReloadPropagatedFrom=docker.service
