@@ -1500,7 +1500,7 @@ def factory_compose_scope__group_out(
             #   EnvironmentFile with root only read access                   #
             #   like ~/.config/OpenStudioLandscapes/ComposeScope_default.env #
             Environment="SUDO_PASS="
-            # Environment="LANDSCAPE_ID=\${env['LANDSCAPE']}"
+            # Environment="LANDSCAPE_ID=${env['LANDSCAPE']}"
             Environment="OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_{compose_scope.upper()}__PANGOLIN_ENDPOINT="
             Environment="OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_{compose_scope.upper()}__NEWT_ID="
             Environment="OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_{compose_scope.upper()}__NEWT_SECRET="
@@ -1508,8 +1508,8 @@ def factory_compose_scope__group_out(
             RestartSec=5
             # WorkingDirectory=/data/share/nfs/.openstudiolandscapes/.landscapes
             # for this service, the scripts need
-            ExecStart=/usr/bin/bash -lc "echo \${{SUDO_PASS}} | {script_cmd_docker_compose_up.as_posix()}"
-            ExecStop=/usr/bin/bash -lc "echo \${{SUDO_PASS}} | {script_cmd_docker_compose_down.as_posix()}"
+            ExecStart=/usr/bin/bash -lc "echo ${{SUDO_PASS}} | {script_cmd_docker_compose_up.as_posix()}"
+            ExecStop=/usr/bin/bash -lc "echo ${{SUDO_PASS}} | {script_cmd_docker_compose_down.as_posix()}"
             
             [Install]
             WantedBy=default.target
@@ -1529,7 +1529,7 @@ def factory_compose_scope__group_out(
             # Install systemd service with:
             
             systemctl --user disable --now openstudiolandscapes-{compose_scope}@${{USER}}.service
-            sudo tee /etc/systemd/user/openstudiolandscapes-{compose_scope}@.service << EOF
+            sudo tee /usr/lib/systemd/user/openstudiolandscapes-{compose_scope}@.service << EOF
             {textwrap.indent(systemd_unit, prefix='            ')}
             EOF
             
