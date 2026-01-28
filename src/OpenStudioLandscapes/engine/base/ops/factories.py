@@ -1532,6 +1532,8 @@ def factory_compose_scope__group_out(
             sudo tee /etc/systemd/user/openstudiolandscapes-{compose_scope}@.service << EOF
             {textwrap.indent(systemd_unit, prefix='            ')}
             EOF
+            
+            # Reload the daemon and analyze the service file integrity
             systemctl --user daemon-reload
             systemd-analyze --user verify openstudiolandscapes-{compose_scope}@${{USER}}.service
             
