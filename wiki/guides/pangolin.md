@@ -1,4 +1,7 @@
-
+<!-- TOC -->
+* [Pangolin](#pangolin)
+  * [How to grant API access while keeping Authorization Mechanism to Website](#how-to-grant-api-access-while-keeping-authorization-mechanism-to-website)
+<!-- TOC -->
 
 ---
 
