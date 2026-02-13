@@ -4,7 +4,7 @@ import os
 import pathlib
 import re
 from importlib.metadata import Distribution
-from typing import ClassVar, Dict, List
+from typing import ClassVar, Dict, List, Union
 
 import pydantic
 import yaml
@@ -560,7 +560,7 @@ class FeatureBaseModel(BaseConfig):
     )
 
     # This does not raise errors because each Feature subclasses this class.
-    local_environment_variables: Dict[str, str] = Field(
+    local_environment_variables: Dict[str, Union[int, str]] = Field(
         default_factory=dict,
         description="Here you can define Feature specific, arbitrary environment variables.",
     )
