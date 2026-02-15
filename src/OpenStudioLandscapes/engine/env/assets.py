@@ -297,15 +297,15 @@ def env(
 ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
 
     # @formatter:off
-    # Todo
-    #  - [ ] Move to constants.py
-    tz = get_str_env(
-        env="CONTAINER_TIMEZONE",
-        default="Europe/Zurich",
-    )
+    # # Todo
+    # #  - [ ] Move to constants.py
+    # tz = get_str_env(
+    #     env="CONTAINER_TIMEZONE",
+    #     default="Europe/Zurich",
+    # )
 
-    if tz not in pytz.all_timezones:
-        raise Exception(f"Unknown container timezone: {tz}")
+    # if tz not in pytz.all_timezones:
+    #     raise Exception(f"Unknown container timezone: {tz}")
 
     landscape_root_dir = pathlib.Path(dot_landscapes, landscape_id["LANDSCAPE"])
 
@@ -338,7 +338,7 @@ def env(
         ),
         # Todo
         #  - [ ] move TIMEZONE to config.yml
-        "TIMEZONE": str(tz),
+        # "TIMEZONE": str(tz),
         "PYTHON_MAJ": "3",
         "PYTHON_MIN": "11",
         "PYTHON_PAT": "11",

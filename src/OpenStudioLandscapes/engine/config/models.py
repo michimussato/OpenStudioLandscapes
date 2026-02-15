@@ -478,6 +478,10 @@ class ConfigEngine(BaseConfig):
     # )
     global_environment_variables: Dict[str, str] = {}
 
+    tz: str = Field(
+        default="Europe/UTC",
+    )
+
 
 # This is the Feature Base Model
 # DO NOT INSTANCE THIS DIRECTLY
@@ -577,9 +581,9 @@ class FeatureBaseModel(BaseConfig):
         exclude=True,
     )
 
-    tz: str = Field(
-        default="Europe/UTC",
-    )
+    # tz: str = Field(
+    #     default="Europe/UTC",
+    # )
 
     # Dagster Attributes
     # Todo:

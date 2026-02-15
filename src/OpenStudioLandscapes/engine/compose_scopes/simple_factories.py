@@ -101,6 +101,7 @@ def simple_factory_newt(
                 "hostname": f"newt-{compose_scope}",
                 "restart": DockerComposePolicies.RESTART_POLICY.ALWAYS,
                 "environment": {
+                    "TZ": CONFIG.config_engine.tz,
                     "PANGOLIN_ENDPOINT": "${OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_%s__PANGOLIN_ENDPOINT}"
                     % compose_scope.upper(),
                     "NEWT_ID": "${OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_%s__NEWT_ID}"
@@ -338,6 +339,7 @@ def simple_factory_alloy(
                 "hostname": f"alloy-{compose_scope}",
                 "restart": DockerComposePolicies.RESTART_POLICY.ON_FAILURE_3,
                 "environment": {
+                    "TZ": CONFIG.config_engine.tz,
                     **CONFIG.config_engine.global_environment_variables,
                 },
                 "command": [
