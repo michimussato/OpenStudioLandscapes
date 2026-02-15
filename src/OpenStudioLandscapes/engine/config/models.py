@@ -577,6 +577,10 @@ class FeatureBaseModel(BaseConfig):
         exclude=True,
     )
 
+    tz: str = Field(
+        default="Europe/UTC",
+    )
+
     # Dagster Attributes
     # Todo:
     #  - [ ] set group_name (if not defined) to feature_name
