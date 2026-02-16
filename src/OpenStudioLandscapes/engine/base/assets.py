@@ -5,7 +5,7 @@ import shutil
 import textwrap
 import time
 import urllib.parse
-from typing import Generator, List, MutableMapping
+from typing import Generator
 
 from dagster import (
     AssetExecutionContext,
