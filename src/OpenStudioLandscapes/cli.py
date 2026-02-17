@@ -18,6 +18,10 @@ __license__ = "GNU Affero General Public License v3.0"
 LOGGER = logging.getLogger(__name__)
 
 
+class CLIException(Exception):
+    pass
+
+
 # ---- Python API ----
 
 
@@ -581,13 +585,48 @@ def main(args):
         #  - [ ] for dependent Features, make sure to also install the parent (i.e. for Workers)
         repo_engine = git.Repo(".")
         repo_name = args.repo.split("/")[-1].replace(".git", "")
-        repo = git.Repo().clone_from(
-            url=args.repo,
-            to_path=pathlib.Path(repo_engine.working_dir).joinpath(
-                ".features", repo_name
-            ),
+
+        repo_dir = pathlib.Path(
+            repo_engine.working_dir
+        ).joinpath(
+            ".features",
+            repo_name
         )
-        LOGGER.info(f"Repo {repo} cloned.")
+
+        try:
+            # Raises git.exc.InvalidGitRepositoryError if it is not a Git Repository
+            repo = git.Repo(repo_dir)
+            # Pull updates
+            git_cmd = repo.git
+            dirty = repo.is_dirty()
+            if dirty:
+                LOGGER.critical("Local repo has uncommitted changes.")
+                # status = git_cmd.status()
+                # LOGGER.info(status)
+            # else:
+            fetch = git_cmd.fetch()
+            LOGGER.info(f"Fetch: {fetch}")
+            status = git_cmd.status()
+            LOGGER.info(f"Status: {status}")
+            # if args.auto_update:
+            if dirty:
+                LOGGER.critical("Repo is dirty, auto-update skipped.")
+            else:
+                result_pull = git_cmd.pull()
+                LOGGER.info(f"Changes: {result_pull}")
+        except git.exc.InvalidGitRepositoryError:
+            # Clone if not cloned yet
+            try:
+                repo = git.Repo().clone_from(
+                    url=args.repo,
+                    to_path=pathlib.Path(repo_engine.working_dir).joinpath(
+                        ".features", repo_name
+                    ),
+                )
+                LOGGER.info(f"Repo {repo} cloned.")
+            except git.exc.GitCommandError as git_command_error:
+                LOGGER.error(f"Failed to clone repo {repo}: {git_command_error}")
+                raise CLIException from git_command_error
         install_cmd = f"source {pathlib.Path(repo_engine.working_dir).joinpath('.venv', 'bin', 'activate')} && pip install --editable {repo.working_dir}"
 
         LOGGER.info(
