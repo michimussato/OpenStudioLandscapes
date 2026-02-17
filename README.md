@@ -171,7 +171,7 @@ sudo reboot
 
 > [!IMPORTANT]
 > 
-> After reboot and before contiuing, verify that the 
+> After reboot and before continuing, verify that the 
 > user is member of the `docker` group:
 > 
 > ```
