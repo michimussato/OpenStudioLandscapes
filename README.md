@@ -309,7 +309,7 @@ openstudiolandscapes
 > [!TIP]
 > 
 > The default location for all Landscapes is
-> with the local Git checkout:
+> within the local Git checkout:
 > `OpenStudioLandscapes/.landscapes`.
 > You can change this behavior by specifying a custom
 > Landscapes root with `--landscapes-root=~/MyOpenStudioLandscapes`
