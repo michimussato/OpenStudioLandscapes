@@ -13,7 +13,7 @@
   * [Run OpenStudioLandscapes](#run-openstudiolandscapes)
     * [CLI](#cli)
       * [Sub-Commands](#sub-commands)
-        * [install-feature](#install-feature)
+        * [clone-feature](#clone-feature)
     * [Launch OpenStudioLandscapes](#launch-openstudiolandscapes)
     * [Create Landscape](#create-landscape)
     * [Launch the Landscape](#launch-the-landscape)
@@ -247,11 +247,11 @@ usage: openstudiolandscapes [-h] [-v] [-vv] [--attach-grafana-alloy-to-compose-s
                             [--landscapes-root OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT]
                             [--landscapes-id OPENSTUDIOLANDSCAPES__LANDSCAPE_ID]
                             [--skip-update-check | --auto-update]
-                            {update,install-feature} ...
+                            {update,clone-feature} ...
 
 positional arguments:
-  {update,install-feature}
-    install-feature     Clone a feature from a given repository and print installation instructions.
+  {update,clone-feature}
+    clone-feature       Clone a feature from a given repository and print installation instructions.
 
 options:
   -h, --help            show this help message and exit
@@ -284,14 +284,14 @@ options:
 
 #### Sub-Commands
 
-##### install-feature
+##### clone-feature
 
 ```
 # cd OpenStudioLandscapes
 # source .venv/bin/activate
 
-$ openstudiolandscapes install-feature --help
-usage: openstudiolandscapes install-feature [-h] --repo REPO
+$ openstudiolandscapes clone-feature --help
+usage: openstudiolandscapes clone-feature [-h] --repo REPO
 
 options:
   -h, --help            show this help message and exit
