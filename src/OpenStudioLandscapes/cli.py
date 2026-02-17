@@ -617,7 +617,10 @@ def main(args):
             else:
                 result_pull = git_cmd.pull()
                 LOGGER.info(f"Changes: {result_pull}")
-        except git.exc.InvalidGitRepositoryError:
+        except (
+            git.exc.InvalidGitRepositoryError,
+            git.exc.NoSuchPathError,
+        ):
             # Clone if not cloned yet
             try:
                 repo = git.Repo().clone_from(
