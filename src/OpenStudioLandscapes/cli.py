@@ -618,7 +618,9 @@ def main(args):
                 result_pull = git_cmd.pull()
                 LOGGER.info(f"Changes: {result_pull}")
         except (
+            # Directory exists but is not a Git repo:
             git.exc.InvalidGitRepositoryError,
+            # Directory does not exist:
             git.exc.NoSuchPathError,
         ):
             # Clone if not cloned yet
