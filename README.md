@@ -263,7 +263,7 @@ options:
                         Attach Newt container to Compose Scope.
   --run-as-systemd-unit
                         If specified, the discovery service will *not* wait for human interaction for
-                        incomplete `conifg.yml` files to be fixed. You will have to monitor the logs
+                        incomplete `config.yml` files to be fixed. You will have to monitor the logs
                         (`journald`) in this case.
   --domain-wan OPENSTUDIOLANDSCAPES__DOMAIN_WAN
                         Set the WAN domain name (i.e. openstudiolandscapes.com).

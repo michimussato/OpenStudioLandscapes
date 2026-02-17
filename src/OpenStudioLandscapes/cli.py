@@ -158,7 +158,7 @@ def parse_args(args):
         required=False,
         help="If specified, the discovery service will *not* wait for "
         "human interaction for incomplete "
-        "`conifg.yml` files to be fixed. You will have to "
+        "`config.yml` files to be fixed. You will have to "
         "monitor the logs (`journald`) in this case.",
     )
 
