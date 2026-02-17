@@ -274,8 +274,11 @@ def parse_args(args):
     #     help="git pull.",
     # )
 
+    # Todo
+    #  - [x] "install-feature" should actually be "clone-feature" (it's not actually installing)
     subparser_install_feature = subparsers.add_parser(
-        "install-feature",
+        "clone-feature",
+        # aliases=["install-feature"],
         help="Clone a feature from a given repository and "
         "print installation instructions.",
     )
@@ -579,9 +582,9 @@ def main(args):
         # repo.git.pull()
         return
 
-    elif any(sc == args.sub_command for sc in ["install-feature", "if"]):
+    elif any(sc == args.sub_command for sc in ["clone-feature", "if"]):
         # Todo
-        #  - [ ] rename install-feature to clone-feature, cause that's essentially what it is
+        #  - [x] rename install-feature to clone-feature, cause that's essentially what it is
         #  - [ ] for dependent Features, make sure to also install the parent (i.e. for Workers)
         repo_engine = git.Repo(".")
         repo_name = args.repo.split("/")[-1].replace(".git", "")
