@@ -1,6 +1,6 @@
 flowchart TD
     classDef missing stroke-dasharray: 5
-    alembic["alembic\n1.18.1"]
+    alembic["alembic\n1.18.4"]
     annotated-types["annotated-types\n0.7.0"]
     antlr4-python3-runtime["antlr4-python3-runtime\n4.13.2"]
     anyio["anyio\n4.12.1"]
@@ -26,12 +26,12 @@ flowchart TD
     dependency-groups["dependency-groups\n1.3.1"]
     distlib["distlib\n0.4.0"]
     dnspython["dnspython\n2.8.0"]
-    docker-compose-graph["docker-compose-graph\n1.0.0.post1.dev4+g3b0ba2c26"]
+    docker-compose-graph["docker-compose-graph\n1.0.0.post1.dev5+ga91125bef"]
     docstring-parser["docstring_parser\n0.17.0"]
     email-validator["email-validator\n2.3.0"]
-    filelock["filelock\n3.20.3"]
+    filelock["filelock\n3.24.2"]
     fqdn["fqdn\n1.5.1"]
-    fsspec["fsspec\n2026.1.0"]
+    fsspec["fsspec\n2026.2.0"]
     gitdb["gitdb\n4.0.12"]
     gitpython["GitPython\n3.1.46"]
     gql["gql\n3.5.3"]
@@ -41,7 +41,7 @@ flowchart TD
     graphviz["graphviz\n0.21"]
     greenlet["greenlet\n3.3.1"]
     grpcio-health-checking["grpcio-health-checking\n1.71.2"]
-    grpcio["grpcio\n1.76.0"]
+    grpcio["grpcio\n1.78.0"]
     h11["h11\n0.16.0"]
     httptools["httptools\n0.7.1"]
     human-readable-id["human-readable-id\n0.0.3"]
@@ -61,17 +61,17 @@ flowchart TD
     markupsafe["MarkupSafe\n3.0.3"]
     mdurl["mdurl\n0.1.2"]
     multidict["multidict\n6.7.1"]
-    nox["nox\n2025.11.12"]
+    nox["nox\n2026.2.9"]
     openstudiolandscapes["OpenStudioLandscapes\n0.0.0"]
     packageurl-python["packageurl-python\n0.17.6"]
     packaging["packaging\n25.0"]
     pathlib-abc["pathlib_abc\n0.5.2"]
     pip-requirements-parser["pip-requirements-parser\n32.0.1"]
-    pip["pip\n25.3"]
+    pip["pip\n26.0.1"]
     pipdeptree["pipdeptree\n2.30.0"]
-    platformdirs["platformdirs\n4.5.1"]
+    platformdirs["platformdirs\n4.9.2"]
     propcache["propcache\n0.4.1"]
-    protobuf["protobuf\n5.29.5"]
+    protobuf["protobuf\n5.29.6"]
     psycopg2-binary["psycopg2-binary\n2.9.11"]
     py-serializable["py-serializable\n2.1.0"]
     pydantic-core["pydantic_core\n2.41.5"]
@@ -89,9 +89,9 @@ flowchart TD
     rfc3339-validator["rfc3339-validator\n0.1.4"]
     rfc3986-validator["rfc3986-validator\n0.1.1"]
     rfc3987-syntax["rfc3987-syntax\n1.1.0"]
-    rich["rich\n14.3.1"]
+    rich["rich\n14.3.2"]
     rpds-py["rpds-py\n0.30.0"]
-    setuptools["setuptools\n80.10.2"]
+    setuptools["setuptools\n82.0.0"]
     six["six\n1.17.0"]
     smmap["smmap\n5.0.2"]
     snakemd["SnakeMD\n2.4.0"]
@@ -102,23 +102,23 @@ flowchart TD
     tabulate["tabulate\n0.9.0"]
     tomli["tomli\n2.4.0"]
     toposort["toposort\n1.10"]
-    tqdm["tqdm\n4.67.1"]
+    tqdm["tqdm\n4.67.3"]
     typing-extensions["typing_extensions\n4.15.0"]
     typing-inspection["typing-inspection\n0.4.2"]
     tzdata["tzdata\n2025.3"]
-    universal-pathlib["universal_pathlib\n0.3.8"]
+    universal-pathlib["universal_pathlib\n0.3.9"]
     uri-template["uri-template\n1.3.0"]
     urllib3["urllib3\n2.6.3"]
-    uvicorn["uvicorn\n0.40.0"]
+    uvicorn["uvicorn\n0.41.0"]
     uvloop["uvloop\n0.22.1"]
-    virtualenv["virtualenv\n20.36.1"]
+    virtualenv["virtualenv\n20.37.0"]
     watchdog["watchdog\n5.0.3"]
     watchfiles["watchfiles\n1.1.1"]
     webcolors["webcolors\n25.10.0"]
     websockets["websockets\n16.0"]
     wheel["wheel\n0.46.3"]
     yarl["yarl\n1.22.0"]
-    alembic -- ">=1.4.0" --> sqlalchemy
+    alembic -- ">=1.4.23" --> sqlalchemy
     alembic -- ">=4.12" --> typing-extensions
     alembic -- "any" --> mako
     anyio -- ">=2.8" --> idna
@@ -213,7 +213,7 @@ flowchart TD
     nox -- ">=1.9.4,<4" --> argcomplete
     nox -- ">=2.6.1,<7" --> colorlog
     nox -- ">=20.15" --> virtualenv
-    nox -- ">=21" --> packaging
+    nox -- ">=22" --> packaging
     nox -- ">=24.1" --> attrs
     nox -- ">=4" --> humanize
     openstudiolandscapes -- "==0.25.11" --> dagster-postgres
@@ -261,7 +261,7 @@ flowchart TD
     uvicorn -- ">=0.8" --> h11
     uvicorn -- ">=7.0" --> click_0
     virtualenv -- ">=0.3.7,<1" --> distlib
-    virtualenv -- ">=3.20.1,<4" --> filelock
+    virtualenv -- ">=3.24.2,<4" --> filelock
     virtualenv -- ">=3.9.1,<5" --> platformdirs
     watchfiles -- ">=3.0.0" --> anyio
     wheel -- ">=24.0" --> packaging

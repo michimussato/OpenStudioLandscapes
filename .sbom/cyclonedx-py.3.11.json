@@ -158,7 +158,7 @@
       "version": "0.0.0"
     },
     {
-      "bom-ref": "BomRef.3718794276175198.7785286102585669",
+      "bom-ref": "BomRef.5070687427836702.07833115212497843",
       "description": "A Toolkit to create dynamic Animation and VFX studio environments for robust automation and pipelines.",
       "externalReferences": [
         {
@@ -350,7 +350,7 @@
       "version": "2.4.0"
     },
     {
-      "bom-ref": "alembic==1.18.1",
+      "bom-ref": "alembic==1.18.4",
       "description": "A database migration tool for SQLAlchemy.",
       "externalReferences": [
         {
@@ -388,9 +388,9 @@
         }
       ],
       "name": "alembic",
-      "purl": "pkg:pypi/alembic@1.18.1",
+      "purl": "pkg:pypi/alembic@1.18.4",
       "type": "library",
-      "version": "1.18.1"
+      "version": "1.18.4"
     },
     {
       "bom-ref": "annotated-types==0.7.0",
@@ -1295,7 +1295,7 @@
       "version": "2.8.0"
     },
     {
-      "bom-ref": "docker-compose-graph==1.0.0.post1.dev4+g3b0ba2c26",
+      "bom-ref": "docker-compose-graph==1.0.0.post1.dev5+ga91125bef",
       "description": "Add a short description here!",
       "externalReferences": [
         {
@@ -1306,7 +1306,7 @@
         {
           "comment": "PackageSource: VCS 'git'",
           "type": "vcs",
-          "url": "https://github.com/michimussato/docker-compose-graph.git#3b0ba2c2677bacbb029be570cd04a22b048c9029"
+          "url": "https://github.com/michimussato/docker-compose-graph.git#a91125bef2f19072cc41aa65d2aba96dfd2d7539"
         },
         {
           "comment": "from packaging metadata: Home-page",
@@ -1326,12 +1326,12 @@
       "properties": [
         {
           "name": "cdx:python:package:source:vcs:commit_id",
-          "value": "3b0ba2c2677bacbb029be570cd04a22b048c9029"
+          "value": "a91125bef2f19072cc41aa65d2aba96dfd2d7539"
         }
       ],
-      "purl": "pkg:pypi/docker-compose-graph@1.0.0.post1.dev4%2Bg3b0ba2c26?vcs_url=git%2Bhttps://github.com/michimussato/docker-compose-graph.git%403b0ba2c2677bacbb029be570cd04a22b048c9029",
+      "purl": "pkg:pypi/docker-compose-graph@1.0.0.post1.dev5%2Bga91125bef?vcs_url=git%2Bhttps://github.com/michimussato/docker-compose-graph.git%40a91125bef2f19072cc41aa65d2aba96dfd2d7539",
       "type": "library",
-      "version": "1.0.0.post1.dev4+g3b0ba2c26"
+      "version": "1.0.0.post1.dev5+ga91125bef"
     },
     {
       "bom-ref": "docstring_parser==0.17.0",
@@ -1390,7 +1390,7 @@
       "version": "2.3.0"
     },
     {
-      "bom-ref": "filelock==3.20.3",
+      "bom-ref": "filelock==3.24.2",
       "description": "A platform independent file lock.",
       "externalReferences": [
         {
@@ -1418,14 +1418,14 @@
         {
           "license": {
             "acknowledgement": "declared",
-            "id": "Unlicense"
+            "id": "MIT"
           }
         }
       ],
       "name": "filelock",
-      "purl": "pkg:pypi/filelock@3.20.3",
+      "purl": "pkg:pypi/filelock@3.24.2",
       "type": "library",
-      "version": "3.20.3"
+      "version": "3.24.2"
     },
     {
       "bom-ref": "fqdn==1.5.1",
@@ -1451,7 +1451,7 @@
       "version": "1.5.1"
     },
     {
-      "bom-ref": "fsspec==2026.1.0",
+      "bom-ref": "fsspec==2026.2.0",
       "description": "File-system specification",
       "externalReferences": [
         {
@@ -1509,9 +1509,9 @@
           "value": "ssh"
         }
       ],
-      "purl": "pkg:pypi/fsspec@2026.1.0",
+      "purl": "pkg:pypi/fsspec@2026.2.0",
       "type": "library",
-      "version": "2026.1.0"
+      "version": "2026.2.0"
     },
     {
       "bom-ref": "gitdb==4.0.12",
@@ -1724,7 +1724,7 @@
       "version": "3.3.1"
     },
     {
-      "bom-ref": "grpcio==1.76.0",
+      "bom-ref": "grpcio==1.78.0",
       "description": "HTTP/2-based RPC framework",
       "externalReferences": [
         {
@@ -1743,7 +1743,7 @@
           "url": "https://github.com/grpc/grpc"
         },
         {
-          "comment": "from packaging metadata: Home-page",
+          "comment": "from packaging metadata Project-URL: Homepage",
           "type": "website",
           "url": "https://grpc.io"
         }
@@ -1752,14 +1752,14 @@
         {
           "license": {
             "acknowledgement": "declared",
-            "name": "License :: OSI Approved :: Apache Software License"
+            "id": "Apache-2.0"
           }
         }
       ],
       "name": "grpcio",
-      "purl": "pkg:pypi/grpcio@1.76.0",
+      "purl": "pkg:pypi/grpcio@1.78.0",
       "type": "library",
-      "version": "1.76.0"
+      "version": "1.78.0"
     },
     {
       "bom-ref": "grpcio-health-checking==1.71.2",
@@ -2321,7 +2321,7 @@
       "version": "6.7.1"
     },
     {
-      "bom-ref": "nox==2025.11.12",
+      "bom-ref": "nox==2026.2.9",
       "description": "Flexible test automation.",
       "externalReferences": [
         {
@@ -2354,9 +2354,9 @@
         }
       ],
       "name": "nox",
-      "purl": "pkg:pypi/nox@2025.11.12",
+      "purl": "pkg:pypi/nox@2026.2.9",
       "type": "library",
-      "version": "2025.11.12"
+      "version": "2026.2.9"
     },
     {
       "bom-ref": "packageurl-python==0.17.6",
@@ -2444,7 +2444,7 @@
       "version": "0.5.2"
     },
     {
-      "bom-ref": "pip==25.3",
+      "bom-ref": "pip==26.0.1",
       "description": "The PyPA recommended tool for installing Python packages.",
       "externalReferences": [
         {
@@ -2477,9 +2477,9 @@
         }
       ],
       "name": "pip",
-      "purl": "pkg:pypi/pip@25.3",
+      "purl": "pkg:pypi/pip@26.0.1",
       "type": "library",
-      "version": "25.3"
+      "version": "26.0.1"
     },
     {
       "bom-ref": "pip-requirements-parser==32.0.1",
@@ -2548,7 +2548,7 @@
       "version": "2.30.0"
     },
     {
-      "bom-ref": "platformdirs==4.5.1",
+      "bom-ref": "platformdirs==4.9.2",
       "description": "A small Python package for determining appropriate platform-specific dirs, e.g. a `user data dir`.",
       "externalReferences": [
         {
@@ -2569,7 +2569,7 @@
         {
           "comment": "from packaging metadata Project-URL: Changelog",
           "type": "release-notes",
-          "url": "https://github.com/tox-dev/platformdirs/releases"
+          "url": "https://platformdirs.readthedocs.io/en/latest/changelog.html"
         },
         {
           "comment": "from packaging metadata Project-URL: Homepage",
@@ -2586,9 +2586,9 @@
         }
       ],
       "name": "platformdirs",
-      "purl": "pkg:pypi/platformdirs@4.5.1",
+      "purl": "pkg:pypi/platformdirs@4.9.2",
       "type": "library",
-      "version": "4.5.1"
+      "version": "4.9.2"
     },
     {
       "bom-ref": "propcache==0.4.1",
@@ -2655,7 +2655,7 @@
       "version": "0.4.1"
     },
     {
-      "bom-ref": "protobuf==5.29.5",
+      "bom-ref": "protobuf==5.29.6",
       "externalReferences": [
         {
           "comment": "from packaging metadata: Home-page",
@@ -2664,9 +2664,9 @@
         }
       ],
       "name": "protobuf",
-      "purl": "pkg:pypi/protobuf@5.29.5",
+      "purl": "pkg:pypi/protobuf@5.29.6",
       "type": "library",
-      "version": "5.29.5"
+      "version": "5.29.6"
     },
     {
       "bom-ref": "psycopg2-binary==2.9.11",
@@ -3212,7 +3212,7 @@
       "version": "1.1.0"
     },
     {
-      "bom-ref": "rich==14.3.1",
+      "bom-ref": "rich==14.3.2",
       "description": "Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal",
       "externalReferences": [
         {
@@ -3235,9 +3235,9 @@
         }
       ],
       "name": "rich",
-      "purl": "pkg:pypi/rich@14.3.1",
+      "purl": "pkg:pypi/rich@14.3.2",
       "type": "library",
-      "version": "14.3.1"
+      "version": "14.3.2"
     },
     {
       "bom-ref": "rpds-py==0.30.0",
@@ -3293,7 +3293,7 @@
       "version": "0.30.0"
     },
     {
-      "bom-ref": "setuptools==80.10.2",
+      "bom-ref": "setuptools==82.0.0",
       "description": "Easily download, build, install, upgrade, and uninstall Python packages",
       "externalReferences": [
         {
@@ -3321,9 +3321,9 @@
         }
       ],
       "name": "setuptools",
-      "purl": "pkg:pypi/setuptools@80.10.2",
+      "purl": "pkg:pypi/setuptools@82.0.0",
       "type": "library",
-      "version": "80.10.2"
+      "version": "82.0.0"
     },
     {
       "bom-ref": "six==1.17.0",
@@ -3580,24 +3580,8 @@
       "version": "1.10"
     },
     {
-      "bom-ref": "tqdm==4.67.1",
+      "bom-ref": "tqdm==4.67.3",
       "description": "Fast, Extensible Progress Meter",
-      "evidence": {
-        "licenses": [
-          {
-            "license": {
-              "acknowledgement": "declared",
-              "id": "MIT"
-            }
-          },
-          {
-            "license": {
-              "acknowledgement": "declared",
-              "name": "License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)"
-            }
-          }
-        ]
-      },
       "externalReferences": [
         {
           "comment": "from packaging metadata Project-URL: wiki",
@@ -3627,9 +3611,9 @@
         }
       ],
       "name": "tqdm",
-      "purl": "pkg:pypi/tqdm@4.67.1",
+      "purl": "pkg:pypi/tqdm@4.67.3",
       "type": "library",
-      "version": "4.67.1"
+      "version": "4.67.3"
     },
     {
       "bom-ref": "typing-inspection==0.4.2",
@@ -3756,7 +3740,7 @@
       "version": "2025.3"
     },
     {
-      "bom-ref": "universal_pathlib==0.3.8",
+      "bom-ref": "universal_pathlib==0.3.9",
       "description": "pathlib api extended to use fsspec backends",
       "externalReferences": [
         {
@@ -3779,9 +3763,9 @@
         }
       ],
       "name": "universal_pathlib",
-      "purl": "pkg:pypi/universal-pathlib@0.3.8",
+      "purl": "pkg:pypi/universal-pathlib@0.3.9",
       "type": "library",
-      "version": "0.3.8"
+      "version": "0.3.9"
     },
     {
       "bom-ref": "uri-template==1.3.0",
@@ -3845,7 +3829,7 @@
       "version": "2.6.3"
     },
     {
-      "bom-ref": "uvicorn==0.40.0",
+      "bom-ref": "uvicorn==0.41.0",
       "description": "The lightning-fast ASGI server.",
       "externalReferences": [
         {
@@ -3884,9 +3868,9 @@
           "value": "standard"
         }
       ],
-      "purl": "pkg:pypi/uvicorn@0.40.0",
+      "purl": "pkg:pypi/uvicorn@0.41.0",
       "type": "library",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "bom-ref": "uvloop==0.22.1",
@@ -3918,7 +3902,7 @@
       "version": "0.22.1"
     },
     {
-      "bom-ref": "virtualenv==20.36.1",
+      "bom-ref": "virtualenv==20.37.0",
       "description": "Virtual Python Environment builder",
       "externalReferences": [
         {
@@ -3951,9 +3935,9 @@
         }
       ],
       "name": "virtualenv",
-      "purl": "pkg:pypi/virtualenv@20.36.1",
+      "purl": "pkg:pypi/virtualenv@20.37.0",
       "type": "library",
-      "version": "20.36.1"
+      "version": "20.37.0"
     },
     {
       "bom-ref": "watchdog==5.0.3",
@@ -4264,11 +4248,11 @@
         "dagster-postgres==0.25.11",
         "dagster-webserver==1.9.11",
         "dagster==1.9.11",
-        "docker-compose-graph==1.0.0.post1.dev4+g3b0ba2c26",
+        "docker-compose-graph==1.0.0.post1.dev5+ga91125bef",
         "email-validator==2.3.0",
         "graphviz==0.21",
         "human-readable-id==0.0.3",
-        "nox==2025.11.12",
+        "nox==2026.2.9",
         "pipdeptree==2.30.0",
         "pydot==4.0.1"
       ],
@@ -4299,7 +4283,7 @@
         "typing_extensions==4.15.0",
         "tzdata==2025.3"
       ],
-      "ref": "alembic==1.18.1"
+      "ref": "alembic==1.18.4"
     },
     {
       "dependsOn": [
@@ -4411,7 +4395,7 @@
         "dagster-graphql==1.9.11",
         "dagster==1.9.11",
         "starlette==0.52.1",
-        "uvicorn==0.40.0"
+        "uvicorn==0.41.0"
       ],
       "ref": "dagster-webserver==1.9.11"
     },
@@ -4420,33 +4404,33 @@
         "Jinja2==3.1.6",
         "PyYAML==6.0.3",
         "SQLAlchemy==2.0.46",
-        "alembic==1.18.1",
+        "alembic==1.18.4",
         "antlr4-python3-runtime==4.13.2",
         "click==8.3.1",
         "coloredlogs==14.0",
         "dagster-pipes==1.9.11",
         "docstring_parser==0.17.0",
-        "filelock==3.20.3",
-        "fsspec==2026.1.0",
+        "filelock==3.24.2",
+        "fsspec==2026.2.0",
         "grpcio-health-checking==1.71.2",
-        "grpcio==1.76.0",
+        "grpcio==1.78.0",
         "packaging==25.0",
-        "protobuf==5.29.5",
+        "protobuf==5.29.6",
         "pydantic==2.12.5",
         "python-dotenv==1.2.1",
         "pytz==2025.2",
         "requests==2.32.5",
-        "rich==14.3.1",
-        "setuptools==80.10.2",
+        "rich==14.3.2",
+        "setuptools==82.0.0",
         "six==1.17.0",
         "structlog==25.5.0",
         "tabulate==0.9.0",
         "tomli==2.4.0",
         "toposort==1.10",
-        "tqdm==4.67.1",
+        "tqdm==4.67.3",
         "typing_extensions==4.15.0",
         "tzdata==2025.3",
-        "universal_pathlib==0.3.8",
+        "universal_pathlib==0.3.9",
         "watchdog==5.0.3"
       ],
       "ref": "dagster==1.9.11"
@@ -4478,9 +4462,9 @@
         "graphviz==0.21",
         "pydot==4.0.1",
         "python-dotenv==1.2.1",
-        "setuptools==80.10.2"
+        "setuptools==82.0.0"
       ],
-      "ref": "docker-compose-graph==1.0.0.post1.dev4+g3b0ba2c26"
+      "ref": "docker-compose-graph==1.0.0.post1.dev5+ga91125bef"
     },
     {
       "ref": "docstring_parser==0.17.0"
@@ -4493,7 +4477,7 @@
       "ref": "email-validator==2.3.0"
     },
     {
-      "ref": "filelock==3.20.3"
+      "ref": "filelock==3.24.2"
     },
     {
       "ref": "fqdn==1.5.1"
@@ -4502,11 +4486,11 @@
       "dependsOn": [
         "Jinja2==3.1.6",
         "requests==2.32.5",
-        "tqdm==4.67.1",
+        "tqdm==4.67.3",
         "urllib3==2.6.3",
         "yarl==1.22.0"
       ],
-      "ref": "fsspec==2026.1.0"
+      "ref": "fsspec==2026.2.0"
     },
     {
       "dependsOn": [
@@ -4556,14 +4540,14 @@
     },
     {
       "dependsOn": [
-        "setuptools==80.10.2"
+        "setuptools==82.0.0"
       ],
       "ref": "greenlet==3.3.1"
     },
     {
       "dependsOn": [
-        "grpcio==1.76.0",
-        "protobuf==5.29.5"
+        "grpcio==1.78.0",
+        "protobuf==5.29.6"
       ],
       "ref": "grpcio-health-checking==1.71.2"
     },
@@ -4571,7 +4555,7 @@
       "dependsOn": [
         "typing_extensions==4.15.0"
       ],
-      "ref": "grpcio==1.76.0"
+      "ref": "grpcio==1.78.0"
     },
     {
       "ref": "h11==0.16.0"
@@ -4663,14 +4647,14 @@
         "humanize==4.15.0",
         "packaging==25.0",
         "tomli==2.4.0",
-        "virtualenv==20.36.1"
+        "virtualenv==20.37.0"
       ],
-      "ref": "nox==2025.11.12"
+      "ref": "nox==2026.2.9"
     },
     {
       "dependsOn": [
         "SQLAlchemy==2.0.46",
-        "setuptools==80.10.2",
+        "setuptools==82.0.0",
         "wheel==0.46.3"
       ],
       "ref": "packageurl-python==0.17.6"
@@ -4689,25 +4673,25 @@
       "ref": "pip-requirements-parser==32.0.1"
     },
     {
-      "ref": "pip==25.3"
+      "ref": "pip==26.0.1"
     },
     {
       "dependsOn": [
         "graphviz==0.21",
         "packaging==25.0",
-        "pip==25.3",
-        "virtualenv==20.36.1"
+        "pip==26.0.1",
+        "virtualenv==20.37.0"
       ],
       "ref": "pipdeptree==2.30.0"
     },
     {
-      "ref": "platformdirs==4.5.1"
+      "ref": "platformdirs==4.9.2"
     },
     {
       "ref": "propcache==0.4.1"
     },
     {
-      "ref": "protobuf==5.29.5"
+      "ref": "protobuf==5.29.6"
     },
     {
       "ref": "psycopg2-binary==2.9.11"
@@ -4807,22 +4791,22 @@
         "Pygments==2.19.2",
         "markdown-it-py==4.0.0"
       ],
-      "ref": "rich==14.3.1"
+      "ref": "rich==14.3.2"
     },
     {
       "ref": "rpds-py==0.30.0"
     },
     {
       "dependsOn": [
-        "filelock==3.20.3",
+        "filelock==3.24.2",
         "packaging==25.0",
-        "pip==25.3",
-        "platformdirs==4.5.1",
+        "pip==26.0.1",
+        "platformdirs==4.9.2",
         "tomli==2.4.0",
-        "virtualenv==20.36.1",
+        "virtualenv==20.37.0",
         "wheel==0.46.3"
       ],
-      "ref": "setuptools==80.10.2"
+      "ref": "setuptools==82.0.0"
     },
     {
       "ref": "six==1.17.0"
@@ -4861,7 +4845,7 @@
       "dependsOn": [
         "requests==2.32.5"
       ],
-      "ref": "tqdm==4.67.1"
+      "ref": "tqdm==4.67.3"
     },
     {
       "dependsOn": [
@@ -4877,13 +4861,13 @@
     },
     {
       "dependsOn": [
-        "fsspec==2026.1.0",
+        "fsspec==2026.2.0",
         "packaging==25.0",
         "pathlib_abc==0.5.2",
         "pydantic==2.12.5",
         "typing_extensions==4.15.0"
       ],
-      "ref": "universal_pathlib==0.3.8"
+      "ref": "universal_pathlib==0.3.9"
     },
     {
       "ref": "uri-template==1.3.0"
@@ -4903,24 +4887,24 @@
         "watchfiles==1.1.1",
         "websockets==16.0"
       ],
-      "ref": "uvicorn==0.40.0"
+      "ref": "uvicorn==0.41.0"
     },
     {
       "dependsOn": [
-        "setuptools==80.10.2"
+        "setuptools==82.0.0"
       ],
       "ref": "uvloop==0.22.1"
     },
     {
       "dependsOn": [
         "distlib==0.4.0",
-        "filelock==3.20.3",
+        "filelock==3.24.2",
         "packaging==25.0",
-        "platformdirs==4.5.1",
-        "setuptools==80.10.2",
+        "platformdirs==4.9.2",
+        "setuptools==82.0.0",
         "typing_extensions==4.15.0"
       ],
-      "ref": "virtualenv==20.36.1"
+      "ref": "virtualenv==20.37.0"
     },
     {
       "dependsOn": [
@@ -4943,7 +4927,7 @@
     {
       "dependsOn": [
         "packaging==25.0",
-        "setuptools==80.10.2"
+        "setuptools==82.0.0"
       ],
       "ref": "wheel==0.46.3"
     },
@@ -4957,7 +4941,7 @@
     }
   ],
   "metadata": {
-    "timestamp": "2026-01-27T19:58:31.734879+00:00",
+    "timestamp": "2026-02-17T23:22:16.786107+00:00",
     "tools": {
       "components": [
         {
@@ -5061,7 +5045,7 @@
       ]
     }
   },
-  "serialNumber": "urn:uuid:7ddf3079-8372-43e1-912f-ca92155fda2e",
+  "serialNumber": "urn:uuid:5da43ebe-7df0-4c8f-90a9-b6331ac1b53c",
   "version": 1,
   "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
   "bomFormat": "CycloneDX",

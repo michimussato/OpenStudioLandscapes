@@ -201,8 +201,8 @@ def parse_args(args):
         # action="store_true",
         required=False,
         help="If the config store is part of a Git repository already, "
-             "you can specify the path to the repo here. Defaults to the same "
-             "value like `OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT`.",
+        "you can specify the path to the repo here. Defaults to the same "
+        "value like `OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT`.",
     )
 
     parser.add_argument(
@@ -591,11 +591,8 @@ def main(args):
         repo_engine = git.Repo(".")
         repo_name = args.repo.split("/")[-1].replace(".git", "")
 
-        repo_dir = pathlib.Path(
-            repo_engine.working_dir
-        ).joinpath(
-            ".features",
-            repo_name
+        repo_dir = pathlib.Path(repo_engine.working_dir).joinpath(
+            ".features", repo_name
         )
 
         try:
