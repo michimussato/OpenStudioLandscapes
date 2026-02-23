@@ -34,7 +34,9 @@
   * [I have zero understanding for bugs! Who can I blame?](#i-have-zero-understanding-for-bugs-who-can-i-blame)
     * [Issues and feature requests](#issues-and-feature-requests)
   * [How can I support this Project?](#how-can-i-support-this-project)
-    * [Call for Help: Package Release Strategy](#call-for-help-package-release-strategy)
+    * [Call for Help](#call-for-help-)
+      * [Package Release Strategy](#package-release-strategy)
+      * [Automated OpenRV Deployment for multiple Platforms](#automated-openrv-deployment-for-multiple-platforms)
 * [Documentation](#documentation)
 * [Community](#community)
 * [Publications](#publications)
@@ -240,7 +242,6 @@ The following commandline options are available:
 
 $ openstudiolandscapes --help
 usage: openstudiolandscapes [-h] [-v] [-vv] [--attach-grafana-alloy-to-compose-scope]
-                            [--attach-pangolin-site-to-compose-scope] [--run-as-systemd-unit]
                             [--domain-wan OPENSTUDIOLANDSCAPES__DOMAIN_WAN]
                             [--config-store OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT]
                             [--config-store-vcs OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS]
@@ -261,10 +262,6 @@ options:
                         Attach Alloy container to Compose Scope.
   --attach-pangolin-site-to-compose-scope
                         Attach Newt container to Compose Scope.
-  --run-as-systemd-unit
-                        If specified, the discovery service will *not* wait for human interaction for
-                        incomplete `config.yml` files to be fixed. You will have to monitor the logs
-                        (`journald`) in this case.
   --domain-wan OPENSTUDIOLANDSCAPES__DOMAIN_WAN
                         Set the WAN domain name (i.e. openstudiolandscapes.com).
   --config-store OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT
@@ -747,7 +744,9 @@ If you feel like this is a project you would like to support, feel free
 to join! There are, however, some specific areas where I am looking
 for help in particular:
 
-### Call for Help: Package Release Strategy
+### Call for Help 
+
+#### Package Release Strategy
 
 I do not have a clue how to best set up and release the components of 
 **OpenStudioLandscapes**. I did think about `git submodules` to make
@@ -757,6 +756,10 @@ multiple repositories. Will a monorepo solve this problem without introducing ne
 difficulties? Please, share your thoughts and experiences!
 
 [Discussion](https://github.com/michimussato/OpenStudioLandscapes/discussions/55)
+
+#### Automated OpenRV Deployment for multiple Platforms
+
+Todo
 
 # Documentation
 

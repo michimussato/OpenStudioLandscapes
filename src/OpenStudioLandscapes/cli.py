@@ -33,10 +33,6 @@ def run_openstudiolandscapes_postgres(args):
         os.environ["OPENSTUDIOLANDSCAPES__ATTACH_GRAFANA_ALLOY_TO_COMPOSE_SCOPE"] = "1"
     if bool(int(args.attach_pangolin_site_to_compose_scope)):
         os.environ["OPENSTUDIOLANDSCAPES__ATTACH_PANGOLIN_SITE_TO_COMPOSE_SCOPE"] = "1"
-    if bool(int(args.run_as_systemd_unit)):
-        os.environ["OPENSTUDIOLANDSCAPES__RUN_AS_SYSTEMD_UNIT"] = "1"
-    if bool(int(args.run_as_systemd_unit)):
-        os.environ["OPENSTUDIOLANDSCAPES__RUN_AS_SYSTEMD_UNIT"] = "1"
     if args.domain_wan is not None:
         os.environ["OPENSTUDIOLANDSCAPES__DOMAIN_WAN"] = args.domain_wan
 
@@ -146,22 +142,6 @@ def parse_args(args):
         const="1",
         required=False,
         help="Attach Newt container to Compose Scope.",
-    )
-
-    # Todo
-    #  - [ ] is this still needed?
-    parser.add_argument(
-        "--run-as-systemd-unit",
-        dest="run_as_systemd_unit",
-        metavar="OPENSTUDIOLANDSCAPES__RUN_AS_SYSTEMD_UNIT",
-        default=os.environ.get("OPENSTUDIOLANDSCAPES__RUN_AS_SYSTEMD_UNIT", "0"),
-        action="store_const",
-        const="1",
-        required=False,
-        help="If specified, the discovery service will *not* wait for "
-        "human interaction for incomplete "
-        "`config.yml` files to be fixed. You will have to "
-        "monitor the logs (`journald`) in this case.",
     )
 
     parser.add_argument(
