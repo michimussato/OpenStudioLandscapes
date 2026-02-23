@@ -1522,7 +1522,7 @@ def factory_compose_scope__group_out(
             # Option 2 - Specify an arbitrary number of .env files
             # (Note: multiple definitions of the same variable are applied hierarchically)
             # EnvironmentFile=/full/path/to/some_general_vars.env
-            # EnvironmentFile=/full/path/to/ComposeScope-{compose_scope.upper()}.env
+            # EnvironmentFile=/full/path/to/ComposeScope-{compose_scope}.env
             ################################################################
             RestartSec=5
             # WorkingDirectory=/data/share/nfs/.openstudiolandscapes/.landscapes
