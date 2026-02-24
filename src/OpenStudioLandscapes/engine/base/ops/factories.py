@@ -19,7 +19,6 @@ import base64
 import copy
 import enum
 import getpass
-
 import itertools
 import json
 import os

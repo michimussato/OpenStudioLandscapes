@@ -15,7 +15,7 @@ flowchart TD
     click_0["click\n8.3.1"]
     coloredlogs["coloredlogs\n14.0"]
     colorlog["colorlog\n6.10.1"]
-    cyclonedx-bom["cyclonedx-bom\n7.2.1"]
+    cyclonedx-bom["cyclonedx-bom\n7.2.2"]
     cyclonedx-python-lib["cyclonedx-python-lib\n11.6.0"]
     dagster-graphql["dagster-graphql\n1.9.11"]
     dagster-pipes["dagster-pipes\n1.9.11"]
@@ -29,7 +29,7 @@ flowchart TD
     docker-compose-graph["docker-compose-graph\n1.0.0.post1.dev5+ga91125bef"]
     docstring-parser["docstring_parser\n0.17.0"]
     email-validator["email-validator\n2.3.0"]
-    filelock["filelock\n3.24.2"]
+    filelock["filelock\n3.24.3"]
     fqdn["fqdn\n1.5.1"]
     fsspec["fsspec\n2026.2.0"]
     gitdb["gitdb\n4.0.12"]
@@ -39,9 +39,9 @@ flowchart TD
     graphql-core["graphql-core\n3.2.6"]
     graphql-relay["graphql-relay\n3.2.0"]
     graphviz["graphviz\n0.21"]
-    greenlet["greenlet\n3.3.1"]
+    greenlet["greenlet\n3.3.2"]
     grpcio-health-checking["grpcio-health-checking\n1.71.2"]
-    grpcio["grpcio\n1.78.0"]
+    grpcio["grpcio\n1.78.1"]
     h11["h11\n0.16.0"]
     httptools["httptools\n0.7.1"]
     human-readable-id["human-readable-id\n0.0.3"]
@@ -64,11 +64,11 @@ flowchart TD
     nox["nox\n2026.2.9"]
     openstudiolandscapes["OpenStudioLandscapes\n0.0.0"]
     packageurl-python["packageurl-python\n0.17.6"]
-    packaging["packaging\n25.0"]
+    packaging["packaging\n26.0"]
     pathlib-abc["pathlib_abc\n0.5.2"]
     pip-requirements-parser["pip-requirements-parser\n32.0.1"]
     pip["pip\n26.0.1"]
-    pipdeptree["pipdeptree\n2.30.0"]
+    pipdeptree["pipdeptree\n2.31.0"]
     platformdirs["platformdirs\n4.9.2"]
     propcache["propcache\n0.4.1"]
     protobuf["protobuf\n5.29.6"]
@@ -89,7 +89,7 @@ flowchart TD
     rfc3339-validator["rfc3339-validator\n0.1.4"]
     rfc3986-validator["rfc3986-validator\n0.1.1"]
     rfc3987-syntax["rfc3987-syntax\n1.1.0"]
-    rich["rich\n14.3.2"]
+    rich["rich\n14.3.3"]
     rpds-py["rpds-py\n0.30.0"]
     setuptools["setuptools\n82.0.0"]
     six["six\n1.17.0"]
@@ -106,12 +106,12 @@ flowchart TD
     typing-extensions["typing_extensions\n4.15.0"]
     typing-inspection["typing-inspection\n0.4.2"]
     tzdata["tzdata\n2025.3"]
-    universal-pathlib["universal_pathlib\n0.3.9"]
+    universal-pathlib["universal_pathlib\n0.3.10"]
     uri-template["uri-template\n1.3.0"]
     urllib3["urllib3\n2.6.3"]
     uvicorn["uvicorn\n0.41.0"]
     uvloop["uvloop\n0.22.1"]
-    virtualenv["virtualenv\n20.37.0"]
+    virtualenv["virtualenv\n20.39.0"]
     watchdog["watchdog\n5.0.3"]
     watchfiles["watchfiles\n1.1.1"]
     webcolors["webcolors\n25.10.0"]
@@ -127,7 +127,7 @@ flowchart TD
     arrow -- "any" --> tzdata
     coloredlogs -- ">=7.1" --> humanfriendly
     cyclonedx-bom -- ">=0.11,<2" --> packageurl-python
-    cyclonedx-bom -- ">=22,<26" --> packaging
+    cyclonedx-bom -- ">=22,<27" --> packaging
     cyclonedx-bom -- ">=32.0,<33.0" --> pip-requirements-parser
     cyclonedx-bom -- ">=5.1,<6.0" --> chardet
     cyclonedx-bom -- ">=8.0,<12" --> cyclonedx-python-lib
@@ -229,8 +229,8 @@ flowchart TD
     openstudiolandscapes -- "any" --> snakemd
     pip-requirements-parser -- "any" --> packaging
     pip-requirements-parser -- "any" --> pyparsing
-    pipdeptree -- ">=25" --> packaging
     pipdeptree -- ">=25.2" --> pip
+    pipdeptree -- ">=26" --> packaging
     py-serializable -- ">=0.7.1,<0.8.0" --> defusedxml
     pydantic -- "==2.41.5" --> pydantic-core
     pydantic -- ">=0.4.2" --> typing-inspection

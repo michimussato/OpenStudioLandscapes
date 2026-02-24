@@ -818,3 +818,32 @@ Now, it's time to head over to the [Wiki](wiki/README.md)!
 
 - [OpenStudioLandscapes-Teleport](https://github.com/michimussato/OpenStudioLandscapes-Teleport)
 - [OpenStudioLandscapes-Twingate](https://github.com/michimussato/OpenStudioLandscapes-Twingate)
+
+---
+
+Todo
+- [ ] create global env file
+  - [Persistent Environment Variables](https://linuxize.com/post/how-to-set-and-list-environment-variables-in-linux/#persistent-environment-variables)
+  - [](https://www.geeksforgeeks.org/linux-unix/environment-variables-in-linux-unix/)
+  - [](https://phoenixnap.com/kb/linux-set-environment-variable)
+
+```dotenv
+OPENSTUDIOLANDSCAPES__USER=openstudiolandscapes
+OPENSTUDIOLANDSCAPES__UID=1000
+OPENSTUDIOLANDSCAPES__GROUP=openstudiolandscapes
+OPENSTUDIOLANDSCAPES__GID=1000
+OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT=
+OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS=
+OPENSTUDIOLANDSCAPES__ATTACH_GRAFANA_ALLOY_TO_COMPOSE_SCOPE=
+OPENSTUDIOLANDSCAPES__ATTACH_PANGOLIN_SITE_TO_COMPOSE_SCOPE=
+OPENSTUDIOLANDSCAPES__DOMAIN_WAN=
+OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT=
+OPENSTUDIOLANDSCAPES__LANDSCAPE_ID=
+```
+
+- [ ] add openstudiolandscapes system user
+  - https://superuser.com/questions/77617/how-can-i-create-a-non-login-user
+  - `--system`?
+  - `--home-dir=`?
+  - `--no-create-home`?
+  - `--no-user-group`?
