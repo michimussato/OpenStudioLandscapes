@@ -251,6 +251,8 @@ def simple_factory_alloy(
 
         alloy_config: pathlib.Path = kwargs.pop("alloy_config")
 
+        build_docker_image_alloy: Dict = kwargs.pop("build_docker_image_alloy")
+
         if CONFIG.attach_grafana_alloy_to_compose_scope:
 
             env: Dict = CONFIG.env
@@ -330,7 +332,13 @@ def simple_factory_alloy(
             # - https://github.com/grafana/alloy-scenarios/blob/main/docker-monitoring/docker-compose-linux.yml
             # - https://www.youtube.com/watch?v=E654LPrkCjo
             service_dict: DockerComposeServiceDefinition = {
-                "image": "docker.io/grafana/alloy:latest",
+                # "image": "docker.io/grafana/alloy:latest",
+                "image": "%s%s:%s"
+                % (
+                    build_docker_image_alloy["image_prefixes"],
+                    build_docker_image_alloy["image_name"],
+                    build_docker_image_alloy["image_tags"][0],
+                ),
                 "privileged": True,
                 "container_name": f"alloy_container.{_unique_suffix}",
                 # Some fixed hostname is needed.

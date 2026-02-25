@@ -168,6 +168,9 @@ if bool(feature_ins):
                     "alloy_config": AssetIn(
                         AssetKey(["OpenStudioLandscapes_Grafana", "alloy_config"])
                     ),
+                    "build_docker_image_alloy": AssetIn(
+                        AssetKey(["OpenStudioLandscapes_Grafana", "build_docker_image_alloy"])
+                    ),
                 },
             )
             compose_scope_asset_defs.append(wrapper_alloy)
