@@ -1313,25 +1313,24 @@ def factory_compose_scope__group_out(
         features_in = kwargs.pop("features_in")
 
         del compose
+        del features_in
 
-        env = CONFIG.env
         docker_config_json: pathlib.Path = group_out_base.docker_config_json
 
         cmd_append["exclude_from_quote"].extend(
             ComposeCmdExclusion.CMD_APPEND_ALWAYS_EXCLUDE_FROM_QUOTATION.value
         )
 
-        DOCKER_COMPOSE: pathlib.Path = CONFIG.docker_compose
         # Todo:
         #  - [ ] Is this necessary here?
-        DOCKER_COMPOSE.parent.mkdir(parents=True, exist_ok=True)
+        CONFIG.docker_compose.parent.mkdir(parents=True, exist_ok=True)
 
         context.log.debug(context.asset_key_for_output("group_out"))
         context.log.debug(context.asset_key_for_output("compose_project_name"))
         context.log.debug(context.selected_output_names)
 
         compose_project_name = (
-            f"{env.get('LANDSCAPE', 'default').replace('.', '-')}-{compose_scope}"
+            f"{CONFIG.env.get('LANDSCAPE', 'default').replace('.', '-')}-{compose_scope}"
         )
 
         group_names_by_key_dict = context.assets_def.group_names_by_key
@@ -1350,14 +1349,15 @@ def factory_compose_scope__group_out(
             "--progress",
             DOCKER_PROGRESS,
             "--file",
-            DOCKER_COMPOSE.as_posix(),
+            CONFIG.docker_compose.as_posix(),
             "--project-name",
             compose_project_name,
             "logs",
             "--follow",
         ]
+        docker_compose_logs_sh: str = "docker_compose_logs.sh"
         script_cmd_docker_compose_logs = (
-            DOCKER_COMPOSE.parent / "docker_compose_logs.sh"
+            CONFIG.docker_compose.parent / docker_compose_logs_sh
         )
 
         cmd_docker_compose_up = [
@@ -1368,7 +1368,7 @@ def factory_compose_scope__group_out(
             "--progress",
             DOCKER_PROGRESS,
             "--file",
-            DOCKER_COMPOSE.as_posix(),
+            CONFIG.docker_compose.as_posix(),
             "--project-name",
             compose_project_name,
             "up",
@@ -1408,7 +1408,8 @@ def factory_compose_scope__group_out(
         #     --project-name 2026-01-20_00-42-28__clumsy-peaceful-volcano-sprite-worker \
         #     logs \
         #     --follow
-        script_cmd_docker_compose_up = DOCKER_COMPOSE.parent / "docker_compose_up.sh"
+        docker_compose_up_sh: str = "docker_compose_up.sh"
+        script_cmd_docker_compose_up = CONFIG.docker_compose.parent / docker_compose_up_sh
 
         cmd_docker_compose_restart = [
             "$(which docker)",
@@ -1418,7 +1419,7 @@ def factory_compose_scope__group_out(
             "--progress",
             DOCKER_PROGRESS,
             "--file",
-            DOCKER_COMPOSE.as_posix(),
+            CONFIG.docker_compose.as_posix(),
             "--project-name",
             compose_project_name,
             "restart",
@@ -1435,8 +1436,9 @@ def factory_compose_scope__group_out(
             # "&&",
             # *cmd_docker_compose_logs,
         ]
+        docker_compose_restart_sh: str = "docker_compose_restart.sh"
         script_cmd_docker_compose_restart = (
-            DOCKER_COMPOSE.parent / "docker_compose_restart.sh"
+            CONFIG.docker_compose.parent / docker_compose_restart_sh
         )
 
         cmd_docker_compose_pull_up = [
@@ -1447,7 +1449,7 @@ def factory_compose_scope__group_out(
             "--progress",
             DOCKER_PROGRESS,
             "--file",
-            DOCKER_COMPOSE.as_posix(),
+            CONFIG.docker_compose.as_posix(),
             "--project-name",
             compose_project_name,
             "pull",
@@ -1455,8 +1457,9 @@ def factory_compose_scope__group_out(
             "&&",
             *cmd_docker_compose_up,
         ]
+        docker_compose_pull_up_sh: str = "docker_compose_pull_up.sh"
         script_cmd_docker_compose_pull_up = (
-            DOCKER_COMPOSE.parent / "docker_compose_pull_up.sh"
+            CONFIG.docker_compose.parent / docker_compose_pull_up_sh
         )
 
         cmd_docker_compose_down = [
@@ -1467,23 +1470,21 @@ def factory_compose_scope__group_out(
             "--progress",
             DOCKER_PROGRESS,
             "--file",
-            DOCKER_COMPOSE.as_posix(),
+            CONFIG.docker_compose.as_posix(),
             "--project-name",
             compose_project_name,
             "down",
             "--remove-orphans",
         ]
+        docker_compose_down_sh = "docker_compose_down.sh"
         script_cmd_docker_compose_down = (
-            DOCKER_COMPOSE.parent / "docker_compose_down.sh"
+            CONFIG.docker_compose.parent / docker_compose_down_sh
         )
 
         asset_key_systemd_unit = context.asset_key_for_output(
             output_name="systemd_unit"
         ).path
         # Todo:
-        #  - [x] It seems like systemd instance units (*@.service)
-        #        are only running if the user is actually logged in.
-        #        This behaviour is highly undesirable.
         #  - [ ] Change user ID so that we can create a user `openstudiolandscapes`
         systemd_unit = textwrap.dedent(f"""
             [Unit]
@@ -1491,7 +1492,7 @@ def factory_compose_scope__group_out(
             # {urllib.parse.quote(f"http://localhost:3000/asset-groups/%s" % '%2F'.join(asset_key_systemd_unit), safe=":/%")}
             # More info on systemd specifiers:
             # - https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html?__goaway_challenge=meta-refresh&__goaway_id=af831620b51d37fbc05006860cc19eca&__goaway_referer=https%3A%2F%2Fduckduckgo.com%2F#Specifiers
-            Description=OpenStudioLandscapes Compose Scope "{compose_scope}" Systemd Unit - Created for {env['LANDSCAPE']}
+            Description=OpenStudioLandscapes Compose Scope "{compose_scope}" Systemd Unit - Created for {CONFIG.env['LANDSCAPE']}
             After=docker.service
             Wants=docker.service
             ReloadPropagatedFrom=docker.service
@@ -1512,7 +1513,8 @@ def factory_compose_scope__group_out(
             #   - Limit read access to .env files
             # 
             # Option 1 - Set individual environment variables
-            # Environment="LANDSCAPE_ID={env['LANDSCAPE']}"
+            # Environment="LANDSCAPE_ID={CONFIG.env['LANDSCAPE']}"
+            # Environment="LANDSCAPES_ROOT={CONFIG.env['DOT_LANDSCAPES']}"
             # Environment="SUDO_PASS="
             # Environment="OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_{compose_scope.upper()}__PANGOLIN_ENDPOINT="
             # Environment="OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_{compose_scope.upper()}__NEWT_ID="
@@ -1526,8 +1528,8 @@ def factory_compose_scope__group_out(
             RestartSec=5
             # WorkingDirectory=/data/share/nfs/.openstudiolandscapes/.landscapes
             # for this service, the scripts need
-            ExecStart=/usr/bin/bash -lc "echo \${{SUDO_PASS}} | {script_cmd_docker_compose_up.as_posix()}"
-            ExecStop=/usr/bin/bash -lc "echo \${{SUDO_PASS}} | {script_cmd_docker_compose_down.as_posix()}"
+            ExecStart=/usr/bin/bash -lc "echo ${{SUDO_PASS}} | {pathlib.Path('${LANDSCAPES_ROOT}').joinpath('${LANDSCAPE_ID}', 'ComposeScope_%s' % compose_scope, 'docker_compose', [docker_compose_up_sh, docker_compose_pull_up_sh][1]).as_posix()}"
+            ExecStop=/usr/bin/bash -lc "echo ${{SUDO_PASS}} | {pathlib.Path('${LANDSCAPES_ROOT}').joinpath('${LANDSCAPE_ID}', 'ComposeScope_%s' % compose_scope, 'docker_compose', docker_compose_down_sh).as_posix()}"
             
             [Install]
             WantedBy=default.target
@@ -1547,7 +1549,7 @@ def factory_compose_scope__group_out(
             # Install systemd service with:
             
             sudo systemctl disable --now openstudiolandscapes-{compose_scope}.service
-            sudo tee "/etc/systemd/system/openstudiolandscapes-{compose_scope}.service" << EOF
+            sudo tee "/etc/systemd/system/openstudiolandscapes-{compose_scope}.service" << 'EOF'
             {textwrap.indent(systemd_unit, prefix='            ')}
             EOF
             
@@ -1559,7 +1561,7 @@ def factory_compose_scope__group_out(
             # sudo systemctl enable --now openstudiolandscapes-{compose_scope}.service
             # 
             # Check journald log output with:
-            # sudo journalctl --output cat -fu openstudiolandscapes-{compose_scope}.service
+            # sudo journalctl --output cat --follow --unit openstudiolandscapes-{compose_scope}.service
             """)
 
         # Todo
@@ -1715,12 +1717,12 @@ def factory_compose_scope__group_out(
 
                 cmd_str_replaced = cmd_str.replace(
                     # docker-compose.yml
-                    DOCKER_COMPOSE.as_posix(),
+                    CONFIG.docker_compose.as_posix(),
                     get_relative_path_via_common_root(
                         context=context,
                         path_src=script_cmd_docker_compose_up,
-                        path_dst=DOCKER_COMPOSE,
-                        path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
+                        path_dst=CONFIG.docker_compose,
+                        path_common_root=pathlib.Path(CONFIG.env["DOT_LANDSCAPES"]),
                     ).as_posix(),
                 ).replace(
                     # OpenStudioLandscapes_Base__docker_config_json
@@ -1729,7 +1731,7 @@ def factory_compose_scope__group_out(
                         context=context,
                         path_src=script_cmd_docker_compose_up,
                         path_dst=docker_config_json,
-                        path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
+                        path_common_root=pathlib.Path(CONFIG.env["DOT_LANDSCAPES"]),
                     ).as_posix(),
                 )
 
@@ -1753,15 +1755,15 @@ def factory_compose_scope__group_out(
                     ).path
                 )
                 script_cmd_convenience = pathlib.Path(
-                    env["DOT_LANDSCAPES"],
-                    env.get("LANDSCAPE", "default"),
+                    CONFIG.env["DOT_LANDSCAPES"],
+                    CONFIG.env.get("LANDSCAPE", "default"),
                     f"{docker_compose_scope}.sh",
                 )
                 rel_path = get_relative_path_via_common_root(
                     context=context,
                     path_src=script_cmd_convenience,
                     path_dst=script_dict["script"],
-                    path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
+                    path_common_root=pathlib.Path(CONFIG.env["DOT_LANDSCAPES"]),
                 )
                 with open(
                     file=script_cmd_convenience,
@@ -1796,7 +1798,7 @@ def factory_compose_scope__group_out(
 
         yield Output(
             output_name=output_name,
-            value=DOCKER_COMPOSE,
+            value=CONFIG.docker_compose,
         )
 
         yield AssetMaterialization(
@@ -1804,8 +1806,8 @@ def factory_compose_scope__group_out(
             metadata={
                 "__".join(
                     context.asset_key_for_output(output_name).path
-                ): MetadataValue.path(DOCKER_COMPOSE),
-                "root_dir": MetadataValue.path(DOCKER_COMPOSE.parent),
+                ): MetadataValue.path(CONFIG.docker_compose),
+                "root_dir": MetadataValue.path(CONFIG.docker_compose.parent),
                 # "yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
                 "scripts": MetadataValue.json(scripts),
             },
