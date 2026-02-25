@@ -304,6 +304,56 @@ def simple_factory_alloy(
             volumes_dict = {
                 "volumes": list(
                     {
+                        # Add named volume for workers
+                        # With bind volumes, all workers try to access the
+                        # same directory on the server, leading to errors like:
+                        # [...]
+                        # ts=2026-02-25T20:34:21.288457728Z level=error msg="Failed to create existing container: /system.slice/docker-7ef95d79314e8670e41b1253a1ced907ff9840df080777ac0cfd1b7855e5ee9f.scope: failed to identify the read-write layer ID for container \"7ef95d79314e8670e41b1253a1ced907ff9840df080777ac0cfd1b7855e5ee9f\". - open /rootfs/var/lib/docker/image/overlayfs/layerdb/mounts/7ef95d79314e8670e41b1253a1ced907ff9840df080777ac0cfd1b7855e5ee9f/mount-id: no such file or directory" component_path=/ component_id=prometheus.exporter.cadvisor.example
+                        # ts=2026-02-25T20:34:21.2947955Z level=error msg="Failed to create existing container: /system.slice/docker-e366ae8d3756d76c08d9696c0e0153ded8451d784a7ed631b846d01425f20b52.scope: failed to identify the read-write layer ID for container \"e366ae8d3756d76c08d9696c0e0153ded8451d784a7ed631b846d01425f20b52\". - open /rootfs/var/lib/docker/image/overlayfs/layerdb/mounts/e366ae8d3756d76c08d9696c0e0153ded8451d784a7ed631b846d01425f20b52/mount-id: no such file or directory" component_path=/ component_id=prometheus.exporter.cadvisor.example
+                        # ts=2026-02-25T20:34:21.309287945Z level=error msg="Failed to create existing container: /system.slice/docker-21694a0c41f2e2a4985fc255f5a1d495769dc10f21f8986bcab962b1f62f1a1d.scope: failed to identify the read-write layer ID for container \"21694a0c41f2e2a4985fc255f5a1d495769dc10f21f8986bcab962b1f62f1a1d\". - open /rootfs/var/lib/docker/image/overlayfs/layerdb/mounts/21694a0c41f2e2a4985fc255f5a1d495769dc10f21f8986bcab962b1f62f1a1d/mount-id: no such file or directory" component_path=/ component_id=prometheus.exporter.cadvisor.example
+                        # ts=2026-02-25T20:34:21.322206762Z level=error msg="Failed to create existing container: /system.slice/docker-3009777d142ed8a9623fb9fe7cfcd07cf1bf9c4dcb9f3e5fc3481a5b9dac4682.scope: failed to identify the read-write layer ID for container \"3009777d142ed8a9623fb9fe7cfcd07cf1bf9c4dcb9f3e5fc3481a5b9dac4682\". - open /rootfs/var/lib/docker/image/overlayfs/layerdb/mounts/3009777d142ed8a9623fb9fe7cfcd07cf1bf9c4dcb9f3e5fc3481a5b9dac4682/mount-id: no such file or directory" component_path=/ component_id=prometheus.exporter.cadvisor.example
+                        # ts=2026-02-25T20:34:21.328600629Z level=error msg="Failed to create existing container: /system.slice/docker-faf83c438a6b2dcaed762b18a6f88c10d63d43d6c446b7acc98028d3c7f6891c.scope: failed to identify the read-write layer ID for container \"faf83c438a6b2dcaed762b18a6f88c10d63d43d6c446b7acc98028d3c7f6891c\". - open /rootfs/var/lib/docker/image/overlayfs/layerdb/mounts/faf83c438a6b2dcaed762b18a6f88c10d63d43d6c446b7acc98028d3c7f6891c/mount-id: no such file or directory" component_path=/ component_id=prometheus.exporter.cadvisor.example
+                        # ts=2026-02-25T20:34:21.33229662Z level=error msg="Failed to create existing container: /system.slice/docker-f3e16f4759f45f9204bf301b46d54c680f686e6ef9a20a1ffd2e342980f68709.scope: failed to identify the read-write layer ID for container \"f3e16f4759f45f9204bf301b46d54c680f686e6ef9a20a1ffd2e342980f68709\". - open /rootfs/var/lib/docker/image/overlayfs/layerdb/mounts/f3e16f4759f45f9204bf301b46d54c680f686e6ef9a20a1ffd2e342980f68709/mount-id: no such file or directory" component_path=/ component_id=prometheus.exporter.cadvisor.example
+                        # ts=2026-02-25T20:34:21.355671359Z level=error msg="Failed to create existing container: /system.slice/docker-f3e16f4759f45f9204bf301b46d54c680f686e6ef9a20a1ffd2e342980f68709.scope: failed to identify the read-write layer ID for container \"f3e16f4759f45f9204bf301b46d54c680f686e6ef9a20a1ffd2e342980f68709\". - open /rootfs/var/lib/docker/image/overlayfs/layerdb/mounts/f3e16f4759f45f9204bf301b46d54c680f686e6ef9a20a1ffd2e342980f68709/mount-id: no such file or directory" component_path=/ component_id=prometheus.exporter.cadvisor.example
+                        # ts=2026-02-25T20:34:21.359779736Z level=error msg="Failed to create existing container: /system.slice/docker-e366ae8d3756d76c08d9696c0e0153ded8451d784a7ed631b846d01425f20b52.scope: failed to identify the read-write layer ID for container \"e366ae8d3756d76c08d9696c0e0153ded8451d784a7ed631b846d01425f20b52\". - open /rootfs/var/lib/docker/image/overlayfs/layerdb/mounts/e366ae8d3756d76c08d9696c0e0153ded8451d784a7ed631b846d01425f20b52/mount-id: no such file or directory" component_path=/ component_id=prometheus.exporter.cadvisor.example
+                        # ts=2026-02-25T20:34:21.365427448Z level=error msg="Failed to create existing container: /system.slice/docker-7ef95d79314e8670e41b1253a1ced907ff9840df080777ac0cfd1b7855e5ee9f.scope: failed to identify the read-write layer ID for container \"7ef95d79314e8670e41b1253a1ced907ff9840df080777ac0cfd1b7855e5ee9f\". - open /rootfs/var/lib/docker/image/overlayfs/layerdb/mounts/7ef95d79314e8670e41b1253a1ced907ff9840df080777ac0cfd1b7855e5ee9f/mount-id: no such file or directory" component_path=/ component_id=prometheus.exporter.cadvisor.example
+                        # ts=2026-02-25T20:34:21.372840298Z level=error msg="Failed to create existing container: /system.slice/docker-21694a0c41f2e2a4985fc255f5a1d495769dc10f21f8986bcab962b1f62f1a1d.scope: failed to identify the read-write layer ID for container \"21694a0c41f2e2a4985fc255f5a1d495769dc10f21f8986bcab962b1f62f1a1d\". - open /rootfs/var/lib/docker/image/overlayfs/layerdb/mounts/21694a0c41f2e2a4985fc255f5a1d495769dc10f21f8986bcab962b1f62f1a1d/mount-id: no such file or directory" component_path=/ component_id=prometheus.exporter.cadvisor.example
+                        # ts=2026-02-25T20:34:21.377242361Z level=error msg="Failed to create existing container: /system.slice/docker-3009777d142ed8a9623fb9fe7cfcd07cf1bf9c4dcb9f3e5fc3481a5b9dac4682.scope: failed to identify the read-write layer ID for container \"3009777d142ed8a9623fb9fe7cfcd07cf1bf9c4dcb9f3e5fc3481a5b9dac4682\". - open /rootfs/var/lib/docker/image/overlayfs/layerdb/mounts/3009777d142ed8a9623fb9fe7cfcd07cf1bf9c4dcb9f3e5fc3481a5b9dac4682/mount-id: no such file or directory" component_path=/ component_id=prometheus.exporter.cadvisor.example
+                        # ts=2026-02-25T20:34:21.381073248Z level=error msg="Failed to create existing container: /system.slice/docker-faf83c438a6b2dcaed762b18a6f88c10d63d43d6c446b7acc98028d3c7f6891c.scope: failed to identify the read-write layer ID for container \"faf83c438a6b2dcaed762b18a6f88c10d63d43d6c446b7acc98028d3c7f6891c\". - open /rootfs/var/lib/docker/image/overlayfs/layerdb/mounts/faf83c438a6b2dcaed762b18a6f88c10d63d43d6c446b7acc98028d3c7f6891c/mount-id: no such file or directory" component_path=/ component_id=prometheus.exporter.cadvisor.example
+                        # ts=2026-02-25T20:34:21.381502091Z level=info msg="finished node evaluation" controller_path=/ controller_id="" trace_id=a0ff776240535fc0368178e9ee23e07d node_id=prometheus.exporter.cadvisor.example duration=407.691454ms
+                        # ts=2026-02-25T20:34:21.382775195Z level=info msg="finished node evaluation" controller_path=/ controller_id="" trace_id=a0ff776240535fc0368178e9ee23e07d node_id=discovery.relabel.example duration=1.092146ms
+                        # ts=2026-02-25T20:34:21.385314351Z level=info msg="finished node evaluation" controller_path=/ controller_id="" trace_id=a0ff776240535fc0368178e9ee23e07d node_id=prometheus.scrape.scraper duration=2.320388ms
+                        # ts=2026-02-25T20:34:21.385911581Z level=info msg="finished node evaluation" controller_path=/ controller_id="" trace_id=a0ff776240535fc0368178e9ee23e07d node_id=discovery.relabel.docker duration=363.897µs
+                        # ts=2026-02-25T20:34:21.391175821Z level=info msg="Failed to process watch event {EventType:0 Name:/system.slice/docker-21694a0c41f2e2a4985fc255f5a1d495769dc10f21f8986bcab962b1f62f1a1d.scope WatchSource:0}: failed to identify the read-write layer ID for container \"21694a0c41f2e2a4985fc255f5a1d495769dc10f21f8986bcab962b1f62f1a1d\". - open /rootfs/var/lib/docker/image/overlayfs/layerdb/mounts/21694a0c41f2e2a4985fc255f5a1d495769dc10f21f8986bcab962b1f62f1a1d/mount-id: no such file or directory" component_path=/ component_id=prometheus.exporter.cadvisor.example
+                        # ts=2026-02-25T20:34:21.394921864Z level=info msg="finished node evaluation" controller_path=/ controller_id="" trace_id=a0ff776240535fc0368178e9ee23e07d node_id=loki.source.docker.docker duration=8.403253ms
+                        # ts=2026-02-25T20:34:21.395142692Z level=info msg="finished complete graph evaluation" controller_path=/ controller_id="" trace_id=a0ff776240535fc0368178e9ee23e07d duration=442.259628ms
+                        # Error: /etc/alloy/config.alloy:34:1: Failed to build component: building component: get segment range: segments are not sequential
+                        # 33 |   // Configure a prometheus.remote_write component to send metrics to a Prometheus server.
+                        # 34 |   prometheus.remote_write "demo" {
+                        #    |  _^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        # 35 | |   endpoint {
+                        # 36 | |     // Endpoints"
+                        # 37 | |     // - https://prometheus.io/docs/prometheus/latest/querying/api/
+                        # 38 | |     //
+                        # 39 | |     // Verify operational:
+                        # 40 | |     // - http://10.1.2.15:9090/api/v1/status/config
+                        # 41 | |     url = "http://10.1.2.15:9090/api/v1/write"
+                        # 42 | |   }
+                        # 43 | | }
+                        #    | |_^
+                        # 44 |
+                        # ts=2026-02-25T20:34:21.398344034Z level=info msg="Failed to process watch event {EventType:0 Name:/system.slice/docker-3009777d142ed8a9623fb9fe7cfcd07cf1bf9c4dcb9f3e5fc3481a5b9dac4682.scope WatchSource:0}: failed to identify the read-write layer ID for container \"3009777d142ed8a9623fb9fe7cfcd07cf1bf9c4dcb9f3e5fc3481a5b9dac4682\". - open /rootfs/var/lib/docker/image/overlayfs/layerdb/mounts/3009777d142ed8a9623fb9fe7cfcd07cf1bf9c4dcb9f3e5fc3481a5b9dac4682/mount-id: no such file or directory" component_path=/ component_id=prometheus.exporter.cadvisor.example
+                        # Error: could not perform the initial load successfully
+                        # 2026/02/25 20:34:21 collector server run finished with error: could not perform the initial load successfully
+                        #
+                        # This is necessary because we cannot specify dynamic host mount
+                        # points using environment variables specified inside the container
+                        # (not yet at least). So, named volumes are an easy workaround
+                        # to create container specific, persistent volumes.
+                        # Data in here is probably not that important anyway - just
+                        # work data for the worker. The results of computations will
+                        # end up in the mounted bind volume.
+                        "alloy-worker-files:/var/lib/alloy/data:rw",
                         *_volume_relative,
                         # Non relative paths:
                         "/:/rootfs:ro",
@@ -373,6 +423,17 @@ def simple_factory_alloy(
                 },
             }
 
+            docker_dict: Dict[Any, Any] = {
+
+            # https://docs.docker.com/engine/storage/volumes/#use-a-volume-with-docker-compose
+                **service,
+                "volumes": {
+                    "alloy-worker-files": {
+                        "external": False,
+                    },
+                }
+            }
+
             # networks = {
             #     "networks": {
             #         unique_alloy_network: {
@@ -395,9 +456,13 @@ def simple_factory_alloy(
 
             service = {}
 
-        compose_yaml = yaml.safe_dump(service)
+            docker_dict: Dict[Any, Any] = {
+                **service,
+            }
 
-        yield Output(service)
+        compose_yaml = yaml.safe_dump(docker_dict)
+
+        yield Output(docker_dict)
 
         yield AssetMaterialization(
             asset_key=context.asset_key,
@@ -406,8 +471,8 @@ def simple_factory_alloy(
                     CONFIG.attach_grafana_alloy_to_compose_scope
                 ),
                 "alloy_config": MetadataValue.path(alloy_config),
-                "service": MetadataValue.md(
-                    f"```json\n{json.dumps(service, indent=2, default=str)}\n```"
+                "docker_dict": MetadataValue.md(
+                    f"```json\n{json.dumps(docker_dict, indent=2, default=str)}\n```"
                 ),
                 "compose_yaml": MetadataValue.md(f"```yaml\n{compose_yaml}\n```"),
             },
