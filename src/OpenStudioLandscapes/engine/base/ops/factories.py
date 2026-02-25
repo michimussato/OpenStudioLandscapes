@@ -1526,7 +1526,7 @@ def factory_compose_scope__group_out(
             # EnvironmentFile=/full/path/to/ComposeScope-{compose_scope}.env
             ################################################################
             RestartSec=5
-            # WorkingDirectory=/data/share/nfs/.openstudiolandscapes/.landscapes
+            # WorkingDirectory=
             # for this service, the scripts need
             ExecStart=/usr/bin/bash -lc "echo ${{SUDO_PASS}} | {pathlib.Path('${LANDSCAPES_ROOT}').joinpath('${LANDSCAPE_ID}', 'ComposeScope_%s' % compose_scope, 'docker_compose', [docker_compose_up_sh, docker_compose_pull_up_sh][1]).as_posix()}"
             ExecStop=/usr/bin/bash -lc "echo ${{SUDO_PASS}} | {pathlib.Path('${LANDSCAPES_ROOT}').joinpath('${LANDSCAPE_ID}', 'ComposeScope_%s' % compose_scope, 'docker_compose', docker_compose_down_sh).as_posix()}"
