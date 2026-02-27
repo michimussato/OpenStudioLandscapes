@@ -942,12 +942,14 @@ def factory_compose_scope__compose(
 
         # if "wrapper_alloy" in kwargs:
         wrapper_alloy = kwargs.pop("wrapper_alloy", {})
+        wrapper_alloy_docker_dict = wrapper_alloy.pop("docker_dict", {})
+        wrapper_alloy_cmd_append = wrapper_alloy.pop("cmd_append", {})
 
         # if "wrapper_newt" in kwargs:
         wrapper_newt = kwargs.pop("wrapper_newt", {})
 
         docker_chainmap = ChainMap(
-            wrapper_alloy,
+            wrapper_alloy_docker_dict,
             wrapper_newt,
             docker_dict_include,
         )
@@ -1164,6 +1166,9 @@ def factory_compose_scope__cmd(
         """ """
 
         features_in = kwargs.pop("features_in")
+        wrapper_alloy = kwargs.pop("wrapper_alloy", {})
+        wrapper_alloy_docker_dict = wrapper_alloy.pop("docker_dict", {})
+        wrapper_alloy_cmd_append = wrapper_alloy.pop("cmd_append", {})
 
         cmd_extend_: List[List] = []
         cmd_append_cmd: List[Dict] = []
@@ -1179,12 +1184,15 @@ def factory_compose_scope__cmd(
             cmd_append_cmd.extend(feature_out.cmd_append["cmd"])
             cmd_append_exclude.extend(feature_out.cmd_append["exclude_from_quote"])
 
+        # cmd_extend_.append(feature_out.cmd_extend)
         # Flatten nested list and remove duplicate entries
         cmd_extend: List = list(set(list(itertools.chain(*cmd_extend_))))
         # Flatten nested dict
         cmd_append: Dict = dict()
         cmd_append["cmd"] = cmd_append_cmd
+        cmd_append["cmd"].extend(wrapper_alloy_cmd_append["cmd"])
         cmd_append["exclude_from_quote"] = cmd_append_exclude
+        cmd_append["exclude_from_quote"].extend(wrapper_alloy_cmd_append["exclude_from_quote"])
 
         ##############
         # cmd_append #

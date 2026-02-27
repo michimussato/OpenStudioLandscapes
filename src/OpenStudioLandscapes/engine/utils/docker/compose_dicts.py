@@ -37,6 +37,7 @@ class DockerComposeServiceDefinition(TypedDict, total=False):
     volumes: List[str]
     networks: List[str]
     ports: List[str]
+    entrypoint: List[str]
     command: List[str]
     network_mode: DockerComposeNetworkMode
     restart: DockerComposeRestartPolicy

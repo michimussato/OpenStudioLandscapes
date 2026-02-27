@@ -1,5 +1,6 @@
 import json
 import pathlib
+import shutil
 import textwrap
 from typing import Any, Dict, Generator
 
@@ -91,13 +92,15 @@ def simple_factory_newt(
             env: Dict = CONFIG.env
             landscape_id: str = env.get("LANDSCAPE", "default")
 
+            newt_service = "newt-worker"
+
             scrape_networks: Dict = kwargs.pop("scrape_networks")
 
             _unique_suffix = f"compose_scope-{compose_scope}.{landscape_id}"
 
             service_dict: DockerComposeServiceDefinition = {
                 "image": "docker.io/fosrl/newt",
-                "container_name": f"newt_container.{_unique_suffix}",
+                "container_name": f"{newt_service}.{landscape_id}",
                 "hostname": f"newt-{compose_scope}",
                 "restart": DockerComposePolicies.RESTART_POLICY.ALWAYS,
                 "environment": {
@@ -154,7 +157,7 @@ def simple_factory_newt(
 
             service = {
                 "services": {
-                    unique_newt_service: service_dict,
+                    newt_service: service_dict,
                 },
                 **networks,
             }
@@ -252,6 +255,10 @@ def simple_factory_alloy(
         alloy_config: pathlib.Path = kwargs.pop("alloy_config")
 
         build_docker_image_alloy: Dict = kwargs.pop("build_docker_image_alloy")
+
+        cmd_append = {"cmd": [], "exclude_from_quote": []}
+        exclude_from_quote = []
+        cmd_docker_compose_set_dynamic_hostnames = []
 
         if CONFIG.attach_grafana_alloy_to_compose_scope:
 
@@ -378,6 +385,8 @@ def simple_factory_alloy(
             else:
                 port_mapping = f"{CONFIG.grafana_alloy_listen_port_host}-{CONFIG.grafana_alloy_listen_port_host + len(port_range_pool) - 1}:{CONFIG.grafana_alloy_listen_port_container}"
 
+            alloy_service = "alloy-worker"
+
             # combination of
             # - https://github.com/grafana/alloy-scenarios/blob/main/docker-monitoring/docker-compose-linux.yml
             # - https://www.youtube.com/watch?v=E654LPrkCjo
@@ -390,16 +399,21 @@ def simple_factory_alloy(
                     build_docker_image_alloy["image_tags"][0],
                 ),
                 "privileged": True,
-                "container_name": f"alloy_container.{_unique_suffix}",
+                "container_name": f"{alloy_service}.{landscape_id}",
                 # Some fixed hostname is needed.
                 # Otherwise, the Grafana references in Dashboards no longer work.
                 # Not setting a hostname means that a random name will be assigned.
-                "hostname": f"alloy-{compose_scope}",
                 "restart": DockerComposePolicies.RESTART_POLICY.ON_FAILURE_3,
                 "environment": {
                     "TZ": CONFIG.config_engine.tz,
                     **CONFIG.config_engine.global_environment_variables,
                 },
+                # "entrypoint": [
+                #     "/usr/bin/hostname",
+                #     "alloy-minion01",
+                #     "&&",
+                #     "/bin/alloy",
+                # ],
                 "command": [
                     "run",
                     f"--server.http.listen-addr={CONFIG.grafana_alloy_listen_address}:{CONFIG.grafana_alloy_listen_port_container}",
@@ -414,12 +428,12 @@ def simple_factory_alloy(
                 ],
             }
 
-            unique_alloy_service = f"alloy_service.{_unique_suffix}"
+            # unique_alloy_service = f"{alloy_service}.{_unique_suffix}"
             # unique_alloy_network = f"newt_network.{_unique_suffix}"
 
             service = {
                 "services": {
-                    unique_alloy_service: service_dict,
+                    alloy_service: service_dict,
                 },
             }
 
@@ -452,6 +466,57 @@ def simple_factory_alloy(
             # docker_dict_include["services"].update(service)
             # docker_dict_include.update(networks)
 
+            container_name = ".".join([alloy_service, env.get("LANDSCAPE", "default")])
+
+            target_worker = (
+                "\"$($(which docker) inspect --format '{{ .State.Pid }}' %s)\""
+                % container_name
+            )
+            hostname_worker = f"${{HOSTNAME}}-{alloy_service}"
+
+            # hostname_worker_truncated = hostname_worker.replace(".", "_")[:45]
+
+            exclude_from_quote.extend(
+                [
+                    target_worker,
+                    hostname_worker,
+                    # hostname_worker_truncated,
+                ]
+            )
+
+            cmd_docker_compose_set_dynamic_hostname_worker = [
+                shutil.which("sudo"),
+                "--stdin",
+                # https://man7.org/linux/man-pages/man1/nsenter.1.html
+                shutil.which("nsenter"),
+                "--target",
+                target_worker,
+                "--uts",
+                "hostname",
+                hostname_worker,
+            ]
+
+            cmd_docker_compose_set_dynamic_hostnames.extend(
+                [
+                    "&&",
+                    *cmd_docker_compose_set_dynamic_hostname_worker,
+                    "||",
+                    "echo",
+                    f"could not set hostname for {container_name}",
+                ]
+            )
+
+            cmd_append["cmd"].extend(cmd_docker_compose_set_dynamic_hostnames)
+            cmd_append["exclude_from_quote"].extend(
+                [
+                    "$(which docker)",
+                    "&&",
+                    ";",
+                    "||",
+                    *exclude_from_quote,
+                ]
+            )
+
         else:
 
             service = {}
@@ -462,7 +527,12 @@ def simple_factory_alloy(
 
         compose_yaml = yaml.safe_dump(docker_dict)
 
-        yield Output(docker_dict)
+        ret = {
+            "docker_dict": docker_dict,
+            "cmd_append": cmd_append,
+        }
+
+        yield Output(ret)
 
         yield AssetMaterialization(
             asset_key=context.asset_key,
@@ -475,6 +545,7 @@ def simple_factory_alloy(
                     f"```json\n{json.dumps(docker_dict, indent=2, default=str)}\n```"
                 ),
                 "compose_yaml": MetadataValue.md(f"```yaml\n{compose_yaml}\n```"),
+                "cmd_append": MetadataValue.json(cmd_append),
             },
         )
 
