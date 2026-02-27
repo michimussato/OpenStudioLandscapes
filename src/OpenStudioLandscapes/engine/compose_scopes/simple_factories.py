@@ -274,18 +274,9 @@ def simple_factory_alloy(
             #     unique_suffix=_unique_suffix,
             # )
 
-            alloy_data = pathlib.Path(
-                env["DOT_LANDSCAPES"],
-                env.get("LANDSCAPE", "default"),
-                f"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}",
-                "alloy",
-                "data",
-            )
-
             volumes_dict = {
                 "volumes": [
                     f"{alloy_config.as_posix()}:/etc/alloy/config.alloy:ro",
-                    f"{alloy_data.as_posix()}:/var/lib/alloy/data",
                 ]
             }
 
