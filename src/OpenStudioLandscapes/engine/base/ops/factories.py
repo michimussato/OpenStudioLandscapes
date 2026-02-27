@@ -1168,7 +1168,13 @@ def factory_compose_scope__cmd(
         features_in = kwargs.pop("features_in")
         wrapper_alloy = kwargs.pop("wrapper_alloy", {})
         wrapper_alloy_docker_dict = wrapper_alloy.pop("docker_dict", {})
-        wrapper_alloy_cmd_append = wrapper_alloy.pop("cmd_append", {})
+        wrapper_alloy_cmd_append = wrapper_alloy.pop(
+            "cmd_append",
+            {
+                "cmd": [],
+                "exclude_from_quote": [],
+            }
+        )
 
         cmd_extend_: List[List] = []
         cmd_append_cmd: List[Dict] = []
