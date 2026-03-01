@@ -999,6 +999,7 @@ def factory_compose_scope__compose(
                 "__".join(
                     context.asset_key_for_output(output_name).path
                 ): MetadataValue.json(docker_chainmap_dict),
+                "docker_compose_path": MetadataValue.path(DOCKER_COMPOSE),
                 "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml_include}\n```"),
                 "includes": MetadataValue.json(includes),
             },
