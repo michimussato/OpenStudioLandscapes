@@ -400,18 +400,32 @@ def simple_factory_alloy(
                     "TZ": CONFIG.config_engine.tz,
                     **CONFIG.config_engine.global_environment_variables,
                 },
-                # "entrypoint": [
-                #     "/usr/bin/hostname",
-                #     "alloy-minion01",
-                #     "&&",
-                #     "/bin/alloy",
-                # ],
-                "command": [
-                    "run",
-                    f"--server.http.listen-addr={CONFIG.grafana_alloy_listen_address}:{CONFIG.grafana_alloy_listen_port_container}",
-                    "--storage.path=/var/lib/alloy/data",
-                    "/etc/alloy/config.alloy",
+                # The sleep command gives us some time to set the hostname
+                # before alloy is launched so that it does not pick a
+                # generic hash at launch time
+                "entrypoint": [
+                    "/usr/bin/bash",
+                    "-c",
+                    f"sleep 10.0 "
+                    f"&& /usr/bin/alloy run "
+                    f"--server.http.listen-addr={CONFIG.grafana_alloy_listen_address}:{CONFIG.grafana_alloy_listen_port_container} "
+                    f"--storage.path=/var/lib/alloy/data "
+                    f"/etc/alloy/config.alloy",
                 ],
+                # # "entrypoint": [
+                # #     "/usr/bin/hostname",
+                # #     "alloy-minion01",
+                # #     "&&",
+                # #     "/bin/alloy",
+                # # ],
+                # "command": [
+                #     "run",
+                #     "--disable-reporting",
+                #     f"--server.http.listen-addr={CONFIG.grafana_alloy_listen_address}:{CONFIG.grafana_alloy_listen_port_container}",
+                #     "--storage.path=/var/lib/alloy/data",
+                #     # "--clustering.enabled=false",
+                #     "/etc/alloy/config.alloy",
+                # ],
                 **volumes_dict,
                 # "network_mode": DockerComposePolicies.NETWORK_MODE.HOST,
                 "networks": [*scrape_networks.keys()],
