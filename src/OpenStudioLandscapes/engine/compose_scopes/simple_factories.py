@@ -1,5 +1,6 @@
 import json
 import pathlib
+import shlex
 import shutil
 import textwrap
 from typing import Any, Dict, Generator
@@ -92,7 +93,7 @@ def simple_factory_newt(
             env: Dict = CONFIG.env
             landscape_id: str = env.get("LANDSCAPE", "default")
 
-            newt_service = "newt-worker"
+            newt_service = f"newt-{compose_scope}"
 
             scrape_networks: Dict = kwargs.pop("scrape_networks")
 
@@ -351,7 +352,7 @@ def simple_factory_alloy(
                         # Data in here is probably not that important anyway - just
                         # work data for the worker. The results of computations will
                         # end up in the mounted bind volume.
-                        "alloy-worker-files:/var/lib/alloy/data:rw",
+                        f"alloy-{compose_scope}-files:/var/lib/alloy/data:rw",
                         *_volume_relative,
                         # Non relative paths:
                         "/:/rootfs:ro",
@@ -376,7 +377,7 @@ def simple_factory_alloy(
             else:
                 port_mapping = f"{CONFIG.grafana_alloy_listen_port_host}-{CONFIG.grafana_alloy_listen_port_host + len(port_range_pool) - 1}:{CONFIG.grafana_alloy_listen_port_container}"
 
-            alloy_service = "alloy-worker"
+            alloy_service = f"alloy-{compose_scope}"
 
             # combination of
             # - https://github.com/grafana/alloy-scenarios/blob/main/docker-monitoring/docker-compose-linux.yml
@@ -433,7 +434,7 @@ def simple_factory_alloy(
             # https://docs.docker.com/engine/storage/volumes/#use-a-volume-with-docker-compose
                 **service,
                 "volumes": {
-                    "alloy-worker-files": {
+                    f"alloy-{compose_scope}-files": {
                         "external": False,
                     },
                 }
@@ -463,18 +464,34 @@ def simple_factory_alloy(
                 "\"$($(which docker) inspect --format '{{ .State.Pid }}' %s)\""
                 % container_name
             )
+
+            # && while [ ! "$(docker inspect -f '{{.State.Running}}' deadline-10-2-pulse-worker.2026-03-01_09-00-46__insidious-rift-unmarred-tsunami)" = "true" ]; do echo "Starting..."; sleep 0.1; done \
+            check_running_target_worker = (
+                "\"$($(which docker) inspect --format '{{ .State.Running }}' %s)\""
+                % container_name
+            )
+
             hostname_worker = f"${{HOSTNAME}}-{alloy_service}"
 
             # hostname_worker_truncated = hostname_worker.replace(".", "_")[:45]
 
             exclude_from_quote.extend(
                 [
+                    check_running_target_worker,
                     target_worker,
                     hostname_worker,
                     # hostname_worker_truncated,
                 ]
             )
 
+            cmd_docker_compose_set_dynamic_hostname_worker_ = shlex.split(
+                    textwrap.dedent(
+                    f"""
+                    {shutil.which("sudo")} --stdin {shutil.which("nsenter")} --target {target_worker} --uts hostname {hostname_worker}
+                    """
+                )
+            )
+            context.log.debug(cmd_docker_compose_set_dynamic_hostname_worker_)
             cmd_docker_compose_set_dynamic_hostname_worker = [
                 shutil.which("sudo"),
                 "--stdin",
@@ -487,13 +504,45 @@ def simple_factory_alloy(
                 hostname_worker,
             ]
 
+            cmd_docker_compose_check_running_worker_ = shlex.split(
+                textwrap.dedent(
+                    f"""
+                    while [ ! {check_running_target_worker} = "true" ] ; do echo "Starting Container..." ; sleep 0.1 ; done
+                    """
+                )
+            )
+            context.log.debug(cmd_docker_compose_check_running_worker_)
+            cmd_docker_compose_check_running_worker = [
+                "while",
+                "[",
+                "!",
+                check_running_target_worker,
+                "=",
+                "true",
+                "]",
+                ";",
+                "do",
+                "echo",
+                "Starting...",
+                ";",
+                "sleep",
+                "0.1",
+                ";",
+                "done",
+            ]
+
             cmd_docker_compose_set_dynamic_hostnames.extend(
                 [
+                    "\\\n",
+                    "&&",
+                    *cmd_docker_compose_check_running_worker,
+                    "\\\n",
                     "&&",
                     *cmd_docker_compose_set_dynamic_hostname_worker,
                     "||",
                     "echo",
                     f"could not set hostname for {container_name}",
+                    "\\\n",
                 ]
             )
 
@@ -504,6 +553,11 @@ def simple_factory_alloy(
                     "&&",
                     ";",
                     "||",
+                    "[",
+                    "]",
+                    "=",
+                    "!",
+                    '\\\n',
                     *exclude_from_quote,
                 ]
             )

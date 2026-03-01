@@ -301,14 +301,22 @@ def try_import_discovered(
         LOGGER.info(f"{_models = }")
         models_object: ModuleType = importlib.import_module(_models)
         LOGGER.info("Feature models import successful: '%s'" % models_object)
-    except (ModuleNotFoundError, AttributeError) as e:
+    except (
+        ModuleNotFoundError,
+        AttributeError,
+        # TypeError,
+    ) as e:
         raise ImportError(e) from e
     try:
         _definitions = discovered_model.definitions
         LOGGER.info(f"{_definitions = }")
         definitions_object: ModuleType = importlib.import_module(_definitions)
         LOGGER.info("Feature definitions import successful: '%s'" % definitions_object)
-    except (ModuleNotFoundError, AttributeError) as e:
+    except (
+        ModuleNotFoundError,
+        AttributeError,
+        # TypeError,
+    ) as e:
         raise ImportError(e) from e
 
     return models_object, definitions_object

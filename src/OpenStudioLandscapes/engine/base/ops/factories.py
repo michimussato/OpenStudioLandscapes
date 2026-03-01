@@ -202,6 +202,8 @@ def factory_feature_out_v2(
 
 
 def factory_cmd(
+    # cmd_append: Dict[str, List],
+    # cmd_extend: List,
     name="op_cmd_from_factory",
     ins=None,
     **kwargs,
@@ -216,6 +218,11 @@ def factory_cmd(
     Returns:
         function: The new op.
     """
+
+    # Todo
+    #  - [ ] elimitate "local overrides" like
+    #        introduced in the *-Worker Features as well as
+    #        in compose-scopes module
 
     @op(
         name=name,
@@ -233,11 +240,18 @@ def factory_cmd(
 
         ret_cmd_append = {"cmd": [], "exclude_from_quote": ["$(which docker)"]}
 
+        # cmd_append
+        # ret_cmd_append = {
+        #     "cmd": cmd_append["cmd"],
+        #     "exclude_from_quote": cmd_append["exclude_from_quote"],
+        # }
+
         output_name = "cmd_append"
 
         yield Output(
             output_name=output_name,
             value=ret_cmd_append,
+            # value=cmd_append,
         )
 
         yield AssetMaterialization(
@@ -246,6 +260,7 @@ def factory_cmd(
                 "__".join(
                     context.asset_key_for_output(output_name).path
                 ): MetadataValue.json(ret_cmd_append),
+                # ): MetadataValue.json(cmd_append),
             },
         )
 
@@ -253,6 +268,7 @@ def factory_cmd(
         # cmd_extend #
         ##############
 
+        # cmd_extend
         output_name = "cmd_extend"
 
         ret_cmd_extend = []
@@ -260,6 +276,7 @@ def factory_cmd(
         yield Output(
             output_name=output_name,
             value=ret_cmd_extend,
+            # value=cmd_extend,
         )
 
         yield AssetMaterialization(
@@ -268,6 +285,7 @@ def factory_cmd(
                 "__".join(
                     context.asset_key_for_output(output_name).path
                 ): MetadataValue.json(ret_cmd_extend),
+                # ): MetadataValue.json(cmd_extend),
             },
         )
 
