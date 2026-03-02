@@ -228,22 +228,10 @@ def get_compose_scope_group__cmd(
     ASSET_HEADER: Dict,
 ) -> AssetsDefinition:
 
-    # The wrapper_alloy asset availability depends on whether or not
-    # OpenStudioLandscapes-Grafana is installed or not
-    ins_alloy = keys_by_input_name_alloy = {}
-    if GRAFANA_AVAILABLE:
-        ins_alloy = {
-            "wrapper_alloy": In(Dict),
-        }
-        keys_by_input_name_alloy = {
-            "wrapper_alloy": AssetKey([*ASSET_HEADER["key_prefix"], "wrapper_alloy"])
-        }
-
     compose_scope_op__cmd: OpDefinition = factory_compose_scope__cmd(
         name=f"op_compose_scope__cmd__{ASSET_HEADER['group_name']}",
         ins={
             "features_in": In(Dict),
-            **ins_alloy,
         },
         out={
             "cmd_append": Out(Dict),
@@ -258,7 +246,6 @@ def get_compose_scope_group__cmd(
         key_prefix=ASSET_HEADER["key_prefix"],
         keys_by_input_name={
             "features_in": AssetKey([*ASSET_HEADER["key_prefix"], "features_in"]),
-            **keys_by_input_name_alloy,
         },
         keys_by_output_name={},
     )

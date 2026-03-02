@@ -1,7 +1,5 @@
 import json
 import pathlib
-import shlex
-import shutil
 import textwrap
 from typing import Any, Dict, Generator
 
@@ -16,7 +14,6 @@ from dagster import (
     asset,
 )
 
-from OpenStudioLandscapes.engine.compose_scopes.constants import *
 from OpenStudioLandscapes.engine.config.models import (
     ComposeScopeBaseModel,
 )
@@ -102,7 +99,7 @@ def simple_factory_newt(
             service_dict: DockerComposeServiceDefinition = {
                 "image": "docker.io/fosrl/newt",
                 "container_name": f"{newt_service}.{landscape_id}",
-                "hostname": f"newt-{compose_scope}",
+                "hostname": f"${{HOSTNAME:-undefined}}-{newt_service}",
                 "restart": DockerComposePolicies.RESTART_POLICY.ALWAYS,
                 "environment": {
                     "TZ": CONFIG.config_engine.tz,
@@ -257,10 +254,6 @@ def simple_factory_alloy(
 
         build_docker_image_alloy: Dict = kwargs.pop("build_docker_image_alloy")
 
-        cmd_append = {"cmd": [], "exclude_from_quote": []}
-        exclude_from_quote = []
-        cmd_docker_compose_set_dynamic_hostnames = []
-
         if CONFIG.attach_grafana_alloy_to_compose_scope:
 
             env: Dict = CONFIG.env
@@ -392,40 +385,20 @@ def simple_factory_alloy(
                 ),
                 "privileged": True,
                 "container_name": f"{alloy_service}.{landscape_id}",
-                # Some fixed hostname is needed.
-                # Otherwise, the Grafana references in Dashboards no longer work.
-                # Not setting a hostname means that a random name will be assigned.
+                "hostname": f"${{HOSTNAME:-undefined}}-{alloy_service}",
                 "restart": DockerComposePolicies.RESTART_POLICY.ON_FAILURE_3,
                 "environment": {
                     "TZ": CONFIG.config_engine.tz,
                     **CONFIG.config_engine.global_environment_variables,
                 },
-                # The sleep command gives us some time to set the hostname
-                # before alloy is launched so that it does not pick a
-                # generic hash at launch time
-                "entrypoint": [
-                    "/usr/bin/bash",
-                    "-c",
-                    f"sleep 10.0 "
-                    f"&& /usr/bin/alloy run "
-                    f"--server.http.listen-addr={CONFIG.grafana_alloy_listen_address}:{CONFIG.grafana_alloy_listen_port_container} "
-                    f"--storage.path=/var/lib/alloy/data "
-                    f"/etc/alloy/config.alloy",
+                "command": [
+                    "run",
+                    "--disable-reporting",
+                    f"--server.http.listen-addr={CONFIG.grafana_alloy_listen_address}:{CONFIG.grafana_alloy_listen_port_container}",
+                    "--storage.path=/var/lib/alloy/data",
+                    # "--clustering.enabled=false",
+                    "/etc/alloy/config.alloy",
                 ],
-                # # "entrypoint": [
-                # #     "/usr/bin/hostname",
-                # #     "alloy-minion01",
-                # #     "&&",
-                # #     "/bin/alloy",
-                # # ],
-                # "command": [
-                #     "run",
-                #     "--disable-reporting",
-                #     f"--server.http.listen-addr={CONFIG.grafana_alloy_listen_address}:{CONFIG.grafana_alloy_listen_port_container}",
-                #     "--storage.path=/var/lib/alloy/data",
-                #     # "--clustering.enabled=false",
-                #     "/etc/alloy/config.alloy",
-                # ],
                 **volumes_dict,
                 # "network_mode": DockerComposePolicies.NETWORK_MODE.HOST,
                 "networks": [*scrape_networks.keys()],
@@ -472,110 +445,6 @@ def simple_factory_alloy(
             # docker_dict_include["services"].update(service)
             # docker_dict_include.update(networks)
 
-            container_name = ".".join([alloy_service, env.get("LANDSCAPE", "default")])
-
-            target_worker = (
-                "\"$($(which docker) inspect --format '{{ .State.Pid }}' %s)\""
-                % container_name
-            )
-
-            # && while [ ! "$(docker inspect -f '{{.State.Running}}' deadline-10-2-pulse-worker.2026-03-01_09-00-46__insidious-rift-unmarred-tsunami)" = "true" ]; do echo "Starting..."; sleep 0.1; done \
-            check_running_target_worker = (
-                "\"$($(which docker) inspect --format '{{ .State.Running }}' %s)\""
-                % container_name
-            )
-
-            hostname_worker = f"${{HOSTNAME}}-{alloy_service}"
-
-            # hostname_worker_truncated = hostname_worker.replace(".", "_")[:45]
-
-            exclude_from_quote.extend(
-                [
-                    check_running_target_worker,
-                    target_worker,
-                    hostname_worker,
-                    # hostname_worker_truncated,
-                ]
-            )
-
-            cmd_docker_compose_set_dynamic_hostname_worker_ = shlex.split(
-                    textwrap.dedent(
-                    f"""
-                    {shutil.which("sudo")} --stdin {shutil.which("nsenter")} --target {target_worker} --uts hostname {hostname_worker}
-                    """
-                )
-            )
-            context.log.debug(cmd_docker_compose_set_dynamic_hostname_worker_)
-            cmd_docker_compose_set_dynamic_hostname_worker = [
-                shutil.which("sudo"),
-                "--stdin",
-                # https://man7.org/linux/man-pages/man1/nsenter.1.html
-                shutil.which("nsenter"),
-                "--target",
-                target_worker,
-                "--uts",
-                "hostname",
-                hostname_worker,
-            ]
-
-            cmd_docker_compose_check_running_worker_ = shlex.split(
-                textwrap.dedent(
-                    f"""
-                    while [ ! {check_running_target_worker} = "true" ] ; do echo "Starting Container..." ; sleep 0.1 ; done
-                    """
-                )
-            )
-            context.log.debug(cmd_docker_compose_check_running_worker_)
-            cmd_docker_compose_check_running_worker = [
-                "while",
-                "[",
-                "!",
-                check_running_target_worker,
-                "=",
-                "true",
-                "]",
-                ";",
-                "do",
-                "echo",
-                "Starting...",
-                ";",
-                "sleep",
-                "0.1",
-                ";",
-                "done",
-            ]
-
-            cmd_docker_compose_set_dynamic_hostnames.extend(
-                [
-                    "\\\n",
-                    "&&",
-                    *cmd_docker_compose_check_running_worker,
-                    "\\\n",
-                    "&&",
-                    *cmd_docker_compose_set_dynamic_hostname_worker,
-                    "||",
-                    "echo",
-                    f"could not set hostname for {container_name}",
-                    "\\\n",
-                ]
-            )
-
-            cmd_append["cmd"].extend(cmd_docker_compose_set_dynamic_hostnames)
-            cmd_append["exclude_from_quote"].extend(
-                [
-                    "$(which docker)",
-                    "&&",
-                    ";",
-                    "||",
-                    "[",
-                    "]",
-                    "=",
-                    "!",
-                    '\\\n',
-                    *exclude_from_quote,
-                ]
-            )
-
         else:
 
             service = {}
@@ -586,12 +455,7 @@ def simple_factory_alloy(
 
         compose_yaml = yaml.safe_dump(docker_dict)
 
-        ret = {
-            "docker_dict": docker_dict,
-            "cmd_append": cmd_append,
-        }
-
-        yield Output(ret)
+        yield Output(docker_dict)
 
         yield AssetMaterialization(
             asset_key=context.asset_key,
@@ -604,7 +468,6 @@ def simple_factory_alloy(
                     f"```json\n{json.dumps(docker_dict, indent=2, default=str)}\n```"
                 ),
                 "compose_yaml": MetadataValue.md(f"```yaml\n{compose_yaml}\n```"),
-                "cmd_append": MetadataValue.json(cmd_append),
             },
         )
 

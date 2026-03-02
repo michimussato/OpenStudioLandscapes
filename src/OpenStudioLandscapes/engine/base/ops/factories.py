@@ -960,14 +960,12 @@ def factory_compose_scope__compose(
 
         # if "wrapper_alloy" in kwargs:
         wrapper_alloy = kwargs.pop("wrapper_alloy", {})
-        wrapper_alloy_docker_dict = wrapper_alloy.pop("docker_dict", {})
-        wrapper_alloy_cmd_append = wrapper_alloy.pop("cmd_append", {})
 
         # if "wrapper_newt" in kwargs:
         wrapper_newt = kwargs.pop("wrapper_newt", {})
 
         docker_chainmap = ChainMap(
-            wrapper_alloy_docker_dict,
+            wrapper_alloy,
             wrapper_newt,
             docker_dict_include,
         )
@@ -1185,15 +1183,6 @@ def factory_compose_scope__cmd(
         """ """
 
         features_in = kwargs.pop("features_in")
-        wrapper_alloy = kwargs.pop("wrapper_alloy", {})
-        wrapper_alloy_docker_dict = wrapper_alloy.pop("docker_dict", {})
-        wrapper_alloy_cmd_append = wrapper_alloy.pop(
-            "cmd_append",
-            {
-                "cmd": [],
-                "exclude_from_quote": [],
-            }
-        )
 
         cmd_extend_: List[List] = []
         cmd_append_cmd: List[Dict] = []
@@ -1215,9 +1204,7 @@ def factory_compose_scope__cmd(
         # Flatten nested dict
         cmd_append: Dict = dict()
         cmd_append["cmd"] = cmd_append_cmd
-        cmd_append["cmd"].extend(wrapper_alloy_cmd_append["cmd"])
         cmd_append["exclude_from_quote"] = cmd_append_exclude
-        cmd_append["exclude_from_quote"].extend(wrapper_alloy_cmd_append["exclude_from_quote"])
 
         ##############
         # cmd_append #
@@ -1427,12 +1414,6 @@ def factory_compose_scope__group_out(
         #     up \
         #     --remove-orphans \
         #     --detach \
-        #     && /usr/bin/sudo /usr/bin/nsenter \
-        #     --target $($(which docker) inspect -f '{{ .State.Pid }}' flamenco-worker-001.2026-01-20_00-42-28__clumsy-peaceful-volcano-sprite) \
-        #     --uts hostname $(hostname)-flamenco-worker-001 \
-        #     && /usr/bin/sudo /usr/bin/nsenter \
-        #     --target $($(which docker) inspect -f '{{ .State.Pid }}' opencue-rqd-worker-001.2026-01-20_00-42-28__clumsy-peaceful-volcano-sprite) \
-        #     --uts hostname $(hostname)-opencue-rqd-worker-001 \
         #     && $(which docker) \
         #     --config ../../../2026-01-20_00-42-28__clumsy-peaceful-volcano-sprite/OpenStudioLandscapes/OpenStudioLandscapes_Base__docker_config_json \
         #     compose \
@@ -1544,6 +1525,9 @@ def factory_compose_scope__group_out(
             # Security concerns:
             # # Secrets
             #   - Limit read access to .env files
+            #
+            # Environment Variables in Systemd Unit Files:
+            # - https://linuxvox.com/blog/using-variable-in-command-path-for-execstart-in-systemd-service/
             # 
             # Option 1 - Set individual environment variables
             # Environment="LANDSCAPE_ID={CONFIG.env['LANDSCAPE']}"
@@ -1561,8 +1545,10 @@ def factory_compose_scope__group_out(
             RestartSec=5
             # WorkingDirectory=
             # for this service, the scripts need
-            ExecStart=/usr/bin/bash -lc "echo ${{SUDO_PASS}} | {pathlib.Path('${LANDSCAPES_ROOT}').joinpath('${LANDSCAPE_ID}', 'ComposeScope_%s' % compose_scope, 'docker_compose', [docker_compose_up_sh, docker_compose_pull_up_sh][1]).as_posix()}"
-            ExecStop=/usr/bin/bash -lc "echo ${{SUDO_PASS}} | {pathlib.Path('${LANDSCAPES_ROOT}').joinpath('${LANDSCAPE_ID}', 'ComposeScope_%s' % compose_scope, 'docker_compose', docker_compose_down_sh).as_posix()}"
+            # ExecStart=/usr/bin/bash -lc "echo ${{SUDO_PASS}} | {pathlib.Path('${LANDSCAPES_ROOT}').joinpath('${LANDSCAPE_ID}', 'ComposeScope_%s' % compose_scope, 'docker_compose', [docker_compose_up_sh, docker_compose_pull_up_sh][1]).as_posix()}"
+            ExecStart={pathlib.Path('${LANDSCAPES_ROOT}').joinpath('${LANDSCAPE_ID}', 'ComposeScope_%s' % compose_scope, 'docker_compose', [docker_compose_up_sh, docker_compose_pull_up_sh][1]).as_posix()}
+            # ExecStop=/usr/bin/bash -lc "echo ${{SUDO_PASS}} | {pathlib.Path('${LANDSCAPES_ROOT}').joinpath('${LANDSCAPE_ID}', 'ComposeScope_%s' % compose_scope, 'docker_compose', docker_compose_down_sh).as_posix()}"
+            ExecStop={pathlib.Path('${LANDSCAPES_ROOT}').joinpath('${LANDSCAPE_ID}', 'ComposeScope_%s' % compose_scope, 'docker_compose', docker_compose_down_sh).as_posix()}
             
             [Install]
             WantedBy=default.target
@@ -1624,7 +1610,6 @@ def factory_compose_scope__group_out(
         docker_script["script"] += "\n"
         docker_script["script"] += (
             "# Export environment variables required by *some* docker-compose files\n"
-            "# as well as /usr/bin/nsenter --uts hostname\n"
         )
         docker_script["script"] += "HOSTNAME=$($(which hostname) --fqdn)\n"
         docker_script["script"] += "export HOSTNAME\n"
