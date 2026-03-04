@@ -4,7 +4,7 @@ import os
 import pathlib
 import re
 from importlib.metadata import Distribution
-from typing import ClassVar, Dict, List, Union
+from typing import ClassVar, Dict, List
 
 import pydantic
 import yaml
@@ -407,6 +407,11 @@ class ConfigEngine(BaseConfig):
         frozen=True,
     )
 
+    apt_packages_rez: List = Field(
+        default=[],
+        frozen=True,
+    )
+
     apt_packages_build_python311: List = Field(
         default=[
             "build-essential",
@@ -426,6 +431,10 @@ class ConfigEngine(BaseConfig):
         frozen=True,
     )
 
+    rez_version: str = Field(
+        default="3.3.0",
+    )
+
     pip_packages: List = Field(
         default=[
             # Content moved to OpenStudioLandscapes.Dagster.assets.pip_packages
@@ -433,6 +442,11 @@ class ConfigEngine(BaseConfig):
             #  - [ ] enable OpenStudioLandscapes after making it public
             #  - [x] maybe move dagster stuff to dagster image?
         ],
+        frozen=True,
+    )
+
+    pip_packages_rez: List = Field(
+        default=[],
         frozen=True,
     )
 
