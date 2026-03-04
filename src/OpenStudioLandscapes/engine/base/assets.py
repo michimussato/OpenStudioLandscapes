@@ -192,7 +192,11 @@ def build_docker_image(
 
         # This would reduce storage
         # 1.26GB -> 1.25GB
-        RUN apt-get update && apt-get upgrade -y && apt-get -y autoremove --purge && apt-get -y clean && apt-get autoclean
+        RUN apt-get update \\
+            && apt-get upgrade -y \\
+            && apt-get -y autoremove --purge \\
+            && apt-get -y clean \\
+            && apt-get autoclean
 
         {apt_install_str_base}
         
@@ -205,7 +209,7 @@ def build_docker_image(
         WORKDIR /build/python
 
         RUN curl "https://www.python.org/ftp/python/{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}/Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}.tgz" -o Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}.tgz \\
-            && file Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}.tgz \\
+            && file Pytdocker_confighon-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}.tgz \\
             && tar -xvf Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}.tgz \\
             && rm Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}.tgz
 
@@ -225,7 +229,7 @@ def build_docker_image(
             
         ENV PATH="$PATH:/opt/python{PYTHON_MAJ}.{PYTHON_MIN}/bin"
         
-        RUN echo $PATH
+        # RUN echo $PATH
 
         RUN python{PYTHON_MAJ}.{PYTHON_MIN} -m pip install --upgrade pip setuptools setuptools_scm wheel \\
             && python{PYTHON_MAJ}.{PYTHON_MIN} -m pip cache purge
@@ -326,6 +330,247 @@ def build_docker_image(
 
 @asset(
     **ASSET_HEADER_BASE,
+    ins={
+        "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
+        "CONFIG": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"])),
+        "docker_config_json": AssetIn(
+            AssetKey([*ASSET_HEADER_BASE["key_prefix"], "docker_config_json"])
+        ),
+        "build_docker_image": AssetIn(
+            AssetKey([*ASSET_HEADER_BASE["key_prefix"], "build_docker_image"]),
+        ),
+    },
+    retry_policy=build_docker_image_retry_policy,
+)
+def build_docker_image_rez(
+    context: AssetExecutionContext,
+    env: dict,  # pylint: disable=redefined-outer-name
+    CONFIG: ConfigEngine,  # pylint: disable=redefined-outer-name
+    docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name
+    build_docker_image: dict,  # pylint: disable=redefined-outer-name
+) -> Generator[Output[dict[str, str | list[str]]] | AssetMaterialization, None, None]:
+    """
+    Supported Python versions:
+    - See https://rez.readthedocs.io/en/stable/installation.html#installation-script
+
+    Install:
+    $ ./install.py --help                                                                  ✔  .venv_rez 
+    usage: Rez installer [-h] [-v] [-s] [-p] [-e] [DIR]
+
+    Install rez in a production ready, standalone Python virtual environment.
+
+    positional arguments:
+      DIR                   Destination directory. If '{version}' is present, it will be expanded to the rez version. Default: /opt/rez
+
+    options:
+      -h, --help            show this help message and exit
+      -v, --verbose         Increase verbosity.
+      -s, --keep-symlinks   Don't run realpath on the passed DIR to resolve symlinks; ie, the baked script locations may still contain
+                            symlinks
+      -p, --as-rez-package  Install rez as a rez package. Note that this installs the API only (no cli tools), and DIR is expected to be the
+                            path to a rez package repository (and will default to ~/packages instead).
+      -e, --editable        Make the install an editable install (pip install -e). This should only be used for development purposes
+
+    Todo:
+     - [ ] edit src/rez/rezconfig.py
+    """
+
+    docker_config: DockerConfigModel = CONFIG.openstudiolandscapes__docker_config
+
+    docker_file = pathlib.Path(
+        env["DOT_LANDSCAPES"],
+        env.get("LANDSCAPE", "default"),
+        f"{dist.name}",
+        "__".join(context.asset_key.path),
+        "Dockerfiles",
+        "Dockerfile",
+    )
+
+    shutil.rmtree(docker_file.parent, ignore_errors=True)
+
+    docker_file.parent.mkdir(parents=True, exist_ok=True)
+
+    #################################################
+
+    (
+        image_name,
+        image_prefixes,
+        tags,
+        build_base_parent_image_prefix,
+        build_base_parent_image_name,
+        build_base_parent_image_tags,
+    ) = get_image_metadata(
+        context=context,
+        docker_image=build_docker_image,
+        docker_config=docker_config,
+        env=env,
+    )
+
+    #################################################
+
+    apt_install_str_rez: str = get_apt_install_str(
+        apt_install_packages=CONFIG.apt_packages_rez,
+    )
+
+    # pip_install_str_rez: str = get_pip_install_str(pip_install_packages=CONFIG.pip_packages_rez)
+
+    # @formatter:off
+    docker_file_str = textwrap.dedent("""\
+        # {auto_generated}
+        # {dagster_url}
+        
+        ################################################################################
+        # Multi Stage: Stage 1
+        FROM {parent_image} AS base
+        LABEL authors="{AUTHOR}"
+        
+        ARG DEBIAN_FRONTEND=noninteractive
+
+        ENV CONTAINER_TIMEZONE={timezone}
+        ENV SET_CONTAINER_TIMEZONE=true
+        
+        ENV PATH="$PATH:/opt/rez/bin/rez"
+        
+        WORKDIR /opt/python3.11/bin
+        # Todo
+        #  - [ ] Do we need other versions?
+        #  - [ ] This is a local package. Do we need to release packaged versions as well?
+        RUN ln -s python3.11 python
+        
+        WORKDIR /
+
+        ENV LC_ALL=C.UTF-8
+        ENV LANG=C.UTF-8
+
+        SHELL ["/bin/bash", "-c"]
+
+        ################################################################################
+        # Multi Stage: Stage 2
+        FROM base AS installer
+
+        WORKDIR /build/rez
+
+        RUN curl -L "https://github.com/AcademySoftwareFoundation/rez/archive/refs/tags/3.3.0.tar.gz" -o rez-{rez_version}.tar.gz \\
+            && file rez-{rez_version}.tar.gz \\
+            && tar -xzvf rez-{rez_version}.tar.gz \\
+            && rm rez-{rez_version}.tar.gz
+        
+        WORKDIR rez-{rez_version}
+        
+        RUN python3.11 ./install.py --verbose /opt/rez
+        
+        ################################################################################        
+        # Multi Stage: Stage 3
+        FROM base AS final
+        
+        COPY --from=installer "/opt/rez" "/opt/rez"
+        
+        WORKDIR /opt/rez
+        
+        RUN chmod +x /opt/rez/completion/complete.sh
+        RUN /opt/rez/completion/complete.sh
+        
+        # # rez-bind --quickstart is equivalent to:
+        # # rez-bind platform \\
+        # #     && rez-bind arch \\
+        # #     && rez-bind os \\
+        # #     && rez-bind python \\
+        # #     && rez-bind rez \\
+        # #     && rez-bind rezgui \\
+        # #     && rez-bind setuptools \\
+        # #     && rez-bind pip
+        # 
+        # # Default install-path is /$HOME/packages
+        # # See: https://github.com/AcademySoftwareFoundation/rez/blob/9afb325fc853a2b7ee79f3f83bfdf966446169a9/src/rez/rezconfig.py#L59
+        # # ENTRYPOINT ["rez-bind" "-vvvvv" "--install-path=/data/rez" "--quickstart"]
+        # ENTRYPOINT []
+        # CMD []
+        
+        ################################################################################        
+        # Multi Stage: Stage 4
+        # Test Stage: does the hello_world package build successfully?
+        FROM final AS rez_build_test
+        
+        COPY --from=installer "/build/rez" "/test/rez"
+        
+        WORKDIR /test/rez/rez-3.3.0/example_packages/hello_world
+        
+        RUN ls -al
+        
+        RUN rez-bind -vvvvv --quickstart
+        RUN rez-build -vvvvv --install
+        
+        RUN rez-env -vvvvv hello_world -- hello
+        
+        RUN echo "hello_world successfully tested" > /rez_hello_world_test.txt
+        
+        ################################################################################        
+        # Multi Stage: Stage 5
+        FROM final AS {image_name}
+        
+        COPY --from=rez_build_test "/rez_hello_world_test.txt" "/rez_hello_world_test.txt"
+        
+        # rez-bind --quickstart is equivalent to:
+        # rez-bind platform \\
+        #     && rez-bind arch \\
+        #     && rez-bind os \\
+        #     && rez-bind python \\
+        #     && rez-bind rez \\
+        #     && rez-bind rezgui \\
+        #     && rez-bind setuptools \\
+        #     && rez-bind pip
+
+        # Default install-path is /$HOME/packages
+        # See: https://github.com/AcademySoftwareFoundation/rez/blob/9afb325fc853a2b7ee79f3f83bfdf966446169a9/src/rez/rezconfig.py#L59
+        # ENTRYPOINT ["rez-bind" "-vvvvv" "--install-path=/data/rez" "--quickstart"]
+        ENTRYPOINT []
+        CMD []
+        """).format(
+        apt_install_str_rez=apt_install_str_rez,
+        rez_version=CONFIG.rez_version,
+        timezone=CONFIG.tz,
+        auto_generated=f"AUTO-GENERATED by Dagster Asset {'__'.join(context.asset_key.path)}",
+        dagster_url=urllib.parse.quote(
+            f"http://localhost:3000/asset-groups/{'%2F'.join(context.asset_key.path)}",
+            safe=":/%",
+        ),
+        image_name=image_name,
+        parent_image=f"{build_base_parent_image_prefix}{build_base_parent_image_name}:{build_base_parent_image_tags[0]}",
+        **env,
+    )
+    # @formatter:on
+
+    with open(docker_file, mode="w", encoding="utf-8") as fw:
+        fw.write(docker_file_str)
+
+    with open(docker_file, mode="r") as fr:
+        docker_file_content = fr.read()
+
+    image_data, logs = create_image(
+        context=context,
+        image_name=image_name,
+        image_prefixes=image_prefixes,
+        tags=tags,
+        docker_image=build_docker_image,
+        docker_config=docker_config,
+        docker_config_json=docker_config_json,
+        docker_file=docker_file,
+    )
+
+    yield Output(image_data)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.json(image_data),
+            "docker_file": MetadataValue.md(f"```yaml\n{docker_file_content}\n```"),
+            "logs": MetadataValue.json(logs),
+        },
+    )
+
+
+@asset(
+    **ASSET_HEADER_BASE,
     # Todo:
     #  - [ ] still necessary?
     tags={
@@ -340,6 +585,9 @@ def build_docker_image(
         "build_docker_image": AssetIn(
             AssetKey([*ASSET_HEADER_BASE["key_prefix"], "build_docker_image"]),
         ),
+        # "build_docker_image_rez": AssetIn(
+        #     AssetKey([*ASSET_HEADER_BASE["key_prefix"], "build_docker_image_rez"]),
+        # ),
     },
     description=textwrap.dedent("""
         This is the foundation. This assets provides all relevant environment information
@@ -353,6 +601,7 @@ def group_out_base(
     CONFIG: ConfigEngine,  # pylint: disable=redefined-outer-name
     docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name
     build_docker_image: dict,  # pylint: disable=redefined-outer-name
+    # build_docker_image_rez: dict,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[OpenStudioLandscapesBaseOut] | AssetMaterialization, None, None]:
 
     group_out_base: OpenStudioLandscapesBaseOut = OpenStudioLandscapesBaseOut(
