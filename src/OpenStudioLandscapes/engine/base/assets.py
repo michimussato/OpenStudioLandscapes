@@ -5,7 +5,7 @@ import shutil
 import textwrap
 import time
 import urllib.parse
-from typing import Generator
+from typing import Generator, Dict
 
 from dagster import (
     AssetExecutionContext,
@@ -585,9 +585,9 @@ def build_docker_image_rez(
         "build_docker_image": AssetIn(
             AssetKey([*ASSET_HEADER_BASE["key_prefix"], "build_docker_image"]),
         ),
-        # "build_docker_image_rez": AssetIn(
-        #     AssetKey([*ASSET_HEADER_BASE["key_prefix"], "build_docker_image_rez"]),
-        # ),
+        "build_docker_image_rez": AssetIn(
+            AssetKey([*ASSET_HEADER_BASE["key_prefix"], "build_docker_image_rez"]),
+        ),
     },
     description=textwrap.dedent("""
         This is the foundation. This assets provides all relevant environment information
@@ -597,11 +597,11 @@ def build_docker_image_rez(
 )
 def group_out_base(
     context: AssetExecutionContext,
-    env: dict,  # pylint: disable=redefined-outer-name
+    env: Dict,  # pylint: disable=redefined-outer-name
     CONFIG: ConfigEngine,  # pylint: disable=redefined-outer-name
     docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name
-    build_docker_image: dict,  # pylint: disable=redefined-outer-name
-    # build_docker_image_rez: dict,  # pylint: disable=redefined-outer-name
+    build_docker_image: Dict,  # pylint: disable=redefined-outer-name
+    build_docker_image_rez: Dict,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[OpenStudioLandscapesBaseOut] | AssetMaterialization, None, None]:
 
     group_out_base: OpenStudioLandscapesBaseOut = OpenStudioLandscapesBaseOut(
@@ -609,6 +609,7 @@ def group_out_base(
         config_engine=CONFIG,
         docker_config_json=docker_config_json,
         docker_image_base=build_docker_image,
+        docker_image_rez=build_docker_image_rez,
     )
 
     context.log.debug(f"group_out_base {group_out_base = }")
