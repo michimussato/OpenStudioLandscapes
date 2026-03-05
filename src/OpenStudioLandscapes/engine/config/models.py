@@ -408,7 +408,12 @@ class ConfigEngine(BaseConfig):
     )
 
     apt_packages_rez: List = Field(
-        default=[],
+        default=[
+            # $ rez bundle bakes/my_bake.rxt bundles/bundle_from_my_bake
+            # 11:34:58 INFO     Bundling /rez/bakes/my_bake.rxt into /rez/bundles/bundle_from_my_bake...
+            # 11:34:58 WARNING  Could not patch 127 files: cannot find 'readelf' utility.
+            "binutils",
+        ],
         frozen=True,
     )
 

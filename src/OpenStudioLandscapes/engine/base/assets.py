@@ -429,6 +429,14 @@ def build_docker_image_rez(
         ENV CONTAINER_TIMEZONE={timezone}
         ENV SET_CONTAINER_TIMEZONE=true
         
+        RUN apt-get update \\
+            && apt-get upgrade -y \\
+            && apt-get -y autoremove --purge \\
+            && apt-get -y clean \\
+            && apt-get autoclean
+
+        {apt_install_str_rez}
+        
         ENV PATH="$PATH:/opt/rez/bin/rez"
         
         WORKDIR /opt/python3.11/bin
@@ -470,22 +478,6 @@ def build_docker_image_rez(
         RUN chmod +x /opt/rez/completion/complete.sh
         RUN /opt/rez/completion/complete.sh
         
-        # # rez-bind --quickstart is equivalent to:
-        # # rez-bind platform \\
-        # #     && rez-bind arch \\
-        # #     && rez-bind os \\
-        # #     && rez-bind python \\
-        # #     && rez-bind rez \\
-        # #     && rez-bind rezgui \\
-        # #     && rez-bind setuptools \\
-        # #     && rez-bind pip
-        # 
-        # # Default install-path is /$HOME/packages
-        # # See: https://github.com/AcademySoftwareFoundation/rez/blob/9afb325fc853a2b7ee79f3f83bfdf966446169a9/src/rez/rezconfig.py#L59
-        # # ENTRYPOINT ["rez-bind" "-vvvvv" "--install-path=/data/rez" "--quickstart"]
-        # ENTRYPOINT []
-        # CMD []
-        
         ################################################################################        
         # Multi Stage: Stage 4
         # Test Stage: does the hello_world package build successfully?
@@ -497,10 +489,10 @@ def build_docker_image_rez(
         
         RUN ls -al
         
-        RUN rez-bind -vvvvv --quickstart
-        RUN rez-build -vvvvv --install
+        RUN rez bind -vvvvv --quickstart
+        RUN rez build -vvvvv --install
         
-        RUN rez-env -vvvvv hello_world -- hello
+        RUN rez env -vvvvv hello_world -- hello
         
         RUN echo "hello_world successfully tested" > /rez_hello_world_test.txt
         
@@ -510,21 +502,20 @@ def build_docker_image_rez(
         
         COPY --from=rez_build_test "/rez_hello_world_test.txt" "/rez_hello_world_test.txt"
         
-        # rez-bind --quickstart is equivalent to:
-        # rez-bind platform \\
-        #     && rez-bind arch \\
-        #     && rez-bind os \\
-        #     && rez-bind python \\
-        #     && rez-bind rez \\
-        #     && rez-bind rezgui \\
-        #     && rez-bind setuptools \\
-        #     && rez-bind pip
-
+        # RUN groupadd --gid 1000 rez
+        # RUN useradd \\
+        #     --create-home \\
+        #     --home-dir=/rez \\
+        #     --uid=1000 \\
+        #     --gid=1000 \\
+        #     rez
+        # USER rez
+        WORKDIR /rez
+        
         # Default install-path is /$HOME/packages
         # See: https://github.com/AcademySoftwareFoundation/rez/blob/9afb325fc853a2b7ee79f3f83bfdf966446169a9/src/rez/rezconfig.py#L59
-        # ENTRYPOINT ["rez-bind" "-vvvvv" "--install-path=/data/rez" "--quickstart"]
-        ENTRYPOINT []
-        CMD []
+        ENTRYPOINT ["/opt/rez/bin/rez/rez"]
+        CMD ["--help"]
         """).format(
         apt_install_str_rez=apt_install_str_rez,
         rez_version=CONFIG.rez_version,
