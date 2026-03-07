@@ -61,8 +61,6 @@ class OpenStudioLandscapesBaseOut(BaseModel):
     #   }
     # config_engine: ConfigEngine
 
-    docker_image_rez: Dict[str, Any]
-
 
 class OpenStudioLandscapesFeatureBasePort(BaseModel):
     compose: Union[None, Dict[str, Any]] = Field(

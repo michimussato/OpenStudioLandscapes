@@ -322,6 +322,46 @@ class DockerConfigModel(BaseConfig):
     docker_registry_config: DockerRegistryConfig = Field()
 
 
+class RezConfigModel(BaseConfig):
+
+    deploy_rez: bool = Field(
+        default=True,
+    )
+
+    rez_version: str = Field(
+        default="3.3.0",
+    )
+
+    REZ_PACKAGES_PATH_CONTAINER: List[pathlib.Path] = Field(
+        default=[
+            pathlib.Path("~/packages"),           # locally installed pkgs, not yet deployed
+            pathlib.Path("~/.rez/packages/int"),  # internally developed pkgs, deployed
+            pathlib.Path("~/.rez/packages/ext"),  # external (3rd party) pkgs, such as houdini, boost
+        ],
+        description="https://rez.readthedocs.io/en/stable/configuring_rez.html#envvar-REZ_PACKAGES_PATH",
+        exclude=True,
+    )
+
+    REZ_PACKAGES_PATH: List[pathlib.Path] = Field(
+        default=[
+            pathlib.Path("~/packages"),           # locally installed pkgs, not yet deployed
+            pathlib.Path("~/.rez/packages/int"),  # internally developed pkgs, deployed
+            pathlib.Path("~/.rez/packages/ext"),  # external (3rd party) pkgs, such as houdini, boost
+        ],
+        description="https://rez.readthedocs.io/en/stable/configuring_rez.html#envvar-REZ_PACKAGES_PATH",
+    )
+
+    apt_packages_rez: List = Field(
+        default=[
+            # $ rez bundle bakes/my_bake.rxt bundles/bundle_from_my_bake
+            # 11:34:58 INFO     Bundling /rez/bakes/my_bake.rxt into /rez/bundles/bundle_from_my_bake...
+            # 11:34:58 WARNING  Could not patch 127 files: cannot find 'readelf' utility.
+            "binutils",
+        ],
+        frozen=True,
+    )
+
+
 class SudoMethod(enum.StrEnum):
     # Todo
     #  - [ ] implement `su`
@@ -386,6 +426,19 @@ class ConfigEngine(BaseConfig):
         ),
     )
 
+    openstudiolandscapes__rez_config: RezConfigModel = Field(
+        default=RezConfigModel(
+            **{
+                "deploy_rez": True,
+                "REZ_PACKAGES_PATH": [
+                    pathlib.Path("~/rez/packages/local"),
+                    pathlib.Path("~/rez/packages/deployed/internal"),
+                    pathlib.Path("/data/share/rez-packages/packages"),
+                ],
+            },
+        ),
+    )
+
     apt_packages_base: List = Field(
         default=[
             "git",
@@ -403,16 +456,6 @@ class ConfigEngine(BaseConfig):
             "libglu1-mesa",
             "libxss1",
             "sudo",
-        ],
-        frozen=True,
-    )
-
-    apt_packages_rez: List = Field(
-        default=[
-            # $ rez bundle bakes/my_bake.rxt bundles/bundle_from_my_bake
-            # 11:34:58 INFO     Bundling /rez/bakes/my_bake.rxt into /rez/bundles/bundle_from_my_bake...
-            # 11:34:58 WARNING  Could not patch 127 files: cannot find 'readelf' utility.
-            "binutils",
         ],
         frozen=True,
     )
@@ -436,10 +479,6 @@ class ConfigEngine(BaseConfig):
         frozen=True,
     )
 
-    rez_version: str = Field(
-        default="3.3.0",
-    )
-
     pip_packages: List = Field(
         default=[
             # Content moved to OpenStudioLandscapes.Dagster.assets.pip_packages
@@ -447,11 +486,6 @@ class ConfigEngine(BaseConfig):
             #  - [ ] enable OpenStudioLandscapes after making it public
             #  - [x] maybe move dagster stuff to dagster image?
         ],
-        frozen=True,
-    )
-
-    pip_packages_rez: List = Field(
-        default=[],
         frozen=True,
     )
 

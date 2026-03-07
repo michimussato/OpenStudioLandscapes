@@ -22,6 +22,7 @@ __all__ = [
     "get_networks_dict",
     "get_docker_compose_names",
     "download_file",
+    "get_docker_run_cmd",
 ]
 
 import copy
@@ -726,6 +727,13 @@ def create_image(
     context.log.debug(f"{tags_full_str = }")
 
     localhost_only = not docker_config.use_registry
+    # Todo:
+    #  - [ ] if localhost_only is True, the images will
+    #        get tagged with docker.io/library/ automatically
+    #        Is this expected?
+    #        [...]
+    #        "stderr: #11 naming to docker.io/library/openstudiolandscapes_kitsu_build_docker_image:2026-02-25_12-05-59__spark-dear-square-axolotl done",
+    #        [...]
 
     if localhost_only:
         pull = False
@@ -854,3 +862,37 @@ def download_file(
         raise Exception(
             "Download failed: status code {}\n{}".format(r.status_code, r.text)
         )
+
+
+def get_docker_run_cmd(
+    image_data: Dict,
+    context: Union[AssetExecutionContext, OpExecutionContext],
+) -> str:
+
+    context.log.debug(f"{image_data = }")
+
+    def _get_cmd() -> List[str]:
+        cmd = [
+            "docker",
+            "run",
+            "--interactive",
+            "--tty",
+            "--rm",
+            "--entrypoint",
+            "bash"
+        ]
+
+        context.log.debug(f"{cmd = }")
+
+        return cmd
+
+    ret = shlex.join(
+        [
+            *_get_cmd(),
+            f"{image_data['image_prefixes']}{image_data['image_name']}:{image_data['image_tags'][0]}",
+        ]
+    )
+
+    context.log.debug(f"{ret = }")
+
+    return ret
