@@ -19,6 +19,7 @@ from pydantic import (
     Field,
     PositiveInt,
     field_validator,
+    # computed_field,
 )
 
 LOG = get_dagster_logger(__name__)
@@ -324,32 +325,63 @@ class DockerConfigModel(BaseConfig):
 
 class RezConfigModel(BaseConfig):
 
-    deploy_rez: bool = Field(
-        default=True,
-    )
-
     rez_version: str = Field(
         default="3.3.0",
     )
 
-    REZ_PACKAGES_PATH_CONTAINER: List[pathlib.Path] = Field(
-        default=[
-            pathlib.Path("~/packages"),           # locally installed pkgs, not yet deployed
-            pathlib.Path("~/.rez/packages/int"),  # internally developed pkgs, deployed
-            pathlib.Path("~/.rez/packages/ext"),  # external (3rd party) pkgs, such as houdini, boost
-        ],
-        description="https://rez.readthedocs.io/en/stable/configuring_rez.html#envvar-REZ_PACKAGES_PATH",
-        exclude=True,
+    # Where to PUT packages TO
+    REZ_LOCAL_PACKAGES_PATH: pathlib.Path = Field(
+        # locally installed pkgs, not yet deployed
+        default=pathlib.Path("~/packages"),
+        description="https://rez.readthedocs.io/en/stable/configuring_rez.html#local_packages_path",
     )
 
-    REZ_PACKAGES_PATH: List[pathlib.Path] = Field(
-        default=[
-            pathlib.Path("~/packages"),           # locally installed pkgs, not yet deployed
-            pathlib.Path("~/.rez/packages/int"),  # internally developed pkgs, deployed
-            pathlib.Path("~/.rez/packages/ext"),  # external (3rd party) pkgs, such as houdini, boost
-        ],
-        description="https://rez.readthedocs.io/en/stable/configuring_rez.html#envvar-REZ_PACKAGES_PATH",
+    REZ_RELEASE_PACKAGES_PATH: pathlib.Path = Field(
+        # internally developed pkgs, deployed
+        default=pathlib.Path("~/.rez/packages/int"),
+        description="https://rez.readthedocs.io/en/stable/configuring_rez.html#release_packages_path",
     )
+
+    REZ_EXTERNAL_PACKAGES_PATH: pathlib.Path = Field(
+        # external (3rd party) pkgs, such as houdini, boost
+        default=pathlib.Path("~/.rez/packages/ext"),
+        description="This variable can't be specified directly. We use `REZ_PACKAGES_PATH` "
+                    "to add this to the lookup paths. For more info, see: "
+                    "https://rez.readthedocs.io/en/stable/configuring_rez.html#packages_path",
+    )
+
+    # @computed_field
+    @property
+    def REZ_PACKAGES_PATH(self) -> List[pathlib.Path]:
+        # Resources (@computed_field):
+        # - https://stackoverflow.com/a/76301965
+        # - https://docs.pydantic.dev/2.7/concepts/fields/#the-computed_field-decorator
+        paths_ = [
+            self.REZ_LOCAL_PACKAGES_PATH,
+            self.REZ_RELEASE_PACKAGES_PATH,
+            self.REZ_EXTERNAL_PACKAGES_PATH,
+        ]
+        return paths_
+
+    # @computed_field
+    @property
+    def REZ_PACKAGES_PATH_ENV(self) -> str:
+        return ":".join(i.expanduser().as_posix() for i in self.REZ_PACKAGES_PATH)
+
+    # @computed_field
+    @property
+    def REZ_PACKAGES_PATH_VOL(self) -> List[str]:
+        return [f"{i.expanduser().as_posix()}:{i.expanduser().as_posix()}" for i in self.REZ_PACKAGES_PATH]
+
+    # @computed_field
+    @property
+    def REZ_ENVIRONMENT(self) -> Dict[str, str]:
+        env = {
+            "REZ_PACKAGES_PATH": self.REZ_PACKAGES_PATH_ENV,
+            "REZ_LOCAL_PACKAGES_PATH": self.REZ_LOCAL_PACKAGES_PATH.expanduser().as_posix(),
+            "REZ_RELEASE_PACKAGES_PATH": self.REZ_RELEASE_PACKAGES_PATH.expanduser().as_posix(),
+        }
+        return env
 
     apt_packages_rez: List = Field(
         default=[
