@@ -2,6 +2,7 @@ __all__ = [
     "DAGSTER_DEFAULT_OUTPUT",
     "ConfigParent",
     "ASSET_HEADER_BASE_ENV",
+    "ASSET_HEADER_VFX_PLATFORM",
     "ASSET_HEADER_BASE",
     "ASSET_HEADER_LANDSCAPE_MAP",
     "ASSET_HEADER_DISTRIBUTABLE",
@@ -49,6 +50,15 @@ KEY_BASE = [GROUP_BASE]
 ASSET_HEADER_BASE = {
     "group_name": GROUP_BASE,
     "key_prefix": KEY_BASE,
+}
+
+
+GROUP_VFX_PLATFORM = "OpenStudioLandscapes_VFX_Platform"
+KEY_VFX_PLATFORM = [GROUP_VFX_PLATFORM]
+
+ASSET_HEADER_VFX_PLATFORM = {
+    "group_name": GROUP_VFX_PLATFORM,
+    "key_prefix": KEY_VFX_PLATFORM,
 }
 
 
