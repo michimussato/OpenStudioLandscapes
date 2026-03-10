@@ -245,8 +245,10 @@ def write_dockerfile_CY2026(
         #  Optional Packages:
         #    cmake
         #    expect
-        RUN dnf makecache --refresh && dnf --assumeyes group install "Development Tools" && dnf clean all
         RUN dnf makecache --refresh && dnf --assumeyes install {dnf_packages_base} && dnf clean all
+        RUN dnf makecache --refresh && dnf --assumeyes group install {dnf_packages_python_group} && dnf clean all
+        RUN dnf makecache --refresh && dnf --assumeyes install {dnf_packages_python} && dnf clean all
+        RUN dnf makecache --refresh && dnf --assumeyes install {dnf_packages_CY2026} && dnf clean all
         RUN dnf makecache --refresh && dnf --assumeyes install {dnf_packages_rez} && dnf clean all
         # RUN dnf makecache --refresh && dnf --assumeyes install {dnf_packages_blender_5} && dnf clean all
 
@@ -299,6 +301,8 @@ def write_dockerfile_CY2026(
         WORKDIR /build/rez/rez-{rez_version}/example_packages/hello_world
 
         RUN rez bind -vvvvv --quickstart
+        # ERROR    RezBindError: Couldn't locate module pkg_resources:
+        # ModuleNotFoundError: No module named 'pkg_resources'
         RUN rez build -vvvvv --install
 
         RUN rez env -vvvvv hello_world -- hello > /rez_hello_world_test.txt
@@ -325,6 +329,24 @@ def write_dockerfile_CY2026(
                 "time",
             ]
         ),
+        dnf_packages_python_group=" ".join(
+            [
+                "'Development Tools'",
+            ]
+        ),
+        dnf_packages_python=" ".join(
+            [
+                "libsqlite3x-devel",
+                "bzip2-devel",
+                # stderr: #11 6.609 Python-3.13.12/PCbuild/libffi.props
+                # stderr: #11 6.609 Python-3.13.12/PCbuild/prepare_libffi.bat
+                # stderr: #12 4.213 checking for libffi... no
+                "libffi-devel",
+            ]
+        ),
+        dnf_packages_CY2026=" ".join([
+            "gcc-toolset-14-gcc-c++",
+        ]),
         dnf_packages_rez=" ".join(
             [
                 "openssl-devel",
@@ -344,12 +366,6 @@ def write_dockerfile_CY2026(
         ),
         # dnf_packages_development_tools=" ".join([
         #     "which",
-        #     "file",
-        #     "epel-release",
-        #     "time",
-        # ]),
-        # dnf_packages_CY2026=" ".join([
-        #     # "gcc",
         #     "file",
         #     "epel-release",
         #     "time",
