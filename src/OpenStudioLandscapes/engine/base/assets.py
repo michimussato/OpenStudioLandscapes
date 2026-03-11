@@ -108,18 +108,13 @@ from OpenStudioLandscapes.engine.utils.docker import *
     ins={
         "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
         "CONFIG": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"])),
-        "docker_config_json": AssetIn(
-            AssetKey([*ASSET_HEADER_BASE["key_prefix"], "docker_config_json"])
-        ),
     },
-    retry_policy=build_docker_image_retry_policy,
 )
-def build_docker_image(
+def write_dockerfile(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
     CONFIG: ConfigEngine,  # pylint: disable=redefined-outer-name
-    docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[dict[str, str | list[str]]] | AssetMaterialization, None, None]:
+) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
     """ """
 
     docker_file = pathlib.Path(
@@ -300,6 +295,57 @@ def build_docker_image(
     with open(docker_file, mode="r") as fr:
         docker_file_content = fr.read()
 
+    yield Output(docker_file)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.path(docker_file),
+            docker_file.name: MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
+            "env": MetadataValue.json(env),
+        },
+    )
+
+
+@asset(
+    **ASSET_HEADER_BASE,
+    ins={
+        "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
+        "CONFIG": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"])),
+        "docker_config_json": AssetIn(
+            AssetKey([*ASSET_HEADER_BASE["key_prefix"], "docker_config_json"])
+        ),
+        "write_dockerfile": AssetIn(
+            AssetKey([*ASSET_HEADER_BASE["key_prefix"], "write_dockerfile"])
+        ),
+    },
+    retry_policy=build_docker_image_retry_policy,
+)
+def build_docker_image(
+    context: AssetExecutionContext,
+    env: dict,  # pylint: disable=redefined-outer-name
+    CONFIG: ConfigEngine,  # pylint: disable=redefined-outer-name
+    docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name
+    write_dockerfile: pathlib.Path,  # pylint: disable=redefined-outer-name
+) -> Generator[Output[dict[str, str | list[str]]] | AssetMaterialization, None, None]:
+    """ """
+
+    image_name = get_image_name(context=context)
+    context.log.debug(f"{image_name = }")
+
+    docker_config: DockerConfigModel = CONFIG.openstudiolandscapes__docker_config
+
+    image_prefixes = parse_docker_image_path(
+        docker_config=docker_config,
+        context=context,
+    )
+    context.log.debug(f"{image_prefixes = }")
+
+    tags = [
+        env.get("LANDSCAPE", str(time.time())),
+    ]
+    context.log.debug(f"{tags = }")
+
     image_data = {
         "image_name": image_name,
         "image_prefixes": image_prefixes,
@@ -325,7 +371,7 @@ def build_docker_image(
     cmd_build = docker_build_cmd(
         context=context,
         docker_config_json=docker_config_json,
-        docker_file=docker_file,
+        docker_file=write_dockerfile,
         tags=tags_full_str,
         pull=docker_config.use_registry
         and docker_config.docker_registry_config.docker_pull,
@@ -361,7 +407,6 @@ def build_docker_image(
         asset_key=context.asset_key,
         metadata={
             "__".join(context.asset_key.path): MetadataValue.json(image_data),
-            docker_file.name: MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
             "env": MetadataValue.json(env),
             "docker_image": MetadataValue.path(
                 f"{image_data['image_prefixes']}{image_data['image_name']}:{image_data['image_tags'][0]}"
