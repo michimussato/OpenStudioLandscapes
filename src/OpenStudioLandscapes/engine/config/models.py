@@ -19,7 +19,6 @@ from pydantic import (
     Field,
     PositiveInt,
     field_validator,
-    # computed_field,
 )
 
 LOG = get_dagster_logger(__name__)
@@ -346,8 +345,8 @@ class RezConfigModel(BaseConfig):
         # external (3rd party) pkgs, such as houdini, boost
         default=pathlib.Path("~/.rez/packages/ext"),
         description="This variable can't be specified directly. We use `REZ_PACKAGES_PATH` "
-                    "to add this to the lookup paths. For more info, see: "
-                    "https://rez.readthedocs.io/en/stable/configuring_rez.html#packages_path",
+        "to add this to the lookup paths. For more info, see: "
+        "https://rez.readthedocs.io/en/stable/configuring_rez.html#packages_path",
     )
 
     # @computed_field
@@ -371,7 +370,10 @@ class RezConfigModel(BaseConfig):
     # @computed_field
     @property
     def REZ_PACKAGES_PATH_VOL(self) -> List[str]:
-        return [f"{i.expanduser().as_posix()}:{i.expanduser().as_posix()}" for i in self.REZ_PACKAGES_PATH]
+        return [
+            f"{i.expanduser().as_posix()}:{i.expanduser().as_posix()}"
+            for i in self.REZ_PACKAGES_PATH
+        ]
 
     # @computed_field
     @property

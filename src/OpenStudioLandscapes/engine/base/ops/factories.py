@@ -1349,9 +1349,7 @@ def factory_compose_scope__group_out(
         context.log.debug(context.asset_key_for_output("compose_project_name"))
         context.log.debug(context.selected_output_names)
 
-        compose_project_name = (
-            f"{CONFIG.env.get('LANDSCAPE', 'default').replace('.', '-')}-{compose_scope}"
-        )
+        compose_project_name = f"{CONFIG.env.get('LANDSCAPE', 'default').replace('.', '-')}-{compose_scope}"
 
         group_names_by_key_dict = context.assets_def.group_names_by_key
         # Results in:
@@ -1423,7 +1421,9 @@ def factory_compose_scope__group_out(
         #     logs \
         #     --follow
         docker_compose_up_sh: str = "docker_compose_up.sh"
-        script_cmd_docker_compose_up = CONFIG.docker_compose.parent / docker_compose_up_sh
+        script_cmd_docker_compose_up = (
+            CONFIG.docker_compose.parent / docker_compose_up_sh
+        )
 
         cmd_docker_compose_restart = [
             "$(which docker)",
@@ -1608,9 +1608,9 @@ def factory_compose_scope__group_out(
             "script"
         ] += 'SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )\n'
         docker_script["script"] += "\n"
-        docker_script["script"] += (
-            "# Export environment variables required by *some* docker-compose files\n"
-        )
+        docker_script[
+            "script"
+        ] += "# Export environment variables required by *some* docker-compose files\n"
         docker_script["script"] += "HOSTNAME=$($(which hostname) --fqdn)\n"
         docker_script["script"] += "export HOSTNAME\n"
         # docker_script["script"] += "\n"

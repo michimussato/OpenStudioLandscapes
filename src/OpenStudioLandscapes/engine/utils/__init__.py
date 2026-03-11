@@ -879,7 +879,7 @@ def get_docker_run_cmd(
             "--tty",
             "--rm",
             "--entrypoint",
-            "bash"
+            "bash",
         ]
 
         context.log.debug(f"{cmd = }")

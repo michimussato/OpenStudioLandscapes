@@ -417,14 +417,13 @@ def simple_factory_alloy(
             }
 
             docker_dict: Dict[Any, Any] = {
-
-            # https://docs.docker.com/engine/storage/volumes/#use-a-volume-with-docker-compose
+                # https://docs.docker.com/engine/storage/volumes/#use-a-volume-with-docker-compose
                 **service,
                 "volumes": {
                     f"alloy-{compose_scope}-files": {
                         "external": False,
                     },
-                }
+                },
             }
 
             # networks = {

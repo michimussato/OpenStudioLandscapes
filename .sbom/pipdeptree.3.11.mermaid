@@ -9,9 +9,9 @@ flowchart TD
     attrs["attrs\n25.4.0"]
     backoff["backoff\n2.2.1"]
     boolean-py["boolean.py\n5.0"]
-    certifi["certifi\n2026.1.4"]
+    certifi["certifi\n2026.2.25"]
     chardet["chardet\n5.2.0"]
-    charset-normalizer["charset-normalizer\n3.4.4"]
+    charset-normalizer["charset-normalizer\n3.4.5"]
     click_0["click\n8.3.1"]
     coloredlogs["coloredlogs\n14.0"]
     colorlog["colorlog\n6.10.1"]
@@ -29,7 +29,7 @@ flowchart TD
     docker-compose-graph["docker-compose-graph\n1.0.0.post1.dev5+ga91125bef"]
     docstring-parser["docstring_parser\n0.17.0"]
     email-validator["email-validator\n2.3.0"]
-    filelock["filelock\n3.24.3"]
+    filelock["filelock\n3.25.1"]
     fqdn["fqdn\n1.5.1"]
     fsspec["fsspec\n2026.2.0"]
     gitdb["gitdb\n4.0.12"]
@@ -41,7 +41,7 @@ flowchart TD
     graphviz["graphviz\n0.21"]
     greenlet["greenlet\n3.3.2"]
     grpcio-health-checking["grpcio-health-checking\n1.71.2"]
-    grpcio["grpcio\n1.78.1"]
+    grpcio["grpcio\n1.78.0"]
     h11["h11\n0.16.0"]
     httptools["httptools\n0.7.1"]
     human-readable-id["human-readable-id\n0.0.3"]
@@ -69,7 +69,7 @@ flowchart TD
     pip-requirements-parser["pip-requirements-parser\n32.0.1"]
     pip["pip\n26.0.1"]
     pipdeptree["pipdeptree\n2.31.0"]
-    platformdirs["platformdirs\n4.9.2"]
+    platformdirs["platformdirs\n4.9.4"]
     propcache["propcache\n0.4.1"]
     protobuf["protobuf\n5.29.6"]
     psycopg2-binary["psycopg2-binary\n2.9.11"]
@@ -80,8 +80,9 @@ flowchart TD
     pygments["Pygments\n2.19.2"]
     pyparsing["pyparsing\n3.3.2"]
     python-dateutil["python-dateutil\n2.9.0.post0"]
-    python-dotenv["python-dotenv\n1.2.1"]
-    pytz["pytz\n2025.2"]
+    python-discovery["python-discovery\n1.1.3"]
+    python-dotenv["python-dotenv\n1.2.2"]
+    pytz["pytz\n2026.1.post1"]
     pyyaml["PyYAML\n6.0.3"]
     referencing["referencing\n0.37.0"]
     requests-toolbelt["requests-toolbelt\n1.0.0"]
@@ -91,15 +92,15 @@ flowchart TD
     rfc3987-syntax["rfc3987-syntax\n1.1.0"]
     rich["rich\n14.3.3"]
     rpds-py["rpds-py\n0.30.0"]
-    setuptools["setuptools\n82.0.0"]
+    setuptools["setuptools\n82.0.1"]
     six["six\n1.17.0"]
-    smmap["smmap\n5.0.2"]
+    smmap["smmap\n5.0.3"]
     snakemd["SnakeMD\n2.4.0"]
     sortedcontainers["sortedcontainers\n2.4.0"]
-    sqlalchemy["SQLAlchemy\n2.0.46"]
+    sqlalchemy["SQLAlchemy\n2.0.48"]
     starlette["starlette\n0.52.1"]
     structlog["structlog\n25.5.0"]
-    tabulate["tabulate\n0.9.0"]
+    tabulate["tabulate\n0.10.0"]
     tomli["tomli\n2.4.0"]
     toposort["toposort\n1.10"]
     tqdm["tqdm\n4.67.3"]
@@ -111,13 +112,13 @@ flowchart TD
     urllib3["urllib3\n2.6.3"]
     uvicorn["uvicorn\n0.41.0"]
     uvloop["uvloop\n0.22.1"]
-    virtualenv["virtualenv\n20.39.0"]
+    virtualenv["virtualenv\n21.2.0"]
     watchdog["watchdog\n5.0.3"]
     watchfiles["watchfiles\n1.1.1"]
     webcolors["webcolors\n25.10.0"]
     websockets["websockets\n16.0"]
     wheel["wheel\n0.46.3"]
-    yarl["yarl\n1.22.0"]
+    yarl["yarl\n1.23.0"]
     alembic -- ">=1.4.23" --> sqlalchemy
     alembic -- ">=4.12" --> typing-extensions
     alembic -- "any" --> mako
@@ -239,6 +240,8 @@ flowchart TD
     pydantic-core -- ">=4.14.1" --> typing-extensions
     pydot -- ">=3.1.0" --> pyparsing
     python-dateutil -- ">=1.5" --> six
+    python-discovery -- ">=3.15.4" --> filelock
+    python-discovery -- ">=4.3.6,<5" --> platformdirs
     referencing -- ">=0.7.0" --> rpds-py
     referencing -- ">=22.2.0" --> attrs
     referencing -- ">=4.4.0" --> typing-extensions
@@ -261,6 +264,7 @@ flowchart TD
     uvicorn -- ">=0.8" --> h11
     uvicorn -- ">=7.0" --> click_0
     virtualenv -- ">=0.3.7,<1" --> distlib
+    virtualenv -- ">=1" --> python-discovery
     virtualenv -- ">=3.24.2,<4" --> filelock
     virtualenv -- ">=3.9.1,<5" --> platformdirs
     watchfiles -- ">=3.0.0" --> anyio

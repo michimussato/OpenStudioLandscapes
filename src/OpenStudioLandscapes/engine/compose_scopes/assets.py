@@ -169,7 +169,9 @@ if bool(feature_ins):
                         AssetKey(["OpenStudioLandscapes_Grafana", "alloy_config"])
                     ),
                     "build_docker_image_alloy": AssetIn(
-                        AssetKey(["OpenStudioLandscapes_Grafana", "build_docker_image_alloy"])
+                        AssetKey(
+                            ["OpenStudioLandscapes_Grafana", "build_docker_image_alloy"]
+                        )
                     ),
                 },
             )

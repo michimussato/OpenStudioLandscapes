@@ -5,7 +5,7 @@ import shutil
 import textwrap
 import time
 import urllib.parse
-from typing import Generator, Dict
+from typing import Dict, Generator
 
 from dagster import (
     AssetExecutionContext,
