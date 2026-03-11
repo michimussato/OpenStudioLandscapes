@@ -219,7 +219,7 @@ def build_docker_image(
         RUN curl "https://www.python.org/ftp/python/{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}/Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}.tgz" -o Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}.tgz \\
             && file Pytdocker_confighon-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}.tgz \\
             && tar -xvf Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}.tgz \\
-            && rm Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}.tgz
+            && rm --force Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT}.tgz
 
         # altinstall instead of install because the later command will overwrite the default system python3 binary.
         RUN pushd Python-{PYTHON_MAJ}.{PYTHON_MIN}.{PYTHON_PAT} \\
@@ -244,7 +244,7 @@ def build_docker_image(
         RUN curl -L "https://github.com/AcademySoftwareFoundation/rez/archive/refs/tags/{rez_version}.tar.gz" -o rez-{rez_version}.tar.gz \\
             && file rez-{rez_version}.tar.gz \\
             && tar -xzvf rez-{rez_version}.tar.gz \\
-            && rm rez-{rez_version}.tar.gz
+            && rm --force rez-{rez_version}.tar.gz
 
         RUN python3.11 ./rez-{rez_version}/install.py --verbose /opt/rez
 
@@ -259,10 +259,8 @@ def build_docker_image(
         RUN rez bind -vvvvv --quickstart
         RUN rez build -vvvvv --install
 
-        RUN rez env -vvvvv hello_world -- hello
+        RUN rez env -vvvvv hello_world -- hello > /rez_hello_world_test.txt
 
-        RUN echo "hello_world successfully tested" > /rez_hello_world_test.txt
-        
         ################################################################################        
         # Multi Stage: Stage FINAL
         FROM base AS {image_name}
