@@ -484,12 +484,16 @@ class ConfigEngine(BaseConfig):
             # "less",
             "wget",
             "ffmpeg",
-            "xvfb",
             "libegl1",
             "libsm6",
             "libglu1-mesa",
             "libxss1",
             "sudo",
+            # Untar xz file
+            "xz-utils",
+            # xvfb
+            "xvfb",
+            "xauth",
         ],
         frozen=True,
     )
