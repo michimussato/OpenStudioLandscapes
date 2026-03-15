@@ -489,6 +489,7 @@ class ConfigEngine(BaseConfig):
             "libglu1-mesa",
             "libxss1",
             "sudo",
+            "neovim",
             # Untar xz file
             "xz-utils",
             # xvfb
