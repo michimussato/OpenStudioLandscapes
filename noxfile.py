@@ -959,6 +959,8 @@ HOSTNAME_DAGSTER_POSTGRES = f"{SERVICE_NAME_DAGSTER_POSTGRES}.{ENVIRONMENT_DAGST
 cmd_dagster_dev = [
     shutil.which("dagster"),
     "dev",
+    "--workspace",
+    f"{pathlib.Path(__file__).parent.as_posix()}/workspace.yaml",
     "--host",
     HOSTNAME_DAGSTER_DEV,
 ]
