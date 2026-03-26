@@ -81,10 +81,6 @@ openstudiolandscapes = "OpenStudioLandscapes.cli:run"
 [project.urls]
 Homepage = "https://github.com/michimussato/OpenStudioLandscapes"
 
-[tool.dagster]
-module_name = "OpenStudioLandscapes.engine.definitions"
-project_name = "OpenStudioLandscapes"
-
 [tool.setuptools]
 include-package-data = true
 platforms = [
