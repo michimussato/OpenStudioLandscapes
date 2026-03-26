@@ -345,7 +345,15 @@ def simple_factory_alloy(
                         # Data in here is probably not that important anyway - just
                         # work data for the worker. The results of computations will
                         # end up in the mounted bind volume.
-                        f"alloy-{compose_scope}-files:/var/lib/alloy/data:rw",
+                        #
+                        # Anonymous Volumes are removed:
+                        # - [Named and anonymous volumes](https://docs.docker.com/engine/storage/volumes/#named-and-anonymous-volumes)
+                        #
+                        # Todo:
+                        #  - [ ] Probably a relic: not needed anymore:
+                        #        /data/local/.openstudiolandscapes/.landscapes/2026-01-21_17-22-54__seasoned-jelly-wholesale-mixer/ComposeScope_worker/alloy/data
+                        #  - [ ] make use of docker-compose.alloy.yml
+                        f"alloy-{compose_scope}-files:/var/lib/alloy/data",
                         *_volume_relative,
                         # Non relative paths:
                         "/:/rootfs:ro",
