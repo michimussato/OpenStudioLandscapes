@@ -52,13 +52,25 @@ tool:
         namespaces: true
         where:
         - src
-  dagster:
-    # We can define ONE SINGLE TOP-LEVEL code location
-    # here in this pyproject.toml.
-    # If you want to be able to define multiple
-    # top-level code locations, comment out this
-    # section and define them in a workspace.yaml
-    # More info here:
-    # https://docs.dagster.io/guides/build/projects/dagster-project-file-reference
-    module_name: OpenStudioLandscapes.engine.definitions
-    project_name: OpenStudioLandscapes
+  # dagster:
+  #   # We can define ONE SINGLE TOP-LEVEL code location
+  #   # here in this pyproject.toml.
+  #   # If you want to be able to define multiple
+  #   # top-level code locations, comment out this
+  #   # section and define them in a workspace.yaml
+  #   # More info here:
+  #   # https://docs.dagster.io/guides/build/projects/dagster-project-file-reference
+  #   #
+  #   # This should work, however:
+  #   #
+  #   # [tool.dagster]
+  #   # modules = [
+  #   #     { type = "module", name = "OpenStudioLandscapes.engine.definitions" },
+  #   #     { type = "module", name = "Another.module.definitions" }
+  #   # ]
+  #   #
+  #   # Dagster does not seem to support gRPC definitions here
+  #   # (maybe to prevent storing of credentials). So,
+  #   # back to workspace.yaml?
+  #   module_name: OpenStudioLandscapes.engine.definitions
+  #   project_name: OpenStudioLandscapes
