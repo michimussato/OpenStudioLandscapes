@@ -1,0 +1,13 @@
+# https://docs.dagster.io/guides/build/projects/workspaces/workspace-yaml
+load_from:
+  - python_module:
+      module_name: "OpenStudioLandscapes.engine.definitions"
+      location_name: "OpenStudioLandscapes"
+  # - grpc_server:
+  #     host: dagster-worker-1.local
+  #     port: 4000
+  #     location_name: 'OpenStudioLandscapes.Dagster_Worker_1'
+  # - grpc_server:
+  #     host: dagster-worker-2.local
+  #     port: 4000
+  #     location_name: 'OpenStudioLandscapes.Dagster_Worker_2'
