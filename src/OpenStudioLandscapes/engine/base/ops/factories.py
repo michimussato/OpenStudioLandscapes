@@ -1335,6 +1335,7 @@ def factory_compose_scope__group_out(
         del compose
         del features_in
 
+        CONFIG_ENGINE: ConfigEngine = group_out_base.config_engine
         docker_config_json: pathlib.Path = group_out_base.docker_config_json
 
         cmd_append["exclude_from_quote"].extend(
@@ -1390,11 +1391,14 @@ def factory_compose_scope__group_out(
             "--project-name",
             compose_project_name,
             "up",
+            f"--pull={CONFIG_ENGINE.openstudiolandscapes__docker_config.docker_pull_policy}",
             "--remove-orphans",
             # Todo
-            #  - [ ] `cmd_extend` seems to have no effect
-            #        this can't be intentional...
+            #  - [ ] would `--rm    Automatically remove the container when it exits` be useful here?
             *{
+                # Todo
+                #  - [ ] `cmd_extend` seems to have no effect
+                #        this can't be intentional...
                 "cmd_extend": cmd_extend,
                 "detach": ["--detach"],
                 "nothing": [],
@@ -1453,27 +1457,6 @@ def factory_compose_scope__group_out(
         docker_compose_restart_sh: str = "docker_compose_restart.sh"
         script_cmd_docker_compose_restart = (
             CONFIG.docker_compose.parent / docker_compose_restart_sh
-        )
-
-        cmd_docker_compose_pull_up = [
-            "$(which docker)",
-            "--config",
-            docker_config_json.as_posix(),
-            "compose",
-            "--progress",
-            DOCKER_PROGRESS,
-            "--file",
-            CONFIG.docker_compose.as_posix(),
-            "--project-name",
-            compose_project_name,
-            "pull",
-            "--ignore-pull-failures",
-            "&&",
-            *cmd_docker_compose_up,
-        ]
-        docker_compose_pull_up_sh: str = "docker_compose_pull_up.sh"
-        script_cmd_docker_compose_pull_up = (
-            CONFIG.docker_compose.parent / docker_compose_pull_up_sh
         )
 
         cmd_docker_compose_down = [
@@ -1545,8 +1528,8 @@ def factory_compose_scope__group_out(
             RestartSec=5
             # WorkingDirectory=
             # for this service, the scripts need
-            # ExecStart=/usr/bin/bash -lc "echo ${{SUDO_PASS}} | {pathlib.Path('${LANDSCAPES_ROOT}').joinpath('${LANDSCAPE_ID}', 'ComposeScope_%s' % compose_scope, 'docker_compose', [docker_compose_up_sh, docker_compose_pull_up_sh][1]).as_posix()}"
-            ExecStart={pathlib.Path('${LANDSCAPES_ROOT}').joinpath('${LANDSCAPE_ID}', 'ComposeScope_%s' % compose_scope, 'docker_compose', [docker_compose_up_sh, docker_compose_pull_up_sh][1]).as_posix()}
+            # ExecStart=/usr/bin/bash -lc "echo ${{SUDO_PASS}} | {pathlib.Path('${LANDSCAPES_ROOT}').joinpath('${LANDSCAPE_ID}', 'ComposeScope_%s' % compose_scope, 'docker_compose', docker_compose_up_sh).as_posix()}"
+            ExecStart={pathlib.Path('${LANDSCAPES_ROOT}').joinpath('${LANDSCAPE_ID}', 'ComposeScope_%s' % compose_scope, 'docker_compose', docker_compose_up_sh).as_posix()}
             # ExecStop=/usr/bin/bash -lc "echo ${{SUDO_PASS}} | {pathlib.Path('${LANDSCAPES_ROOT}').joinpath('${LANDSCAPE_ID}', 'ComposeScope_%s' % compose_scope, 'docker_compose', docker_compose_down_sh).as_posix()}"
             ExecStop={pathlib.Path('${LANDSCAPES_ROOT}').joinpath('${LANDSCAPE_ID}', 'ComposeScope_%s' % compose_scope, 'docker_compose', docker_compose_down_sh).as_posix()}
             
@@ -1676,12 +1659,6 @@ def factory_compose_scope__group_out(
                 #     raise CheckError(f"Failure condition: {desc}")
                 "create_convenience_script": False,
                 "asset_key_for_output": "cmd_docker_compose_restart",
-            },
-            {
-                "script": script_cmd_docker_compose_pull_up,
-                "cmd": cmd_docker_compose_pull_up,
-                "create_convenience_script": False,
-                "asset_key_for_output": "cmd_docker_compose_pull_up",
             },
             {
                 "script": script_cmd_docker_compose_down,
@@ -1862,7 +1839,6 @@ def factory_compose_scope__group_out(
             value={
                 "cmd_docker_compose_up": cmd_docker_compose_up,
                 "cmd_docker_compose_restart": cmd_docker_compose_restart,
-                "cmd_docker_compose_pull_up": cmd_docker_compose_pull_up,
                 "cmd_docker_compose_down": cmd_docker_compose_down,
                 "cmd_docker_compose_logs": cmd_docker_compose_logs,
             },
@@ -1887,9 +1863,6 @@ def factory_compose_scope__group_out(
                 ),
                 "script_cmd_docker_compose_restart": MetadataValue.path(
                     script_cmd_docker_compose_restart
-                ),
-                "script_cmd_docker_compose_pull_up": MetadataValue.path(
-                    script_cmd_docker_compose_pull_up
                 ),
                 "script_cmd_docker_compose_logs": MetadataValue.path(
                     script_cmd_docker_compose_logs

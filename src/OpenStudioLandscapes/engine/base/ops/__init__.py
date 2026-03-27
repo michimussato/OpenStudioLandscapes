@@ -24,6 +24,7 @@ from docker_compose_graph.docker_compose_graph import DockerComposeGraph
 
 from OpenStudioLandscapes.engine.config.models import (
     FeatureBaseModel,
+    ConfigEngine,
 )
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.enums import *
@@ -212,6 +213,7 @@ def op_group_out(
     docker_config_json: pathlib.Path = (
         feature_in.openstudiolandscapes_base.docker_config_json
     )
+    CONFIG_ENGINE: ConfigEngine = feature_in.openstudiolandscapes_base.config_engine
 
     context.log.debug(f"{docker_config_json = }")
 
@@ -270,11 +272,18 @@ def op_group_out(
         "--project-name",
         compose_project_name,
         "up",
+        # Todo
+        #  - [x] implement `--pull always` policy here:
+        #        References:
+        #        - [Method 1: Using the --pull=always Flag](https://www.codegenes.net/blog/can-i-make-docker-do-always-a-pull-when-performing-a-run/#method-1-using-the-pull-always-flag)
+        f"--pull={CONFIG_ENGINE.openstudiolandscapes__docker_config.docker_pull_policy}",
         "--remove-orphans",
         # Todo
-        #  - [ ] `cmd_extend` seems to have no effect
-        #        this can't be intentional...
+        #  - [ ] would `--rm    Automatically remove the container when it exits` be useful here?
         *{
+            # Todo
+            #  - [ ] `cmd_extend` seems to have no effect
+            #        this can't be intentional...
             "cmd_extend": cmd_extend,
             "detach": ["--detach"],
             "nothing": [],
@@ -312,26 +321,6 @@ def op_group_out(
     ]
     script_cmd_docker_compose_restart = (
         DOCKER_COMPOSE.parent / "docker_compose_restart.sh"
-    )
-
-    cmd_docker_compose_pull_up = [
-        "$(which docker)",
-        "--config",
-        docker_config_json.as_posix(),
-        "compose",
-        "--progress",
-        DOCKER_PROGRESS,
-        "--file",
-        DOCKER_COMPOSE.as_posix(),
-        "--project-name",
-        compose_project_name,
-        "pull",
-        "--ignore-pull-failures",
-        "&&",
-        *cmd_docker_compose_up,
-    ]
-    script_cmd_docker_compose_pull_up = (
-        DOCKER_COMPOSE.parent / "docker_compose_pull_up.sh"
     )
 
     cmd_docker_compose_down = [
@@ -437,12 +426,6 @@ def op_group_out(
             #     raise CheckError(f"Failure condition: {desc}")
             "create_convenience_script": False,
             "asset_key_for_output": "cmd_docker_compose_restart",
-        },
-        {
-            "script": script_cmd_docker_compose_pull_up,
-            "cmd": cmd_docker_compose_pull_up,
-            "create_convenience_script": False,
-            "asset_key_for_output": "cmd_docker_compose_pull_up",
         },
         {
             "script": script_cmd_docker_compose_down,
@@ -625,7 +608,6 @@ def op_group_out(
             value={
                 "cmd_docker_compose_up": cmd_docker_compose_up,
                 "cmd_docker_compose_restart": cmd_docker_compose_restart,
-                "cmd_docker_compose_pull_up": cmd_docker_compose_pull_up,
                 "cmd_docker_compose_down": cmd_docker_compose_down,
                 "cmd_docker_compose_logs": cmd_docker_compose_logs,
             },
@@ -647,9 +629,6 @@ def op_group_out(
                 ),
                 "script_cmd_docker_compose_restart": MetadataValue.path(
                     script_cmd_docker_compose_restart
-                ),
-                "script_cmd_docker_compose_pull_up": MetadataValue.path(
-                    script_cmd_docker_compose_pull_up
                 ),
                 "script_cmd_docker_compose_down": MetadataValue.path(
                     script_cmd_docker_compose_down

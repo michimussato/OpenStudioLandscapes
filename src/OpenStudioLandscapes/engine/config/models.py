@@ -51,6 +51,12 @@ class DockerRegistryAccess(enum.StrEnum):
     private = "private"
 
 
+class DockerPullPolicy(enum.StrEnum):
+    never = "never"
+    missing = "missing"
+    always = "always"
+
+
 class BaseConfig(BaseModel):
 
     @classmethod
@@ -320,6 +326,11 @@ class DockerConfigModel(BaseConfig):
         description="Run `docker` commands with the `--no-cache` flag.",
     )
     docker_registry_config: DockerRegistryConfig = Field()
+    docker_pull_policy: DockerPullPolicy = Field(
+        default=DockerPullPolicy.always,
+        examples=[i.name for i in DockerPullPolicy],
+        description="Run `docker` commands with the `--pull=<POLICY>` option.",
+    )
 
 
 class RezConfigModel(BaseConfig):
