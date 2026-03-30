@@ -15,6 +15,7 @@ classifiers = [
     "Programming Language :: Python",
 ]
 dependencies = [
+    "OpenStudioLandscapes-Dagster-Streaming-Process @ git+https://github.com/michimussato/OpenStudioLandscapes-Dagster-Streaming-Process.git",
     "PyYAML",
     "dagster-postgres==0.25.11",
     "dagster-webserver==1.9.11",

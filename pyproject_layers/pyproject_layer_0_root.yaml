@@ -26,6 +26,7 @@ project:
   - email-validator
   # docker-compose-graph is needed because of yaml_tags.overrides
   - docker-compose-graph @ git+https://github.com/michimussato/docker-compose-graph.git
+  - OpenStudioLandscapes-Dagster-Streaming-Process @ git+https://github.com/michimussato/OpenStudioLandscapes-Dagster-Streaming-Process.git
   dynamic:
   - version
   entry-points: {}
