@@ -10,7 +10,7 @@ from typing import List, Union
 
 from dagster import AssetExecutionContext, OpExecutionContext, get_dagster_logger
 
-from OpenStudioLandscapes.Dagster.streaming_process import submit_cmds
+from OpenStudioLandscapes.Dagster_Streaming_Process import submit_cmds
 
 LOGGER = get_dagster_logger(__name__)
 
