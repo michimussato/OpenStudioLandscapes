@@ -20,12 +20,22 @@ from setuptools import find_namespace_packages
 from OpenStudioLandscapes.engine import dist as dist_engine
 from OpenStudioLandscapes.engine.config.models import CONFIG_STR as ENGINE_CONFIG_STR
 from OpenStudioLandscapes.engine.config.models import ConfigEngine, FeatureBaseModel
-from OpenStudioLandscapes.engine.exceptions import OpenStudioLandscapesException
 
 LOGGER = get_dagster_logger(__name__)
 
 
 LOGGER.info("Start bootstrapping...")
+
+
+# Todo
+#  - [ ] Implement mechanism to avoid re-scraping (re-discover) every single time
+#        - a code location is loaded
+#        - an asset is materialized
+#        The current implementation:
+#        - causes a lot of performance loss because the discovery procedure is quite expensive
+#        - however, for now it is the safest approach
+#        Options
+#        - [ ] @functools.cache?
 
 
 def update_config_yml(
