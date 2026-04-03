@@ -225,6 +225,7 @@ class ComposeScopeBaseModel(BaseConfig):
 
     docker_compose: pathlib.Path = Field(
         description="The path to the `docker-compose.yml` file.",
+        exclude=True,
     )
 
     env: Dict = Field(

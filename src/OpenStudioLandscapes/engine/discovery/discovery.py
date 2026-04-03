@@ -36,6 +36,9 @@ LOGGER.info("Start bootstrapping...")
 #        - however, for now it is the safest approach
 #        Options
 #        - [ ] @functools.cache?
+#              - https://www.youtube.com/watch?v=K0Q5twtYxWY
+#              - https://stackoverflow.com/questions/15585493/store-the-cache-to-a-file-functools-lru-cache-in-python-3-2
+#                - -> multiple possible solutions here
 
 
 def update_config_yml(

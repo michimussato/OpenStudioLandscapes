@@ -564,7 +564,7 @@ def main(args):
         # repo.git.pull()
         return
 
-    elif any(sc == args.sub_command for sc in ["clone-feature", "if"]):
+    elif any(sc == args.sub_command for sc in ["clone-feature"]):
         # Todo
         #  - [x] rename install-feature to clone-feature, cause that's essentially what it is
         #  - [ ] for dependent Features, make sure to also install the parent (i.e. for Workers)
