@@ -158,7 +158,7 @@
       "version": "0.0.0"
     },
     {
-      "bom-ref": "BomRef.007188951207967698.66321154402174",
+      "bom-ref": "BomRef.8135838812236552.49022746866882827",
       "description": "A Toolkit to create dynamic Animation and VFX studio environments for robust automation and pipelines.",
       "externalReferences": [
         {
@@ -173,6 +173,32 @@
         }
       ],
       "name": "OpenStudioLandscapes",
+      "type": "library",
+      "version": "0.0.0"
+    },
+    {
+      "bom-ref": "OpenStudioLandscapes-DagsterCodeLocation-StreamingProcess==0.0.0",
+      "description": "Run `subprocess` in Dagster and live stream output to Dagster.",
+      "externalReferences": [
+        {
+          "comment": "PackageSource: VCS 'git'",
+          "type": "vcs",
+          "url": "https://github.com/michimussato/OpenStudioLandscapes-DagsterCodeLocation-StreamingProcess.git#a197e19d01c04f196269bce11dda7a23824f0369"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Homepage",
+          "type": "website",
+          "url": "https://github.com/michimussato/OpenStudioLandscapes-DagsterCodeLocation-StreamingProcess"
+        }
+      ],
+      "name": "OpenStudioLandscapes-DagsterCodeLocation-StreamingProcess",
+      "properties": [
+        {
+          "name": "cdx:python:package:source:vcs:commit_id",
+          "value": "a197e19d01c04f196269bce11dda7a23824f0369"
+        }
+      ],
+      "purl": "pkg:pypi/openstudiolandscapes-dagstercodelocation-streamingprocess@0.0.0?vcs_url=git%2Bhttps://github.com/michimussato/OpenStudioLandscapes-DagsterCodeLocation-StreamingProcess.git%40a197e19d01c04f196269bce11dda7a23824f0369",
       "type": "library",
       "version": "0.0.0"
     },
@@ -230,7 +256,7 @@
       "version": "6.0.3"
     },
     {
-      "bom-ref": "Pygments==2.19.2",
+      "bom-ref": "Pygments==2.20.0",
       "description": "Pygments is a syntax highlighting package written in Python.",
       "externalReferences": [
         {
@@ -265,18 +291,12 @@
             "acknowledgement": "declared",
             "id": "BSD-2-Clause"
           }
-        },
-        {
-          "license": {
-            "acknowledgement": "declared",
-            "name": "License :: OSI Approved :: BSD License"
-          }
         }
       ],
       "name": "Pygments",
-      "purl": "pkg:pypi/pygments@2.19.2",
+      "purl": "pkg:pypi/pygments@2.20.0",
       "type": "library",
-      "version": "2.19.2"
+      "version": "2.20.0"
     },
     {
       "bom-ref": "SQLAlchemy==2.0.48",
@@ -721,7 +741,7 @@
       "version": "5.2.0"
     },
     {
-      "bom-ref": "charset-normalizer==3.4.6",
+      "bom-ref": "charset-normalizer==3.4.7",
       "description": "The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet.",
       "externalReferences": [
         {
@@ -754,9 +774,9 @@
         }
       ],
       "name": "charset-normalizer",
-      "purl": "pkg:pypi/charset-normalizer@3.4.6",
+      "purl": "pkg:pypi/charset-normalizer@3.4.7",
       "type": "library",
-      "version": "3.4.6"
+      "version": "3.4.7"
     },
     {
       "bom-ref": "click==8.3.1",
@@ -848,7 +868,7 @@
       "version": "6.10.1"
     },
     {
-      "bom-ref": "cyclonedx-bom==7.2.2",
+      "bom-ref": "cyclonedx-bom==7.3.0",
       "description": "CycloneDX Software Bill of Materials (SBOM) generator for Python projects and environments",
       "externalReferences": [
         {
@@ -897,9 +917,9 @@
         }
       ],
       "name": "cyclonedx-bom",
-      "purl": "pkg:pypi/cyclonedx-bom@7.2.2",
+      "purl": "pkg:pypi/cyclonedx-bom@7.3.0",
       "type": "library",
-      "version": "7.2.2"
+      "version": "7.3.0"
     },
     {
       "bom-ref": "cyclonedx-python-lib==11.7.0",
@@ -1451,7 +1471,7 @@
       "version": "1.5.1"
     },
     {
-      "bom-ref": "fsspec==2026.2.0",
+      "bom-ref": "fsspec==2026.3.0",
       "description": "File-system specification",
       "externalReferences": [
         {
@@ -1509,9 +1529,9 @@
           "value": "ssh"
         }
       ],
-      "purl": "pkg:pypi/fsspec@2026.2.0",
+      "purl": "pkg:pypi/fsspec@2026.3.0",
       "type": "library",
-      "version": "2026.2.0"
+      "version": "2026.3.0"
     },
     {
       "bom-ref": "gitdb==4.0.12",
@@ -1724,7 +1744,7 @@
       "version": "3.3.2"
     },
     {
-      "bom-ref": "grpcio==1.78.0",
+      "bom-ref": "grpcio==1.80.0",
       "description": "HTTP/2-based RPC framework",
       "externalReferences": [
         {
@@ -1757,9 +1777,9 @@
         }
       ],
       "name": "grpcio",
-      "purl": "pkg:pypi/grpcio@1.78.0",
+      "purl": "pkg:pypi/grpcio@1.80.0",
       "type": "library",
-      "version": "1.78.0"
+      "version": "1.80.0"
     },
     {
       "bom-ref": "grpcio-health-checking==1.71.2",
@@ -3091,7 +3111,7 @@
       "version": "0.37.0"
     },
     {
-      "bom-ref": "requests==2.33.0",
+      "bom-ref": "requests==2.33.1",
       "description": "Python HTTP for Humans.",
       "externalReferences": [
         {
@@ -3120,9 +3140,9 @@
         }
       ],
       "name": "requests",
-      "purl": "pkg:pypi/requests@2.33.0",
+      "purl": "pkg:pypi/requests@2.33.1",
       "type": "library",
-      "version": "2.33.0"
+      "version": "2.33.1"
     },
     {
       "bom-ref": "requests-toolbelt==1.0.0",
@@ -4265,10 +4285,17 @@
     },
     {
       "dependsOn": [
+        "dagster==1.9.11"
+      ],
+      "ref": "OpenStudioLandscapes-DagsterCodeLocation-StreamingProcess==0.0.0"
+    },
+    {
+      "dependsOn": [
         "GitPython==3.1.46",
+        "OpenStudioLandscapes-DagsterCodeLocation-StreamingProcess==0.0.0",
         "PyYAML==6.0.3",
         "SnakeMD==2.4.0",
-        "cyclonedx-bom==7.2.2",
+        "cyclonedx-bom==7.3.0",
         "dagster-postgres==0.25.11",
         "dagster-webserver==1.9.11",
         "dagster==1.9.11",
@@ -4286,7 +4313,7 @@
       "ref": "PyYAML==6.0.3"
     },
     {
-      "ref": "Pygments==2.19.2"
+      "ref": "Pygments==2.20.0"
     },
     {
       "dependsOn": [
@@ -4355,7 +4382,7 @@
       "ref": "chardet==5.2.0"
     },
     {
-      "ref": "charset-normalizer==3.4.6"
+      "ref": "charset-normalizer==3.4.7"
     },
     {
       "ref": "click==8.3.1"
@@ -4378,7 +4405,7 @@
         "pip-requirements-parser==32.0.1",
         "tomli==2.4.1"
       ],
-      "ref": "cyclonedx-bom==7.2.2"
+      "ref": "cyclonedx-bom==7.3.0"
     },
     {
       "dependsOn": [
@@ -4398,7 +4425,7 @@
         "dagster==1.9.11",
         "gql==3.5.3",
         "graphene==3.4.3",
-        "requests==2.33.0",
+        "requests==2.33.1",
         "starlette==1.0.0"
       ],
       "ref": "dagster-graphql==1.9.11"
@@ -4435,15 +4462,15 @@
         "dagster-pipes==1.9.11",
         "docstring_parser==0.17.0",
         "filelock==3.25.2",
-        "fsspec==2026.2.0",
+        "fsspec==2026.3.0",
         "grpcio-health-checking==1.71.2",
-        "grpcio==1.78.0",
+        "grpcio==1.80.0",
         "packaging==26.0",
         "protobuf==5.29.6",
         "pydantic==2.12.5",
         "python-dotenv==1.2.2",
         "pytz==2026.1.post1",
-        "requests==2.33.0",
+        "requests==2.33.1",
         "rich==14.3.3",
         "setuptools==82.0.1",
         "six==1.17.0",
@@ -4509,12 +4536,12 @@
     {
       "dependsOn": [
         "Jinja2==3.1.6",
-        "requests==2.33.0",
+        "requests==2.33.1",
         "tqdm==4.67.3",
         "urllib3==2.6.3",
         "yarl==1.23.0"
       ],
-      "ref": "fsspec==2026.2.0"
+      "ref": "fsspec==2026.3.0"
     },
     {
       "dependsOn": [
@@ -4528,7 +4555,7 @@
         "backoff==2.2.1",
         "graphql-core==3.2.6",
         "requests-toolbelt==1.0.0",
-        "requests==2.33.0",
+        "requests==2.33.1",
         "websockets==16.0",
         "yarl==1.23.0"
       ],
@@ -4570,7 +4597,7 @@
     },
     {
       "dependsOn": [
-        "grpcio==1.78.0",
+        "grpcio==1.80.0",
         "protobuf==5.29.6"
       ],
       "ref": "grpcio-health-checking==1.71.2"
@@ -4579,7 +4606,7 @@
       "dependsOn": [
         "typing_extensions==4.15.0"
       ],
-      "ref": "grpcio==1.78.0"
+      "ref": "grpcio==1.80.0"
     },
     {
       "ref": "h11==0.16.0"
@@ -4648,7 +4675,7 @@
       "dependsOn": [
         "PyYAML==6.0.3",
         "mdurl==0.1.2",
-        "requests==2.33.0"
+        "requests==2.33.1"
       ],
       "ref": "markdown-it-py==4.0.0"
     },
@@ -4789,7 +4816,7 @@
     },
     {
       "dependsOn": [
-        "requests==2.33.0"
+        "requests==2.33.1"
       ],
       "ref": "requests-toolbelt==1.0.0"
     },
@@ -4797,11 +4824,11 @@
       "dependsOn": [
         "certifi==2026.2.25",
         "chardet==5.2.0",
-        "charset-normalizer==3.4.6",
+        "charset-normalizer==3.4.7",
         "idna==3.11",
         "urllib3==2.6.3"
       ],
-      "ref": "requests==2.33.0"
+      "ref": "requests==2.33.1"
     },
     {
       "dependsOn": [
@@ -4820,7 +4847,7 @@
     },
     {
       "dependsOn": [
-        "Pygments==2.19.2",
+        "Pygments==2.20.0",
         "markdown-it-py==4.0.0"
       ],
       "ref": "rich==14.3.3"
@@ -4874,7 +4901,7 @@
     },
     {
       "dependsOn": [
-        "requests==2.33.0"
+        "requests==2.33.1"
       ],
       "ref": "tqdm==4.67.3"
     },
@@ -4892,7 +4919,7 @@
     },
     {
       "dependsOn": [
-        "fsspec==2026.2.0",
+        "fsspec==2026.3.0",
         "packaging==26.0",
         "pathlib_abc==0.5.2",
         "pydantic==2.12.5",
@@ -4971,7 +4998,7 @@
     }
   ],
   "metadata": {
-    "timestamp": "2026-03-26T23:30:33.785593+00:00",
+    "timestamp": "2026-04-03T02:02:29.766855+00:00",
     "tools": {
       "components": [
         {
@@ -5021,7 +5048,7 @@
           ],
           "name": "cyclonedx-py",
           "type": "application",
-          "version": "7.2.2"
+          "version": "7.3.0"
         },
         {
           "description": "Python library for CycloneDX",
@@ -5075,7 +5102,7 @@
       ]
     }
   },
-  "serialNumber": "urn:uuid:a10373ca-a8bd-4656-93f2-295b93e005d2",
+  "serialNumber": "urn:uuid:84c0fc0d-3568-45d2-861e-cd99162e2d24",
   "version": 1,
   "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
   "bomFormat": "CycloneDX",

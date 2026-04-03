@@ -11,11 +11,11 @@ flowchart TD
     boolean-py["boolean.py<br/>5.0"]
     certifi["certifi<br/>2026.2.25"]
     chardet["chardet<br/>5.2.0"]
-    charset-normalizer["charset-normalizer<br/>3.4.6"]
+    charset-normalizer["charset-normalizer<br/>3.4.7"]
     click_0["click<br/>8.3.1"]
     coloredlogs["coloredlogs<br/>14.0"]
     colorlog["colorlog<br/>6.10.1"]
-    cyclonedx-bom["cyclonedx-bom<br/>7.2.2"]
+    cyclonedx-bom["cyclonedx-bom<br/>7.3.0"]
     cyclonedx-python-lib["cyclonedx-python-lib<br/>11.7.0"]
     dagster-graphql["dagster-graphql<br/>1.9.11"]
     dagster-pipes["dagster-pipes<br/>1.9.11"]
@@ -31,7 +31,7 @@ flowchart TD
     email-validator["email-validator<br/>2.3.0"]
     filelock["filelock<br/>3.25.2"]
     fqdn["fqdn<br/>1.5.1"]
-    fsspec["fsspec<br/>2026.2.0"]
+    fsspec["fsspec<br/>2026.3.0"]
     gitdb["gitdb<br/>4.0.12"]
     gitpython["GitPython<br/>3.1.46"]
     gql["gql<br/>3.5.3"]
@@ -41,7 +41,7 @@ flowchart TD
     graphviz["graphviz<br/>0.21"]
     greenlet["greenlet<br/>3.3.2"]
     grpcio-health-checking["grpcio-health-checking<br/>1.71.2"]
-    grpcio["grpcio<br/>1.78.0"]
+    grpcio["grpcio<br/>1.80.0"]
     h11["h11<br/>0.16.0"]
     httptools["httptools<br/>0.7.1"]
     human-readable-id["human-readable-id<br/>0.0.3"]
@@ -62,6 +62,7 @@ flowchart TD
     mdurl["mdurl<br/>0.1.2"]
     multidict["multidict<br/>6.7.1"]
     nox["nox<br/>2026.2.9"]
+    openstudiolandscapes-dagstercodelocation-streamingprocess["OpenStudioLandscapes-DagsterCodeLocation-StreamingProcess<br/>0.0.0"]
     openstudiolandscapes["OpenStudioLandscapes<br/>0.0.0"]
     packageurl-python["packageurl-python<br/>0.17.6"]
     packaging["packaging<br/>26.0"]
@@ -77,7 +78,7 @@ flowchart TD
     pydantic-core["pydantic_core<br/>2.41.5"]
     pydantic["pydantic<br/>2.12.5"]
     pydot["pydot<br/>4.0.1"]
-    pygments["Pygments<br/>2.19.2"]
+    pygments["Pygments<br/>2.20.0"]
     pyparsing["pyparsing<br/>3.3.2"]
     python-dateutil["python-dateutil<br/>2.9.0.post0"]
     python-discovery["python-discovery<br/>1.2.1"]
@@ -86,7 +87,7 @@ flowchart TD
     pyyaml["PyYAML<br/>6.0.3"]
     referencing["referencing<br/>0.37.0"]
     requests-toolbelt["requests-toolbelt<br/>1.0.0"]
-    requests["requests<br/>2.33.0"]
+    requests["requests<br/>2.33.1"]
     rfc3339-validator["rfc3339-validator<br/>0.1.4"]
     rfc3986-validator["rfc3986-validator<br/>0.1.1"]
     rfc3987-syntax["rfc3987-syntax<br/>1.1.0"]
@@ -225,9 +226,11 @@ flowchart TD
     openstudiolandscapes -- "any" --> gitpython
     openstudiolandscapes -- "any" --> human-readable-id
     openstudiolandscapes -- "any" --> nox
+    openstudiolandscapes -- "any" --> openstudiolandscapes-dagstercodelocation-streamingprocess
     openstudiolandscapes -- "any" --> pydot
     openstudiolandscapes -- "any" --> pyyaml
     openstudiolandscapes -- "any" --> snakemd
+    openstudiolandscapes-dagstercodelocation-streamingprocess -- "==1.9.11" --> dagster
     pip-requirements-parser -- "any" --> packaging
     pip-requirements-parser -- "any" --> pyparsing
     pipdeptree -- ">=26" --> packaging
