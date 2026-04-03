@@ -11,6 +11,7 @@ LOGGER = get_dagster_logger(__name__)
 imports_engine = [
     "OpenStudioLandscapes.engine.base.definitions",
     "OpenStudioLandscapes.engine.env.definitions",
+    # "OpenStudioLandscapes.engine.vfx_reference.definitions",
 ]
 
 

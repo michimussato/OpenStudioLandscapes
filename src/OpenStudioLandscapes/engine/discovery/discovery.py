@@ -27,20 +27,6 @@ LOGGER = get_dagster_logger(__name__)
 LOGGER.info("Start bootstrapping...")
 
 
-# Todo
-#  - [ ] Implement mechanism to avoid re-scraping (re-discover) every single time
-#        - a code location is loaded
-#        - an asset is materialized
-#        The current implementation:
-#        - causes a lot of performance loss because the discovery procedure is quite expensive
-#        - however, for now it is the safest approach
-#        Options
-#        - [ ] @functools.cache?
-#              - https://www.youtube.com/watch?v=K0Q5twtYxWY
-#              - https://stackoverflow.com/questions/15585493/store-the-cache-to-a-file-functools-lru-cache-in-python-3-2
-#                - -> multiple possible solutions here
-
-
 def update_config_yml(
     config_yml_expanded: pathlib.Path,
     config: Union[ConfigEngine, FeatureBaseModel],

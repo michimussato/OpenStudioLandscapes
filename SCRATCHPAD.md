@@ -1,5 +1,6 @@
 <!-- TOC -->
 * [Scratchpad](#scratchpad)
+* [Dagster Code Location Reload Performance Improvement](#dagster-code-location-reload-performance-improvement)
 <!-- TOC -->
 
 ---
@@ -8,7 +9,7 @@
 
 > [!NOTE]
 > 
-> This is for random info.
+> This is for random ideas, info and threads.
 
 Todo
 - [ ] create global env file
@@ -152,3 +153,19 @@ OPENSTUDIOLANDSCAPES__LANDSCAPE_ID=
   - `--home-dir=`?
   - `--no-create-home`?
   - `--no-user-group`?
+
+# Dagster Code Location Reload Performance Improvement
+
+Todo
+- [ ] Implement mechanism to avoid re-scraping (re-discover) every single time
+  - a code location is loaded
+  - an asset is materialized
+  - The current implementation:
+    - causes a lot of performance loss because the discovery procedure is quite expensive
+    - however, for now it is the safest approach
+  - Options
+    - [ ] @functools.cache?
+      - https://www.youtube.com/watch?v=K0Q5twtYxWY
+      - https://stackoverflow.com/questions/15585493/store-the-cache-to-a-file-functools-lru-cache-in-python-3-2
+        - -> multiple possible solutions here
+      - Entrypoint would potentially be [`definitions.py`](src/OpenStudioLandscapes/engine/definitions.py)
