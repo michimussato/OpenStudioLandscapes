@@ -95,6 +95,9 @@ def get_pip_install_str(
                     )
                 )
             if bust_cache:
+                # Resources:
+                # - [How to Disable Cache in Docker Build: A Complete Guide](https://medium.com/@aleksej.gudkov/how-to-disable-cache-in-docker-build-a-complete-guide-372e20507ed9)
+                # - [Latest code from Github (or similar) - use the Github API](https://stackoverflow.com/a/65762156)
                 pip_install_str += (
                     f"RUN echo \"Cache busted at {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\"\n"
                     # f"RUN echo \"Cache busted at $(date)\"\n"

@@ -251,6 +251,9 @@ def CONFIG(
     None,
 ]:
 
+    # Todo:
+    #  - [ ] bind mount /etc/localtime:/etc/localtime:ro?
+
     config_validated = discovery.get_config_engine()
 
     yield Output(config_validated)
