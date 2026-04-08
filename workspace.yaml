@@ -1,13 +1,17 @@
 # https://docs.dagster.io/guides/build/projects/workspaces/workspace-yaml
 load_from:
-  - python_module:
-      module_name: "OpenStudioLandscapes.engine.definitions"
-      location_name: "OpenStudioLandscapes"
-  - python_module:
-      module_name: "OpenStudioLandscapes.filebrowser.definitions"
-      location_name: "OpenStudioLandscapes-filebrowser"
-      working_directory: ../OpenStudioLandscapes-filebrowser/
-      executable_path: ./.venv/bin/python
+#  - python_module:
+#      module_name: "OpenStudioLandscapes.engine.definitions"
+#      location_name: "OpenStudioLandscapes"
+#  - python_module:
+#      module_name: "OpenStudioLandscapes.filebrowser.definitions"
+#      location_name: "OpenStudioLandscapes-filebrowser"
+#      working_directory: ../OpenStudioLandscapes-filebrowser/
+#      executable_path: ./.venv/bin/python
+  - grpc_server:
+      host: localhost  # when running on localhost
+      port: 4000
+      location_name: 'OpenStudioLandscapes-filebrowser (gRPC)'
   # - grpc_server:
   #     host: dagster-worker-1.local
   #     port: 4000

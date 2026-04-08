@@ -11,7 +11,7 @@ from dagster import (
 from OpenStudioLandscapes.engine.base.ops.factories import (  # factory_feature_out,
     factory_feature_out_v2,
 )
-from OpenStudioLandscapes.engine.discovery import discovery
+# from OpenStudioLandscapes.engine.discovery import discovery
 from OpenStudioLandscapes.engine.link.models import OpenStudioLandscapesFeatureOut
 
 # def get_feature_out(
@@ -54,7 +54,7 @@ def get_feature_out_v2(
         name=f"op_feature_out_v2_{ASSET_HEADER['group_name']}",
         ins={
             "compose": In(Dict),
-            "CONFIG": In(discovery.FeatureBaseModel),
+            # "CONFIG": In(discovery.FeatureBaseModel),
             "cmd_extend": In(List),
             "cmd_append": In(Dict),
         },
