@@ -5,7 +5,7 @@ import shutil
 import textwrap
 import time
 import urllib.parse
-from typing import Generator, Dict
+from typing import Dict, Generator
 
 from dagster import (
     AssetExecutionContext,
@@ -124,17 +124,12 @@ Rez
     ins={
         "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
         "CONFIG": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"])),
-        # "docker_config_json": AssetIn(
-        #     AssetKey([*ASSET_HEADER_BASE["key_prefix"], "docker_config_json"])
-        # ),
     },
-    retry_policy=build_docker_image_retry_policy,
 )
 def write_dockerfile_CY2026(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
     CONFIG: ConfigEngine,  # pylint: disable=redefined-outer-name
-    # docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
     """ """
 
@@ -196,6 +191,7 @@ def write_dockerfile_CY2026(
         ENV SET_CONTAINER_TIMEZONE=true
             
         # Prepend to PATH /opt/python{python_maj}.{python_min}/bin
+        # RUN python --version
         ENV PATH="/opt/python{python_maj}.{python_min}/bin:$PATH"
         # Prepend to PATH /opt/rez/bin/rez
         ENV PATH="/opt/rez/bin/rez:$PATH"
@@ -246,6 +242,7 @@ def write_dockerfile_CY2026(
         #    cmake
         #    expect
         RUN dnf makecache --refresh && dnf --assumeyes install {dnf_packages_base} && dnf clean all
+        # RUN /usr/bin/crb enable
         RUN dnf makecache --refresh && dnf --assumeyes group install {dnf_packages_python_group} && dnf clean all
         RUN dnf makecache --refresh && dnf --assumeyes install {dnf_packages_python} && dnf clean all
         RUN dnf makecache --refresh && dnf --assumeyes install {dnf_packages_CY2026} && dnf clean all
@@ -273,7 +270,7 @@ def write_dockerfile_CY2026(
 
         WORKDIR /opt/python{python_maj}.{python_min}/bin
         RUN ln -s python{python_maj}.{python_min} python
-        RUN python -m pip install --upgrade pip setuptools wheel
+        # RUN python -m pip install --upgrade pip setuptools wheel
         
         ################################################################################
         # Multi Stage: Stage Rez
@@ -281,6 +278,7 @@ def write_dockerfile_CY2026(
         FROM base AS rez_installer
         
         COPY --from=build_python "/opt/python{python_maj}.{python_min}" "/opt/python{python_maj}.{python_min}"
+        RUN ls -al /opt/python{python_maj}.{python_min}/bin/python
 
         WORKDIR /build/rez
 
@@ -289,8 +287,13 @@ def write_dockerfile_CY2026(
             && tar -xzvf rez-{rez_version}.tar.gz \\
             && rm --force rez-{rez_version}.tar.gz
 
+        RUN python{python_maj}.{python_min} -m pip install --root-user-action=ignore --upgrade pip setuptools setuptools_scm wheel
         RUN python{python_maj}.{python_min} ./rez-{rez_version}/install.py --verbose /opt/rez
-        RUN /opt/rez/bin/python -m pip install --upgrade pip setuptools wheel
+        # RUN ls -al /opt/rez/bin/python
+        RUN /opt/rez/bin/python --version
+        # RUN /opt/rez/bin/python -m pip install --root-user-action=ignore --upgrade pip setuptools setuptools_scm wheel
+        
+        RUN ls -al
 
         RUN chmod +x /opt/rez/completion/complete.sh
         RUN /opt/rez/completion/complete.sh
@@ -300,7 +303,22 @@ def write_dockerfile_CY2026(
         
         WORKDIR /build/rez/rez-{rez_version}/example_packages/hello_world
 
-        RUN rez bind -vvvvv --quickstart
+        RUN rez bind -vvvvv --quickstart --install-path /this/should/be/machine/specific
+        RUN rez bind PyQt
+        RUN rez bind PySide
+        RUN rez bind arch
+        RUN rez bind cmake
+        RUN rez bind gcc
+        # RUN rez bind hello_world
+        RUN rez bind os
+        RUN rez bind pip
+        RUN rez bind platform
+        RUN rez bind python
+        RUN rez bind rez
+        RUN rez bind rezgui
+        RUN rez bind setuptools
+        RUN rez bind sip
+
         # ERROR    RezBindError: Couldn't locate module pkg_resources:
         # ModuleNotFoundError: No module named 'pkg_resources'
         RUN rez build -vvvvv --install
@@ -344,9 +362,11 @@ def write_dockerfile_CY2026(
                 "libffi-devel",
             ]
         ),
-        dnf_packages_CY2026=" ".join([
-            "gcc-toolset-14-gcc-c++",
-        ]),
+        dnf_packages_CY2026=" ".join(
+            [
+                "gcc-toolset-14-gcc-c++",
+            ]
+        ),
         dnf_packages_rez=" ".join(
             [
                 "openssl-devel",
@@ -402,29 +422,12 @@ def write_dockerfile_CY2026(
     with open(docker_file, mode="r") as fr:
         docker_file_content = fr.read()
 
-    # image_data = {
-    #     "image_name": image_name,
-    #     "image_prefixes": image_prefixes,
-    #     "image_tags": tags,
-    #     "image_parent": {},
-    # }
-
-    # just highlight the message
-    # context.log.debug(f"{image_data = }")
-
-    # Full command as per python-on-whales
-    # Build command (public) (OK: [x]):  /usr/bin/docker --config /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json build --quiet --pull --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles/Dockerfile --no-cache --tag openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9 --tag harbor.farm.evil:80/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9 /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles
-    # Push command (public):             /usr/bin/docker --config /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json image push harbor.farm.evil:80/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9
-    # Build command (private) (OK: [x]): /usr/bin/docker --config /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json build --quiet --pull --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles/Dockerfile --no-cache --tag openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666 --tag harbor.farm.evil:80/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666 /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles
-    # Push command (private):            /usr/bin/docker --config /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json image push harbor.farm.evil:80/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666
-
     yield Output(docker_file)
 
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
             "__".join(context.asset_key.path): MetadataValue.path(docker_file),
-            # "image_data": MetadataValue.json(image_data),
             docker_file.name: MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
             "env": MetadataValue.json(env),
         },
@@ -440,9 +443,10 @@ def write_dockerfile_CY2026(
             AssetKey([*ASSET_HEADER_BASE["key_prefix"], "docker_config_json"])
         ),
         "write_dockerfile_CY2026": AssetIn(
-            AssetKey([*ASSET_HEADER_VFX_PLATFORM["key_prefix"], "write_dockerfile_CY2026"])
+            AssetKey(
+                [*ASSET_HEADER_VFX_PLATFORM["key_prefix"], "write_dockerfile_CY2026"]
+            )
         ),
-
     },
     # retry_policy=build_docker_image_retry_policy,
 )
