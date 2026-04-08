@@ -51,9 +51,9 @@ from OpenStudioLandscapes.engine.config.models import (
 )
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.discovery import discovery
-from OpenStudioLandscapes.engine.discovery.get_feature_base_model import (
-    get_feature_base_model,
-)
+# from OpenStudioLandscapes.engine.discovery.get_feature_base_model import (
+#     get_feature_base_model,
+# )
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.link.models import (
     OpenStudioLandscapesBaseOut,
@@ -1891,119 +1891,119 @@ def factory_compose_scope__group_out(
     return _op_compose_scope__group_out
 
 
-def factory__CONFIG(
-    CONFIG_STR: str,
-    search_model_of_type: Type[discovery.FeatureBaseModel],
-    name="op_factory__CONFIG",
-    ins=None,
-    **kwargs,
-) -> OpDefinition:
-    """
-    https://docs.dagster.io/guides/build/ops#op-factory
-
-    Args:
-        name (str): The name of the new op.
-        ins (Dict[str, In]): Any Ins for the new op. Default: None.
-
-    Returns:
-        function: The new op.
-    """
-
-    @op(
-        name=name,
-        ins=ins,
-        description=textwrap.dedent(f"""
-Reads options from a `config.yml` on your hard drive.
-If the custom `config.yml` does not exist, it 
-will be created locally containing default options.
-
----
-
-For reference, the default `Config` values are as follows:
-
-> __These default `Config` values **do not reflect your
-> actual configuration** specified in the `config.yml` file.__
-        
-```yaml
-{CONFIG_STR}
-```
-"""),
-        **kwargs,
-    )
-    def _op__CONFIG(
-        context: OpExecutionContext,
-        **kwargs,
-    ):
-        """ """
-
-        # if config_parent is None:
-        #     pass
-        # else:
-        #     pass
-
-        feature_in: OpenStudioLandscapesFeatureIn = kwargs.get("feature_in")
-
-        env: Dict = feature_in.openstudiolandscapes_base.env
-
-        config_validated: discovery.FeatureBaseModel = get_feature_base_model(
-            context=context,
-            discovered_models=discovery.DISCOVERED_MODELS,
-            search_instance_type=search_model_of_type,
-        )
-
-        config_validated.env = env
-
-        ##########
-        # CONFIG #
-        ##########
-
-        output_name = "CONFIG"
-
-        yield Output(
-            output_name=output_name,
-            value=config_validated,
-        )
-
-        yield AssetMaterialization(
-            asset_key=context.asset_key_for_output(output_name),
-            metadata={
-                "__".join(
-                    context.asset_key_for_output(output_name).path
-                ): MetadataValue.md(
-                    f"```yaml\n{yaml.safe_dump(json.loads(config_validated.model_dump_json(fallback=str, indent=2)))}\n```"
-                ),
-            },
-        )
-
-        # feature_in_parent: Union[None, OpenStudioLandscapesFeatureOut] = feature_in.feature_in_parent
-        #
-        # if feature_in_parent is not None:
-        #
-        #     config_validated_parent: discovery.FeatureBaseModel = feature_in_parent.config_feature
-        #
-        #     #################
-        #     # CONFIG_PARENT #
-        #     #################
-        #
-        #     output_name = "CONFIG_PARENT"
-        #
-        #     yield Output(
-        #         output_name=output_name,
-        #         value=config_validated_parent,
-        #     )
-        #
-        #     yield AssetMaterialization(
-        #         asset_key=context.asset_key_for_output(output_name),
-        #         metadata={
-        #             "__".join(
-        #                 context.asset_key_for_output(output_name).path
-        #                 ): MetadataValue.md(
-        #                 f"```yaml\n{yaml.safe_dump(json.loads(config_validated_parent.model_dump_json(fallback=str, indent=2)))}\n```"
-        #             ),
-        #         },
-        #     )
-
-    return _op__CONFIG
+# def factory__CONFIG(
+#     CONFIG_STR: str,
+#     search_model_of_type: Type[discovery.FeatureBaseModel],
+#     name="op_factory__CONFIG",
+#     ins=None,
+#     **kwargs,
+# ) -> OpDefinition:
+#     """
+#     https://docs.dagster.io/guides/build/ops#op-factory
+#
+#     Args:
+#         name (str): The name of the new op.
+#         ins (Dict[str, In]): Any Ins for the new op. Default: None.
+#
+#     Returns:
+#         function: The new op.
+#     """
+#
+#     @op(
+#         name=name,
+#         ins=ins,
+#         description=textwrap.dedent(f"""
+# Reads options from a `config.yml` on your hard drive.
+# If the custom `config.yml` does not exist, it
+# will be created locally containing default options.
+#
+# ---
+#
+# For reference, the default `Config` values are as follows:
+#
+# > __These default `Config` values **do not reflect your
+# > actual configuration** specified in the `config.yml` file.__
+#
+# ```yaml
+# {CONFIG_STR}
+# ```
+# """),
+#         **kwargs,
+#     )
+#     def _op__CONFIG(
+#         context: OpExecutionContext,
+#         **kwargs,
+#     ):
+#         """ """
+#
+#         # if config_parent is None:
+#         #     pass
+#         # else:
+#         #     pass
+#
+#         feature_in: OpenStudioLandscapesFeatureIn = kwargs.get("feature_in")
+#
+#         env: Dict = feature_in.openstudiolandscapes_base.env
+#
+#         config_validated: discovery.FeatureBaseModel = get_feature_base_model(
+#             context=context,
+#             discovered_models=discovery.DISCOVERED_MODELS,
+#             search_instance_type=search_model_of_type,
+#         )
+#
+#         config_validated.env = env
+#
+#         ##########
+#         # CONFIG #
+#         ##########
+#
+#         output_name = "CONFIG"
+#
+#         yield Output(
+#             output_name=output_name,
+#             value=config_validated,
+#         )
+#
+#         yield AssetMaterialization(
+#             asset_key=context.asset_key_for_output(output_name),
+#             metadata={
+#                 "__".join(
+#                     context.asset_key_for_output(output_name).path
+#                 ): MetadataValue.md(
+#                     f"```yaml\n{yaml.safe_dump(json.loads(config_validated.model_dump_json(fallback=str, indent=2)))}\n```"
+#                 ),
+#             },
+#         )
+#
+#         # feature_in_parent: Union[None, OpenStudioLandscapesFeatureOut] = feature_in.feature_in_parent
+#         #
+#         # if feature_in_parent is not None:
+#         #
+#         #     config_validated_parent: discovery.FeatureBaseModel = feature_in_parent.config_feature
+#         #
+#         #     #################
+#         #     # CONFIG_PARENT #
+#         #     #################
+#         #
+#         #     output_name = "CONFIG_PARENT"
+#         #
+#         #     yield Output(
+#         #         output_name=output_name,
+#         #         value=config_validated_parent,
+#         #     )
+#         #
+#         #     yield AssetMaterialization(
+#         #         asset_key=context.asset_key_for_output(output_name),
+#         #         metadata={
+#         #             "__".join(
+#         #                 context.asset_key_for_output(output_name).path
+#         #                 ): MetadataValue.md(
+#         #                 f"```yaml\n{yaml.safe_dump(json.loads(config_validated_parent.model_dump_json(fallback=str, indent=2)))}\n```"
+#         #             ),
+#         #         },
+#         #     )
+#
+#     return _op__CONFIG
 
 
 # # TEMPLATE (FACTORY)

@@ -25,7 +25,7 @@ from OpenStudioLandscapes.engine.discovery import discovery
 from OpenStudioLandscapes.engine.discovery.discovery import *
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.link.models import OpenStudioLandscapesBaseOut
-from OpenStudioLandscapes.engine.utils import get_dynamic_ins
+# from OpenStudioLandscapes.engine.utils import get_dynamic_ins
 
 feature_ins = get_dynamic_ins(
     imported_features=discovery.DISCOVERED_MODELS,

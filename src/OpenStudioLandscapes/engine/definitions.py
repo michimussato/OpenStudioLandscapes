@@ -25,8 +25,8 @@ imports_engine = [
 # every module beneath it.
 imports_engine.extend(
     [
-        "OpenStudioLandscapes.engine.compose_scopes.definitions",
-        "OpenStudioLandscapes.engine.landscape_map.definitions",
+        # "OpenStudioLandscapes.engine.compose_scopes.definitions",
+        # "OpenStudioLandscapes.engine.landscape_map.definitions",
         # "OpenStudioLandscapes.engine.distributable.definitions",
     ]
 )
