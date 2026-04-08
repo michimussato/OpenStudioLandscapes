@@ -43,15 +43,15 @@ for core in imports_engine:
         LOGGER.error(f"Engine setup failed to complete: {e}")
         raise e
 
-package: str
-feature: discovery.OpenStudioLandscapesDiscoveredFeature
-for package, feature in discovery.DISCOVERED_MODELS.items():
-    config: FeatureBaseModel = feature.config
-    enabled: bool = config.enabled
-    if enabled:
-        modules.append(feature.definitions_object)
-    else:
-        continue
+# package: str
+# feature: discovery.OpenStudioLandscapesDiscoveredFeature
+# for package, feature in discovery.DISCOVERED_MODELS.items():
+#     config: FeatureBaseModel = feature.config
+#     enabled: bool = config.enabled
+#     if enabled:
+#         modules.append(feature.definitions_object)
+#     else:
+#         continue
 
 
 defs = Definitions.merge(
