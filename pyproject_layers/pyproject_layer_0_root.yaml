@@ -63,6 +63,8 @@ project:
   - email: michimussato@gmail.com
     name: Michael Mussato
   optional-dependencies:
+    dev:
+    - dagster-webserver==1.9.11
     # Add here additional requirements for extra features, to install with:
     # `pip install OpenStudioLandscapes[PDF]` like:
     # PDF = ReportLab; RXP

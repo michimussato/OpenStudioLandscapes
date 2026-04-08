@@ -37,7 +37,7 @@ def run_openstudiolandscapes_postgres(args):
         os.environ["OPENSTUDIOLANDSCAPES__DOMAIN_WAN"] = args.domain_wan
 
     os.environ["OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT"] = args.config_store
-    os.environ["OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS"] = args.config_store_vcs
+    # os.environ["OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS"] = args.config_store_vcs
 
     if args.landscapes_root is not None:
         os.environ["OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT"] = args.landscapes_root
@@ -169,21 +169,21 @@ def parse_args(args):
         help="Set the configuration store path.",
     )
 
-    parser.add_argument(
-        "--config-store-vcs",
-        dest="config_store_vcs",
-        type=str,
-        metavar="OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS",
-        default=os.environ.get(
-            "OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS",
-            "~/.config/OpenStudioLandscapes/config-store",
-        ),
-        # action="store_true",
-        required=False,
-        help="If the config store is part of a Git repository already, "
-        "you can specify the path to the repo here. Defaults to the same "
-        "value like `OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT`.",
-    )
+    # parser.add_argument(
+    #     "--config-store-vcs",
+    #     dest="config_store_vcs",
+    #     type=str,
+    #     metavar="OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS",
+    #     default=os.environ.get(
+    #         "OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS",
+    #         "~/.config/OpenStudioLandscapes/config-store",
+    #     ),
+    #     # action="store_true",
+    #     required=False,
+    #     help="If the config store is part of a Git repository already, "
+    #     "you can specify the path to the repo here. Defaults to the same "
+    #     "value like `OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT`.",
+    # )
 
     parser.add_argument(
         "--landscapes-root",

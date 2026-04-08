@@ -45,6 +45,7 @@ requires-python = ">=3.11"
 
 [project.optional-dependencies]
 dev = [
+    "dagster-webserver==1.9.11",
     "OpenStudioLandscapesUtil-VersionBumper @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-VersionBumper.git",
     "OpenStudioLandscapes[lint]",
     "OpenStudioLandscapes[pyproject]",

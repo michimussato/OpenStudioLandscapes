@@ -84,12 +84,12 @@ OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT: pathlib.Path = pathlib.Path(
         # default="~/.config/OpenStudioLandscapes/config-store",
     )
 )
-OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS: pathlib.Path = pathlib.Path(
-    os.environ.get(
-        "OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS",
-        # default="~/.config/OpenStudioLandscapes/config-store",
-    )
-)
+# OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS: pathlib.Path = pathlib.Path(
+#     os.environ.get(
+#         "OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS",
+#         # default="~/.config/OpenStudioLandscapes/config-store",
+#     )
+# )
 
 
 REPO_INITIALIZED = False
@@ -125,7 +125,7 @@ if not OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.expanduser().exists():
     )
 
 config_store_repo, fresh_repo = init_config_store(
-    root=OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS or OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT
+    root=OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT
 )
 
 
