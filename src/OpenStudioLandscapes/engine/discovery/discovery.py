@@ -81,7 +81,7 @@ def update_config_yml(
 OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT: pathlib.Path = pathlib.Path(
     os.environ.get(
         "OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT",
-        # default="~/.config/OpenStudioLandscapes/config-store",
+        default="~/.config/OpenStudioLandscapes/config-store",
     )
 )
 # OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS: pathlib.Path = pathlib.Path(
