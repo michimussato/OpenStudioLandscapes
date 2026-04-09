@@ -3,6 +3,9 @@ load_from:
   - python_module:
       module_name: "OpenStudioLandscapes.engine.definitions"
       location_name: "OpenStudioLandscapes"
+  - python_module:
+      module_name: "OpenStudioLandscapes.engine.landscape_map.definitions"
+      location_name: "OpenStudioLandscapes LandscapeMap"
   # - grpc_server:
   #     host: dagster-worker-1.local
   #     port: 4000
