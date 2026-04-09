@@ -1,3 +1,5 @@
+# import importlib
+
 from dagster import Definitions, get_dagster_logger
 
 import OpenStudioLandscapes.engine.discovery.discovery as discovery
@@ -5,9 +7,41 @@ from OpenStudioLandscapes.engine.config.models import FeatureBaseModel
 
 LOGGER = get_dagster_logger(__name__)
 
+# # Base Definitions
+# code_locations = [
+#     "OpenStudioLandscapes.engine.base.definitions",
+#     "OpenStudioLandscapes.engine.env.definitions",
+#     # "OpenStudioLandscapes.engine.vfx_reference.definitions",
+# ]
+#
+#
+# # Additional Definitions
+# #
+# # This structure is for debugging
+# #
+# # These modules have a layered dependency:
+# # the latter depends on the prior.
+# # To disable one of them, disable it and
+# # every module beneath it.
+# # -> This should not be strictly necessary anymore ()
+# code_locations.extend(
+#     [
+#         "OpenStudioLandscapes.engine.compose_scopes.definitions",
+#         "OpenStudioLandscapes.engine.landscape_map.definitions",
+#         # "OpenStudioLandscapes.engine.distributable.definitions",
+#     ]
+# )
 
 modules = []
 
+
+# for core in code_locations:
+#     try:
+#         module_object = importlib.import_module(core)
+#         modules.append(module_object)
+#     except ModuleNotFoundError as e:
+#         LOGGER.error(f"Engine setup failed to complete: {e}")
+#         raise e
 
 package: str
 feature: discovery.OpenStudioLandscapesDiscoveredFeature
@@ -24,6 +58,16 @@ for package, feature in discovery.DISCOVERED_MODELS.items():
 # enabled) Features.
 # Todo:
 #  - [ ] migrate to Code Locations
+#        -> This is not so easy because "Materialize All" DOES NOT
+#           work across multiple Code Locations
+#        -> Because of this, we use the experimental `Definitions.merge()`
+#           Feature to combine all individual Code Location into a single one
+#           so that `workspace.yaml` only loads one Code Location
+#        -> We can still deploy individual Code Locations and implement
+#           testing etc.
+#           -> Not true. The actual `AssetDefinition` clashes with
+#              its related `AssetSpec`, raising
+#              `dagster._core.errors.DagsterInvalidDefinitionError: Duplicate asset key: AssetKey(['OpenStudioLandscapes_Env', 'env'])`
 defs = Definitions.merge(
     *[i.defs for i in modules],
 )
