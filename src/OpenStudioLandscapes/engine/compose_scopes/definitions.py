@@ -6,6 +6,7 @@ from dagster import (
 )
 
 import OpenStudioLandscapes.engine.compose_scopes.assets
+from OpenStudioLandscapes.engine.compose_scopes import GRAFANA_AVAILABLE
 # import OpenStudioLandscapes.engine.compose_scopes.constants
 
 assets = load_assets_from_modules(
@@ -45,8 +46,9 @@ if bool(feature_ins):
 
     compose_scope: str
     feature: Dict[str, discovery.OpenStudioLandscapesDiscoveredFeature]
+    LOGGER.debug(f"{feature_ins = }")
     for compose_scope, features in feature_ins.items():
-        LOGGER.error(f"{features = }")
+        LOGGER.debug(f"{features = }")
         # features = {'OpenStudioLandscapes_filebrowser': AssetIn(key=AssetKey(['OpenStudioLandscapes_filebrowser', 'feature_out_v2']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>)}
 
         feature_name: str
@@ -54,12 +56,34 @@ if bool(feature_ins):
         for feature_name, asset_in in features.items():
             asset_key: AssetKey = asset_in.key
 
+            LOGGER.debug(f"{asset_key = }")
+
             asset_spec = AssetSpec(
                 asset_key,  # contains key, key_prefix, group
                 description="Todo",
             )
 
             assets_external.append(asset_spec)
+
+        if GRAFANA_AVAILABLE:
+            from OpenStudioLandscapes.Grafana.constants import ASSET_HEADER as ASSET_HEADER_GRAFANA
+
+            for asset_spec in [
+                "build_docker_image_alloy",
+                "alloy_config",
+            ]:
+                asset_spec_alloy = AssetSpec(
+                    key=AssetKey(
+                        [
+                            *ASSET_HEADER_GRAFANA["key_prefix"],
+                            asset_spec,
+                        ]
+                    ),
+                    group_name=ASSET_HEADER_GRAFANA["group_name"],
+                    description="`AssetSpec` for `AssetDefinition` specified in "
+                                "`OpenStudioLandscapes.engine.base.assets.group_out_base`.",
+                )
+                assets_external.append(asset_spec_alloy)
 
 
 # for testing:
