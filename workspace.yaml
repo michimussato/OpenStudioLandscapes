@@ -4,6 +4,9 @@ load_from:
       module_name: "OpenStudioLandscapes.engine.definitions"
       location_name: "OpenStudioLandscapes Engine (Core)"
   - python_module:
+      module_name: "OpenStudioLandscapes.engine.env.definitions"
+      location_name: "OpenStudioLandscapes Engine (Env)"
+  - python_module:
       module_name: "OpenStudioLandscapes.engine.base.definitions"
       location_name: "OpenStudioLandscapes Engine (Base)"
   - python_module:
