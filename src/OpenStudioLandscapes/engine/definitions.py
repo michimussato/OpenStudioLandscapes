@@ -9,26 +9,8 @@ LOGGER = get_dagster_logger(__name__)
 
 # Base Definitions
 imports_engine = [
-    "OpenStudioLandscapes.engine.base.definitions",
     "OpenStudioLandscapes.engine.env.definitions",
-    # "OpenStudioLandscapes.engine.vfx_reference.definitions",
 ]
-
-
-# Additional Definitions
-#
-# This structure is for debugging
-#
-# These modules have a layered dependency:
-# the latter depends on the prior.
-# To disable one of them, disable it and
-# every module beneath it.
-imports_engine.extend(
-    [
-        "OpenStudioLandscapes.engine.compose_scopes.definitions",
-        # "OpenStudioLandscapes.engine.distributable.definitions",
-    ]
-)
 
 
 modules = []

@@ -29,11 +29,12 @@ LOGGER = discovery.LOGGER
 
 LOGGER.info(f"{feature_ins = }")
 
+assets_external = []
+
 
 ins = {}
 _compose_scopes = set()
 
-assets_external = []
 
 compose_scope: str
 feature: Dict[str, AssetSpec]
@@ -43,7 +44,7 @@ for compose_scope, _ in feature_ins.items():
         continue
     _compose_scopes.update(compose_scope)
     asset_spec = AssetSpec(
-        AssetKey(
+        key=AssetKey(
             # ComposeScopes / ComposeScope_DEV_default / docker_compose_graph_dot
             [
                 "ComposeScopes",
@@ -68,7 +69,7 @@ for compose_scope, _ in feature_ins.items():
 if not bool(assets_external):
     compose_scope = "dummy_compose_scope"
     asset_spec = AssetSpec(
-        AssetKey(
+        key=AssetKey(
             # ComposeScopes / dummy_compose_scope / docker_compose_graph_dot
             [
                 "ComposeScopes",
@@ -90,9 +91,8 @@ group_out_base = AssetSpec(
         ]
     ),
     group_name=ASSET_HEADER_BASE["group_name"],
-    description="AssetDefinition from `CodeLocation1.assets`. "
-                "Description from AssetSpec in "
-                "`Base.definitions`.",
+    description="`AssetSpec` for `AssetDefinition` specified in "
+                "`OpenStudioLandscapes.engine.base.assets.group_out_base`.",
 )
 
 assets_external.append(group_out_base)
