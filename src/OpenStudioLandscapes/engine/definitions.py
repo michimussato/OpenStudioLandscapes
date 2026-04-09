@@ -68,6 +68,14 @@ for package, feature in discovery.DISCOVERED_MODELS.items():
 #           -> Not true. The actual `AssetDefinition` clashes with
 #              its related `AssetSpec`, raising
 #              `dagster._core.errors.DagsterInvalidDefinitionError: Duplicate asset key: AssetKey(['OpenStudioLandscapes_Env', 'env'])`
+#        References:
+#        - https://stackoverflow.com/questions/79780791/dagster-multiple-code-locations-materialize-all-problem
+#        - https://github.com/dagster-io/dagster/discussions/19184
+#          - [Declarative Automation](https://docs.dagster.io/guides/automate/declarative-automation#declarative-automation)
+#          - https://www.youtube.com/watch?v=Z77s50b_Sks
+#        - https://github.com/dagster-io/dagster/discussions/19263
+#        - https://www.youtube.com/watch?v=9U5OEQtDl-s
+#        - https://github.com/dagster-io/dagster/issues/14422
 defs = Definitions.merge(
     *[i.defs for i in modules],
 )
