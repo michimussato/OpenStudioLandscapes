@@ -18,7 +18,7 @@
 load_from:
   - python_module:
       module_name: "OpenStudioLandscapes.engine.definitions"
-      location_name: "OpenStudioLandscapes Engine (Core)"
+      location_name: "OpenStudioLandscapes Engine (Features)"
   - python_module:
       module_name: "OpenStudioLandscapes.engine.env.definitions"
       location_name: "OpenStudioLandscapes Engine (Env)"

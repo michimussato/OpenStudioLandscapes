@@ -32,6 +32,12 @@ from OpenStudioLandscapes.engine.utils import *
 #  - [ ] get assets from common_assets
 
 
+"""
+2026-04-09 23:19:44 +0200 - dagster - WARNING - /home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/definitions/resolved_asset_deps.py:24: ExperimentalWarning: Asset ["ComposeScopes", "ComposeScope_default", "docker_compose_graph_dot"]'s dependency 'compose_project_name' was resolved to upstream asset ["ComposeScopes", "ComposeScope_default", "compose_project_name"], because the name matches and they're in the same group. This is experimental functionality that may change in a future release is experimental. It may break in future versions, even between dot releases. To mute warnings for experimental functionality, invoke warnings.filterwarnings("ignore", category=dagster.ExperimentalWarning) or use one of the other methods described at https://docs.python.org/3/library/warnings.html#describing-warning-filters.
+  self._deps_by_assets_def_id = resolve_assets_def_deps(assets_defs, source_assets)
+"""
+
+
 # https://github.com/yaml/pyyaml/issues/722#issuecomment-1969292770
 yaml.SafeDumper.add_multi_representer(
     enum.Enum,
