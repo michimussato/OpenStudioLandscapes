@@ -61,19 +61,22 @@ for compose_scope, _ in feature_ins.items():
 
 # for testing:
 # if assets_external is empty at this point,
-# just add a dummy
+# just add a dummy to match the dummy AssetIn
+# defined in the assets.py (if not bool(ins))
+# so that we have a visual representation of
+# the dependencies
 if not bool(assets_external):
     compose_scope = "dummy_compose_scope"
     asset_spec = AssetSpec(
         AssetKey(
-            # ComposeScopes / ComposeScope_DEV_default / docker_compose_graph_dot
+            # ComposeScopes / dummy_compose_scope / docker_compose_graph_dot
             [
                 "ComposeScopes",
                 f"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}",
                 "docker_compose_graph_dot",
             ]
         ),
-        group_name=ASSET_HEADER_LANDSCAPE_MAP["group_name"],
+        group_name=f"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}",
         description="Todo",
     )
     assets_external.append(asset_spec)
@@ -86,7 +89,7 @@ group_out_base = AssetSpec(
             "group_out_base",
         ]
     ),
-    group_name="Base",
+    group_name=ASSET_HEADER_BASE["group_name"],
     description="AssetDefinition from `CodeLocation1.assets`. "
                 "Description from AssetSpec in "
                 "`Base.definitions`.",

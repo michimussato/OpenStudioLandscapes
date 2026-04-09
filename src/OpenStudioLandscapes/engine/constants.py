@@ -68,6 +68,7 @@ KEY_LANDSCAPE_MAP = [GROUP_LANDSCAPE_MAP]
 ASSET_HEADER_LANDSCAPE_MAP = {
     "group_name": GROUP_LANDSCAPE_MAP,
     "key_prefix": KEY_LANDSCAPE_MAP,
+    "compute_kind": "python",
 }
 
 
