@@ -60,6 +60,8 @@ for package, feature in discovery.DISCOVERED_MODELS.items():
 #  - [ ] migrate to Code Locations
 #        -> This is not so easy because "Materialize All" DOES NOT
 #           work across multiple Code Locations
+#        -> We can at least set the foundation for local Feature
+#           development to function properly (`dagster dev --workspace <feature_workspace.yaml>`)
 #        -> Because of this, we use the experimental `Definitions.merge()`
 #           Feature to combine all individual Code Location into a single one
 #           so that `workspace.yaml` only loads one Code Location
