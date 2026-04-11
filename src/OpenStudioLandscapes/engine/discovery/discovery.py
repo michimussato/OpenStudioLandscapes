@@ -81,13 +81,21 @@ def update_config_yml(
 OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT: pathlib.Path = pathlib.Path(
     os.environ.get(
         "OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT",
-        # default="~/.config/OpenStudioLandscapes/config-store",
+        # Todo:
+        #  - [ ] if we launch OpenStudioLandscapes via `dagster dev`,
+        #        this env var has not been set and will result in None -
+        #        this is problematic. This is a workaround for now.
+        default="~/.config/OpenStudioLandscapes/config-store",
     )
 )
 OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS: pathlib.Path = pathlib.Path(
     os.environ.get(
         "OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS",
-        # default="~/.config/OpenStudioLandscapes/config-store",
+        # Todo:
+        #  - [ ] if we launch OpenStudioLandscapes via `dagster dev`,
+        #        this env var has not been set and will result in None -
+        #        this is problematic. This is a workaround for now.
+        default="~/.config/OpenStudioLandscapes/config-store",
     )
 )
 
