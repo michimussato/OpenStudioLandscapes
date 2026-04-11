@@ -107,19 +107,19 @@ if not bool(assets_external) and not bool(feature_ins):
     assets_external.append(feature_out)
 
 
-group_out_base = AssetSpec(
-    key=AssetKey(
-        [
-            *ASSET_HEADER_BASE["key_prefix"],
-            "group_out_base",
-        ]
-    ),
-    group_name=ASSET_HEADER_BASE["group_name"],
-    description="`AssetSpec` for `AssetDefinition` specified in "
-                "`OpenStudioLandscapes.engine.base.assets.group_out_base`.",
-)
-
-assets_external.append(group_out_base)
+# group_out_base = AssetSpec(
+#     key=AssetKey(
+#         [
+#             *ASSET_HEADER_BASE["key_prefix"],
+#             "group_out_base",
+#         ]
+#     ),
+#     group_name=ASSET_HEADER_BASE["group_name"],
+#     description="`AssetSpec` for `AssetDefinition` specified in "
+#                 "`OpenStudioLandscapes.engine.base.assets.group_out_base`.",
+# )
+#
+# assets_external.append(group_out_base)
 
 
 defs = Definitions(

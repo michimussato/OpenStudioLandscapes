@@ -15,8 +15,9 @@ from dagster import (
     MetadataValue,
     Output,
     asset,
+    multi_asset,
+    AssetSpec, AssetOut,
 )
-from dagster._core.definitions.utils import DEFAULT_OUTPUT
 
 from OpenStudioLandscapes.engine.config import dist
 from OpenStudioLandscapes.engine.config.models import ConfigEngine, DockerConfigModel
@@ -421,14 +422,41 @@ def build_docker_image(
         },
     )
 
-
-@asset(
-    **ASSET_HEADER_BASE,
+group_out_base = AssetSpec(
+    key=AssetKey(
+        [
+            *ASSET_HEADER_BASE["key_prefix"],
+            "group_out_base",
+        ]
+    ),
+    # deps=[
+    #     AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"]),
+    #     AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"]),
+    #     AssetKey([*ASSET_HEADER_BASE["key_prefix"], "docker_config_json"]),
+    #     AssetKey([*ASSET_HEADER_BASE["key_prefix"], "build_docker_image"]),
+    # ],
+    group_name=ASSET_HEADER_BASE["group_name"],
+    description=textwrap.dedent("""
+        This is the foundation. This assets provides all relevant environment information
+        for subsequent assets and asset groups. All downstream assets consume this data and
+        build their environment on top of this.
+        """)
+)
+@multi_asset(
+    # **ASSET_HEADER_BASE,
+    outs={
+        "group_out_base": AssetOut.from_spec(
+            group_out_base,
+        )
+    },
     # Todo:
     #  - [ ] still necessary?
-    tags={
-        "group_out": "base",
-    },
+    # tags={
+    #     "group_out": "base",
+    # },
+    # specs=[
+    #     group_out_base,
+    # ],
     ins={
         "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
         "CONFIG": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"])),
@@ -439,11 +467,11 @@ def build_docker_image(
             AssetKey([*ASSET_HEADER_BASE["key_prefix"], "build_docker_image"]),
         ),
     },
-    description=textwrap.dedent("""
-        This is the foundation. This assets provides all relevant environment information
-        for subsequent assets and asset groups. All downstream assets consume this data and
-        build their environment on top of this.
-        """),
+    # description=textwrap.dedent("""
+    #     This is the foundation. This assets provides all relevant environment information
+    #     for subsequent assets and asset groups. All downstream assets consume this data and
+    #     build their environment on top of this.
+    #     """),
 )
 def group_out_base(
     context: AssetExecutionContext,
@@ -462,7 +490,7 @@ def group_out_base(
 
     context.log.debug(f"group_out_base {group_out_base = }")
 
-    output_name = DEFAULT_OUTPUT
+    output_name = "group_out_base"
 
     yield Output(
         output_name=output_name,
@@ -470,7 +498,7 @@ def group_out_base(
     )
 
     yield AssetMaterialization(
-        asset_key=context.asset_key_for_output(output_name).path,
+        asset_key=context.asset_key_for_output(output_name),
         metadata={
             "group_out_base": MetadataValue.md(
                 f"```json\n{group_out_base.model_dump_json(indent=2, fallback=str)}\n```"
