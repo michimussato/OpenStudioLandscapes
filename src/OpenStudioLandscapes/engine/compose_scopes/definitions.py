@@ -10,10 +10,13 @@ from dagster import (
 
 import OpenStudioLandscapes.engine.compose_scopes.assets
 from OpenStudioLandscapes.engine.compose_scopes import GRAFANA_AVAILABLE
+from OpenStudioLandscapes.engine.constants import (
+    ASSET_HEADER_BASE,
+)
 
 # import OpenStudioLandscapes.engine.compose_scopes.constants
 
-assets = load_assets_from_modules(
+assets_base = load_assets_from_modules(
     modules=[OpenStudioLandscapes.engine.compose_scopes.assets]
 )
 
@@ -65,6 +68,7 @@ if bool(feature_ins):
             asset_spec = AssetSpec(
                 asset_key,  # contains key, key_prefix, group
                 description="Todo",
+                group_name="Features",  # Don't know how to retrieve the "group_name" from an AssetKey
             )
 
             assets_external.append(asset_spec)
@@ -113,25 +117,25 @@ if not bool(assets_external) and not bool(feature_ins):
     assets_external.append(feature_out)
 
 
-# group_out_base = AssetSpec(
-#     key=AssetKey(
-#         [
-#             *ASSET_HEADER_BASE["key_prefix"],
-#             "group_out_base",
-#         ]
-#     ),
-#     group_name=ASSET_HEADER_BASE["group_name"],
-#     description="`AssetSpec` for `AssetDefinition` specified in "
-#                 "`OpenStudioLandscapes.engine.base.assets.group_out_base`.",
-# )
-#
-# assets_external.append(group_out_base)
+group_out_base = AssetSpec(
+    key=AssetKey(
+        [
+            *ASSET_HEADER_BASE["key_prefix"],
+            "group_out_base",
+        ]
+    ),
+    group_name=ASSET_HEADER_BASE["group_name"],
+    description="`AssetSpec` for `AssetDefinition` specified in "
+                "`OpenStudioLandscapes.engine.base.assets.group_out_base`.",
+)
+
+assets_external.append(group_out_base)
 
 
 defs = Definitions(
     assets=[
-        *assets,
+        *assets_base,
         # *constants,
-        *assets_external,
+        # *assets_external,
     ],
 )
