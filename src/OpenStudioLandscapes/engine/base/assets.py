@@ -422,7 +422,7 @@ def build_docker_image(
         },
     )
 
-group_out_base = AssetSpec(
+group_out_base_spec = AssetSpec(
     key=AssetKey(
         [
             *ASSET_HEADER_BASE["key_prefix"],
@@ -436,17 +436,19 @@ group_out_base = AssetSpec(
     #     AssetKey([*ASSET_HEADER_BASE["key_prefix"], "build_docker_image"]),
     # ],
     group_name=ASSET_HEADER_BASE["group_name"],
-    description=textwrap.dedent("""
+    description=textwrap.dedent(
+        """
         This is the foundation. This assets provides all relevant environment information
         for subsequent assets and asset groups. All downstream assets consume this data and
         build their environment on top of this.
-        """)
+        """
+    ),
 )
 @multi_asset(
     # **ASSET_HEADER_BASE,
     outs={
         "group_out_base": AssetOut.from_spec(
-            group_out_base,
+            group_out_base_spec,
         )
     },
     # Todo:
