@@ -17,7 +17,7 @@ code_locations = [
     # (contains AssetDefinitions and upstream AssetSpecs)
     {
         "default": "OpenStudioLandscapes.engine.base.definitions",
-        "_with_upstream_specs": "OpenStudioLandscapes.engine.base.definitions_with_upstream_specs",
+        "_with_upstream_specs": "OpenStudioLandscapes.engine.base._definitions_with_upstream_specs",
     }["default"],
 
     # "OpenStudioLandscapes.engine.vfx_reference.definitions",
