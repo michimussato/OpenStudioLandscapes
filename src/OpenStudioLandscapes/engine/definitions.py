@@ -10,16 +10,11 @@ LOGGER = get_dagster_logger(__name__)
 # Base Definitions
 code_locations = [
     "OpenStudioLandscapes.engine.env.definitions",
-
     # default definitions file is for Single Code Location where AssetSpec clash with AssetDefinitions
     # "OpenStudioLandscapes.engine.base.definitions",
     # _with_upstream_specs definitions file is for Multi Code Location or isolated testing/development
     # (contains AssetDefinitions and upstream AssetSpecs)
-    {
-        "default": "OpenStudioLandscapes.engine.base.definitions",
-        "_with_upstream_specs": "OpenStudioLandscapes.engine.base._definitions_with_upstream_specs",
-    }["default"],
-
+    "OpenStudioLandscapes.engine.base.definitions",
     # "OpenStudioLandscapes.engine.vfx_reference.definitions",
 ]
 
@@ -35,8 +30,8 @@ code_locations = [
 # -> This should not be strictly necessary anymore ()
 code_locations.extend(
     [
-        # "OpenStudioLandscapes.engine.compose_scopes.definitions",
-        # "OpenStudioLandscapes.engine.landscape_map.definitions",
+        "OpenStudioLandscapes.engine.compose_scopes.definitions",
+        "OpenStudioLandscapes.engine.landscape_map.definitions",
         # "OpenStudioLandscapes.engine.distributable.definitions",
     ]
 )

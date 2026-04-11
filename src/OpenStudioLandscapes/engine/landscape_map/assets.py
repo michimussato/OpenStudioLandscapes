@@ -129,12 +129,8 @@ def landscape_map(
     stdout, stderr = proc.communicate()
 
     stdout_stderr = {
-        "stdout": MetadataValue.md(
-            f"```shell\n{stdout.decode(encoding='utf-8')}\n```"
-        ),
-        "stderr": MetadataValue.md(
-            f"```shell\n{stderr.decode(encoding='utf-8')}\n```"
-        ),
+        "stdout": MetadataValue.md(f"```shell\n{stdout.decode(encoding='utf-8')}\n```"),
+        "stderr": MetadataValue.md(f"```shell\n{stderr.decode(encoding='utf-8')}\n```"),
     }
 
     # https://stackoverflow.com/questions/16488216/graph-of-graphs-in-graphviz

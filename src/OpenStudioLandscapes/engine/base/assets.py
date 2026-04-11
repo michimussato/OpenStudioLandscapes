@@ -12,11 +12,12 @@ from dagster import (
     AssetIn,
     AssetKey,
     AssetMaterialization,
+    AssetOut,
+    AssetSpec,
     MetadataValue,
     Output,
     asset,
     multi_asset,
-    AssetSpec, AssetOut,
 )
 
 from OpenStudioLandscapes.engine.config import dist
@@ -422,6 +423,7 @@ def build_docker_image(
         },
     )
 
+
 group_out_base_spec = AssetSpec(
     key=AssetKey(
         [
@@ -429,36 +431,21 @@ group_out_base_spec = AssetSpec(
             "group_out_base",
         ]
     ),
-    # deps=[
-    #     AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"]),
-    #     AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"]),
-    #     AssetKey([*ASSET_HEADER_BASE["key_prefix"], "docker_config_json"]),
-    #     AssetKey([*ASSET_HEADER_BASE["key_prefix"], "build_docker_image"]),
-    # ],
     group_name=ASSET_HEADER_BASE["group_name"],
-    description=textwrap.dedent(
-        """
+    description=textwrap.dedent("""
         This is the foundation. This assets provides all relevant environment information
         for subsequent assets and asset groups. All downstream assets consume this data and
         build their environment on top of this.
-        """
-    ),
+        """),
 )
+
+
 @multi_asset(
-    # **ASSET_HEADER_BASE,
     outs={
         "group_out_base": AssetOut.from_spec(
             group_out_base_spec,
         )
     },
-    # Todo:
-    #  - [ ] still necessary?
-    # tags={
-    #     "group_out": "base",
-    # },
-    # specs=[
-    #     group_out_base,
-    # ],
     ins={
         "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
         "CONFIG": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"])),
@@ -469,11 +456,6 @@ group_out_base_spec = AssetSpec(
             AssetKey([*ASSET_HEADER_BASE["key_prefix"], "build_docker_image"]),
         ),
     },
-    # description=textwrap.dedent("""
-    #     This is the foundation. This assets provides all relevant environment information
-    #     for subsequent assets and asset groups. All downstream assets consume this data and
-    #     build their environment on top of this.
-    #     """),
 )
 def group_out_base(
     context: AssetExecutionContext,

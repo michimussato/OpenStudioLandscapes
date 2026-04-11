@@ -1,12 +1,16 @@
 from typing import Dict
 
 from dagster import (
+    AssetIn,
+    AssetKey,
+    AssetSpec,
     Definitions,
-    load_assets_from_modules, AssetSpec, AssetKey, AssetIn,
+    load_assets_from_modules,
 )
 
 import OpenStudioLandscapes.engine.compose_scopes.assets
 from OpenStudioLandscapes.engine.compose_scopes import GRAFANA_AVAILABLE
+
 # import OpenStudioLandscapes.engine.compose_scopes.constants
 
 assets = load_assets_from_modules(
@@ -23,11 +27,11 @@ assets = load_assets_from_modules(
 #     constants = []
 
 
-from OpenStudioLandscapes.engine.utils import get_dynamic_ins
+from OpenStudioLandscapes.engine.compose_scopes.constants import (
+    COMPOSE_SCOPE_GROUP_PREFIX,
+)
 from OpenStudioLandscapes.engine.discovery import discovery
-
-from OpenStudioLandscapes.engine.compose_scopes.constants import COMPOSE_SCOPE_GROUP_PREFIX
-from OpenStudioLandscapes.engine.constants import ASSET_HEADER_BASE
+from OpenStudioLandscapes.engine.utils import get_dynamic_ins
 
 feature_ins = get_dynamic_ins(
     imported_features=discovery.DISCOVERED_MODELS,
@@ -66,7 +70,9 @@ if bool(feature_ins):
             assets_external.append(asset_spec)
 
         if GRAFANA_AVAILABLE:
-            from OpenStudioLandscapes.Grafana.constants import ASSET_HEADER as ASSET_HEADER_GRAFANA
+            from OpenStudioLandscapes.Grafana.constants import (
+                ASSET_HEADER as ASSET_HEADER_GRAFANA,
+            )
 
             for asset_spec in [
                 "build_docker_image_alloy",
@@ -81,7 +87,7 @@ if bool(feature_ins):
                     ),
                     group_name=ASSET_HEADER_GRAFANA["group_name"],
                     description="`AssetSpec` for `AssetDefinition` specified in "
-                                "`OpenStudioLandscapes.engine.base.assets.group_out_base`.",
+                    "`OpenStudioLandscapes.engine.base.assets.group_out_base`.",
                 )
                 assets_external.append(asset_spec_alloy)
 

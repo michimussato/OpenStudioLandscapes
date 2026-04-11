@@ -1,18 +1,22 @@
 from typing import Dict
 
 from dagster import (
+    AssetKey,
+    AssetSpec,
     Definitions,
     load_assets_from_modules,
-    AssetSpec,
-    AssetKey,
 )
 
 import OpenStudioLandscapes.engine.landscape_map.assets
-from OpenStudioLandscapes.engine.utils import get_dynamic_ins
+from OpenStudioLandscapes.engine.compose_scopes.constants import (
+    COMPOSE_SCOPE_GROUP_PREFIX,
+)
+from OpenStudioLandscapes.engine.constants import (
+    ASSET_HEADER_BASE,
+    ASSET_HEADER_LANDSCAPE_MAP,
+)
 from OpenStudioLandscapes.engine.discovery import discovery
-
-from OpenStudioLandscapes.engine.constants import ASSET_HEADER_LANDSCAPE_MAP, ASSET_HEADER_BASE
-from OpenStudioLandscapes.engine.compose_scopes.constants import COMPOSE_SCOPE_GROUP_PREFIX
+from OpenStudioLandscapes.engine.utils import get_dynamic_ins
 
 assets = load_assets_from_modules(
     modules=[OpenStudioLandscapes.engine.landscape_map.assets],
@@ -92,7 +96,7 @@ group_out_base = AssetSpec(
     ),
     group_name=ASSET_HEADER_BASE["group_name"],
     description="`AssetSpec` for `AssetDefinition` specified in "
-                "`OpenStudioLandscapes.engine.base.assets.group_out_base`.",
+    "`OpenStudioLandscapes.engine.base.assets.group_out_base`.",
 )
 
 assets_external.append(group_out_base)

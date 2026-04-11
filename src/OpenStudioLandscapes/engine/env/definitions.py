@@ -1,11 +1,10 @@
-from dagster import (
+from dagster import (  # define_asset_job,; AssetSelection,
     Definitions,
     load_assets_from_modules,
-    # define_asset_job,
-    # AssetSelection,
 )
 
 import OpenStudioLandscapes.engine.env.assets
+
 # from OpenStudioLandscapes.engine.constants import ASSET_HEADER_BASE_ENV
 
 assets_base = load_assets_from_modules([OpenStudioLandscapes.engine.env.assets])

@@ -56,12 +56,11 @@ compose_scope_asset_defs = []
 compose_scopes = set(feature_ins.keys())
 
 
-
 # for testing:
 # if assets_external is empty at this point,
 # just add a dummy
 if not bool(feature_ins):
-    feature_ins =  {
+    feature_ins = {
         "dummy_compose_scope": {
             "OpenStudioLandscapes_dummy": AssetIn(
                 key=AssetKey(
@@ -183,9 +182,7 @@ for compose_scope, features in feature_ins.items():
             port_range_pool=compose_scopes,
             name="wrapper_alloy",
             ins={
-                "CONFIG": AssetIn(
-                    AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"])
-                ),
+                "CONFIG": AssetIn(AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"])),
                 "scrape_networks": AssetIn(
                     AssetKey([*ASSET_HEADER["key_prefix"], "scrape_networks"])
                 ),

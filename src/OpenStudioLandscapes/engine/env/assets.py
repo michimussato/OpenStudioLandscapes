@@ -15,12 +15,12 @@ from dagster import (
     AssetIn,
     AssetKey,
     AssetMaterialization,
+    AssetOut,
+    AssetSpec,
     MetadataValue,
     Output,
     asset,
     multi_asset,
-    AssetSpec,
-    AssetOut,
 )
 from human_readable_id import generate_hrid
 
@@ -228,8 +228,7 @@ def dot_features(
 CONFIG_spec = AssetSpec(
     key=AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"]),
     group_name=ASSET_HEADER_BASE_ENV["group_name"],
-    description=textwrap.dedent(
-        f"""
+    description=textwrap.dedent(f"""
         Reads options from a custom `config.yml`.
         If the custom `config.yml` does not exist, it 
         will be created locally containing default options.
@@ -241,23 +240,14 @@ CONFIG_spec = AssetSpec(
         ```yaml
         {textwrap.indent(CONFIG_STR, prefix='        ')}
         ```
-        """
-    ),
+        """),
 )
+
+
 @multi_asset(
     outs={
-        # "env": AssetOut(
-        #     **ASSET_HEADER_BASE_ENV,
-        #     dagster_type=dict,
-        #     description="",
-        # ),
         "CONFIG": AssetOut.from_spec(CONFIG_spec),
     },
-    # is equivalent to:
-    # specs=[
-    #     CONFIG_spec,
-    # ],
-    # **ASSET_HEADER_BASE_ENV,
     ins={},
 )
 def CONFIG(
@@ -294,20 +284,11 @@ env_spec = AssetSpec(
     key=AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"]),
     group_name=ASSET_HEADER_BASE_ENV["group_name"],
     description="Todo",
-    # deps=[
-    #     AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "git_root"]),
-    #     AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "landscape_id"]),
-    #     AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "dot_landscapes"]),
-    #     AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "dot_features"]),
-    # ],
 )
+
+
 @multi_asset(
     outs={
-        # "env": AssetOut(
-        #     **ASSET_HEADER_BASE_ENV,
-        #     dagster_type=dict,
-        #     description="",
-        # ),
         "env": AssetOut.from_spec(env_spec),
     },
     # Would have to create AssetSpecs for all deps=[] as well, otherwise,
@@ -399,8 +380,8 @@ def env(
     yield AssetMaterialization(
         asset_key=context.asset_key_for_output(output_name),
         metadata={
-            "__".join(context.asset_key_for_output(output_name).path): MetadataValue.json(
-                ENVIRONMENT_BASE
-            ),
+            "__".join(
+                context.asset_key_for_output(output_name).path
+            ): MetadataValue.json(ENVIRONMENT_BASE),
         },
     )

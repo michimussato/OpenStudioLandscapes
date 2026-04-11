@@ -4,7 +4,6 @@ from dagster import (
 
 from OpenStudioLandscapes.engine.env.definitions import assets_base
 
-
 assets_external = []
 
 
