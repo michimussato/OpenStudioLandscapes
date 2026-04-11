@@ -164,8 +164,15 @@ Todo
     - causes a lot of performance loss because the discovery procedure is quite expensive
     - however, for now it is the safest approach
   - Options
-    - [ ] @functools.cache?
+    - [ ] `@functools.cache`?
       - https://www.youtube.com/watch?v=K0Q5twtYxWY
       - https://stackoverflow.com/questions/15585493/store-the-cache-to-a-file-functools-lru-cache-in-python-3-2
         - -> multiple possible solutions here
       - Entrypoint would potentially be [`definitions.py`](src/OpenStudioLandscapes/engine/definitions.py)
+- `workspace.yaml`
+  - [x] OpenStudioLandscapes-Kitsu
+  - [x] OpenStudioLandscapes-Deadline-10-2-Worker
+  - [x] OpenStudioLandscapes-Flamenco-Worker
+  - [x] OpenStudioLandscapes-OpenCue-Worker
+  - [x] OpenStudioLandscapes-Watchtower
+  - ...
