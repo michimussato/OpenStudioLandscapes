@@ -13,12 +13,11 @@ from OpenStudioLandscapes.engine.compose_scopes.constants import (
 )
 from OpenStudioLandscapes.engine.constants import (
     ASSET_HEADER_BASE,
-    ASSET_HEADER_LANDSCAPE_MAP,
 )
 from OpenStudioLandscapes.engine.discovery import discovery
 from OpenStudioLandscapes.engine.utils import get_dynamic_ins
 
-assets = load_assets_from_modules(
+assets_base = load_assets_from_modules(
     modules=[OpenStudioLandscapes.engine.landscape_map.assets],
 )
 
@@ -47,21 +46,30 @@ for compose_scope, _ in feature_ins.items():
     if compose_scope in _compose_scopes:
         continue
     _compose_scopes.update(compose_scope)
-    asset_spec = AssetSpec(
+
+    ASSET_HEADER = {
+        "group_name": f"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}",
+        "key_prefix": [
+            "ComposeScopes",
+            f"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}",
+        ],
+        "compute_kind": "python",
+    }
+
+    compose_scope_asset_spec = AssetSpec(
         key=AssetKey(
             # ComposeScopes / ComposeScope_DEV_default / docker_compose_graph_dot
             [
-                "ComposeScopes",
-                f"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}",
+                *ASSET_HEADER["key_prefix"],
                 "docker_compose_graph_dot",
             ]
         ),
-        group_name=ASSET_HEADER_LANDSCAPE_MAP["group_name"],
+        group_name=ASSET_HEADER["group_name"],
         description="Todo",
     )
-    ins[f"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}"] = asset_spec
+    ins[f"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}"] = compose_scope_asset_spec
 
-    assets_external.append(asset_spec)
+    assets_external.append(compose_scope_asset_spec)
 
 
 # for testing:
@@ -99,12 +107,13 @@ group_out_base = AssetSpec(
     "`OpenStudioLandscapes.engine.base.assets.group_out_base`.",
 )
 
+# assets_external is meant for the Definitions object in
+# _definitions_with_upstream_specs.py for now.
 assets_external.append(group_out_base)
 
 
 defs = Definitions(
     assets=[
-        *assets,
-        *assets_external,
+        *assets_base,
     ],
 )
