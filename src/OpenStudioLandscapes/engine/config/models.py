@@ -210,11 +210,11 @@ class ComposeScopeBaseModel(BaseConfig):
         ),
         description="Do you want the ComposeScope to to populate Alloy metrics?",
     )
-    grafana_alloy_listen_port_host: PositiveInt = Field(
+    grafana_alloy_listen_port_host: int = Field(
         default=12345,
         description="Do you want the ComposeScope to to populate Alloy metrics?",
     )
-    grafana_alloy_listen_port_container: PositiveInt = Field(
+    grafana_alloy_listen_port_container: int = Field(
         default=12345,
         description="Do you want the ComposeScope to to populate Alloy metrics?",
     )
@@ -288,7 +288,7 @@ class DockerRegistryConfig(BaseConfig):
         default="registry.openstudiolandscapes.lan",
         description="The fully qualified domain name of the Docker Registry server.",
     )
-    docker_registry_port: PositiveInt = Field(
+    docker_registry_port: int = Field(
         default=5000,
         description="The port the Docker Registry server is listening on.",
     )
