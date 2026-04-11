@@ -12,7 +12,9 @@ project:
 #    pyproject:
 #    - OpenStudioLandscapesUtil-VersionBumper @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-VersionBumper.git
     dev:
-    # - OpenStudioLandscapes[testing]
+    # Todo:
+    #  - [ ] Can be implemented now
+    #        - OpenStudioLandscapes[testing]
     - OpenStudioLandscapes[lint]
     # - OpenStudioLandscapes[nox]
     - OpenStudioLandscapes[sbom]
