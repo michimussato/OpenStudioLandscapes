@@ -176,3 +176,98 @@ Todo
   - [x] OpenStudioLandscapes-OpenCue-Worker
   - [x] OpenStudioLandscapes-Watchtower
   - ...
+
+> [!TIP]
+> 
+> The visualized DAG is cleaner when using `build_docker_image_spec`
+> instead of `build_docker_image.specs` - yet they should be
+> equivalent. However, `build_docker_image_spec` requires an 
+> `AssetSpec` object, which, in turn, only works on `multi_asset`.
+> Bottom line: `build_docker_image.specs` might not look cleaner,
+> it's probably way easier to maintain.
+> 
+> > [!CRITICAL]
+> > 
+> > And for asset factories it's probably a headache to specify `AssetSpec` first.
+> > Let's see if it would make a difference when setting up
+> > tests...
+> > 
+> > Example:
+> > ```python
+> > from OpenStudioLandscapes.Deadline_10_2.assets import (
+> >     feature_out_v2,
+> > )
+> > 
+> > assets_external.extend(feature_out_v2.specs)
+> > ```
+> 
+> Example `OpenStudioLandscapes-Deadline-10-2-Worker`:
+> 
+> `build_docker_image_spec`:
+> 
+> ```python
+> group_out_base_spec = AssetSpec(
+>     key=AssetKey(
+>         [
+>             *ASSET_HEADER_BASE["key_prefix"],
+>             "group_out_base",
+>         ]
+>     ),
+>     group_name=ASSET_HEADER_BASE["group_name"],
+>     description=textwrap.dedent("""
+>         This is the foundation. This assets provides all relevant environment information
+>         for subsequent assets and asset groups. All downstream assets consume this data and
+>         build their environment on top of this.
+>         """),
+> )
+> 
+> 
+> @multi_asset(
+>     outs={
+>         "group_out_base": AssetOut.from_spec(
+>             group_out_base_spec,
+>         )
+>     },
+>     ins={
+>         "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
+>         "CONFIG": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"])),
+>         "docker_config_json": AssetIn(
+>             AssetKey([*ASSET_HEADER_BASE["key_prefix"], "docker_config_json"])
+>         ),
+>         "build_docker_image": AssetIn(
+>             AssetKey([*ASSET_HEADER_BASE["key_prefix"], "build_docker_image"]),
+>         ),
+>     },
+> )
+> def group_out_base():...
+> ```
+> 
+> Results in:
+> ![](media/images/2026-04-12_09-33.png)
+> 
+> `build_docker_image.specs`:
+> 
+> ```python
+> @asset(
+>     **ASSET_HEADER_BASE,
+>     ins={
+>         "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
+>         "CONFIG": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"])),
+>         "docker_config_json": AssetIn(
+>             AssetKey([*ASSET_HEADER_BASE["key_prefix"], "docker_config_json"])
+>         ),
+>         "build_docker_image": AssetIn(
+>             AssetKey([*ASSET_HEADER_BASE["key_prefix"], "build_docker_image"]),
+>         ),
+>     },
+>     description=textwrap.dedent("""
+>         This is the foundation. This assets provides all relevant environment information
+>         for subsequent assets and asset groups. All downstream assets consume this data and
+>         build their environment on top of this.
+>         """),
+> )
+> def group_out_base():...
+> ```
+> 
+> Results in:
+> ![](media/images/2026-04-12_09-26.png)

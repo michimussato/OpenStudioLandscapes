@@ -225,10 +225,36 @@ def dot_features(
     )
 
 
-CONFIG_spec = AssetSpec(
-    key=AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"]),
-    group_name=ASSET_HEADER_BASE_ENV["group_name"],
-    description=textwrap.dedent(f"""
+# CONFIG_spec = AssetSpec(
+#     key=AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"]),
+#     group_name=ASSET_HEADER_BASE_ENV["group_name"],
+#     description=textwrap.dedent(f"""
+#         Reads options from a custom `config.yml`.
+#         If the custom `config.yml` does not exist, it
+#         will be created locally containing default options.
+#
+#         ---
+#
+#         For reference, the default `config.yml` looks as follows:
+#
+#         ```yaml
+#         {textwrap.indent(CONFIG_STR, prefix='        ')}
+#         ```
+#         """),
+# )
+#
+#
+# @multi_asset(
+#     outs={
+#         "CONFIG": AssetOut.from_spec(CONFIG_spec),
+#     },
+#     ins={},
+# )
+@asset(
+    **ASSET_HEADER_BASE_ENV,
+    ins={},
+    description=textwrap.dedent(
+        f"""
         Reads options from a custom `config.yml`.
         If the custom `config.yml` does not exist, it 
         will be created locally containing default options.
@@ -236,19 +262,12 @@ CONFIG_spec = AssetSpec(
         ---
         
         For reference, the default `config.yml` looks as follows:
-                
+        
         ```yaml
         {textwrap.indent(CONFIG_STR, prefix='        ')}
         ```
-        """),
-)
-
-
-@multi_asset(
-    outs={
-        "CONFIG": AssetOut.from_spec(CONFIG_spec),
-    },
-    ins={},
+        """
+    ),
 )
 def CONFIG(
     context: AssetExecutionContext,
@@ -264,32 +283,39 @@ def CONFIG(
 
     config_validated = discovery.get_config_engine()
 
-    output_name = "CONFIG"
+    # output_name = "CONFIG"
     yield Output(
-        output_name=output_name,
+        # output_name=output_name,
         value=config_validated,
     )
 
     yield AssetMaterialization(
-        asset_key=context.asset_key_for_output(output_name),
+        # asset_key=context.asset_key_for_output(output_name),
+        asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key_for_output(output_name).path): MetadataValue.md(
+            # "__".join(context.asset_key_for_output(output_name).path): MetadataValue.md(
+            "__".join(context.asset_key.path): MetadataValue.md(
                 f"```yaml\n{yaml.safe_dump(json.loads(config_validated.model_dump_json(fallback=str, indent=2)))}\n```"
             ),
         },
     )
 
 
-env_spec = AssetSpec(
-    key=AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"]),
-    group_name=ASSET_HEADER_BASE_ENV["group_name"],
-    description="Todo",
-)
+# env_spec = AssetSpec(
+#     key=AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"]),
+#     group_name=ASSET_HEADER_BASE_ENV["group_name"],
+#     description="Todo",
+# )
 
 
 @multi_asset(
     outs={
-        "env": AssetOut.from_spec(env_spec),
+        # "env": AssetOut.from_spec(env_spec),
+        "env": AssetOut(
+            **ASSET_HEADER_BASE_ENV,
+            dagster_type=dict,
+            description="",
+        ),
     },
     # Would have to create AssetSpecs for all deps=[] as well, otherwise,
     # the deps are visualized as group "default" (cosmetics) and we don't need
@@ -372,6 +398,7 @@ def env(
     # @formatter:on
 
     output_name = "env"
+
     yield Output(
         output_name=output_name,
         value=ENVIRONMENT_BASE,
