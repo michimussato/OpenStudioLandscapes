@@ -301,21 +301,21 @@ def CONFIG(
     )
 
 
-# env_spec = AssetSpec(
-#     key=AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"]),
-#     group_name=ASSET_HEADER_BASE_ENV["group_name"],
-#     description="Todo",
-# )
+env_spec = AssetSpec(
+    key=AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"]),
+    group_name=ASSET_HEADER_BASE_ENV["group_name"],
+    description="Todo",
+)
 
 
 @multi_asset(
     outs={
-        # "env": AssetOut.from_spec(env_spec),
-        "env": AssetOut(
-            **ASSET_HEADER_BASE_ENV,
-            dagster_type=dict,
-            description="",
-        ),
+        "env": AssetOut.from_spec(env_spec),
+        # "env": AssetOut(
+        #     **ASSET_HEADER_BASE_ENV,
+        #     dagster_type=dict,
+        #     description="",
+        # ),
     },
     # Would have to create AssetSpecs for all deps=[] as well, otherwise,
     # the deps are visualized as group "default" (cosmetics) and we don't need

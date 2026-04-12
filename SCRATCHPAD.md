@@ -271,3 +271,8 @@ Todo
 > 
 > Results in:
 > ![](media/images/2026-04-12_09-26.png)
+
+
+The visualized DAG is cleaner when using `build_docker_image_spec`
+instead of `build_docker_image.specs` - yet they should be
+equivalent

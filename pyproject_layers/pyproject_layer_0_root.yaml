@@ -88,10 +88,10 @@ project:
     - cyclonedx-bom  # https://cyclonedx-bom-tool.readthedocs.io/en/latest/
     # Todo:
     #  - [ ] Can be implemented now
-    #        testing:
-    #        - setuptools
-    #        - pytest  # https://docs.pytest.org/en/stable/
-    #        - pytest-cov  # https://pytest-cov.readthedocs.io/en/latest/
+    testing:
+    - setuptools
+    - pytest  # https://docs.pytest.org/en/stable/
+    - pytest-cov  # https://pytest-cov.readthedocs.io/en/latest/
   readme:
     # Change if running only on Windows, Mac or Linux (comma-separated)
     # Add here all kinds of additional classifiers as defined under

@@ -20,12 +20,17 @@ project:
     - OpenStudioLandscapes[sbom]
     # - OpenStudioLandscapes[coverage]
     - OpenStudioLandscapes[readme]
-    - OpenStudioLandscapes[pyproject]
+    # - OpenStudioLandscapes[pyproject]
+    - OpenStudioLandscapes[testing]
     - OpenStudioLandscapesUtil-VersionBumper @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-VersionBumper.git
     # nox:
     # - OpenStudioLandscapes[testing]
     sbom:
     - OpenStudioLandscapes[graphviz]
+    testing:
+    - setuptools
+    - pytest
+    - pytest-cov
   urls:
     Homepage: https://github.com/michimussato/OpenStudioLandscapes
   scripts:

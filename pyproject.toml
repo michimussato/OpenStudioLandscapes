@@ -47,9 +47,9 @@ requires-python = ">=3.11"
 dev = [
     "OpenStudioLandscapesUtil-VersionBumper @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-VersionBumper.git",
     "OpenStudioLandscapes[lint]",
-    "OpenStudioLandscapes[pyproject]",
     "OpenStudioLandscapes[readme]",
     "OpenStudioLandscapes[sbom]",
+    "OpenStudioLandscapes[testing]",
 ]
 graphviz = [
     "graphviz",
@@ -70,6 +70,11 @@ readme = [
 sbom = [
     "OpenStudioLandscapes[graphviz]",
     "cyclonedx-bom",
+]
+testing = [
+    "pytest",
+    "pytest-cov",
+    "setuptools",
 ]
 
 [project.readme]
