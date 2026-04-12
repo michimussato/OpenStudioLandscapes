@@ -1,5 +1,6 @@
 <!-- TOC -->
 * [Env](#env)
+  * [Tests](#tests)
 <!-- TOC -->
 
 ---
@@ -13,4 +14,10 @@ definitions for upstream dependencies.
 
 ```shell
 dagster dev --workspace src/OpenStudioLandscapes/engine/env/workspace.yaml
+```
+
+## Tests
+
+```shell
+pytest src/OpenStudioLandscapes/engine/env/tests
 ```
