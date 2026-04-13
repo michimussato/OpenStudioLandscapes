@@ -3,14 +3,14 @@ import shutil
 from typing import Dict
 
 import pytest
-# https://docs.dagster.io/guides/test/unit-testing-assets-and-ops#unit-test-examples
-
-
 from dagster import (
-    IOManager,
     Definitions,
+    ExecuteInProcessResult,
+    IOManager,
     SourceAsset,
 )
+
+# https://docs.dagster.io/guides/test/unit-testing-assets-and-ops#unit-test-examples
 
 
 CLEANUP_ENABLED = True
@@ -30,21 +30,21 @@ fixtures = pathlib.Path(__file__).parent / "fixtures"
 # from dagster import Definitions, SourceAsset, AssetKey
 # from OpenStudioLandscapes.engine.constants import ASSET_HEADER_BASE_ENV
 from OpenStudioLandscapes.engine.env.assets import (
+    dot_features,
+    dot_landscapes,
     env,
     git_root,
-    dot_landscapes,
     landscape_id,
-    dot_features,
 )
 
 
 class MockDataIOManager(IOManager):
     def __init__(
-            self,
-            dot_landscapes: pathlib.Path,
-            git_root: pathlib.Path,
-            landscape_id: Dict[str, str],
-            dot_features: pathlib.Path,
+        self,
+        dot_landscapes: pathlib.Path,
+        git_root: pathlib.Path,
+        landscape_id: Dict[str, str],
+        dot_features: pathlib.Path,
     ):
         self.dot_landscapes = dot_landscapes
         self.git_root = git_root
@@ -81,7 +81,7 @@ def fixture_dot_landscapes():
 
 
 def test_env(
-        fixture_dot_landscapes: pathlib.Path,
+    fixture_dot_landscapes: pathlib.Path,
 ) -> None:
 
     source_dot_landscapes = SourceAsset(key=dot_landscapes.key)
@@ -110,7 +110,7 @@ def test_env(
     )
 
     job = defs.get_implicit_global_asset_job_def()
-    result = job.execute_in_process(
+    result: ExecuteInProcessResult = job.execute_in_process(
         asset_selection=[
             env.key,
         ]

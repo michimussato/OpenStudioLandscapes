@@ -75,7 +75,8 @@ nox.options.sessions = [
     "lint",
     "readme",
     # "release",  # Todo
-    # "testing",  # Todo
+    "testing_engine",  # Todo
+    # "testing_features",  # Todo
 ]
 
 SESSION_PIP_UPGRADE = [
@@ -119,6 +120,9 @@ engine_dir: pathlib.Path = pathlib.Path(__file__).parent
 features_dir: pathlib.Path = engine_dir / ".features"
 landscapes_dir: pathlib.Path = engine_dir / ".landscapes"
 FEATURES_PARAMETERIZED: list[pathlib.Path] = []
+ENGINE_COMPONENTS_PARAMETERIZED: list[pathlib.Path] = [
+    engine_dir / "src/OpenStudioLandscapes/engine/env/tests",
+]
 
 for dir_ in features_dir.iterdir():
     # dir_ is always the full path
@@ -1517,7 +1521,7 @@ def sbom(session, working_directory):
 
         session.install(
             "--no-cache-dir",
-            "-e",
+            "--editable",
             ".[sbom]",
             silent=SESSION_INSTALL_SILENT,
         )
@@ -1599,7 +1603,7 @@ def sbom(session, working_directory):
 #
 #         session.install(
 #             "--no-cache-dir",
-#             "-e",
+#             "--editable",
 #             ".[coverage]",
 #             silent=SESSION_INSTALL_SILENT,
 #         )
@@ -1671,7 +1675,7 @@ def lint(session, working_directory):
 
         session.install(
             "--no-cache-dir",
-            "-e",
+            "--editable",
             ".[lint]",
             silent=SESSION_INSTALL_SILENT,
         )
@@ -1715,6 +1719,8 @@ def lint(session, working_directory):
         #         # external=True,
         #         silent=SESSION_RUN_SILENT,
         #     )
+
+        # https://pytest-with-eric.com/pytest-best-practices/pytest-code-coverage-reports/
 
         # # nox > Command pylint src failed with exit code 30
         # # nox > Session lint-3.12 failed.
@@ -1764,56 +1770,69 @@ def lint(session, working_directory):
 #######################################################################################################################
 
 
-# #######################################################################################################################
-# # Testing
-# @nox.session(python=PYTHON_TEST_VERSIONS, tags=["testing"])
-# @nox.parametrize(
-#     "working_directory",
-#     # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
-#     [
-#         nox.param(engine_dir.name, id=engine_dir.name),
-#         *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED],
-#     ],
-# )
-# def testing(session, working_directory):
-#     """
-#     Runs pytests (not implemented).
-#
-#     Scope:
-#     - [x] Engine
-#     - [x] Features
-#     """
-#     # Ex:
-#     # nox --session testing
-#     # nox --tags testing
-#
-#     session.skip("Not implemented")
-#
-#     sudo = False
-#
-#     with session.chdir(engine_dir.parent / working_directory):
-#
-#         session.log(
-#             f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
-#         )
-#
-#         session.install(
-#             "--no-cache-dir",
-#             "-e",
-#             ".[testing]",
-#             silent=SESSION_INSTALL_SILENT,
-#         )
-#
-#         session.run(
-#             "pytest",
-#             *session.posargs,
-#             env=ENV,
-#             # external=True,
-#             silent=SESSION_RUN_SILENT,
-#         )
-#
-#
-# #######################################################################################################################
+#######################################################################################################################
+# Testing
+@nox.session(python=PYTHON_TEST_VERSIONS, tags=["testing"])
+@nox.parametrize(
+    "working_directory",
+    # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
+    [
+        # nox.param(engine_dir.name, id=engine_dir.name),
+        *[nox.param(i, id=i.name) for i in ENGINE_COMPONENTS_PARAMETERIZED],
+        # *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED],
+    ],
+)
+def testing_engine(session, working_directory):
+    """
+    Runs pytests (not implemented).
+
+    Scope:
+    - [x] Engine
+    - [ ] Features
+    """
+    # Ex:
+    # nox --session testing
+    # nox --tags testing
+
+    # session.skip("Not implemented")
+
+    sudo = False
+
+    # with session.chdir(engine_dir.parent / working_directory):
+    #
+    #     session.log(
+    #         f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
+    #     )
+
+    session.install(
+        "--no-cache-dir",
+        "--editable",
+        ".[testing]",
+        silent=SESSION_INSTALL_SILENT,
+    )
+
+    with session.chdir(engine_dir.parent / working_directory):
+
+        session.log(
+            f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
+        )
+
+        # ENV.update(
+        #     {
+        #         "OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT": pathlib.Path(pathlib.Path.cwd() / "fixtures" / "config-store").as_posix()
+        #     }
+        # )
+
+        session.run(
+            "pytest",
+            *session.posargs,
+            env=ENV,
+            # external=True,
+            silent=SESSION_RUN_SILENT,
+        )
+
+
+#######################################################################################################################
 
 
 #######################################################################################################################
@@ -1849,7 +1868,7 @@ def readme(session, working_directory):
 
         session.install(
             "--no-cache-dir",
-            "-e",
+            "--editable",
             ".[readme]",
             silent=SESSION_INSTALL_SILENT,
         )
@@ -1899,7 +1918,7 @@ def pyproject_engine(session):
 
     session.install(
         "--no-cache-dir",
-        "-e",
+        "--editable",
         ".[pyproject]",
         silent=SESSION_INSTALL_SILENT,
     )
@@ -1948,7 +1967,7 @@ def pyproject_features(session, working_directory):
 
     session.install(
         "--no-cache-dir",
-        "-e",
+        "--editable",
         ".[pyproject]",
         silent=SESSION_INSTALL_SILENT,
     )
@@ -2017,7 +2036,7 @@ def pyproject_features(session, working_directory):
 #
 #         session.install(
 #             "--no-cache-dir",
-#             "-e",
+#             "--editable",
 #             ".[release]",
 #             silent=SESSION_INSTALL_SILENT,
 #         )
@@ -2696,13 +2715,6 @@ def menu_from_choices(
 #         session.skip(msg)
 
 
-#######################################################################################################################
-
-
-#######################################################################################################################
-# stow (switch .env)
-
-# Todo
 #######################################################################################################################
 
 
