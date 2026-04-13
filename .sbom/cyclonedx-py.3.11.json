@@ -158,7 +158,7 @@
       "version": "0.0.0"
     },
     {
-      "bom-ref": "BomRef.804669670954115.965728936814159",
+      "bom-ref": "BomRef.4994293788794103.26571668399271076",
       "description": "A Toolkit to create dynamic Animation and VFX studio environments for robust automation and pipelines.",
       "externalReferences": [
         {
@@ -2778,7 +2778,7 @@
       "version": "2.1.0"
     },
     {
-      "bom-ref": "pydantic==2.12.5",
+      "bom-ref": "pydantic==2.13.0",
       "description": "Data validation using Python type hints",
       "externalReferences": [
         {
@@ -2816,18 +2816,18 @@
         }
       ],
       "name": "pydantic",
-      "purl": "pkg:pypi/pydantic@2.12.5",
+      "purl": "pkg:pypi/pydantic@2.13.0",
       "type": "library",
-      "version": "2.12.5"
+      "version": "2.13.0"
     },
     {
-      "bom-ref": "pydantic_core==2.41.5",
+      "bom-ref": "pydantic_core==2.46.0",
       "description": "Core functionality for Pydantic validation and serialization",
       "externalReferences": [
         {
           "comment": "from packaging metadata Project-URL: Source",
           "type": "other",
-          "url": "https://github.com/pydantic/pydantic-core"
+          "url": "https://github.com/pydantic/pydantic/tree/main/pydantic-core"
         },
         {
           "comment": "from packaging metadata Project-URL: Funding",
@@ -2837,12 +2837,12 @@
         {
           "comment": "from packaging metadata Project-URL: Homepage",
           "type": "website",
-          "url": "https://github.com/pydantic/pydantic-core"
+          "url": "https://github.com/pydantic"
         },
         {
           "comment": "from packaging metadata: Home-page",
           "type": "website",
-          "url": "https://github.com/pydantic/pydantic-core"
+          "url": "https://github.com/pydantic/pydantic"
         }
       ],
       "licenses": [
@@ -2854,9 +2854,9 @@
         }
       ],
       "name": "pydantic_core",
-      "purl": "pkg:pypi/pydantic-core@2.41.5",
+      "purl": "pkg:pypi/pydantic-core@2.46.0",
       "type": "library",
-      "version": "2.41.5"
+      "version": "2.46.0"
     },
     {
       "bom-ref": "pydot==4.0.1",
@@ -4468,7 +4468,7 @@
         "grpcio==1.80.0",
         "packaging==26.0",
         "protobuf==5.29.6",
-        "pydantic==2.12.5",
+        "pydantic==2.13.0",
         "python-dotenv==1.2.2",
         "pytz==2026.1.post1",
         "requests==2.33.1",
@@ -4758,18 +4758,18 @@
       "dependsOn": [
         "annotated-types==0.7.0",
         "email-validator==2.3.0",
-        "pydantic_core==2.41.5",
+        "pydantic_core==2.46.0",
         "typing-inspection==0.4.2",
         "typing_extensions==4.15.0",
         "tzdata==2026.1"
       ],
-      "ref": "pydantic==2.12.5"
+      "ref": "pydantic==2.13.0"
     },
     {
       "dependsOn": [
         "typing_extensions==4.15.0"
       ],
-      "ref": "pydantic_core==2.41.5"
+      "ref": "pydantic_core==2.46.0"
     },
     {
       "dependsOn": [
@@ -4923,7 +4923,7 @@
         "fsspec==2026.3.0",
         "packaging==26.0",
         "pathlib_abc==0.5.2",
-        "pydantic==2.12.5",
+        "pydantic==2.13.0",
         "typing_extensions==4.15.0"
       ],
       "ref": "universal_pathlib==0.3.10"
@@ -4999,7 +4999,7 @@
     }
   ],
   "metadata": {
-    "timestamp": "2026-04-13T09:21:39.503765+00:00",
+    "timestamp": "2026-04-13T17:30:51.170192+00:00",
     "tools": {
       "components": [
         {
@@ -5103,7 +5103,7 @@
       ]
     }
   },
-  "serialNumber": "urn:uuid:4eafe0ee-bd27-452e-b84d-aaf6954c832d",
+  "serialNumber": "urn:uuid:8882fef7-5fa5-4a28-b4ca-6c98b0de9d3c",
   "version": 1,
   "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
   "bomFormat": "CycloneDX",
