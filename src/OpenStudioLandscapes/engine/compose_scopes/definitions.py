@@ -126,7 +126,7 @@ group_out_base = AssetSpec(
     ),
     group_name=ASSET_HEADER_BASE["group_name"],
     description="`AssetSpec` for `AssetDefinition` specified in "
-                "`OpenStudioLandscapes.engine.base.assets.group_out_base`.",
+    "`OpenStudioLandscapes.engine.base.assets.group_out_base`.",
 )
 
 assets_external.append(group_out_base)

@@ -253,8 +253,7 @@ def dot_features(
 @asset(
     **ASSET_HEADER_BASE_ENV,
     ins={},
-    description=textwrap.dedent(
-        f"""
+    description=textwrap.dedent(f"""
         Reads options from a custom `config.yml`.
         If the custom `config.yml` does not exist, it 
         will be created locally containing default options.
@@ -266,8 +265,7 @@ def dot_features(
         ```yaml
         {textwrap.indent(CONFIG_STR, prefix='        ')}
         ```
-        """
-    ),
+        """),
 )
 def CONFIG(
     context: AssetExecutionContext,
@@ -379,7 +377,7 @@ def env(
         #  - [ ] move DOT_SHARED_VOLUMES to config.yml
         "DOT_SHARED_VOLUMES": ".shared_volumes",
         "DOT_FEATURES": dot_features.as_posix(),
-        "DOT_OVERRIDES": pathlib.Path(landscape_root_dir, ".overrides").as_posix(),
+        # "DOT_OVERRIDES": pathlib.Path(landscape_root_dir, ".overrides").as_posix(),
         "AUTHOR": "michimussato@gmail.com",
         "CREATED_BY": str(getpass.getuser()),
         "CREATED_ON": str(socket.gethostname()),
