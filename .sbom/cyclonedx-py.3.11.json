@@ -158,7 +158,7 @@
       "version": "0.0.0"
     },
     {
-      "bom-ref": "BomRef.08747687792256831.120869117723163",
+      "bom-ref": "BomRef.804669670954115.965728936814159",
       "description": "A Toolkit to create dynamic Animation and VFX studio environments for robust automation and pipelines.",
       "externalReferences": [
         {
@@ -4999,7 +4999,7 @@
     }
   ],
   "metadata": {
-    "timestamp": "2026-04-13T08:05:53.670855+00:00",
+    "timestamp": "2026-04-13T09:21:39.503765+00:00",
     "tools": {
       "components": [
         {
@@ -5103,7 +5103,7 @@
       ]
     }
   },
-  "serialNumber": "urn:uuid:555791be-cae6-4a78-8dae-c8397d327cd7",
+  "serialNumber": "urn:uuid:4eafe0ee-bd27-452e-b84d-aaf6954c832d",
   "version": 1,
   "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
   "bomFormat": "CycloneDX",

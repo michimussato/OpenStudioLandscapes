@@ -5148,45 +5148,6 @@
         "message-id": "W0614"
     },
     {
-        "type": "convention",
-        "module": "OpenStudioLandscapes.engine.base.tests.test_base",
-        "obj": "",
-        "line": 37,
-        "column": 0,
-        "endLine": null,
-        "endColumn": null,
-        "path": "src/OpenStudioLandscapes/engine/base/tests/test_base.py",
-        "symbol": "line-too-long",
-        "message": "Line too long (124/100)",
-        "message-id": "C0301"
-    },
-    {
-        "type": "convention",
-        "module": "OpenStudioLandscapes.engine.base.tests.test_base",
-        "obj": "",
-        "line": 40,
-        "column": 0,
-        "endLine": null,
-        "endColumn": null,
-        "path": "src/OpenStudioLandscapes/engine/base/tests/test_base.py",
-        "symbol": "line-too-long",
-        "message": "Line too long (125/100)",
-        "message-id": "C0301"
-    },
-    {
-        "type": "convention",
-        "module": "OpenStudioLandscapes.engine.base.tests.test_base",
-        "obj": "",
-        "line": 112,
-        "column": 0,
-        "endLine": null,
-        "endColumn": null,
-        "path": "src/OpenStudioLandscapes/engine/base/tests/test_base.py",
-        "symbol": "line-too-long",
-        "message": "Line too long (123/100)",
-        "message-id": "C0301"
-    },
-    {
         "type": "warning",
         "module": "OpenStudioLandscapes.engine.distributable.assets",
         "obj": "",
@@ -9740,26 +9701,13 @@
         "type": "convention",
         "module": "OpenStudioLandscapes.engine.env.tests.test_CONFIG",
         "obj": "",
-        "line": 106,
+        "line": 30,
         "column": 0,
         "endLine": null,
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py",
         "symbol": "line-too-long",
-        "message": "Line too long (1610/100)",
-        "message-id": "C0301"
-    },
-    {
-        "type": "convention",
-        "module": "OpenStudioLandscapes.engine.env.tests.test_CONFIG",
-        "obj": "",
-        "line": 108,
-        "column": 0,
-        "endLine": null,
-        "endColumn": null,
-        "path": "src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py",
-        "symbol": "line-too-long",
-        "message": "Line too long (115/100)",
+        "message": "Line too long (109/100)",
         "message-id": "C0301"
     },
     {
@@ -9791,10 +9739,101 @@
     {
         "type": "convention",
         "module": "OpenStudioLandscapes.engine.env.tests.test_CONFIG",
-        "obj": "test_CONFIG",
-        "line": 20,
+        "obj": "",
+        "line": 10,
         "column": 0,
-        "endLine": 20,
+        "endLine": 10,
+        "endColumn": 28,
+        "path": "src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py",
+        "symbol": "wrong-import-position",
+        "message": "Import \"from typing import Generator\" should be placed at the top of the module",
+        "message-id": "C0413"
+    },
+    {
+        "type": "error",
+        "module": "OpenStudioLandscapes.engine.env.tests.test_CONFIG",
+        "obj": "",
+        "line": 12,
+        "column": 0,
+        "endLine": 12,
+        "endColumn": 13,
+        "path": "src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py",
+        "symbol": "import-error",
+        "message": "Unable to import 'pytest'",
+        "message-id": "E0401"
+    },
+    {
+        "type": "convention",
+        "module": "OpenStudioLandscapes.engine.env.tests.test_CONFIG",
+        "obj": "",
+        "line": 12,
+        "column": 0,
+        "endLine": 12,
+        "endColumn": 13,
+        "path": "src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py",
+        "symbol": "wrong-import-position",
+        "message": "Import \"import pytest\" should be placed at the top of the module",
+        "message-id": "C0413"
+    },
+    {
+        "type": "convention",
+        "module": "OpenStudioLandscapes.engine.env.tests.test_CONFIG",
+        "obj": "",
+        "line": 13,
+        "column": 0,
+        "endLine": 13,
+        "endColumn": 69,
+        "path": "src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py",
+        "symbol": "wrong-import-position",
+        "message": "Import \"from dagster import AssetMaterialization, Output, build_asset_context\" should be placed at the top of the module",
+        "message-id": "C0413"
+    },
+    {
+        "type": "convention",
+        "module": "OpenStudioLandscapes.engine.env.tests.test_CONFIG",
+        "obj": "",
+        "line": 15,
+        "column": 0,
+        "endLine": 21,
+        "endColumn": 1,
+        "path": "src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py",
+        "symbol": "wrong-import-position",
+        "message": "Import \"from OpenStudioLandscapes.engine.config.models import ConfigEngine, DockerPullPolicy, DockerRegistryAccess, DockerRegistryProtocol, SudoMethod\" should be placed at the top of the module",
+        "message-id": "C0413"
+    },
+    {
+        "type": "convention",
+        "module": "OpenStudioLandscapes.engine.env.tests.test_CONFIG",
+        "obj": "",
+        "line": 22,
+        "column": 0,
+        "endLine": 22,
+        "endColumn": 57,
+        "path": "src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py",
+        "symbol": "wrong-import-position",
+        "message": "Import \"from OpenStudioLandscapes.engine.env.assets import CONFIG\" should be placed at the top of the module",
+        "message-id": "C0413"
+    },
+    {
+        "type": "convention",
+        "module": "OpenStudioLandscapes.engine.env.tests.test_CONFIG",
+        "obj": "fixture_config_store",
+        "line": 34,
+        "column": 0,
+        "endLine": 34,
+        "endColumn": 24,
+        "path": "src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py",
+        "symbol": "missing-function-docstring",
+        "message": "Missing function or method docstring",
+        "message-id": "C0116"
+    },
+    {
+        "type": "convention",
+        "module": "OpenStudioLandscapes.engine.env.tests.test_CONFIG",
+        "obj": "test_CONFIG",
+        "line": 51,
+        "column": 0,
+        "endLine": 51,
         "endColumn": 15,
         "path": "src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py",
         "symbol": "missing-function-docstring",
@@ -9805,9 +9844,9 @@
         "type": "convention",
         "module": "OpenStudioLandscapes.engine.env.tests.test_CONFIG",
         "obj": "test_CONFIG",
-        "line": 20,
+        "line": 51,
         "column": 0,
-        "endLine": 20,
+        "endLine": 51,
         "endColumn": 15,
         "path": "src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py",
         "symbol": "invalid-name",
@@ -9815,12 +9854,25 @@
         "message-id": "C0103"
     },
     {
+        "type": "warning",
+        "module": "OpenStudioLandscapes.engine.env.tests.test_CONFIG",
+        "obj": "test_CONFIG",
+        "line": 52,
+        "column": 4,
+        "endLine": 52,
+        "endColumn": 38,
+        "path": "src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py",
+        "symbol": "redefined-outer-name",
+        "message": "Redefining name 'fixture_config_store' from outer scope (line 34)",
+        "message-id": "W0621"
+    },
+    {
         "type": "refactor",
         "module": "OpenStudioLandscapes.engine.env.tests.test_CONFIG",
         "obj": "test_CONFIG",
-        "line": 32,
+        "line": 65,
         "column": 13,
-        "endLine": 32,
+        "endLine": 65,
         "endColumn": 48,
         "path": "src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py",
         "symbol": "unnecessary-comprehension",
@@ -9831,66 +9883,27 @@
         "type": "warning",
         "module": "OpenStudioLandscapes.engine.env.tests.test_CONFIG",
         "obj": "test_CONFIG",
-        "line": 37,
+        "line": 52,
         "column": 4,
-        "endLine": 37,
+        "endLine": 52,
+        "endColumn": 38,
+        "path": "src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py",
+        "symbol": "unused-argument",
+        "message": "Unused argument 'fixture_config_store'",
+        "message-id": "W0613"
+    },
+    {
+        "type": "warning",
+        "module": "OpenStudioLandscapes.engine.env.tests.test_CONFIG",
+        "obj": "test_CONFIG",
+        "line": 70,
+        "column": 4,
+        "endLine": 70,
         "endColumn": 25,
         "path": "src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py",
         "symbol": "unused-variable",
         "message": "Unused variable 'asset_materialization'",
         "message-id": "W0612"
-    },
-    {
-        "type": "warning",
-        "module": "OpenStudioLandscapes.engine.env.tests.test_CONFIG",
-        "obj": "",
-        "line": 2,
-        "column": 0,
-        "endLine": 2,
-        "endColumn": 15,
-        "path": "src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py",
-        "symbol": "unused-import",
-        "message": "Unused import textwrap",
-        "message-id": "W0611"
-    },
-    {
-        "type": "warning",
-        "module": "OpenStudioLandscapes.engine.env.tests.test_CONFIG",
-        "obj": "",
-        "line": 5,
-        "column": 0,
-        "endLine": 5,
-        "endColumn": 11,
-        "path": "src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py",
-        "symbol": "unused-import",
-        "message": "Unused import yaml",
-        "message-id": "W0611"
-    },
-    {
-        "type": "warning",
-        "module": "OpenStudioLandscapes.engine.env.tests.test_CONFIG",
-        "obj": "",
-        "line": 8,
-        "column": 0,
-        "endLine": 16,
-        "endColumn": 1,
-        "path": "src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py",
-        "symbol": "unused-import",
-        "message": "Unused DockerConfigModel imported from OpenStudioLandscapes.engine.config.models",
-        "message-id": "W0611"
-    },
-    {
-        "type": "warning",
-        "module": "OpenStudioLandscapes.engine.env.tests.test_CONFIG",
-        "obj": "",
-        "line": 8,
-        "column": 0,
-        "endLine": 16,
-        "endColumn": 1,
-        "path": "src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py",
-        "symbol": "unused-import",
-        "message": "Unused DockerRegistryConfig imported from OpenStudioLandscapes.engine.config.models",
-        "message-id": "W0611"
     },
     {
         "type": "convention",
@@ -10097,7 +10110,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/tests/test_env.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.config.models:[489:510]\n==OpenStudioLandscapes.engine.env.tests.test_CONFIG:[40:58]\n            \"git\",\n            \"ca-certificates\",\n            \"htop\",\n            \"file\",\n            \"tzdata\",\n            \"curl\",\n            # \"less\",\n            \"wget\",\n            \"ffmpeg\",\n            \"libegl1\",\n            \"libsm6\",\n            \"libglu1-mesa\",\n            \"libxss1\",\n            \"sudo\",\n            \"neovim\",\n            # Untar xz file\n            \"xz-utils\",\n            # xvfb\n            \"xvfb\",\n            \"xauth\",\n        ],",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.config.models:[489:510]\n==OpenStudioLandscapes.engine.env.tests.test_CONFIG:[73:91]\n            \"git\",\n            \"ca-certificates\",\n            \"htop\",\n            \"file\",\n            \"tzdata\",\n            \"curl\",\n            \"wget\",\n            \"ffmpeg\",\n            \"libegl1\",\n            \"libsm6\",\n            \"libglu1-mesa\",\n            \"libxss1\",\n            \"sudo\",\n            \"neovim\",\n            \"xz-utils\",\n            \"xvfb\",\n            \"xauth\",\n        ],",
         "message-id": "R0801"
     },
     {
@@ -10110,7 +10123,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/tests/test_env.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.compose_scopes.definitions:[119:141]\n==OpenStudioLandscapes.engine.landscape_map.definitions:[97:119]\ngroup_out_base = AssetSpec(\n    key=AssetKey(\n        [\n            *ASSET_HEADER_BASE[\"key_prefix\"],\n            \"group_out_base\",\n        ]\n    ),\n    group_name=ASSET_HEADER_BASE[\"group_name\"],\n    description=\"`AssetSpec` for `AssetDefinition` specified in \"\n    \"`OpenStudioLandscapes.engine.base.assets.group_out_base`.\",\n)\n\n# assets_external is meant for the Definitions object in\n# _definitions_with_upstream_specs.py for now.\nassets_external.append(group_out_base)\n\n\ndefs = Definitions(\n    assets=[\n        *assets_base,\n    ],\n)",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.compose_scopes.definitions:[119:141]\n==OpenStudioLandscapes.engine.landscape_map.definitions:[97:119]\ngroup_out_base = AssetSpec(\n    key=AssetKey(\n        [\n            *ASSET_HEADER_BASE[\"key_prefix\"],\n            \"group_out_base\",\n        ]\n    ),\n    group_name=ASSET_HEADER_BASE[\"group_name\"],\n    description=\"`AssetSpec` for `AssetDefinition` specified in \"\n    \"`OpenStudioLandscapes.engine.base.assets.group_out_base`.\",\n)\n\nassets_external.append(group_out_base)\n\n\ndefs = Definitions(\n    assets=[\n        *assets_base,\n        # *constants,\n        # *assets_external,\n    ],\n)",
         "message-id": "R0801"
     },
     {
@@ -10123,7 +10136,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/tests/test_env.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[83:102]\n==OpenStudioLandscapes.engine.base.ops.factories:[1067:1086]\n        raise FileNotFoundError(\"Is Graphviz installed?\") from e\n\n    with open(svg, \"rb\") as fr:\n        svg_bytes = fr.read()\n\n    svg_base64 = base64.b64encode(svg_bytes).decode(\"utf-8\")\n    svg_md = f\"![Image](data:image/svg+xml;base64,{svg_base64})\"\n\n    # PNG\n    png = (\n        docker_compose_dir\n        / f\"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.png\"\n    )\n    try:\n        dcg.graph.write(\n            path=png,\n            format=\"png\",\n        )\n    except FileNotFoundError as e:",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[83:102]\n==OpenStudioLandscapes.engine.base.ops.factories:[1067:1086]\n            raise FileNotFoundError(\"Is Graphviz installed?\") from e\n\n        with open(svg, \"rb\") as fr:\n            svg_bytes = fr.read()\n\n        svg_base64 = base64.b64encode(svg_bytes).decode(\"utf-8\")\n        svg_md = f\"![Image](data:image/svg+xml;base64,{svg_base64})\"\n\n        # PNG\n        png = (\n            docker_compose_dir\n            / f\"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.png\"\n        )\n        try:\n            dcg.graph.write(\n                path=png,\n                format=\"png\",\n            )\n        except FileNotFoundError as e:",
         "message-id": "R0801"
     },
     {
@@ -10136,7 +10149,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/tests/test_env.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.config.models:[515:529]\n==OpenStudioLandscapes.engine.env.tests.test_CONFIG:[59:73]\n            \"build-essential\",\n            \"pkg-config\",\n            \"zlib1g-dev\",\n            \"libncurses5-dev\",\n            \"libgdbm-dev\",\n            \"libnss3-dev\",\n            \"libssl-dev\",\n            \"libreadline-dev\",\n            \"libffi-dev\",\n            \"libsqlite3-dev\",\n            \"libbz2-dev\",\n            \"iproute2\",\n            \"liblzma-dev\",\n        ],",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.config.models:[515:529]\n==OpenStudioLandscapes.engine.env.tests.test_CONFIG:[92:106]\n            \"build-essential\",\n            \"pkg-config\",\n            \"zlib1g-dev\",\n            \"libncurses5-dev\",\n            \"libgdbm-dev\",\n            \"libnss3-dev\",\n            \"libssl-dev\",\n            \"libreadline-dev\",\n            \"libffi-dev\",\n            \"libsqlite3-dev\",\n            \"libbz2-dev\",\n            \"iproute2\",\n            \"liblzma-dev\",\n        ],",
         "message-id": "R0801"
     },
     {
@@ -10149,7 +10162,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/tests/test_env.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.assets:[387:405]\n==OpenStudioLandscapes.engine.utils.__init__:[762:779]\n        cmds_push = docker_push_cmd(\n            context=context,\n            docker_config_json=docker_config_json,\n            tags_full=tags_full_str,\n        )\n\n        cmds.extend(cmds_push)\n    else:\n        pass\n\n    context.log.info(f\"{cmds = }\")\n    # cmds = [['/usr/local/bin/docker', '--debug', '--config', '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json', 'build', '--progress', 'plain', '--pull', '--file', '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles/Dockerfile', '--no-cache', '--tag', 'openstudiolandscapes_base_build_docker_image:2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f', '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles'], ['/usr/local/bin/docker', '--config', '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json', 'push', 'openstudiolandscapes_base_build_docker_image:2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f']]\n\n    logs = docker_do(\n        context=context,\n        cmds=cmds,\n    )\n",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.assets:[387:405]\n==OpenStudioLandscapes.engine.utils.__init__:[762:779]\n        cmds_push = docker_push_cmd(\n            context=context,\n            docker_config_json=docker_config_json,\n            tags_full=tags_full_str,\n        )\n\n        cmds.extend(cmds_push)\n    else:\n        pass\n\n    context.log.info(f\"{cmds = }\")\n\n    logs = docker_do(\n        context=context,\n        cmds=cmds,\n    )\n",
         "message-id": "R0801"
     },
     {
@@ -10162,7 +10175,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/tests/test_env.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.assets:[121:137]\n==OpenStudioLandscapes.engine.vfx_reference.assets:[135:162]\n    docker_file = pathlib.Path(\n        env[\"DOT_LANDSCAPES\"],\n        env.get(\"LANDSCAPE\", \"default\"),\n        f\"{dist.name}\",\n        \"__\".join(context.asset_key.path),\n        \"Dockerfiles\",\n        \"Dockerfile\",\n    )\n\n    shutil.rmtree(docker_file.parent, ignore_errors=True)\n\n    docker_file.parent.mkdir(parents=True, exist_ok=True)\n\n    image_name = get_image_name(context=context)\n    context.log.debug(f\"{image_name = }\")\n",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.assets:[121:137]\n==OpenStudioLandscapes.engine.vfx_reference.assets:[135:162]\n    docker_file = pathlib.Path(\n        env[\"DOT_LANDSCAPES\"],\n        env.get(\"LANDSCAPE\", \"default\"),\n        f\"{dist.name}\",\n        \"__\".join(context.asset_key.path),\n        \"Dockerfiles\",\n        \"Dockerfile\",\n    )\n\n    shutil.rmtree(docker_file.parent, ignore_errors=True)\n\n    docker_file.parent.mkdir(parents=True, exist_ok=True)\n\n    image_name = get_image_name(context=context)\n    context.log.debug(f\"{image_name = }\")\n\n    # apt_install_str_base: str = get_apt_install_str(\n    #     apt_install_packages=[\n    #         *CONFIG.apt_packages_base,\n    #         *CONFIG.openstudiolandscapes__rez_config.apt_packages_rez,\n    #     ],\n    # )\n\n    # apt_install_str_build_python311: str = get_apt_install_str(\n    #     apt_install_packages=CONFIG.apt_packages_build_python311,\n    # )\n",
         "message-id": "R0801"
     },
     {
@@ -10188,7 +10201,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/tests/test_env.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[103:123]\n==OpenStudioLandscapes.engine.base.ops.factories:[1087:1107]\n        raise FileNotFoundError(\"Is Graphviz installed?\") from e\n\n    # SLOW\n    # with open(png, \"rb\") as fr:\n    #     png_bytes = fr.read()\n    #\n    # png_base64 = base64.b64encode(png_bytes).decode(\"utf-8\")\n    # png_md = f\"![Image](data:image/png;base64,{png_base64})\"\n\n    # DOT\n    dot = (\n        docker_compose_dir\n        / f\"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.dot\"\n    )\n    try:\n        dcg.graph.write(\n            path=dot,\n            format=\"dot\",\n        )\n    except FileNotFoundError as e:",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[103:123]\n==OpenStudioLandscapes.engine.base.ops.factories:[1087:1107]\n            raise FileNotFoundError(\"Is Graphviz installed?\") from e\n\n        # SLOW\n        # with open(png, \"rb\") as fr:\n        #     png_bytes = fr.read()\n        #\n        # png_base64 = base64.b64encode(png_bytes).decode(\"utf-8\")\n        # png_md = f\"![Image](data:image/png;base64,{png_base64})\"\n\n        # DOT\n        dot = (\n            docker_compose_dir\n            / f\"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.dot\"\n        )\n        try:\n            dcg.graph.write(\n                path=dot,\n                format=\"dot\",\n            )\n        except FileNotFoundError as e:",
         "message-id": "R0801"
     },
     {
@@ -10201,7 +10214,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/tests/test_env.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[238:254]\n==OpenStudioLandscapes.engine.base.ops.factories:[1354:1370]\n    group_names_by_key_dict = context.assets_def.group_names_by_key\n    # Results in:\n    # Single Output:\n    # {AssetKey(['OpenCue', 'group_out']): 'OpenCue'}\n    # Multiple Outputs:\n    # {AssetKey(['Compose_default', 'group_out']): 'Compose_default', AssetKey(['Compose_default', 'compose_project_name']): 'Compose_default'}\n    context.log.debug(group_names_by_key_dict)\n\n    cmd_docker_compose_logs = [\n        \"$(which docker)\",\n        \"--config\",\n        docker_config_json.as_posix(),\n        \"compose\",\n        \"--progress\",\n        DOCKER_PROGRESS,\n        \"--file\",",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[238:254]\n==OpenStudioLandscapes.engine.base.ops.factories:[1354:1370]\n        group_names_by_key_dict = context.assets_def.group_names_by_key\n        # Results in:\n        # Single Output:\n        # {AssetKey(['OpenCue', 'group_out']): 'OpenCue'}\n        # Multiple Outputs:\n        # {AssetKey(['Compose_default', 'group_out']): 'Compose_default', AssetKey(['Compose_default', 'compose_project_name']): 'Compose_default'}\n        context.log.debug(group_names_by_key_dict)\n\n        cmd_docker_compose_logs = [\n            \"$(which docker)\",\n            \"--config\",\n            docker_config_json.as_posix(),\n            \"compose\",\n            \"--progress\",\n            DOCKER_PROGRESS,\n            \"--file\",",
         "message-id": "R0801"
     },
     {
@@ -10227,7 +10240,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/tests/test_env.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.compose_scopes.assets:[85:95]\n==OpenStudioLandscapes.engine.landscape_map.definitions:[49:58]\n    ASSET_HEADER = {\n        \"group_name\": f\"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}\",\n        \"key_prefix\": [\n            \"ComposeScopes\",\n            f\"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}\",\n        ],\n        \"compute_kind\": \"python\",\n    }\n\n    # features_in",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.compose_scopes.assets:[85:95]\n==OpenStudioLandscapes.engine.landscape_map.definitions:[49:58]\n    ASSET_HEADER = {\n        \"group_name\": f\"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}\",\n        \"key_prefix\": [\n            \"ComposeScopes\",\n            f\"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}\",\n        ],\n        \"compute_kind\": \"python\",\n    }\n",
         "message-id": "R0801"
     },
     {
@@ -10240,7 +10253,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/tests/test_env.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.compose_scopes.definitions:[20:51]\n==OpenStudioLandscapes.engine.landscape_map.definitions:[21:37]\n)\n\n# if bool(assets):\n#     constants = load_assets_from_modules(\n#         [OpenStudioLandscapes.engine.compose_scopes.constants]\n#     )\n# else:\n#     # This prevents constants asset from showing up it the\n#     # Dagster UI if the Feature itself is not enabled/available.\n#     constants = []\n\n\nfrom OpenStudioLandscapes.engine.compose_scopes.constants import (\n    COMPOSE_SCOPE_GROUP_PREFIX,\n)\nfrom OpenStudioLandscapes.engine.discovery import discovery\nfrom OpenStudioLandscapes.engine.utils import get_dynamic_ins\n\nfeature_ins = get_dynamic_ins(\n    imported_features=discovery.DISCOVERED_MODELS,\n)\n\nLOGGER = discovery.LOGGER\n\n\nLOGGER.info(f\"{feature_ins = }\")\n# {'default': {'OpenStudioLandscapes_filebrowser': AssetIn(key=AssetKey(['OpenStudioLandscapes_filebrowser', 'feature_out_v2']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>)}}\n\nassets_external = []\n\n",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.compose_scopes.definitions:[20:51]\n==OpenStudioLandscapes.engine.landscape_map.definitions:[21:37]\n)\n\n\nfeature_ins = get_dynamic_ins(\n    imported_features=discovery.DISCOVERED_MODELS,\n)\n\n\nLOGGER = discovery.LOGGER\n\n\nLOGGER.info(f\"{feature_ins = }\")\n\nassets_external = []\n\n",
         "message-id": "R0801"
     },
     {
@@ -10292,7 +10305,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/tests/test_env.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[326:333]\n==OpenStudioLandscapes.engine.base.ops.factories:[1432:1439]\n        \"$(which docker)\",\n        \"--config\",\n        docker_config_json.as_posix(),\n        \"compose\",\n        \"--progress\",\n        DOCKER_PROGRESS,\n        \"--file\",",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[326:333]\n==OpenStudioLandscapes.engine.base.ops.factories:[1432:1439]\n            \"$(which docker)\",\n            \"--config\",\n            docker_config_json.as_posix(),\n            \"compose\",\n            \"--progress\",\n            DOCKER_PROGRESS,\n            \"--file\",",
         "message-id": "R0801"
     },
     {
@@ -10318,7 +10331,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/tests/test_env.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.assets:[273:375]\n==OpenStudioLandscapes.engine.vfx_reference.assets:[338:502]\n        ENTRYPOINT []\n        CMD []\n        \"\"\").format(\n        apt_install_str_base=apt_install_str_base,\n        apt_install_str_build_python311=apt_install_str_build_python311,\n        pip_install_str=pip_install_str.format(\n            **env,\n        ),\n        rez_version=CONFIG.openstudiolandscapes__rez_config.rez_version,\n        timezone=CONFIG.tz,\n        auto_generated=f\"AUTO-GENERATED by Dagster Asset {'__'.join(context.asset_key.path)}\",\n        dagster_url=urllib.parse.quote(\n            f\"http://localhost:3000/asset-groups/{'%2F'.join(context.asset_key.path)}\",\n            safe=\":/%\",\n        ),\n        image_name=image_name,\n        **env,\n    )\n    # @formatter:on\n\n    with open(docker_file, mode=\"w\", encoding=\"utf-8\") as fw:\n        fw.write(docker_file_str)\n\n    with open(docker_file, mode=\"r\") as fr:\n        docker_file_content = fr.read()\n\n    yield Output(docker_file)\n\n    yield AssetMaterialization(\n        asset_key=context.asset_key,\n        metadata={\n            \"__\".join(context.asset_key.path): MetadataValue.path(docker_file),\n            docker_file.name: MetadataValue.md(f\"```shell\\n{docker_file_content}\\n```\"),\n            \"env\": MetadataValue.json(env),\n        },\n    )\n\n\n@asset(\n    **ASSET_HEADER_BASE,\n    ins={\n        \"env\": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV[\"key_prefix\"], \"env\"])),\n        \"CONFIG\": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV[\"key_prefix\"], \"CONFIG\"])),\n        \"docker_config_json\": AssetIn(\n            AssetKey([*ASSET_HEADER_BASE[\"key_prefix\"], \"docker_config_json\"])\n        ),\n        \"write_dockerfile\": AssetIn(\n            AssetKey([*ASSET_HEADER_BASE[\"key_prefix\"], \"write_dockerfile\"])\n        ),\n    },\n    retry_policy=build_docker_image_retry_policy,\n)\ndef build_docker_image(\n    context: AssetExecutionContext,\n    env: dict,  # pylint: disable=redefined-outer-name\n    CONFIG: ConfigEngine,  # pylint: disable=redefined-outer-name\n    docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name\n    write_dockerfile: pathlib.Path,  # pylint: disable=redefined-outer-name\n) -> Generator[Output[dict[str, str | list[str]]] | AssetMaterialization, None, None]:\n    \"\"\" \"\"\"\n\n    image_name = get_image_name(context=context)\n    context.log.debug(f\"{image_name = }\")\n\n    docker_config: DockerConfigModel = CONFIG.openstudiolandscapes__docker_config\n\n    image_prefixes = parse_docker_image_path(\n        docker_config=docker_config,\n        context=context,\n    )\n    context.log.debug(f\"{image_prefixes = }\")\n\n    tags = [\n        env.get(\"LANDSCAPE\", str(time.time())),\n    ]\n    context.log.debug(f\"{tags = }\")\n\n    image_data = {\n        \"image_name\": image_name,\n        \"image_prefixes\": image_prefixes,\n        \"image_tags\": tags,\n        \"image_parent\": {},\n    }\n\n    # just highlight the message\n    context.log.debug(f\"{image_data = }\")\n\n    # Full command as per python-on-whales\n    # Build command (public) (OK: [x]):  /usr/bin/docker --config /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json build --quiet --pull --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles/Dockerfile --no-cache --tag openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9 --tag harbor.farm.evil:80/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9 /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles\n    # Push command (public):             /usr/bin/docker --config /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json image push harbor.farm.evil:80/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9\n    # Build command (private) (OK: [x]): /usr/bin/docker --config /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json build --quiet --pull --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles/Dockerfile --no-cache --tag openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666 --tag harbor.farm.evil:80/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666 /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles\n    # Push command (private):            /usr/bin/docker --config /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json image push harbor.farm.evil:80/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666\n\n    cmds = []\n\n    # tags_local = [f\"{image_prefix_local}{image_name}:{tag}\" for tag in tags]\n    tags_full_str = [f\"{image_prefixes}{image_name}:{tag}\" for tag in tags]\n    context.log.debug(f\"{tags_full_str = }\")\n\n    cmd_build = docker_build_cmd(\n        context=context,\n        docker_config_json=docker_config_json,",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.assets:[273:375]\n==OpenStudioLandscapes.engine.vfx_reference.assets:[338:502]\n        ENTRYPOINT []\n        CMD []\n        \"\"\").format(\n        dnf_packages_base=\" \".join(\n            [\n                \"which\",\n                \"file\",\n                \"epel-release\",\n                \"time\",\n            ]\n        ),\n        dnf_packages_python_group=\" \".join(\n            [\n                \"'Development Tools'\",\n            ]\n        ),\n        dnf_packages_python=\" \".join(\n            [\n                \"libsqlite3x-devel\",\n                \"bzip2-devel\",\n                # stderr: #11 6.609 Python-3.13.12/PCbuild/libffi.props\n                # stderr: #11 6.609 Python-3.13.12/PCbuild/prepare_libffi.bat\n                # stderr: #12 4.213 checking for libffi... no\n                \"libffi-devel\",\n            ]\n        ),\n        dnf_packages_CY2026=\" \".join(\n            [\n                \"gcc-toolset-14-gcc-c++\",\n            ]\n        ),\n        dnf_packages_rez=\" \".join(\n            [\n                \"openssl-devel\",\n                # \"libssl\",\n            ]\n        ),\n        dnf_packages_blender_5=\" \".join(\n            [\n                \"libX11\",\n                \"libXrender\",\n                \"libXfixes\",\n                \"libXi\",\n                \"libxkbcommon\",\n                \"libSM\",\n                \"libGL\",\n            ]\n        ),\n        # dnf_packages_development_tools=\" \".join([\n        #     \"which\",\n        #     \"file\",\n        #     \"epel-release\",\n        #     \"time\",\n        # ]),\n        rocky_image=\"docker.io/rockylinux\",\n        rocky_base=[\n            \"8\",\n            \"9\",\n            \"10\",\n        ][1],\n        python_maj=3,\n        python_min=13,\n        python_pat=12,\n        # apt_install_str_base=apt_install_str_base,\n        # apt_install_str_build_python311=apt_install_str_build_python311,\n        pip_install_str=pip_install_str.format(\n            **env,\n        ),\n        rez_version=CONFIG.openstudiolandscapes__rez_config.rez_version,\n        timezone=CONFIG.tz,\n        auto_generated=f\"AUTO-GENERATED by Dagster Asset {'__'.join(context.asset_key.path)}\",\n        dagster_url=urllib.parse.quote(\n            f\"http://localhost:3000/asset-groups/{'%2F'.join(context.asset_key.path)}\",\n            safe=\":/%\",\n        ),\n        image_name=image_name,\n        **env,\n    )\n    # @formatter:on\n\n    with open(docker_file, mode=\"w\", encoding=\"utf-8\") as fw:\n        fw.write(docker_file_str)\n\n    with open(docker_file, mode=\"r\") as fr:\n        docker_file_content = fr.read()\n\n    yield Output(docker_file)\n\n    yield AssetMaterialization(\n        asset_key=context.asset_key,\n        metadata={\n            \"__\".join(context.asset_key.path): MetadataValue.path(docker_file),\n            docker_file.name: MetadataValue.md(f\"```shell\\n{docker_file_content}\\n```\"),\n            \"env\": MetadataValue.json(env),\n        },\n    )\n\n\n@asset(\n    **ASSET_HEADER_VFX_PLATFORM,\n    ins={\n        \"env\": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV[\"key_prefix\"], \"env\"])),\n        \"CONFIG\": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV[\"key_prefix\"], \"CONFIG\"])),\n        \"docker_config_json\": AssetIn(\n            AssetKey([*ASSET_HEADER_BASE[\"key_prefix\"], \"docker_config_json\"])\n        ),\n        \"write_dockerfile_CY2026\": AssetIn(\n            AssetKey(\n                [*ASSET_HEADER_VFX_PLATFORM[\"key_prefix\"], \"write_dockerfile_CY2026\"]\n            )\n        ),\n    },\n    # retry_policy=build_docker_image_retry_policy,\n)\ndef build_docker_image_CY2026(\n    context: AssetExecutionContext,\n    env: dict,  # pylint: disable=redefined-outer-name\n    CONFIG: ConfigEngine,  # pylint: disable=redefined-outer-name\n    docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name\n    write_dockerfile_CY2026: pathlib.Path,  # pylint: disable=redefined-outer-name\n) -> Generator[Output[dict[str, str | list[str]]] | AssetMaterialization, None, None]:\n    \"\"\" \"\"\"\n\n    image_name = get_image_name(context=context)\n    context.log.debug(f\"{image_name = }\")\n\n    docker_config: DockerConfigModel = CONFIG.openstudiolandscapes__docker_config\n\n    image_prefixes = parse_docker_image_path(\n        docker_config=docker_config,\n        context=context,\n    )\n    context.log.debug(f\"{image_prefixes = }\")\n\n    tags = [\n        env.get(\"LANDSCAPE\", str(time.time())),\n    ]\n    context.log.debug(f\"{tags = }\")\n\n    image_data = {\n        \"image_name\": image_name,\n        \"image_prefixes\": image_prefixes,\n        \"image_tags\": tags,\n        \"image_parent\": {},\n    }\n\n    # just highlight the message\n    context.log.debug(f\"{image_data = }\")\n\n    # Full command as per python-on-whales\n    # Build command (public) (OK: [x]):  /usr/bin/docker --config /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json build --quiet --pull --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles/Dockerfile --no-cache --tag openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9 --tag harbor.farm.evil:80/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9 /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles\n    # Push command (public):             /usr/bin/docker --config /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json image push harbor.farm.evil:80/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-04-29-00-43-06-aa6a607169ea49138c242967c00bb7e9\n    # Build command (private) (OK: [x]): /usr/bin/docker --config /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json build --quiet --pull --file /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles/Dockerfile --no-cache --tag openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666 --tag harbor.farm.evil:80/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666 /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles\n    # Push command (private):            /usr/bin/docker --config /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json image push harbor.farm.evil:80/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-05-02-10-53-11-b9aaea217caf4017a403fc001a5cd666\n\n    cmds = []\n\n    # tags_local = [f\"{image_prefix_local}{image_name}:{tag}\" for tag in tags]\n    tags_full_str = [f\"{image_prefixes}{image_name}:{tag}\" for tag in tags]\n    context.log.debug(f\"{tags_full_str = }\")\n\n    cmd_build = docker_build_cmd(\n        context=context,\n        docker_config_json=docker_config_json,",
         "message-id": "R0801"
     },
     {
@@ -10331,7 +10344,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/tests/test_env.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[323:333]\n==OpenStudioLandscapes.engine.base.ops.factories:[1459:1469]\n    )\n\n    cmd_docker_compose_down = [\n        \"$(which docker)\",\n        \"--config\",\n        docker_config_json.as_posix(),\n        \"compose\",\n        \"--progress\",\n        DOCKER_PROGRESS,\n        \"--file\",",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[323:333]\n==OpenStudioLandscapes.engine.base.ops.factories:[1459:1469]\n        )\n\n        cmd_docker_compose_down = [\n            \"$(which docker)\",\n            \"--config\",\n            docker_config_json.as_posix(),\n            \"compose\",\n            \"--progress\",\n            DOCKER_PROGRESS,\n            \"--file\",",
         "message-id": "R0801"
     },
     {
@@ -10370,7 +10383,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/tests/test_env.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[296:304]\n==OpenStudioLandscapes.engine.base.ops.factories:[1431:1439]\n        cmd_docker_compose_restart = [\n            \"$(which docker)\",\n            \"--config\",\n            docker_config_json.as_posix(),\n            \"compose\",\n            \"--progress\",\n            DOCKER_PROGRESS,\n            \"--file\",",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[296:304]\n==OpenStudioLandscapes.engine.base.ops.factories:[1431:1439]\n    cmd_docker_compose_restart = [\n        \"$(which docker)\",\n        \"--config\",\n        docker_config_json.as_posix(),\n        \"compose\",\n        \"--progress\",\n        DOCKER_PROGRESS,\n        \"--file\",",
         "message-id": "R0801"
     }
 ]

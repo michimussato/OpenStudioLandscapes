@@ -416,10 +416,6 @@ src/OpenStudioLandscapes/engine/base/ops/factories.py:45:0: W0614: Unused import
 src/OpenStudioLandscapes/engine/base/ops/factories.py:52:0: W0614: Unused import(s) LOGGER, ConfigParent, GROUP_BASE_ENV, KEY_BASE_ENV, ASSET_HEADER_BASE_ENV, GROUP_BASE, KEY_BASE, ASSET_HEADER_BASE, GROUP_VFX_PLATFORM, KEY_VFX_PLATFORM, ASSET_HEADER_VFX_PLATFORM, GROUP_LANDSCAPE_MAP, KEY_LANDSCAPE_MAP, ASSET_HEADER_LANDSCAPE_MAP, GROUP_DISTRIBUTABLE, KEY_DISTRIBUTABLE, ASSET_HEADER_DISTRIBUTABLE, get_dagster_logger and DAGSTER_DEFAULT_OUTPUT from wildcard import of OpenStudioLandscapes.engine.constants (unused-wildcard-import)
 src/OpenStudioLandscapes/engine/base/ops/factories.py:57:0: W0614: Unused import(s) OpenStudioLandscapesConfig, FeatureVolumeType, DockerComposeNetworkMode, DockerComposeRestartPolicy, DockerComposeDependsOnPolicy and DockerComposePolicies from wildcard import of OpenStudioLandscapes.engine.enums (unused-wildcard-import)
 src/OpenStudioLandscapes/engine/base/ops/factories.py:63:0: W0614: Unused import(s) datetime, time, git, requests, cmd_list_to_str, get_pip_install_str, get_apt_install_str, get_copy_str, get_wget_str, get_git_root, get_configs_root, get_data_root, get_bin_root, get_image_name, parse_docker_image_path, get_compose_scope, get_feature_config, expand_dict_vars, get_bool_env, get_str_env, get_all_compose_scopes, get_dynamic_ins, get_image_metadata, create_image, get_docker_compose_names, download_file, get_docker_run_cmd, MutableMapping, Tuple, AssetExecutionContext, DockerConfigModel, ComposeScopeException, OpenStudioLandscapesException, OpenStudioLandscapesDockerException, docker_build_cmd, docker_push_cmd, docker_do and submit_cmds from wildcard import of OpenStudioLandscapes.engine.utils (unused-wildcard-import)
-************* Module OpenStudioLandscapes.engine.base.tests.test_base
-src/OpenStudioLandscapes/engine/base/tests/test_base.py:37:0: C0301: Line too long (124/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/tests/test_base.py:40:0: C0301: Line too long (125/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/tests/test_base.py:112:0: C0301: Line too long (123/100) (line-too-long)
 ************* Module OpenStudioLandscapes.engine.distributable.assets
 src/OpenStudioLandscapes/engine/distributable/assets.py:93:13: W0511: Todo (fixme)
 src/OpenStudioLandscapes/engine/distributable/assets.py:1:0: C0114: Missing module docstring (missing-module-docstring)
@@ -799,18 +795,22 @@ src/OpenStudioLandscapes/engine/env/definitions.py:1:0: C0114: Missing module do
 ************* Module OpenStudioLandscapes.engine.env._definitions_with_upstream_specs
 src/OpenStudioLandscapes/engine/env/_definitions_with_upstream_specs.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 ************* Module OpenStudioLandscapes.engine.env.tests.test_CONFIG
-src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py:106:0: C0301: Line too long (1610/100) (line-too-long)
-src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py:108:0: C0301: Line too long (115/100) (line-too-long)
+src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py:30:0: C0301: Line too long (109/100) (line-too-long)
 src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py:1:0: C0103: Module name "test_CONFIG" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py:20:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py:20:0: C0103: Function name "test_CONFIG" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py:32:13: R1721: Unnecessary use of a comprehension, use list(asset_return_generator) instead. (unnecessary-comprehension)
-src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py:37:4: W0612: Unused variable 'asset_materialization' (unused-variable)
-src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py:2:0: W0611: Unused import textwrap (unused-import)
-src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py:5:0: W0611: Unused import yaml (unused-import)
-src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py:8:0: W0611: Unused DockerConfigModel imported from OpenStudioLandscapes.engine.config.models (unused-import)
-src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py:8:0: W0611: Unused DockerRegistryConfig imported from OpenStudioLandscapes.engine.config.models (unused-import)
+src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py:10:0: C0413: Import "from typing import Generator" should be placed at the top of the module (wrong-import-position)
+src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py:12:0: E0401: Unable to import 'pytest' (import-error)
+src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py:12:0: C0413: Import "import pytest" should be placed at the top of the module (wrong-import-position)
+src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py:13:0: C0413: Import "from dagster import AssetMaterialization, Output, build_asset_context" should be placed at the top of the module (wrong-import-position)
+src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py:15:0: C0413: Import "from OpenStudioLandscapes.engine.config.models import ConfigEngine, DockerPullPolicy, DockerRegistryAccess, DockerRegistryProtocol, SudoMethod" should be placed at the top of the module (wrong-import-position)
+src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py:22:0: C0413: Import "from OpenStudioLandscapes.engine.env.assets import CONFIG" should be placed at the top of the module (wrong-import-position)
+src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py:34:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py:51:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py:51:0: C0103: Function name "test_CONFIG" doesn't conform to snake_case naming style (invalid-name)
+src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py:52:4: W0621: Redefining name 'fixture_config_store' from outer scope (line 34) (redefined-outer-name)
+src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py:65:13: R1721: Unnecessary use of a comprehension, use list(asset_return_generator) instead. (unnecessary-comprehension)
+src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py:52:4: W0613: Unused argument 'fixture_config_store' (unused-argument)
+src/OpenStudioLandscapes/engine/env/tests/test_CONFIG.py:70:4: W0612: Unused variable 'asset_materialization' (unused-variable)
 ************* Module OpenStudioLandscapes.engine.env.tests.test_env
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:27:0: C0301: Line too long (112/100) (line-too-long)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: C0114: Missing module docstring (missing-module-docstring)
@@ -908,14 +908,13 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
     except FileNotFoundError as e: (duplicate-code)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.config.models:[489:510]
-==OpenStudioLandscapes.engine.env.tests.test_CONFIG:[40:58]
+==OpenStudioLandscapes.engine.env.tests.test_CONFIG:[73:91]
             "git",
             "ca-certificates",
             "htop",
             "file",
             "tzdata",
             "curl",
-            # "less",
             "wget",
             "ffmpeg",
             "libegl1",
@@ -924,9 +923,7 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
             "libxss1",
             "sudo",
             "neovim",
-            # Untar xz file
             "xz-utils",
-            # xvfb
             "xvfb",
             "xauth",
         ], (duplicate-code)
@@ -945,41 +942,41 @@ group_out_base = AssetSpec(
     "`OpenStudioLandscapes.engine.base.assets.group_out_base`.",
 )
 
-# assets_external is meant for the Definitions object in
-# _definitions_with_upstream_specs.py for now.
 assets_external.append(group_out_base)
 
 
 defs = Definitions(
     assets=[
         *assets_base,
+        # *constants,
+        # *assets_external,
     ],
 ) (duplicate-code)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[83:102]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1067:1086]
-        raise FileNotFoundError("Is Graphviz installed?") from e
+            raise FileNotFoundError("Is Graphviz installed?") from e
 
-    with open(svg, "rb") as fr:
-        svg_bytes = fr.read()
+        with open(svg, "rb") as fr:
+            svg_bytes = fr.read()
 
-    svg_base64 = base64.b64encode(svg_bytes).decode("utf-8")
-    svg_md = f"![Image](data:image/svg+xml;base64,{svg_base64})"
+        svg_base64 = base64.b64encode(svg_bytes).decode("utf-8")
+        svg_md = f"![Image](data:image/svg+xml;base64,{svg_base64})"
 
-    # PNG
-    png = (
-        docker_compose_dir
-        / f"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.png"
-    )
-    try:
-        dcg.graph.write(
-            path=png,
-            format="png",
+        # PNG
+        png = (
+            docker_compose_dir
+            / f"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.png"
         )
-    except FileNotFoundError as e: (duplicate-code)
+        try:
+            dcg.graph.write(
+                path=png,
+                format="png",
+            )
+        except FileNotFoundError as e: (duplicate-code)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.config.models:[515:529]
-==OpenStudioLandscapes.engine.env.tests.test_CONFIG:[59:73]
+==OpenStudioLandscapes.engine.env.tests.test_CONFIG:[92:106]
             "build-essential",
             "pkg-config",
             "zlib1g-dev",
@@ -1008,7 +1005,6 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
         pass
 
     context.log.info(f"{cmds = }")
-    # cmds = [['/usr/local/bin/docker', '--debug', '--config', '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json', 'build', '--progress', 'plain', '--pull', '--file', '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles/Dockerfile', '--no-cache', '--tag', 'openstudiolandscapes_base_build_docker_image:2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f', '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles'], ['/usr/local/bin/docker', '--config', '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json', 'push', 'openstudiolandscapes_base_build_docker_image:2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f']]
 
     logs = docker_do(
         context=context,
@@ -1033,6 +1029,17 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
 
     image_name = get_image_name(context=context)
     context.log.debug(f"{image_name = }")
+
+    # apt_install_str_base: str = get_apt_install_str(
+    #     apt_install_packages=[
+    #         *CONFIG.apt_packages_base,
+    #         *CONFIG.openstudiolandscapes__rez_config.apt_packages_rez,
+    #     ],
+    # )
+
+    # apt_install_str_build_python311: str = get_apt_install_str(
+    #     apt_install_packages=CONFIG.apt_packages_build_python311,
+    # )
  (duplicate-code)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.assets:[134:150]
@@ -1056,45 +1063,45 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[103:123]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1087:1107]
-        raise FileNotFoundError("Is Graphviz installed?") from e
+            raise FileNotFoundError("Is Graphviz installed?") from e
 
-    # SLOW
-    # with open(png, "rb") as fr:
-    #     png_bytes = fr.read()
-    #
-    # png_base64 = base64.b64encode(png_bytes).decode("utf-8")
-    # png_md = f"![Image](data:image/png;base64,{png_base64})"
+        # SLOW
+        # with open(png, "rb") as fr:
+        #     png_bytes = fr.read()
+        #
+        # png_base64 = base64.b64encode(png_bytes).decode("utf-8")
+        # png_md = f"![Image](data:image/png;base64,{png_base64})"
 
-    # DOT
-    dot = (
-        docker_compose_dir
-        / f"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.dot"
-    )
-    try:
-        dcg.graph.write(
-            path=dot,
-            format="dot",
+        # DOT
+        dot = (
+            docker_compose_dir
+            / f"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.dot"
         )
-    except FileNotFoundError as e: (duplicate-code)
+        try:
+            dcg.graph.write(
+                path=dot,
+                format="dot",
+            )
+        except FileNotFoundError as e: (duplicate-code)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[238:254]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1354:1370]
-    group_names_by_key_dict = context.assets_def.group_names_by_key
-    # Results in:
-    # Single Output:
-    # {AssetKey(['OpenCue', 'group_out']): 'OpenCue'}
-    # Multiple Outputs:
-    # {AssetKey(['Compose_default', 'group_out']): 'Compose_default', AssetKey(['Compose_default', 'compose_project_name']): 'Compose_default'}
-    context.log.debug(group_names_by_key_dict)
+        group_names_by_key_dict = context.assets_def.group_names_by_key
+        # Results in:
+        # Single Output:
+        # {AssetKey(['OpenCue', 'group_out']): 'OpenCue'}
+        # Multiple Outputs:
+        # {AssetKey(['Compose_default', 'group_out']): 'Compose_default', AssetKey(['Compose_default', 'compose_project_name']): 'Compose_default'}
+        context.log.debug(group_names_by_key_dict)
 
-    cmd_docker_compose_logs = [
-        "$(which docker)",
-        "--config",
-        docker_config_json.as_posix(),
-        "compose",
-        "--progress",
-        DOCKER_PROGRESS,
-        "--file", (duplicate-code)
+        cmd_docker_compose_logs = [
+            "$(which docker)",
+            "--config",
+            docker_config_json.as_posix(),
+            "compose",
+            "--progress",
+            DOCKER_PROGRESS,
+            "--file", (duplicate-code)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[271:289]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1390:1404]
@@ -1127,38 +1134,22 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
         ],
         "compute_kind": "python",
     }
-
-    # features_in (duplicate-code)
+ (duplicate-code)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.compose_scopes.definitions:[20:51]
 ==OpenStudioLandscapes.engine.landscape_map.definitions:[21:37]
 )
 
-# if bool(assets):
-#     constants = load_assets_from_modules(
-#         [OpenStudioLandscapes.engine.compose_scopes.constants]
-#     )
-# else:
-#     # This prevents constants asset from showing up it the
-#     # Dagster UI if the Feature itself is not enabled/available.
-#     constants = []
-
-
-from OpenStudioLandscapes.engine.compose_scopes.constants import (
-    COMPOSE_SCOPE_GROUP_PREFIX,
-)
-from OpenStudioLandscapes.engine.discovery import discovery
-from OpenStudioLandscapes.engine.utils import get_dynamic_ins
 
 feature_ins = get_dynamic_ins(
     imported_features=discovery.DISCOVERED_MODELS,
 )
 
+
 LOGGER = discovery.LOGGER
 
 
 LOGGER.info(f"{feature_ins = }")
-# {'default': {'OpenStudioLandscapes_filebrowser': AssetIn(key=AssetKey(['OpenStudioLandscapes_filebrowser', 'feature_out_v2']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>)}}
 
 assets_external = []
 
@@ -1196,13 +1187,13 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[326:333]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1432:1439]
-        "$(which docker)",
-        "--config",
-        docker_config_json.as_posix(),
-        "compose",
-        "--progress",
-        DOCKER_PROGRESS,
-        "--file", (duplicate-code)
+            "$(which docker)",
+            "--config",
+            docker_config_json.as_posix(),
+            "compose",
+            "--progress",
+            DOCKER_PROGRESS,
+            "--file", (duplicate-code)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[305:321]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1440:1456]
@@ -1228,8 +1219,68 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
         ENTRYPOINT []
         CMD []
         """).format(
-        apt_install_str_base=apt_install_str_base,
-        apt_install_str_build_python311=apt_install_str_build_python311,
+        dnf_packages_base=" ".join(
+            [
+                "which",
+                "file",
+                "epel-release",
+                "time",
+            ]
+        ),
+        dnf_packages_python_group=" ".join(
+            [
+                "'Development Tools'",
+            ]
+        ),
+        dnf_packages_python=" ".join(
+            [
+                "libsqlite3x-devel",
+                "bzip2-devel",
+                # stderr: #11 6.609 Python-3.13.12/PCbuild/libffi.props
+                # stderr: #11 6.609 Python-3.13.12/PCbuild/prepare_libffi.bat
+                # stderr: #12 4.213 checking for libffi... no
+                "libffi-devel",
+            ]
+        ),
+        dnf_packages_CY2026=" ".join(
+            [
+                "gcc-toolset-14-gcc-c++",
+            ]
+        ),
+        dnf_packages_rez=" ".join(
+            [
+                "openssl-devel",
+                # "libssl",
+            ]
+        ),
+        dnf_packages_blender_5=" ".join(
+            [
+                "libX11",
+                "libXrender",
+                "libXfixes",
+                "libXi",
+                "libxkbcommon",
+                "libSM",
+                "libGL",
+            ]
+        ),
+        # dnf_packages_development_tools=" ".join([
+        #     "which",
+        #     "file",
+        #     "epel-release",
+        #     "time",
+        # ]),
+        rocky_image="docker.io/rockylinux",
+        rocky_base=[
+            "8",
+            "9",
+            "10",
+        ][1],
+        python_maj=3,
+        python_min=13,
+        python_pat=12,
+        # apt_install_str_base=apt_install_str_base,
+        # apt_install_str_build_python311=apt_install_str_build_python311,
         pip_install_str=pip_install_str.format(
             **env,
         ),
@@ -1264,25 +1315,27 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
 
 
 @asset(
-    **ASSET_HEADER_BASE,
+    **ASSET_HEADER_VFX_PLATFORM,
     ins={
         "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
         "CONFIG": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"])),
         "docker_config_json": AssetIn(
             AssetKey([*ASSET_HEADER_BASE["key_prefix"], "docker_config_json"])
         ),
-        "write_dockerfile": AssetIn(
-            AssetKey([*ASSET_HEADER_BASE["key_prefix"], "write_dockerfile"])
+        "write_dockerfile_CY2026": AssetIn(
+            AssetKey(
+                [*ASSET_HEADER_VFX_PLATFORM["key_prefix"], "write_dockerfile_CY2026"]
+            )
         ),
     },
-    retry_policy=build_docker_image_retry_policy,
+    # retry_policy=build_docker_image_retry_policy,
 )
-def build_docker_image(
+def build_docker_image_CY2026(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
     CONFIG: ConfigEngine,  # pylint: disable=redefined-outer-name
     docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name
-    write_dockerfile: pathlib.Path,  # pylint: disable=redefined-outer-name
+    write_dockerfile_CY2026: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict[str, str | list[str]]] | AssetMaterialization, None, None]:
     """ """
 
@@ -1330,16 +1383,16 @@ def build_docker_image(
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[323:333]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1459:1469]
-    )
+        )
 
-    cmd_docker_compose_down = [
-        "$(which docker)",
-        "--config",
-        docker_config_json.as_posix(),
-        "compose",
-        "--progress",
-        DOCKER_PROGRESS,
-        "--file", (duplicate-code)
+        cmd_docker_compose_down = [
+            "$(which docker)",
+            "--config",
+            docker_config_json.as_posix(),
+            "compose",
+            "--progress",
+            DOCKER_PROGRESS,
+            "--file", (duplicate-code)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.assets:[238:245]
 ==OpenStudioLandscapes.engine.vfx_reference.assets:[282:289]
@@ -1364,15 +1417,15 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[296:304]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1431:1439]
-        cmd_docker_compose_restart = [
-            "$(which docker)",
-            "--config",
-            docker_config_json.as_posix(),
-            "compose",
-            "--progress",
-            DOCKER_PROGRESS,
-            "--file", (duplicate-code)
+    cmd_docker_compose_restart = [
+        "$(which docker)",
+        "--config",
+        docker_config_json.as_posix(),
+        "compose",
+        "--progress",
+        DOCKER_PROGRESS,
+        "--file", (duplicate-code)
 
 ------------------------------------------------------------------
-Your code has been rated at 6.15/10 (previous run: 7.42/10, -1.26)
+Your code has been rated at 6.15/10 (previous run: 7.42/10, -1.27)
 

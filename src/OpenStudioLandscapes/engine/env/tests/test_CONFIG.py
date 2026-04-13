@@ -7,9 +7,9 @@ config_store = pathlib.Path(fixtures / "config-store")
 
 os.environ["OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT"] = config_store.as_posix()
 
-import pytest
 from typing import Generator
 
+import pytest
 from dagster import AssetMaterialization, Output, build_asset_context
 
 from OpenStudioLandscapes.engine.config.models import (
@@ -20,7 +20,6 @@ from OpenStudioLandscapes.engine.config.models import (
     SudoMethod,
 )
 from OpenStudioLandscapes.engine.env.assets import CONFIG
-
 
 CLEANUP_ENABLED = True
 
