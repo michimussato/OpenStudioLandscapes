@@ -67,6 +67,8 @@ def get_pip_install_str(
     pip_install_packages: List[str],
     python_str: str = "python{PYTHON_MAJ}.{PYTHON_MIN}",
     single_run_layer: bool = True,
+    # Todo
+    #  - [ ] enable `bust_cache` by default?
     bust_cache: bool = False,  # https://medium.com/@aleksej.gudkov/how-to-disable-cache-in-docker-build-a-complete-guide-372e20507ed9
 ) -> str:
     if bool(pip_install_packages):
