@@ -67,7 +67,7 @@
       "version": "3.1.6"
     },
     {
-      "bom-ref": "Mako==1.3.10",
+      "bom-ref": "Mako==1.3.11",
       "description": "A super-fast templating language that borrows the best ideas from the existing templating languages.",
       "externalReferences": [
         {
@@ -95,9 +95,9 @@
         }
       ],
       "name": "Mako",
-      "purl": "pkg:pypi/mako@1.3.10",
+      "purl": "pkg:pypi/mako@1.3.11",
       "type": "library",
-      "version": "1.3.10"
+      "version": "1.3.11"
     },
     {
       "bom-ref": "MarkupSafe==3.0.3",
@@ -158,7 +158,7 @@
       "version": "0.0.0"
     },
     {
-      "bom-ref": "BomRef.4994293788794103.26571668399271076",
+      "bom-ref": "BomRef.6737983257408281.4039543197956367",
       "description": "A Toolkit to create dynamic Animation and VFX studio environments for robust automation and pipelines.",
       "externalReferences": [
         {
@@ -1354,7 +1354,7 @@
       "version": "1.0.0.post1.dev5+ga91125bef"
     },
     {
-      "bom-ref": "docstring_parser==0.17.0",
+      "bom-ref": "docstring_parser==0.18.0",
       "description": "Parse Python docstrings in reST, Google and Numpydoc format",
       "externalReferences": [
         {
@@ -1382,9 +1382,9 @@
         }
       ],
       "name": "docstring_parser",
-      "purl": "pkg:pypi/docstring-parser@0.17.0",
+      "purl": "pkg:pypi/docstring-parser@0.18.0",
       "type": "library",
-      "version": "0.17.0"
+      "version": "0.18.0"
     },
     {
       "bom-ref": "email-validator==2.3.0",
@@ -1410,7 +1410,7 @@
       "version": "2.3.0"
     },
     {
-      "bom-ref": "filelock==3.25.2",
+      "bom-ref": "filelock==3.29.0",
       "description": "A platform independent file lock.",
       "externalReferences": [
         {
@@ -1443,9 +1443,9 @@
         }
       ],
       "name": "filelock",
-      "purl": "pkg:pypi/filelock@3.25.2",
+      "purl": "pkg:pypi/filelock@3.29.0",
       "type": "library",
-      "version": "3.25.2"
+      "version": "3.29.0"
     },
     {
       "bom-ref": "fqdn==1.5.1",
@@ -2207,7 +2207,7 @@
       "version": "30.4.4"
     },
     {
-      "bom-ref": "lxml==6.0.4",
+      "bom-ref": "lxml==6.1.0",
       "description": "Powerful and Pythonic XML processing library combining libxml2/libxslt with the ElementTree API.",
       "externalReferences": [
         {
@@ -2235,9 +2235,9 @@
         }
       ],
       "name": "lxml",
-      "purl": "pkg:pypi/lxml@6.0.4",
+      "purl": "pkg:pypi/lxml@6.1.0",
       "type": "library",
-      "version": "6.0.4"
+      "version": "6.1.0"
     },
     {
       "bom-ref": "markdown-it-py==4.0.0",
@@ -2402,7 +2402,7 @@
       "version": "0.17.6"
     },
     {
-      "bom-ref": "packaging==26.0",
+      "bom-ref": "packaging==26.1",
       "description": "Core utilities for Python packages",
       "externalReferences": [
         {
@@ -2423,9 +2423,9 @@
         }
       ],
       "name": "packaging",
-      "purl": "pkg:pypi/packaging@26.0",
+      "purl": "pkg:pypi/packaging@26.1",
       "type": "library",
-      "version": "26.0"
+      "version": "26.1"
     },
     {
       "bom-ref": "pathlib_abc==0.5.2",
@@ -2778,7 +2778,7 @@
       "version": "2.1.0"
     },
     {
-      "bom-ref": "pydantic==2.13.0",
+      "bom-ref": "pydantic==2.13.2",
       "description": "Data validation using Python type hints",
       "externalReferences": [
         {
@@ -2816,12 +2816,12 @@
         }
       ],
       "name": "pydantic",
-      "purl": "pkg:pypi/pydantic@2.13.0",
+      "purl": "pkg:pypi/pydantic@2.13.2",
       "type": "library",
-      "version": "2.13.0"
+      "version": "2.13.2"
     },
     {
-      "bom-ref": "pydantic_core==2.46.0",
+      "bom-ref": "pydantic_core==2.46.2",
       "description": "Core functionality for Pydantic validation and serialization",
       "externalReferences": [
         {
@@ -2854,9 +2854,9 @@
         }
       ],
       "name": "pydantic_core",
-      "purl": "pkg:pypi/pydantic-core@2.46.0",
+      "purl": "pkg:pypi/pydantic-core@2.46.2",
       "type": "library",
-      "version": "2.46.0"
+      "version": "2.46.2"
     },
     {
       "bom-ref": "pydot==4.0.1",
@@ -3952,7 +3952,7 @@
       "version": "0.22.1"
     },
     {
-      "bom-ref": "virtualenv==21.2.1",
+      "bom-ref": "virtualenv==21.2.4",
       "description": "Virtual Python Environment builder",
       "externalReferences": [
         {
@@ -3985,9 +3985,9 @@
         }
       ],
       "name": "virtualenv",
-      "purl": "pkg:pypi/virtualenv@21.2.1",
+      "purl": "pkg:pypi/virtualenv@21.2.4",
       "type": "library",
-      "version": "21.2.1"
+      "version": "21.2.4"
     },
     {
       "bom-ref": "watchdog==5.0.3",
@@ -4278,7 +4278,7 @@
       "dependsOn": [
         "MarkupSafe==3.0.3"
       ],
-      "ref": "Mako==1.3.10"
+      "ref": "Mako==1.3.11"
     },
     {
       "ref": "MarkupSafe==3.0.3"
@@ -4329,7 +4329,7 @@
     },
     {
       "dependsOn": [
-        "Mako==1.3.10",
+        "Mako==1.3.11",
         "SQLAlchemy==2.0.49",
         "tomli==2.4.1",
         "typing_extensions==4.15.0",
@@ -4402,7 +4402,7 @@
         "chardet==5.2.0",
         "cyclonedx-python-lib==11.7.0",
         "packageurl-python==0.17.6",
-        "packaging==26.0",
+        "packaging==26.1",
         "pip-requirements-parser==32.0.1",
         "tomli==2.4.1"
       ],
@@ -4412,7 +4412,7 @@
       "dependsOn": [
         "jsonschema==4.26.0",
         "license-expression==30.4.4",
-        "lxml==6.0.4",
+        "lxml==6.1.0",
         "packageurl-python==0.17.6",
         "py-serializable==2.1.0",
         "referencing==0.37.0",
@@ -4461,14 +4461,14 @@
         "click==8.3.2",
         "coloredlogs==14.0",
         "dagster-pipes==1.9.11",
-        "docstring_parser==0.17.0",
-        "filelock==3.25.2",
+        "docstring_parser==0.18.0",
+        "filelock==3.29.0",
         "fsspec==2026.3.0",
         "grpcio-health-checking==1.71.2",
         "grpcio==1.80.0",
-        "packaging==26.0",
+        "packaging==26.1",
         "protobuf==5.29.6",
-        "pydantic==2.13.0",
+        "pydantic==2.13.2",
         "python-dotenv==1.2.2",
         "pytz==2026.1.post1",
         "requests==2.33.1",
@@ -4492,7 +4492,7 @@
     },
     {
       "dependsOn": [
-        "packaging==26.0",
+        "packaging==26.1",
         "tomli==2.4.1"
       ],
       "ref": "dependency-groups==1.3.1"
@@ -4519,7 +4519,7 @@
       "ref": "docker-compose-graph==1.0.0.post1.dev5+ga91125bef"
     },
     {
-      "ref": "docstring_parser==0.17.0"
+      "ref": "docstring_parser==0.18.0"
     },
     {
       "dependsOn": [
@@ -4529,7 +4529,7 @@
       "ref": "email-validator==2.3.0"
     },
     {
-      "ref": "filelock==3.25.2"
+      "ref": "filelock==3.29.0"
     },
     {
       "ref": "fqdn==1.5.1"
@@ -4670,7 +4670,7 @@
       "ref": "license-expression==30.4.4"
     },
     {
-      "ref": "lxml==6.0.4"
+      "ref": "lxml==6.1.0"
     },
     {
       "dependsOn": [
@@ -4697,9 +4697,9 @@
         "colorlog==6.10.1",
         "dependency-groups==1.3.1",
         "humanize==4.15.0",
-        "packaging==26.0",
+        "packaging==26.1",
         "tomli==2.4.1",
-        "virtualenv==21.2.1"
+        "virtualenv==21.2.4"
       ],
       "ref": "nox==2026.4.10"
     },
@@ -4712,14 +4712,14 @@
       "ref": "packageurl-python==0.17.6"
     },
     {
-      "ref": "packaging==26.0"
+      "ref": "packaging==26.1"
     },
     {
       "ref": "pathlib_abc==0.5.2"
     },
     {
       "dependsOn": [
-        "packaging==26.0",
+        "packaging==26.1",
         "pyparsing==3.3.2"
       ],
       "ref": "pip-requirements-parser==32.0.1"
@@ -4730,9 +4730,9 @@
     {
       "dependsOn": [
         "graphviz==0.21",
-        "packaging==26.0",
+        "packaging==26.1",
         "rich==15.0.0",
-        "virtualenv==21.2.1"
+        "virtualenv==21.2.4"
       ],
       "ref": "pipdeptree==2.35.1"
     },
@@ -4758,18 +4758,18 @@
       "dependsOn": [
         "annotated-types==0.7.0",
         "email-validator==2.3.0",
-        "pydantic_core==2.46.0",
+        "pydantic_core==2.46.2",
         "typing-inspection==0.4.2",
         "typing_extensions==4.15.0",
         "tzdata==2026.1"
       ],
-      "ref": "pydantic==2.13.0"
+      "ref": "pydantic==2.13.2"
     },
     {
       "dependsOn": [
         "typing_extensions==4.15.0"
       ],
-      "ref": "pydantic_core==2.46.0"
+      "ref": "pydantic_core==2.46.2"
     },
     {
       "dependsOn": [
@@ -4792,7 +4792,7 @@
     },
     {
       "dependsOn": [
-        "filelock==3.25.2",
+        "filelock==3.29.0",
         "platformdirs==4.9.6",
         "setuptools==82.0.1"
       ],
@@ -4858,11 +4858,11 @@
     },
     {
       "dependsOn": [
-        "filelock==3.25.2",
-        "packaging==26.0",
+        "filelock==3.29.0",
+        "packaging==26.1",
         "pip==26.0.1",
         "tomli==2.4.1",
-        "virtualenv==21.2.1",
+        "virtualenv==21.2.4",
         "wheel==0.46.3"
       ],
       "ref": "setuptools==82.0.1"
@@ -4921,9 +4921,9 @@
     {
       "dependsOn": [
         "fsspec==2026.3.0",
-        "packaging==26.0",
+        "packaging==26.1",
         "pathlib_abc==0.5.2",
-        "pydantic==2.13.0",
+        "pydantic==2.13.2",
         "typing_extensions==4.15.0"
       ],
       "ref": "universal_pathlib==0.3.10"
@@ -4957,12 +4957,12 @@
     {
       "dependsOn": [
         "distlib==0.4.0",
-        "filelock==3.25.2",
+        "filelock==3.29.0",
         "platformdirs==4.9.6",
         "python-discovery==1.2.2",
         "typing_extensions==4.15.0"
       ],
-      "ref": "virtualenv==21.2.1"
+      "ref": "virtualenv==21.2.4"
     },
     {
       "dependsOn": [
@@ -4984,7 +4984,7 @@
     },
     {
       "dependsOn": [
-        "packaging==26.0",
+        "packaging==26.1",
         "setuptools==82.0.1"
       ],
       "ref": "wheel==0.46.3"
@@ -4999,7 +4999,7 @@
     }
   ],
   "metadata": {
-    "timestamp": "2026-04-13T17:30:51.170192+00:00",
+    "timestamp": "2026-04-19T19:25:29.403846+00:00",
     "tools": {
       "components": [
         {
@@ -5103,7 +5103,7 @@
       ]
     }
   },
-  "serialNumber": "urn:uuid:8882fef7-5fa5-4a28-b4ca-6c98b0de9d3c",
+  "serialNumber": "urn:uuid:d1f86de2-aef5-4b28-8f93-b738b7eb8d93",
   "version": 1,
   "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
   "bomFormat": "CycloneDX",

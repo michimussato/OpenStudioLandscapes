@@ -27,9 +27,9 @@ flowchart TD
     distlib["distlib<br/>0.4.0"]
     dnspython["dnspython<br/>2.8.0"]
     docker-compose-graph["docker-compose-graph<br/>1.0.0.post1.dev5+ga91125bef"]
-    docstring-parser["docstring_parser<br/>0.17.0"]
+    docstring-parser["docstring_parser<br/>0.18.0"]
     email-validator["email-validator<br/>2.3.0"]
-    filelock["filelock<br/>3.25.2"]
+    filelock["filelock<br/>3.29.0"]
     fqdn["fqdn<br/>1.5.1"]
     fsspec["fsspec<br/>2026.3.0"]
     gitdb["gitdb<br/>4.0.12"]
@@ -55,8 +55,8 @@ flowchart TD
     jsonschema["jsonschema<br/>4.26.0"]
     lark["lark<br/>1.3.1"]
     license-expression["license-expression<br/>30.4.4"]
-    lxml["lxml<br/>6.0.4"]
-    mako["Mako<br/>1.3.10"]
+    lxml["lxml<br/>6.1.0"]
+    mako["Mako<br/>1.3.11"]
     markdown-it-py["markdown-it-py<br/>4.0.0"]
     markupsafe["MarkupSafe<br/>3.0.3"]
     mdurl["mdurl<br/>0.1.2"]
@@ -65,7 +65,7 @@ flowchart TD
     openstudiolandscapes-dagstercodelocation-streamingprocess["OpenStudioLandscapes-DagsterCodeLocation-StreamingProcess<br/>0.0.0"]
     openstudiolandscapes["OpenStudioLandscapes<br/>0.0.0"]
     packageurl-python["packageurl-python<br/>0.17.6"]
-    packaging["packaging<br/>26.0"]
+    packaging["packaging<br/>26.1"]
     pathlib-abc["pathlib_abc<br/>0.5.2"]
     pip-requirements-parser["pip-requirements-parser<br/>32.0.1"]
     pip["pip<br/>26.0.1"]
@@ -75,8 +75,8 @@ flowchart TD
     protobuf["protobuf<br/>5.29.6"]
     psycopg2-binary["psycopg2-binary<br/>2.9.11"]
     py-serializable["py-serializable<br/>2.1.0"]
-    pydantic-core["pydantic_core<br/>2.46.0"]
-    pydantic["pydantic<br/>2.13.0"]
+    pydantic-core["pydantic_core<br/>2.46.2"]
+    pydantic["pydantic<br/>2.13.2"]
     pydot["pydot<br/>4.0.1"]
     pygments["Pygments<br/>2.20.0"]
     pyparsing["pyparsing<br/>3.3.2"]
@@ -113,7 +113,7 @@ flowchart TD
     urllib3["urllib3<br/>2.6.3"]
     uvicorn["uvicorn<br/>0.44.0"]
     uvloop["uvloop<br/>0.22.1"]
-    virtualenv["virtualenv<br/>21.2.1"]
+    virtualenv["virtualenv<br/>21.2.4"]
     watchdog["watchdog<br/>5.0.3"]
     watchfiles["watchfiles<br/>1.1.1"]
     webcolors["webcolors<br/>25.10.0"]
@@ -235,7 +235,7 @@ flowchart TD
     pip-requirements-parser -- "any" --> pyparsing
     pipdeptree -- ">=26" --> packaging
     py-serializable -- ">=0.7.1,<0.8.0" --> defusedxml
-    pydantic -- "==2.46.0" --> pydantic-core
+    pydantic -- "==2.46.2" --> pydantic-core
     pydantic -- ">=0.4.2" --> typing-inspection
     pydantic -- ">=0.6.0" --> annotated-types
     pydantic -- ">=4.14.1" --> typing-extensions
@@ -266,7 +266,7 @@ flowchart TD
     uvicorn -- ">=0.8" --> h11
     uvicorn -- ">=7.0" --> click_0
     virtualenv -- ">=0.3.7,<1" --> distlib
-    virtualenv -- ">=1" --> python-discovery
+    virtualenv -- ">=1.2.2" --> python-discovery
     virtualenv -- ">=3.24.2,<4" --> filelock
     virtualenv -- ">=3.9.1,<5" --> platformdirs
     watchfiles -- ">=3.0.0" --> anyio

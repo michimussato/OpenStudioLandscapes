@@ -110,84 +110,85 @@ src/OpenStudioLandscapes/engine/link/models.py:65:0: C0115: Missing class docstr
 src/OpenStudioLandscapes/engine/link/models.py:71:0: C0115: Missing class docstring (missing-class-docstring)
 src/OpenStudioLandscapes/engine/link/models.py:79:0: C0115: Missing class docstring (missing-class-docstring)
 ************* Module OpenStudioLandscapes.engine.utils.__init__
-src/OpenStudioLandscapes/engine/utils/__init__.py:70:0: C0301: Line too long (134/100) (line-too-long)
-src/OpenStudioLandscapes/engine/utils/__init__.py:84:0: C0301: Line too long (109/100) (line-too-long)
-src/OpenStudioLandscapes/engine/utils/__init__.py:99:0: C0301: Line too long (179/100) (line-too-long)
-src/OpenStudioLandscapes/engine/utils/__init__.py:100:0: C0301: Line too long (117/100) (line-too-long)
-src/OpenStudioLandscapes/engine/utils/__init__.py:102:0: C0301: Line too long (109/100) (line-too-long)
-src/OpenStudioLandscapes/engine/utils/__init__.py:121:0: C0301: Line too long (118/100) (line-too-long)
-src/OpenStudioLandscapes/engine/utils/__init__.py:369:0: C0301: Line too long (139/100) (line-too-long)
-src/OpenStudioLandscapes/engine/utils/__init__.py:497:0: C0301: Line too long (237/100) (line-too-long)
-src/OpenStudioLandscapes/engine/utils/__init__.py:500:0: C0301: Line too long (198/100) (line-too-long)
-src/OpenStudioLandscapes/engine/utils/__init__.py:527:0: C0301: Line too long (169/100) (line-too-long)
-src/OpenStudioLandscapes/engine/utils/__init__.py:531:0: C0301: Line too long (152/100) (line-too-long)
-src/OpenStudioLandscapes/engine/utils/__init__.py:539:0: C0301: Line too long (161/100) (line-too-long)
-src/OpenStudioLandscapes/engine/utils/__init__.py:628:0: C0301: Line too long (1701/100) (line-too-long)
-src/OpenStudioLandscapes/engine/utils/__init__.py:649:0: C0301: Line too long (738/100) (line-too-long)
-src/OpenStudioLandscapes/engine/utils/__init__.py:662:0: C0301: Line too long (206/100) (line-too-long)
-src/OpenStudioLandscapes/engine/utils/__init__.py:666:0: C0301: Line too long (321/100) (line-too-long)
-src/OpenStudioLandscapes/engine/utils/__init__.py:738:0: C0301: Line too long (153/100) (line-too-long)
-src/OpenStudioLandscapes/engine/utils/__init__.py:895:0: C0301: Line too long (102/100) (line-too-long)
-src/OpenStudioLandscapes/engine/utils/__init__.py:157:5: W0511: Todo: (fixme)
-src/OpenStudioLandscapes/engine/utils/__init__.py:188:1: W0511: Todo: (fixme)
-src/OpenStudioLandscapes/engine/utils/__init__.py:199:1: W0511: Todo: (fixme)
-src/OpenStudioLandscapes/engine/utils/__init__.py:210:1: W0511: Todo: (fixme)
-src/OpenStudioLandscapes/engine/utils/__init__.py:221:1: W0511: Todo: (fixme)
-src/OpenStudioLandscapes/engine/utils/__init__.py:302:9: W0511: Todo: necessary? -> Yes: `OpenStudioLandscapes.engine.base.ops.op_constants` (fixme)
-src/OpenStudioLandscapes/engine/utils/__init__.py:380:5: W0511: Todo: (fixme)
-src/OpenStudioLandscapes/engine/utils/__init__.py:446:1: W0511: Todo (fixme)
-src/OpenStudioLandscapes/engine/utils/__init__.py:516:5: W0511: Todo (fixme)
-src/OpenStudioLandscapes/engine/utils/__init__.py:733:5: W0511: Todo: (fixme)
-src/OpenStudioLandscapes/engine/utils/__init__.py:831:5: W0511: Todo (fixme)
+src/OpenStudioLandscapes/engine/utils/__init__.py:72:0: C0301: Line too long (134/100) (line-too-long)
+src/OpenStudioLandscapes/engine/utils/__init__.py:86:0: C0301: Line too long (109/100) (line-too-long)
+src/OpenStudioLandscapes/engine/utils/__init__.py:101:0: C0301: Line too long (179/100) (line-too-long)
+src/OpenStudioLandscapes/engine/utils/__init__.py:102:0: C0301: Line too long (117/100) (line-too-long)
+src/OpenStudioLandscapes/engine/utils/__init__.py:104:0: C0301: Line too long (109/100) (line-too-long)
+src/OpenStudioLandscapes/engine/utils/__init__.py:123:0: C0301: Line too long (118/100) (line-too-long)
+src/OpenStudioLandscapes/engine/utils/__init__.py:371:0: C0301: Line too long (139/100) (line-too-long)
+src/OpenStudioLandscapes/engine/utils/__init__.py:499:0: C0301: Line too long (237/100) (line-too-long)
+src/OpenStudioLandscapes/engine/utils/__init__.py:502:0: C0301: Line too long (198/100) (line-too-long)
+src/OpenStudioLandscapes/engine/utils/__init__.py:529:0: C0301: Line too long (169/100) (line-too-long)
+src/OpenStudioLandscapes/engine/utils/__init__.py:533:0: C0301: Line too long (152/100) (line-too-long)
+src/OpenStudioLandscapes/engine/utils/__init__.py:541:0: C0301: Line too long (161/100) (line-too-long)
+src/OpenStudioLandscapes/engine/utils/__init__.py:630:0: C0301: Line too long (1701/100) (line-too-long)
+src/OpenStudioLandscapes/engine/utils/__init__.py:651:0: C0301: Line too long (738/100) (line-too-long)
+src/OpenStudioLandscapes/engine/utils/__init__.py:664:0: C0301: Line too long (206/100) (line-too-long)
+src/OpenStudioLandscapes/engine/utils/__init__.py:668:0: C0301: Line too long (321/100) (line-too-long)
+src/OpenStudioLandscapes/engine/utils/__init__.py:740:0: C0301: Line too long (153/100) (line-too-long)
+src/OpenStudioLandscapes/engine/utils/__init__.py:897:0: C0301: Line too long (102/100) (line-too-long)
+src/OpenStudioLandscapes/engine/utils/__init__.py:70:5: W0511: Todo (fixme)
+src/OpenStudioLandscapes/engine/utils/__init__.py:159:5: W0511: Todo: (fixme)
+src/OpenStudioLandscapes/engine/utils/__init__.py:190:1: W0511: Todo: (fixme)
+src/OpenStudioLandscapes/engine/utils/__init__.py:201:1: W0511: Todo: (fixme)
+src/OpenStudioLandscapes/engine/utils/__init__.py:212:1: W0511: Todo: (fixme)
+src/OpenStudioLandscapes/engine/utils/__init__.py:223:1: W0511: Todo: (fixme)
+src/OpenStudioLandscapes/engine/utils/__init__.py:304:9: W0511: Todo: necessary? -> Yes: `OpenStudioLandscapes.engine.base.ops.op_constants` (fixme)
+src/OpenStudioLandscapes/engine/utils/__init__.py:382:5: W0511: Todo: (fixme)
+src/OpenStudioLandscapes/engine/utils/__init__.py:448:1: W0511: Todo (fixme)
+src/OpenStudioLandscapes/engine/utils/__init__.py:518:5: W0511: Todo (fixme)
+src/OpenStudioLandscapes/engine/utils/__init__.py:735:5: W0511: Todo: (fixme)
+src/OpenStudioLandscapes/engine/utils/__init__.py:833:5: W0511: Todo (fixme)
 ************* Module OpenStudioLandscapes.engine.utils
 src/OpenStudioLandscapes/engine/utils/__init__.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 src/OpenStudioLandscapes/engine/utils/__init__.py:47:0: R0402: Use 'from OpenStudioLandscapes.engine.discovery import discovery' instead (consider-using-from-import)
 src/OpenStudioLandscapes/engine/utils/__init__.py:59:0: C0116: Missing function or method docstring (missing-function-docstring)
 src/OpenStudioLandscapes/engine/utils/__init__.py:66:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/utils/__init__.py:72:4: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
-src/OpenStudioLandscapes/engine/utils/__init__.py:75:16: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/engine/utils/__init__.py:81:31: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/engine/utils/__init__.py:91:20: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/engine/utils/__init__.py:112:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/utils/__init__.py:116:4: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
-src/OpenStudioLandscapes/engine/utils/__init__.py:173:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/utils/__init__.py:201:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/utils/__init__.py:212:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/utils/__init__.py:223:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/utils/__init__.py:232:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/utils/__init__.py:238:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/utils/__init__.py:269:4: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
-src/OpenStudioLandscapes/engine/utils/__init__.py:299:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/utils/__init__.py:316:4: C0103: Variable name "COMPOSE_SCOPE" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/utils/__init__.py:319:12: C0103: Variable name "COMPOSE_SCOPE" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/utils/__init__.py:324:12: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/engine/utils/__init__.py:331:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/utils/__init__.py:343:4: C0103: Variable name "FEATURE_CONFIG" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/utils/__init__.py:346:12: C0103: Variable name "FEATURE_CONFIG" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/utils/__init__.py:350:16: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/engine/utils/__init__.py:448:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/utils/__init__.py:509:8: W0719: Raising too general exception: Exception (broad-exception-raised)
-src/OpenStudioLandscapes/engine/utils/__init__.py:519:8: W0719: Raising too general exception: Exception (broad-exception-raised)
-src/OpenStudioLandscapes/engine/utils/__init__.py:545:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/utils/__init__.py:570:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/utils/__init__.py:594:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/utils/__init__.py:599:4: W0612: Unused variable 'package' (unused-variable)
-src/OpenStudioLandscapes/engine/utils/__init__.py:624:4: W0612: Unused variable 'package' (unused-variable)
-src/OpenStudioLandscapes/engine/utils/__init__.py:638:8: W0612: Unused variable 'key_prefixes' (unused-variable)
-src/OpenStudioLandscapes/engine/utils/__init__.py:653:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/utils/__init__.py:708:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/utils/__init__.py:708:0: R0913: Too many arguments (9/5) (too-many-arguments)
-src/OpenStudioLandscapes/engine/utils/__init__.py:708:0: R0917: Too many positional arguments (9/5) (too-many-positional-arguments)
-src/OpenStudioLandscapes/engine/utils/__init__.py:708:0: R0914: Too many local variables (18/15) (too-many-locals)
-src/OpenStudioLandscapes/engine/utils/__init__.py:801:9: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
-src/OpenStudioLandscapes/engine/utils/__init__.py:811:4: W0613: Unused argument 'context' (unused-argument)
-src/OpenStudioLandscapes/engine/utils/__init__.py:842:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/utils/__init__.py:854:8: W3101: Missing timeout argument for method 'requests.get' can cause your program to hang indefinitely (missing-timeout)
-src/OpenStudioLandscapes/engine/utils/__init__.py:855:4: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
-src/OpenStudioLandscapes/engine/utils/__init__.py:856:20: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/engine/utils/__init__.py:865:8: W0719: Raising too general exception: Exception (broad-exception-raised)
-src/OpenStudioLandscapes/engine/utils/__init__.py:866:12: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/engine/utils/__init__.py:870:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/utils/__init__.py:74:4: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+src/OpenStudioLandscapes/engine/utils/__init__.py:77:16: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
+src/OpenStudioLandscapes/engine/utils/__init__.py:83:31: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
+src/OpenStudioLandscapes/engine/utils/__init__.py:93:20: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
+src/OpenStudioLandscapes/engine/utils/__init__.py:114:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/utils/__init__.py:118:4: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+src/OpenStudioLandscapes/engine/utils/__init__.py:175:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/utils/__init__.py:203:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/utils/__init__.py:214:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/utils/__init__.py:225:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/utils/__init__.py:234:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/utils/__init__.py:240:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/utils/__init__.py:271:4: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+src/OpenStudioLandscapes/engine/utils/__init__.py:301:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/utils/__init__.py:318:4: C0103: Variable name "COMPOSE_SCOPE" doesn't conform to snake_case naming style (invalid-name)
+src/OpenStudioLandscapes/engine/utils/__init__.py:321:12: C0103: Variable name "COMPOSE_SCOPE" doesn't conform to snake_case naming style (invalid-name)
+src/OpenStudioLandscapes/engine/utils/__init__.py:326:12: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
+src/OpenStudioLandscapes/engine/utils/__init__.py:333:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/utils/__init__.py:345:4: C0103: Variable name "FEATURE_CONFIG" doesn't conform to snake_case naming style (invalid-name)
+src/OpenStudioLandscapes/engine/utils/__init__.py:348:12: C0103: Variable name "FEATURE_CONFIG" doesn't conform to snake_case naming style (invalid-name)
+src/OpenStudioLandscapes/engine/utils/__init__.py:352:16: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
+src/OpenStudioLandscapes/engine/utils/__init__.py:450:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/utils/__init__.py:511:8: W0719: Raising too general exception: Exception (broad-exception-raised)
+src/OpenStudioLandscapes/engine/utils/__init__.py:521:8: W0719: Raising too general exception: Exception (broad-exception-raised)
+src/OpenStudioLandscapes/engine/utils/__init__.py:547:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/utils/__init__.py:572:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/utils/__init__.py:596:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/utils/__init__.py:601:4: W0612: Unused variable 'package' (unused-variable)
+src/OpenStudioLandscapes/engine/utils/__init__.py:626:4: W0612: Unused variable 'package' (unused-variable)
+src/OpenStudioLandscapes/engine/utils/__init__.py:640:8: W0612: Unused variable 'key_prefixes' (unused-variable)
+src/OpenStudioLandscapes/engine/utils/__init__.py:655:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/utils/__init__.py:710:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/utils/__init__.py:710:0: R0913: Too many arguments (9/5) (too-many-arguments)
+src/OpenStudioLandscapes/engine/utils/__init__.py:710:0: R0917: Too many positional arguments (9/5) (too-many-positional-arguments)
+src/OpenStudioLandscapes/engine/utils/__init__.py:710:0: R0914: Too many local variables (18/15) (too-many-locals)
+src/OpenStudioLandscapes/engine/utils/__init__.py:803:9: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
+src/OpenStudioLandscapes/engine/utils/__init__.py:813:4: W0613: Unused argument 'context' (unused-argument)
+src/OpenStudioLandscapes/engine/utils/__init__.py:844:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/utils/__init__.py:856:8: W3101: Missing timeout argument for method 'requests.get' can cause your program to hang indefinitely (missing-timeout)
+src/OpenStudioLandscapes/engine/utils/__init__.py:857:4: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+src/OpenStudioLandscapes/engine/utils/__init__.py:858:20: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
+src/OpenStudioLandscapes/engine/utils/__init__.py:867:8: W0719: Raising too general exception: Exception (broad-exception-raised)
+src/OpenStudioLandscapes/engine/utils/__init__.py:868:12: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
+src/OpenStudioLandscapes/engine/utils/__init__.py:872:0: C0116: Missing function or method docstring (missing-function-docstring)
 ************* Module OpenStudioLandscapes.engine.utils.docker.compose_dicts
 src/OpenStudioLandscapes/engine/utils/docker/compose_dicts.py:73:0: C0301: Line too long (118/100) (line-too-long)
 src/OpenStudioLandscapes/engine/utils/docker/compose_dicts.py:75:0: C0301: Line too long (106/100) (line-too-long)
@@ -880,32 +881,32 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[56:82]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1040:1066]
-        dcg = DockerComposeGraph(
-            label_root_service=compose_project_name,
+    dcg = DockerComposeGraph(
+        label_root_service=compose_project_name,
+    )
+    trees = dcg.parse_docker_compose(pathlib.Path(group_out))
+
+    context.log.info(trees)
+
+    dcg.iterate_trees(trees)
+
+    docker_compose_dir = group_out.parent / "__".join(
+        context.asset_key_for_output("docker_compose_graph").path
+    )
+
+    docker_compose_dir.mkdir(parents=True, exist_ok=True)
+
+    # SVG
+    svg = (
+        docker_compose_dir
+        / f"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.svg"
+    )
+    try:
+        dcg.graph.write(
+            path=svg,
+            format="svg",
         )
-        trees = dcg.parse_docker_compose(pathlib.Path(group_out))
-
-        context.log.info(trees)
-
-        dcg.iterate_trees(trees)
-
-        docker_compose_dir = group_out.parent / "__".join(
-            context.asset_key_for_output("docker_compose_graph").path
-        )
-
-        docker_compose_dir.mkdir(parents=True, exist_ok=True)
-
-        # SVG
-        svg = (
-            docker_compose_dir
-            / f"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.svg"
-        )
-        try:
-            dcg.graph.write(
-                path=svg,
-                format="svg",
-            )
-        except FileNotFoundError as e: (duplicate-code)
+    except FileNotFoundError as e: (duplicate-code)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.config.models:[489:510]
 ==OpenStudioLandscapes.engine.env.tests.test_CONFIG:[73:91]
@@ -915,6 +916,7 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
             "file",
             "tzdata",
             "curl",
+            # "less",
             "wget",
             "ffmpeg",
             "libegl1",
@@ -923,7 +925,9 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
             "libxss1",
             "sudo",
             "neovim",
+            # Untar xz file
             "xz-utils",
+            # xvfb
             "xvfb",
             "xauth",
         ], (duplicate-code)
@@ -955,25 +959,25 @@ defs = Definitions(
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[83:102]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1067:1086]
-        raise FileNotFoundError("Is Graphviz installed?") from e
+            raise FileNotFoundError("Is Graphviz installed?") from e
 
-    with open(svg, "rb") as fr:
-        svg_bytes = fr.read()
+        with open(svg, "rb") as fr:
+            svg_bytes = fr.read()
 
-    svg_base64 = base64.b64encode(svg_bytes).decode("utf-8")
-    svg_md = f"![Image](data:image/svg+xml;base64,{svg_base64})"
+        svg_base64 = base64.b64encode(svg_bytes).decode("utf-8")
+        svg_md = f"![Image](data:image/svg+xml;base64,{svg_base64})"
 
-    # PNG
-    png = (
-        docker_compose_dir
-        / f"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.png"
-    )
-    try:
-        dcg.graph.write(
-            path=png,
-            format="png",
+        # PNG
+        png = (
+            docker_compose_dir
+            / f"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.png"
         )
-    except FileNotFoundError as e: (duplicate-code)
+        try:
+            dcg.graph.write(
+                path=png,
+                format="png",
+            )
+        except FileNotFoundError as e: (duplicate-code)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.config.models:[515:529]
 ==OpenStudioLandscapes.engine.env.tests.test_CONFIG:[92:106]
@@ -993,7 +997,7 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
         ], (duplicate-code)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.assets:[387:405]
-==OpenStudioLandscapes.engine.utils.__init__:[762:779]
+==OpenStudioLandscapes.engine.utils.__init__:[764:781]
         cmds_push = docker_push_cmd(
             context=context,
             docker_config_json=docker_config_json,
@@ -1029,6 +1033,17 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
 
     image_name = get_image_name(context=context)
     context.log.debug(f"{image_name = }")
+
+    # apt_install_str_base: str = get_apt_install_str(
+    #     apt_install_packages=[
+    #         *CONFIG.apt_packages_base,
+    #         *CONFIG.openstudiolandscapes__rez_config.apt_packages_rez,
+    #     ],
+    # )
+
+    # apt_install_str_build_python311: str = get_apt_install_str(
+    #     apt_install_packages=CONFIG.apt_packages_build_python311,
+    # )
  (duplicate-code)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.assets:[134:150]
@@ -1052,26 +1067,26 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[103:123]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1087:1107]
-        raise FileNotFoundError("Is Graphviz installed?") from e
+            raise FileNotFoundError("Is Graphviz installed?") from e
 
-    # SLOW
-    # with open(png, "rb") as fr:
-    #     png_bytes = fr.read()
-    #
-    # png_base64 = base64.b64encode(png_bytes).decode("utf-8")
-    # png_md = f"![Image](data:image/png;base64,{png_base64})"
+        # SLOW
+        # with open(png, "rb") as fr:
+        #     png_bytes = fr.read()
+        #
+        # png_base64 = base64.b64encode(png_bytes).decode("utf-8")
+        # png_md = f"![Image](data:image/png;base64,{png_base64})"
 
-    # DOT
-    dot = (
-        docker_compose_dir
-        / f"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.dot"
-    )
-    try:
-        dcg.graph.write(
-            path=dot,
-            format="dot",
+        # DOT
+        dot = (
+            docker_compose_dir
+            / f"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.dot"
         )
-    except FileNotFoundError as e: (duplicate-code)
+        try:
+            dcg.graph.write(
+                path=dot,
+                format="dot",
+            )
+        except FileNotFoundError as e: (duplicate-code)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[238:254]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1354:1370]
@@ -1162,13 +1177,13 @@ assets_external = []
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[247:254]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1382:1389]
-            "$(which docker)",
-            "--config",
-            docker_config_json.as_posix(),
-            "compose",
-            "--progress",
-            DOCKER_PROGRESS,
-            "--file", (duplicate-code)
+        "$(which docker)",
+        "--config",
+        docker_config_json.as_posix(),
+        "compose",
+        "--progress",
+        DOCKER_PROGRESS,
+        "--file", (duplicate-code)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[263:270]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1363:1370]
@@ -1182,13 +1197,13 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[297:304]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1462:1469]
-        "$(which docker)",
-        "--config",
-        docker_config_json.as_posix(),
-        "compose",
-        "--progress",
-        DOCKER_PROGRESS,
-        "--file", (duplicate-code)
+            "$(which docker)",
+            "--config",
+            docker_config_json.as_posix(),
+            "compose",
+            "--progress",
+            DOCKER_PROGRESS,
+            "--file", (duplicate-code)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[326:333]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1432:1439]
@@ -1388,16 +1403,16 @@ def build_docker_image_CY2026(
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[323:333]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1459:1469]
-        )
+    )
 
-        cmd_docker_compose_down = [
-            "$(which docker)",
-            "--config",
-            docker_config_json.as_posix(),
-            "compose",
-            "--progress",
-            DOCKER_PROGRESS,
-            "--file", (duplicate-code)
+    cmd_docker_compose_down = [
+        "$(which docker)",
+        "--config",
+        docker_config_json.as_posix(),
+        "compose",
+        "--progress",
+        DOCKER_PROGRESS,
+        "--file", (duplicate-code)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.assets:[238:245]
 ==OpenStudioLandscapes.engine.vfx_reference.assets:[282:289]
@@ -1411,18 +1426,7 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[262:270]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1381:1389]
-    cmd_docker_compose_up = [
-        "$(which docker)",
-        "--config",
-        docker_config_json.as_posix(),
-        "compose",
-        "--progress",
-        DOCKER_PROGRESS,
-        "--file", (duplicate-code)
-src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
-==OpenStudioLandscapes.engine.base.ops.__init__:[296:304]
-==OpenStudioLandscapes.engine.base.ops.factories:[1431:1439]
-        cmd_docker_compose_restart = [
+        cmd_docker_compose_up = [
             "$(which docker)",
             "--config",
             docker_config_json.as_posix(),
@@ -1430,7 +1434,18 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
             "--progress",
             DOCKER_PROGRESS,
             "--file", (duplicate-code)
+src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
+==OpenStudioLandscapes.engine.base.ops.__init__:[296:304]
+==OpenStudioLandscapes.engine.base.ops.factories:[1431:1439]
+    cmd_docker_compose_restart = [
+        "$(which docker)",
+        "--config",
+        docker_config_json.as_posix(),
+        "compose",
+        "--progress",
+        DOCKER_PROGRESS,
+        "--file", (duplicate-code)
 
 ------------------------------------------------------------------
-Your code has been rated at 6.15/10 (previous run: 7.28/10, -1.14)
+Your code has been rated at 6.14/10 (previous run: 7.42/10, -1.28)
 
