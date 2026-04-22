@@ -409,6 +409,7 @@ def checks(args):
         LOGGER.info("Checking for OpenStudioLandscapes Engine and Features updates...")
         repo = git.Repo(".")
         LOGGER.debug(f"{repo = }")
+        LOGGER.info(f"{repo.active_branch = }")
         LOGGER.debug(f"{repo.working_dir = }")
         LOGGER.info(
             f"Checking for {pathlib.Path(repo.working_dir).name} (Engine) updates..."
@@ -438,6 +439,7 @@ def checks(args):
             LOGGER.debug(f"{d = }")
             repo_feature = git.Repo(d)
             LOGGER.debug(f"{repo_feature = }")
+            LOGGER.info(f"{repo.active_branch = }")
             LOGGER.debug(f"{repo_feature.working_dir = }")
             LOGGER.info(
                 f"Checking for {pathlib.Path(repo_feature.working_dir).name} updates..."
