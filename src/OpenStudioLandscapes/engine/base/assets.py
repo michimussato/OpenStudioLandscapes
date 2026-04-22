@@ -491,15 +491,15 @@ def group_out_base(
 
     context.log.debug(f"group_out_base {group_out_base = }")
 
-    output_name = "group_out_base"
+    # output_name = "group_out_base"
 
     yield Output(
-        output_name=output_name,
+        # output_name=output_name,
         value=group_out_base,
     )
 
     yield AssetMaterialization(
-        asset_key=context.asset_key_for_output(output_name),
+        asset_key=context.asset_key,
         metadata={
             "group_out_base": MetadataValue.md(
                 f"```json\n{group_out_base.model_dump_json(indent=2, fallback=str)}\n```"
