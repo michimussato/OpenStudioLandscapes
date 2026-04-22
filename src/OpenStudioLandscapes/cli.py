@@ -278,67 +278,27 @@ def parse_args(args):
         required=True,
     )
 
-    # subparser_install_feature.add_argument(
-    #     "--feature-name",
-    #     "-n",
-    #     dest="feature_name",
-    #     metavar="FEATURE_NAME",
-    #     # type=git.Repo,
-    #     type=str,
-    #     required=True,
-    # )
+    # Todo
+    #  - [x] "install-feature" should actually be "clone-feature" (it's not actually installing)
+    subparser_install_feature = subparsers.add_parser(
+        "switch-branch",
+        # aliases=["install-feature"],
+        help="Switch branch across the Engine and all Features.",
+    )
 
-    # parser.add_argument(
-    #     "--uniform",
-    #     dest="uniform",
-    #     default=False,
-    #     action="store_true",
-    #     required=False,
-    #     help="Use uniform color columns.",
-    # )
-    #
-    # parser.add_argument(
-    #     "--out-dir",
-    #     dest="out_dir",
-    #     metavar="OUT_DIR",
-    #     required=False,
-    #     default=pathlib.Path().cwd(),
-    #     type=pathlib.Path,
-    #     help="Where to save the output file.",
-    # )
-    #
-    # parser.add_argument(
-    #     "--width",
-    #     dest="width",
-    #     metavar="WIDTH",
-    #     required=False,
-    #     default=2560,
-    #     type=int,
-    #     help="Width of the barcoded image.",
-    # )
-    #
-    # parser.add_argument(
-    #     "--height",
-    #     dest="height",
-    #     metavar="HEIGHT",
-    #     required=False,
-    #     default=1280,
-    #     type=int,
-    #     help="Height of the barcoded image.",
-    # )
-    #
-    # parser.add_argument(
-    #     "--sample-height",
-    #     dest="sample_height",
-    #     metavar="SAMPLE_HEIGHT",
-    #     required=False,
-    #     default=8,
-    #     type=int,
-    #     help="Sample Height of the barcoded image. "
-    #          "In compressed mode, each frame is resized into a 1xSAMPLE_HEIGHT vector. "
-    #          "SAMPLE_HEIGHT should be at most the input height and at least 1 (which "
-    #          "is equivalent to uniform mode). Smaller values yield smoother results.",
-    # )
+    # Todo
+    #  - [ ] set branch, default=main `--branch`
+
+    subparser_install_feature.add_argument(
+        "--branch",
+        # "-r",
+        dest="branch",
+        metavar="BRANCH",
+        default="main",
+        # type=git.Repo,
+        type=str,
+        required=True,
+    )
 
     return parser.parse_args(args)
 
@@ -564,6 +524,54 @@ def main(args):
         # repo.git.pull()
         return
 
+    elif any(sc == args.sub_command for sc in ["switch-branch"]):
+
+        repos = {
+            "engine": None,
+            "features": {},
+        }
+
+        LOGGER.info("Switching branch for OpenStudioLandscapes Engine and Features...")
+        repo = git.Repo(".")
+        LOGGER.debug(f"{repo = }")
+        LOGGER.debug(f"{repo.working_dir = }")
+        # LOGGER.info(
+        #     f"Checking for {pathlib.Path(repo.working_dir).name} (Engine) updates..."
+        # )
+        repos["engine"] = repo
+        git_cmd = repo.git
+        if repo.is_dirty():
+            LOGGER.critical("Can't switch: repo has uncommitted changes.")
+            status = git_cmd.status()
+            LOGGER.info(status)
+        else:
+            result = git_cmd.checkout(args.branch)
+            LOGGER.info(f"Checkout: {result}")
+
+        for d in pathlib.Path(repo.working_tree_dir).joinpath(".features").iterdir():
+            if d.is_file():
+                continue
+            LOGGER.debug(f"{d = }")
+            repo_feature = git.Repo(d)
+            LOGGER.debug(f"{repo_feature = }")
+            LOGGER.debug(f"{repo_feature.working_dir = }")
+            # LOGGER.info(
+            #     f"Checking for {pathlib.Path(repo_feature.working_dir).name} updates..."
+            # )
+            repos["features"][
+                pathlib.Path(repo_feature.working_dir).name
+            ] = repo_feature
+            git_cmd_feature = repo_feature.git
+            if repo_feature.is_dirty():
+                LOGGER.critical("Can't switch: repo has uncommitted changes.")
+                status_feature = git_cmd_feature.status()
+                LOGGER.info(status_feature)
+            else:
+                result_feature = git_cmd_feature.checkout(args.branch)
+                LOGGER.info(f"Changes: {result_feature}")
+        # repo.git.pull()
+        return
+
     elif any(sc == args.sub_command for sc in ["clone-feature"]):
         # Todo
         #  - [x] rename install-feature to clone-feature, cause that's essentially what it is
@@ -625,24 +633,9 @@ def main(args):
             f"\tEdit this file according to your needs.\n\n"
         )
 
-        # result_ = subprocess.run(
-        #     install_cmd,
-        #     stdout=subprocess.PIPE,
-        #     stderr=subprocess.STDOUT,
-        #     shell=True,
-        #     cwd=pathlib.Path(repo_engine.working_dir),
-        # )
-        #
-        # result = result_.stdout.decode().strip()
-        #
-        # LOGGER.info(f"{result = }")
-
         return
 
     run_openstudiolandscapes(args)
-    # ret = run_openstudiolandscapes(args)
-    #
-    # sys.exit(ret)
 
 
 # https://stackoverflow.com/a/1112350/2207196
