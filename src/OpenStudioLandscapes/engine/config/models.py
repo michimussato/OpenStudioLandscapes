@@ -6,7 +6,7 @@ import re
 from importlib.metadata import Distribution
 from typing import ClassVar, Dict, List
 
-import pydantic
+# import pydantic
 import yaml
 from dagster import (
     AssetIn,
@@ -19,6 +19,7 @@ from pydantic import (
     Field,
     PositiveInt,
     field_validator,
+    computed_field,
 )
 
 LOG = get_dagster_logger(__name__)
@@ -240,6 +241,7 @@ class ComposeScopeBaseModel(BaseConfig):
         exclude=True,
     )
 
+    @computed_field
     @property
     def docker_compose_expanded(self) -> pathlib.Path:
         ret = pathlib.Path(
@@ -361,7 +363,7 @@ class RezConfigModel(BaseConfig):
         "https://rez.readthedocs.io/en/stable/configuring_rez.html#packages_path",
     )
 
-    # @computed_field
+    @computed_field
     @property
     def REZ_PACKAGES_PATH(self) -> List[pathlib.Path]:
         # Resources (@computed_field):
@@ -374,12 +376,12 @@ class RezConfigModel(BaseConfig):
         ]
         return paths_
 
-    # @computed_field
+    @computed_field
     @property
     def REZ_PACKAGES_PATH_ENV(self) -> str:
         return ":".join(i.expanduser().as_posix() for i in self.REZ_PACKAGES_PATH)
 
-    # @computed_field
+    @computed_field
     @property
     def REZ_PACKAGES_PATH_VOL(self) -> List[str]:
         return [
@@ -387,7 +389,7 @@ class RezConfigModel(BaseConfig):
             for i in self.REZ_PACKAGES_PATH
         ]
 
-    # @computed_field
+    @computed_field
     @property
     def REZ_ENVIRONMENT(self) -> Dict[str, str]:
         env = {
@@ -714,6 +716,7 @@ class FeatureBaseModel(BaseConfig):
         "more information",
     )
 
+    @computed_field
     @property
     def dagster_compose_scope_in(self) -> AssetIn:
         default_name_feature_out = "feature_out_v2"
@@ -721,6 +724,7 @@ class FeatureBaseModel(BaseConfig):
         return ret
 
     # EXPANDABLE PATHS
+    @computed_field
     @property
     def config_file_path(self) -> pathlib.Path:
         OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT = pathlib.Path(
@@ -795,6 +799,7 @@ class FeatureBaseModel(BaseConfig):
         description="The path to the `docker-compose.yml` file.",
     )
 
+    @computed_field
     @property
     def docker_compose_expanded(self) -> pathlib.Path:
         ret = pathlib.Path(
