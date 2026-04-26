@@ -1,7 +1,7 @@
 {
   "components": [
     {
-      "bom-ref": "GitPython==3.1.46",
+      "bom-ref": "GitPython==3.1.47",
       "description": "GitPython is a Python library used to interact with Git repositories",
       "externalReferences": [
         {
@@ -19,9 +19,9 @@
         }
       ],
       "name": "GitPython",
-      "purl": "pkg:pypi/gitpython@3.1.46",
+      "purl": "pkg:pypi/gitpython@3.1.47",
       "type": "library",
-      "version": "3.1.46"
+      "version": "3.1.47"
     },
     {
       "bom-ref": "Jinja2==3.1.6",
@@ -158,7 +158,7 @@
       "version": "0.0.0"
     },
     {
-      "bom-ref": "BomRef.6737983257408281.4039543197956367",
+      "bom-ref": "BomRef.18010645069514353.8947107021182977",
       "description": "A Toolkit to create dynamic Animation and VFX studio environments for robust automation and pipelines.",
       "externalReferences": [
         {
@@ -669,7 +669,7 @@
       "version": "5.0"
     },
     {
-      "bom-ref": "certifi==2026.2.25",
+      "bom-ref": "certifi==2026.4.22",
       "description": "Python package for providing Mozilla's CA Bundle.",
       "externalReferences": [
         {
@@ -698,9 +698,9 @@
         }
       ],
       "name": "certifi",
-      "purl": "pkg:pypi/certifi@2026.2.25",
+      "purl": "pkg:pypi/certifi@2026.4.22",
       "type": "library",
-      "version": "2026.2.25"
+      "version": "2026.4.22"
     },
     {
       "bom-ref": "chardet==5.2.0",
@@ -779,7 +779,7 @@
       "version": "3.4.7"
     },
     {
-      "bom-ref": "click==8.3.2",
+      "bom-ref": "click==8.3.3",
       "description": "Composable command line interface toolkit",
       "externalReferences": [
         {
@@ -817,9 +817,9 @@
         }
       ],
       "name": "click",
-      "purl": "pkg:pypi/click@8.3.2",
+      "purl": "pkg:pypi/click@8.3.3",
       "type": "library",
-      "version": "8.3.2"
+      "version": "8.3.3"
     },
     {
       "bom-ref": "coloredlogs==14.0",
@@ -1955,7 +1955,7 @@
       "version": "4.15.0"
     },
     {
-      "bom-ref": "idna==3.11",
+      "bom-ref": "idna==3.13",
       "description": "Internationalized Domain Names in Applications (IDNA)",
       "externalReferences": [
         {
@@ -1983,9 +1983,9 @@
         }
       ],
       "name": "idna",
-      "purl": "pkg:pypi/idna@3.11",
+      "purl": "pkg:pypi/idna@3.13",
       "type": "library",
-      "version": "3.11"
+      "version": "3.13"
     },
     {
       "bom-ref": "isoduration==20.11.0",
@@ -2402,7 +2402,7 @@
       "version": "0.17.6"
     },
     {
-      "bom-ref": "packaging==26.1",
+      "bom-ref": "packaging==26.2",
       "description": "Core utilities for Python packages",
       "externalReferences": [
         {
@@ -2423,9 +2423,9 @@
         }
       ],
       "name": "packaging",
-      "purl": "pkg:pypi/packaging@26.1",
+      "purl": "pkg:pypi/packaging@26.2",
       "type": "library",
-      "version": "26.1"
+      "version": "26.2"
     },
     {
       "bom-ref": "pathlib_abc==0.5.2",
@@ -2681,7 +2681,7 @@
       "version": "5.29.6"
     },
     {
-      "bom-ref": "psycopg2-binary==2.9.11",
+      "bom-ref": "psycopg2-binary==2.9.12",
       "description": "psycopg2 - Python-PostgreSQL Database Adapter",
       "externalReferences": [
         {
@@ -2729,9 +2729,9 @@
         }
       ],
       "name": "psycopg2-binary",
-      "purl": "pkg:pypi/psycopg2-binary@2.9.11",
+      "purl": "pkg:pypi/psycopg2-binary@2.9.12",
       "type": "library",
-      "version": "2.9.11"
+      "version": "2.9.12"
     },
     {
       "bom-ref": "py-serializable==2.1.0",
@@ -2778,7 +2778,7 @@
       "version": "2.1.0"
     },
     {
-      "bom-ref": "pydantic==2.13.2",
+      "bom-ref": "pydantic==2.13.3",
       "description": "Data validation using Python type hints",
       "externalReferences": [
         {
@@ -2816,12 +2816,12 @@
         }
       ],
       "name": "pydantic",
-      "purl": "pkg:pypi/pydantic@2.13.2",
+      "purl": "pkg:pypi/pydantic@2.13.3",
       "type": "library",
-      "version": "2.13.2"
+      "version": "2.13.3"
     },
     {
-      "bom-ref": "pydantic_core==2.46.2",
+      "bom-ref": "pydantic_core==2.46.3",
       "description": "Core functionality for Pydantic validation and serialization",
       "externalReferences": [
         {
@@ -2854,9 +2854,9 @@
         }
       ],
       "name": "pydantic_core",
-      "purl": "pkg:pypi/pydantic-core@2.46.2",
+      "purl": "pkg:pypi/pydantic-core@2.46.3",
       "type": "library",
-      "version": "2.46.2"
+      "version": "2.46.3"
     },
     {
       "bom-ref": "pydot==4.0.1",
@@ -3752,7 +3752,7 @@
       "version": "4.15.0"
     },
     {
-      "bom-ref": "tzdata==2026.1",
+      "bom-ref": "tzdata==2026.2",
       "description": "Provider of IANA time zone data",
       "externalReferences": [
         {
@@ -3785,9 +3785,9 @@
         }
       ],
       "name": "tzdata",
-      "purl": "pkg:pypi/tzdata@2026.1",
+      "purl": "pkg:pypi/tzdata@2026.2",
       "type": "library",
-      "version": "2026.1"
+      "version": "2026.2"
     },
     {
       "bom-ref": "universal_pathlib==0.3.10",
@@ -3879,7 +3879,7 @@
       "version": "2.6.3"
     },
     {
-      "bom-ref": "uvicorn==0.44.0",
+      "bom-ref": "uvicorn==0.46.0",
       "description": "The lightning-fast ASGI server.",
       "externalReferences": [
         {
@@ -3918,9 +3918,9 @@
           "value": "standard"
         }
       ],
-      "purl": "pkg:pypi/uvicorn@0.44.0",
+      "purl": "pkg:pypi/uvicorn@0.46.0",
       "type": "library",
-      "version": "0.44.0"
+      "version": "0.46.0"
     },
     {
       "bom-ref": "uvloop==0.22.1",
@@ -4164,7 +4164,7 @@
       "version": "16.0"
     },
     {
-      "bom-ref": "wheel==0.46.3",
+      "bom-ref": "wheel==0.47.0",
       "description": "Command line tool for manipulating wheel files",
       "externalReferences": [
         {
@@ -4197,9 +4197,9 @@
         }
       ],
       "name": "wheel",
-      "purl": "pkg:pypi/wheel@0.46.3",
+      "purl": "pkg:pypi/wheel@0.47.0",
       "type": "library",
-      "version": "0.46.3"
+      "version": "0.47.0"
     },
     {
       "bom-ref": "yarl==1.23.0",
@@ -4266,7 +4266,7 @@
         "gitdb==4.0.12",
         "typing_extensions==4.15.0"
       ],
-      "ref": "GitPython==3.1.46"
+      "ref": "GitPython==3.1.47"
     },
     {
       "dependsOn": [
@@ -4291,7 +4291,7 @@
     },
     {
       "dependsOn": [
-        "GitPython==3.1.46",
+        "GitPython==3.1.47",
         "OpenStudioLandscapes-DagsterCodeLocation-StreamingProcess==0.0.0",
         "PyYAML==6.0.3",
         "SnakeMD==2.4.0",
@@ -4319,7 +4319,7 @@
     {
       "dependsOn": [
         "greenlet==3.4.0",
-        "psycopg2-binary==2.9.11",
+        "psycopg2-binary==2.9.12",
         "typing_extensions==4.15.0"
       ],
       "ref": "SQLAlchemy==2.0.49"
@@ -4333,7 +4333,7 @@
         "SQLAlchemy==2.0.49",
         "tomli==2.4.1",
         "typing_extensions==4.15.0",
-        "tzdata==2026.1"
+        "tzdata==2026.2"
       ],
       "ref": "alembic==1.18.4"
     },
@@ -4348,14 +4348,14 @@
     },
     {
       "dependsOn": [
-        "idna==3.11",
+        "idna==3.13",
         "typing_extensions==4.15.0"
       ],
       "ref": "anyio==4.13.0"
     },
     {
       "dependsOn": [
-        "wheel==0.46.3"
+        "wheel==0.47.0"
       ],
       "ref": "argcomplete==3.6.3"
     },
@@ -4363,7 +4363,7 @@
       "dependsOn": [
         "python-dateutil==2.9.0.post0",
         "pytz==2026.1.post1",
-        "tzdata==2026.1"
+        "tzdata==2026.2"
       ],
       "ref": "arrow==1.4.0"
     },
@@ -4377,7 +4377,7 @@
       "ref": "boolean.py==5.0"
     },
     {
-      "ref": "certifi==2026.2.25"
+      "ref": "certifi==2026.4.22"
     },
     {
       "ref": "chardet==5.2.0"
@@ -4386,7 +4386,7 @@
       "ref": "charset-normalizer==3.4.7"
     },
     {
-      "ref": "click==8.3.2"
+      "ref": "click==8.3.3"
     },
     {
       "dependsOn": [
@@ -4402,7 +4402,7 @@
         "chardet==5.2.0",
         "cyclonedx-python-lib==11.7.0",
         "packageurl-python==0.17.6",
-        "packaging==26.1",
+        "packaging==26.2",
         "pip-requirements-parser==32.0.1",
         "tomli==2.4.1"
       ],
@@ -4437,17 +4437,17 @@
     {
       "dependsOn": [
         "dagster==1.9.11",
-        "psycopg2-binary==2.9.11"
+        "psycopg2-binary==2.9.12"
       ],
       "ref": "dagster-postgres==0.25.11"
     },
     {
       "dependsOn": [
-        "click==8.3.2",
+        "click==8.3.3",
         "dagster-graphql==1.9.11",
         "dagster==1.9.11",
         "starlette==1.0.0",
-        "uvicorn==0.44.0"
+        "uvicorn==0.46.0"
       ],
       "ref": "dagster-webserver==1.9.11"
     },
@@ -4458,7 +4458,7 @@
         "SQLAlchemy==2.0.49",
         "alembic==1.18.4",
         "antlr4-python3-runtime==4.13.2",
-        "click==8.3.2",
+        "click==8.3.3",
         "coloredlogs==14.0",
         "dagster-pipes==1.9.11",
         "docstring_parser==0.18.0",
@@ -4466,9 +4466,9 @@
         "fsspec==2026.3.0",
         "grpcio-health-checking==1.71.2",
         "grpcio==1.80.0",
-        "packaging==26.1",
+        "packaging==26.2",
         "protobuf==5.29.6",
-        "pydantic==2.13.2",
+        "pydantic==2.13.3",
         "python-dotenv==1.2.2",
         "pytz==2026.1.post1",
         "requests==2.33.1",
@@ -4481,7 +4481,7 @@
         "toposort==1.10",
         "tqdm==4.67.3",
         "typing_extensions==4.15.0",
-        "tzdata==2026.1",
+        "tzdata==2026.2",
         "universal_pathlib==0.3.10",
         "watchdog==5.0.3"
       ],
@@ -4492,7 +4492,7 @@
     },
     {
       "dependsOn": [
-        "packaging==26.1",
+        "packaging==26.2",
         "tomli==2.4.1"
       ],
       "ref": "dependency-groups==1.3.1"
@@ -4502,8 +4502,8 @@
     },
     {
       "dependsOn": [
-        "idna==3.11",
-        "wheel==0.46.3"
+        "idna==3.13",
+        "wheel==0.47.0"
       ],
       "ref": "dnspython==2.8.0"
     },
@@ -4524,7 +4524,7 @@
     {
       "dependsOn": [
         "dnspython==2.8.0",
-        "idna==3.11"
+        "idna==3.13"
       ],
       "ref": "email-validator==2.3.0"
     },
@@ -4586,7 +4586,7 @@
     },
     {
       "dependsOn": [
-        "wheel==0.46.3"
+        "wheel==0.47.0"
       ],
       "ref": "graphviz==0.21"
     },
@@ -4625,7 +4625,7 @@
       "ref": "humanize==4.15.0"
     },
     {
-      "ref": "idna==3.11"
+      "ref": "idna==3.13"
     },
     {
       "dependsOn": [
@@ -4646,7 +4646,7 @@
       "dependsOn": [
         "attrs==26.1.0",
         "fqdn==1.5.1",
-        "idna==3.11",
+        "idna==3.13",
         "isoduration==20.11.0",
         "jsonpointer==3.1.1",
         "jsonschema-specifications==2025.9.1",
@@ -4697,7 +4697,7 @@
         "colorlog==6.10.1",
         "dependency-groups==1.3.1",
         "humanize==4.15.0",
-        "packaging==26.1",
+        "packaging==26.2",
         "tomli==2.4.1",
         "virtualenv==21.2.4"
       ],
@@ -4707,19 +4707,19 @@
       "dependsOn": [
         "SQLAlchemy==2.0.49",
         "setuptools==82.0.1",
-        "wheel==0.46.3"
+        "wheel==0.47.0"
       ],
       "ref": "packageurl-python==0.17.6"
     },
     {
-      "ref": "packaging==26.1"
+      "ref": "packaging==26.2"
     },
     {
       "ref": "pathlib_abc==0.5.2"
     },
     {
       "dependsOn": [
-        "packaging==26.1",
+        "packaging==26.2",
         "pyparsing==3.3.2"
       ],
       "ref": "pip-requirements-parser==32.0.1"
@@ -4730,7 +4730,7 @@
     {
       "dependsOn": [
         "graphviz==0.21",
-        "packaging==26.1",
+        "packaging==26.2",
         "rich==15.0.0",
         "virtualenv==21.2.4"
       ],
@@ -4746,7 +4746,7 @@
       "ref": "protobuf==5.29.6"
     },
     {
-      "ref": "psycopg2-binary==2.9.11"
+      "ref": "psycopg2-binary==2.9.12"
     },
     {
       "dependsOn": [
@@ -4758,18 +4758,18 @@
       "dependsOn": [
         "annotated-types==0.7.0",
         "email-validator==2.3.0",
-        "pydantic_core==2.46.2",
+        "pydantic_core==2.46.3",
         "typing-inspection==0.4.2",
         "typing_extensions==4.15.0",
-        "tzdata==2026.1"
+        "tzdata==2026.2"
       ],
-      "ref": "pydantic==2.13.2"
+      "ref": "pydantic==2.13.3"
     },
     {
       "dependsOn": [
         "typing_extensions==4.15.0"
       ],
-      "ref": "pydantic_core==2.46.2"
+      "ref": "pydantic_core==2.46.3"
     },
     {
       "dependsOn": [
@@ -4800,7 +4800,7 @@
     },
     {
       "dependsOn": [
-        "click==8.3.2"
+        "click==8.3.3"
       ],
       "ref": "python-dotenv==1.2.2"
     },
@@ -4823,10 +4823,10 @@
     },
     {
       "dependsOn": [
-        "certifi==2026.2.25",
+        "certifi==2026.4.22",
         "chardet==5.2.0",
         "charset-normalizer==3.4.7",
-        "idna==3.11",
+        "idna==3.13",
         "urllib3==2.6.3"
       ],
       "ref": "requests==2.33.1"
@@ -4859,11 +4859,11 @@
     {
       "dependsOn": [
         "filelock==3.29.0",
-        "packaging==26.1",
+        "packaging==26.2",
         "pip==26.0.1",
         "tomli==2.4.1",
         "virtualenv==21.2.4",
-        "wheel==0.46.3"
+        "wheel==0.47.0"
       ],
       "ref": "setuptools==82.0.1"
     },
@@ -4916,14 +4916,14 @@
       "ref": "typing_extensions==4.15.0"
     },
     {
-      "ref": "tzdata==2026.1"
+      "ref": "tzdata==2026.2"
     },
     {
       "dependsOn": [
         "fsspec==2026.3.0",
-        "packaging==26.1",
+        "packaging==26.2",
         "pathlib_abc==0.5.2",
-        "pydantic==2.13.2",
+        "pydantic==2.13.3",
         "typing_extensions==4.15.0"
       ],
       "ref": "universal_pathlib==0.3.10"
@@ -4937,7 +4937,7 @@
     {
       "dependsOn": [
         "PyYAML==6.0.3",
-        "click==8.3.2",
+        "click==8.3.3",
         "h11==0.16.0",
         "httptools==0.7.1",
         "python-dotenv==1.2.2",
@@ -4946,7 +4946,7 @@
         "watchfiles==1.1.1",
         "websockets==16.0"
       ],
-      "ref": "uvicorn==0.44.0"
+      "ref": "uvicorn==0.46.0"
     },
     {
       "dependsOn": [
@@ -4984,14 +4984,13 @@
     },
     {
       "dependsOn": [
-        "packaging==26.1",
-        "setuptools==82.0.1"
+        "packaging==26.2"
       ],
-      "ref": "wheel==0.46.3"
+      "ref": "wheel==0.47.0"
     },
     {
       "dependsOn": [
-        "idna==3.11",
+        "idna==3.13",
         "multidict==6.7.1",
         "propcache==0.4.1"
       ],
@@ -4999,7 +4998,7 @@
     }
   ],
   "metadata": {
-    "timestamp": "2026-04-19T19:25:29.403846+00:00",
+    "timestamp": "2026-04-25T10:33:43.914150+00:00",
     "tools": {
       "components": [
         {
@@ -5103,7 +5102,7 @@
       ]
     }
   },
-  "serialNumber": "urn:uuid:d1f86de2-aef5-4b28-8f93-b738b7eb8d93",
+  "serialNumber": "urn:uuid:a788ae91-9910-4346-814b-0c2ab407efa6",
   "version": 1,
   "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
   "bomFormat": "CycloneDX",

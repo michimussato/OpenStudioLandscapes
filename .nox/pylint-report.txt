@@ -1,8 +1,10 @@
 ************* Module OpenStudioLandscapes.cli
-src/OpenStudioLandscapes/cli.py:617:0: C0301: Line too long (153/100) (line-too-long)
+src/OpenStudioLandscapes/cli.py:627:0: C0301: Line too long (153/100) (line-too-long)
 src/OpenStudioLandscapes/cli.py:259:5: W0511: Todo (fixme)
 src/OpenStudioLandscapes/cli.py:268:5: W0511: Todo (fixme)
-src/OpenStudioLandscapes/cli.py:568:9: W0511: Todo (fixme)
+src/OpenStudioLandscapes/cli.py:281:5: W0511: Todo (fixme)
+src/OpenStudioLandscapes/cli.py:289:5: W0511: Todo (fixme)
+src/OpenStudioLandscapes/cli.py:578:9: W0511: Todo (fixme)
 src/OpenStudioLandscapes/cli.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 src/OpenStudioLandscapes/cli.py:21:0: C0115: Missing class docstring (missing-class-docstring)
 src/OpenStudioLandscapes/cli.py:28:0: C0116: Missing function or method docstring (missing-function-docstring)
@@ -11,63 +13,72 @@ src/OpenStudioLandscapes/cli.py:79:0: C0116: Missing function or method docstrin
 src/OpenStudioLandscapes/cli.py:84:4: W1510: 'subprocess.run' used without explicitly defining the value for 'check'. (subprocess-run-check)
 src/OpenStudioLandscapes/cli.py:101:0: C0116: Missing function or method docstring (missing-function-docstring)
 src/OpenStudioLandscapes/cli.py:246:4: W0612: Unused variable 'subparser_update' (unused-variable)
-src/OpenStudioLandscapes/cli.py:362:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/cli.py:395:8: W1201: Use lazy % formatting in logging functions (logging-not-lazy)
-src/OpenStudioLandscapes/cli.py:396:12: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/cli.py:402:12: W1201: Use lazy % formatting in logging functions (logging-not-lazy)
-src/OpenStudioLandscapes/cli.py:402:24: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/cli.py:405:20: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/cli.py:420:12: W1201: Use lazy % formatting in logging functions (logging-not-lazy)
-src/OpenStudioLandscapes/cli.py:420:24: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/cli.py:423:21: W1510: 'subprocess.run' used without explicitly defining the value for 'check'. (subprocess-run-check)
-src/OpenStudioLandscapes/cli.py:433:12: W1201: Use lazy % formatting in logging functions (logging-not-lazy)
-src/OpenStudioLandscapes/cli.py:433:24: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/cli.py:451:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:452:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:453:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:465:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:467:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:473:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:478:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:480:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:481:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:482:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:496:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:498:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:504:20: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:439:4: R1711: Useless return at end of function or method (useless-return)
-src/OpenStudioLandscapes/cli.py:362:0: R0915: Too many statements (62/50) (too-many-statements)
-src/OpenStudioLandscapes/cli.py:512:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/cli.py:512:0: R0914: Too many local variables (19/15) (too-many-locals)
-src/OpenStudioLandscapes/cli.py:515:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:515:16: W1309: Using an f-string that does not have any interpolated variables (f-string-without-interpolation)
-src/OpenStudioLandscapes/cli.py:519:4: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
-src/OpenStudioLandscapes/cli.py:528:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:529:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:530:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:541:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:546:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:548:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:549:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:550:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:563:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:590:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:592:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:598:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:613:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:615:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:619:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:512:0: R0912: Too many branches (13/12) (too-many-branches)
-src/OpenStudioLandscapes/cli.py:512:0: R0915: Too many statements (66/50) (too-many-statements)
-src/OpenStudioLandscapes/cli.py:649:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/cli.py:651:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:652:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:654:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:654:16: W1309: Using an f-string that does not have any interpolated variables (f-string-without-interpolation)
-src/OpenStudioLandscapes/cli.py:655:4: W1510: 'subprocess.run' used without explicitly defining the value for 'check'. (subprocess-run-check)
-src/OpenStudioLandscapes/cli.py:663:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:663:16: W1309: Using an f-string that does not have any interpolated variables (f-string-without-interpolation)
-src/OpenStudioLandscapes/cli.py:672:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/cli.py:322:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/cli.py:355:8: W1201: Use lazy % formatting in logging functions (logging-not-lazy)
+src/OpenStudioLandscapes/cli.py:356:12: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
+src/OpenStudioLandscapes/cli.py:362:12: W1201: Use lazy % formatting in logging functions (logging-not-lazy)
+src/OpenStudioLandscapes/cli.py:362:24: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
+src/OpenStudioLandscapes/cli.py:365:20: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
+src/OpenStudioLandscapes/cli.py:380:12: W1201: Use lazy % formatting in logging functions (logging-not-lazy)
+src/OpenStudioLandscapes/cli.py:380:24: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
+src/OpenStudioLandscapes/cli.py:383:21: W1510: 'subprocess.run' used without explicitly defining the value for 'check'. (subprocess-run-check)
+src/OpenStudioLandscapes/cli.py:393:12: W1201: Use lazy % formatting in logging functions (logging-not-lazy)
+src/OpenStudioLandscapes/cli.py:393:24: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
+src/OpenStudioLandscapes/cli.py:411:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:412:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:413:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:414:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:426:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:428:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:434:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:439:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:441:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:442:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:443:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:444:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:458:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:460:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:466:20: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:399:4: R1711: Useless return at end of function or method (useless-return)
+src/OpenStudioLandscapes/cli.py:322:0: R0915: Too many statements (64/50) (too-many-statements)
+src/OpenStudioLandscapes/cli.py:474:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/cli.py:474:0: R0914: Too many local variables (19/15) (too-many-locals)
+src/OpenStudioLandscapes/cli.py:477:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:477:16: W1309: Using an f-string that does not have any interpolated variables (f-string-without-interpolation)
+src/OpenStudioLandscapes/cli.py:481:4: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
+src/OpenStudioLandscapes/cli.py:490:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:491:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:492:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:503:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:508:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:510:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:511:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:512:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:525:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:538:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:539:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:551:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:556:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:558:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:559:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:573:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:600:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:602:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:608:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:623:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:625:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:629:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:474:0: R0912: Too many branches (20/12) (too-many-branches)
+src/OpenStudioLandscapes/cli.py:474:0: R0915: Too many statements (96/50) (too-many-statements)
+src/OpenStudioLandscapes/cli.py:644:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/cli.py:646:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:647:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:649:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:649:16: W1309: Using an f-string that does not have any interpolated variables (f-string-without-interpolation)
+src/OpenStudioLandscapes/cli.py:650:4: W1510: 'subprocess.run' used without explicitly defining the value for 'check'. (subprocess-run-check)
+src/OpenStudioLandscapes/cli.py:658:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:658:16: W1309: Using an f-string that does not have any interpolated variables (f-string-without-interpolation)
+src/OpenStudioLandscapes/cli.py:667:0: C0116: Missing function or method docstring (missing-function-docstring)
 ************* Module OpenStudioLandscapes.engine.enums
 src/OpenStudioLandscapes/engine/enums.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 src/OpenStudioLandscapes/engine/enums.py:15:0: C0115: Missing class docstring (missing-class-docstring)
@@ -946,14 +957,14 @@ group_out_base = AssetSpec(
     "`OpenStudioLandscapes.engine.base.assets.group_out_base`.",
 )
 
-# assets_external is meant for the Definitions object in
-# _definitions_with_upstream_specs.py for now.
 assets_external.append(group_out_base)
 
 
 defs = Definitions(
     assets=[
         *assets_base,
+        # *constants,
+        # *assets_external,
     ],
 ) (duplicate-code)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
@@ -1009,6 +1020,7 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
         pass
 
     context.log.info(f"{cmds = }")
+    # cmds = [['/usr/local/bin/docker', '--debug', '--config', '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json', 'build', '--progress', 'plain', '--pull', '--file', '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles/Dockerfile', '--no-cache', '--tag', 'openstudiolandscapes_base_build_docker_image:2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f', '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles'], ['/usr/local/bin/docker', '--config', '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json', 'push', 'openstudiolandscapes_base_build_docker_image:2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f']]
 
     logs = docker_do(
         context=context,
@@ -1090,22 +1102,22 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[238:254]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1354:1370]
-    group_names_by_key_dict = context.assets_def.group_names_by_key
-    # Results in:
-    # Single Output:
-    # {AssetKey(['OpenCue', 'group_out']): 'OpenCue'}
-    # Multiple Outputs:
-    # {AssetKey(['Compose_default', 'group_out']): 'Compose_default', AssetKey(['Compose_default', 'compose_project_name']): 'Compose_default'}
-    context.log.debug(group_names_by_key_dict)
+        group_names_by_key_dict = context.assets_def.group_names_by_key
+        # Results in:
+        # Single Output:
+        # {AssetKey(['OpenCue', 'group_out']): 'OpenCue'}
+        # Multiple Outputs:
+        # {AssetKey(['Compose_default', 'group_out']): 'Compose_default', AssetKey(['Compose_default', 'compose_project_name']): 'Compose_default'}
+        context.log.debug(group_names_by_key_dict)
 
-    cmd_docker_compose_logs = [
-        "$(which docker)",
-        "--config",
-        docker_config_json.as_posix(),
-        "compose",
-        "--progress",
-        DOCKER_PROGRESS,
-        "--file", (duplicate-code)
+        cmd_docker_compose_logs = [
+            "$(which docker)",
+            "--config",
+            docker_config_json.as_posix(),
+            "compose",
+            "--progress",
+            DOCKER_PROGRESS,
+            "--file", (duplicate-code)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[271:289]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1390:1404]
@@ -1145,31 +1157,16 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
 ==OpenStudioLandscapes.engine.landscape_map.definitions:[21:37]
 )
 
-# if bool(assets):
-#     constants = load_assets_from_modules(
-#         [OpenStudioLandscapes.engine.compose_scopes.constants]
-#     )
-# else:
-#     # This prevents constants asset from showing up it the
-#     # Dagster UI if the Feature itself is not enabled/available.
-#     constants = []
-
-
-from OpenStudioLandscapes.engine.compose_scopes.constants import (
-    COMPOSE_SCOPE_GROUP_PREFIX,
-)
-from OpenStudioLandscapes.engine.discovery import discovery
-from OpenStudioLandscapes.engine.utils import get_dynamic_ins
 
 feature_ins = get_dynamic_ins(
     imported_features=discovery.DISCOVERED_MODELS,
 )
 
+
 LOGGER = discovery.LOGGER
 
 
 LOGGER.info(f"{feature_ins = }")
-# {'default': {'OpenStudioLandscapes_filebrowser': AssetIn(key=AssetKey(['OpenStudioLandscapes_filebrowser', 'feature_out_v2']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>)}}
 
 assets_external = []
 
@@ -1177,16 +1174,26 @@ assets_external = []
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[247:254]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1382:1389]
-        "$(which docker)",
-        "--config",
-        docker_config_json.as_posix(),
-        "compose",
-        "--progress",
-        DOCKER_PROGRESS,
-        "--file", (duplicate-code)
+            "$(which docker)",
+            "--config",
+            docker_config_json.as_posix(),
+            "compose",
+            "--progress",
+            DOCKER_PROGRESS,
+            "--file", (duplicate-code)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[263:270]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1363:1370]
+            "$(which docker)",
+            "--config",
+            docker_config_json.as_posix(),
+            "compose",
+            "--progress",
+            DOCKER_PROGRESS,
+            "--file", (duplicate-code)
+src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
+==OpenStudioLandscapes.engine.base.ops.__init__:[297:304]
+==OpenStudioLandscapes.engine.base.ops.factories:[1462:1469]
         "$(which docker)",
         "--config",
         docker_config_json.as_posix(),
@@ -1195,44 +1202,34 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
         DOCKER_PROGRESS,
         "--file", (duplicate-code)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
-==OpenStudioLandscapes.engine.base.ops.__init__:[297:304]
-==OpenStudioLandscapes.engine.base.ops.factories:[1462:1469]
-            "$(which docker)",
-            "--config",
-            docker_config_json.as_posix(),
-            "compose",
-            "--progress",
-            DOCKER_PROGRESS,
-            "--file", (duplicate-code)
-src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[326:333]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1432:1439]
-            "$(which docker)",
-            "--config",
-            docker_config_json.as_posix(),
-            "compose",
-            "--progress",
-            DOCKER_PROGRESS,
-            "--file", (duplicate-code)
+        "$(which docker)",
+        "--config",
+        docker_config_json.as_posix(),
+        "compose",
+        "--progress",
+        DOCKER_PROGRESS,
+        "--file", (duplicate-code)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[305:321]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1440:1456]
-            "--project-name",
-            compose_project_name,
-            "restart",
-            # "--remove-orphans",
-            # Todo
-            #  - [ ] `cmd_extend` seems to have no effect
-            #        this can't be intentional...
-            *{
-                "cmd_extend": cmd_extend,
-                "detach": ["--detach"],
-                "nothing": [],
-            }["nothing"],
-            # *cmd_append["cmd"],
-            # "&&",
-            # *cmd_docker_compose_logs,
-        ] (duplicate-code)
+        "--project-name",
+        compose_project_name,
+        "restart",
+        # "--remove-orphans",
+        # Todo
+        #  - [ ] `cmd_extend` seems to have no effect
+        #        this can't be intentional...
+        *{
+            "cmd_extend": cmd_extend,
+            "detach": ["--detach"],
+            "nothing": [],
+        }["nothing"],
+        # *cmd_append["cmd"],
+        # "&&",
+        # *cmd_docker_compose_logs,
+    ] (duplicate-code)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.assets:[273:375]
 ==OpenStudioLandscapes.engine.vfx_reference.assets:[338:502]
@@ -1426,14 +1423,14 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[262:270]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1381:1389]
-        cmd_docker_compose_up = [
-            "$(which docker)",
-            "--config",
-            docker_config_json.as_posix(),
-            "compose",
-            "--progress",
-            DOCKER_PROGRESS,
-            "--file", (duplicate-code)
+    cmd_docker_compose_up = [
+        "$(which docker)",
+        "--config",
+        docker_config_json.as_posix(),
+        "compose",
+        "--progress",
+        DOCKER_PROGRESS,
+        "--file", (duplicate-code)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[296:304]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1431:1439]
@@ -1447,5 +1444,5 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
         "--file", (duplicate-code)
 
 ------------------------------------------------------------------
-Your code has been rated at 6.14/10 (previous run: 7.42/10, -1.28)
+Your code has been rated at 6.15/10 (previous run: 7.42/10, -1.27)
 
