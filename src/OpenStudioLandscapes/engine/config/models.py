@@ -17,7 +17,6 @@ from pydantic import (
     BaseModel,
     ConfigDict,
     Field,
-    FieldInfo,
     PositiveInt,
     field_validator,
     computed_field,
@@ -99,7 +98,7 @@ class BaseConfig(BaseModel):
         doc_str = str()
 
         field_k: str
-        field_v: FieldInfo
+        field_v: pydantic.FieldInfo
 
         for field_k, field_v in cls.model_fields.items():
             try:
@@ -170,7 +169,7 @@ class BaseConfig(BaseModel):
                 # if isinstance(sub_class_value, PydanticUndefinedType):
                 #     kv = {field_k: "<NOT SET> (CHANGE_ME)"}
                 # else:
-                if isinstance(sub_class_value, BaseModel):
+                if isinstance(sub_class_value, pydantic.BaseModel):
                     v = json.loads(
                         sub_class_value.model_dump_json(indent=2, fallback=str)
                     )
