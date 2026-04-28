@@ -361,12 +361,16 @@ class RezConfigModel(BaseConfig):
         "https://rez.readthedocs.io/en/stable/configuring_rez.html#packages_path",
     )
 
-    # @computed_field
     @property
     def REZ_PACKAGES_PATH(self) -> List[pathlib.Path]:
         # Resources (@computed_field):
         # - https://stackoverflow.com/a/76301965
         # - https://docs.pydantic.dev/2.7/concepts/fields/#the-computed_field-decorator
+        # -> just property without computed_field is fine here.
+        #    no need to serialize this member when dumping the model
+        #    An example of a successful computed_field implementation
+        #    can be found here:
+        #    - [OpenStudioLandscapes-DagsterCodeLocation-JobProcessor](https://github.com/michimussato/OpenStudioLandscapes-DagsterCodeLocation-JobProcessor/blob/main/src/OpenStudioLandscapes/DagsterCodeLocation/JobProcessor/deadline_templates/plugins/houdini/__init__.py)
         paths_ = [
             self.REZ_LOCAL_PACKAGES_PATH,
             self.REZ_RELEASE_PACKAGES_PATH,
@@ -374,12 +378,10 @@ class RezConfigModel(BaseConfig):
         ]
         return paths_
 
-    # @computed_field
     @property
     def REZ_PACKAGES_PATH_ENV(self) -> str:
         return ":".join(i.expanduser().as_posix() for i in self.REZ_PACKAGES_PATH)
 
-    # @computed_field
     @property
     def REZ_PACKAGES_PATH_VOL(self) -> List[str]:
         return [
@@ -387,7 +389,6 @@ class RezConfigModel(BaseConfig):
             for i in self.REZ_PACKAGES_PATH
         ]
 
-    # @computed_field
     @property
     def REZ_ENVIRONMENT(self) -> Dict[str, str]:
         env = {
