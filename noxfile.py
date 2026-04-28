@@ -121,7 +121,8 @@ features_dir: pathlib.Path = engine_dir / ".features"
 landscapes_dir: pathlib.Path = engine_dir / ".landscapes"
 FEATURES_PARAMETERIZED: list[pathlib.Path] = []
 ENGINE_COMPONENTS_PARAMETERIZED: list[pathlib.Path] = [
-    engine_dir / "src/OpenStudioLandscapes/engine/env/tests",
+    engine_dir.joinpath("tests"),
+    engine_dir.joinpath("src", "OpenStudioLandscapes", "engine", "env", "tests"),
 ]
 
 for dir_ in features_dir.iterdir():
@@ -1770,27 +1771,27 @@ def lint(session, working_directory):
 
 #######################################################################################################################
 # Testing
-@nox.session(python=PYTHON_TEST_VERSIONS, tags=["testing"])
+@nox.session(python=PYTHON_TEST_VERSIONS, tags=["testing_engine"])
 @nox.parametrize(
     "working_directory",
     # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
     [
         # nox.param(engine_dir.name, id=engine_dir.name),
-        *[nox.param(i, id=i.name) for i in ENGINE_COMPONENTS_PARAMETERIZED],
+        *[nox.param(i, id="-".join(i.relative_to(engine_dir).parts)) for i in ENGINE_COMPONENTS_PARAMETERIZED],
         # *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED],
     ],
 )
 def testing_engine(session, working_directory):
     """
-    Runs pytests (not implemented).
+    Runs engine core and components pytests.
 
     Scope:
     - [x] Engine
     - [ ] Features
     """
     # Ex:
-    # nox --session testing
-    # nox --tags testing
+    # nox --session testing_engine
+    # nox --tags testing_engine
 
     # session.skip("Not implemented")
 
