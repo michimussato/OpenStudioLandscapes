@@ -372,10 +372,10 @@ def get_config_dict_feature(
     return config_dict_feature
 
 
-def init() -> Dict:
-    config_engine: ConfigEngine = get_config_engine()
-
-    discovered_models = {}
+def init(
+    config_engine: ConfigEngine,
+    discovered_models: Dict,
+) -> Dict[str, ModuleType]:
 
     for package in get_namespace_packages():
         feature_dict = {
@@ -485,7 +485,6 @@ def init() -> Dict:
     #      'OpenStudioLandscapes-VERT': <class 'OpenStudioLandscapes.VERT.config.models.Config'>,
     #  }
 
-
     if REPO_INITIALIZED:
         # Add all files to tracked files in Git repo
         if fresh_repo:
@@ -502,7 +501,6 @@ def init() -> Dict:
                     f"{config_store_repo.git.status()}"
                 )
 
-
     LOGGER.info(f"Bootstrapping finished successfully.")
 
     return discovered_models
@@ -512,4 +510,11 @@ if __name__ == "__main__":
     pass
 
 else:
-    DISCOVERED_MODELS: Dict = init()
+    DISCOVERED_MODELS: Dict[str, ModuleType] = {}
+
+    config_engine: ConfigEngine = get_config_engine()
+
+    init(
+        config_engine=config_engine,
+        discovered_models=DISCOVERED_MODELS,
+    )
