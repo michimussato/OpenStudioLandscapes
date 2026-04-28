@@ -1690,6 +1690,15 @@ def lint(session, working_directory):
         #     "--extend-exclude", "'^.svg'",
         # ]
 
+        """
+        [...]
+        nox > black src
+        Warning: Python 3.11 cannot parse code formatted for Python 3.14. To fix this: run Black with Python 3.14, set --target-version to py311, or use --fast to skip the safety check. Black's safety check verifies equivalence by parsing the AST, which fails when the running Python is older than the target version.                                               
+        All done! ✨ 🍰 ✨
+        9 files left unchanged.
+        [...]
+        """
+
         session.run(
             "black",
             "src",
