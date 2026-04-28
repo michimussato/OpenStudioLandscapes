@@ -85,7 +85,7 @@ function create_pr() {
       --assignee="@me" \
       --draft \
       --body="${body_string}" \
-#      --dry-run \
+      --dry-run \
 #      ${args}
 #      --body-file="${BODY_FILE}" \
   #    --template="${TEMPLATE}" \
