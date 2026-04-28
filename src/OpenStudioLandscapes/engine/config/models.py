@@ -478,11 +478,17 @@ class ConfigEngine(BaseConfig):
         default=RezConfigModel(
             **{
                 "deploy_rez": True,
-                "REZ_PACKAGES_PATH": [
-                    pathlib.Path("~/rez/packages/local"),
-                    pathlib.Path("~/rez/packages/deployed/internal"),
-                    pathlib.Path("/data/share/rez-packages/packages"),
-                ],
+                # The following has no effect here:
+                # REZ_PACKAGES_PATH refers to a property, not a Field
+                # Hence, model gets created using defaults for:
+                # - REZ_LOCAL_PACKAGES_PATH
+                # - REZ_RELEASE_PACKAGES_PATH
+                # - REZ_EXTERNAL_PACKAGES_PATH
+                # "REZ_PACKAGES_PATH": [
+                #     pathlib.Path("~/rez/packages/local"),
+                #     pathlib.Path("~/rez/packages/deployed/internal"),
+                #     pathlib.Path("/data/share/rez-packages/packages"),
+                # ],
             },
         ),
     )
