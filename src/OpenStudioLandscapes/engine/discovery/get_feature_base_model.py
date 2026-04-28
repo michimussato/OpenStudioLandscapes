@@ -14,7 +14,7 @@ def get_feature_base_model(
     search_instance_type: Type[discovery.FeatureBaseModel],
 ) -> discovery.FeatureBaseModel:
     """
-    We are not create a new Config object for this Feature. It
+    We are not creating a new Config object for this Feature. It
     was pre-made during the bootstrapping process.
     We just need to find it in the `discovery.DISCOVERED_MODELS` dict.
 

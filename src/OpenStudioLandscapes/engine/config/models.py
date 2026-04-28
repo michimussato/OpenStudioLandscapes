@@ -5,6 +5,7 @@ import pathlib
 import re
 from importlib.metadata import Distribution
 from typing import ClassVar, Dict, List
+from types import ModuleType
 
 import pydantic
 import yaml
@@ -809,6 +810,36 @@ class FeatureBaseModel(BaseConfig):
             )
         )
         return ret
+
+
+class OpenStudioLandscapesDiscoveredFeature(BaseModel):
+    # ModuleType Fields:
+    # pydantic.errors.PydanticSchemaGenerationError:
+    #   Unable to generate pydantic-core schema for <class 'module'>.
+    #   Set `arbitrary_types_allowed=True` in the model_config to
+    #   ignore this error or implement `__get_pydantic_core_schema__`
+    #   on your type to fully support it.
+    model_config = ConfigDict(
+        # This disables model checks for all fields.
+        # More info here:
+        # - https://stackoverflow.com/a/78379656/2207196
+        arbitrary_types_allowed=True,
+    )
+
+    definitions: str = Field()
+    definitions_object: ModuleType = Field(
+        default=None,
+    )
+
+    models: str = Field()
+    models_object: ModuleType = Field(
+        default=None,
+    )
+
+    config: FeatureBaseModel = Field(
+        default=None,
+        # default_factory=FeatureBaseModel,
+    )
 
 
 # Todo:

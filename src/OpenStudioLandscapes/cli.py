@@ -36,11 +36,10 @@ def run_openstudiolandscapes_postgres(args):
     if args.domain_wan is not None:
         os.environ["OPENSTUDIOLANDSCAPES__DOMAIN_WAN"] = args.domain_wan
 
-    os.environ["OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT"] = args.config_store
-    os.environ["OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS"] = args.config_store_vcs
+    os.environ["OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT"] = args.config_store.as_posix()
+    os.environ["OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS"] = args.config_store_vcs.as_posix()
 
-    if args.landscapes_root is not None:
-        os.environ["OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT"] = args.landscapes_root
+    os.environ["OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT"] = args.landscapes_root.as_posix()
 
     if args.landscapes_id is not None:
         os.environ["OPENSTUDIOLANDSCAPES__LANDSCAPE_ID"] = args.landscapes_id
@@ -158,12 +157,9 @@ def parse_args(args):
     parser.add_argument(
         "--config-store",
         dest="config_store",
-        type=str,
+        type=pathlib.Path,
         metavar="OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT",
-        default=os.environ.get(
-            "OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT",
-            "~/.config/OpenStudioLandscapes/config-store",
-        ),
+        default=pathlib.Path("~/.config/OpenStudioLandscapes/config-store"),
         # action="store_true",
         required=False,
         help="Set the configuration store path.",
@@ -172,13 +168,9 @@ def parse_args(args):
     parser.add_argument(
         "--config-store-vcs",
         dest="config_store_vcs",
-        type=str,
+        type=pathlib.Path,
         metavar="OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS",
-        default=os.environ.get(
-            "OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS",
-            "~/.config/OpenStudioLandscapes/config-store",
-        ),
-        # action="store_true",
+        default=pathlib.Path("~/.config/OpenStudioLandscapes/config-store"),
         required=False,
         help="If the config store is part of a Git repository already, "
         "you can specify the path to the repo here. Defaults to the same "
@@ -188,13 +180,9 @@ def parse_args(args):
     parser.add_argument(
         "--landscapes-root",
         dest="landscapes_root",
-        type=str,
+        type=pathlib.Path,
         metavar="OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT",
-        default=os.environ.get(
-            "OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT",
-            None,
-        ),
-        # action="store_true",
+        default=pathlib.Path("~/.local/share/OpenStudioLandscapes"),
         required=False,
         help="Set the Landscape root path. A `.landscapes` "
         "subdirectory will be created and used.",
@@ -205,10 +193,7 @@ def parse_args(args):
         dest="landscapes_id",
         type=str,
         metavar="OPENSTUDIOLANDSCAPES__LANDSCAPE_ID",
-        default=os.environ.get(
-            "OPENSTUDIOLANDSCAPES__LANDSCAPE_ID",
-            None,
-        ),
+        default=None,
         # action="store_true",
         required=False,
         help="Lock the landscape_id to this value.",
@@ -320,9 +305,45 @@ def setup_logging(loglevel):
 
 
 def checks(args):
-    LOGGER.info("Checking OpenStudioLandscapes dependencies...")
+    LOGGER.info("Running OpenStudioLandscapes pre-flight checks...")
+
+    def check_illegal_args(args):
+
+        LOGGER.info("Checking for illegal CLI values...")
+
+        args.landscapes_root: pathlib.Path
+
+        try:
+            assert ".landscapes" not in args.landscapes_root.parts, (
+                    "`--landscapes-root` contains `.landscapes` path element ('%s'). "
+                    "Can't continue."
+                    % args.landscapes_root.as_posix()
+            )
+
+        except AssertionError as e:
+            msg = textwrap.dedent(
+                """
+                #########################################################
+                `--landscapes-root` path must not contain `.landscapes`. 
+                A `.landscapes` subdirectory will be created 
+                automatically.
+                #########################################################
+                Initialization terminated.
+                #########################################################
+                """
+            )
+            LOGGER.error(msg)
+            raise AssertionError(msg) from e
+
+        LOGGER.info("Done checking for illegal CLI values.")
+        return 0
+
+    check_illegal_args(args)
 
     def check_sys_deps():
+
+        LOGGER.info("Checking OpenStudioLandscapes dependencies...")
+
         sys_deps = {
             "Docker": {
                 "executable": "docker",
@@ -393,6 +414,7 @@ def checks(args):
             LOGGER.info("%s version is: `%s`" % (dep, result.stdout.decode().strip()))
 
         LOGGER.info("Done checking dependencies.")
+        return 0
 
     check_sys_deps()
 
@@ -400,6 +422,8 @@ def checks(args):
         # https://knowledge.buka.sh/how-to-check-for-remote-git-changes-without-pulling/
 
         # if any(sc == args.sub_command for sc in ["update"]):
+
+        LOGGER.info("Checking for OpenStudioLandscapes updates...")
 
         repos = {
             "engine": None,
@@ -465,7 +489,9 @@ def checks(args):
                     result_pull_feature = git_cmd_feature.pull()
                     LOGGER.info(f"Changes: {result_pull_feature}")
         # repo.git.pull()
-        return
+
+        LOGGER.info("Done checking for OpenStudioLandscapes updates.")
+        return 0
 
     if not args.skip_update_check:
         check_updates_available()

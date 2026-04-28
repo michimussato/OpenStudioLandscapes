@@ -1,5 +1,19 @@
 """
 This is the Feature discovery engine for OpenStudioLandscapes.
+It's a bit messy in here for two reasons -
+1. The project has grown with this as an underlying core feature
+2. I couldn't come up with a better solution yet
+
+Things that could be improved
+- config.yaml to allow for comments
+  - Currently, the files are read and dumped again,
+    removing all comments whatsoever
+  - This mechanisma, however, allows to dynamically
+    add/remove YAML key/value pairs based on the underlying
+    model.
+- avoid re-discovery at runtime whenever possible and if
+  not explicitly asked for
+- maybe migrate to a pure Code Location approach at some point
 """
 
 import importlib
@@ -19,7 +33,11 @@ from setuptools import find_namespace_packages
 
 from OpenStudioLandscapes.engine import dist as dist_engine
 from OpenStudioLandscapes.engine.config.models import CONFIG_STR as ENGINE_CONFIG_STR
-from OpenStudioLandscapes.engine.config.models import ConfigEngine, FeatureBaseModel
+from OpenStudioLandscapes.engine.config.models import (
+    ConfigEngine,
+    FeatureBaseModel,
+    OpenStudioLandscapesDiscoveredFeature,
+)
 
 LOGGER = get_dagster_logger(__name__)
 
@@ -47,26 +65,6 @@ def update_config_yml(
     return None
 
 
-# def has_handle(
-#     fpath: pathlib.Path,
-# ):
-#     # Checks if a file is currently open (aka. has a handle)
-#     for proc in psutil.process_iter():
-#         try:
-#             for item in proc.open_files():
-#                 if fpath == item.path:
-#                     LOGGER.debug(f"File currently opened by process: {fpath.as_posix()}")
-#                     return True
-#         except psutil.AccessDenied as access_denied:
-#             LOGGER.debug(f"Access denied: {access_denied}")
-#         except psutil.NoSuchProcess as no_such_process:
-#             LOGGER.debug(f"No such process: {no_such_process}")
-#         except FileNotFoundError as file_not_found:
-#             LOGGER.debug(f"File not found: {file_not_found}")
-#
-#     return False
-
-
 # Important
 # The Feature Git repositories have to physically exist locally.
 # It's not enough to just pip install them from the repo directly, like:
@@ -85,9 +83,10 @@ OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT: pathlib.Path = pathlib.Path(
         #  - [ ] if we launch OpenStudioLandscapes via `dagster dev`,
         #        this env var has not been set and will result in None -
         #        this is problematic. This is a workaround for now.
+        #        -> see `dot_landscapes` asset for a better solution
         default="~/.config/OpenStudioLandscapes/config-store",
     )
-)
+).expanduser()
 OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS: pathlib.Path = pathlib.Path(
     os.environ.get(
         "OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS",
@@ -95,9 +94,20 @@ OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS: pathlib.Path = pathlib.Path(
         #  - [ ] if we launch OpenStudioLandscapes via `dagster dev`,
         #        this env var has not been set and will result in None -
         #        this is problematic. This is a workaround for now.
+        #        -> see `dot_landscapes` asset for a better solution
         default="~/.config/OpenStudioLandscapes/config-store",
     )
-)
+).expanduser()
+# OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT: pathlib.Path = pathlib.Path(
+#     os.environ.get(
+#         "OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT",
+#         # Todo:
+#         #  - [ ] if we launch OpenStudioLandscapes via `dagster dev`,
+#         #        this env var has not been set and will result in None -
+#         #        this is problematic. This is a workaround for now.
+#         default="~/.local/share/OpenStudioLandscapes",
+#     )
+# ).expanduser()
 
 
 REPO_INITIALIZED = False
@@ -263,36 +273,6 @@ def get_models_path(namespace_package) -> str:
     )
     LOGGER.info("Resulting models path: '%s'", definitions_path)
     return definitions_path
-
-
-class OpenStudioLandscapesDiscoveredFeature(BaseModel):
-    # ModuleType Fields:
-    # pydantic.errors.PydanticSchemaGenerationError:
-    #   Unable to generate pydantic-core schema for <class 'module'>.
-    #   Set `arbitrary_types_allowed=True` in the model_config to
-    #   ignore this error or implement `__get_pydantic_core_schema__`
-    #   on your type to fully support it.
-    model_config = ConfigDict(
-        # This disables model checks for all fields.
-        # More info here:
-        # - https://stackoverflow.com/a/78379656/2207196
-        arbitrary_types_allowed=True,
-    )
-
-    definitions: str = Field()
-    definitions_object: ModuleType = Field(
-        default=None,
-    )
-
-    models: str = Field()
-    models_object: ModuleType = Field(
-        default=None,
-    )
-
-    config: FeatureBaseModel = Field(
-        default=None,
-        # default_factory=FeatureBaseModel,
-    )
 
 
 def try_import_discovered(

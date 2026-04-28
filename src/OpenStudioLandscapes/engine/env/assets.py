@@ -119,15 +119,18 @@ def dot_landscapes(
     git_root: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
 
-    _dot_landscapes = pathlib.Path(
-        get_str_env(
-            env="OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT",
-            default=git_root.as_posix(),
-        ),
-        ".landscapes",
+    _dot_landscapes: pathlib.Path = (
+        pathlib.Path(
+            get_str_env(
+                env="OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT",
+                default=pathlib.Path("~/.local/share/OpenStudioLandscapes"),
+            ),
+        )
+        .joinpath(".landscapes")
+        .expanduser()
     )
 
-    if not _dot_landscapes.expanduser().exists():
+    if not _dot_landscapes.exists():
         try:
             _dot_landscapes.mkdir(
                 mode=0o775,
@@ -355,19 +358,19 @@ def env(
     # if tz not in pytz.all_timezones:
     #     raise Exception(f"Unknown container timezone: {tz}")
 
-    landscape_root_dir = pathlib.Path(dot_landscapes, landscape_id["LANDSCAPE"])
+    landscapes_id_dir = pathlib.Path(dot_landscapes, landscape_id["LANDSCAPE"])
 
     try:
-        landscape_root_dir.expanduser().mkdir(
+        landscapes_id_dir.expanduser().mkdir(
             exist_ok=True,
             parents=True,
         )
 
-        context.log.debug(f"{landscape_root_dir.as_posix()} created successfully.")
+        context.log.debug(f"{landscapes_id_dir.as_posix()} created successfully.")
 
     except Exception as e:
         raise exceptions.OpenStudioLandscapesException(
-            f"OpenStudioLandscapes could not create landscape root directory: {landscape_root_dir.as_posix()}."
+            f"OpenStudioLandscapes could not create landscape root directory: {landscapes_id_dir.as_posix()}."
         ) from e
 
     ENVIRONMENT_BASE: dict = {
@@ -377,7 +380,6 @@ def env(
         #  - [ ] move DOT_SHARED_VOLUMES to config.yml
         "DOT_SHARED_VOLUMES": ".shared_volumes",
         "DOT_FEATURES": dot_features.as_posix(),
-        # "DOT_OVERRIDES": pathlib.Path(landscape_root_dir, ".overrides").as_posix(),
         "AUTHOR": "michimussato@gmail.com",
         "CREATED_BY": str(getpass.getuser()),
         "CREATED_ON": str(socket.gethostname()),
