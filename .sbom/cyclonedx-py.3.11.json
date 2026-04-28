@@ -1,7 +1,7 @@
 {
   "components": [
     {
-      "bom-ref": "GitPython==3.1.47",
+      "bom-ref": "GitPython==3.1.48",
       "description": "GitPython is a Python library used to interact with Git repositories",
       "externalReferences": [
         {
@@ -19,9 +19,9 @@
         }
       ],
       "name": "GitPython",
-      "purl": "pkg:pypi/gitpython@3.1.47",
+      "purl": "pkg:pypi/gitpython@3.1.48",
       "type": "library",
-      "version": "3.1.47"
+      "version": "3.1.48"
     },
     {
       "bom-ref": "Jinja2==3.1.6",
@@ -158,7 +158,7 @@
       "version": "0.0.0"
     },
     {
-      "bom-ref": "BomRef.18010645069514353.8947107021182977",
+      "bom-ref": "BomRef.7126862069500796.30628742525896047",
       "description": "A Toolkit to create dynamic Animation and VFX studio environments for robust automation and pipelines.",
       "externalReferences": [
         {
@@ -1703,7 +1703,7 @@
       "version": "0.21"
     },
     {
-      "bom-ref": "greenlet==3.4.0",
+      "bom-ref": "greenlet==3.5.0",
       "description": "Lightweight in-process concurrent programming",
       "externalReferences": [
         {
@@ -1739,9 +1739,9 @@
         }
       ],
       "name": "greenlet",
-      "purl": "pkg:pypi/greenlet@3.4.0",
+      "purl": "pkg:pypi/greenlet@3.5.0",
       "type": "library",
-      "version": "3.4.0"
+      "version": "3.5.0"
     },
     {
       "bom-ref": "grpcio==1.80.0",
@@ -2456,7 +2456,7 @@
       "version": "0.5.2"
     },
     {
-      "bom-ref": "pip==26.0.1",
+      "bom-ref": "pip==26.1",
       "description": "The PyPA recommended tool for installing Python packages.",
       "externalReferences": [
         {
@@ -2489,9 +2489,9 @@
         }
       ],
       "name": "pip",
-      "purl": "pkg:pypi/pip@26.0.1",
+      "purl": "pkg:pypi/pip@26.1",
       "type": "library",
-      "version": "26.0.1"
+      "version": "26.1"
     },
     {
       "bom-ref": "pip-requirements-parser==32.0.1",
@@ -3952,7 +3952,7 @@
       "version": "0.22.1"
     },
     {
-      "bom-ref": "virtualenv==21.2.4",
+      "bom-ref": "virtualenv==21.3.0",
       "description": "Virtual Python Environment builder",
       "externalReferences": [
         {
@@ -3985,9 +3985,9 @@
         }
       ],
       "name": "virtualenv",
-      "purl": "pkg:pypi/virtualenv@21.2.4",
+      "purl": "pkg:pypi/virtualenv@21.3.0",
       "type": "library",
-      "version": "21.2.4"
+      "version": "21.3.0"
     },
     {
       "bom-ref": "watchdog==5.0.3",
@@ -4266,7 +4266,7 @@
         "gitdb==4.0.12",
         "typing_extensions==4.15.0"
       ],
-      "ref": "GitPython==3.1.47"
+      "ref": "GitPython==3.1.48"
     },
     {
       "dependsOn": [
@@ -4291,7 +4291,7 @@
     },
     {
       "dependsOn": [
-        "GitPython==3.1.47",
+        "GitPython==3.1.48",
         "OpenStudioLandscapes-DagsterCodeLocation-StreamingProcess==0.0.0",
         "PyYAML==6.0.3",
         "SnakeMD==2.4.0",
@@ -4318,7 +4318,7 @@
     },
     {
       "dependsOn": [
-        "greenlet==3.4.0",
+        "greenlet==3.5.0",
         "psycopg2-binary==2.9.12",
         "typing_extensions==4.15.0"
       ],
@@ -4594,7 +4594,7 @@
       "dependsOn": [
         "setuptools==82.0.1"
       ],
-      "ref": "greenlet==3.4.0"
+      "ref": "greenlet==3.5.0"
     },
     {
       "dependsOn": [
@@ -4699,7 +4699,7 @@
         "humanize==4.15.0",
         "packaging==26.2",
         "tomli==2.4.1",
-        "virtualenv==21.2.4"
+        "virtualenv==21.3.0"
       ],
       "ref": "nox==2026.4.10"
     },
@@ -4725,14 +4725,14 @@
       "ref": "pip-requirements-parser==32.0.1"
     },
     {
-      "ref": "pip==26.0.1"
+      "ref": "pip==26.1"
     },
     {
       "dependsOn": [
         "graphviz==0.21",
         "packaging==26.2",
         "rich==15.0.0",
-        "virtualenv==21.2.4"
+        "virtualenv==21.3.0"
       ],
       "ref": "pipdeptree==2.35.1"
     },
@@ -4860,9 +4860,9 @@
       "dependsOn": [
         "filelock==3.29.0",
         "packaging==26.2",
-        "pip==26.0.1",
+        "pip==26.1",
         "tomli==2.4.1",
-        "virtualenv==21.2.4",
+        "virtualenv==21.3.0",
         "wheel==0.47.0"
       ],
       "ref": "setuptools==82.0.1"
@@ -4962,7 +4962,7 @@
         "python-discovery==1.2.2",
         "typing_extensions==4.15.0"
       ],
-      "ref": "virtualenv==21.2.4"
+      "ref": "virtualenv==21.3.0"
     },
     {
       "dependsOn": [
@@ -4998,7 +4998,7 @@
     }
   ],
   "metadata": {
-    "timestamp": "2026-04-25T10:33:43.914150+00:00",
+    "timestamp": "2026-04-28T13:56:29.970974+00:00",
     "tools": {
       "components": [
         {
@@ -5102,7 +5102,7 @@
       ]
     }
   },
-  "serialNumber": "urn:uuid:a788ae91-9910-4346-814b-0c2ab407efa6",
+  "serialNumber": "urn:uuid:5cf05a40-3d88-4f59-a2d2-ca725895a801",
   "version": 1,
   "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
   "bomFormat": "CycloneDX",

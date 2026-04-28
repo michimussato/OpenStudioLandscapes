@@ -4,8 +4,8 @@ import os
 import pathlib
 import re
 from importlib.metadata import Distribution
-from typing import ClassVar, Dict, List
 from types import ModuleType
+from typing import ClassVar, Dict, List
 
 import pydantic
 import yaml

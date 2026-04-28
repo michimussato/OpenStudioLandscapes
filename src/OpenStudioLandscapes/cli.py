@@ -37,9 +37,13 @@ def run_openstudiolandscapes_postgres(args):
         os.environ["OPENSTUDIOLANDSCAPES__DOMAIN_WAN"] = args.domain_wan
 
     os.environ["OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT"] = args.config_store.as_posix()
-    os.environ["OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS"] = args.config_store_vcs.as_posix()
+    os.environ["OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS"] = (
+        args.config_store_vcs.as_posix()
+    )
 
-    os.environ["OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT"] = args.landscapes_root.as_posix()
+    os.environ["OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT"] = (
+        args.landscapes_root.as_posix()
+    )
 
     if args.landscapes_id is not None:
         os.environ["OPENSTUDIOLANDSCAPES__LANDSCAPE_ID"] = args.landscapes_id
@@ -315,14 +319,12 @@ def checks(args):
 
         try:
             assert ".landscapes" not in args.landscapes_root.parts, (
-                    "`--landscapes-root` contains `.landscapes` path element ('%s'). "
-                    "Can't continue."
-                    % args.landscapes_root.as_posix()
+                "`--landscapes-root` contains `.landscapes` path element ('%s'). "
+                "Can't continue." % args.landscapes_root.as_posix()
             )
 
         except AssertionError as e:
-            msg = textwrap.dedent(
-                """
+            msg = textwrap.dedent("""
                 #########################################################
                 `--landscapes-root` path must not contain `.landscapes`. 
                 A `.landscapes` subdirectory will be created 
@@ -330,8 +332,7 @@ def checks(args):
                 #########################################################
                 Initialization terminated.
                 #########################################################
-                """
-            )
+                """)
             LOGGER.error(msg)
             raise AssertionError(msg) from e
 
