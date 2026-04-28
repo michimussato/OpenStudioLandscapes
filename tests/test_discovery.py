@@ -104,8 +104,13 @@ def test_get_config_engine(
         },
     )
 
+    result_singleton = get_config_engine()
+
+    assert result_singleton is expected
+
     expected_dump = copy.deepcopy(expected.model_dump())
     del expected  # delete expected ConfigModel so that we can create a new Singleton -> move to fixture?
+    del result_singleton
 
     result = get_config_engine()
     result_dump = result.model_dump()
