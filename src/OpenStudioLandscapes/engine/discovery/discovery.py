@@ -8,12 +8,22 @@ Things that could be improved
 - config.yaml to allow for comments
   - Currently, the files are read and dumped again,
     removing all comments whatsoever
+    - Migratio to `ruamel.yaml` might be an option
+      - https://www.w3reference.com/blog/python-yaml-update-preserving-order-and-comments/#why-preserving-order-and-comments-matters
   - This mechanisma, however, allows to dynamically
     add/remove YAML key/value pairs based on the underlying
     model.
 - avoid re-discovery at runtime whenever possible and if
   not explicitly asked for
+  Requirements:
+  - cache has to persist across processes
+    - Redis? https://www.youtube.com/watch?v=mHJoq4aK4lk
+  - invalidation of cache has to happen on Reload definitions
 - maybe migrate to a pure Code Location approach at some point
+- discovery does more than it's supposed to be doing
+  - update_config_yml
+  - Repo initialization
+    - init_config_store()
 """
 
 import importlib
@@ -136,7 +146,8 @@ def init_config_store(
 
 if not OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.expanduser().exists():
     OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.expanduser().mkdir(
-        parents=True, exist_ok=True
+        parents=True,
+        exist_ok=False,
     )
     LOGGER.info(
         f"Repo dir created: {OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.expanduser().as_posix()}."
@@ -211,9 +222,6 @@ def get_config_engine() -> ConfigEngine:
     LOGGER.info(f"{config_engine = }")
 
     return config_engine
-
-
-config_engine = get_config_engine()
 
 
 def get_namespace_packages(where=pathlib.Path.cwd() / ".features") -> List[str]:
@@ -309,51 +317,6 @@ def try_import_discovered(
     return models_object, definitions_object
 
 
-DISCOVERED_MODELS = {}
-
-
-for package in get_namespace_packages():
-    feature_dict = {
-        "definitions": get_definitions_path(package),
-        "models": get_models_path(package),
-    }
-    module = OpenStudioLandscapesDiscoveredFeature(**feature_dict)
-    # 'OpenStudioLandscapes-Kitsu.src.OpenStudioLandscapes.Kitsu':
-    #     OpenStudioLandscapesDiscoveredFeature(
-    #         definitions='OpenStudioLandscapes.Kitsu.definitions',
-    #         models='OpenStudioLandscapes.Kitsu.config.models',
-    #         config=None,
-    #     ),
-
-    try:
-        models_object, definitions_object = try_import_discovered(
-            package=package,
-            discovered_model=module,
-        )
-    except ImportError as e:
-        LOGGER.exception(e)
-        LOGGER.error("Feature import failed and won't be available: '%s'" % package)
-        continue
-
-    module.definitions_object = definitions_object
-    module.models_object = models_object
-    # 'OpenStudioLandscapes-Kitsu.src.OpenStudioLandscapes.Kitsu':
-    #     OpenStudioLandscapesDiscoveredFeature(
-    #         definitions='OpenStudioLandscapes.Kitsu.definitions',
-    #         definitions_object=<module 'OpenStudioLandscapes.Kitsu.definitions'
-    #             from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Kitsu/src/OpenStudioLandscapes/Kitsu/definitions.py'>,
-    #         models='OpenStudioLandscapes.Kitsu.config.models',
-    #         models_object=<module 'OpenStudioLandscapes.Kitsu.config.models'
-    #             from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Kitsu/src/OpenStudioLandscapes/Kitsu/config/models.py'>,
-    #         config=None
-    #     ),
-
-    DISCOVERED_MODELS[package] = module
-
-
-LOGGER.info(f"{DISCOVERED_MODELS = }")
-
-
 def get_feature_config_yml(
     package: str,
 ) -> pathlib.Path:
@@ -369,6 +332,7 @@ def get_feature_config_yml(
 def get_config_dict_feature(
     package: str,
     feature: OpenStudioLandscapesDiscoveredFeature,
+    config_engine: ConfigEngine,
 ) -> Dict:
     distribution: Distribution = metadata.distribution(package)
 
@@ -408,86 +372,144 @@ def get_config_dict_feature(
     return config_dict_feature
 
 
-# Annotate the types before the loop
-# References:
-# - https://stackoverflow.com/a/41641489/2207196
-package: str
-feature: OpenStudioLandscapesDiscoveredFeature
-for package, feature in DISCOVERED_MODELS.items():
-    LOGGER.info(f"{package = }")
-    # package =
-    # 'OpenStudioLandscapes-Kitsu.src.OpenStudioLandscapes.Kitsu'
-    LOGGER.info(f"{feature = }")
-    # feature =
-    # OpenStudioLandscapesDiscoveredFeature(
-    #     definitions='OpenStudioLandscapes.Kitsu.definitions',
-    #     definitions_object=<module 'OpenStudioLandscapes.Kitsu.definitions'
-    #         from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Kitsu/src/OpenStudioLandscapes/Kitsu/definitions.py'>,
-    #     models='OpenStudioLandscapes.Kitsu.config.models',
-    #     models_object=<module 'OpenStudioLandscapes.Kitsu.config.models'
-    #         from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Kitsu/src/OpenStudioLandscapes/Kitsu/config/models.py'>,
-    #     config=None
-    # )
+def init() -> Dict:
+    config_engine: ConfigEngine = get_config_engine()
 
-    try:
-        dict_from_config_feature = get_config_dict_feature(package, feature)
-    except ImportError as e:
-        LOGGER.error(f"`CONFIG_STR` for {package} not found. Ignoring.")
-        continue
+    discovered_models = {}
 
-    dict_from_model_feature: Dict = yaml.safe_load(feature.models_object.CONFIG_STR)
+    for package in get_namespace_packages():
+        feature_dict = {
+            "definitions": get_definitions_path(package),
+            "models": get_models_path(package),
+        }
+        module = OpenStudioLandscapesDiscoveredFeature(**feature_dict)
+        # 'OpenStudioLandscapes-Kitsu.src.OpenStudioLandscapes.Kitsu':
+        #     OpenStudioLandscapesDiscoveredFeature(
+        #         definitions='OpenStudioLandscapes.Kitsu.definitions',
+        #         models='OpenStudioLandscapes.Kitsu.config.models',
+        #         config=None,
+        #     ),
 
-    dict_updated_feature: Dict = {
-        # use the model dict as base
-        # with all the (also the new ones) defaults
-        **dict_from_model_feature,
-        # and override the values with values from the config if set
-        **dict_from_config_feature,
-    }
-
-    # Config is the `OpenStudioLandscapes.<FEATURE>.config.models.Config` object.
-    #
-    # The `OpenStudioLandscapes.<FEATURE>.config.models.Config` itself inherits
-    # from `OpenStudioLandscapes.engine.config.models.FeatureBaseModel`.
-    config_model_object: FeatureBaseModel = feature.models_object.Config(
-        **dict_updated_feature
-    )
-    LOGGER.info(f"{config_model_object = }")
-    feature.config = config_model_object
-
-    config_yml_feature: pathlib.Path = get_feature_config_yml(package)
-    LOGGER.info(f"{config_yml_feature = }")
-    config_yml_feature_expanded = config_yml_feature.expanduser()
-
-    update_config_yml(
-        config_yml_expanded=config_yml_feature_expanded,
-        config=feature.config,
-    )
-
-LOGGER.info(f"{FeatureBaseModel.subclasses = }")
-#  FeatureBaseModel.subclasses =
-#  {
-#      'OpenStudioLandscapes-Kitsu': <class 'OpenStudioLandscapes.Kitsu.config.models.Config'>,
-#      'OpenStudioLandscapes-Watchtower': <class 'OpenStudioLandscapes.Watchtower.config.models.Config'>,
-#      'OpenStudioLandscapes-VERT': <class 'OpenStudioLandscapes.VERT.config.models.Config'>,
-#  }
-
-
-if REPO_INITIALIZED:
-    # Add all files to tracked files in Git repo
-    if fresh_repo:
-        LOGGER.info(f"Add files to tracked file...")
-        config_store_repo.index.add("*")
-        LOGGER.info(f"Making initial commit...")
-        config_store_repo.index.commit("Initial Commit")
-        LOGGER.info(f"Initial Commit successful.")
-    else:
-        if config_store_repo.is_dirty():
-            # config_store_repo.git.status("--porcelain")
-            LOGGER.warning(
-                f"Config Store '{config_store_repo.common_dir}' has uncommited changes: "
-                f"{config_store_repo.git.status()}"
+        try:
+            models_object, definitions_object = try_import_discovered(
+                package=package,
+                discovered_model=module,
             )
+        except ImportError as e:
+            LOGGER.exception(e)
+            LOGGER.error("Feature import failed and won't be available: '%s'" % package)
+            continue
+
+        module.definitions_object = definitions_object
+        module.models_object = models_object
+        # 'OpenStudioLandscapes-Kitsu.src.OpenStudioLandscapes.Kitsu':
+        #     OpenStudioLandscapesDiscoveredFeature(
+        #         definitions='OpenStudioLandscapes.Kitsu.definitions',
+        #         definitions_object=<module 'OpenStudioLandscapes.Kitsu.definitions'
+        #             from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Kitsu/src/OpenStudioLandscapes/Kitsu/definitions.py'>,
+        #         models='OpenStudioLandscapes.Kitsu.config.models',
+        #         models_object=<module 'OpenStudioLandscapes.Kitsu.config.models'
+        #             from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Kitsu/src/OpenStudioLandscapes/Kitsu/config/models.py'>,
+        #         config=None
+        #     ),
+
+        discovered_models[package] = module
+
+    LOGGER.info(f"{discovered_models = }")
+
+    # Annotate the types before the loop
+    # References:
+    # - https://stackoverflow.com/a/41641489/2207196
+    package: str
+    feature: OpenStudioLandscapesDiscoveredFeature
+    for package, feature in discovered_models.items():
+        LOGGER.info(f"{package = }")
+        # package =
+        # 'OpenStudioLandscapes-Kitsu.src.OpenStudioLandscapes.Kitsu'
+        LOGGER.info(f"{feature = }")
+        # feature =
+        # OpenStudioLandscapesDiscoveredFeature(
+        #     definitions='OpenStudioLandscapes.Kitsu.definitions',
+        #     definitions_object=<module 'OpenStudioLandscapes.Kitsu.definitions'
+        #         from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Kitsu/src/OpenStudioLandscapes/Kitsu/definitions.py'>,
+        #     models='OpenStudioLandscapes.Kitsu.config.models',
+        #     models_object=<module 'OpenStudioLandscapes.Kitsu.config.models'
+        #         from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Kitsu/src/OpenStudioLandscapes/Kitsu/config/models.py'>,
+        #     config=None
+        # )
+
+        try:
+            dict_from_config_feature = get_config_dict_feature(
+                package=package,
+                feature=feature,
+                config_engine=config_engine,
+            )
+        except ImportError as e:
+            LOGGER.error(f"`CONFIG_STR` for {package} not found. Ignoring.")
+            continue
+
+        dict_from_model_feature: Dict = yaml.safe_load(feature.models_object.CONFIG_STR)
+
+        dict_updated_feature: Dict = {
+            # use the model dict as base
+            # with all the (also the new ones) defaults
+            **dict_from_model_feature,
+            # and override the values with values from the config if set
+            **dict_from_config_feature,
+        }
+
+        # Config is the `OpenStudioLandscapes.<FEATURE>.config.models.Config` object.
+        #
+        # The `OpenStudioLandscapes.<FEATURE>.config.models.Config` itself inherits
+        # from `OpenStudioLandscapes.engine.config.models.FeatureBaseModel`.
+        config_model_object: FeatureBaseModel = feature.models_object.Config(
+            **dict_updated_feature
+        )
+        LOGGER.info(f"{config_model_object = }")
+        feature.config = config_model_object
+
+        config_yml_feature: pathlib.Path = get_feature_config_yml(package)
+        LOGGER.info(f"{config_yml_feature = }")
+        config_yml_feature_expanded = config_yml_feature.expanduser()
+
+        update_config_yml(
+            config_yml_expanded=config_yml_feature_expanded,
+            config=feature.config,
+        )
+
+    LOGGER.info(f"{FeatureBaseModel.subclasses = }")
+    #  FeatureBaseModel.subclasses =
+    #  {
+    #      'OpenStudioLandscapes-Kitsu': <class 'OpenStudioLandscapes.Kitsu.config.models.Config'>,
+    #      'OpenStudioLandscapes-Watchtower': <class 'OpenStudioLandscapes.Watchtower.config.models.Config'>,
+    #      'OpenStudioLandscapes-VERT': <class 'OpenStudioLandscapes.VERT.config.models.Config'>,
+    #  }
 
 
-LOGGER.info(f"Bootstrapping finished successfully.")
+    if REPO_INITIALIZED:
+        # Add all files to tracked files in Git repo
+        if fresh_repo:
+            LOGGER.info(f"Add files to tracked file...")
+            config_store_repo.index.add("*")
+            LOGGER.info(f"Making initial commit...")
+            config_store_repo.index.commit("Initial Commit")
+            LOGGER.info(f"Initial Commit successful.")
+        else:
+            if config_store_repo.is_dirty():
+                # config_store_repo.git.status("--porcelain")
+                LOGGER.warning(
+                    f"Config Store '{config_store_repo.common_dir}' has uncommited changes: "
+                    f"{config_store_repo.git.status()}"
+                )
+
+
+    LOGGER.info(f"Bootstrapping finished successfully.")
+
+    return discovered_models
+
+
+if __name__ == "__main__":
+    pass
+
+else:
+    DISCOVERED_MODELS: Dict = init()
