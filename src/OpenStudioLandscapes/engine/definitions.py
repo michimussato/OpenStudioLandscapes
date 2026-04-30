@@ -1,4 +1,5 @@
 import importlib
+from typing import Dict
 
 from dagster import Definitions, get_dagster_logger
 
@@ -51,9 +52,28 @@ for core in code_locations:
         raise e
 
 
+class DiscoveredModels:
+    # has no effect on performance
+    def __init__(self):
+        self._discovered_models = {}
+
+        LOGGER.error(f"Loading: {self}...")
+
+    @property
+    def discovered_models(self) -> Dict:
+        if not bool(self._discovered_models):
+            self._discovered_models = discovery.DISCOVERED_MODELS
+        return self._discovered_models
+
+    def clear_cache(self):
+        self._discovered_models = {}
+
+
+discovered_models = DiscoveredModels()
+
 package: str
 feature: OpenStudioLandscapesDiscoveredFeature
-for package, feature in discovery.DISCOVERED_MODELS.items():
+for package, feature in discovered_models.discovered_models.items():
     config: FeatureBaseModel = feature.config
     enabled: bool = config.enabled
     if enabled:
@@ -64,6 +84,11 @@ for package, feature in discovery.DISCOVERED_MODELS.items():
 
 # This loads the definitions from all the available (and
 # enabled) Features.
+#
+# Experimental Feature
+# [2026-04-30 20:49:56] WARNING:dagster:/home/michael/git/repos/OpenStudioLandscapes/src/OpenStudioLandscapes/engine/definitions.py:109: ExperimentalWarning: Static method `Definitions.merge` is experimental. It may break in future versions, even between dot releases. To mute warnings for experimental functionality, invoke warnings.filterwarnings("ignore", category=dagster.ExperimentalWarning) or use one of the other methods described at https://docs.python.org/3/library/warnings.html#describing-warning-filters.
+#   defs = Definitions.merge(
+#
 # Todo:
 #  - [ ] migrate to Code Locations
 #        -> This is not so easy because "Materialize All" DOES NOT

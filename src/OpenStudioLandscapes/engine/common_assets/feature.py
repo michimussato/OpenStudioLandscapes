@@ -5,6 +5,7 @@ from dagster import (
     In,
     OpDefinition,
     Out,
+    AssetKey,
 )
 
 from OpenStudioLandscapes.engine.base.ops.factories import factory__CONFIG
@@ -35,10 +36,18 @@ def get_feature__CONFIG(
 
     feature_in__CONFIG: AssetsDefinition = AssetsDefinition.from_op(
         feature_in_op__CONFIG,
+        # Experimental Feature:
+        # key_prefix=ASSET_HEADER["key_prefix"],
         group_name=ASSET_HEADER["group_name"],
-        key_prefix=ASSET_HEADER["key_prefix"],
-        keys_by_input_name={},
-        keys_by_output_name={},
+        keys_by_input_name={
+            # Without these:
+            # [2026-04-30 20:48:30] WARNING:dagster:/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/definitions/resolved_asset_deps.py:24: ExperimentalWarning: Asset ["OpenStudioLandscapes_Flamenco_Worker", "CONFIG"]'s dependency 'feature_in' was resolved to upstream asset ["OpenStudioLandscapes_Flamenco_Worker", "feature_in"], because the name matches and they're in the same group. This is experimental functionality that may change in a future release is experimental. It may break in future versions, even between dot releases. To mute warnings for experimental functionality, invoke warnings.filterwarnings("ignore", category=dagster.ExperimentalWarning) or use one of the other methods described at https://docs.python.org/3/library/warnings.html#describing-warning-filters.
+            #   self._deps_by_assets_def_id = resolve_assets_def_deps(assets_defs, source_assets)
+            "feature_in": AssetKey([*ASSET_HEADER["key_prefix"], "feature_in"]),
+        },
+        keys_by_output_name={
+            "CONFIG": AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
+        },
     )
 
     return feature_in__CONFIG

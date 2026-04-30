@@ -328,12 +328,14 @@ def get_config_engine() -> ConfigEngine:
     return config_engine
 
 
-def get_namespace_packages(where=pathlib.Path.cwd() / ".features") -> List[str]:
+def get_namespace_packages(
+        where: pathlib.Path,
+) -> List[str]:
     LOGGER.info(
         "Getting installed OpenStudioLandscapes namespace packages from '%s'...", where
     )
 
-    namespace_packages_ = find_namespace_packages(
+    namespace_packages_: List[str] = find_namespace_packages(
         where=where,
         include=["*src.OpenStudioLandscapes.*"],
         exclude=[
@@ -426,7 +428,9 @@ def init(
     discovered_models: Dict,
 ) -> Dict[str, ModuleType]:
 
-    for package in get_namespace_packages():
+    for package in get_namespace_packages(
+        where=pathlib.Path.cwd().joinpath(".features"),
+    ):
         feature_dict = {
             "definitions": get_definitions_path(package),
             "models": get_models_path(package),
@@ -525,21 +529,26 @@ def init(
     #      'OpenStudioLandscapes-VERT': <class 'OpenStudioLandscapes.VERT.config.models.Config'>,
     #  }
 
-    if REPO_INITIALIZED:
-        # Add all files to tracked files in Git repo
-        if fresh_repo:
-            LOGGER.info(f"Add files to tracked file...")
-            config_store_repo.index.add("*")
-            LOGGER.info(f"Making initial commit...")
-            config_store_repo.index.commit("Initial Commit")
-            LOGGER.info(f"Initial Commit successful.")
-        else:
-            if config_store_repo.is_dirty():
-                # config_store_repo.git.status("--porcelain")
-                LOGGER.warning(
-                    f"Config Store '{config_store_repo.common_dir}' has uncommited changes: "
-                    f"{config_store_repo.git.status()}"
-                )
+    def commit_configs() -> None:
+
+        if REPO_INITIALIZED:
+            # Add all files to tracked files in Git repo
+            if fresh_repo:
+                LOGGER.info(f"Add files to tracked file...")
+                config_store_repo.index.add("*")
+                LOGGER.info(f"Making initial commit...")
+                config_store_repo.index.commit("Initial Commit")
+                LOGGER.info(f"Initial Commit successful.")
+            else:
+                if config_store_repo.is_dirty():
+                    # config_store_repo.git.status("--porcelain")
+                    LOGGER.warning(
+                        f"Config Store '{config_store_repo.common_dir}' has uncommited changes: "
+                        f"{config_store_repo.git.status()}"
+                    )
+                    LOGGER.info("Manual commit necessary.")
+
+    commit_configs()
 
     LOGGER.info(f"Bootstrapping finished successfully.")
 

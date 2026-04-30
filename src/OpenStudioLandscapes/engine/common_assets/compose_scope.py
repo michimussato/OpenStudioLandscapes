@@ -215,10 +215,20 @@ def get_compose_scope_group__docker_compose_graph(
 
     compose_scope__docker_compose_graph: AssetsDefinition = AssetsDefinition.from_op(
         compose_scope_op__docker_compose_graph,
+        # Experimental Feature:
+        # key_prefix=ASSET_HEADER["key_prefix"],
         group_name=ASSET_HEADER["group_name"],
-        key_prefix=ASSET_HEADER["key_prefix"],
-        keys_by_input_name={},
-        keys_by_output_name={},
+        keys_by_input_name={
+            # Without these:
+            # [2026-04-30 20:42:02] WARNING:dagster:/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/definitions/resolved_asset_deps.py:24: ExperimentalWarning: Asset ["ComposeScopes", "ComposeScope_default", "docker_compose_graph_dot"]'s dependency 'compose_project_name' was resolved to upstream asset ["ComposeScopes", "ComposeScope_default", "ComposeScopes", "ComposeScope_default", "compose_project_name"], because the name matches and they're in the same group. This is experimental functionality that may change in a future release is experimental. It may break in future versions, even between dot releases. To mute warnings for experimental functionality, invoke warnings.filterwarnings("ignore", category=dagster.ExperimentalWarning) or use one of the other methods described at https://docs.python.org/3/library/warnings.html#describing-warning-filters.
+            #   self._deps_by_assets_def_id = resolve_assets_def_deps(assets_defs, source_assets)
+            "group_out": AssetKey([*ASSET_HEADER["key_prefix"], "group_out"]),
+            "compose_project_name": AssetKey([*ASSET_HEADER["key_prefix"], "compose_project_name"]),
+        },
+        keys_by_output_name={
+            "docker_compose_graph": AssetKey([*ASSET_HEADER["key_prefix"], "docker_compose_graph"]),
+            "docker_compose_graph_dot": AssetKey([*ASSET_HEADER["key_prefix"], "docker_compose_graph_dot"]),
+        },
     )
 
     return compose_scope__docker_compose_graph
@@ -279,8 +289,9 @@ def get_compose_scope_group__group_out(
 
     compose_scope__group_out: AssetsDefinition = AssetsDefinition.from_op(
         compose_scope_op__group_out,
+        # Experimental Feature:
+        # key_prefix=ASSET_HEADER["key_prefix"],
         group_name=ASSET_HEADER["group_name"],
-        key_prefix=ASSET_HEADER["key_prefix"],
         keys_by_input_name={
             "group_out_base": AssetKey(
                 [*ASSET_HEADER_BASE["key_prefix"], "group_out_base"]
@@ -291,7 +302,15 @@ def get_compose_scope_group__group_out(
             "cmd_extend": AssetKey([*ASSET_HEADER["key_prefix"], "cmd_extend"]),
             "compose": AssetKey([*ASSET_HEADER["key_prefix"], "compose"]),
         },
-        keys_by_output_name={},
+        keys_by_output_name={
+            # Without these:
+            # [2026-04-30 20:41:22] WARNING:dagster:/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/definitions/resolved_asset_deps.py:24: ExperimentalWarning: Asset ["ComposeScopes", "ComposeScope_default", "docker_compose_graph"]'s dependency 'compose_project_name' was resolved to upstream asset ["ComposeScopes", "ComposeScope_default", "compose_project_name"], because the name matches and they're in the same group. This is experimental functionality that may change in a future release is experimental. It may break in future versions, even between dot releases. To mute warnings for experimental functionality, invoke warnings.filterwarnings("ignore", category=dagster.ExperimentalWarning) or use one of the other methods described at https://docs.python.org/3/library/warnings.html#describing-warning-filters.
+            #   self._deps_by_assets_def_id = resolve_assets_def_deps(assets_defs, source_assets)
+            "group_out": AssetKey([*ASSET_HEADER["key_prefix"], "group_out"]),
+            "compose_project_name": AssetKey([*ASSET_HEADER["key_prefix"], "compose_project_name"]),
+            "docker_compose_commands": AssetKey([*ASSET_HEADER["key_prefix"], "docker_compose_commands"]),
+            "systemd_unit": AssetKey([*ASSET_HEADER["key_prefix"], "systemd_unit"]),
+        },
     )
 
     return compose_scope__group_out
