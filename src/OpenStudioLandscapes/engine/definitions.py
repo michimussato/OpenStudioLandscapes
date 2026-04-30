@@ -1,8 +1,8 @@
 import importlib
-from typing import Dict
 
 from dagster import Definitions, get_dagster_logger
 
+from OpenStudioLandscapes.cli import LOGGING_LEVEL_DEFAULT
 import OpenStudioLandscapes.engine.discovery.discovery as discovery
 from OpenStudioLandscapes.engine.config.models import (
     FeatureBaseModel,
@@ -10,6 +10,7 @@ from OpenStudioLandscapes.engine.config.models import (
 )
 
 LOGGER = get_dagster_logger(__name__)
+LOGGER.setLevel(LOGGING_LEVEL_DEFAULT)
 
 # Base Definitions
 code_locations = [
@@ -52,28 +53,28 @@ for core in code_locations:
         raise e
 
 
-class DiscoveredModels:
-    # has no effect on performance
-    def __init__(self):
-        self._discovered_models = {}
-
-        LOGGER.error(f"Loading: {self}...")
-
-    @property
-    def discovered_models(self) -> Dict:
-        if not bool(self._discovered_models):
-            self._discovered_models = discovery.DISCOVERED_MODELS
-        return self._discovered_models
-
-    def clear_cache(self):
-        self._discovered_models = {}
-
-
-discovered_models = DiscoveredModels()
+# class DiscoveredModels:
+#     # has no effect on performance
+#     def __init__(self):
+#         self._discovered_models = {}
+#
+#         LOGGER.error(f"Loading: {self}...")
+#
+#     @property
+#     def discovered_models(self) -> Dict:
+#         if not bool(self._discovered_models):
+#             self._discovered_models = discovery.DISCOVERED_MODELS
+#         return self._discovered_models
+#
+#     def clear_cache(self):
+#         self._discovered_models = {}
+#
+#
+# discovered_models = DiscoveredModels()
 
 package: str
 feature: OpenStudioLandscapesDiscoveredFeature
-for package, feature in discovered_models.discovered_models.items():
+for package, feature in discovery.DISCOVERED_MODELS.items():
     config: FeatureBaseModel = feature.config
     enabled: bool = config.enabled
     if enabled:

@@ -8,7 +8,10 @@ from dagster import (
     get_dagster_logger,
 )
 
+from OpenStudioLandscapes.cli import LOGGING_LEVEL_DEFAULT
+
 LOGGER = get_dagster_logger(__name__)
+LOGGER.setLevel(LOGGING_LEVEL_DEFAULT)
 
 import OpenStudioLandscapes.engine.discovery.discovery as discovery
 from OpenStudioLandscapes.engine.common_assets.compose_scope import (

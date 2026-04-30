@@ -44,6 +44,7 @@ from dagster import (
     get_dagster_logger,
 )
 
+from OpenStudioLandscapes.cli import LOGGING_LEVEL_DEFAULT
 import OpenStudioLandscapes.engine.discovery.discovery as discovery
 from OpenStudioLandscapes.engine.config.models import DockerConfigModel
 from OpenStudioLandscapes.engine.enums import *
@@ -54,6 +55,7 @@ from OpenStudioLandscapes.engine.exceptions import (
 from OpenStudioLandscapes.engine.utils.docker import *
 
 LOGGER = get_dagster_logger(__name__)
+LOGGER.setLevel(LOGGING_LEVEL_DEFAULT)
 
 
 def cmd_list_to_str(

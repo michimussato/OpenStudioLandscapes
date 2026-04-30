@@ -12,6 +12,7 @@ from dagster import (
     get_dagster_logger,
 )
 
+from OpenStudioLandscapes.cli import LOGGING_LEVEL_DEFAULT
 from OpenStudioLandscapes.engine.base.ops.factories import (
     factory_compose_scope__cmd,
     factory_compose_scope__compose,
@@ -30,6 +31,7 @@ from OpenStudioLandscapes.engine.link.models import (
 )
 
 LOGGER = get_dagster_logger(__name__)
+LOGGER.setLevel(LOGGING_LEVEL_DEFAULT)
 
 
 def get_compose_scope_group__features_in(

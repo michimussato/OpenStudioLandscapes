@@ -18,11 +18,13 @@ from pydantic import (
     BaseModel,
     ConfigDict,
     Field,
-    PositiveInt,
     field_validator,
 )
 
-LOG = get_dagster_logger(__name__)
+from OpenStudioLandscapes.cli import LOGGING_LEVEL_DEFAULT
+
+LOGGER = get_dagster_logger(__name__)
+LOGGER.setLevel(LOGGING_LEVEL_DEFAULT)
 
 """
 Resources:
@@ -93,7 +95,7 @@ class BaseConfig(BaseModel):
         # docs += "# \n\n"
         # fields = []
 
-        LOG.info(f"{cls.model_fields = }")
+        LOGGER.info(f"{cls.model_fields = }")
 
         doc_str = str()
 
@@ -102,11 +104,8 @@ class BaseConfig(BaseModel):
 
         for field_k, field_v in cls.model_fields.items():
             try:
-                LOG.info(f"{field_k = }")
-                LOG.info(f"{field_v.is_required() = }")
-                # LOGGER.debug(f"Field name: {field_k}")
-
-                # LOGGER.debug(f"\tValues specified in Config:")
+                # LOG.debug(f"{field_k = }")
+                # LOG.debug(f"{field_v.is_required() = }")
 
                 sub_class_required = field_v.is_required()
                 sub_class_value = field_v.default
@@ -164,7 +163,7 @@ class BaseConfig(BaseModel):
                         continue
 
                 except UnboundLocalError as e:
-                    LOG.warning(f"{e}")
+                    LOGGER.warning(f"{e}")
 
                 # if isinstance(sub_class_value, PydanticUndefinedType):
                 #     kv = {field_k: "<NOT SET> (CHANGE_ME)"}
@@ -180,7 +179,7 @@ class BaseConfig(BaseModel):
                 doc_str += f"{yaml.safe_dump(json.loads(json.dumps(kv, indent=2, default=str)))}\n\n"
 
             except Exception as e:
-                LOG.error(f"{e}")
+                LOGGER.error(f"{e}")
                 raise Exception from e
 
         return doc_str.rstrip()  # strip trailing newlines
