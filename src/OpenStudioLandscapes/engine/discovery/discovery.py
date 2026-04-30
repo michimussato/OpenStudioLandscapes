@@ -8,8 +8,9 @@ Things that could be improved
 - config.yaml to allow for comments
   - Currently, the files are read and dumped again,
     removing all comments whatsoever
-    - Migratio to `ruamel.yaml` might be an option
+    - Migration to `ruamel.yaml` might be an option
       - https://www.w3reference.com/blog/python-yaml-update-preserving-order-and-comments/#why-preserving-order-and-comments-matters
+      - https://stackoverflow.com/questions/55253090/how-to-round-trip-ruamel-yaml-strings-like-on
   - This mechanisma, however, allows to dynamically
     add/remove YAML key/value pairs based on the underlying
     model.
@@ -24,9 +25,17 @@ Things that could be improved
   - update_config_yml
   - Repo initialization
     - init_config_store()
-"""
 
+
+The logic current does:
+- not add documenting comments to the initial YAML files
+- add new keys from model fields to the YAML
+- not remove keys from the YAML of non-existing model fields
+- keep comments in the YAML files
+  - [How to Update YAML in Python While Preserving Order and Comments: A Step-by-Step Guide](https://www.w3reference.com/blog/python-yaml-update-preserving-order-and-comments/)
+"""
 import importlib
+from collections import OrderedDict
 import json
 import os
 import pathlib
@@ -36,13 +45,11 @@ from types import ModuleType
 from typing import Dict, List, Tuple, Union
 
 import git
-import yaml
+import ruamel.yaml
 from dagster import get_dagster_logger
-from pydantic import BaseModel, ConfigDict, Field
 from setuptools import find_namespace_packages
 
 from OpenStudioLandscapes.engine import dist as dist_engine
-from OpenStudioLandscapes.engine.config.models import CONFIG_STR as ENGINE_CONFIG_STR
 from OpenStudioLandscapes.engine.config.models import (
     ConfigEngine,
     FeatureBaseModel,
@@ -55,24 +62,96 @@ LOGGER = get_dagster_logger(__name__)
 LOGGER.info("Start bootstrapping...")
 
 
-def update_config_yml(
-    config_yml_expanded: pathlib.Path,
-    config: Union[ConfigEngine, FeatureBaseModel],
-) -> None:
+# https://www.w3reference.com/blog/python-yaml-update-preserving-order-and-comments/#why-preserving-order-and-comments-matters
+def load_yaml(
+    file_path: pathlib.Path,
+) -> ruamel.yaml.CommentedMap:
+    """Load a YAML file and return its data (preserving comments/order)."""
+    yaml_ = ruamel.yaml.YAML(typ="rt")  # 'rt' = round-trip mode
+    yaml_.preserve_quotes = True  # Keep string quotes (e.g., "MyApp" vs MyApp)
+    with open(file_path, "r") as f:
+        return yaml_.load(f)
 
-    yaml_str: str = yaml.safe_dump(
-        json.loads(config.model_dump_json(indent=2, fallback=str))
+
+def dump_yaml(
+    model_config: Union[ConfigEngine, FeatureBaseModel],
+    file_path: pathlib.Path,
+):
+    """Save YAML data to a file, preserving comments/order."""
+
+    # if file_path.exists() is not necessary - part of get_config()
+    current_config_: ruamel.yaml.CommentedMap = get_config(
+        file_path_config_yaml=file_path,
     )
-    LOGGER.debug(f"{yaml_str = }")
 
-    if config_yml_expanded.read_text() == yaml_str:
-        # No need to update the file contents
-        LOGGER.debug(f"File contents have not changed.")
+    file_path.parent.mkdir(parents=True, exist_ok=True)
+
+    model_dump_json: str = model_config.model_dump_json(indent=2, fallback=str)
+    model_dump_dict: Dict = json.loads(model_dump_json)
+
+    # update current_config_
+    current_config_.update(model_dump_dict)
+
+    yaml_ = ruamel.yaml.YAML(typ="rt")
+    yaml_.indent(
+        mapping=2,
+        sequence=2,
+        offset=0,
+    )  # Match original indentation
+    with open(file_path, "w") as f:
+        yaml_.dump(current_config_, f)
+
+
+def get_config(
+    file_path_config_yaml: pathlib.Path,
+) -> ruamel.yaml.CommentedMap:
+    """
+    Load YAML data to a file (if it exists), preserving comments/order,
+    otherwise create an empty dict (ruamel.yaml.CommentedMap), and return it.
+    Args:
+        file_path_config_yaml:
+
+    Returns:
+        data: ruamel.yaml.CommentedMap
+    """
+
+    if file_path_config_yaml.exists():
+        data: ruamel.yaml.CommentedMap = load_yaml(
+            file_path=file_path_config_yaml,
+        )
     else:
-        LOGGER.info(f"Updating file contents of {config_yml_expanded.as_posix()}...")
-        config_yml_expanded.write_text(yaml_str)
+        # CommentedMap needs an OrderedDict.
+        # Standard dict does not work.
+        data: ruamel.yaml.CommentedMap = ruamel.yaml.CommentedMap(
+            OrderedDict()
+        )
 
-    return None
+    return data
+
+
+def get_absolute_config_path(
+    dist: Distribution,
+) -> pathlib.Path:
+    """
+    Get the absolute path of the configuration file. The
+    file itself does not necessarily exist. This is just
+    where it has to live.
+
+    Returns:
+        engine_config_path: pathlib.Path
+    """
+
+    LOGGER.info(f"{dist.name = }")
+    config_yml: pathlib.Path = (
+        OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.joinpath(
+            dist.name,
+            "config.yml",
+        )
+    )
+    config_yml_expanded: pathlib.Path = config_yml.expanduser()
+    LOGGER.info(f"{config_yml = }")
+    LOGGER.info(f"{config_yml_expanded = }")
+    return config_yml_expanded
 
 
 # Important
@@ -160,66 +239,31 @@ config_store_repo, fresh_repo = init_config_store(
 
 def get_config_engine() -> ConfigEngine:
     """
-    Get the Engine Configuration.
+    Get the Engine Configuration Model Object.
+    This is a Singleton, so re-instantiating basically
+    returns the already existing ConfigEngine object.
 
     Returns:
         ConfigEngine
     """
 
-    def get_config_dict() -> Dict:
-        # Specify the `config.yml` for the engine.
-        # Hard coding this is a good and predictable way
-        # to implement this.
-        LOGGER.info(f"{dist_engine.name = }")
-        engine_config_yml: pathlib.Path = (
-            OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.joinpath(
-                dist_engine.name,
-                "config.yml",
-            )
-        )
-        engine_config_yml_expanded: pathlib.Path = engine_config_yml.expanduser()
-        LOGGER.info(f"{engine_config_yml = }")
-        LOGGER.info(f"{engine_config_yml_expanded = }")
+    engine_config_yml_expanded: pathlib.Path = get_absolute_config_path(
+        dist=dist_engine,
+    )
 
-        # Create the `config.yml` for the engine
-        # with the default `CONFIG_STR` if
-        # it does not exist
-        if not engine_config_yml_expanded.exists():
-            engine_config_yml_expanded.parent.mkdir(parents=True, exist_ok=True)
+    engine_config_dict: ruamel.yaml.CommentedMap = get_config(
+        file_path_config_yaml=engine_config_yml_expanded,
+    )
 
-            engine_config_yml_expanded.write_text(
-                yaml.safe_dump(yaml.safe_load(ENGINE_CONFIG_STR))
-            )
-
-        dict_from_model: Dict = yaml.safe_load(ENGINE_CONFIG_STR)
-        dict_from_config: Dict = yaml.safe_load(engine_config_yml_expanded.read_text())
-
-        dict_updated: Dict = {
-            # use the model dict as base
-            # with all the (also the new ones) defaults
-            **dict_from_model,
-            # and override the values with values from the config if set
-            **dict_from_config,
-        }
-
-        config_engine: ConfigEngine = ConfigEngine(**dict_updated)
-
-        update_config_yml(
-            config_yml_expanded=engine_config_yml_expanded,
-            config=config_engine,
-        )
-
-        # Read the `config.yml` as a str
-        engine_config_str: str = engine_config_yml_expanded.read_text()
-
-        engine_config_dict_: Dict = yaml.safe_load(engine_config_str)
-
-        return engine_config_dict_
-
-    engine_config_dict = get_config_dict()
-
-    config_engine: ConfigEngine = ConfigEngine(**engine_config_dict)
+    config_engine: ConfigEngine = ConfigEngine(
+        **engine_config_dict,
+    )
     LOGGER.info(f"{config_engine = }")
+
+    dump_yaml(
+        model_config=config_engine,
+        file_path=engine_config_yml_expanded,
+    )
 
     return config_engine
 
@@ -317,61 +361,6 @@ def try_import_discovered(
     return models_object, definitions_object
 
 
-def get_feature_config_yml(
-    package: str,
-) -> pathlib.Path:
-    distribution: Distribution = metadata.distribution(package)
-
-    config_yml_feature: pathlib.Path = OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.joinpath(
-        distribution.name,
-        "config.yml",
-    )
-    return config_yml_feature
-
-
-def get_config_dict_feature(
-    package: str,
-    feature: OpenStudioLandscapesDiscoveredFeature,
-    config_engine: ConfigEngine,
-) -> Dict:
-    distribution: Distribution = metadata.distribution(package)
-
-    # Create the `config.yml` for the feature
-    # with the default `CONFIG_STR` if
-    # it does not exist
-    config_yml_feature: pathlib.Path = get_feature_config_yml(package)
-    LOGGER.info(f"{config_yml_feature = }")
-    config_yml_feature_expanded = config_yml_feature.expanduser()
-
-    if not config_yml_feature_expanded.exists():
-        config_yml_feature_expanded.parent.mkdir(parents=True, exist_ok=True)
-        LOGGER.info("Loading config from `CONFIG_STR`...")
-        try:
-            CONFIG_STR = feature.models_object.CONFIG_STR
-            LOGGER.info(f"`CONFIG_STR` for {package} successfully read.")
-        except (KeyError, AttributeError) as e:
-            raise ImportError(e) from e
-
-        config_yml_feature_expanded.write_text(
-            yaml.safe_dump(yaml.safe_load(CONFIG_STR))
-        )
-
-    # Read the `config.yml` as a str
-    config_str_feature: str = config_yml_feature_expanded.read_text()
-    LOGGER.info(f"{config_str_feature = }")
-
-    config_dict_feature: Dict = yaml.safe_load(config_str_feature)
-    LOGGER.info(f"{config_dict_feature = }")
-
-    # Also inject the ConfigEngine object
-    config_dict_feature["config_engine"] = config_engine
-    # and the Distribution object
-    config_dict_feature["distribution"] = distribution
-    LOGGER.info(f"{config_dict_feature = }")
-
-    return config_dict_feature
-
-
 def init(
     config_engine: ConfigEngine,
     discovered_models: Dict,
@@ -438,43 +427,34 @@ def init(
         #     config=None
         # )
 
-        try:
-            dict_from_config_feature = get_config_dict_feature(
-                package=package,
-                feature=feature,
-                config_engine=config_engine,
-            )
-        except ImportError as e:
-            LOGGER.error(f"`CONFIG_STR` for {package} not found. Ignoring.")
-            continue
+        feature_dist: Distribution = metadata.distribution(package)
 
-        dict_from_model_feature: Dict = yaml.safe_load(feature.models_object.CONFIG_STR)
-
-        dict_updated_feature: Dict = {
-            # use the model dict as base
-            # with all the (also the new ones) defaults
-            **dict_from_model_feature,
-            # and override the values with values from the config if set
-            **dict_from_config_feature,
-        }
-
-        # Config is the `OpenStudioLandscapes.<FEATURE>.config.models.Config` object.
-        #
-        # The `OpenStudioLandscapes.<FEATURE>.config.models.Config` itself inherits
-        # from `OpenStudioLandscapes.engine.config.models.FeatureBaseModel`.
-        config_model_object: FeatureBaseModel = feature.models_object.Config(
-            **dict_updated_feature
+        config_yml_feature_expanded: pathlib.Path = get_absolute_config_path(
+            dist=feature_dist,
         )
-        LOGGER.info(f"{config_model_object = }")
-        feature.config = config_model_object
 
-        config_yml_feature: pathlib.Path = get_feature_config_yml(package)
-        LOGGER.info(f"{config_yml_feature = }")
-        config_yml_feature_expanded = config_yml_feature.expanduser()
+        feature_config_dict: ruamel.yaml.CommentedMap = get_config(
+            file_path_config_yaml=config_yml_feature_expanded,
+        )
 
-        update_config_yml(
-            config_yml_expanded=config_yml_feature_expanded,
-            config=feature.config,
+        # Also inject the ConfigEngine object
+        LOGGER.debug(f"{feature_config_dict = }")
+        LOGGER.debug(f"{config_engine = }")
+        LOGGER.debug(f"{feature_dist = }")
+        feature_config_dict["config_engine"] = config_engine
+        # and the Distribution object
+        feature_config_dict["distribution"] = feature_dist
+        LOGGER.info(f"{feature_config_dict = }")
+
+        config_feature: FeatureBaseModel = feature.models_object.Config(
+            **feature_config_dict,
+        )
+        LOGGER.info(f"{config_feature = }")
+        feature.config = config_feature
+
+        dump_yaml(
+            model_config=config_feature,
+            file_path=config_yml_feature_expanded,
         )
 
     LOGGER.info(f"{FeatureBaseModel.subclasses = }")
