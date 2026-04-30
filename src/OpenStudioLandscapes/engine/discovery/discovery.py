@@ -72,8 +72,8 @@ def load_yaml(
     """Load a YAML file and return its data (preserving comments/order)."""
     yaml_ = ruamel.yaml.YAML(typ="rt")  # 'rt' = round-trip mode
     yaml_.preserve_quotes = True  # Keep string quotes (e.g., "MyApp" vs MyApp)
-    with open(file_path, "r") as f:
-        data: ruamel.yaml.CommentedMap = yaml_.load(f)
+    with open(file_path, "r") as fr:
+        data: ruamel.yaml.CommentedMap = yaml_.load(fr)
 
     if data is None:
         raise OpenStudioLandscapesDiscoveryException(
@@ -83,6 +83,7 @@ def load_yaml(
         )
 
         # Seems to be a bit random...
+        # - file currently open?
 
         # In process 392288: OpenStudioLandscapes.engine.discovery.discovery.OpenStudioLandscapesDiscoveryException: Could not load YAML file:
         # file_path = PosixPath('/home/michael/.config/OpenStudioLandscapes/config-store/OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20/config.yml')
@@ -138,14 +139,27 @@ def dump_yaml(
     # update current_config_
     current_config_.update(model_dump_dict)
 
-    yaml_ = ruamel.yaml.YAML(typ="rt")
-    yaml_.indent(
-        mapping=2,
-        sequence=2,
-        offset=0,
-    )  # Match original indentation
-    with open(file_path, "w") as f:
-        yaml_.dump(current_config_, f)
+    if file_path.exists():
+        # Develop some logic so that
+        # the existing file does not just get
+        # overwritten just like that.
+        # Keeping control over file handle
+        # concurrency with Dagster is not straight
+        # forward it seems.
+        # Of course, we need to make sure that
+        # new/changed model fields don't result
+        # in non-functional situations.
+        # - "Migration" logic?
+        pass
+    else:
+        yaml_ = ruamel.yaml.YAML(typ="rt")
+        yaml_.indent(
+            mapping=2,
+            sequence=2,
+            offset=0,
+        )  # Match original indentation
+        with open(file_path, "w") as f:
+            yaml_.dump(current_config_, f)
 
 
 def get_config(

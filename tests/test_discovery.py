@@ -13,7 +13,7 @@ __email__ = "michimussato@gmail.com"
 
 from typing import Generator, Dict
 
-CLEANUP_ENABLED = True
+CLEANUP_ENABLED = False
 
 
 FIXTURES = pathlib.Path(__file__).parent / "fixtures"
