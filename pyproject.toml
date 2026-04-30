@@ -26,6 +26,7 @@ dependencies = [
     "human-readable-id",
     "nox",
     "pydot",
+    "ruamel.yaml",
     "snakemd",
 ]
 description = "A Toolkit to create dynamic Animation and VFX studio environments for robust automation and pipelines."
