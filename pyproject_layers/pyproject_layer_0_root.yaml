@@ -22,6 +22,7 @@ project:
   # - deprecation  # https://deprecation.readthedocs.io/en/latest/
   - gitpython  # https://gitpython.readthedocs.io/en/latest/
   - PyYAML  # https://pyyaml.org/wiki/PyYAMLDocumentation
+  - ruamel.yaml  # https://pypi.org/project/ruamel.yaml/
   - snakemd  # https://www.snakemd.io/en/latest/docs/
   - email-validator
   # docker-compose-graph is needed because of yaml_tags.overrides

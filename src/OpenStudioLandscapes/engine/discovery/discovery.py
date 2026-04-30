@@ -56,6 +56,9 @@ from OpenStudioLandscapes.engine.config.models import (
     OpenStudioLandscapesDiscoveredFeature,
 )
 
+class OpenStudioLandscapesDiscoveryException(Exception):
+    pass
+
 LOGGER = get_dagster_logger(__name__)
 
 
@@ -70,7 +73,50 @@ def load_yaml(
     yaml_ = ruamel.yaml.YAML(typ="rt")  # 'rt' = round-trip mode
     yaml_.preserve_quotes = True  # Keep string quotes (e.g., "MyApp" vs MyApp)
     with open(file_path, "r") as f:
-        return yaml_.load(f)
+        data: ruamel.yaml.CommentedMap = yaml_.load(f)
+
+    if data is None:
+        raise OpenStudioLandscapesDiscoveryException(
+            "Could not load YAML file: \n"
+            f"{file_path = }\n"
+            f"{data = }\n"
+        )
+
+        # Seems to be a bit random...
+
+        # In process 392288: OpenStudioLandscapes.engine.discovery.discovery.OpenStudioLandscapesDiscoveryException: Could not load YAML file:
+        # file_path = PosixPath('/home/michael/.config/OpenStudioLandscapes/config-store/OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20/config.yml')
+        # data = None
+
+        # In process 400434: OpenStudioLandscapes.engine.discovery.discovery.OpenStudioLandscapesDiscoveryException: Could not load YAML file:
+        # file_path = PosixPath('/home/michael/.config/OpenStudioLandscapes/config-store/OpenStudioLandscapes-NukeRLM-8/config.yml')
+        # data = None
+
+        # In process 399991: OpenStudioLandscapes.engine.discovery.discovery.OpenStudioLandscapesDiscoveryException: Could not load YAML file:
+        # file_path = PosixPath('/home/michael/.config/OpenStudioLandscapes/config-store/OpenStudioLandscapes-OpenCue/config.yml')
+        # data = None
+
+        # In process 399481: OpenStudioLandscapes.engine.discovery.discovery.OpenStudioLandscapesDiscoveryException: Could not load YAML file:
+        # file_path = PosixPath('/home/michael/.config/OpenStudioLandscapes/config-store/OpenStudioLandscapes-Deadline-10-2/config.yml')
+        # data = None
+
+        # In process 511464: OpenStudioLandscapes.engine.discovery.discovery.OpenStudioLandscapesDiscoveryException: Could not load YAML file:
+        # file_path = PosixPath('/home/michael/.config/OpenStudioLandscapes/config-store/OpenStudioLandscapes/config.yml')
+        # data = None
+
+        # In process 511343: OpenStudioLandscapes.engine.discovery.discovery.OpenStudioLandscapesDiscoveryException: Could not load YAML file:
+        # file_path = PosixPath('/home/michael/.config/OpenStudioLandscapes/config-store/OpenStudioLandscapes-Flamenco/config.yml')
+        # data = None
+
+        # In process 556689: OpenStudioLandscapes.engine.discovery.discovery.OpenStudioLandscapesDiscoveryException: Could not load YAML file:
+        # file_path = PosixPath('/home/michael/.config/OpenStudioLandscapes/config-store/OpenStudioLandscapes-Kitsu/config.yml')
+        # data = None
+
+        # In process 556617: OpenStudioLandscapes.engine.discovery.discovery.OpenStudioLandscapesDiscoveryException: Could not load YAML file:
+        # file_path = PosixPath('/home/michael/.config/OpenStudioLandscapes/config-store/OpenStudioLandscapes-Dagster/config.yml')
+        # data = None
+
+    return data
 
 
 def dump_yaml(
@@ -441,14 +487,14 @@ def init(
         LOGGER.debug(f"{feature_config_dict = }")
         LOGGER.debug(f"{config_engine = }")
         LOGGER.debug(f"{feature_dist = }")
-        feature_config_dict["config_engine"] = config_engine
-        # and the Distribution object
-        feature_config_dict["distribution"] = feature_dist
         LOGGER.info(f"{feature_config_dict = }")
 
         config_feature: FeatureBaseModel = feature.models_object.Config(
             **feature_config_dict,
         )
+        # Also inject the ConfigEngine object
+        config_feature.config_engine = config_engine
+        config_feature.distribution = feature_dist
         LOGGER.info(f"{config_feature = }")
         feature.config = config_feature
 

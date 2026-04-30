@@ -1,0 +1,37 @@
+env: {}
+local_bind_volumes: []
+local_environment_variables: {}
+group_name: OpenStudioLandscapes_Grafana
+key_prefixes:
+- OpenStudioLandscapes_Grafana
+enabled: true
+compose_scope: default
+feature_name: OpenStudioLandscapes-Grafana
+docker_compose: '{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml'
+GF_PATHS_DATA: '{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/var/lib/grafana'
+grafana_dashboards:
+  Node Exporter Full:
+    url: https://grafana.com/api/dashboards/1860/revisions/42/download
+    id: 1860
+  cAdvisor Docker Insights:
+    url: https://grafana.com/api/dashboards/19908/revisions/1/download
+    id: 19908
+grafana_admin_user: openstudiolandscapes
+grafana_admin_password: openstudiolandscapes
+grafana_root_url: http://localhost:3000
+grafana_port_container: 3000
+grafana_port_host: 3030
+grafana_loki_port_container: 3100
+grafana_loki_port_host: 3100
+grafana_loki_loglevel: info
+prometheus_port_container: 9090
+prometheus_port_host: 9090
+grafana_image: docker.io/grafana/grafana
+grafana_image_version: latest-ubuntu
+grafana_loki_image: docker.io/grafana/loki:latest
+prometheus_image: docker.io/prom/prometheus:main
+alloy_image: docker.io/grafana/alloy:latest
+endpoint_prometheus: http://prometheus
+endpoint_loki: http://loki
+alloy_apt_packages:
+- zfsutils-linux
