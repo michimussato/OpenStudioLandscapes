@@ -46,10 +46,10 @@ from typing import Dict, List, Tuple, Union
 
 import git
 import ruamel.yaml
-from dagster import get_dagster_logger
 from setuptools import find_namespace_packages
 
-from OpenStudioLandscapes.cli import LOGGING_LEVEL_DEFAULT
+from OpenStudioLandscapes.engine.logging.loggers import DISCOVERY_LOGGER as LOGGER
+
 from OpenStudioLandscapes.engine import dist as dist_engine
 from OpenStudioLandscapes.engine.config.models import (
     ConfigEngine,
@@ -59,9 +59,6 @@ from OpenStudioLandscapes.engine.config.models import (
 
 class OpenStudioLandscapesDiscoveryException(Exception):
     pass
-
-LOGGER = get_dagster_logger(__name__)
-LOGGER.setLevel(LOGGING_LEVEL_DEFAULT)
 
 
 LOGGER.info("Start bootstrapping...")

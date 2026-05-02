@@ -1,11 +1,8 @@
-from dagster import get_dagster_logger
+from OpenStudioLandscapes.engine.logging.loggers import ENGINE_LOGGER as LOGGER
 
-from OpenStudioLandscapes.cli import LOGGING_LEVEL_DEFAULT
 from OpenStudioLandscapes.engine.config.models import FeatureBaseModel
 from OpenStudioLandscapes.engine.discovery import discovery
 
-LOGGER = get_dagster_logger(__name__)
-LOGGER.setLevel(LOGGING_LEVEL_DEFAULT)
 
 grafana_installed: bool = (
     "OpenStudioLandscapes.Grafana" in discovery.DISCOVERED_MODELS.keys()

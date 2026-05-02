@@ -2,12 +2,7 @@ import sys
 from importlib import metadata
 from pathlib import Path
 
-from dagster import get_dagster_logger
-
-from OpenStudioLandscapes.cli import LOGGING_LEVEL_DEFAULT
-
-LOGGER = get_dagster_logger(__name__)
-LOGGER.setLevel(LOGGING_LEVEL_DEFAULT)
+from OpenStudioLandscapes.engine.logging.loggers import ENGINE_LOGGER as LOGGER
 
 if sys.version_info[:2] >= (3, 11):
     # TODO: Import directly (no need for conditional) when `python_requires = >= 3.8`

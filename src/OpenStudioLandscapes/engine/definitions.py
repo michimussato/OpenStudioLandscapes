@@ -1,16 +1,15 @@
 import importlib
 
-from dagster import Definitions, get_dagster_logger
+from dagster import Definitions
 
-from OpenStudioLandscapes.cli import LOGGING_LEVEL_DEFAULT
+from OpenStudioLandscapes.engine.logging.loggers import ENGINE_LOGGER as LOGGER
+
 import OpenStudioLandscapes.engine.discovery.discovery as discovery
 from OpenStudioLandscapes.engine.config.models import (
     FeatureBaseModel,
     OpenStudioLandscapesDiscoveredFeature,
 )
 
-LOGGER = get_dagster_logger(__name__)
-LOGGER.setLevel(LOGGING_LEVEL_DEFAULT)
 
 # Base Definitions
 code_locations = [

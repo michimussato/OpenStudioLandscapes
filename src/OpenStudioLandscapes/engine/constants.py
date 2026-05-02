@@ -11,13 +11,7 @@ __all__ = [
 
 from typing import Union
 
-from dagster import get_dagster_logger
 from dagster._core.definitions.utils import DEFAULT_OUTPUT as DAGSTER_DEFAULT_OUTPUT
-
-from OpenStudioLandscapes.cli import LOGGING_LEVEL_DEFAULT
-
-LOGGER = get_dagster_logger(__name__)
-LOGGER.setLevel(LOGGING_LEVEL_DEFAULT)
 
 from OpenStudioLandscapes.engine.config.models import FeatureBaseModel
 

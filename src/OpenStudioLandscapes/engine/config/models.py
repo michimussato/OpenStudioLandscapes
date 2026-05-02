@@ -12,7 +12,6 @@ import yaml
 from dagster import (
     AssetIn,
     AssetKey,
-    get_dagster_logger,
 )
 from pydantic import (
     BaseModel,
@@ -21,10 +20,8 @@ from pydantic import (
     field_validator,
 )
 
-from OpenStudioLandscapes.cli import LOGGING_LEVEL_DEFAULT
+from OpenStudioLandscapes.engine.logging.loggers import ENGINE_LOGGER as LOGGER
 
-LOGGER = get_dagster_logger(__name__)
-LOGGER.setLevel(LOGGING_LEVEL_DEFAULT)
 
 """
 Resources:

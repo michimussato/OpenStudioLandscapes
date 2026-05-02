@@ -10,14 +10,13 @@ import textwrap
 
 import git
 
-LOGGING_LEVEL_DEFAULT = logging.WARNING
 
 __author__ = "Michael Mussato"
 __copyright__ = "Michael Mussato"
 __url__ = "https://github.com/michimussato/OpenStudioLandscapes"
 __license__ = "GNU Affero General Public License v3.0"
 
-LOGGER = logging.getLogger(__name__)
+from OpenStudioLandscapes.engine.logging.loggers import CLI_LOGGER as LOGGER
 
 
 class CLIException(Exception):
@@ -300,15 +299,10 @@ def setup_logging(loglevel):
     Args:
       loglevel (int): minimum loglevel for emitting messages
     """
-    logformat = "[%(asctime)s] %(levelname)s:%(name)s:%(message)s"
-    logging.basicConfig(
-        level=loglevel,
-        # stream=sys.stdout,
-        format=logformat,
-        datefmt="%Y-%m-%d %H:%M:%S",
-    )
 
-    LOGGER.setLevel(loglevel or LOGGING_LEVEL_DEFAULT)
+    if loglevel is not None:
+        # Default level is from OpenStudioLandscapes/engine/logging/logging.py
+        LOGGER.setLevel(loglevel)
 
     LOGGER.warning("CLI logging configured: level %s", logging.getLevelName(LOGGER.level))
 
