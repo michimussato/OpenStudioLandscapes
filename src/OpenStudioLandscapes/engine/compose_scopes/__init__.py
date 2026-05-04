@@ -13,13 +13,14 @@ if grafana_installed:
     grafana_config: FeatureBaseModel = discovery.DISCOVERED_MODELS[
         "OpenStudioLandscapes.Grafana"
     ].config
-    LOGGER.info(f"{grafana_config = }")
 
     grafana_enabled: bool = grafana_config.enabled
-    LOGGER.info(f"{grafana_enabled = }")
+    # LOGGER.info(f"{grafana_enabled = }")
+    LOGGER.debug(f"{grafana_config = }")
 else:
     grafana_enabled: bool = False
-    LOGGER.info(f"{grafana_enabled = }")
+
+LOGGER.info(f"{grafana_enabled = }")
 
 GRAFANA_AVAILABLE: bool = all(
     [

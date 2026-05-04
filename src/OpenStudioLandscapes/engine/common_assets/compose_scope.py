@@ -42,8 +42,8 @@ def get_compose_scope_group__features_in(
     k: str
     v: AssetIn
     for k, v in features.items():
-        LOGGER.info(f"{k = }")
-        LOGGER.info(f"{v = }")
+        LOGGER.debug(f"{k = }")
+        LOGGER.debug(f"{v = }")
         dynamic_ins[k] = In(
             OpenStudioLandscapesFeatureOut
         )  # In(<type>): type is not really relevant for now.

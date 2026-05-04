@@ -28,7 +28,7 @@ class CLIException(Exception):
 
 def run_openstudiolandscapes_postgres(args):
     LOGGER.info("Welcome!")
-    LOGGER.info("OpenStudioLandscapes args: %s", args)
+    LOGGER.debug("OpenStudioLandscapes args: %s", args)
 
     if bool(int(args.attach_grafana_alloy_to_compose_scope)):
         os.environ["OPENSTUDIOLANDSCAPES__ATTACH_GRAFANA_ALLOY_TO_COMPOSE_SCOPE"] = "1"
@@ -106,21 +106,48 @@ def parse_args(args):
 
     parser = argparse.ArgumentParser()
 
+    # parser.add_argument(
+    #     "-v",
+    #     "--verbose",
+    #     dest="loglevel",
+    #     help="set loglevel to INFO",
+    #     action="store_const",
+    #     const=logging.INFO,
+    # )
+    # parser.add_argument(
+    #     "-vv",
+    #     "--very-verbose",
+    #     dest="loglevel",
+    #     help="set loglevel to DEBUG",
+    #     action="store_const",
+    #     const=logging.DEBUG,
+    # )
+    # parser.add_argument(
+    #     "-vv",
+    #     "--verbose",
+    #     dest="loglevel",
+    #     help="set loglevel to DEBUG",
+    #     action="store_const",
+    #     const=logging.DEBUG,
+    # )
+
     parser.add_argument(
+        "--verbosity",
         "-v",
-        "--verbose",
-        dest="loglevel",
-        help="set loglevel to INFO",
-        action="store_const",
-        const=logging.INFO,
-    )
-    parser.add_argument(
-        "-vv",
-        "--very-verbose",
-        dest="loglevel",
-        help="set loglevel to DEBUG",
-        action="store_const",
-        const=logging.DEBUG,
+        dest="verbosity",
+        type=str,
+        metavar="OPENSTUDIOLANDSCAPES__VERBOSITY",
+        default=logging.getLevelName(logging.INFO),
+        choices=[
+            logging.getLevelName(logging.ERROR),
+            logging.getLevelName(logging.CRITICAL),
+            logging.getLevelName(logging.WARNING),
+            logging.getLevelName(logging.INFO),
+            logging.getLevelName(logging.DEBUG),
+        ],
+        # action="store_true",
+        required=False,
+        help="Verbosity level.",
     )
 
     parser.add_argument(
@@ -300,11 +327,16 @@ def setup_logging(loglevel):
       loglevel (int): minimum loglevel for emitting messages
     """
 
-    if loglevel is not None:
-        # Default level is from OpenStudioLandscapes/engine/logging/logging.py
-        LOGGER.setLevel(loglevel)
+    # if loglevel is not None:
+    #     # Default level is from OpenStudioLandscapes/engine/logging/logging.py
+    LOGGER.setLevel(loglevel)
+    # else:
+    #     LOGGER.setLevel(logging.WARNING)
 
-    LOGGER.warning("CLI logging configured: level %s", logging.getLevelName(LOGGER.level))
+    LOGGER.critical("Setting CLI logging to: level %s...", loglevel)
+    LOGGER.critical("CLI logging configured: level (%i) %s" % (LOGGER.level, logging.getLevelName(LOGGER.level)))
+    LOGGER.critical("CLI logging configured: effective level %s", LOGGER.getEffectiveLevel())
+    os.environ["OPENSTUDIOLANDSCAPES__VERBOSITY"] = logging.getLevelName(LOGGER.getEffectiveLevel())
 
 
 def checks(args):
@@ -499,7 +531,7 @@ def checks(args):
 
 def main(args):
     args = parse_args(args)
-    setup_logging(args.loglevel)
+    setup_logging(args.verbosity)
     LOGGER.info(f"Launching OpenStudioLandscapes...")
 
     checks(args)

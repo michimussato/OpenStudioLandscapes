@@ -6,7 +6,11 @@ try:
     from OpenStudioLandscapes.engine.logging.logging import LOGGING_SCHEMA
     log_config.dictConfig(LOGGING_SCHEMA)
 except ImportError as e:
-    raise ImportError(e) from e
+    # Todo:
+    #  - [ ] make fail safe
+    #        - [](https://runebook.dev/en/docs/python/library/logging.config/logging.config.dictConfig)
+    raise ImportError(f"Could not import OpenStudioLandscapes Loggers: "
+                      f"{e}") from e
 
 CLI_LOGGER = log.getLogger("OpenStudioLandscapes.cli")
 DISCOVERY_LOGGER = log.getLogger("OpenStudioLandscapes.discovery")

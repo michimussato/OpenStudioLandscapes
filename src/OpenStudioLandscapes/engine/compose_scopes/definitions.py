@@ -43,7 +43,7 @@ feature_ins = get_dynamic_ins(
 LOGGER = discovery.LOGGER
 
 
-LOGGER.info(f"{feature_ins = }")
+LOGGER.debug(f"{feature_ins = }")
 # {'default': {'OpenStudioLandscapes_filebrowser': AssetIn(key=AssetKey(['OpenStudioLandscapes_filebrowser', 'feature_out_v2']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>)}}
 
 assets_external = []

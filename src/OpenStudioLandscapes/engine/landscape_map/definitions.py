@@ -30,7 +30,7 @@ feature_ins = get_dynamic_ins(
 LOGGER = discovery.LOGGER
 
 
-LOGGER.info(f"{feature_ins = }")
+LOGGER.debug(f"{feature_ins = }")
 
 assets_external = []
 

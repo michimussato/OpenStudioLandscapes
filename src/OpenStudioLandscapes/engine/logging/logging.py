@@ -1,3 +1,4 @@
+import logging
 import os
 import pathlib
 from typing import Dict
@@ -15,57 +16,70 @@ LOG_ROOT.mkdir(parents=True, exist_ok=True)
 # - [](https://unix.stackexchange.com/a/687072/535903)
 
 
+ROOT_LOGGER_DEFAULT = logging.DEBUG
+CONSOLE_HANDLER_DEFAULT = logging.DEBUG
+
+
+FORMAT_CONSOLE = '[{asctime}] [{levelname:<8}]:    {message}'
+FORMAT_FILE = '[{asctime}] [{levelname:<8}] [{threadName}|{thread}], File "{pathname}", line {lineno}, in {funcName}:    {message}'
+
+
 LOGGING_SCHEMA: Dict = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
-        'simple': {
-            'format': '[{asctime}] [{levelname:<8}] [{threadName}|{thread}], File "{pathname}", line {lineno}, in {funcName}:    {message}',
+        'console_formatter': {
+            'format': FORMAT_CONSOLE,
+            'style': '{',
+            'datefmt': '%m-%d-%Y %H:%M:%S',
+        },
+        'file_formatter': {
+            'format': FORMAT_FILE,
             'style': '{',
             'datefmt': '%m-%d-%Y %H:%M:%S',
         },
     },
     'handlers': {
         'console': {
-            'level': 'WARNING',
+            'level': os.environ.get("OPENSTUDIOLANDSCAPES__VERBOSITY"),
             'class': 'logging.StreamHandler',
-            'formatter': 'simple'
+            'formatter': 'console_formatter'
         },
         'cli_filehandler': {
-            'level': 'DEBUG',
+            'level': os.environ.get("OPENSTUDIOLANDSCAPES__VERBOSITY"),
             'class': 'logging.handlers.TimedRotatingFileHandler',
             'when': 'midnight',
             'interval': 1,
             'backupCount': 7,
             'filename': os.path.join(LOG_ROOT, 'cli.log'),
-            'formatter': 'simple',
+            'formatter': 'file_formatter',
         },
         'discovery_filehandler': {
-            'level': 'DEBUG',
+            'level': os.environ.get("OPENSTUDIOLANDSCAPES__VERBOSITY"),
             'class': 'logging.handlers.TimedRotatingFileHandler',
             'when': 'midnight',
             'interval': 1,
             'backupCount': 7,
             'filename': os.path.join(LOG_ROOT, 'discovery.log'),
-            'formatter': 'simple',
+            'formatter': 'file_formatter',
         },
         'engine_filehandler': {
-            'level': 'DEBUG',
+            'level': os.environ.get("OPENSTUDIOLANDSCAPES__VERBOSITY"),
             'class': 'logging.handlers.TimedRotatingFileHandler',
             'when': 'midnight',
             'interval': 1,
             'backupCount': 7,
             'filename': os.path.join(LOG_ROOT, 'engine.log'),
-            'formatter': 'simple',
+            'formatter': 'file_formatter',
         },
         'features_filehandler': {
-            'level': 'DEBUG',
+            'level': os.environ.get("OPENSTUDIOLANDSCAPES__VERBOSITY"),
             'class': 'logging.handlers.TimedRotatingFileHandler',
             'when': 'midnight',
             'interval': 1,
             'backupCount': 7,
             'filename': os.path.join(LOG_ROOT, 'features.log'),
-            'formatter': 'simple',
+            'formatter': 'file_formatter',
         },
     },
     'loggers': {
@@ -126,7 +140,7 @@ LOGGING_SCHEMA: Dict = {
         # },
     },
     'root': {
-        'level': 'DEBUG',
+        'level': logging.getLevelName(ROOT_LOGGER_DEFAULT),
         'handlers': ['console']
     }
 }

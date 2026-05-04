@@ -200,7 +200,7 @@ def get_absolute_config_path(
         engine_config_path: pathlib.Path
     """
 
-    LOGGER.info(f"{dist.name = }")
+    LOGGER.debug(f"{dist.name = }")
     config_yml: pathlib.Path = (
         OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.joinpath(
             dist.name,
@@ -208,7 +208,7 @@ def get_absolute_config_path(
         )
     )
     config_yml_expanded: pathlib.Path = config_yml.expanduser()
-    LOGGER.info(f"{config_yml = }")
+    LOGGER.debug(f"{config_yml = }")
     LOGGER.info(f"{config_yml_expanded = }")
     return config_yml_expanded
 
@@ -317,7 +317,7 @@ def get_config_engine() -> ConfigEngine:
     config_engine: ConfigEngine = ConfigEngine(
         **engine_config_dict,
     )
-    LOGGER.info(f"{config_engine = }")
+    LOGGER.debug(f"{config_engine = }")
 
     dump_yaml(
         model_config=config_engine,
@@ -342,7 +342,7 @@ def get_namespace_packages(
             "*.doc",  # exclude src.OpenStudioLandscapes.<Feature>.doc from module discovery
         ],
     )
-    LOGGER.info(f"{namespace_packages_ = }")
+    LOGGER.debug(f"{namespace_packages_ = }")
     # ['OpenStudioLandscapes-NukeRLM-8.src.OpenStudioLandscapes.NukeRLM_8', ...]
 
     # Just take the final part of the namespace package ('NukeRLM_8') an
@@ -395,10 +395,10 @@ def try_import_discovered(
     """Try to import a discovered model from a package."""
 
     LOGGER.info(f"{package = }")
-    LOGGER.info(f"{discovered_model = }")
+    LOGGER.debug(f"{discovered_model = }")
     try:
         _models = discovered_model.models
-        LOGGER.info(f"{_models = }")
+        LOGGER.debug(f"{_models = }")
         models_object: ModuleType = importlib.import_module(_models)
         LOGGER.info("Feature models import successful: '%s'" % models_object)
     except (
@@ -409,7 +409,7 @@ def try_import_discovered(
         raise ImportError(e) from e
     try:
         _definitions = discovered_model.definitions
-        LOGGER.info(f"{_definitions = }")
+        LOGGER.debug(f"{_definitions = }")
         definitions_object: ModuleType = importlib.import_module(_definitions)
         LOGGER.info("Feature definitions import successful: '%s'" % definitions_object)
     except (
@@ -467,7 +467,7 @@ def init(
 
         discovered_models[package] = module
 
-    LOGGER.info(f"{discovered_models = }")
+    LOGGER.debug(f"{discovered_models = }")
 
     # Annotate the types before the loop
     # References:
@@ -478,7 +478,7 @@ def init(
         LOGGER.info(f"{package = }")
         # package =
         # 'OpenStudioLandscapes-Kitsu.src.OpenStudioLandscapes.Kitsu'
-        LOGGER.info(f"{feature = }")
+        LOGGER.debug(f"{feature = }")
         # feature =
         # OpenStudioLandscapesDiscoveredFeature(
         #     definitions='OpenStudioLandscapes.Kitsu.definitions',
@@ -500,19 +500,17 @@ def init(
             file_path_config_yaml=config_yml_feature_expanded,
         )
 
-        # Also inject the ConfigEngine object
         LOGGER.debug(f"{feature_config_dict = }")
-        LOGGER.debug(f"{config_engine = }")
-        LOGGER.debug(f"{feature_dist = }")
-        LOGGER.info(f"{feature_config_dict = }")
 
         config_feature: FeatureBaseModel = feature.models_object.Config(
             **feature_config_dict,
         )
         # Also inject the ConfigEngine object
+        LOGGER.debug(f"{config_engine = }")
+        LOGGER.debug(f"{feature_dist = }")
         config_feature.config_engine = config_engine
         config_feature.distribution = feature_dist
-        LOGGER.info(f"{config_feature = }")
+        LOGGER.debug(f"{config_feature = }")
         feature.config = config_feature
 
         dump_yaml(
@@ -520,7 +518,7 @@ def init(
             file_path=config_yml_feature_expanded,
         )
 
-    LOGGER.info(f"{FeatureBaseModel.subclasses = }")
+    LOGGER.debug(f"{FeatureBaseModel.subclasses = }")
     #  FeatureBaseModel.subclasses =
     #  {
     #      'OpenStudioLandscapes-Kitsu': <class 'OpenStudioLandscapes.Kitsu.config.models.Config'>,

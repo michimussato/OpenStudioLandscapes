@@ -17,13 +17,13 @@ else:
 try:
     # Change here if project is renamed and does not equal the package name
     namespace: str = Path(__file__).parent.parent.name
-    LOGGER.info(f"{namespace = }")
+    LOGGER.debug(f"{namespace = }")
     # OpenStudioLandscapes
     # package: str = Path(__file__).parent.name
     # LOGGER.error(f"{package = }")
     # engine
     dist: Distribution = metadata.distribution(namespace)
-    LOGGER.info(f"{dist = }")
+    LOGGER.debug(f"{dist = }")
 
     __version__: str = version(dist.name)
 except PackageNotFoundError:  # pragma: no cover

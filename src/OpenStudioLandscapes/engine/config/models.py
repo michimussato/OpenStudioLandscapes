@@ -92,7 +92,7 @@ class BaseConfig(BaseModel):
         # docs += "# \n\n"
         # fields = []
 
-        LOGGER.info(f"{cls.model_fields = }")
+        LOGGER.debug(f"{cls.model_fields = }")
 
         doc_str = str()
 

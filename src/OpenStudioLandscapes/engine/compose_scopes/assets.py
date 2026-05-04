@@ -47,7 +47,7 @@ feature_ins = get_dynamic_ins(
     imported_features=discovery.DISCOVERED_MODELS,
 )
 
-LOGGER.info(f"{feature_ins = }")
+LOGGER.debug(f"{feature_ins = }")
 # feature_ins = {'default': {'OpenStudioLandscapes_Kitsu': AssetIn(key=AssetKey(['Kitsu', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>), 'OpenStudioLandscapes_Watchtower': AssetIn(key=AssetKey(['Watchtower', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>), 'OpenStudioLandscapes_VERT': AssetIn(key=AssetKey(['VERT', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>)}}
 
 compose_scope_asset_defs = []
@@ -79,7 +79,7 @@ for compose_scope, features in feature_ins.items():
     # Todo
     #  - [ ] This most likely needs a factory
 
-    LOGGER.info(f"{features = }")
+    LOGGER.debug(f"{features = }")
     # features = {'OpenStudioLandscapes_Kitsu': AssetIn(key=AssetKey(['OpenStudioLandscapes_Kitsu', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>), 'OpenStudioLandscapes_Watchtower': AssetIn(key=AssetKey(['OpenStudioLandscapes_Watchtower', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>)
 
     ASSET_HEADER = {
