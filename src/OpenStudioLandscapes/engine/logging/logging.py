@@ -7,6 +7,10 @@ LOG_ROOT: pathlib.Path = pathlib.Path("~/.config/OpenStudioLandscapes/logs").exp
 LOG_ROOT.mkdir(parents=True, exist_ok=True)
 
 
+# This configures the OpenStudioLandscapes loggers.
+# The Dagster loggers stay unaffected by these.
+
+
 # Resources:
 # - [A Complete Guide to Linux Log File Locations and Their Usage](https://last9.io/blog/linux-log-file-locations/)
 # - [Mastering Python Logging: A Guide to dictConfig() Troubleshooting and Alternatives](https://runebook.dev/en/docs/python/library/logging.config/logging.config.dictConfig)
@@ -14,6 +18,9 @@ LOG_ROOT.mkdir(parents=True, exist_ok=True)
 #
 # Follow logs:
 # - [](https://unix.stackexchange.com/a/687072/535903)
+#
+# Dagster Logging:
+# - [Dagster Logging](https://docs.dagster.io/guides/log-debug/logging)
 
 
 ROOT_LOGGER_DEFAULT = logging.DEBUG

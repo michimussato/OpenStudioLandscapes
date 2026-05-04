@@ -605,7 +605,12 @@ def get_all_compose_scopes(
     return set(compose_scopes)
 
 
-# Edited func for testing
+# Todo
+#  - [ ] This function gets called multiple times:
+#        - OpenStudioLandscapes.engine.compose_scopes.assets.feature_ins
+#        - [removed] OpenStudioLandscapes.engine.compose_scopes.definitions.feature_ins
+#        - OpenStudioLandscapes.engine.landscape_map.assets.feature_ins
+#        - [removed] OpenStudioLandscapes.engine.landscape_map.definitions.feature_ins
 def get_dynamic_ins(
     imported_features: Dict,
 ):
@@ -637,7 +642,7 @@ def get_dynamic_ins(
 
         # Skip Feature if disabled in `config.yml`
         if not feature_enabled:
-            LOGGER.info(f"Feature is disabled: {feature_name}")
+            LOGGER.info(f"Feature is disabled by `config.yml`: {feature_name}")
             continue
 
         asset_in = feature.config.dagster_compose_scope_in

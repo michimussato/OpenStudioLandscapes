@@ -34,11 +34,8 @@ from OpenStudioLandscapes.engine.compose_scopes.constants import (
     COMPOSE_SCOPE_GROUP_PREFIX,
 )
 from OpenStudioLandscapes.engine.discovery import discovery
-from OpenStudioLandscapes.engine.utils import get_dynamic_ins
+from OpenStudioLandscapes.engine.compose_scopes.assets import feature_ins
 
-feature_ins = get_dynamic_ins(
-    imported_features=discovery.DISCOVERED_MODELS,
-)
 
 LOGGER = discovery.LOGGER
 

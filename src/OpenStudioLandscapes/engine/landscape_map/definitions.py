@@ -15,15 +15,10 @@ from OpenStudioLandscapes.engine.constants import (
     ASSET_HEADER_BASE,
 )
 from OpenStudioLandscapes.engine.discovery import discovery
-from OpenStudioLandscapes.engine.utils import get_dynamic_ins
+from OpenStudioLandscapes.engine.landscape_map.assets import feature_ins
 
 assets_base = load_assets_from_modules(
     modules=[OpenStudioLandscapes.engine.landscape_map.assets],
-)
-
-
-feature_ins = get_dynamic_ins(
-    imported_features=discovery.DISCOVERED_MODELS,
 )
 
 
