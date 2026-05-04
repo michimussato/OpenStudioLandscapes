@@ -34,11 +34,12 @@ The logic current does:
 - keep comments in the YAML files
   - [How to Update YAML in Python While Preserving Order and Comments: A Step-by-Step Guide](https://www.w3reference.com/blog/python-yaml-update-preserving-order-and-comments/)
 """
+
 import importlib
-from collections import OrderedDict
 import json
 import os
 import pathlib
+from collections import OrderedDict
 from importlib import metadata
 from importlib.metadata import Distribution
 from types import ModuleType
@@ -48,14 +49,14 @@ import git
 import ruamel.yaml
 from setuptools import find_namespace_packages
 
-from OpenStudioLandscapes.engine.logging.loggers import DISCOVERY_LOGGER as LOGGER
-
 from OpenStudioLandscapes.engine import dist as dist_engine
 from OpenStudioLandscapes.engine.config.models import (
     ConfigEngine,
     FeatureBaseModel,
     OpenStudioLandscapesDiscoveredFeature,
 )
+from OpenStudioLandscapes.engine.logging.loggers import DISCOVERY_LOGGER as LOGGER
+
 
 class OpenStudioLandscapesDiscoveryException(Exception):
     pass
@@ -76,13 +77,14 @@ def load_yaml(
 
     if data is None:
         raise OpenStudioLandscapesDiscoveryException(
-            "Could not load YAML file: \n"
-            f"{file_path = }\n"
-            f"{data = }\n"
+            "Could not load YAML file: \n" f"{file_path = }\n" f"{data = }\n"
         )
 
+        # Todo
+        #  - [ ] continue here...
+
         # Seems to be a bit random...
-        # - file currently open?
+        # - file currently open? -> Yes.
 
         # In process 392288: OpenStudioLandscapes.engine.discovery.discovery.OpenStudioLandscapesDiscoveryException: Could not load YAML file:
         # file_path = PosixPath('/home/michael/.config/OpenStudioLandscapes/config-store/OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20/config.yml')
@@ -181,9 +183,7 @@ def get_config(
     else:
         # CommentedMap needs an OrderedDict.
         # Standard dict does not work.
-        data: ruamel.yaml.CommentedMap = ruamel.yaml.CommentedMap(
-            OrderedDict()
-        )
+        data: ruamel.yaml.CommentedMap = ruamel.yaml.CommentedMap(OrderedDict())
 
     return data
 
@@ -201,11 +201,9 @@ def get_absolute_config_path(
     """
 
     LOGGER.debug(f"{dist.name = }")
-    config_yml: pathlib.Path = (
-        OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.joinpath(
-            dist.name,
-            "config.yml",
-        )
+    config_yml: pathlib.Path = OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.joinpath(
+        dist.name,
+        "config.yml",
     )
     config_yml_expanded: pathlib.Path = config_yml.expanduser()
     LOGGER.debug(f"{config_yml = }")
@@ -328,7 +326,7 @@ def get_config_engine() -> ConfigEngine:
 
 
 def get_namespace_packages(
-        where: pathlib.Path,
+    where: pathlib.Path,
 ) -> List[str]:
     LOGGER.info(
         "Getting installed OpenStudioLandscapes namespace packages from '%s'...", where

@@ -1,16 +1,13 @@
 import importlib
-import os
 
 from dagster import Definitions
-
-from OpenStudioLandscapes.engine.logging.loggers import ENGINE_LOGGER as LOGGER
 
 import OpenStudioLandscapes.engine.discovery.discovery as discovery
 from OpenStudioLandscapes.engine.config.models import (
     FeatureBaseModel,
     OpenStudioLandscapesDiscoveredFeature,
 )
-
+from OpenStudioLandscapes.engine.logging.loggers import ENGINE_LOGGER as LOGGER
 
 # Base Definitions
 code_locations = [

@@ -3,7 +3,9 @@ import os
 import pathlib
 from typing import Dict
 
-LOG_ROOT: pathlib.Path = pathlib.Path("~/.config/OpenStudioLandscapes/logs").expanduser()
+LOG_ROOT: pathlib.Path = pathlib.Path(
+    "~/.config/OpenStudioLandscapes/logs"
+).expanduser()
 LOG_ROOT.mkdir(parents=True, exist_ok=True)
 
 
@@ -27,77 +29,77 @@ ROOT_LOGGER_DEFAULT = logging.DEBUG
 CONSOLE_HANDLER_DEFAULT = logging.DEBUG
 
 
-FORMAT_CONSOLE = '[{asctime}] [{levelname:<8}]:    {message}'
+FORMAT_CONSOLE = "[{asctime}] [{levelname:<8}]:    {message}"
 FORMAT_FILE = '[{asctime}] [{levelname:<8}] [{threadName}|{thread}], File "{pathname}", line {lineno}, in {funcName}:    {message}'
 
 
 LOGGING_SCHEMA: Dict = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'console_formatter': {
-            'format': FORMAT_CONSOLE,
-            'style': '{',
-            'datefmt': '%m-%d-%Y %H:%M:%S',
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "console_formatter": {
+            "format": FORMAT_CONSOLE,
+            "style": "{",
+            "datefmt": "%m-%d-%Y %H:%M:%S",
         },
-        'file_formatter': {
-            'format': FORMAT_FILE,
-            'style': '{',
-            'datefmt': '%m-%d-%Y %H:%M:%S',
-        },
-    },
-    'handlers': {
-        'console': {
-            'level': os.environ.get("OPENSTUDIOLANDSCAPES__VERBOSITY"),
-            'class': 'logging.StreamHandler',
-            'formatter': 'console_formatter'
-        },
-        'cli_filehandler': {
-            'level': os.environ.get("OPENSTUDIOLANDSCAPES__VERBOSITY"),
-            'class': 'logging.handlers.TimedRotatingFileHandler',
-            'when': 'midnight',
-            'interval': 1,
-            'backupCount': 7,
-            'filename': os.path.join(LOG_ROOT, 'cli.log'),
-            'formatter': 'file_formatter',
-        },
-        'discovery_filehandler': {
-            'level': os.environ.get("OPENSTUDIOLANDSCAPES__VERBOSITY"),
-            'class': 'logging.handlers.TimedRotatingFileHandler',
-            'when': 'midnight',
-            'interval': 1,
-            'backupCount': 7,
-            'filename': os.path.join(LOG_ROOT, 'discovery.log'),
-            'formatter': 'file_formatter',
-        },
-        'engine_filehandler': {
-            'level': os.environ.get("OPENSTUDIOLANDSCAPES__VERBOSITY"),
-            'class': 'logging.handlers.TimedRotatingFileHandler',
-            'when': 'midnight',
-            'interval': 1,
-            'backupCount': 7,
-            'filename': os.path.join(LOG_ROOT, 'engine.log'),
-            'formatter': 'file_formatter',
-        },
-        'features_filehandler': {
-            'level': os.environ.get("OPENSTUDIOLANDSCAPES__VERBOSITY"),
-            'class': 'logging.handlers.TimedRotatingFileHandler',
-            'when': 'midnight',
-            'interval': 1,
-            'backupCount': 7,
-            'filename': os.path.join(LOG_ROOT, 'features.log'),
-            'formatter': 'file_formatter',
+        "file_formatter": {
+            "format": FORMAT_FILE,
+            "style": "{",
+            "datefmt": "%m-%d-%Y %H:%M:%S",
         },
     },
-    'loggers': {
-        'OpenStudioLandscapes.cli': {
-            'handlers': ['console', 'cli_filehandler'],
-            'propagate': False,
+    "handlers": {
+        "console": {
+            "level": os.environ.get("OPENSTUDIOLANDSCAPES__VERBOSITY"),
+            "class": "logging.StreamHandler",
+            "formatter": "console_formatter",
+        },
+        "cli_filehandler": {
+            "level": os.environ.get("OPENSTUDIOLANDSCAPES__VERBOSITY"),
+            "class": "logging.handlers.TimedRotatingFileHandler",
+            "when": "midnight",
+            "interval": 1,
+            "backupCount": 7,
+            "filename": os.path.join(LOG_ROOT, "cli.log"),
+            "formatter": "file_formatter",
+        },
+        "discovery_filehandler": {
+            "level": os.environ.get("OPENSTUDIOLANDSCAPES__VERBOSITY"),
+            "class": "logging.handlers.TimedRotatingFileHandler",
+            "when": "midnight",
+            "interval": 1,
+            "backupCount": 7,
+            "filename": os.path.join(LOG_ROOT, "discovery.log"),
+            "formatter": "file_formatter",
+        },
+        "engine_filehandler": {
+            "level": os.environ.get("OPENSTUDIOLANDSCAPES__VERBOSITY"),
+            "class": "logging.handlers.TimedRotatingFileHandler",
+            "when": "midnight",
+            "interval": 1,
+            "backupCount": 7,
+            "filename": os.path.join(LOG_ROOT, "engine.log"),
+            "formatter": "file_formatter",
+        },
+        "features_filehandler": {
+            "level": os.environ.get("OPENSTUDIOLANDSCAPES__VERBOSITY"),
+            "class": "logging.handlers.TimedRotatingFileHandler",
+            "when": "midnight",
+            "interval": 1,
+            "backupCount": 7,
+            "filename": os.path.join(LOG_ROOT, "features.log"),
+            "formatter": "file_formatter",
+        },
+    },
+    "loggers": {
+        "OpenStudioLandscapes.cli": {
+            "handlers": ["console", "cli_filehandler"],
+            "propagate": False,
             # 'level': 'WARNING',
         },
-        'OpenStudioLandscapes.discovery': {
-            'handlers': ['console', 'discovery_filehandler'],
-            'propagate': False,
+        "OpenStudioLandscapes.discovery": {
+            "handlers": ["console", "discovery_filehandler"],
+            "propagate": False,
             # 'level': 'WARNING',
         },
         # 'OpenStudioLandscapes.engine.utils': {
@@ -115,14 +117,14 @@ LOGGING_SCHEMA: Dict = {
         #     'propagate': False,
         #     'level': 'WARNING',
         # },
-        'OpenStudioLandscapes.engine': {
-            'handlers': ['console', 'engine_filehandler'],
-            'propagate': False,
+        "OpenStudioLandscapes.engine": {
+            "handlers": ["console", "engine_filehandler"],
+            "propagate": False,
             # 'level': 'WARNING',
         },
-        'OpenStudioLandscapes.Features': {
-            'handlers': ['console', 'features_filehandler'],
-            'propagate': False,
+        "OpenStudioLandscapes.Features": {
+            "handlers": ["console", "features_filehandler"],
+            "propagate": False,
             # 'level': 'WARNING',
         },
         # 'urllib3': {
@@ -146,8 +148,8 @@ LOGGING_SCHEMA: Dict = {
         #     'level': 'WARNING',
         # },
     },
-    'root': {
-        'level': logging.getLevelName(ROOT_LOGGER_DEFAULT),
-        'handlers': ['console']
-    }
+    "root": {
+        "level": logging.getLevelName(ROOT_LOGGER_DEFAULT),
+        "handlers": ["console"],
+    },
 }

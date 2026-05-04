@@ -1,7 +1,7 @@
 {
   "components": [
     {
-      "bom-ref": "GitPython==3.1.48",
+      "bom-ref": "GitPython==3.1.49",
       "description": "GitPython is a Python library used to interact with Git repositories",
       "externalReferences": [
         {
@@ -19,9 +19,9 @@
         }
       ],
       "name": "GitPython",
-      "purl": "pkg:pypi/gitpython@3.1.48",
+      "purl": "pkg:pypi/gitpython@3.1.49",
       "type": "library",
-      "version": "3.1.48"
+      "version": "3.1.49"
     },
     {
       "bom-ref": "Jinja2==3.1.6",
@@ -67,7 +67,7 @@
       "version": "3.1.6"
     },
     {
-      "bom-ref": "Mako==1.3.11",
+      "bom-ref": "Mako==1.3.12",
       "description": "A super-fast templating language that borrows the best ideas from the existing templating languages.",
       "externalReferences": [
         {
@@ -95,9 +95,9 @@
         }
       ],
       "name": "Mako",
-      "purl": "pkg:pypi/mako@1.3.11",
+      "purl": "pkg:pypi/mako@1.3.12",
       "type": "library",
-      "version": "1.3.11"
+      "version": "1.3.12"
     },
     {
       "bom-ref": "MarkupSafe==3.0.3",
@@ -158,7 +158,7 @@
       "version": "0.0.0"
     },
     {
-      "bom-ref": "BomRef.7126862069500796.30628742525896047",
+      "bom-ref": "BomRef.16860947353527045.8781714551502503",
       "description": "A Toolkit to create dynamic Animation and VFX studio environments for robust automation and pipelines.",
       "externalReferences": [
         {
@@ -1471,7 +1471,7 @@
       "version": "1.5.1"
     },
     {
-      "bom-ref": "fsspec==2026.3.0",
+      "bom-ref": "fsspec==2026.4.0",
       "description": "File-system specification",
       "externalReferences": [
         {
@@ -1529,9 +1529,9 @@
           "value": "ssh"
         }
       ],
-      "purl": "pkg:pypi/fsspec@2026.3.0",
+      "purl": "pkg:pypi/fsspec@2026.4.0",
       "type": "library",
-      "version": "2026.3.0"
+      "version": "2026.4.0"
     },
     {
       "bom-ref": "gitdb==4.0.12",
@@ -2517,7 +2517,7 @@
       "version": "32.0.1"
     },
     {
-      "bom-ref": "pipdeptree==2.35.1",
+      "bom-ref": "pipdeptree==2.35.2",
       "description": "Command line utility to show dependency tree of packages.",
       "externalReferences": [
         {
@@ -2555,9 +2555,9 @@
         }
       ],
       "name": "pipdeptree",
-      "purl": "pkg:pypi/pipdeptree@2.35.1",
+      "purl": "pkg:pypi/pipdeptree@2.35.2",
       "type": "library",
-      "version": "2.35.1"
+      "version": "2.35.2"
     },
     {
       "bom-ref": "platformdirs==4.9.6",
@@ -3030,7 +3030,7 @@
       "version": "1.2.2"
     },
     {
-      "bom-ref": "pytz==2026.1.post1",
+      "bom-ref": "pytz==2026.2",
       "description": "World timezone definitions, modern and historical",
       "externalReferences": [
         {
@@ -3053,9 +3053,9 @@
         }
       ],
       "name": "pytz",
-      "purl": "pkg:pypi/pytz@2026.1.post1",
+      "purl": "pkg:pypi/pytz@2026.2",
       "type": "library",
-      "version": "2026.1.post1"
+      "version": "2026.2"
     },
     {
       "bom-ref": "referencing==0.37.0",
@@ -3341,6 +3341,44 @@
       "purl": "pkg:pypi/rpds-py@0.30.0",
       "type": "library",
       "version": "0.30.0"
+    },
+    {
+      "bom-ref": "ruamel.yaml==0.19.1",
+      "description": "ruamel.yaml is a YAML parser/emitter that supports roundtrip preservation of comments, seq/map flow style, and map key order",
+      "externalReferences": [
+        {
+          "comment": "from packaging metadata Project-URL: Documentation",
+          "type": "documentation",
+          "url": "https://yaml.dev/doc/ruamel.yaml"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Tracker",
+          "type": "issue-tracker",
+          "url": "https://sourceforge.net/p/ruamel-yaml/tickets/"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Source",
+          "type": "other",
+          "url": "https://sourceforge.net/p/ruamel-yaml/code/ci/default/tree/"
+        },
+        {
+          "comment": "from packaging metadata Project-URL: Home",
+          "type": "website",
+          "url": "https://sourceforge.net/p/ruamel-yaml/"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "acknowledgement": "declared",
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "ruamel.yaml",
+      "purl": "pkg:pypi/ruamel.yaml@0.19.1",
+      "type": "library",
+      "version": "0.19.1"
     },
     {
       "bom-ref": "setuptools==82.0.1",
@@ -4266,7 +4304,7 @@
         "gitdb==4.0.12",
         "typing_extensions==4.15.0"
       ],
-      "ref": "GitPython==3.1.48"
+      "ref": "GitPython==3.1.49"
     },
     {
       "dependsOn": [
@@ -4278,7 +4316,7 @@
       "dependsOn": [
         "MarkupSafe==3.0.3"
       ],
-      "ref": "Mako==1.3.11"
+      "ref": "Mako==1.3.12"
     },
     {
       "ref": "MarkupSafe==3.0.3"
@@ -4291,7 +4329,7 @@
     },
     {
       "dependsOn": [
-        "GitPython==3.1.48",
+        "GitPython==3.1.49",
         "OpenStudioLandscapes-DagsterCodeLocation-StreamingProcess==0.0.0",
         "PyYAML==6.0.3",
         "SnakeMD==2.4.0",
@@ -4304,8 +4342,9 @@
         "graphviz==0.21",
         "human-readable-id==0.0.3",
         "nox==2026.4.10",
-        "pipdeptree==2.35.1",
+        "pipdeptree==2.35.2",
         "pydot==4.0.1",
+        "ruamel.yaml==0.19.1",
         "setuptools==82.0.1"
       ],
       "ref": "OpenStudioLandscapes==0.0.0"
@@ -4329,7 +4368,7 @@
     },
     {
       "dependsOn": [
-        "Mako==1.3.11",
+        "Mako==1.3.12",
         "SQLAlchemy==2.0.49",
         "tomli==2.4.1",
         "typing_extensions==4.15.0",
@@ -4362,7 +4401,7 @@
     {
       "dependsOn": [
         "python-dateutil==2.9.0.post0",
-        "pytz==2026.1.post1",
+        "pytz==2026.2",
         "tzdata==2026.2"
       ],
       "ref": "arrow==1.4.0"
@@ -4463,14 +4502,14 @@
         "dagster-pipes==1.9.11",
         "docstring_parser==0.18.0",
         "filelock==3.29.0",
-        "fsspec==2026.3.0",
+        "fsspec==2026.4.0",
         "grpcio-health-checking==1.71.2",
         "grpcio==1.80.0",
         "packaging==26.2",
         "protobuf==5.29.6",
         "pydantic==2.13.3",
         "python-dotenv==1.2.2",
-        "pytz==2026.1.post1",
+        "pytz==2026.2",
         "requests==2.33.1",
         "rich==15.0.0",
         "setuptools==82.0.1",
@@ -4542,7 +4581,7 @@
         "urllib3==2.6.3",
         "yarl==1.23.0"
       ],
-      "ref": "fsspec==2026.3.0"
+      "ref": "fsspec==2026.4.0"
     },
     {
       "dependsOn": [
@@ -4734,7 +4773,7 @@
         "rich==15.0.0",
         "virtualenv==21.3.0"
       ],
-      "ref": "pipdeptree==2.35.1"
+      "ref": "pipdeptree==2.35.2"
     },
     {
       "ref": "platformdirs==4.9.6"
@@ -4805,7 +4844,7 @@
       "ref": "python-dotenv==1.2.2"
     },
     {
-      "ref": "pytz==2026.1.post1"
+      "ref": "pytz==2026.2"
     },
     {
       "dependsOn": [
@@ -4855,6 +4894,9 @@
     },
     {
       "ref": "rpds-py==0.30.0"
+    },
+    {
+      "ref": "ruamel.yaml==0.19.1"
     },
     {
       "dependsOn": [
@@ -4920,7 +4962,7 @@
     },
     {
       "dependsOn": [
-        "fsspec==2026.3.0",
+        "fsspec==2026.4.0",
         "packaging==26.2",
         "pathlib_abc==0.5.2",
         "pydantic==2.13.3",
@@ -4998,7 +5040,7 @@
     }
   ],
   "metadata": {
-    "timestamp": "2026-04-28T13:56:29.970974+00:00",
+    "timestamp": "2026-05-04T11:37:15.980720+00:00",
     "tools": {
       "components": [
         {
@@ -5102,7 +5144,7 @@
       ]
     }
   },
-  "serialNumber": "urn:uuid:5cf05a40-3d88-4f59-a2d2-ca725895a801",
+  "serialNumber": "urn:uuid:f07d21a7-ee1f-4e20-ac1a-0d5c38f07c8e",
   "version": 1,
   "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
   "bomFormat": "CycloneDX",

@@ -22,7 +22,6 @@ from pydantic import (
 
 from OpenStudioLandscapes.engine.logging.loggers import ENGINE_LOGGER as LOGGER
 
-
 """
 Resources:
 - https://app.studyraid.com/en/read/15002/518529/conditional-validation-based-on-other-fields

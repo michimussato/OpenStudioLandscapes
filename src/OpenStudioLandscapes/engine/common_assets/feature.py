@@ -1,11 +1,11 @@
 from typing import Dict, Type
 
 from dagster import (
+    AssetKey,
     AssetsDefinition,
     In,
     OpDefinition,
     Out,
-    AssetKey,
 )
 
 from OpenStudioLandscapes.engine.base.ops.factories import factory__CONFIG

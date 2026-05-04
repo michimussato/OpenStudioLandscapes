@@ -7,8 +7,6 @@ from dagster import (
     AssetKey,
 )
 
-from OpenStudioLandscapes.engine.logging.loggers import ENGINE_LOGGER as LOGGER
-
 import OpenStudioLandscapes.engine.discovery.discovery as discovery
 from OpenStudioLandscapes.engine.common_assets.compose_scope import (
     get_compose_scope_group__cmd,
@@ -25,6 +23,7 @@ from OpenStudioLandscapes.engine.compose_scopes.simple_factories import (
     simple_factory_alloy,
     simple_factory_newt,
 )
+from OpenStudioLandscapes.engine.logging.loggers import ENGINE_LOGGER as LOGGER
 from OpenStudioLandscapes.engine.utils import *
 
 # Todo:

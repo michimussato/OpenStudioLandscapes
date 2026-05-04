@@ -11,8 +11,6 @@ from dagster import (
     Out,
 )
 
-from OpenStudioLandscapes.engine.logging.loggers import ENGINE_LOGGER as LOGGER
-
 from OpenStudioLandscapes.engine.base.ops.factories import (
     factory_compose_scope__cmd,
     factory_compose_scope__compose,
@@ -29,6 +27,7 @@ from OpenStudioLandscapes.engine.link.models import (
     OpenStudioLandscapesBaseOut,
     OpenStudioLandscapesFeatureOut,
 )
+from OpenStudioLandscapes.engine.logging.loggers import ENGINE_LOGGER as LOGGER
 
 
 def get_compose_scope_group__features_in(
@@ -222,11 +221,17 @@ def get_compose_scope_group__docker_compose_graph(
             # [2026-04-30 20:42:02] WARNING:dagster:/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/definitions/resolved_asset_deps.py:24: ExperimentalWarning: Asset ["ComposeScopes", "ComposeScope_default", "docker_compose_graph_dot"]'s dependency 'compose_project_name' was resolved to upstream asset ["ComposeScopes", "ComposeScope_default", "ComposeScopes", "ComposeScope_default", "compose_project_name"], because the name matches and they're in the same group. This is experimental functionality that may change in a future release is experimental. It may break in future versions, even between dot releases. To mute warnings for experimental functionality, invoke warnings.filterwarnings("ignore", category=dagster.ExperimentalWarning) or use one of the other methods described at https://docs.python.org/3/library/warnings.html#describing-warning-filters.
             #   self._deps_by_assets_def_id = resolve_assets_def_deps(assets_defs, source_assets)
             "group_out": AssetKey([*ASSET_HEADER["key_prefix"], "group_out"]),
-            "compose_project_name": AssetKey([*ASSET_HEADER["key_prefix"], "compose_project_name"]),
+            "compose_project_name": AssetKey(
+                [*ASSET_HEADER["key_prefix"], "compose_project_name"]
+            ),
         },
         keys_by_output_name={
-            "docker_compose_graph": AssetKey([*ASSET_HEADER["key_prefix"], "docker_compose_graph"]),
-            "docker_compose_graph_dot": AssetKey([*ASSET_HEADER["key_prefix"], "docker_compose_graph_dot"]),
+            "docker_compose_graph": AssetKey(
+                [*ASSET_HEADER["key_prefix"], "docker_compose_graph"]
+            ),
+            "docker_compose_graph_dot": AssetKey(
+                [*ASSET_HEADER["key_prefix"], "docker_compose_graph_dot"]
+            ),
         },
     )
 
@@ -306,8 +311,12 @@ def get_compose_scope_group__group_out(
             # [2026-04-30 20:41:22] WARNING:dagster:/home/michael/git/repos/OpenStudioLandscapes/.venv/lib/python3.11/site-packages/dagster/_core/definitions/resolved_asset_deps.py:24: ExperimentalWarning: Asset ["ComposeScopes", "ComposeScope_default", "docker_compose_graph"]'s dependency 'compose_project_name' was resolved to upstream asset ["ComposeScopes", "ComposeScope_default", "compose_project_name"], because the name matches and they're in the same group. This is experimental functionality that may change in a future release is experimental. It may break in future versions, even between dot releases. To mute warnings for experimental functionality, invoke warnings.filterwarnings("ignore", category=dagster.ExperimentalWarning) or use one of the other methods described at https://docs.python.org/3/library/warnings.html#describing-warning-filters.
             #   self._deps_by_assets_def_id = resolve_assets_def_deps(assets_defs, source_assets)
             "group_out": AssetKey([*ASSET_HEADER["key_prefix"], "group_out"]),
-            "compose_project_name": AssetKey([*ASSET_HEADER["key_prefix"], "compose_project_name"]),
-            "docker_compose_commands": AssetKey([*ASSET_HEADER["key_prefix"], "docker_compose_commands"]),
+            "compose_project_name": AssetKey(
+                [*ASSET_HEADER["key_prefix"], "compose_project_name"]
+            ),
+            "docker_compose_commands": AssetKey(
+                [*ASSET_HEADER["key_prefix"], "docker_compose_commands"]
+            ),
             "systemd_unit": AssetKey([*ASSET_HEADER["key_prefix"], "systemd_unit"]),
         },
     )

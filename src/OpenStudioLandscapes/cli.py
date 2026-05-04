@@ -10,7 +10,6 @@ import textwrap
 
 import git
 
-
 __author__ = "Michael Mussato"
 __copyright__ = "Michael Mussato"
 __url__ = "https://github.com/michimussato/OpenStudioLandscapes"
@@ -327,16 +326,19 @@ def setup_logging(loglevel):
       loglevel (int): minimum loglevel for emitting messages
     """
 
-    # if loglevel is not None:
-    #     # Default level is from OpenStudioLandscapes/engine/logging/logging.py
     LOGGER.setLevel(loglevel)
-    # else:
-    #     LOGGER.setLevel(logging.WARNING)
 
     LOGGER.critical("Setting CLI logging to: level %s...", loglevel)
-    LOGGER.critical("CLI logging configured: level (%i) %s" % (LOGGER.level, logging.getLevelName(LOGGER.level)))
-    LOGGER.critical("CLI logging configured: effective level %s", LOGGER.getEffectiveLevel())
-    os.environ["OPENSTUDIOLANDSCAPES__VERBOSITY"] = logging.getLevelName(LOGGER.getEffectiveLevel())
+    LOGGER.critical(
+        "CLI logging configured: level (%i) %s"
+        % (LOGGER.level, logging.getLevelName(LOGGER.level))
+    )
+    LOGGER.critical(
+        "CLI logging configured: effective level %s", LOGGER.getEffectiveLevel()
+    )
+    os.environ["OPENSTUDIOLANDSCAPES__VERBOSITY"] = logging.getLevelName(
+        LOGGER.getEffectiveLevel()
+    )
 
 
 def checks(args):

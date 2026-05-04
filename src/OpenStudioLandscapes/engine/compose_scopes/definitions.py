@@ -14,28 +14,15 @@ from OpenStudioLandscapes.engine.constants import (
     ASSET_HEADER_BASE,
 )
 
-# import OpenStudioLandscapes.engine.compose_scopes.constants
-
 assets_base = load_assets_from_modules(
     modules=[OpenStudioLandscapes.engine.compose_scopes.assets]
 )
 
-# if bool(assets):
-#     constants = load_assets_from_modules(
-#         [OpenStudioLandscapes.engine.compose_scopes.constants]
-#     )
-# else:
-#     # This prevents constants asset from showing up it the
-#     # Dagster UI if the Feature itself is not enabled/available.
-#     constants = []
-
-
+from OpenStudioLandscapes.engine.compose_scopes.assets import feature_ins
 from OpenStudioLandscapes.engine.compose_scopes.constants import (
     COMPOSE_SCOPE_GROUP_PREFIX,
 )
 from OpenStudioLandscapes.engine.discovery import discovery
-from OpenStudioLandscapes.engine.compose_scopes.assets import feature_ins
-
 
 LOGGER = discovery.LOGGER
 

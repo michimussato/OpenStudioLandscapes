@@ -1,8 +1,6 @@
-from OpenStudioLandscapes.engine.logging.loggers import ENGINE_LOGGER as LOGGER
-
 from OpenStudioLandscapes.engine.config.models import FeatureBaseModel
 from OpenStudioLandscapes.engine.discovery import discovery
-
+from OpenStudioLandscapes.engine.logging.loggers import ENGINE_LOGGER as LOGGER
 
 grafana_installed: bool = (
     "OpenStudioLandscapes.Grafana" in discovery.DISCOVERED_MODELS.keys()

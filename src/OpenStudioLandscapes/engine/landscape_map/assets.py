@@ -3,9 +3,9 @@ import enum
 import shutil
 import subprocess
 from typing import Any, Generator
-import yaml
 
 import pydot
+import yaml
 from dagster import (
     AssetExecutionContext,
     AssetIn,
@@ -177,9 +177,7 @@ def landscape_map(
         asset_key=context.asset_key,
         metadata={
             "svg": MetadataValue.md(svg_md),
-            "dot": MetadataValue.md(
-                f"```\n{graph.to_string(indent=2)}\n```"
-            ),
+            "dot": MetadataValue.md(f"```\n{graph.to_string(indent=2)}\n```"),
             "svg_path": MetadataValue.path(svg),
             "png_path": MetadataValue.path(png),
             "cmd": MetadataValue.path(" ".join(cmd)),
