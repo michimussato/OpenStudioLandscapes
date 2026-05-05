@@ -44,10 +44,12 @@ from importlib import metadata
 from importlib.metadata import Distribution
 from types import ModuleType
 from typing import Dict, List, Tuple, Union
+from pydantic_core._pydantic_core import ValidationError as PydanticValidationError
 
-import git
 import ruamel.yaml
 from setuptools import find_namespace_packages
+
+from OpenStudioLandscapes.engine.logging.loggers import DISCOVERY_LOGGER as LOGGER
 
 from OpenStudioLandscapes.engine import dist as dist_engine
 from OpenStudioLandscapes.engine.config.models import (
@@ -55,7 +57,10 @@ from OpenStudioLandscapes.engine.config.models import (
     FeatureBaseModel,
     OpenStudioLandscapesDiscoveredFeature,
 )
-from OpenStudioLandscapes.engine.logging.loggers import DISCOVERY_LOGGER as LOGGER
+from OpenStudioLandscapes.engine.discovery.init_config_store import (
+    init_config_store,
+    commit_configs,
+)
 
 
 class OpenStudioLandscapesDiscoveryException(Exception):
@@ -80,44 +85,6 @@ def load_yaml(
             "Could not load YAML file: \n" f"{file_path = }\n" f"{data = }\n"
         )
 
-        # Todo
-        #  - [ ] continue here...
-
-        # Seems to be a bit random...
-        # - file currently open? -> Yes.
-
-        # In process 392288: OpenStudioLandscapes.engine.discovery.discovery.OpenStudioLandscapesDiscoveryException: Could not load YAML file:
-        # file_path = PosixPath('/home/michael/.config/OpenStudioLandscapes/config-store/OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20/config.yml')
-        # data = None
-
-        # In process 400434: OpenStudioLandscapes.engine.discovery.discovery.OpenStudioLandscapesDiscoveryException: Could not load YAML file:
-        # file_path = PosixPath('/home/michael/.config/OpenStudioLandscapes/config-store/OpenStudioLandscapes-NukeRLM-8/config.yml')
-        # data = None
-
-        # In process 399991: OpenStudioLandscapes.engine.discovery.discovery.OpenStudioLandscapesDiscoveryException: Could not load YAML file:
-        # file_path = PosixPath('/home/michael/.config/OpenStudioLandscapes/config-store/OpenStudioLandscapes-OpenCue/config.yml')
-        # data = None
-
-        # In process 399481: OpenStudioLandscapes.engine.discovery.discovery.OpenStudioLandscapesDiscoveryException: Could not load YAML file:
-        # file_path = PosixPath('/home/michael/.config/OpenStudioLandscapes/config-store/OpenStudioLandscapes-Deadline-10-2/config.yml')
-        # data = None
-
-        # In process 511464: OpenStudioLandscapes.engine.discovery.discovery.OpenStudioLandscapesDiscoveryException: Could not load YAML file:
-        # file_path = PosixPath('/home/michael/.config/OpenStudioLandscapes/config-store/OpenStudioLandscapes/config.yml')
-        # data = None
-
-        # In process 511343: OpenStudioLandscapes.engine.discovery.discovery.OpenStudioLandscapesDiscoveryException: Could not load YAML file:
-        # file_path = PosixPath('/home/michael/.config/OpenStudioLandscapes/config-store/OpenStudioLandscapes-Flamenco/config.yml')
-        # data = None
-
-        # In process 556689: OpenStudioLandscapes.engine.discovery.discovery.OpenStudioLandscapesDiscoveryException: Could not load YAML file:
-        # file_path = PosixPath('/home/michael/.config/OpenStudioLandscapes/config-store/OpenStudioLandscapes-Kitsu/config.yml')
-        # data = None
-
-        # In process 556617: OpenStudioLandscapes.engine.discovery.discovery.OpenStudioLandscapesDiscoveryException: Could not load YAML file:
-        # file_path = PosixPath('/home/michael/.config/OpenStudioLandscapes/config-store/OpenStudioLandscapes-Dagster/config.yml')
-        # data = None
-
     return data
 
 
@@ -132,13 +99,11 @@ def dump_yaml(
         file_path_config_yaml=file_path,
     )
 
-    file_path.parent.mkdir(parents=True, exist_ok=True)
-
-    model_dump_json: str = model_config.model_dump_json(indent=2, fallback=str)
+    model_dump_json: str = model_config.model_dump_json(
+        indent=2,
+        fallback=str,
+    )
     model_dump_dict: Dict = json.loads(model_dump_json)
-
-    # update current_config_
-    current_config_.update(model_dump_dict)
 
     if file_path.exists():
         # Develop some logic so that
@@ -151,8 +116,46 @@ def dump_yaml(
         # new/changed model fields don't result
         # in non-functional situations.
         # - "Migration" logic?
-        pass
+
+        data: ruamel.yaml.CommentedMap = load_yaml(file_path)
+        LOGGER.debug(f"{data = }")
+        # data = {'HKEY_BIN': '{DOT_FEATURES}/{FEATURE}/.payload/bin/hkey-bin', 'HSERVER': '{DOT_FEATURES}/{FEATURE}/.payload/bin/hserver', 'LICENSES': '{DOT_FEATURES}/{FEATURE}/.payload/bin/licenses', 'LICENSES_ACTIVE': '{DOT_FEATURES}/{FEATURE}/.payload/data/licenses', 'LICENSES_DISABLED': '{DOT_FEATURES}/{FEATURE}/.payload/bin/licenses.disabled', 'SESICTRL': '{DOT_FEATURES}/{FEATURE}/.payload/bin/sesictrl', 'SESINETD': '{DOT_FEATURES}/{FEATURE}/.payload/bin/sesinetd', 'SESINETD_PEAK_USAGE_BIN': '{DOT_FEATURES}/{FEATURE}/.payload/bin/sesinetd_peak_usage.bin', 'SESIUSAGE': '{DOT_FEATURES}/{FEATURE}/.payload/bin/sesiusage', 'SESI_PORT_CONTAINER': 1715, 'SESI_PORT_HOST': 1717, 'apt_packages': ['lsb-release'], 'compose_scope': 'license_server', 'docker_compose': '{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml', 'enabled': True, 'env': {}, 'feature_name': 'OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20', 'group_name': 'OpenStudioLandscapes_SESI_gcc_9_3_Houdini_20', 'key_prefixes': ['OpenStudioLandscapes_SESI_gcc_9_3_Houdini_20'], 'local_bind_volumes': [], 'local_environment_variables': {}}
+
+        keys_expected = model_dump_dict.keys()
+        LOGGER.debug(f"{keys_expected = }")
+        # keys_expected = dict_keys(['env', 'local_bind_volumes', 'local_environment_variables', 'group_name', 'key_prefixes', 'enabled', 'compose_scope', 'feature_name', 'docker_compose', 'LICENSES_ACTIVE', 'HKEY_BIN', 'HSERVER', 'LICENSES', 'LICENSES_DISABLED', 'SESICTRL', 'SESINETD', 'SESINETD_PEAK_USAGE_BIN', 'SESIUSAGE', 'SESI_PORT_HOST', 'SESI_PORT_CONTAINER', 'apt_packages'])
+
+        # current_config_.keys()
+        keys_actual = dict(current_config_).keys()
+        LOGGER.debug(f"{keys_actual = }")
+        # keys_actual = dict_keys(['HKEY_BIN', 'HSERVER', 'LICENSES', 'LICENSES_ACTIVE', 'LICENSES_DISABLED', 'SESICTRL', 'SESINETD', 'SESINETD_PEAK_USAGE_BIN', 'SESIUSAGE', 'SESI_PORT_CONTAINER', 'SESI_PORT_HOST', 'apt_packages', 'compose_scope', 'docker_compose', 'enabled', 'env', 'feature_name', 'group_name', 'key_prefixes', 'local_bind_volumes', 'local_environment_variables'])
+
+        if keys_expected != keys_actual:
+
+            # LOGGER.critical("Model keys and `config.yml` keys differ.")
+
+            # missing_keys = set(keys_expected) - set(keys_actual)
+            unused_keys = set(keys_actual) - set(keys_expected)
+
+            if bool(unused_keys):
+                # We don't want to edit a config.yml file automatically.
+                # This can have unwanted side effects and takes away control
+                # from the user. Just highlight the problem here.
+                LOGGER.warning(f"Unused keys found in YAML file. Please manually "
+                               f"remove {unused_keys} from {file_path.as_posix()}.")
+
+            # if bool(missing_keys):
+            #     # This is currently dealt with by `except PydanticValidationError as e:`
+            #     raise OpenStudioLandscapesDiscoveryException(
+            #         f"{missing_keys = }"
+            #     )
+
     else:
+        file_path.parent.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
         yaml_ = ruamel.yaml.YAML(typ="rt")
         yaml_.indent(
             mapping=2,
@@ -254,30 +257,6 @@ OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS: pathlib.Path = pathlib.Path(
 #         default="~/.local/share/OpenStudioLandscapes",
 #     )
 # ).expanduser()
-
-
-REPO_INITIALIZED = False
-
-
-def init_config_store(
-    root: pathlib.Path,
-) -> Tuple[git.Repo, bool]:
-    # Get Git repo
-    try:
-        fresh_repo = False
-        r = git.Repo(root.expanduser())
-        LOGGER.info(f"Using existing repo: {r.common_dir}.")
-    except git.exc.InvalidGitRepositoryError:
-        fresh_repo = True
-        # Create Repo if dir is not a Git repo
-        # https://gitpython.readthedocs.io/en/stable/tutorial.html#initializing-a-repository
-        r = git.Repo.init(root.expanduser())
-        LOGGER.info(f"New repo created: {r.common_dir}.")
-
-    global REPO_INITIALIZED
-    REPO_INITIALIZED = True
-
-    return r, fresh_repo
 
 
 if not OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.expanduser().exists():
@@ -422,23 +401,45 @@ def try_import_discovered(
 
 def init(
     config_engine: ConfigEngine,
-    discovered_models: Dict,
-) -> Dict[str, ModuleType]:
+    discovered_models: Dict[
+        str, OpenStudioLandscapesDiscoveredFeature
+    ],
+) -> None:
+    """
+    Fill the discovered_models dictionary with the discovered models.
+    (Does not return anything but edits the dict instead.)
+
+    Args:
+        config_engine:
+        discovered_models:
+
+    Returns:
+        None
+    """
+
+    package: str
 
     for package in get_namespace_packages(
         where=pathlib.Path.cwd().joinpath(".features"),
     ):
+        LOGGER.debug(f"{package = }")
+        # package = 'OpenStudioLandscapes.SESI_gcc_9_3_Houdini_20'
+
         feature_dict = {
             "definitions": get_definitions_path(package),
             "models": get_models_path(package),
         }
-        module = OpenStudioLandscapesDiscoveredFeature(**feature_dict)
-        # 'OpenStudioLandscapes-Kitsu.src.OpenStudioLandscapes.Kitsu':
-        #     OpenStudioLandscapesDiscoveredFeature(
-        #         definitions='OpenStudioLandscapes.Kitsu.definitions',
-        #         models='OpenStudioLandscapes.Kitsu.config.models',
-        #         config=None,
-        #     ),
+        module: OpenStudioLandscapesDiscoveredFeature = OpenStudioLandscapesDiscoveredFeature(
+            **feature_dict
+        )
+        LOGGER.debug(f"{module = }")
+        # module = OpenStudioLandscapesDiscoveredFeature(
+        #     definitions='OpenStudioLandscapes.SESI_gcc_9_3_Houdini_20.definitions',
+        #     definitions_object=None,
+        #     models='OpenStudioLandscapes.SESI_gcc_9_3_Houdini_20.config.models',
+        #     models_object=None,
+        #     config=None,
+        # )
 
         try:
             models_object, definitions_object = try_import_discovered(
@@ -451,21 +452,29 @@ def init(
             continue
 
         module.definitions_object = definitions_object
+        LOGGER.debug(f"{module.definitions_object = }")
+        # module.definitions_object = <module 'OpenStudioLandscapes.SESI_gcc_9_3_Houdini_20.definitions' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20/src/OpenStudioLandscapes/SESI_gcc_9_3_Houdini_20/definitions.py'>
+
         module.models_object = models_object
-        # 'OpenStudioLandscapes-Kitsu.src.OpenStudioLandscapes.Kitsu':
-        #     OpenStudioLandscapesDiscoveredFeature(
-        #         definitions='OpenStudioLandscapes.Kitsu.definitions',
-        #         definitions_object=<module 'OpenStudioLandscapes.Kitsu.definitions'
-        #             from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Kitsu/src/OpenStudioLandscapes/Kitsu/definitions.py'>,
-        #         models='OpenStudioLandscapes.Kitsu.config.models',
-        #         models_object=<module 'OpenStudioLandscapes.Kitsu.config.models'
-        #             from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Kitsu/src/OpenStudioLandscapes/Kitsu/config/models.py'>,
-        #         config=None
-        #     ),
+        LOGGER.debug(f"{module.models_object = }")
+        # module.models_object = <module 'OpenStudioLandscapes.SESI_gcc_9_3_Houdini_20.config.models' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20/src/OpenStudioLandscapes/SESI_gcc_9_3_Houdini_20/config/models.py'>
 
         discovered_models[package] = module
 
     LOGGER.debug(f"{discovered_models = }")
+    # discovered_models = {
+    #     [...]
+    #     'OpenStudioLandscapes.SESI_gcc_9_3_Houdini_20': (
+    #         OpenStudioLandscapesDiscoveredFeature(
+    #             definitions='OpenStudioLandscapes.SESI_gcc_9_3_Houdini_20.definitions',
+    #             definitions_object=<module 'OpenStudioLandscapes.SESI_gcc_9_3_Houdini_20.definitions' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20/src/OpenStudioLandscapes/SESI_gcc_9_3_Houdini_20/definitions.py'>,
+    #             models='OpenStudioLandscapes.SESI_gcc_9_3_Houdini_20.config.models',
+    #             models_object=<module 'OpenStudioLandscapes.SESI_gcc_9_3_Houdini_20.config.models' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20/src/OpenStudioLandscapes/SESI_gcc_9_3_Houdini_20/config/models.py'>,
+    #             config=None,
+    #         ),
+    #     ),
+    #     [...]
+    # }
 
     # Annotate the types before the loop
     # References:
@@ -473,43 +482,164 @@ def init(
     package: str
     feature: OpenStudioLandscapesDiscoveredFeature
     for package, feature in discovered_models.items():
-        LOGGER.info(f"{package = }")
-        # package =
-        # 'OpenStudioLandscapes-Kitsu.src.OpenStudioLandscapes.Kitsu'
+        LOGGER.debug(f"{package = }")
+        # package = 'OpenStudioLandscapes.SESI_gcc_9_3_Houdini_20'
         LOGGER.debug(f"{feature = }")
-        # feature =
-        # OpenStudioLandscapesDiscoveredFeature(
-        #     definitions='OpenStudioLandscapes.Kitsu.definitions',
-        #     definitions_object=<module 'OpenStudioLandscapes.Kitsu.definitions'
-        #         from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Kitsu/src/OpenStudioLandscapes/Kitsu/definitions.py'>,
-        #     models='OpenStudioLandscapes.Kitsu.config.models',
-        #     models_object=<module 'OpenStudioLandscapes.Kitsu.config.models'
-        #         from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Kitsu/src/OpenStudioLandscapes/Kitsu/config/models.py'>,
-        #     config=None
+        # feature = OpenStudioLandscapesDiscoveredFeature(
+        #     definitions='OpenStudioLandscapes.SESI_gcc_9_3_Houdini_20.definitions',
+        #     definitions_object=<module 'OpenStudioLandscapes.SESI_gcc_9_3_Houdini_20.definitions' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20/src/OpenStudioLandscapes/SESI_gcc_9_3_Houdini_20/definitions.py'>,
+        #     models='OpenStudioLandscapes.SESI_gcc_9_3_Houdini_20.config.models',
+        #     models_object=<module 'OpenStudioLandscapes.SESI_gcc_9_3_Houdini_20.config.models' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20/src/OpenStudioLandscapes/SESI_gcc_9_3_Houdini_20/config/models.py'>,
+        #     config=None,
         # )
 
         feature_dist: Distribution = metadata.distribution(package)
+        LOGGER.debug(f"{feature_dist = }")
+        # feature_dist = <importlib.metadata.PathDistribution object at 0x7fe647853dd0>
 
         config_yml_feature_expanded: pathlib.Path = get_absolute_config_path(
             dist=feature_dist,
         )
+        LOGGER.debug(f"{config_yml_feature_expanded = }")
+        # config_yml_feature_expanded = PosixPath('/home/michael/.config/OpenStudioLandscapes/config-store/OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20/config.yml')
 
         feature_config_dict: ruamel.yaml.CommentedMap = get_config(
             file_path_config_yaml=config_yml_feature_expanded,
         )
-
         LOGGER.debug(f"{feature_config_dict = }")
+        # feature_config_dict = {
+        #     'HKEY_BIN': '{DOT_FEATURES}/{FEATURE}/.payload/bin/hkey-bin',
+        #     'HSERVER': '{DOT_FEATURES}/{FEATURE}/.payload/bin/hserver',
+        #     'LICENSES': '{DOT_FEATURES}/{FEATURE}/.payload/bin/licenses',
+        #     'LICENSES_ACTIVE': '{DOT_FEATURES}/{FEATURE}/.payload/data/licenses',
+        #     'LICENSES_DISABLED': '{DOT_FEATURES}/{FEATURE}/.payload/bin/licenses.disabled',
+        #     'SESICTRL': '{DOT_FEATURES}/{FEATURE}/.payload/bin/sesictrl',
+        #     'SESINETD': '{DOT_FEATURES}/{FEATURE}/.payload/bin/sesinetd',
+        #     'SESINETD_PEAK_USAGE_BIN': '{DOT_FEATURES}/{FEATURE}/.payload/bin/sesinetd_peak_usage.bin',
+        #     'SESIUSAGE': '{DOT_FEATURES}/{FEATURE}/.payload/bin/sesiusage',
+        #     'SESI_PORT_CONTAINER': 1715,
+        #     'SESI_PORT_HOST': 1717,
+        #     'apt_packages': ['lsb-release'],
+        #     'compose_scope': 'license_server',
+        #     'docker_compose': '{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml',
+        #     'enabled': True,
+        #     'env': {},
+        #     'feature_name': 'OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20',
+        #     'group_name': 'OpenStudioLandscapes_SESI_gcc_9_3_Houdini_20',
+        #     'key_prefixes': ['OpenStudioLandscapes_SESI_gcc_9_3_Houdini_20'],
+        #     'local_bind_volumes': [],
+        #     'local_environment_variables': {}
+        # }
+        try:
+            config_feature: FeatureBaseModel = feature.models_object.Config(
+                **feature_config_dict,
+            )
+            LOGGER.debug(f"{config_feature = }")
+            #  config_feature = Feature(
+            #      [
+            #          'env={}',
+            #          'local_bind_volumes=[]',
+            #          'local_environment_variables={}',
+            #          'config_engine=None',
+            #          'distribution=None',
+            #          'group_name=OpenStudioLandscapes_SESI_gcc_9_3_Houdini_20',
+            #          "key_prefixes=['OpenStudioLandscapes_SESI_gcc_9_3_Houdini_20']",
+            #          'enabled=True',
+            #          'compose_scope=license_server',
+            #          'feature_name=OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20',
+            #          'docker_compose={DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml',
+            #          'LICENSES_ACTIVE={DOT_FEATURES}/{FEATURE}/.payload/data/licenses',
+            #          'HKEY_BIN={DOT_FEATURES}/{FEATURE}/.payload/bin/hkey-bin',
+            #          'HSERVER={DOT_FEATURES}/{FEATURE}/.payload/bin/hserver',
+            #          'LICENSES={DOT_FEATURES}/{FEATURE}/.payload/bin/licenses',
+            #          'LICENSES_DISABLED={DOT_FEATURES}/{FEATURE}/.payload/bin/licenses.disabled',
+            #          'SESICTRL={DOT_FEATURES}/{FEATURE}/.payload/bin/sesictrl',
+            #          'SESINETD={DOT_FEATURES}/{FEATURE}/.payload/bin/sesinetd',
+            #          'SESINETD_PEAK_USAGE_BIN={DOT_FEATURES}/{FEATURE}/.payload/bin/sesinetd_peak_usage.bin',
+            #          'SESIUSAGE={DOT_FEATURES}/{FEATURE}/.payload/bin/sesiusage',
+            #          'SESI_PORT_HOST=1717',
+            #          'SESI_PORT_CONTAINER=1715',
+            #          "apt_packages=['lsb-release']"
+            #      ]
+            #  )
+        except PydanticValidationError as e:
+            # We don't want to edit a config.yml file automatically.
+            # This can have unwanted side effects and takes away control
+            # from the user. Just raise an Exception and highlight the problem here.
+            msg = f"`config.yml` needs to be updated with the following missing fields: {e}"
+            LOGGER.error(msg)
+            raise OpenStudioLandscapesDiscoveryException(msg)
 
-        config_feature: FeatureBaseModel = feature.models_object.Config(
-            **feature_config_dict,
-        )
         # Also inject the ConfigEngine object
-        LOGGER.debug(f"{config_engine = }")
-        LOGGER.debug(f"{feature_dist = }")
         config_feature.config_engine = config_engine
+        LOGGER.debug(f"{config_feature.config_engine = }")
+        # config_feature.config_engine = ConfigEngine(openstudiolandscapes__docker_config=DockerConfigModel(use_registry=True, no_cache=False, docker_registry_config=DockerRegistryConfig(docker_push=True, docker_pull=True, docker_repository_name='openstudiolandscapes', docker_registry_access=<DockerRegistryAccess.public: 'public'>, docker_registry_protocol=<DockerRegistryProtocol.https: 'https'>, docker_registry_fqdn='registry.openstudiolandscapes.lan', docker_registry_port=5000, docker_registry_username='registry-user', docker_registry_password='registry-password'), docker_pull_policy=<DockerPullPolicy.always: 'always'>), openstudiolandscapes__rez_config=RezConfigModel(rez_version='3.3.0', REZ_LOCAL_PACKAGES_PATH=PosixPath('~/packages'), REZ_RELEASE_PACKAGES_PATH=PosixPath('~/.rez/packages/int'), REZ_EXTERNAL_PACKAGES_PATH=PosixPath('/data/share/rez-packages/packages'), apt_packages_rez=['binutils']), apt_packages_base=['git', 'ca-certificates', 'htop', 'file', 'tzdata', 'curl', 'wget', 'ffmpeg', 'libegl1', 'libsm6', 'libglu1-mesa', 'libxss1', 'sudo', 'xz-utils', 'xvfb', 'xauth'], apt_packages_build_python311=['build-essential', 'pkg-config', 'zlib1g-dev', 'libncurses5-dev', 'libgdbm-dev', 'libnss3-dev', 'libssl-dev', 'libreadline-dev', 'libffi-dev', 'libsqlite3-dev', 'libbz2-dev', 'iproute2', 'liblzma-dev'], pip_packages=[], openstudiolandscapes__domain_lan='openstudiolandscapes.lan', openstudiolandscapes__human_readable_ids=True, sudo_method=<SudoMethod.PKEXEC: 'pkexec'>, global_bind_volumes=['/data/share:/data/share:rw'], global_environment_variables={'OPENSTUDIOLANDSCAPES__DAGSTER_JOBS_IN': '/data/share/in'}, tz='Europe/UTC')
+
         config_feature.distribution = feature_dist
-        LOGGER.debug(f"{config_feature = }")
+        LOGGER.debug(f"{config_feature.distribution = }")
+        # config_feature.distribution = <importlib.metadata.PathDistribution object at 0x7fe647853dd0>
+
         feature.config = config_feature
+        LOGGER.debug(f"{feature.config = }")
+        # feature.config = Feature(
+        #     [
+        #         'env={}',
+        #         'local_bind_volumes=[]',
+        #         'local_environment_variables={}',
+        #         "config_engine=openstudiolandscapes__docker_config=DockerConfigModel(
+        #             use_registry=True,
+        #             no_cache=False,
+        #             docker_registry_config=DockerRegistryConfig(
+        #                 docker_push=True,
+        #                 docker_pull=True,
+        #                 docker_repository_name='openstudiolandscapes',
+        #                 docker_registry_access=<DockerRegistryAccess.public: 'public'>,
+        #                 docker_registry_protocol=<DockerRegistryProtocol.https: 'https'>,
+        #                 docker_registry_fqdn='registry.openstudiolandscapes.lan',
+        #                 docker_registry_port=5000,
+        #                 docker_registry_username='registry-user',
+        #                 docker_registry_password='registry-password'
+        #             ),
+        #             docker_pull_policy=<DockerPullPolicy.always: 'always'>
+        #         )
+        #         openstudiolandscapes__rez_config=RezConfigModel(
+        #             rez_version='3.3.0',
+        #             REZ_LOCAL_PACKAGES_PATH=PosixPath('~/packages'),
+        #             REZ_RELEASE_PACKAGES_PATH=PosixPath('~/.rez/packages/int'),
+        #             REZ_EXTERNAL_PACKAGES_PATH=PosixPath('/data/share/rez-packages/packages'),
+        #             apt_packages_rez=['binutils']
+        #         )
+        #         apt_packages_base=['git', 'ca-certificates', 'htop', 'file', 'tzdata', 'curl', 'wget', 'ffmpeg', 'libegl1', 'libsm6', 'libglu1-mesa', 'libxss1', 'sudo', 'xz-utils', 'xvfb', 'xauth']
+        #         apt_packages_build_python311=['build-essential', 'pkg-config', 'zlib1g-dev', 'libncurses5-dev', 'libgdbm-dev', 'libnss3-dev', 'libssl-dev', 'libreadline-dev', 'libffi-dev', 'libsqlite3-dev', 'libbz2-dev', 'iproute2', 'liblzma-dev']
+        #         pip_packages=[]
+        #         openstudiolandscapes__domain_lan='openstudiolandscapes.lan'
+        #         openstudiolandscapes__human_readable_ids=True
+        #         sudo_method=<SudoMethod.PKEXEC: 'pkexec'>
+        #         global_bind_volumes=['/data/share:/data/share:rw']
+        #         global_environment_variables={'OPENSTUDIOLANDSCAPES__DAGSTER_JOBS_IN': '/data/share/in'}
+        #         tz='Europe/UTC'",
+        #
+        #         'distribution=<importlib.metadata.PathDistribution object at 0x7fe9b533ecd0>',
+        #         'group_name=OpenStudioLandscapes_SESI_gcc_9_3_Houdini_20',
+        #         "key_prefixes=['OpenStudioLandscapes_SESI_gcc_9_3_Houdini_20']",
+        #         'enabled=True',
+        #         'compose_scope=license_server',
+        #         'feature_name=OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20',
+        #         'docker_compose={DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml',
+        #         'LICENSES_ACTIVE={DOT_FEATURES}/{FEATURE}/.payload/data/licenses',
+        #         'HKEY_BIN={DOT_FEATURES}/{FEATURE}/.payload/bin/hkey-bin',
+        #         'HSERVER={DOT_FEATURES}/{FEATURE}/.payload/bin/hserver',
+        #         'LICENSES={DOT_FEATURES}/{FEATURE}/.payload/bin/licenses',
+        #         'LICENSES_DISABLED={DOT_FEATURES}/{FEATURE}/.payload/bin/licenses.disabled',
+        #         'SESICTRL={DOT_FEATURES}/{FEATURE}/.payload/bin/sesictrl',
+        #         'SESINETD={DOT_FEATURES}/{FEATURE}/.payload/bin/sesinetd',
+        #         'SESINETD_PEAK_USAGE_BIN={DOT_FEATURES}/{FEATURE}/.payload/bin/sesinetd_peak_usage.bin',
+        #         'SESIUSAGE={DOT_FEATURES}/{FEATURE}/.payload/bin/sesiusage',
+        #         'SESI_PORT_HOST=1717',
+        #         'SESI_PORT_CONTAINER=1715',
+        #         "apt_packages=['lsb-release']"
+        #     ]
+        # )
 
         dump_yaml(
             model_config=config_feature,
@@ -517,44 +647,29 @@ def init(
         )
 
     LOGGER.debug(f"{FeatureBaseModel.subclasses = }")
-    #  FeatureBaseModel.subclasses =
-    #  {
-    #      'OpenStudioLandscapes-Kitsu': <class 'OpenStudioLandscapes.Kitsu.config.models.Config'>,
-    #      'OpenStudioLandscapes-Watchtower': <class 'OpenStudioLandscapes.Watchtower.config.models.Config'>,
-    #      'OpenStudioLandscapes-VERT': <class 'OpenStudioLandscapes.VERT.config.models.Config'>,
-    #  }
+    # FeatureBaseModel.subclasses = {
+    #     [...]
+    #     'OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20': <class 'OpenStudioLandscapes.SESI_gcc_9_3_Houdini_20.config.models.Config'>,
+    #     [...]
+    # }
 
-    def commit_configs() -> None:
-
-        if REPO_INITIALIZED:
-            # Add all files to tracked files in Git repo
-            if fresh_repo:
-                LOGGER.info(f"Add files to tracked file...")
-                config_store_repo.index.add("*")
-                LOGGER.info(f"Making initial commit...")
-                config_store_repo.index.commit("Initial Commit")
-                LOGGER.info(f"Initial Commit successful.")
-            else:
-                if config_store_repo.is_dirty():
-                    # config_store_repo.git.status("--porcelain")
-                    LOGGER.warning(
-                        f"Config Store '{config_store_repo.common_dir}' has uncommited changes: "
-                        f"{config_store_repo.git.status()}"
-                    )
-                    LOGGER.info("Manual commit necessary.")
-
-    commit_configs()
+    commit_configs(
+        config_store_repo=config_store_repo,
+        fresh_repo=fresh_repo,
+    )
 
     LOGGER.info(f"Bootstrapping finished successfully.")
 
-    return discovered_models
+    return None
 
 
 if __name__ == "__main__":
     pass
 
 else:
-    DISCOVERED_MODELS: Dict[str, ModuleType] = {}
+    DISCOVERED_MODELS: Dict[
+        str, OpenStudioLandscapesDiscoveredFeature
+    ] = {}
 
     config_engine: ConfigEngine = get_config_engine()
 

@@ -105,38 +105,13 @@ def parse_args(args):
 
     parser = argparse.ArgumentParser()
 
-    # parser.add_argument(
-    #     "-v",
-    #     "--verbose",
-    #     dest="loglevel",
-    #     help="set loglevel to INFO",
-    #     action="store_const",
-    #     const=logging.INFO,
-    # )
-    # parser.add_argument(
-    #     "-vv",
-    #     "--very-verbose",
-    #     dest="loglevel",
-    #     help="set loglevel to DEBUG",
-    #     action="store_const",
-    #     const=logging.DEBUG,
-    # )
-    # parser.add_argument(
-    #     "-vv",
-    #     "--verbose",
-    #     dest="loglevel",
-    #     help="set loglevel to DEBUG",
-    #     action="store_const",
-    #     const=logging.DEBUG,
-    # )
-
     parser.add_argument(
         "--verbosity",
         "-v",
         dest="verbosity",
         type=str,
         metavar="OPENSTUDIOLANDSCAPES__VERBOSITY",
-        default=logging.getLevelName(logging.INFO),
+        default=logging.getLevelName(logging.WARNING),
         choices=[
             logging.getLevelName(logging.ERROR),
             logging.getLevelName(logging.CRITICAL),
@@ -144,7 +119,6 @@ def parse_args(args):
             logging.getLevelName(logging.INFO),
             logging.getLevelName(logging.DEBUG),
         ],
-        # action="store_true",
         required=False,
         help="Verbosity level.",
     )
@@ -180,7 +154,6 @@ def parse_args(args):
         type=str,
         metavar="OPENSTUDIOLANDSCAPES__DOMAIN_WAN",
         default=os.environ.get("OPENSTUDIOLANDSCAPES__DOMAIN_WAN", None),
-        # action="store_true",
         required=False,
         help="Set the WAN domain name (i.e. openstudiolandscapes.com).",
     )
@@ -191,7 +164,6 @@ def parse_args(args):
         type=pathlib.Path,
         metavar="OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT",
         default=pathlib.Path("~/.config/OpenStudioLandscapes/config-store"),
-        # action="store_true",
         required=False,
         help="Set the configuration store path.",
     )
@@ -225,7 +197,6 @@ def parse_args(args):
         type=str,
         metavar="OPENSTUDIOLANDSCAPES__LANDSCAPE_ID",
         default=None,
-        # action="store_true",
         required=False,
         help="Lock the landscape_id to this value.",
     )
@@ -235,8 +206,6 @@ def parse_args(args):
     update_group.add_argument(
         "--skip-update-check",
         dest="skip_update_check",
-        # type=str,
-        # metavar="OPENSTUDIOLANDSCAPES__LANDSCAPE_ID",
         default=False,
         action="store_true",
         required=False,
@@ -246,8 +215,6 @@ def parse_args(args):
     update_group.add_argument(
         "--auto-update",
         dest="auto_update",
-        # type=str,
-        # metavar="OPENSTUDIOLANDSCAPES__LANDSCAPE_ID",
         default=False,
         action="store_true",
         required=False,
@@ -315,6 +282,12 @@ def parse_args(args):
         type=str,
         required=True,
     )
+
+    # Todo
+    #  - [ ] update config.yml files after model has changed
+    #        - subparser_update = subparsers.add_parser(
+    #              "migrate",
+    #          )
 
     return parser.parse_args(args)
 
@@ -401,10 +374,6 @@ def checks(args):
                 "executable": "nox",
                 "version": "--version",
             },
-            # "Foo": {
-            #     "executable": "foo",
-            #     "version": "-V",
-            # },
         }
 
         LOGGER.info(

@@ -1,4 +1,5 @@
 from typing import Dict, List, Type, Union
+from types import ModuleType
 
 from dagster import (
     AssetExecutionContext,
@@ -8,9 +9,11 @@ from dagster import (
 from OpenStudioLandscapes.engine.discovery import discovery
 
 
+# Todo
+#  - [ ] use `context`, make optional or remove
 def get_feature_base_model(
     context: Union[OpExecutionContext, AssetExecutionContext],
-    discovered_models: Dict[str, discovery.OpenStudioLandscapesDiscoveredFeature],
+    discovered_models: Dict[str, ModuleType],
     search_instance_type: Type[discovery.FeatureBaseModel],
 ) -> discovery.FeatureBaseModel:
     """
