@@ -16,4 +16,4 @@ except ImportError as e:
 CLI_LOGGER = log.getLogger("OpenStudioLandscapes.cli")
 DISCOVERY_LOGGER = log.getLogger("OpenStudioLandscapes.discovery")
 ENGINE_LOGGER = log.getLogger("OpenStudioLandscapes.engine")
-FEATURE_LOGGER = log.getLogger("OpenStudioLandscapes.Features")
+# FEATURE_LOGGER = log.getLogger("OpenStudioLandscapes")

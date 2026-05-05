@@ -32,20 +32,25 @@ CONSOLE_HANDLER_DEFAULT = logging.DEBUG
 FORMAT_CONSOLE = "[{asctime}] [{levelname:<8}]:    {message}"
 FORMAT_FILE = '[{asctime}] [{levelname:<8}] [{threadName}|{thread}], File "{pathname}", line {lineno}, in {funcName}:    {message}'
 
+DATE_FMT = "%m-%d-%Y %H:%M:%S"
+STYLE = "{"
+PROPAGATE = False
+DISABLE_EXISTING_LOGGERS = False
+
 
 LOGGING_SCHEMA: Dict = {
     "version": 1,
-    "disable_existing_loggers": False,
+    "disable_existing_loggers": DISABLE_EXISTING_LOGGERS,
     "formatters": {
         "console_formatter": {
             "format": FORMAT_CONSOLE,
-            "style": "{",
-            "datefmt": "%m-%d-%Y %H:%M:%S",
+            "style": STYLE,
+            "datefmt": DATE_FMT,
         },
         "file_formatter": {
             "format": FORMAT_FILE,
-            "style": "{",
-            "datefmt": "%m-%d-%Y %H:%M:%S",
+            "style": STYLE,
+            "datefmt": DATE_FMT,
         },
     },
     "handlers": {
@@ -81,25 +86,25 @@ LOGGING_SCHEMA: Dict = {
             "filename": os.path.join(LOG_ROOT, "engine.log"),
             "formatter": "file_formatter",
         },
-        "features_filehandler": {
-            "level": os.environ.get("OPENSTUDIOLANDSCAPES__VERBOSITY"),
-            "class": "logging.handlers.TimedRotatingFileHandler",
-            "when": "midnight",
-            "interval": 1,
-            "backupCount": 7,
-            "filename": os.path.join(LOG_ROOT, "features.log"),
-            "formatter": "file_formatter",
-        },
+        # "features_filehandler": {
+        #     "level": os.environ.get("OPENSTUDIOLANDSCAPES__VERBOSITY"),
+        #     "class": "logging.handlers.TimedRotatingFileHandler",
+        #     "when": "midnight",
+        #     "interval": 1,
+        #     "backupCount": 7,
+        #     "filename": os.path.join(LOG_ROOT, "features.log"),
+        #     "formatter": "file_formatter",
+        # },
     },
     "loggers": {
         "OpenStudioLandscapes.cli": {
             "handlers": ["console", "cli_filehandler"],
-            "propagate": False,
+            "propagate": PROPAGATE,
             # 'level': 'WARNING',
         },
         "OpenStudioLandscapes.discovery": {
             "handlers": ["console", "discovery_filehandler"],
-            "propagate": False,
+            "propagate": PROPAGATE,
             # 'level': 'WARNING',
         },
         # 'OpenStudioLandscapes.engine.utils': {
@@ -119,14 +124,14 @@ LOGGING_SCHEMA: Dict = {
         # },
         "OpenStudioLandscapes.engine": {
             "handlers": ["console", "engine_filehandler"],
-            "propagate": False,
+            "propagate": PROPAGATE,
             # 'level': 'WARNING',
         },
-        "OpenStudioLandscapes.Features": {
-            "handlers": ["console", "features_filehandler"],
-            "propagate": False,
-            # 'level': 'WARNING',
-        },
+        # "OpenStudioLandscapes.Features": {
+        #     "handlers": ["console", "features_filehandler"],
+        #     "propagate": False,
+        #     # 'level': 'WARNING',
+        # },
         # 'urllib3': {
         #     'handlers': ['console', 'file'],
         #     # 'propagate': True,
