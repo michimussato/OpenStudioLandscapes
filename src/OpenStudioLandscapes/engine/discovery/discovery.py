@@ -11,7 +11,7 @@ Things that could be improved
     - Migration to `ruamel.yaml` might be an option
       - https://www.w3reference.com/blog/python-yaml-update-preserving-order-and-comments/#why-preserving-order-and-comments-matters
       - https://stackoverflow.com/questions/55253090/how-to-round-trip-ruamel-yaml-strings-like-on
-  - This mechanisma, however, allows to dynamically
+  - This mechanism, however, allows to dynamically
     add/remove YAML key/value pairs based on the underlying
     model.
 - avoid re-discovery at runtime whenever possible and if
@@ -22,12 +22,11 @@ Things that could be improved
   - invalidation of cache has to happen on Reload definitions
 - maybe migrate to a pure Code Location approach at some point
 - discovery does more than it's supposed to be doing
-  - update_config_yml
   - Repo initialization
     - init_config_store()
 
 
-The logic current does:
+The logic currently does:
 - not add documenting comments to the initial YAML files
 - add new keys from model fields to the YAML
 - not remove keys from the YAML of non-existing model fields

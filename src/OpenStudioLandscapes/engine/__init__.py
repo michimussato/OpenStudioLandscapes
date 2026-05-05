@@ -2,8 +2,6 @@ import sys
 from importlib import metadata
 from pathlib import Path
 
-from OpenStudioLandscapes.engine.logging.loggers import ENGINE_LOGGER as LOGGER
-
 if sys.version_info[:2] >= (3, 11):
     # TODO: Import directly (no need for conditional) when `python_requires = >= 3.8`
     from importlib.metadata import (  # pragma: no cover
@@ -17,13 +15,11 @@ else:
 try:
     # Change here if project is renamed and does not equal the package name
     namespace: str = Path(__file__).parent.parent.name
-    LOGGER.debug(f"{namespace = }")
     # OpenStudioLandscapes
     # package: str = Path(__file__).parent.name
     # LOGGER.error(f"{package = }")
     # engine
     dist: Distribution = metadata.distribution(namespace)
-    LOGGER.debug(f"{dist = }")
 
     __version__: str = version(dist.name)
 except PackageNotFoundError:  # pragma: no cover

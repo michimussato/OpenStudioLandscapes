@@ -628,6 +628,10 @@ def get_dynamic_ins(
 
     package: str
     feature: discovery.OpenStudioLandscapesDiscoveredFeature
+    feature_names: List[str] = []
+    for feature in imported_features.values():
+        if not feature.config.enabled:
+            feature_names.append(feature.config.feature_name)
     for package, feature in imported_features.items():
         LOGGER.debug(f"{feature = }")
         # feature = OpenStudioLandscapesDiscoveredFeature(definitions='OpenStudioLandscapes.Watchtower.definitions', definitions_object=<module 'OpenStudioLandscapes.Watchtower.definitions' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Watchtower/src/OpenStudioLandscapes/Watchtower/definitions.py'>, models='OpenStudioLandscapes.Watchtower.config.models', models_object=<module 'OpenStudioLandscapes.Watchtower.config.models' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Watchtower/src/OpenStudioLandscapes/Watchtower/config/models.py'>, config=Feature(['env=None', "config_engine=openstudiolandscapes__docker_config=DockerConfigModel(use_registry=True, no_cache=False, docker_registry_config=DockerRegistryConfig(docker_push=True, docker_pull=True, docker_repository_name='openstudiolandscapes', docker_registry_access='public', docker_registry_protocol='https', docker_registry_fqdn='registry.openstudiolandscapes.lan', docker_registry_port=5000, docker_registry_username='registry-user', docker_registry_password='registry-password')) openstudiolandscapes__repository_root=PosixPath('{REPOSITORY_ROOT}') openstudiolandscapes__domain_lan='openstudiolandscapes.lan'", 'config_parent=None', 'distribution=<importlib.metadata.PathDistribution object at 0x7fe9b764ad10>', 'enabled=True', 'compose_scope=default', 'feature_name=OpenStudioLandscapes-Watchtower', 'group_name=watchtower', "key_prefixes=['Watchtower']", 'docker_compose={DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml', 'definitions=OpenStudioLandscapes.Watchtower.definitions', 'watchtower_port_host=4000', 'watchtower_port_container=80']))
@@ -641,7 +645,10 @@ def get_dynamic_ins(
 
         # Skip Feature if disabled in `config.yml`
         if not feature_enabled:
-            LOGGER.info(f"Feature is disabled by `config.yml`: {feature_name}")
+            # Todo
+            #  - [ ] We get duplicate log messages here
+            LOGGER.info(f"Feature [{feature_name.ljust(max([len(i) for i in feature_names]))}] "
+                        f"is installed but DISABLED in {feature.config.config_file_path.as_posix()}")
             continue
 
         asset_in = feature.config.dagster_compose_scope_in
