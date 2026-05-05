@@ -605,14 +605,10 @@ def get_all_compose_scopes(
 
 
 # Todo
-#  - [ ] This function gets called multiple times:
-#        - OpenStudioLandscapes.engine.compose_scopes.assets.feature_ins
-#        - [removed] OpenStudioLandscapes.engine.compose_scopes.definitions.feature_ins
-#        - OpenStudioLandscapes.engine.landscape_map.assets.feature_ins
-#        - [removed] OpenStudioLandscapes.engine.landscape_map.definitions.feature_ins
+#  - [ ] more specific return type
 def get_dynamic_ins(
     imported_features: Dict,
-):
+) -> Dict:
     """
     Dynamic inputs based on the imported
     third party code locations
@@ -645,8 +641,6 @@ def get_dynamic_ins(
 
         # Skip Feature if disabled in `config.yml`
         if not feature_enabled:
-            # Todo
-            #  - [ ] We get duplicate log messages here
             LOGGER.info(f"Feature [{feature_name.ljust(max([len(i) for i in feature_names]))}] "
                         f"is installed but DISABLED in {feature.config.config_file_path.as_posix()}")
             continue

@@ -22,18 +22,13 @@ from OpenStudioLandscapes.engine.compose_scopes.assets import (
 )
 from OpenStudioLandscapes.engine.config import dist
 from OpenStudioLandscapes.engine.constants import *
-from OpenStudioLandscapes.engine.discovery import discovery
 from OpenStudioLandscapes.engine.discovery.discovery import *
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.link.models import OpenStudioLandscapesBaseOut
-from OpenStudioLandscapes.engine.utils import get_dynamic_ins
-
-feature_ins = get_dynamic_ins(
-    imported_features=discovery.DISCOVERED_MODELS,
-)
+from OpenStudioLandscapes.engine.discovery.discovery import DYNAMIC_INS
 
 
-LOGGER.debug(f"{feature_ins = }")
+LOGGER.debug(f"{DYNAMIC_INS = }")
 # feature_ins = {'default': {'OpenStudioLandscapes_Kitsu': AssetIn(key=AssetKey(['Kitsu', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>), 'OpenStudioLandscapes_Watchtower': AssetIn(key=AssetKey(['Watchtower', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>), 'OpenStudioLandscapes_VERT': AssetIn(key=AssetKey(['VERT', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>)}}
 
 
@@ -42,7 +37,7 @@ compose_scopes = set()
 
 compose_scope: str
 feature: Dict[str, AssetIn]
-for compose_scope, _ in feature_ins.items():
+for compose_scope, _ in DYNAMIC_INS.items():
     # get_dynamic_ins() filters for enabled Features already
     if compose_scope in compose_scopes:
         continue

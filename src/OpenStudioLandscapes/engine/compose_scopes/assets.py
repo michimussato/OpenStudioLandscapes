@@ -24,7 +24,7 @@ from OpenStudioLandscapes.engine.compose_scopes.simple_factories import (
     simple_factory_newt,
 )
 from OpenStudioLandscapes.engine.logging.loggers import ENGINE_LOGGER as LOGGER
-from OpenStudioLandscapes.engine.utils import *
+from OpenStudioLandscapes.engine.discovery.discovery import DYNAMIC_INS
 
 # Todo:
 #  - [ ] get assets from common_assets
@@ -42,23 +42,19 @@ yaml.SafeDumper.add_multi_representer(
     yaml.representer.SafeRepresenter.represent_str,
 )
 
-feature_ins = get_dynamic_ins(
-    imported_features=discovery.DISCOVERED_MODELS,
-)
-
-LOGGER.debug(f"{feature_ins = }")
+LOGGER.debug(f"{DYNAMIC_INS = }")
 # feature_ins = {'default': {'OpenStudioLandscapes_Kitsu': AssetIn(key=AssetKey(['Kitsu', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>), 'OpenStudioLandscapes_Watchtower': AssetIn(key=AssetKey(['Watchtower', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>), 'OpenStudioLandscapes_VERT': AssetIn(key=AssetKey(['VERT', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>)}}
 
 compose_scope_asset_defs = []
 
-compose_scopes = set(feature_ins.keys())
+compose_scopes = set(DYNAMIC_INS.keys())
 
 
 # for testing:
 # if assets_external is empty at this point,
 # just add a dummy
-if not bool(feature_ins):
-    feature_ins = {
+if not bool(DYNAMIC_INS):
+    DYNAMIC_INS = {
         "dummy_compose_scope": {
             "OpenStudioLandscapes_dummy": AssetIn(
                 key=AssetKey(
@@ -74,7 +70,7 @@ if not bool(feature_ins):
 
 compose_scope: str
 feature: Dict[str, discovery.OpenStudioLandscapesDiscoveredFeature]
-for compose_scope, features in feature_ins.items():
+for compose_scope, features in DYNAMIC_INS.items():
     # Todo
     #  - [ ] This most likely needs a factory
 

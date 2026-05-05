@@ -15,7 +15,7 @@ from OpenStudioLandscapes.engine.constants import (
     ASSET_HEADER_BASE,
 )
 from OpenStudioLandscapes.engine.discovery import discovery
-from OpenStudioLandscapes.engine.landscape_map.assets import feature_ins
+from OpenStudioLandscapes.engine.landscape_map.assets import DYNAMIC_INS
 
 assets_base = load_assets_from_modules(
     modules=[OpenStudioLandscapes.engine.landscape_map.assets],
@@ -25,7 +25,7 @@ assets_base = load_assets_from_modules(
 LOGGER = discovery.LOGGER
 
 
-LOGGER.debug(f"{feature_ins = }")
+LOGGER.debug(f"{DYNAMIC_INS = }")
 
 assets_external = []
 
@@ -36,7 +36,7 @@ _compose_scopes = set()
 
 compose_scope: str
 feature: Dict[str, AssetSpec]
-for compose_scope, _ in feature_ins.items():
+for compose_scope, _ in DYNAMIC_INS.items():
     # get_dynamic_ins() filters for enabled Features already
     if compose_scope in _compose_scopes:
         continue

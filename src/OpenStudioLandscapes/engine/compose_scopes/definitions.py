@@ -18,7 +18,7 @@ assets_base = load_assets_from_modules(
     modules=[OpenStudioLandscapes.engine.compose_scopes.assets]
 )
 
-from OpenStudioLandscapes.engine.compose_scopes.assets import feature_ins
+from OpenStudioLandscapes.engine.compose_scopes.assets import DYNAMIC_INS
 from OpenStudioLandscapes.engine.compose_scopes.constants import (
     COMPOSE_SCOPE_GROUP_PREFIX,
 )
@@ -27,18 +27,18 @@ from OpenStudioLandscapes.engine.discovery import discovery
 LOGGER = discovery.LOGGER
 
 
-LOGGER.debug(f"{feature_ins = }")
+LOGGER.debug(f"{DYNAMIC_INS = }")
 # {'default': {'OpenStudioLandscapes_filebrowser': AssetIn(key=AssetKey(['OpenStudioLandscapes_filebrowser', 'feature_out_v2']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>)}}
 
 assets_external = []
 
 
-if bool(feature_ins):
+if bool(DYNAMIC_INS):
 
     compose_scope: str
     feature: Dict[str, discovery.OpenStudioLandscapesDiscoveredFeature]
-    LOGGER.debug(f"{feature_ins = }")
-    for compose_scope, features in feature_ins.items():
+    LOGGER.debug(f"{DYNAMIC_INS = }")
+    for compose_scope, features in DYNAMIC_INS.items():
         LOGGER.debug(f"{features = }")
         # features = {'OpenStudioLandscapes_filebrowser': AssetIn(key=AssetKey(['OpenStudioLandscapes_filebrowser', 'feature_out_v2']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>)}
 
@@ -86,7 +86,7 @@ if bool(feature_ins):
 # defined in the assets.py (if not bool(ins))
 # so that we have a visual representation of
 # the dependencies
-if not bool(assets_external) and not bool(feature_ins):
+if not bool(assets_external) and not bool(DYNAMIC_INS):
     compose_scope = "dummy_feature"
     feature_out = AssetSpec(
         key=AssetKey(

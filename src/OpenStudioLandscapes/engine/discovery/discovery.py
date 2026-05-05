@@ -60,6 +60,7 @@ from OpenStudioLandscapes.engine.discovery.init_config_store import (
     init_config_store,
     commit_configs,
 )
+from OpenStudioLandscapes.engine.utils import get_dynamic_ins
 
 
 class OpenStudioLandscapesDiscoveryException(Exception):
@@ -675,4 +676,10 @@ else:
     init(
         config_engine=config_engine,
         discovered_models=DISCOVERED_MODELS,
+    )
+
+    # Todo
+    #  - [ ] improve type hint
+    DYNAMIC_INS: Dict = get_dynamic_ins(
+        imported_features=DISCOVERED_MODELS,
     )
