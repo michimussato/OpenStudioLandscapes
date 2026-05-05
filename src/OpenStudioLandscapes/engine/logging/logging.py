@@ -29,8 +29,8 @@ ROOT_LOGGER_DEFAULT = logging.DEBUG
 CONSOLE_HANDLER_DEFAULT = logging.DEBUG
 
 
-FORMAT_CONSOLE = "[{asctime}] [{levelname:<8}]:    {message}"
-FORMAT_FILE = '[{asctime}] [{levelname:<8}] [{threadName}|{thread}], File "{pathname}", line {lineno}, in {funcName}:    {message}'
+FORMAT_CONSOLE = "[{asctime}] [{levelname:<8}]:    [{name}] {message}"
+FORMAT_FILE = '[{asctime}] [{levelname:<8}] [{threadName}|{thread}], File "{pathname}", line {lineno}, in {funcName}:     [{name}] {message}'
 
 DATE_FMT = "%m-%d-%Y %H:%M:%S"
 STYLE = "{"
