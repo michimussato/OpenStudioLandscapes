@@ -1,5 +1,5 @@
-from typing import Dict, List, Type, Union
 from types import ModuleType
+from typing import Dict, List, Type, Union
 
 from dagster import (
     AssetExecutionContext,

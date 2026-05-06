@@ -641,8 +641,10 @@ def get_dynamic_ins(
 
         # Skip Feature if disabled in `config.yml`
         if not feature_enabled:
-            LOGGER.info(f"Feature [{feature_name.ljust(max([len(i) for i in feature_names]))}] "
-                        f"is installed but DISABLED in {feature.config.config_file_path.as_posix()}")
+            LOGGER.info(
+                f"Feature [{feature_name.ljust(max([len(i) for i in feature_names]))}] "
+                f"is installed but DISABLED in {feature.config.config_file_path.as_posix()}"
+            )
             continue
 
         asset_in = feature.config.dagster_compose_scope_in

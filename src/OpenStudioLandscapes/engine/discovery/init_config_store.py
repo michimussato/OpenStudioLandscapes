@@ -1,6 +1,7 @@
-import git
 import pathlib
 from typing import Tuple
+
+import git
 
 from OpenStudioLandscapes.engine.logging.loggers import DISCOVERY_LOGGER as LOGGER
 
@@ -25,8 +26,8 @@ def init_config_store(
 
 
 def commit_configs(
-        fresh_repo: bool,
-        config_store_repo: git.Repo,
+    fresh_repo: bool,
+    config_store_repo: git.Repo,
 ) -> None:
 
     # Add all files to tracked files in Git repo

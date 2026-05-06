@@ -43,12 +43,10 @@ from importlib import metadata
 from importlib.metadata import Distribution
 from types import ModuleType
 from typing import Dict, List, Tuple, Union
-from pydantic_core._pydantic_core import ValidationError as PydanticValidationError
 
 import ruamel.yaml
+from pydantic_core._pydantic_core import ValidationError as PydanticValidationError
 from setuptools import find_namespace_packages
-
-from OpenStudioLandscapes.engine.logging.loggers import DISCOVERY_LOGGER as LOGGER
 
 from OpenStudioLandscapes.engine import dist as dist_engine
 from OpenStudioLandscapes.engine.config.models import (
@@ -57,9 +55,10 @@ from OpenStudioLandscapes.engine.config.models import (
     OpenStudioLandscapesDiscoveredFeature,
 )
 from OpenStudioLandscapes.engine.discovery.init_config_store import (
-    init_config_store,
     commit_configs,
+    init_config_store,
 )
+from OpenStudioLandscapes.engine.logging.loggers import DISCOVERY_LOGGER as LOGGER
 from OpenStudioLandscapes.engine.utils import get_dynamic_ins
 
 
@@ -141,8 +140,10 @@ def dump_yaml(
                 # We don't want to edit a config.yml file automatically.
                 # This can have unwanted side effects and takes away control
                 # from the user. Just highlight the problem here.
-                LOGGER.warning(f"Unused keys found in YAML file. Please manually "
-                               f"remove {unused_keys} from {file_path.as_posix()}.")
+                LOGGER.warning(
+                    f"Unused keys found in YAML file. Please manually "
+                    f"remove {unused_keys} from {file_path.as_posix()}."
+                )
 
             # if bool(missing_keys):
             #     # This is currently dealt with by `except PydanticValidationError as e:`
@@ -401,9 +402,7 @@ def try_import_discovered(
 
 def init(
     config_engine: ConfigEngine,
-    discovered_models: Dict[
-        str, OpenStudioLandscapesDiscoveredFeature
-    ],
+    discovered_models: Dict[str, OpenStudioLandscapesDiscoveredFeature],
 ) -> None:
     """
     Fill the discovered_models dictionary with the discovered models.
@@ -429,8 +428,8 @@ def init(
             "definitions": get_definitions_path(package),
             "models": get_models_path(package),
         }
-        module: OpenStudioLandscapesDiscoveredFeature = OpenStudioLandscapesDiscoveredFeature(
-            **feature_dict
+        module: OpenStudioLandscapesDiscoveredFeature = (
+            OpenStudioLandscapesDiscoveredFeature(**feature_dict)
         )
         LOGGER.debug(f"{module = }")
         # module = OpenStudioLandscapesDiscoveredFeature(
@@ -667,9 +666,7 @@ if __name__ == "__main__":
     pass
 
 else:
-    DISCOVERED_MODELS: Dict[
-        str, OpenStudioLandscapesDiscoveredFeature
-    ] = {}
+    DISCOVERED_MODELS: Dict[str, OpenStudioLandscapesDiscoveredFeature] = {}
 
     config_engine: ConfigEngine = get_config_engine()
 

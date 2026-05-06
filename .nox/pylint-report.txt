@@ -1,10 +1,11 @@
 ************* Module OpenStudioLandscapes.cli
-src/OpenStudioLandscapes/cli.py:691:0: C0301: Line too long (153/100) (line-too-long)
-src/OpenStudioLandscapes/cli.py:275:5: W0511: Todo (fixme)
-src/OpenStudioLandscapes/cli.py:284:5: W0511: Todo (fixme)
-src/OpenStudioLandscapes/cli.py:297:5: W0511: Todo (fixme)
-src/OpenStudioLandscapes/cli.py:305:5: W0511: Todo (fixme)
-src/OpenStudioLandscapes/cli.py:642:9: W0511: Todo (fixme)
+src/OpenStudioLandscapes/cli.py:656:0: C0301: Line too long (153/100) (line-too-long)
+src/OpenStudioLandscapes/cli.py:242:5: W0511: Todo (fixme)
+src/OpenStudioLandscapes/cli.py:251:5: W0511: Todo (fixme)
+src/OpenStudioLandscapes/cli.py:264:5: W0511: Todo (fixme)
+src/OpenStudioLandscapes/cli.py:272:5: W0511: Todo (fixme)
+src/OpenStudioLandscapes/cli.py:286:5: W0511: Todo (fixme)
+src/OpenStudioLandscapes/cli.py:607:9: W0511: Todo (fixme)
 src/OpenStudioLandscapes/cli.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 src/OpenStudioLandscapes/cli.py:21:0: C0115: Missing class docstring (missing-class-docstring)
 src/OpenStudioLandscapes/cli.py:28:0: C0116: Missing function or method docstring (missing-function-docstring)
@@ -12,75 +13,75 @@ src/OpenStudioLandscapes/cli.py:53:42: W1510: 'subprocess.run' used without expl
 src/OpenStudioLandscapes/cli.py:82:0: C0116: Missing function or method docstring (missing-function-docstring)
 src/OpenStudioLandscapes/cli.py:87:4: W1510: 'subprocess.run' used without explicitly defining the value for 'check'. (subprocess-run-check)
 src/OpenStudioLandscapes/cli.py:104:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/cli.py:262:4: W0612: Unused variable 'subparser_update' (unused-variable)
-src/OpenStudioLandscapes/cli.py:336:4: W1201: Use lazy % formatting in logging functions (logging-not-lazy)
-src/OpenStudioLandscapes/cli.py:337:8: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/cli.py:348:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/cli.py:359:16: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/cli.py:414:8: W1201: Use lazy % formatting in logging functions (logging-not-lazy)
-src/OpenStudioLandscapes/cli.py:415:12: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/cli.py:421:12: W1201: Use lazy % formatting in logging functions (logging-not-lazy)
-src/OpenStudioLandscapes/cli.py:421:24: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/cli.py:424:20: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/cli.py:439:12: W1201: Use lazy % formatting in logging functions (logging-not-lazy)
-src/OpenStudioLandscapes/cli.py:439:24: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/cli.py:442:21: W1510: 'subprocess.run' used without explicitly defining the value for 'check'. (subprocess-run-check)
-src/OpenStudioLandscapes/cli.py:452:12: W1201: Use lazy % formatting in logging functions (logging-not-lazy)
-src/OpenStudioLandscapes/cli.py:452:24: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/cli.py:473:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:474:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:475:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:476:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:488:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:490:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:496:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:501:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:503:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:504:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:505:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:506:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:520:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:522:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:528:20: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:348:0: R0915: Too many statements (77/50) (too-many-statements)
-src/OpenStudioLandscapes/cli.py:538:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/cli.py:538:0: R0914: Too many local variables (19/15) (too-many-locals)
-src/OpenStudioLandscapes/cli.py:541:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:541:16: W1309: Using an f-string that does not have any interpolated variables (f-string-without-interpolation)
-src/OpenStudioLandscapes/cli.py:545:4: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
-src/OpenStudioLandscapes/cli.py:554:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:555:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:556:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:567:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:572:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:574:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:575:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:576:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:589:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:602:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:603:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:615:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:620:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:622:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:623:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:229:4: W0612: Unused variable 'subparser_update' (unused-variable)
+src/OpenStudioLandscapes/cli.py:305:4: W1201: Use lazy % formatting in logging functions (logging-not-lazy)
+src/OpenStudioLandscapes/cli.py:306:8: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
+src/OpenStudioLandscapes/cli.py:317:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/cli.py:328:16: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
+src/OpenStudioLandscapes/cli.py:379:8: W1201: Use lazy % formatting in logging functions (logging-not-lazy)
+src/OpenStudioLandscapes/cli.py:380:12: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
+src/OpenStudioLandscapes/cli.py:386:12: W1201: Use lazy % formatting in logging functions (logging-not-lazy)
+src/OpenStudioLandscapes/cli.py:386:24: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
+src/OpenStudioLandscapes/cli.py:389:20: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
+src/OpenStudioLandscapes/cli.py:404:12: W1201: Use lazy % formatting in logging functions (logging-not-lazy)
+src/OpenStudioLandscapes/cli.py:404:24: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
+src/OpenStudioLandscapes/cli.py:407:21: W1510: 'subprocess.run' used without explicitly defining the value for 'check'. (subprocess-run-check)
+src/OpenStudioLandscapes/cli.py:417:12: W1201: Use lazy % formatting in logging functions (logging-not-lazy)
+src/OpenStudioLandscapes/cli.py:417:24: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
+src/OpenStudioLandscapes/cli.py:438:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:439:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:440:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:441:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:453:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:455:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:461:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:466:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:468:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:469:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:470:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:471:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:485:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:487:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:493:20: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:317:0: R0915: Too many statements (77/50) (too-many-statements)
+src/OpenStudioLandscapes/cli.py:503:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/cli.py:503:0: R0914: Too many local variables (19/15) (too-many-locals)
+src/OpenStudioLandscapes/cli.py:506:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:506:16: W1309: Using an f-string that does not have any interpolated variables (f-string-without-interpolation)
+src/OpenStudioLandscapes/cli.py:510:4: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
+src/OpenStudioLandscapes/cli.py:519:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:520:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:521:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:532:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:537:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:539:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:540:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:541:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:554:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:567:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:568:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:580:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:585:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:587:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:588:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:602:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:629:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:631:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
 src/OpenStudioLandscapes/cli.py:637:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:664:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:666:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:672:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:687:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:689:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:693:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:538:0: R0912: Too many branches (20/12) (too-many-branches)
-src/OpenStudioLandscapes/cli.py:538:0: R0915: Too many statements (96/50) (too-many-statements)
-src/OpenStudioLandscapes/cli.py:708:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/cli.py:710:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:711:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:713:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:713:16: W1309: Using an f-string that does not have any interpolated variables (f-string-without-interpolation)
-src/OpenStudioLandscapes/cli.py:714:4: W1510: 'subprocess.run' used without explicitly defining the value for 'check'. (subprocess-run-check)
-src/OpenStudioLandscapes/cli.py:722:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/cli.py:722:16: W1309: Using an f-string that does not have any interpolated variables (f-string-without-interpolation)
-src/OpenStudioLandscapes/cli.py:731:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/cli.py:652:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:654:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:658:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:503:0: R0912: Too many branches (20/12) (too-many-branches)
+src/OpenStudioLandscapes/cli.py:503:0: R0915: Too many statements (96/50) (too-many-statements)
+src/OpenStudioLandscapes/cli.py:673:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/cli.py:675:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:676:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:678:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:678:16: W1309: Using an f-string that does not have any interpolated variables (f-string-without-interpolation)
+src/OpenStudioLandscapes/cli.py:679:4: W1510: 'subprocess.run' used without explicitly defining the value for 'check'. (subprocess-run-check)
+src/OpenStudioLandscapes/cli.py:687:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/cli.py:687:16: W1309: Using an f-string that does not have any interpolated variables (f-string-without-interpolation)
+src/OpenStudioLandscapes/cli.py:696:0: C0116: Missing function or method docstring (missing-function-docstring)
 ************* Module OpenStudioLandscapes.engine.enums
 src/OpenStudioLandscapes/engine/enums.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 src/OpenStudioLandscapes/engine/enums.py:15:0: C0115: Missing class docstring (missing-class-docstring)
@@ -92,17 +93,16 @@ src/OpenStudioLandscapes/engine/enums.py:92:0: C0115: Missing class docstring (m
 src/OpenStudioLandscapes/engine/enums.py:99:0: C0115: Missing class docstring (missing-class-docstring)
 src/OpenStudioLandscapes/engine/enums.py:99:0: R0903: Too few public methods (0/2) (too-few-public-methods)
 ************* Module OpenStudioLandscapes.engine.definitions
-src/OpenStudioLandscapes/engine/definitions.py:16:0: C0301: Line too long (102/100) (line-too-long)
-src/OpenStudioLandscapes/engine/definitions.py:18:0: C0301: Line too long (102/100) (line-too-long)
-src/OpenStudioLandscapes/engine/definitions.py:88:0: C0301: Line too long (517/100) (line-too-long)
-src/OpenStudioLandscapes/engine/definitions.py:104:0: C0301: Line too long (135/100) (line-too-long)
-src/OpenStudioLandscapes/engine/definitions.py:106:0: C0301: Line too long (111/100) (line-too-long)
-src/OpenStudioLandscapes/engine/definitions.py:108:0: C0301: Line too long (124/100) (line-too-long)
-src/OpenStudioLandscapes/engine/definitions.py:91:1: W0511: Todo: (fixme)
+src/OpenStudioLandscapes/engine/definitions.py:15:0: C0301: Line too long (102/100) (line-too-long)
+src/OpenStudioLandscapes/engine/definitions.py:17:0: C0301: Line too long (102/100) (line-too-long)
+src/OpenStudioLandscapes/engine/definitions.py:67:0: C0301: Line too long (517/100) (line-too-long)
+src/OpenStudioLandscapes/engine/definitions.py:83:0: C0301: Line too long (135/100) (line-too-long)
+src/OpenStudioLandscapes/engine/definitions.py:85:0: C0301: Line too long (111/100) (line-too-long)
+src/OpenStudioLandscapes/engine/definitions.py:87:0: C0301: Line too long (124/100) (line-too-long)
+src/OpenStudioLandscapes/engine/definitions.py:70:1: W0511: Todo: (fixme)
 src/OpenStudioLandscapes/engine/definitions.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-src/OpenStudioLandscapes/engine/definitions.py:6:0: R0402: Use 'from OpenStudioLandscapes.engine.discovery import discovery' instead (consider-using-from-import)
-src/OpenStudioLandscapes/engine/definitions.py:50:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/engine/definitions.py:2:0: W0611: Unused import os (unused-import)
+src/OpenStudioLandscapes/engine/definitions.py:5:0: R0402: Use 'from OpenStudioLandscapes.engine.discovery import discovery' instead (consider-using-from-import)
+src/OpenStudioLandscapes/engine/definitions.py:49:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
 ************* Module OpenStudioLandscapes.engine.constants
 src/OpenStudioLandscapes/engine/constants.py:31:0: C0301: Line too long (142/100) (line-too-long)
 src/OpenStudioLandscapes/engine/constants.py:29:1: W0511: Todo (fixme)
@@ -111,11 +111,9 @@ src/OpenStudioLandscapes/engine/constants.py:18:0: C0103: Constant name "ConfigP
 ************* Module OpenStudioLandscapes.engine.community_channels
 src/OpenStudioLandscapes/engine/community_channels.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 ************* Module OpenStudioLandscapes.engine.__init__
-src/OpenStudioLandscapes/engine/__init__.py:8:5: W0511: TODO: Import directly (no need for conditional) when `python_requires = >= 3.8` (fixme)
+src/OpenStudioLandscapes/engine/__init__.py:6:5: W0511: TODO: Import directly (no need for conditional) when `python_requires = >= 3.8` (fixme)
 ************* Module OpenStudioLandscapes.engine
 src/OpenStudioLandscapes/engine/__init__.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-src/OpenStudioLandscapes/engine/__init__.py:20:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/engine/__init__.py:26:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
 ************* Module OpenStudioLandscapes.engine.link.models
 src/OpenStudioLandscapes/engine/link/models.py:17:0: C0301: Line too long (150/100) (line-too-long)
 src/OpenStudioLandscapes/engine/link/models.py:30:0: C0301: Line too long (613/100) (line-too-long)
@@ -127,14 +125,18 @@ src/OpenStudioLandscapes/engine/link/models.py:65:0: C0115: Missing class docstr
 src/OpenStudioLandscapes/engine/link/models.py:71:0: C0115: Missing class docstring (missing-class-docstring)
 src/OpenStudioLandscapes/engine/link/models.py:79:0: C0115: Missing class docstring (missing-class-docstring)
 ************* Module OpenStudioLandscapes.engine.logging.loggers
-src/OpenStudioLandscapes/engine/logging/loggers.py:13:0: C0301: Line too long (103/100) (line-too-long)
-src/OpenStudioLandscapes/engine/logging/loggers.py:11:5: W0511: Todo: (fixme)
+src/OpenStudioLandscapes/engine/logging/loggers.py:27:0: C0301: Line too long (103/100) (line-too-long)
+src/OpenStudioLandscapes/engine/logging/loggers.py:25:5: W0511: Todo: (fixme)
 src/OpenStudioLandscapes/engine/logging/loggers.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+src/OpenStudioLandscapes/engine/logging/loggers.py:36:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/logging/loggers.py:39:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/logging/loggers.py:67:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/logging/loggers.py:69:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
 ************* Module OpenStudioLandscapes.engine.logging.logging
 src/OpenStudioLandscapes/engine/logging/logging.py:17:0: C0301: Line too long (115/100) (line-too-long)
 src/OpenStudioLandscapes/engine/logging/logging.py:18:0: C0301: Line too long (174/100) (line-too-long)
 src/OpenStudioLandscapes/engine/logging/logging.py:19:0: C0301: Line too long (108/100) (line-too-long)
-src/OpenStudioLandscapes/engine/logging/logging.py:33:0: C0301: Line too long (131/100) (line-too-long)
+src/OpenStudioLandscapes/engine/logging/logging.py:33:0: C0301: Line too long (141/100) (line-too-long)
 src/OpenStudioLandscapes/engine/logging/logging.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 ************* Module OpenStudioLandscapes.engine.utils.__init__
 src/OpenStudioLandscapes/engine/utils/__init__.py:70:0: C0301: Line too long (134/100) (line-too-long)
@@ -150,11 +152,11 @@ src/OpenStudioLandscapes/engine/utils/__init__.py:527:0: C0301: Line too long (1
 src/OpenStudioLandscapes/engine/utils/__init__.py:531:0: C0301: Line too long (152/100) (line-too-long)
 src/OpenStudioLandscapes/engine/utils/__init__.py:539:0: C0301: Line too long (161/100) (line-too-long)
 src/OpenStudioLandscapes/engine/utils/__init__.py:633:0: C0301: Line too long (1701/100) (line-too-long)
-src/OpenStudioLandscapes/engine/utils/__init__.py:656:0: C0301: Line too long (738/100) (line-too-long)
-src/OpenStudioLandscapes/engine/utils/__init__.py:669:0: C0301: Line too long (206/100) (line-too-long)
-src/OpenStudioLandscapes/engine/utils/__init__.py:673:0: C0301: Line too long (321/100) (line-too-long)
-src/OpenStudioLandscapes/engine/utils/__init__.py:745:0: C0301: Line too long (153/100) (line-too-long)
-src/OpenStudioLandscapes/engine/utils/__init__.py:902:0: C0301: Line too long (102/100) (line-too-long)
+src/OpenStudioLandscapes/engine/utils/__init__.py:659:0: C0301: Line too long (738/100) (line-too-long)
+src/OpenStudioLandscapes/engine/utils/__init__.py:672:0: C0301: Line too long (206/100) (line-too-long)
+src/OpenStudioLandscapes/engine/utils/__init__.py:676:0: C0301: Line too long (321/100) (line-too-long)
+src/OpenStudioLandscapes/engine/utils/__init__.py:748:0: C0301: Line too long (153/100) (line-too-long)
+src/OpenStudioLandscapes/engine/utils/__init__.py:905:0: C0301: Line too long (102/100) (line-too-long)
 src/OpenStudioLandscapes/engine/utils/__init__.py:68:5: W0511: Todo (fixme)
 src/OpenStudioLandscapes/engine/utils/__init__.py:157:5: W0511: Todo: (fixme)
 src/OpenStudioLandscapes/engine/utils/__init__.py:188:1: W0511: Todo: (fixme)
@@ -166,8 +168,8 @@ src/OpenStudioLandscapes/engine/utils/__init__.py:380:5: W0511: Todo: (fixme)
 src/OpenStudioLandscapes/engine/utils/__init__.py:446:1: W0511: Todo (fixme)
 src/OpenStudioLandscapes/engine/utils/__init__.py:516:5: W0511: Todo (fixme)
 src/OpenStudioLandscapes/engine/utils/__init__.py:607:1: W0511: Todo (fixme)
-src/OpenStudioLandscapes/engine/utils/__init__.py:740:5: W0511: Todo: (fixme)
-src/OpenStudioLandscapes/engine/utils/__init__.py:838:5: W0511: Todo (fixme)
+src/OpenStudioLandscapes/engine/utils/__init__.py:743:5: W0511: Todo: (fixme)
+src/OpenStudioLandscapes/engine/utils/__init__.py:841:5: W0511: Todo (fixme)
 ************* Module OpenStudioLandscapes.engine.utils
 src/OpenStudioLandscapes/engine/utils/__init__.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 src/OpenStudioLandscapes/engine/utils/__init__.py:46:0: R0402: Use 'from OpenStudioLandscapes.engine.discovery import discovery' instead (consider-using-from-import)
@@ -201,22 +203,23 @@ src/OpenStudioLandscapes/engine/utils/__init__.py:545:0: C0116: Missing function
 src/OpenStudioLandscapes/engine/utils/__init__.py:570:0: C0116: Missing function or method docstring (missing-function-docstring)
 src/OpenStudioLandscapes/engine/utils/__init__.py:594:0: C0116: Missing function or method docstring (missing-function-docstring)
 src/OpenStudioLandscapes/engine/utils/__init__.py:599:4: W0612: Unused variable 'package' (unused-variable)
-src/OpenStudioLandscapes/engine/utils/__init__.py:629:4: W0612: Unused variable 'package' (unused-variable)
+src/OpenStudioLandscapes/engine/utils/__init__.py:645:47: R1728: Consider using a generator instead 'max(len(i) for i in feature_names)' (consider-using-generator)
+src/OpenStudioLandscapes/engine/utils/__init__.py:625:4: W0612: Unused variable 'package' (unused-variable)
 src/OpenStudioLandscapes/engine/utils/__init__.py:640:8: W0612: Unused variable 'key_prefixes' (unused-variable)
-src/OpenStudioLandscapes/engine/utils/__init__.py:660:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/utils/__init__.py:715:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/utils/__init__.py:715:0: R0913: Too many arguments (9/5) (too-many-arguments)
-src/OpenStudioLandscapes/engine/utils/__init__.py:715:0: R0917: Too many positional arguments (9/5) (too-many-positional-arguments)
-src/OpenStudioLandscapes/engine/utils/__init__.py:715:0: R0914: Too many local variables (18/15) (too-many-locals)
-src/OpenStudioLandscapes/engine/utils/__init__.py:808:9: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
-src/OpenStudioLandscapes/engine/utils/__init__.py:818:4: W0613: Unused argument 'context' (unused-argument)
-src/OpenStudioLandscapes/engine/utils/__init__.py:849:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/utils/__init__.py:861:8: W3101: Missing timeout argument for method 'requests.get' can cause your program to hang indefinitely (missing-timeout)
-src/OpenStudioLandscapes/engine/utils/__init__.py:862:4: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
-src/OpenStudioLandscapes/engine/utils/__init__.py:863:20: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/engine/utils/__init__.py:872:8: W0719: Raising too general exception: Exception (broad-exception-raised)
-src/OpenStudioLandscapes/engine/utils/__init__.py:873:12: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/engine/utils/__init__.py:877:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/utils/__init__.py:663:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/utils/__init__.py:718:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/utils/__init__.py:718:0: R0913: Too many arguments (9/5) (too-many-arguments)
+src/OpenStudioLandscapes/engine/utils/__init__.py:718:0: R0917: Too many positional arguments (9/5) (too-many-positional-arguments)
+src/OpenStudioLandscapes/engine/utils/__init__.py:718:0: R0914: Too many local variables (18/15) (too-many-locals)
+src/OpenStudioLandscapes/engine/utils/__init__.py:811:9: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
+src/OpenStudioLandscapes/engine/utils/__init__.py:821:4: W0613: Unused argument 'context' (unused-argument)
+src/OpenStudioLandscapes/engine/utils/__init__.py:852:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/utils/__init__.py:864:8: W3101: Missing timeout argument for method 'requests.get' can cause your program to hang indefinitely (missing-timeout)
+src/OpenStudioLandscapes/engine/utils/__init__.py:865:4: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+src/OpenStudioLandscapes/engine/utils/__init__.py:866:20: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
+src/OpenStudioLandscapes/engine/utils/__init__.py:875:8: W0719: Raising too general exception: Exception (broad-exception-raised)
+src/OpenStudioLandscapes/engine/utils/__init__.py:876:12: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
+src/OpenStudioLandscapes/engine/utils/__init__.py:880:0: C0116: Missing function or method docstring (missing-function-docstring)
 ************* Module OpenStudioLandscapes.engine.utils.docker.compose_dicts
 src/OpenStudioLandscapes/engine/utils/docker/compose_dicts.py:73:0: C0301: Line too long (118/100) (line-too-long)
 src/OpenStudioLandscapes/engine/utils/docker/compose_dicts.py:75:0: C0301: Line too long (106/100) (line-too-long)
@@ -244,20 +247,20 @@ src/OpenStudioLandscapes/engine/utils/docker/__init__.py:22:0: R0917: Too many p
 src/OpenStudioLandscapes/engine/utils/docker/__init__.py:55:72: W0640: Cell variable tag defined in loop (cell-var-from-loop)
 src/OpenStudioLandscapes/engine/utils/docker/__init__.py:68:0: C0116: Missing function or method docstring (missing-function-docstring)
 ************* Module OpenStudioLandscapes.engine.landscape_map.assets
-src/OpenStudioLandscapes/engine/landscape_map/assets.py:37:0: C0301: Line too long (724/100) (line-too-long)
-src/OpenStudioLandscapes/engine/landscape_map/assets.py:138:0: C0301: Line too long (604/100) (line-too-long)
-src/OpenStudioLandscapes/engine/landscape_map/assets.py:139:0: C0301: Line too long (628/100) (line-too-long)
-src/OpenStudioLandscapes/engine/landscape_map/assets.py:118:24: W1401: Anomalous backslash in string: '\+'. String constant might be missing an r prefix. (anomalous-backslash-in-string)
+src/OpenStudioLandscapes/engine/landscape_map/assets.py:31:0: C0301: Line too long (724/100) (line-too-long)
+src/OpenStudioLandscapes/engine/landscape_map/assets.py:132:0: C0301: Line too long (604/100) (line-too-long)
+src/OpenStudioLandscapes/engine/landscape_map/assets.py:133:0: C0301: Line too long (628/100) (line-too-long)
+src/OpenStudioLandscapes/engine/landscape_map/assets.py:112:24: W1401: Anomalous backslash in string: '\+'. String constant might be missing an r prefix. (anomalous-backslash-in-string)
 src/OpenStudioLandscapes/engine/landscape_map/assets.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 src/OpenStudioLandscapes/engine/landscape_map/assets.py:24:0: W0401: Wildcard import OpenStudioLandscapes.engine.constants (wildcard-import)
-src/OpenStudioLandscapes/engine/landscape_map/assets.py:26:0: W0401: Wildcard import OpenStudioLandscapes.engine.discovery.discovery (wildcard-import)
+src/OpenStudioLandscapes/engine/landscape_map/assets.py:25:0: W0401: Wildcard import OpenStudioLandscapes.engine.discovery.discovery (wildcard-import)
 src/OpenStudioLandscapes/engine/landscape_map/assets.py:27:0: W0401: Wildcard import OpenStudioLandscapes.engine.enums (wildcard-import)
-src/OpenStudioLandscapes/engine/landscape_map/assets.py:36:0: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/engine/landscape_map/assets.py:94:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/landscape_map/assets.py:94:0: R0914: Too many local variables (18/15) (too-many-locals)
-src/OpenStudioLandscapes/engine/landscape_map/assets.py:123:11: R1732: Consider using 'with' for resource-allocating operations (consider-using-with)
+src/OpenStudioLandscapes/engine/landscape_map/assets.py:30:0: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/landscape_map/assets.py:88:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/landscape_map/assets.py:88:0: R0914: Too many local variables (18/15) (too-many-locals)
+src/OpenStudioLandscapes/engine/landscape_map/assets.py:117:11: R1732: Consider using 'with' for resource-allocating operations (consider-using-with)
 src/OpenStudioLandscapes/engine/landscape_map/assets.py:24:0: W0614: Unused import(s) ConfigParent, DOCKER_PROGRESS, GROUP_BASE_ENV, KEY_BASE_ENV, ASSET_HEADER_BASE_ENV, GROUP_BASE, KEY_BASE, GROUP_VFX_PLATFORM, KEY_VFX_PLATFORM, ASSET_HEADER_VFX_PLATFORM, GROUP_LANDSCAPE_MAP, KEY_LANDSCAPE_MAP, GROUP_DISTRIBUTABLE, KEY_DISTRIBUTABLE, ASSET_HEADER_DISTRIBUTABLE, Union, DAGSTER_DEFAULT_OUTPUT and FeatureBaseModel from wildcard import of OpenStudioLandscapes.engine.constants (unused-wildcard-import)
-src/OpenStudioLandscapes/engine/landscape_map/assets.py:26:0: W0614: Unused import(s) importlib, json, os, git, ruamel, OpenStudioLandscapesDiscoveryException, load_yaml, dump_yaml, get_config, get_absolute_config_path, OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT, OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS, REPO_INITIALIZED, init_config_store, config_store_repo, fresh_repo, get_config_engine, get_namespace_packages, get_definitions_path, get_models_path, try_import_discovered, init, DISCOVERED_MODELS, config_engine, OrderedDict, metadata, Distribution, ModuleType, List, Tuple, find_namespace_packages, dist_engine, ConfigEngine and OpenStudioLandscapesDiscoveredFeature from wildcard import of OpenStudioLandscapes.engine.discovery.discovery (unused-wildcard-import)
+src/OpenStudioLandscapes/engine/landscape_map/assets.py:25:0: W0614: Unused import(s) importlib, json, os, ruamel, OpenStudioLandscapesDiscoveryException, load_yaml, dump_yaml, get_config, get_absolute_config_path, OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT, OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS, config_store_repo, fresh_repo, get_config_engine, get_namespace_packages, get_definitions_path, get_models_path, try_import_discovered, init, DISCOVERED_MODELS, config_engine, OrderedDict, metadata, Distribution, ModuleType, List, Tuple, PydanticValidationError, find_namespace_packages, dist_engine, ConfigEngine, OpenStudioLandscapesDiscoveredFeature, commit_configs, init_config_store and get_dynamic_ins from wildcard import of OpenStudioLandscapes.engine.discovery.discovery (unused-wildcard-import)
 src/OpenStudioLandscapes/engine/landscape_map/assets.py:27:0: W0614: Unused import(s) OpenStudioLandscapesConfig, FeatureVolumeType, ComposeCmdExclusion, DockerComposeNetworkMode, DockerComposeRestartPolicy, DockerComposeDependsOnPolicy and DockerComposePolicies from wildcard import of OpenStudioLandscapes.engine.enums (unused-wildcard-import)
 ************* Module OpenStudioLandscapes.engine.landscape_map.definitions
 src/OpenStudioLandscapes/engine/landscape_map/definitions.py:1:0: C0114: Missing module docstring (missing-module-docstring)
@@ -388,9 +391,7 @@ src/OpenStudioLandscapes/engine/base/ops/factories.py:1658:0: C0301: Line too lo
 src/OpenStudioLandscapes/engine/base/ops/factories.py:1681:0: C0301: Line too long (105/100) (line-too-long)
 src/OpenStudioLandscapes/engine/base/ops/factories.py:1684:0: C0301: Line too long (105/100) (line-too-long)
 src/OpenStudioLandscapes/engine/base/ops/factories.py:1973:0: C0301: Line too long (123/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/factories.py:1978:0: C0301: Line too long (103/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/factories.py:2001:0: C0301: Line too long (136/100) (line-too-long)
-src/OpenStudioLandscapes/engine/base/ops/factories.py:1:0: C0302: Too many lines in module (2101/1000) (too-many-lines)
+src/OpenStudioLandscapes/engine/base/ops/factories.py:1:0: C0302: Too many lines in module (2073/1000) (too-many-lines)
 src/OpenStudioLandscapes/engine/base/ops/factories.py:222:5: W0511: Todo (fixme)
 src/OpenStudioLandscapes/engine/base/ops/factories.py:360:17: W0511: Todo: "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)), (fixme)
 src/OpenStudioLandscapes/engine/base/ops/factories.py:818:9: W0511: Todo: (fixme)
@@ -659,124 +660,139 @@ src/OpenStudioLandscapes/engine/vfx_reference/definitions.py:1:0: C0114: Missing
 ************* Module OpenStudioLandscapes.engine.vfx_reference._definitions_with_upstream_specs
 src/OpenStudioLandscapes/engine/vfx_reference/_definitions_with_upstream_specs.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 ************* Module OpenStudioLandscapes.engine.discovery.get_feature_base_model
+src/OpenStudioLandscapes/engine/discovery/get_feature_base_model.py:12:1: W0511: Todo (fixme)
 src/OpenStudioLandscapes/engine/discovery/get_feature_base_model.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-src/OpenStudioLandscapes/engine/discovery/get_feature_base_model.py:41:8: R1703: The if statement can be replaced with 'return bool(test)' (simplifiable-if-statement)
-src/OpenStudioLandscapes/engine/discovery/get_feature_base_model.py:41:8: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
-src/OpenStudioLandscapes/engine/discovery/get_feature_base_model.py:52:7: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/engine/discovery/get_feature_base_model.py:59:50: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/engine/discovery/get_feature_base_model.py:12:4: W0613: Unused argument 'context' (unused-argument)
+src/OpenStudioLandscapes/engine/discovery/get_feature_base_model.py:44:8: R1703: The if statement can be replaced with 'return bool(test)' (simplifiable-if-statement)
+src/OpenStudioLandscapes/engine/discovery/get_feature_base_model.py:44:8: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+src/OpenStudioLandscapes/engine/discovery/get_feature_base_model.py:55:7: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
+src/OpenStudioLandscapes/engine/discovery/get_feature_base_model.py:62:50: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
+src/OpenStudioLandscapes/engine/discovery/get_feature_base_model.py:15:4: W0613: Unused argument 'context' (unused-argument)
 ************* Module OpenStudioLandscapes.engine.discovery.discovery
 src/OpenStudioLandscapes/engine/discovery/discovery.py:12:0: C0301: Line too long (132/100) (line-too-long)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:35:0: C0301: Line too long (176/100) (line-too-long)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:89:0: C0301: Line too long (142/100) (line-too-long)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:90:0: C0301: Line too long (146/100) (line-too-long)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:93:0: C0301: Line too long (142/100) (line-too-long)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:94:0: C0301: Line too long (132/100) (line-too-long)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:97:0: C0301: Line too long (142/100) (line-too-long)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:98:0: C0301: Line too long (130/100) (line-too-long)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:101:0: C0301: Line too long (142/100) (line-too-long)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:102:0: C0301: Line too long (136/100) (line-too-long)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:105:0: C0301: Line too long (142/100) (line-too-long)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:106:0: C0301: Line too long (122/100) (line-too-long)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:109:0: C0301: Line too long (142/100) (line-too-long)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:110:0: C0301: Line too long (131/100) (line-too-long)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:113:0: C0301: Line too long (142/100) (line-too-long)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:114:0: C0301: Line too long (128/100) (line-too-long)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:117:0: C0301: Line too long (142/100) (line-too-long)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:118:0: C0301: Line too long (130/100) (line-too-long)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:217:0: C0301: Line too long (103/100) (line-too-long)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:339:0: C0301: Line too long (164/100) (line-too-long)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:459:0: C0301: Line too long (158/100) (line-too-long)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:462:0: C0301: Line too long (160/100) (line-too-long)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:484:0: C0301: Line too long (154/100) (line-too-long)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:487:0: C0301: Line too long (156/100) (line-too-long)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:523:0: C0301: Line too long (109/100) (line-too-long)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:83:9: W0511: Todo (fixme)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:222:1: W0511: Todo (fixme)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:228:9: W0511: Todo: (fixme)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:239:9: W0511: Todo: (fixme)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:61:0: C0115: Missing class docstring (missing-class-docstring)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:75:9: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:162:13: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:203:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:209:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:210:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:262:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:267:8: W0621: Redefining name 'fresh_repo' from outer scope (line 292) (redefined-outer-name)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:269:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:275:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:277:4: W0603: Using the global statement (global-statement)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:288:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:315:4: W0621: Redefining name 'config_engine' from outer scope (line 559) (redefined-outer-name)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:318:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:328:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:343:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:352:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:357:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:373:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:395:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:396:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:399:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:401:8: W1201: Use lazy % formatting in logging functions (logging-not-lazy)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:401:20: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:410:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:412:8: W1201: Use lazy % formatting in logging functions (logging-not-lazy)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:412:20: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:423:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:424:4: W0621: Redefining name 'config_engine' from outer scope (line 559) (redefined-outer-name)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:34:0: C0301: Line too long (176/100) (line-too-long)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:121:0: C0301: Line too long (1127/100) (line-too-long)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:125:0: C0301: Line too long (385/100) (line-too-long)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:130:0: C0301: Line too long (383/100) (line-too-long)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:221:0: C0301: Line too long (103/100) (line-too-long)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:319:0: C0301: Line too long (164/100) (line-too-long)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:455:0: C0301: Line too long (276/100) (line-too-long)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:459:0: C0301: Line too long (275/100) (line-too-long)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:469:0: C0301: Line too long (276/100) (line-too-long)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:471:0: C0301: Line too long (275/100) (line-too-long)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:489:0: C0301: Line too long (272/100) (line-too-long)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:491:0: C0301: Line too long (271/100) (line-too-long)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:503:0: C0301: Line too long (164/100) (line-too-long)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:517:0: C0301: Line too long (105/100) (line-too-long)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:523:0: C0301: Line too long (107/100) (line-too-long)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:549:0: C0301: Line too long (113/100) (line-too-long)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:557:0: C0301: Line too long (111/100) (line-too-long)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:575:0: C0301: Line too long (1658/100) (line-too-long)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:579:0: C0301: Line too long (102/100) (line-too-long)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:611:0: C0301: Line too long (199/100) (line-too-long)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:612:0: C0301: Line too long (249/100) (line-too-long)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:618:0: C0301: Line too long (106/100) (line-too-long)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:627:0: C0301: Line too long (108/100) (line-too-long)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:635:0: C0301: Line too long (106/100) (line-too-long)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:651:0: C0301: Line too long (134/100) (line-too-long)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:226:1: W0511: Todo (fixme)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:232:9: W0511: Todo: (fixme)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:243:9: W0511: Todo: (fixme)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:678:5: W0511: Todo (fixme)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:48:0: E0611: No name 'ValidationError' in module 'pydantic_core._pydantic_core' (no-name-in-module)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:65:0: C0115: Missing class docstring (missing-class-docstring)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:79:9: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:120:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:124:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:129:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:143:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:166:13: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:207:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:213:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:214:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:268:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:295:4: W0621: Redefining name 'config_engine' from outer scope (line 671) (redefined-outer-name)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:298:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:308:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:323:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:332:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:337:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:353:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:375:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:376:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:379:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:381:8: W1201: Use lazy % formatting in logging functions (logging-not-lazy)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:381:20: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:390:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:392:8: W1201: Use lazy % formatting in logging functions (logging-not-lazy)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:392:20: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:404:4: W0621: Redefining name 'config_engine' from outer scope (line 671) (redefined-outer-name)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:424:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:434:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
 src/OpenStudioLandscapes/engine/discovery/discovery.py:450:12: W1201: Use lazy % formatting in logging functions (logging-not-lazy)
 src/OpenStudioLandscapes/engine/discovery/discovery.py:450:25: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:468:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:476:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:479:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:501:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:507:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:454:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:458:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:463:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:484:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:486:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:496:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:502:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
 src/OpenStudioLandscapes/engine/discovery/discovery.py:508:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:511:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:519:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:532:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:532:28: W1309: Using an f-string that does not have any interpolated variables (f-string-without-interpolation)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:534:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:534:28: W1309: Using an f-string that does not have any interpolated variables (f-string-without-interpolation)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:536:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:536:28: W1309: Using an f-string that does not have any interpolated variables (f-string-without-interpolation)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:540:20: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:548:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/engine/discovery/discovery.py:548:16: W1309: Using an f-string that does not have any interpolated variables (f-string-without-interpolation)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:536:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:570:12: W0707: Consider explicitly re-raising using 'raise OpenStudioLandscapesDiscoveryException(msg) from e' (raise-missing-from)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:574:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:578:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:582:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:648:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:660:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:660:16: W1309: Using an f-string that does not have any interpolated variables (f-string-without-interpolation)
+src/OpenStudioLandscapes/engine/discovery/discovery.py:403:0: R1711: Useless return at end of function or method (useless-return)
+************* Module OpenStudioLandscapes.engine.discovery.init_config_store
+src/OpenStudioLandscapes/engine/discovery/init_config_store.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+src/OpenStudioLandscapes/engine/discovery/init_config_store.py:9:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/discovery/init_config_store.py:17:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/discovery/init_config_store.py:23:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/discovery/init_config_store.py:28:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/engine/discovery/init_config_store.py:35:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/discovery/init_config_store.py:35:20: W1309: Using an f-string that does not have any interpolated variables (f-string-without-interpolation)
+src/OpenStudioLandscapes/engine/discovery/init_config_store.py:37:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/discovery/init_config_store.py:37:20: W1309: Using an f-string that does not have any interpolated variables (f-string-without-interpolation)
+src/OpenStudioLandscapes/engine/discovery/init_config_store.py:39:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/discovery/init_config_store.py:39:20: W1309: Using an f-string that does not have any interpolated variables (f-string-without-interpolation)
+src/OpenStudioLandscapes/engine/discovery/init_config_store.py:43:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/discovery/init_config_store.py:28:0: R1711: Useless return at end of function or method (useless-return)
 ************* Module OpenStudioLandscapes.engine.compose_scopes.assets
 src/OpenStudioLandscapes/engine/compose_scopes/assets.py:34:0: C0301: Line too long (864/100) (line-too-long)
-src/OpenStudioLandscapes/engine/compose_scopes/assets.py:50:0: C0301: Line too long (724/100) (line-too-long)
-src/OpenStudioLandscapes/engine/compose_scopes/assets.py:82:0: C0301: Line too long (526/100) (line-too-long)
-src/OpenStudioLandscapes/engine/compose_scopes/assets.py:148:0: C0301: Line too long (206/100) (line-too-long)
+src/OpenStudioLandscapes/engine/compose_scopes/assets.py:46:0: C0301: Line too long (724/100) (line-too-long)
+src/OpenStudioLandscapes/engine/compose_scopes/assets.py:78:0: C0301: Line too long (526/100) (line-too-long)
+src/OpenStudioLandscapes/engine/compose_scopes/assets.py:144:0: C0301: Line too long (206/100) (line-too-long)
 src/OpenStudioLandscapes/engine/compose_scopes/assets.py:29:1: W0511: Todo: (fixme)
-src/OpenStudioLandscapes/engine/compose_scopes/assets.py:78:5: W0511: Todo (fixme)
-src/OpenStudioLandscapes/engine/compose_scopes/assets.py:157:5: W0511: Todo (fixme)
+src/OpenStudioLandscapes/engine/compose_scopes/assets.py:74:5: W0511: Todo (fixme)
+src/OpenStudioLandscapes/engine/compose_scopes/assets.py:153:5: W0511: Todo (fixme)
 src/OpenStudioLandscapes/engine/compose_scopes/assets.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 src/OpenStudioLandscapes/engine/compose_scopes/assets.py:10:0: R0402: Use 'from OpenStudioLandscapes.engine.discovery import discovery' instead (consider-using-from-import)
 src/OpenStudioLandscapes/engine/compose_scopes/assets.py:21:0: W0401: Wildcard import OpenStudioLandscapes.engine.compose_scopes.constants (wildcard-import)
-src/OpenStudioLandscapes/engine/compose_scopes/assets.py:27:0: W0401: Wildcard import OpenStudioLandscapes.engine.utils (wildcard-import)
 src/OpenStudioLandscapes/engine/compose_scopes/assets.py:33:0: W0105: String statement has no effect (pointless-string-statement)
-src/OpenStudioLandscapes/engine/compose_scopes/assets.py:49:0: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/engine/compose_scopes/assets.py:81:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/engine/compose_scopes/assets.py:84:4: C0103: Variable name "ASSET_HEADER" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/compose_scopes/assets.py:102:4: C0103: Variable name "compose_scope_group__CONFIG" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/engine/compose_scopes/assets.py:199:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/engine/compose_scopes/assets.py:200:12: W1309: Using an f-string that does not have any interpolated variables (f-string-without-interpolation)
-src/OpenStudioLandscapes/engine/compose_scopes/assets.py:27:0: W0614: Unused import(s) copy, datetime, json, os, pathlib, shlex, time, git, requests, cmd_list_to_str, get_pip_install_str, get_apt_install_str, get_copy_str, get_wget_str, get_git_root, get_configs_root, get_data_root, get_bin_root, get_image_name, parse_docker_image_path, get_compose_scope, get_feature_config, expand_dict_vars, metadatavalues_from_dict, get_relative_path_via_common_root, get_bool_env, get_str_env, get_all_compose_scopes, get_image_metadata, create_image, get_networks_dict, get_docker_compose_names, download_file, get_docker_run_cmd, Any, List, MutableMapping, Tuple, Union, AssetExecutionContext, MetadataValue, OpExecutionContext, DockerConfigModel, GroupIn, OpenStudioLandscapesConfig, FeatureVolumeType, ComposeCmdExclusion, DockerComposeNetworkMode, DockerComposeRestartPolicy, DockerComposeDependsOnPolicy, DockerComposePolicies, ComposeScopeException, OpenStudioLandscapesException, shutil, OpenStudioLandscapesDockerException, docker_build_cmd, docker_push_cmd, docker_do, get_dagster_logger and submit_cmds from wildcard import of OpenStudioLandscapes.engine.utils (unused-wildcard-import)
+src/OpenStudioLandscapes/engine/compose_scopes/assets.py:45:0: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/compose_scopes/assets.py:77:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/compose_scopes/assets.py:80:4: C0103: Variable name "ASSET_HEADER" doesn't conform to snake_case naming style (invalid-name)
+src/OpenStudioLandscapes/engine/compose_scopes/assets.py:98:4: C0103: Variable name "compose_scope_group__CONFIG" doesn't conform to snake_case naming style (invalid-name)
+src/OpenStudioLandscapes/engine/compose_scopes/assets.py:195:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/compose_scopes/assets.py:196:12: W1309: Using an f-string that does not have any interpolated variables (f-string-without-interpolation)
 ************* Module OpenStudioLandscapes.engine.compose_scopes.definitions
-src/OpenStudioLandscapes/engine/compose_scopes/definitions.py:43:0: C0301: Line too long (280/100) (line-too-long)
-src/OpenStudioLandscapes/engine/compose_scopes/definitions.py:55:0: C0301: Line too long (286/100) (line-too-long)
-src/OpenStudioLandscapes/engine/compose_scopes/definitions.py:67:0: C0301: Line too long (102/100) (line-too-long)
+src/OpenStudioLandscapes/engine/compose_scopes/definitions.py:31:0: C0301: Line too long (280/100) (line-too-long)
+src/OpenStudioLandscapes/engine/compose_scopes/definitions.py:43:0: C0301: Line too long (286/100) (line-too-long)
+src/OpenStudioLandscapes/engine/compose_scopes/definitions.py:55:0: C0301: Line too long (102/100) (line-too-long)
 src/OpenStudioLandscapes/engine/compose_scopes/definitions.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-src/OpenStudioLandscapes/engine/compose_scopes/definitions.py:33:0: C0413: Import "from OpenStudioLandscapes.engine.compose_scopes.assets import feature_ins" should be placed at the top of the module (wrong-import-position)
-src/OpenStudioLandscapes/engine/compose_scopes/definitions.py:34:0: C0413: Import "from OpenStudioLandscapes.engine.compose_scopes.constants import COMPOSE_SCOPE_GROUP_PREFIX" should be placed at the top of the module (wrong-import-position)
-src/OpenStudioLandscapes/engine/compose_scopes/definitions.py:37:0: C0413: Import "from OpenStudioLandscapes.engine.discovery import discovery" should be placed at the top of the module (wrong-import-position)
-src/OpenStudioLandscapes/engine/compose_scopes/definitions.py:42:0: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/engine/compose_scopes/definitions.py:52:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/engine/compose_scopes/definitions.py:54:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/engine/compose_scopes/definitions.py:62:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
-src/OpenStudioLandscapes/engine/compose_scopes/definitions.py:73:12: E0401: Unable to import 'OpenStudioLandscapes.Grafana.constants' (import-error)
-src/OpenStudioLandscapes/engine/compose_scopes/definitions.py:73:12: E0611: No name 'Grafana' in module 'OpenStudioLandscapes' (no-name-in-module)
+src/OpenStudioLandscapes/engine/compose_scopes/definitions.py:21:0: C0413: Import "from OpenStudioLandscapes.engine.compose_scopes.assets import DYNAMIC_INS" should be placed at the top of the module (wrong-import-position)
+src/OpenStudioLandscapes/engine/compose_scopes/definitions.py:22:0: C0413: Import "from OpenStudioLandscapes.engine.compose_scopes.constants import COMPOSE_SCOPE_GROUP_PREFIX" should be placed at the top of the module (wrong-import-position)
+src/OpenStudioLandscapes/engine/compose_scopes/definitions.py:25:0: C0413: Import "from OpenStudioLandscapes.engine.discovery import discovery" should be placed at the top of the module (wrong-import-position)
+src/OpenStudioLandscapes/engine/compose_scopes/definitions.py:30:0: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/compose_scopes/definitions.py:40:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/compose_scopes/definitions.py:42:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/compose_scopes/definitions.py:50:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+src/OpenStudioLandscapes/engine/compose_scopes/definitions.py:61:12: E0401: Unable to import 'OpenStudioLandscapes.Grafana.constants' (import-error)
+src/OpenStudioLandscapes/engine/compose_scopes/definitions.py:61:12: E0611: No name 'Grafana' in module 'OpenStudioLandscapes' (no-name-in-module)
 ************* Module OpenStudioLandscapes.engine.compose_scopes.constants
 src/OpenStudioLandscapes/engine/compose_scopes/constants.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 ************* Module OpenStudioLandscapes.engine.compose_scopes.simple_factories
@@ -953,32 +969,32 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[56:82]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1040:1066]
-    dcg = DockerComposeGraph(
-        label_root_service=compose_project_name,
-    )
-    trees = dcg.parse_docker_compose(pathlib.Path(group_out))
-
-    context.log.info(trees)
-
-    dcg.iterate_trees(trees)
-
-    docker_compose_dir = group_out.parent / "__".join(
-        context.asset_key_for_output("docker_compose_graph").path
-    )
-
-    docker_compose_dir.mkdir(parents=True, exist_ok=True)
-
-    # SVG
-    svg = (
-        docker_compose_dir
-        / f"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.svg"
-    )
-    try:
-        dcg.graph.write(
-            path=svg,
-            format="svg",
+        dcg = DockerComposeGraph(
+            label_root_service=compose_project_name,
         )
-    except FileNotFoundError as e: (duplicate-code)
+        trees = dcg.parse_docker_compose(pathlib.Path(group_out))
+
+        context.log.info(trees)
+
+        dcg.iterate_trees(trees)
+
+        docker_compose_dir = group_out.parent / "__".join(
+            context.asset_key_for_output("docker_compose_graph").path
+        )
+
+        docker_compose_dir.mkdir(parents=True, exist_ok=True)
+
+        # SVG
+        svg = (
+            docker_compose_dir
+            / f"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.svg"
+        )
+        try:
+            dcg.graph.write(
+                path=svg,
+                format="svg",
+            )
+        except FileNotFoundError as e: (duplicate-code)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.config.models:[492:513]
 ==OpenStudioLandscapes.engine.env.tests.test_CONFIG:[73:91]
@@ -1004,7 +1020,7 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
             "xauth",
         ], (duplicate-code)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
-==OpenStudioLandscapes.engine.compose_scopes.definitions:[115:137]
+==OpenStudioLandscapes.engine.compose_scopes.definitions:[103:125]
 ==OpenStudioLandscapes.engine.landscape_map.definitions:[92:114]
 group_out_base = AssetSpec(
     key=AssetKey(
@@ -1069,7 +1085,7 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
         ], (duplicate-code)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.assets:[384:402]
-==OpenStudioLandscapes.engine.utils.__init__:[769:786]
+==OpenStudioLandscapes.engine.utils.__init__:[772:789]
         cmds_push = docker_push_cmd(
             context=context,
             docker_config_json=docker_config_json,
@@ -1081,7 +1097,6 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
         pass
 
     context.log.info(f"{cmds = }")
-    # cmds = [['/usr/local/bin/docker', '--debug', '--config', '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json', 'build', '--progress', 'plain', '--pull', '--file', '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles/Dockerfile', '--no-cache', '--tag', 'openstudiolandscapes_base_build_docker_image:2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f', '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__build_docker_image/Dockerfiles'], ['/usr/local/bin/docker', '--config', '/home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json', 'push', 'openstudiolandscapes_base_build_docker_image:2025-11-16-17-38-11-6545bb6740ab406189bad0aa0820844f']]
 
     logs = docker_do(
         context=context,
@@ -1152,22 +1167,22 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[238:254]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1354:1370]
-        group_names_by_key_dict = context.assets_def.group_names_by_key
-        # Results in:
-        # Single Output:
-        # {AssetKey(['OpenCue', 'group_out']): 'OpenCue'}
-        # Multiple Outputs:
-        # {AssetKey(['Compose_default', 'group_out']): 'Compose_default', AssetKey(['Compose_default', 'compose_project_name']): 'Compose_default'}
-        context.log.debug(group_names_by_key_dict)
+    group_names_by_key_dict = context.assets_def.group_names_by_key
+    # Results in:
+    # Single Output:
+    # {AssetKey(['OpenCue', 'group_out']): 'OpenCue'}
+    # Multiple Outputs:
+    # {AssetKey(['Compose_default', 'group_out']): 'Compose_default', AssetKey(['Compose_default', 'compose_project_name']): 'Compose_default'}
+    context.log.debug(group_names_by_key_dict)
 
-        cmd_docker_compose_logs = [
-            "$(which docker)",
-            "--config",
-            docker_config_json.as_posix(),
-            "compose",
-            "--progress",
-            DOCKER_PROGRESS,
-            "--file", (duplicate-code)
+    cmd_docker_compose_logs = [
+        "$(which docker)",
+        "--config",
+        docker_config_json.as_posix(),
+        "compose",
+        "--progress",
+        DOCKER_PROGRESS,
+        "--file", (duplicate-code)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.common_assets.compose_scope:[306:319]
 ==OpenStudioLandscapes.engine.common_assets.group_out:[28:38]
@@ -1199,7 +1214,7 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
                 "detach": ["--detach"],
                 "nothing": [], (duplicate-code)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
-==OpenStudioLandscapes.engine.compose_scopes.assets:[83:93]
+==OpenStudioLandscapes.engine.compose_scopes.assets:[79:89]
 ==OpenStudioLandscapes.engine.landscape_map.definitions:[44:53]
     ASSET_HEADER = {
         "group_name": f"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}",
@@ -1209,7 +1224,8 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
         ],
         "compute_kind": "python",
     }
- (duplicate-code)
+
+    # features_in (duplicate-code)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[247:254]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1382:1389]
@@ -1223,13 +1239,13 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[263:270]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1363:1370]
-            "$(which docker)",
-            "--config",
-            docker_config_json.as_posix(),
-            "compose",
-            "--progress",
-            DOCKER_PROGRESS,
-            "--file", (duplicate-code)
+        "$(which docker)",
+        "--config",
+        docker_config_json.as_posix(),
+        "compose",
+        "--progress",
+        DOCKER_PROGRESS,
+        "--file", (duplicate-code)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[297:304]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1462:1469]
@@ -1253,90 +1269,30 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[305:321]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1440:1456]
-        "--project-name",
-        compose_project_name,
-        "restart",
-        # "--remove-orphans",
-        # Todo
-        #  - [ ] `cmd_extend` seems to have no effect
-        #        this can't be intentional...
-        *{
-            "cmd_extend": cmd_extend,
-            "detach": ["--detach"],
-            "nothing": [],
-        }["nothing"],
-        # *cmd_append["cmd"],
-        # "&&",
-        # *cmd_docker_compose_logs,
-    ] (duplicate-code)
+            "--project-name",
+            compose_project_name,
+            "restart",
+            # "--remove-orphans",
+            # Todo
+            #  - [ ] `cmd_extend` seems to have no effect
+            #        this can't be intentional...
+            *{
+                "cmd_extend": cmd_extend,
+                "detach": ["--detach"],
+                "nothing": [],
+            }["nothing"],
+            # *cmd_append["cmd"],
+            # "&&",
+            # *cmd_docker_compose_logs,
+        ] (duplicate-code)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.assets:[270:372]
 ==OpenStudioLandscapes.engine.vfx_reference.assets:[338:502]
         ENTRYPOINT []
         CMD []
         """).format(
-        dnf_packages_base=" ".join(
-            [
-                "which",
-                "file",
-                "epel-release",
-                "time",
-            ]
-        ),
-        dnf_packages_python_group=" ".join(
-            [
-                "'Development Tools'",
-            ]
-        ),
-        dnf_packages_python=" ".join(
-            [
-                "libsqlite3x-devel",
-                "bzip2-devel",
-                # stderr: #11 6.609 Python-3.13.12/PCbuild/libffi.props
-                # stderr: #11 6.609 Python-3.13.12/PCbuild/prepare_libffi.bat
-                # stderr: #12 4.213 checking for libffi... no
-                "libffi-devel",
-            ]
-        ),
-        dnf_packages_CY2026=" ".join(
-            [
-                "gcc-toolset-14-gcc-c++",
-            ]
-        ),
-        dnf_packages_rez=" ".join(
-            [
-                "openssl-devel",
-                # "libssl",
-            ]
-        ),
-        dnf_packages_blender_5=" ".join(
-            [
-                "libX11",
-                "libXrender",
-                "libXfixes",
-                "libXi",
-                "libxkbcommon",
-                "libSM",
-                "libGL",
-            ]
-        ),
-        # dnf_packages_development_tools=" ".join([
-        #     "which",
-        #     "file",
-        #     "epel-release",
-        #     "time",
-        # ]),
-        rocky_image="docker.io/rockylinux",
-        rocky_base=[
-            "8",
-            "9",
-            "10",
-        ][1],
-        python_maj=3,
-        python_min=13,
-        python_pat=12,
-        # apt_install_str_base=apt_install_str_base,
-        # apt_install_str_build_python311=apt_install_str_build_python311,
+        apt_install_str_base=apt_install_str_base,
+        apt_install_str_build_python311=apt_install_str_build_python311,
         pip_install_str=pip_install_str.format(
             **env,
         ),
@@ -1371,27 +1327,25 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
 
 
 @asset(
-    **ASSET_HEADER_VFX_PLATFORM,
+    **ASSET_HEADER_BASE,
     ins={
         "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
         "CONFIG": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"])),
         "docker_config_json": AssetIn(
             AssetKey([*ASSET_HEADER_BASE["key_prefix"], "docker_config_json"])
         ),
-        "write_dockerfile_CY2026": AssetIn(
-            AssetKey(
-                [*ASSET_HEADER_VFX_PLATFORM["key_prefix"], "write_dockerfile_CY2026"]
-            )
+        "write_dockerfile": AssetIn(
+            AssetKey([*ASSET_HEADER_BASE["key_prefix"], "write_dockerfile"])
         ),
     },
-    # retry_policy=build_docker_image_retry_policy,
+    retry_policy=build_docker_image_retry_policy,
 )
-def build_docker_image_CY2026(
+def build_docker_image(
     context: AssetExecutionContext,
     env: dict,  # pylint: disable=redefined-outer-name
     CONFIG: ConfigEngine,  # pylint: disable=redefined-outer-name
     docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name
-    write_dockerfile_CY2026: pathlib.Path,  # pylint: disable=redefined-outer-name
+    write_dockerfile: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict[str, str | list[str]]] | AssetMaterialization, None, None]:
     """ """
 
@@ -1439,16 +1393,16 @@ def build_docker_image_CY2026(
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[323:333]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1459:1469]
-    )
+        )
 
-    cmd_docker_compose_down = [
-        "$(which docker)",
-        "--config",
-        docker_config_json.as_posix(),
-        "compose",
-        "--progress",
-        DOCKER_PROGRESS,
-        "--file", (duplicate-code)
+        cmd_docker_compose_down = [
+            "$(which docker)",
+            "--config",
+            docker_config_json.as_posix(),
+            "compose",
+            "--progress",
+            DOCKER_PROGRESS,
+            "--file", (duplicate-code)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.assets:[235:242]
 ==OpenStudioLandscapes.engine.vfx_reference.assets:[282:289]
@@ -1481,7 +1435,8 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
             "--progress",
             DOCKER_PROGRESS,
             "--file", (duplicate-code)
+src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.discovery.discovery -> OpenStudioLandscapes.engine.utils) (cyclic-import)
 
 ------------------------------------------------------------------
-Your code has been rated at 5.93/10 (previous run: 7.42/10, -1.48)
+Your code has been rated at 5.93/10 (previous run: 5.02/10, +0.91)
 

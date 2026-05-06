@@ -1,10 +1,18 @@
-import os
 import logging as log
-from logging.handlers import TimedRotatingFileHandler
+import os
 from importlib.metadata import (  # pragma: no cover
     Distribution,
 )
-from OpenStudioLandscapes.engine.logging.logging import PROPAGATE, FORMAT_CONSOLE, FORMAT_FILE, DATE_FMT, STYLE, LOG_ROOT
+from logging.handlers import TimedRotatingFileHandler
+
+from OpenStudioLandscapes.engine.logging.logging import (
+    DATE_FMT,
+    FORMAT_CONSOLE,
+    FORMAT_FILE,
+    LOG_ROOT,
+    PROPAGATE,
+    STYLE,
+)
 
 try:
     # Place this before the third-party packages are imported!
@@ -26,7 +34,7 @@ ENGINE_LOGGER = log.getLogger("OpenStudioLandscapes.engine")
 
 
 def get_feature_logger(
-        dist: Distribution,
+    dist: Distribution,
 ) -> log.Logger:
     ENGINE_LOGGER.info(f"Configuring logger for {dist.name}...")
 
@@ -34,13 +42,17 @@ def get_feature_logger(
     feature_logger.setLevel(os.environ.get("OPENSTUDIOLANDSCAPES__VERBOSITY"))
     feature_logger.propagate = PROPAGATE
 
-    console_formatter: log.Formatter = log.Formatter(fmt=FORMAT_CONSOLE, datefmt=DATE_FMT, style=STYLE)
-    file_formatter: log.Formatter = log.Formatter(fmt=FORMAT_FILE, datefmt=DATE_FMT, style=STYLE)
+    console_formatter: log.Formatter = log.Formatter(
+        fmt=FORMAT_CONSOLE, datefmt=DATE_FMT, style=STYLE
+    )
+    file_formatter: log.Formatter = log.Formatter(
+        fmt=FORMAT_FILE, datefmt=DATE_FMT, style=STYLE
+    )
 
     file_handler: TimedRotatingFileHandler = TimedRotatingFileHandler(
         filename=LOG_ROOT.joinpath(f"{dist.name}.log"),
-        encoding='utf-8',
-        when='midnight',
+        encoding="utf-8",
+        when="midnight",
         interval=1,
         backupCount=7,
     )

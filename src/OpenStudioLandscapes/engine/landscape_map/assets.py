@@ -23,10 +23,9 @@ from OpenStudioLandscapes.engine.compose_scopes.assets import (
 from OpenStudioLandscapes.engine.config import dist
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.discovery.discovery import *
+from OpenStudioLandscapes.engine.discovery.discovery import DYNAMIC_INS
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.link.models import OpenStudioLandscapesBaseOut
-from OpenStudioLandscapes.engine.discovery.discovery import DYNAMIC_INS
-
 
 LOGGER.debug(f"{DYNAMIC_INS = }")
 # feature_ins = {'default': {'OpenStudioLandscapes_Kitsu': AssetIn(key=AssetKey(['Kitsu', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>), 'OpenStudioLandscapes_Watchtower': AssetIn(key=AssetKey(['Watchtower', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>), 'OpenStudioLandscapes_VERT': AssetIn(key=AssetKey(['VERT', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>)}}

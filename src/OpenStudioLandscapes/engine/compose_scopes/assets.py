@@ -23,8 +23,8 @@ from OpenStudioLandscapes.engine.compose_scopes.simple_factories import (
     simple_factory_alloy,
     simple_factory_newt,
 )
-from OpenStudioLandscapes.engine.logging.loggers import ENGINE_LOGGER as LOGGER
 from OpenStudioLandscapes.engine.discovery.discovery import DYNAMIC_INS
+from OpenStudioLandscapes.engine.logging.loggers import ENGINE_LOGGER as LOGGER
 
 # Todo:
 #  - [ ] get assets from common_assets
