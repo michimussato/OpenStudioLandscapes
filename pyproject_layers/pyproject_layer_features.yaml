@@ -1,8 +1,8 @@
 project:
   # dependencies:
   # - OpenStudioLandscapes @ git+https://github.com/michimussato/OpenStudioLandscapes
-  optional-dependencies:
-    optional-base: []
+#  optional-dependencies:
+#    optional-base: []
     # - OpenStudioLandscapes @ git+https://github.com/michimussato/OpenStudioLandscapes.git
     # lint:
     # - OpenStudioLandscapes @ git+https://github.com/michimussato/OpenStudioLandscapes.git
