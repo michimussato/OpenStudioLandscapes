@@ -158,7 +158,7 @@
       "version": "0.0.0"
     },
     {
-      "bom-ref": "BomRef.3189222937024685.24595448457826197",
+      "bom-ref": "BomRef.5367181724694113.20706896730684743",
       "description": "A Toolkit to create dynamic Animation and VFX studio environments for robust automation and pipelines.",
       "externalReferences": [
         {
@@ -2240,7 +2240,7 @@
       "version": "6.1.0"
     },
     {
-      "bom-ref": "markdown-it-py==4.0.0",
+      "bom-ref": "markdown-it-py==4.2.0",
       "description": "Python port of markdown-it. Markdown parsing, done right!",
       "externalReferences": [
         {
@@ -2263,9 +2263,9 @@
         }
       ],
       "name": "markdown-it-py",
-      "purl": "pkg:pypi/markdown-it-py@4.0.0",
+      "purl": "pkg:pypi/markdown-it-py@4.2.0",
       "type": "library",
-      "version": "4.0.0"
+      "version": "4.2.0"
     },
     {
       "bom-ref": "mdurl==0.1.2",
@@ -2778,7 +2778,7 @@
       "version": "2.1.0"
     },
     {
-      "bom-ref": "pydantic==2.13.3",
+      "bom-ref": "pydantic==2.13.4",
       "description": "Data validation using Python type hints",
       "externalReferences": [
         {
@@ -2816,12 +2816,12 @@
         }
       ],
       "name": "pydantic",
-      "purl": "pkg:pypi/pydantic@2.13.3",
+      "purl": "pkg:pypi/pydantic@2.13.4",
       "type": "library",
-      "version": "2.13.3"
+      "version": "2.13.4"
     },
     {
-      "bom-ref": "pydantic_core==2.46.3",
+      "bom-ref": "pydantic_core==2.46.4",
       "description": "Core functionality for Pydantic validation and serialization",
       "externalReferences": [
         {
@@ -2854,9 +2854,9 @@
         }
       ],
       "name": "pydantic_core",
-      "purl": "pkg:pypi/pydantic-core@2.46.3",
+      "purl": "pkg:pypi/pydantic-core@2.46.4",
       "type": "library",
-      "version": "2.46.3"
+      "version": "2.46.4"
     },
     {
       "bom-ref": "pydot==4.0.1",
@@ -4507,7 +4507,7 @@
         "grpcio==1.80.0",
         "packaging==26.2",
         "protobuf==5.29.6",
-        "pydantic==2.13.3",
+        "pydantic==2.13.4",
         "python-dotenv==1.2.2",
         "pytz==2026.2",
         "requests==2.33.1",
@@ -4717,7 +4717,7 @@
         "mdurl==0.1.2",
         "requests==2.33.1"
       ],
-      "ref": "markdown-it-py==4.0.0"
+      "ref": "markdown-it-py==4.2.0"
     },
     {
       "ref": "mdurl==0.1.2"
@@ -4797,18 +4797,18 @@
       "dependsOn": [
         "annotated-types==0.7.0",
         "email-validator==2.3.0",
-        "pydantic_core==2.46.3",
+        "pydantic_core==2.46.4",
         "typing-inspection==0.4.2",
         "typing_extensions==4.15.0",
         "tzdata==2026.2"
       ],
-      "ref": "pydantic==2.13.3"
+      "ref": "pydantic==2.13.4"
     },
     {
       "dependsOn": [
         "typing_extensions==4.15.0"
       ],
-      "ref": "pydantic_core==2.46.3"
+      "ref": "pydantic_core==2.46.4"
     },
     {
       "dependsOn": [
@@ -4888,7 +4888,7 @@
     {
       "dependsOn": [
         "Pygments==2.20.0",
-        "markdown-it-py==4.0.0"
+        "markdown-it-py==4.2.0"
       ],
       "ref": "rich==15.0.0"
     },
@@ -4965,7 +4965,7 @@
         "fsspec==2026.4.0",
         "packaging==26.2",
         "pathlib_abc==0.5.2",
-        "pydantic==2.13.3",
+        "pydantic==2.13.4",
         "typing_extensions==4.15.0"
       ],
       "ref": "universal_pathlib==0.3.10"
@@ -5040,7 +5040,7 @@
     }
   ],
   "metadata": {
-    "timestamp": "2026-05-06T12:11:42.250786+00:00",
+    "timestamp": "2026-05-07T15:35:33.525408+00:00",
     "tools": {
       "components": [
         {
@@ -5144,7 +5144,7 @@
       ]
     }
   },
-  "serialNumber": "urn:uuid:eae8d244-f385-4a1e-8fcf-943cd142c860",
+  "serialNumber": "urn:uuid:b5dd1c0d-186e-44ec-ba9d-46c91e792e8d",
   "version": 1,
   "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
   "bomFormat": "CycloneDX",

@@ -725,7 +725,7 @@ def create_venv_features(session):
 @nox.session(python=None, tags=["install_features_into_engine"])
 def install_features_into_engine(session):
     """
-    Installs the Features after `nox --session clone_features` into the engine `.venv`.
+    Installs all Features found in `.features` after `nox --session clone_features` into the engine `.venv`.
 
     Scope:
     - [x] Engine
@@ -739,6 +739,20 @@ def install_features_into_engine(session):
     #  - [ ] option to install local package instead of
     #        being limited to install from Github
     #        `for i in .features/*; do pip install --editable "$(pwd)/${i}[dev]"; done; pip install --editable ".[dev]"`
+
+    # Todo:
+    #  - [ ] `--editable` requires to install in specific order, otherwise
+    #        the code is being fetched from the repo directly:
+    #        Example:
+    #        1. pip install --editable OpenStudioLandscapes-Flamenco-Worker[dev]
+    #        2. pip install --editable OpenStudioLandscapes-Flamenco[dev]
+    #        3. Always last: pip install --editable OpenStudioLandscapes[dev]
+    #        Implement logic accordingly
+    #        Packages where this matters:
+    #        - OpenStudioLandscapes-OpenCue
+    #        - OpenStudioLandscapes-Deadline
+    #        - OpenStudioLandscapes-Flamenco
+    #        - OpenStudioLandscapes-Watchtower/OpenStudioLandscapes-Kitsu
 
     sudo = False
 
@@ -818,6 +832,8 @@ LINKED_FILES = [
     ".pre-commit-config.yaml",
     "noxfile.py",
     "LICENSE.txt",
+    # "src/OpenStudioLandscapes/*/__init__.py", ?
+    # ".pylintrc" ?
 ]
 
 # # fix_hardlinks_in_features
@@ -1868,6 +1884,11 @@ def readme(session, working_directory):
 
     sudo = False
 
+    pythonpath = [
+        pathlib.Path.cwd().joinpath("src").as_posix(),
+        *[i.absolute().joinpath("src").as_posix() for i in FEATURES_PARAMETERIZED]
+    ]
+
     with session.chdir(engine_dir.parent / working_directory):
 
         session.log(
@@ -1886,12 +1907,27 @@ def readme(session, working_directory):
             silent=SESSION_INSTALL_SILENT,
         )
 
+        logging.warning(pythonpath)
+
         session.run(
             "generate-readme",
             "--versions",
             *PYTHON_TEST_VERSIONS,
             # external=True,
             silent=SESSION_RUN_SILENT,
+            env={
+                **ENV,
+                # "PATH": f"{os.environ['PATH']}:{pathlib.Path.cwd().parent.parent.joinpath('src').as_posix()}:",
+                # "PATH": f"{pathlib.Path.cwd().parent.parent.joinpath('src').as_posix()}:",
+                # "PYTHONPATH": ":".join(
+                #     [
+                #         pathlib.Path.cwd().joinpath("src").as_posix(),
+                #         pathlib.Path.cwd().parent.parent.joinpath("src").as_posix(),
+                #     ]
+                # ),
+                "PYTHONPATH": ":".join(pythonpath),
+                "OPENSTUDIOLANDSCAPES__VERBOSITY": logging.getLevelName(logging.WARNING),
+            },
         )
 
 

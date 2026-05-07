@@ -7567,6 +7567,19 @@
     },
     {
         "type": "convention",
+        "module": "OpenStudioLandscapes.engine.common_assets",
+        "obj": "",
+        "line": 1,
+        "column": 0,
+        "endLine": null,
+        "endColumn": null,
+        "path": "src/OpenStudioLandscapes/engine/common_assets/__init__.py",
+        "symbol": "missing-module-docstring",
+        "message": "Missing module docstring",
+        "message-id": "C0114"
+    },
+    {
+        "type": "convention",
         "module": "OpenStudioLandscapes.engine.vfx_reference.assets",
         "obj": "",
         "line": 489,
@@ -11228,7 +11241,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/tests/test_env.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[56:82]\n==OpenStudioLandscapes.engine.base.ops.factories:[1040:1066]\n        dcg = DockerComposeGraph(\n            label_root_service=compose_project_name,\n        )\n        trees = dcg.parse_docker_compose(pathlib.Path(group_out))\n\n        context.log.info(trees)\n\n        dcg.iterate_trees(trees)\n\n        docker_compose_dir = group_out.parent / \"__\".join(\n            context.asset_key_for_output(\"docker_compose_graph\").path\n        )\n\n        docker_compose_dir.mkdir(parents=True, exist_ok=True)\n\n        # SVG\n        svg = (\n            docker_compose_dir\n            / f\"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.svg\"\n        )\n        try:\n            dcg.graph.write(\n                path=svg,\n                format=\"svg\",\n            )\n        except FileNotFoundError as e:",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[56:82]\n==OpenStudioLandscapes.engine.base.ops.factories:[1040:1066]\n    dcg = DockerComposeGraph(\n        label_root_service=compose_project_name,\n    )\n    trees = dcg.parse_docker_compose(pathlib.Path(group_out))\n\n    context.log.info(trees)\n\n    dcg.iterate_trees(trees)\n\n    docker_compose_dir = group_out.parent / \"__\".join(\n        context.asset_key_for_output(\"docker_compose_graph\").path\n    )\n\n    docker_compose_dir.mkdir(parents=True, exist_ok=True)\n\n    # SVG\n    svg = (\n        docker_compose_dir\n        / f\"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.svg\"\n    )\n    try:\n        dcg.graph.write(\n            path=svg,\n            format=\"svg\",\n        )\n    except FileNotFoundError as e:",
         "message-id": "R0801"
     },
     {
@@ -11241,7 +11254,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/tests/test_env.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.config.models:[492:513]\n==OpenStudioLandscapes.engine.env.tests.test_CONFIG:[73:91]\n            \"git\",\n            \"ca-certificates\",\n            \"htop\",\n            \"file\",\n            \"tzdata\",\n            \"curl\",\n            # \"less\",\n            \"wget\",\n            \"ffmpeg\",\n            \"libegl1\",\n            \"libsm6\",\n            \"libglu1-mesa\",\n            \"libxss1\",\n            \"sudo\",\n            \"neovim\",\n            # Untar xz file\n            \"xz-utils\",\n            # xvfb\n            \"xvfb\",\n            \"xauth\",\n        ],",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.config.models:[492:513]\n==OpenStudioLandscapes.engine.env.tests.test_CONFIG:[73:91]\n            \"git\",\n            \"ca-certificates\",\n            \"htop\",\n            \"file\",\n            \"tzdata\",\n            \"curl\",\n            \"wget\",\n            \"ffmpeg\",\n            \"libegl1\",\n            \"libsm6\",\n            \"libglu1-mesa\",\n            \"libxss1\",\n            \"sudo\",\n            \"neovim\",\n            \"xz-utils\",\n            \"xvfb\",\n            \"xauth\",\n        ],",
         "message-id": "R0801"
     },
     {
@@ -11371,7 +11384,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/tests/test_env.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[271:289]\n==OpenStudioLandscapes.engine.base.ops.factories:[1390:1404]\n            \"--project-name\",\n            compose_project_name,\n            \"up\",\n            f\"--pull={CONFIG_ENGINE.openstudiolandscapes__docker_config.docker_pull_policy}\",\n            \"--remove-orphans\",\n            # Todo\n            #  - [ ] would `--rm    Automatically remove the container when it exits` be useful here?\n            *{\n                # Todo\n                #  - [ ] `cmd_extend` seems to have no effect\n                #        this can't be intentional...\n                \"cmd_extend\": cmd_extend,\n                \"detach\": [\"--detach\"],\n                \"nothing\": [],",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[271:289]\n==OpenStudioLandscapes.engine.base.ops.factories:[1390:1404]\n        \"--project-name\",\n        compose_project_name,\n        \"up\",\n        # Todo\n        #  - [x] implement `--pull always` policy here:\n        #        References:\n        #        - [Method 1: Using the --pull=always Flag](https://www.codegenes.net/blog/can-i-make-docker-do-always-a-pull-when-performing-a-run/#method-1-using-the-pull-always-flag)\n        f\"--pull={CONFIG_ENGINE.openstudiolandscapes__docker_config.docker_pull_policy}\",\n        \"--remove-orphans\",\n        # Todo\n        #  - [ ] would `--rm    Automatically remove the container when it exits` be useful here?\n        *{\n            # Todo\n            #  - [ ] `cmd_extend` seems to have no effect\n            #        this can't be intentional...\n            \"cmd_extend\": cmd_extend,\n            \"detach\": [\"--detach\"],\n            \"nothing\": [],",
         "message-id": "R0801"
     },
     {
@@ -11384,7 +11397,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/tests/test_env.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.compose_scopes.assets:[79:89]\n==OpenStudioLandscapes.engine.landscape_map.definitions:[44:53]\n    ASSET_HEADER = {\n        \"group_name\": f\"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}\",\n        \"key_prefix\": [\n            \"ComposeScopes\",\n            f\"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}\",\n        ],\n        \"compute_kind\": \"python\",\n    }\n\n    # features_in",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.compose_scopes.assets:[79:89]\n==OpenStudioLandscapes.engine.landscape_map.definitions:[44:53]\n    ASSET_HEADER = {\n        \"group_name\": f\"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}\",\n        \"key_prefix\": [\n            \"ComposeScopes\",\n            f\"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}\",\n        ],\n        \"compute_kind\": \"python\",\n    }\n",
         "message-id": "R0801"
     },
     {
@@ -11436,7 +11449,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/tests/test_env.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[326:333]\n==OpenStudioLandscapes.engine.base.ops.factories:[1432:1439]\n        \"$(which docker)\",\n        \"--config\",\n        docker_config_json.as_posix(),\n        \"compose\",\n        \"--progress\",\n        DOCKER_PROGRESS,\n        \"--file\",",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[326:333]\n==OpenStudioLandscapes.engine.base.ops.factories:[1432:1439]\n            \"$(which docker)\",\n            \"--config\",\n            docker_config_json.as_posix(),\n            \"compose\",\n            \"--progress\",\n            DOCKER_PROGRESS,\n            \"--file\",",
         "message-id": "R0801"
     },
     {

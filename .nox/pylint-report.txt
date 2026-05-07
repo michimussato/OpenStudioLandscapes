@@ -616,6 +616,8 @@ src/OpenStudioLandscapes/engine/common_assets/docker_compose_graph.py:12:4: C010
 src/OpenStudioLandscapes/engine/common_assets/group_out.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 src/OpenStudioLandscapes/engine/common_assets/group_out.py:11:0: C0116: Missing function or method docstring (missing-function-docstring)
 src/OpenStudioLandscapes/engine/common_assets/group_out.py:12:4: C0103: Argument name "ASSET_HEADER" doesn't conform to snake_case naming style (invalid-name)
+************* Module OpenStudioLandscapes.engine.common_assets
+src/OpenStudioLandscapes/engine/common_assets/__init__.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 ************* Module OpenStudioLandscapes.engine.vfx_reference.assets
 src/OpenStudioLandscapes/engine/vfx_reference/assets.py:489:0: C0301: Line too long (1036/100) (line-too-long)
 src/OpenStudioLandscapes/engine/vfx_reference/assets.py:490:0: C0301: Line too long (424/100) (line-too-long)
@@ -969,32 +971,32 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[56:82]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1040:1066]
-        dcg = DockerComposeGraph(
-            label_root_service=compose_project_name,
+    dcg = DockerComposeGraph(
+        label_root_service=compose_project_name,
+    )
+    trees = dcg.parse_docker_compose(pathlib.Path(group_out))
+
+    context.log.info(trees)
+
+    dcg.iterate_trees(trees)
+
+    docker_compose_dir = group_out.parent / "__".join(
+        context.asset_key_for_output("docker_compose_graph").path
+    )
+
+    docker_compose_dir.mkdir(parents=True, exist_ok=True)
+
+    # SVG
+    svg = (
+        docker_compose_dir
+        / f"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.svg"
+    )
+    try:
+        dcg.graph.write(
+            path=svg,
+            format="svg",
         )
-        trees = dcg.parse_docker_compose(pathlib.Path(group_out))
-
-        context.log.info(trees)
-
-        dcg.iterate_trees(trees)
-
-        docker_compose_dir = group_out.parent / "__".join(
-            context.asset_key_for_output("docker_compose_graph").path
-        )
-
-        docker_compose_dir.mkdir(parents=True, exist_ok=True)
-
-        # SVG
-        svg = (
-            docker_compose_dir
-            / f"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.svg"
-        )
-        try:
-            dcg.graph.write(
-                path=svg,
-                format="svg",
-            )
-        except FileNotFoundError as e: (duplicate-code)
+    except FileNotFoundError as e: (duplicate-code)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.config.models:[492:513]
 ==OpenStudioLandscapes.engine.env.tests.test_CONFIG:[73:91]
@@ -1004,7 +1006,6 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
             "file",
             "tzdata",
             "curl",
-            # "less",
             "wget",
             "ffmpeg",
             "libegl1",
@@ -1013,9 +1014,7 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
             "libxss1",
             "sudo",
             "neovim",
-            # Untar xz file
             "xz-utils",
-            # xvfb
             "xvfb",
             "xauth",
         ], (duplicate-code)
@@ -1199,20 +1198,24 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[271:289]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1390:1404]
-            "--project-name",
-            compose_project_name,
-            "up",
-            f"--pull={CONFIG_ENGINE.openstudiolandscapes__docker_config.docker_pull_policy}",
-            "--remove-orphans",
+        "--project-name",
+        compose_project_name,
+        "up",
+        # Todo
+        #  - [x] implement `--pull always` policy here:
+        #        References:
+        #        - [Method 1: Using the --pull=always Flag](https://www.codegenes.net/blog/can-i-make-docker-do-always-a-pull-when-performing-a-run/#method-1-using-the-pull-always-flag)
+        f"--pull={CONFIG_ENGINE.openstudiolandscapes__docker_config.docker_pull_policy}",
+        "--remove-orphans",
+        # Todo
+        #  - [ ] would `--rm    Automatically remove the container when it exits` be useful here?
+        *{
             # Todo
-            #  - [ ] would `--rm    Automatically remove the container when it exits` be useful here?
-            *{
-                # Todo
-                #  - [ ] `cmd_extend` seems to have no effect
-                #        this can't be intentional...
-                "cmd_extend": cmd_extend,
-                "detach": ["--detach"],
-                "nothing": [], (duplicate-code)
+            #  - [ ] `cmd_extend` seems to have no effect
+            #        this can't be intentional...
+            "cmd_extend": cmd_extend,
+            "detach": ["--detach"],
+            "nothing": [], (duplicate-code)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.compose_scopes.assets:[79:89]
 ==OpenStudioLandscapes.engine.landscape_map.definitions:[44:53]
@@ -1224,8 +1227,7 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
         ],
         "compute_kind": "python",
     }
-
-    # features_in (duplicate-code)
+ (duplicate-code)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[247:254]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1382:1389]
@@ -1259,13 +1261,13 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[326:333]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1432:1439]
-        "$(which docker)",
-        "--config",
-        docker_config_json.as_posix(),
-        "compose",
-        "--progress",
-        DOCKER_PROGRESS,
-        "--file", (duplicate-code)
+            "$(which docker)",
+            "--config",
+            docker_config_json.as_posix(),
+            "compose",
+            "--progress",
+            DOCKER_PROGRESS,
+            "--file", (duplicate-code)
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.engine.base.ops.__init__:[305:321]
 ==OpenStudioLandscapes.engine.base.ops.factories:[1440:1456]
@@ -1438,5 +1440,5 @@ src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0801: Similar lines 
 src/OpenStudioLandscapes/engine/env/tests/test_env.py:1:0: R0401: Cyclic import (OpenStudioLandscapes.engine.discovery.discovery -> OpenStudioLandscapes.engine.utils) (cyclic-import)
 
 ------------------------------------------------------------------
-Your code has been rated at 5.93/10 (previous run: 5.02/10, +0.91)
+Your code has been rated at 5.93/10 (previous run: 7.87/10, -1.94)
 
