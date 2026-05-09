@@ -8,11 +8,12 @@ import pathlib
 import shutil
 from typing import List, Union
 
-from dagster import AssetExecutionContext, OpExecutionContext, get_dagster_logger
+from dagster import (
+    AssetExecutionContext,
+    OpExecutionContext,
+)
 
 from OpenStudioLandscapes.DagsterCodeLocation.StreamingProcess import submit_cmds
-
-LOGGER = get_dagster_logger(__name__)
 
 
 class OpenStudioLandscapesDockerException(Exception):
