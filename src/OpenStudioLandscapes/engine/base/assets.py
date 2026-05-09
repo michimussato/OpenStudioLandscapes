@@ -20,22 +20,22 @@ from dagster import (
 from OpenStudioLandscapes.engine.config import dist
 from OpenStudioLandscapes.engine.config.models import ConfigEngine, DockerConfigModel
 from OpenStudioLandscapes.engine.constants import (
-    ASSET_HEADER_BASE_ENV,
     ASSET_HEADER_BASE,
+    ASSET_HEADER_BASE_ENV,
 )
 from OpenStudioLandscapes.engine.link.models import OpenStudioLandscapesBaseOut
 from OpenStudioLandscapes.engine.policies.retry import build_docker_image_retry_policy
 from OpenStudioLandscapes.engine.utils import (
-    get_pip_install_str,
     get_apt_install_str,
-    get_image_name,
-    parse_docker_image_path,
     get_docker_run_cmd,
+    get_image_name,
+    get_pip_install_str,
+    parse_docker_image_path,
 )
 from OpenStudioLandscapes.engine.utils.docker import (
     docker_build_cmd,
-    docker_push_cmd,
     docker_do,
+    docker_push_cmd,
 )
 
 # @asset(

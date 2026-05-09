@@ -158,7 +158,7 @@
       "version": "0.0.0"
     },
     {
-      "bom-ref": "BomRef.5367181724694113.20706896730684743",
+      "bom-ref": "BomRef.18948985401475738.7825245455498101",
       "description": "A Toolkit to create dynamic Animation and VFX studio environments for robust automation and pipelines.",
       "externalReferences": [
         {
@@ -2603,7 +2603,7 @@
       "version": "4.9.6"
     },
     {
-      "bom-ref": "propcache==0.4.1",
+      "bom-ref": "propcache==0.5.2",
       "description": "Accelerated property cache",
       "externalReferences": [
         {
@@ -2662,9 +2662,9 @@
         }
       ],
       "name": "propcache",
-      "purl": "pkg:pypi/propcache@0.4.1",
+      "purl": "pkg:pypi/propcache@0.5.2",
       "type": "library",
-      "version": "0.4.1"
+      "version": "0.5.2"
     },
     {
       "bom-ref": "protobuf==5.29.6",
@@ -3879,7 +3879,7 @@
       "version": "1.3.0"
     },
     {
-      "bom-ref": "urllib3==2.6.3",
+      "bom-ref": "urllib3==2.7.0",
       "description": "HTTP library with thread-safe connection pooling, file post, and more.",
       "externalReferences": [
         {
@@ -3912,9 +3912,9 @@
         }
       ],
       "name": "urllib3",
-      "purl": "pkg:pypi/urllib3@2.6.3",
+      "purl": "pkg:pypi/urllib3@2.7.0",
       "type": "library",
-      "version": "2.6.3"
+      "version": "2.7.0"
     },
     {
       "bom-ref": "uvicorn==0.46.0",
@@ -4578,7 +4578,7 @@
         "Jinja2==3.1.6",
         "requests==2.33.1",
         "tqdm==4.67.3",
-        "urllib3==2.6.3",
+        "urllib3==2.7.0",
         "yarl==1.23.0"
       ],
       "ref": "fsspec==2026.4.0"
@@ -4779,7 +4779,7 @@
       "ref": "platformdirs==4.9.6"
     },
     {
-      "ref": "propcache==0.4.1"
+      "ref": "propcache==0.5.2"
     },
     {
       "ref": "protobuf==5.29.6"
@@ -4866,7 +4866,7 @@
         "chardet==5.2.0",
         "charset-normalizer==3.4.7",
         "idna==3.13",
-        "urllib3==2.6.3"
+        "urllib3==2.7.0"
       ],
       "ref": "requests==2.33.1"
     },
@@ -4974,7 +4974,7 @@
       "ref": "uri-template==1.3.0"
     },
     {
-      "ref": "urllib3==2.6.3"
+      "ref": "urllib3==2.7.0"
     },
     {
       "dependsOn": [
@@ -5034,13 +5034,13 @@
       "dependsOn": [
         "idna==3.13",
         "multidict==6.7.1",
-        "propcache==0.4.1"
+        "propcache==0.5.2"
       ],
       "ref": "yarl==1.23.0"
     }
   ],
   "metadata": {
-    "timestamp": "2026-05-07T15:35:33.525408+00:00",
+    "timestamp": "2026-05-09T10:46:31.274257+00:00",
     "tools": {
       "components": [
         {
@@ -5144,7 +5144,7 @@
       ]
     }
   },
-  "serialNumber": "urn:uuid:b5dd1c0d-186e-44ec-ba9d-46c91e792e8d",
+  "serialNumber": "urn:uuid:0797dfa1-7be1-4504-aa75-2a61dbc2917b",
   "version": 1,
   "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
   "bomFormat": "CycloneDX",

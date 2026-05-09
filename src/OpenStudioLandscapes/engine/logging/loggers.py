@@ -41,7 +41,9 @@ def get_feature_logger(
 
     feature_logger: log.Logger = log.getLogger(dist.name)
     feature_logger.setLevel(
-        os.environ.get("OPENSTUDIOLANDSCAPES__VERBOSITY", log.getLevelName(default_level))
+        os.environ.get(
+            "OPENSTUDIOLANDSCAPES__VERBOSITY", log.getLevelName(default_level)
+        )
     )
     feature_logger.propagate = PROPAGATE
 

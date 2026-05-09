@@ -833,6 +833,7 @@ LINKED_FILES = [
     "noxfile.py",
     "LICENSE.txt",
     # "src/OpenStudioLandscapes/*/__init__.py", ?
+    # "src/OpenStudioLandscapes/*/constants.py", ?
     # ".pylintrc" ?
 ]
 
@@ -1889,6 +1890,8 @@ def readme(session, working_directory):
         *[i.absolute().joinpath("src").as_posix() for i in FEATURES_PARAMETERIZED]
     ]
 
+    logging.warning(f"{pythonpath = }")
+
     with session.chdir(engine_dir.parent / working_directory):
 
         session.log(
@@ -1906,8 +1909,6 @@ def readme(session, working_directory):
             *SESSION_PIP_UPGRADE,
             silent=SESSION_INSTALL_SILENT,
         )
-
-        logging.warning(pythonpath)
 
         session.run(
             "generate-readme",
