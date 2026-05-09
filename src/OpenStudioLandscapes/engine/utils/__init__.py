@@ -43,15 +43,25 @@ from dagster import (
     OpExecutionContext,
 )
 
-import OpenStudioLandscapes.engine.discovery.discovery as discovery
-from OpenStudioLandscapes.engine.config.models import DockerConfigModel
-from OpenStudioLandscapes.engine.enums import *
+from OpenStudioLandscapes.engine.discovery.discovery import (
+    OpenStudioLandscapesDiscoveredFeature,
+)
+from OpenStudioLandscapes.engine.config.models import (
+    DockerConfigModel,
+)
+from OpenStudioLandscapes.engine.enums import (
+    OpenStudioLandscapesConfig,
+)
 from OpenStudioLandscapes.engine.exceptions import (
     ComposeScopeException,
     OpenStudioLandscapesException,
 )
 from OpenStudioLandscapes.engine.logging.loggers import ENGINE_LOGGER as LOGGER
-from OpenStudioLandscapes.engine.utils.docker import *
+from OpenStudioLandscapes.engine.utils.docker import (
+    docker_build_cmd,
+    docker_push_cmd,
+    docker_do,
+)
 
 
 def cmd_list_to_str(
