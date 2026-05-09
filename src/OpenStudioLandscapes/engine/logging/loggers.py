@@ -35,11 +35,14 @@ ENGINE_LOGGER = log.getLogger("OpenStudioLandscapes.engine")
 
 def get_feature_logger(
     dist: Distribution,
+    default_level: int = log.WARNING,
 ) -> log.Logger:
     ENGINE_LOGGER.info(f"Configuring logger for {dist.name}...")
 
     feature_logger: log.Logger = log.getLogger(dist.name)
-    feature_logger.setLevel(os.environ.get("OPENSTUDIOLANDSCAPES__VERBOSITY"))
+    feature_logger.setLevel(
+        os.environ.get("OPENSTUDIOLANDSCAPES__VERBOSITY", log.getLevelName(default_level))
+    )
     feature_logger.propagate = PROPAGATE
 
     console_formatter: log.Formatter = log.Formatter(
