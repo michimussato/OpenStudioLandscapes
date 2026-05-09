@@ -601,12 +601,12 @@ def get_str_env(
 
 
 def get_all_compose_scopes(
-    usable_features: Dict[str, discovery.OpenStudioLandscapesDiscoveredFeature],
+    usable_features: Dict[str, OpenStudioLandscapesDiscoveredFeature],
 ) -> set:
     compose_scopes = []
 
     package: str
-    feature: discovery.OpenStudioLandscapesDiscoveredFeature
+    feature: OpenStudioLandscapesDiscoveredFeature
     for package, feature in usable_features.items():
         LOGGER.info(f"Usable {feature = }")
         compose_scopes.append(feature.config.compose_scope)
