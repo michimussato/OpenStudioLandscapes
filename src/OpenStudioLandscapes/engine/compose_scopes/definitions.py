@@ -58,7 +58,7 @@ if bool(DYNAMIC_INS):
             assets_external.append(asset_spec)
 
         if GRAFANA_AVAILABLE:
-            from OpenStudioLandscapes.Grafana.constants import (
+            from OpenStudioLandscapes.Grafana import (
                 ASSET_HEADER as ASSET_HEADER_GRAFANA,
             )
 
