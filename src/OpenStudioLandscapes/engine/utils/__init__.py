@@ -22,6 +22,7 @@ __all__ = [
     "get_docker_compose_names",
     "download_file",
     "get_docker_run_cmd",
+    "get_asset_header",
 ]
 
 import copy
@@ -31,6 +32,7 @@ import os
 import pathlib
 import shlex
 import time
+from distutils.dist import Distribution
 from typing import Any, Dict, List, MutableMapping, Tuple, Union
 
 import git
@@ -42,11 +44,11 @@ from dagster import (
     OpExecutionContext,
 )
 
-from OpenStudioLandscapes.engine.discovery.discovery import (
-    OpenStudioLandscapesDiscoveredFeature,
-)
 from OpenStudioLandscapes.engine.config.models import (
     DockerConfigModel,
+)
+from OpenStudioLandscapes.engine.discovery.discovery import (
+    OpenStudioLandscapesDiscoveredFeature,
 )
 from OpenStudioLandscapes.engine.enums import (
     OpenStudioLandscapesConfig,
@@ -58,8 +60,8 @@ from OpenStudioLandscapes.engine.exceptions import (
 from OpenStudioLandscapes.engine.logging.loggers import ENGINE_LOGGER as LOGGER
 from OpenStudioLandscapes.engine.utils.docker import (
     docker_build_cmd,
-    docker_push_cmd,
     docker_do,
+    docker_push_cmd,
 )
 
 
@@ -862,3 +864,20 @@ def get_docker_run_cmd(
     context.log.debug(f"{ret = }")
 
     return ret
+
+
+def get_asset_header(
+    dist: Distribution,
+) -> Dict[str, Union[str, List[str]]]:
+
+    # Todo
+    #  - [ ] fix this naive replacement logic
+    GROUP: str = dist.name.replace("-", "_")
+    KEY: List[str] = [GROUP]
+
+    ASSET_HEADER = {
+        "group_name": GROUP,
+        "key_prefix": KEY,
+    }
+
+    return ASSET_HEADER
