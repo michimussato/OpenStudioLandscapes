@@ -20,6 +20,10 @@ class OpenStudioLandscapesDockerException(Exception):
     pass
 
 
+# Todo
+#  - [ ] refactor shutil.which
+
+
 def docker_build_cmd(
     context: Union[OpExecutionContext, AssetExecutionContext],
     docker_config_json: pathlib.Path,
