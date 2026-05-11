@@ -697,7 +697,7 @@ simply because you _**have**_ to.
 
 The reputation of _pipeline_ can be ambiguous. On one hand, 
 it's here to increase efficiency. On the other hand, it does
-so limiting options - by forcing us to work within specific guidelines. 
+so by limiting options - by forcing us to work within specific guidelines. 
 
 Again, **OpenStudioLandscapes** will not (and cannot) tell you how you work and which 
 workflow the hole grail is. This is up to you and your team. With **OpenStudioLandscapes**
