@@ -9,7 +9,7 @@ from OpenStudioLandscapes.engine.logging.logging import (
     DATE_FMT,
     FORMAT_CONSOLE,
     FORMAT_FILE,
-    LOG_ROOT,
+    LOGS_ROOT,
     PROPAGATE,
     STYLE,
 )
@@ -55,7 +55,7 @@ def get_feature_logger(
     )
 
     file_handler: TimedRotatingFileHandler = TimedRotatingFileHandler(
-        filename=LOG_ROOT.joinpath(f"{dist.name}.log"),
+        filename=LOGS_ROOT.joinpath(f"{dist.name}.log"),
         encoding="utf-8",
         when="midnight",
         interval=1,

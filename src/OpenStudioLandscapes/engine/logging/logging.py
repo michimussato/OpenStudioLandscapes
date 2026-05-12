@@ -3,10 +3,13 @@ import os
 import pathlib
 from typing import Dict
 
-LOG_ROOT: pathlib.Path = pathlib.Path(
-    "~/.config/OpenStudioLandscapes/logs"
-).expanduser()
-LOG_ROOT.mkdir(parents=True, exist_ok=True)
+LOGS_ROOT: pathlib.Path = pathlib.Path(
+    os.environ.get(
+        key="OPENSTUDIOLANDSCAPES__LOGS_ROOT",
+        default="~/.config/OpenStudioLandscapes",
+    )
+).expanduser().joinpath(".logs")
+LOGS_ROOT.mkdir(parents=True, exist_ok=True)
 
 
 # This configures the OpenStudioLandscapes loggers.
@@ -65,7 +68,7 @@ LOGGING_SCHEMA: Dict = {
             "when": "midnight",
             "interval": 1,
             "backupCount": 7,
-            "filename": os.path.join(LOG_ROOT, "cli.log"),
+            "filename": os.path.join(LOGS_ROOT, "cli.log"),
             "formatter": "file_formatter",
         },
         "discovery_filehandler": {
@@ -74,7 +77,7 @@ LOGGING_SCHEMA: Dict = {
             "when": "midnight",
             "interval": 1,
             "backupCount": 7,
-            "filename": os.path.join(LOG_ROOT, "discovery.log"),
+            "filename": os.path.join(LOGS_ROOT, "discovery.log"),
             "formatter": "file_formatter",
         },
         "engine_filehandler": {
@@ -83,7 +86,7 @@ LOGGING_SCHEMA: Dict = {
             "when": "midnight",
             "interval": 1,
             "backupCount": 7,
-            "filename": os.path.join(LOG_ROOT, "engine.log"),
+            "filename": os.path.join(LOGS_ROOT, "engine.log"),
             "formatter": "file_formatter",
         },
         # "features_filehandler": {

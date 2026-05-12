@@ -45,6 +45,10 @@ def run_openstudiolandscapes_postgres(args):
         args.landscapes_root.as_posix()
     )
 
+    os.environ["OPENSTUDIOLANDSCAPES__LOGS_ROOT"] = (
+        args.logs_root.as_posix()
+    )
+
     if args.landscapes_id is not None:
         os.environ["OPENSTUDIOLANDSCAPES__LANDSCAPE_ID"] = args.landscapes_id
 
@@ -191,16 +195,16 @@ def parse_args(args):
         "subdirectory will be created and used.",
     )
 
-    # parser.add_argument(
-    #     "--logs-root",
-    #     dest="logs_root",
-    #     type=pathlib.Path,
-    #     metavar="OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT",
-    #     default=pathlib.Path("~/.local/share/OpenStudioLandscapes"),
-    #     required=False,
-    #     help="Set the Landscape root path. A `.landscapes` "
-    #     "subdirectory will be created and used.",
-    # )
+    parser.add_argument(
+        "--logs-root",
+        dest="logs_root",
+        type=pathlib.Path,
+        metavar="OPENSTUDIOLANDSCAPES__LOGS_ROOT",
+        default=pathlib.Path("~/.config/OpenStudioLandscapes"),
+        required=False,
+        help="Set the OpenStudioLandscapes logs root path. A `.logs` "
+             "subdirectory will be created and used.",
+    )
 
     parser.add_argument(
         "--landscapes-id",
