@@ -3,12 +3,16 @@ import os
 import pathlib
 from typing import Dict
 
-LOGS_ROOT: pathlib.Path = pathlib.Path(
-    os.environ.get(
-        key="OPENSTUDIOLANDSCAPES__LOGS_ROOT",
-        default="~/.config/OpenStudioLandscapes",
+LOGS_ROOT: pathlib.Path = (
+    pathlib.Path(
+        os.environ.get(
+            key="OPENSTUDIOLANDSCAPES__LOGS_ROOT",
+            default="~/.config/OpenStudioLandscapes",
+        )
     )
-).expanduser().joinpath(".logs")
+    .expanduser()
+    .joinpath(".logs")
+)
 LOGS_ROOT.mkdir(parents=True, exist_ok=True)
 
 

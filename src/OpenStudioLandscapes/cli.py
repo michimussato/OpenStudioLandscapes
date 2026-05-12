@@ -45,9 +45,7 @@ def run_openstudiolandscapes_postgres(args):
         args.landscapes_root.as_posix()
     )
 
-    os.environ["OPENSTUDIOLANDSCAPES__LOGS_ROOT"] = (
-        args.logs_root.as_posix()
-    )
+    os.environ["OPENSTUDIOLANDSCAPES__LOGS_ROOT"] = args.logs_root.as_posix()
 
     if args.landscapes_id is not None:
         os.environ["OPENSTUDIOLANDSCAPES__LANDSCAPE_ID"] = args.landscapes_id
@@ -203,7 +201,7 @@ def parse_args(args):
         default=pathlib.Path("~/.config/OpenStudioLandscapes"),
         required=False,
         help="Set the OpenStudioLandscapes logs root path. A `.logs` "
-             "subdirectory will be created and used.",
+        "subdirectory will be created and used.",
     )
 
     parser.add_argument(
@@ -348,7 +346,8 @@ def setup_logging(loglevel):
         LOGGER.getEffectiveLevel()
     )
 
-def check_updates_available(autoupdate: bool=False):
+
+def check_updates_available(autoupdate: bool = False):
     # https://knowledge.buka.sh/how-to-check-for-remote-git-changes-without-pulling/
 
     # if any(sc == args.sub_command for sc in ["update"]):
@@ -398,9 +397,7 @@ def check_updates_available(autoupdate: bool=False):
         LOGGER.info(
             f"Checking for {pathlib.Path(repo_feature.working_dir).name} updates..."
         )
-        repos["features"][
-            pathlib.Path(repo_feature.working_dir).name
-        ] = repo_feature
+        repos["features"][pathlib.Path(repo_feature.working_dir).name] = repo_feature
         git_cmd_feature = repo_feature.git
         feature_dirty = repo_feature.is_dirty()
         if feature_dirty:

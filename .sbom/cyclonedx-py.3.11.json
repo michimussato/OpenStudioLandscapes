@@ -158,7 +158,7 @@
       "version": "0.0.0"
     },
     {
-      "bom-ref": "BomRef.18948985401475738.7825245455498101",
+      "bom-ref": "BomRef.1206935157126835.5256213049719888",
       "description": "A Toolkit to create dynamic Animation and VFX studio environments for robust automation and pipelines.",
       "externalReferences": [
         {
@@ -1315,7 +1315,7 @@
       "version": "2.8.0"
     },
     {
-      "bom-ref": "docker-compose-graph==1.0.0.post1.dev5+ga91125bef",
+      "bom-ref": "docker-compose-graph==1.0.0.post1.dev6+g08f8289c0",
       "description": "Add a short description here!",
       "externalReferences": [
         {
@@ -1326,7 +1326,7 @@
         {
           "comment": "PackageSource: VCS 'git'",
           "type": "vcs",
-          "url": "https://github.com/michimussato/docker-compose-graph.git#a91125bef2f19072cc41aa65d2aba96dfd2d7539"
+          "url": "https://github.com/michimussato/docker-compose-graph.git#08f8289c0d2c6dff2add43da12033ea400806186"
         },
         {
           "comment": "from packaging metadata: Home-page",
@@ -1346,12 +1346,12 @@
       "properties": [
         {
           "name": "cdx:python:package:source:vcs:commit_id",
-          "value": "a91125bef2f19072cc41aa65d2aba96dfd2d7539"
+          "value": "08f8289c0d2c6dff2add43da12033ea400806186"
         }
       ],
-      "purl": "pkg:pypi/docker-compose-graph@1.0.0.post1.dev5%2Bga91125bef?vcs_url=git%2Bhttps://github.com/michimussato/docker-compose-graph.git%40a91125bef2f19072cc41aa65d2aba96dfd2d7539",
+      "purl": "pkg:pypi/docker-compose-graph@1.0.0.post1.dev6%2Bg08f8289c0?vcs_url=git%2Bhttps://github.com/michimussato/docker-compose-graph.git%4008f8289c0d2c6dff2add43da12033ea400806186",
       "type": "library",
-      "version": "1.0.0.post1.dev5+ga91125bef"
+      "version": "1.0.0.post1.dev6+g08f8289c0"
     },
     {
       "bom-ref": "docstring_parser==0.18.0",
@@ -1955,7 +1955,7 @@
       "version": "4.15.0"
     },
     {
-      "bom-ref": "idna==3.13",
+      "bom-ref": "idna==3.14",
       "description": "Internationalized Domain Names in Applications (IDNA)",
       "externalReferences": [
         {
@@ -1983,9 +1983,9 @@
         }
       ],
       "name": "idna",
-      "purl": "pkg:pypi/idna@3.13",
+      "purl": "pkg:pypi/idna@3.14",
       "type": "library",
-      "version": "3.13"
+      "version": "3.14"
     },
     {
       "bom-ref": "isoduration==20.11.0",
@@ -3111,7 +3111,7 @@
       "version": "0.37.0"
     },
     {
-      "bom-ref": "requests==2.33.1",
+      "bom-ref": "requests==2.34.0",
       "description": "Python HTTP for Humans.",
       "externalReferences": [
         {
@@ -3140,9 +3140,9 @@
         }
       ],
       "name": "requests",
-      "purl": "pkg:pypi/requests@2.33.1",
+      "purl": "pkg:pypi/requests@2.34.0",
       "type": "library",
-      "version": "2.33.1"
+      "version": "2.34.0"
     },
     {
       "bom-ref": "requests-toolbelt==1.0.0",
@@ -4337,7 +4337,7 @@
         "dagster-postgres==0.25.11",
         "dagster-webserver==1.9.11",
         "dagster==1.9.11",
-        "docker-compose-graph==1.0.0.post1.dev5+ga91125bef",
+        "docker-compose-graph==1.0.0.post1.dev6+g08f8289c0",
         "email-validator==2.3.0",
         "graphviz==0.21",
         "human-readable-id==0.0.3",
@@ -4387,7 +4387,7 @@
     },
     {
       "dependsOn": [
-        "idna==3.13",
+        "idna==3.14",
         "typing_extensions==4.15.0"
       ],
       "ref": "anyio==4.13.0"
@@ -4465,7 +4465,7 @@
         "dagster==1.9.11",
         "gql==3.5.3",
         "graphene==3.4.3",
-        "requests==2.33.1",
+        "requests==2.34.0",
         "starlette==1.0.0"
       ],
       "ref": "dagster-graphql==1.9.11"
@@ -4510,7 +4510,7 @@
         "pydantic==2.13.4",
         "python-dotenv==1.2.2",
         "pytz==2026.2",
-        "requests==2.33.1",
+        "requests==2.34.0",
         "rich==15.0.0",
         "setuptools==82.0.1",
         "six==1.17.0",
@@ -4541,7 +4541,7 @@
     },
     {
       "dependsOn": [
-        "idna==3.13",
+        "idna==3.14",
         "wheel==0.47.0"
       ],
       "ref": "dnspython==2.8.0"
@@ -4555,7 +4555,7 @@
         "python-dotenv==1.2.2",
         "setuptools==82.0.1"
       ],
-      "ref": "docker-compose-graph==1.0.0.post1.dev5+ga91125bef"
+      "ref": "docker-compose-graph==1.0.0.post1.dev6+g08f8289c0"
     },
     {
       "ref": "docstring_parser==0.18.0"
@@ -4563,7 +4563,7 @@
     {
       "dependsOn": [
         "dnspython==2.8.0",
-        "idna==3.13"
+        "idna==3.14"
       ],
       "ref": "email-validator==2.3.0"
     },
@@ -4576,7 +4576,7 @@
     {
       "dependsOn": [
         "Jinja2==3.1.6",
-        "requests==2.33.1",
+        "requests==2.34.0",
         "tqdm==4.67.3",
         "urllib3==2.7.0",
         "yarl==1.23.0"
@@ -4595,7 +4595,7 @@
         "backoff==2.2.1",
         "graphql-core==3.2.6",
         "requests-toolbelt==1.0.0",
-        "requests==2.33.1",
+        "requests==2.34.0",
         "websockets==16.0",
         "yarl==1.23.0"
       ],
@@ -4664,7 +4664,7 @@
       "ref": "humanize==4.15.0"
     },
     {
-      "ref": "idna==3.13"
+      "ref": "idna==3.14"
     },
     {
       "dependsOn": [
@@ -4685,7 +4685,7 @@
       "dependsOn": [
         "attrs==26.1.0",
         "fqdn==1.5.1",
-        "idna==3.13",
+        "idna==3.14",
         "isoduration==20.11.0",
         "jsonpointer==3.1.1",
         "jsonschema-specifications==2025.9.1",
@@ -4715,7 +4715,7 @@
       "dependsOn": [
         "PyYAML==6.0.3",
         "mdurl==0.1.2",
-        "requests==2.33.1"
+        "requests==2.34.0"
       ],
       "ref": "markdown-it-py==4.2.0"
     },
@@ -4856,7 +4856,7 @@
     },
     {
       "dependsOn": [
-        "requests==2.33.1"
+        "requests==2.34.0"
       ],
       "ref": "requests-toolbelt==1.0.0"
     },
@@ -4865,10 +4865,10 @@
         "certifi==2026.4.22",
         "chardet==5.2.0",
         "charset-normalizer==3.4.7",
-        "idna==3.13",
+        "idna==3.14",
         "urllib3==2.7.0"
       ],
-      "ref": "requests==2.33.1"
+      "ref": "requests==2.34.0"
     },
     {
       "dependsOn": [
@@ -4944,7 +4944,7 @@
     },
     {
       "dependsOn": [
-        "requests==2.33.1"
+        "requests==2.34.0"
       ],
       "ref": "tqdm==4.67.3"
     },
@@ -5032,7 +5032,7 @@
     },
     {
       "dependsOn": [
-        "idna==3.13",
+        "idna==3.14",
         "multidict==6.7.1",
         "propcache==0.5.2"
       ],
@@ -5040,7 +5040,7 @@
     }
   ],
   "metadata": {
-    "timestamp": "2026-05-09T10:46:31.274257+00:00",
+    "timestamp": "2026-05-12T11:13:50.260115+00:00",
     "tools": {
       "components": [
         {
@@ -5144,7 +5144,7 @@
       ]
     }
   },
-  "serialNumber": "urn:uuid:0797dfa1-7be1-4504-aa75-2a61dbc2917b",
+  "serialNumber": "urn:uuid:ffbf5698-b694-4c8c-8d17-dd7dfc3c8834",
   "version": 1,
   "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
   "bomFormat": "CycloneDX",
