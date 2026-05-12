@@ -191,6 +191,17 @@ def parse_args(args):
         "subdirectory will be created and used.",
     )
 
+    # parser.add_argument(
+    #     "--logs-root",
+    #     dest="logs_root",
+    #     type=pathlib.Path,
+    #     metavar="OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT",
+    #     default=pathlib.Path("~/.local/share/OpenStudioLandscapes"),
+    #     required=False,
+    #     help="Set the Landscape root path. A `.landscapes` "
+    #     "subdirectory will be created and used.",
+    # )
+
     parser.add_argument(
         "--landscapes-id",
         dest="landscapes_id",
@@ -291,17 +302,23 @@ def parse_args(args):
 
     try:
         LOGGER.info("Parsing arguments...")
+        LOGGER.debug(f"{args = }")
         parsed = parser.parse_args(args)
     except SystemExit as e:  # argparse raises SystemExit on error
-        # print("bro")
-        # print(e)
-        LOGGER.critical("Could not parse arguments: %s", args)
-        LOGGER.error(e)
-        LOGGER.critical("I will try to update the repos...")
-        check_updates_available(args)
-        LOGGER.critical("Update done. Try to launch OpenStudioLandscapes again.")
+        if not any(x in ["-h", "--help"] for x in args):
+            # raise SystemExit from e
+            LOGGER.critical("Could not parse arguments: %s", args)
+            LOGGER.error(e)
+            LOGGER.critical("I will try to update the repos...")
+            check_updates_available(args)
+            LOGGER.critical("Update done. Try to launch OpenStudioLandscapes again.")
 
-        raise e
+        # Todo:
+        #  - [ ] maybe pip install is needed after changes?
+        #  - [ ] pip install --upgrade pip?
+        #  - [ ]
+
+        raise SystemExit from e
 
     return parsed
 
@@ -361,7 +378,7 @@ def check_updates_available(autoupdate: bool=False):
     LOGGER.info(f"Status: {status}")
     if autoupdate:
         if dirty:
-            LOGGER.critical("Repo is dirty, auto-update skipped.")
+            LOGGER.critical(f"Repo is dirty, auto-update skipped.")
         else:
             result_pull = git_cmd.pull()
             LOGGER.info(f"Changes: {result_pull}")
