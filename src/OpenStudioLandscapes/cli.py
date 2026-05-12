@@ -289,7 +289,21 @@ def parse_args(args):
     #              "migrate",
     #          )
 
-    return parser.parse_args(args)
+    try:
+        LOGGER.info("Parsing arguments...")
+        parsed = parser.parse_args(args)
+    except SystemExit as e:  # argparse raises SystemExit on error
+        # print("bro")
+        # print(e)
+        LOGGER.critical("Could not parse arguments: %s", args)
+        LOGGER.error(e)
+        LOGGER.critical("I will try to update the repos...")
+        check_updates_available(args)
+        LOGGER.critical("Update done. Try to launch OpenStudioLandscapes again.")
+
+        raise e
+
+    return parsed
 
 
 def setup_logging(loglevel):
@@ -312,6 +326,81 @@ def setup_logging(loglevel):
     os.environ["OPENSTUDIOLANDSCAPES__VERBOSITY"] = logging.getLevelName(
         LOGGER.getEffectiveLevel()
     )
+
+def check_updates_available(autoupdate: bool=False):
+    # https://knowledge.buka.sh/how-to-check-for-remote-git-changes-without-pulling/
+
+    # if any(sc == args.sub_command for sc in ["update"]):
+
+    LOGGER.info("Checking for OpenStudioLandscapes updates...")
+
+    repos = {
+        "engine": None,
+        "features": {},
+    }
+
+    LOGGER.info("Checking for OpenStudioLandscapes Engine and Features updates...")
+    repo = git.Repo(".")
+    LOGGER.debug(f"{repo = }")
+    LOGGER.info(f"{repo.active_branch = }")
+    LOGGER.debug(f"{repo.working_dir = }")
+    LOGGER.info(
+        f"Checking for {pathlib.Path(repo.working_dir).name} (Engine) updates..."
+    )
+    repos["engine"] = repo
+    git_cmd = repo.git
+    dirty = repo.is_dirty()
+    if dirty:
+        LOGGER.critical("Local repo has uncommitted changes.")
+        # status = git_cmd.status()
+        # LOGGER.info(status)
+    # else:
+    fetch = git_cmd.fetch()
+    LOGGER.info(f"Fetch: {fetch}")
+    status = git_cmd.status()
+    LOGGER.info(f"Status: {status}")
+    if autoupdate:
+        if dirty:
+            LOGGER.critical("Repo is dirty, auto-update skipped.")
+        else:
+            result_pull = git_cmd.pull()
+            LOGGER.info(f"Changes: {result_pull}")
+
+    for d in pathlib.Path(repo.working_tree_dir).joinpath(".features").iterdir():
+        if d.is_file():
+            continue
+        LOGGER.debug(f"{d = }")
+        repo_feature = git.Repo(d)
+        LOGGER.debug(f"{repo_feature = }")
+        LOGGER.info(f"{repo.active_branch = }")
+        LOGGER.debug(f"{repo_feature.working_dir = }")
+        LOGGER.info(
+            f"Checking for {pathlib.Path(repo_feature.working_dir).name} updates..."
+        )
+        repos["features"][
+            pathlib.Path(repo_feature.working_dir).name
+        ] = repo_feature
+        git_cmd_feature = repo_feature.git
+        feature_dirty = repo_feature.is_dirty()
+        if feature_dirty:
+            LOGGER.critical("Can't update: repo has uncommitted changes.")
+            # status_feature = git_cmd_feature.status()
+            # LOGGER.info(status_feature)
+        # else:
+        fetch_feature = git_cmd_feature.fetch()
+        LOGGER.info(f"Fetch: {fetch_feature}")
+        status_feature = git_cmd_feature.status()
+        LOGGER.info(f"Status: {status_feature}")
+        if autoupdate:
+            if dirty:
+                LOGGER.critical("Repo is dirty, auto-update skipped.")
+            else:
+                result_pull_feature = git_cmd_feature.pull()
+                LOGGER.info(f"Changes: {result_pull_feature}")
+    # repo.git.pull()
+
+    LOGGER.info("Done checking for OpenStudioLandscapes updates.")
+    return 0
 
 
 def checks(args):
@@ -421,83 +510,8 @@ def checks(args):
 
     check_sys_deps()
 
-    def check_updates_available():
-        # https://knowledge.buka.sh/how-to-check-for-remote-git-changes-without-pulling/
-
-        # if any(sc == args.sub_command for sc in ["update"]):
-
-        LOGGER.info("Checking for OpenStudioLandscapes updates...")
-
-        repos = {
-            "engine": None,
-            "features": {},
-        }
-
-        LOGGER.info("Checking for OpenStudioLandscapes Engine and Features updates...")
-        repo = git.Repo(".")
-        LOGGER.debug(f"{repo = }")
-        LOGGER.info(f"{repo.active_branch = }")
-        LOGGER.debug(f"{repo.working_dir = }")
-        LOGGER.info(
-            f"Checking for {pathlib.Path(repo.working_dir).name} (Engine) updates..."
-        )
-        repos["engine"] = repo
-        git_cmd = repo.git
-        dirty = repo.is_dirty()
-        if dirty:
-            LOGGER.critical("Local repo has uncommitted changes.")
-            # status = git_cmd.status()
-            # LOGGER.info(status)
-        # else:
-        fetch = git_cmd.fetch()
-        LOGGER.info(f"Fetch: {fetch}")
-        status = git_cmd.status()
-        LOGGER.info(f"Status: {status}")
-        if args.auto_update:
-            if dirty:
-                LOGGER.critical("Repo is dirty, auto-update skipped.")
-            else:
-                result_pull = git_cmd.pull()
-                LOGGER.info(f"Changes: {result_pull}")
-
-        for d in pathlib.Path(repo.working_tree_dir).joinpath(".features").iterdir():
-            if d.is_file():
-                continue
-            LOGGER.debug(f"{d = }")
-            repo_feature = git.Repo(d)
-            LOGGER.debug(f"{repo_feature = }")
-            LOGGER.info(f"{repo.active_branch = }")
-            LOGGER.debug(f"{repo_feature.working_dir = }")
-            LOGGER.info(
-                f"Checking for {pathlib.Path(repo_feature.working_dir).name} updates..."
-            )
-            repos["features"][
-                pathlib.Path(repo_feature.working_dir).name
-            ] = repo_feature
-            git_cmd_feature = repo_feature.git
-            feature_dirty = repo_feature.is_dirty()
-            if feature_dirty:
-                LOGGER.critical("Can't update: repo has uncommitted changes.")
-                # status_feature = git_cmd_feature.status()
-                # LOGGER.info(status_feature)
-            # else:
-            fetch_feature = git_cmd_feature.fetch()
-            LOGGER.info(f"Fetch: {fetch_feature}")
-            status_feature = git_cmd_feature.status()
-            LOGGER.info(f"Status: {status_feature}")
-            if args.auto_update:
-                if dirty:
-                    LOGGER.critical("Repo is dirty, auto-update skipped.")
-                else:
-                    result_pull_feature = git_cmd_feature.pull()
-                    LOGGER.info(f"Changes: {result_pull_feature}")
-        # repo.git.pull()
-
-        LOGGER.info("Done checking for OpenStudioLandscapes updates.")
-        return 0
-
     if not args.skip_update_check:
-        check_updates_available()
+        check_updates_available(autoupdate=args.auto_update)
 
 
 def main(args):
