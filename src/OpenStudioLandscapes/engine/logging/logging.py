@@ -89,15 +89,6 @@ LOGGING_SCHEMA: Dict = {
             "filename": os.path.join(LOGS_ROOT, "engine.log"),
             "formatter": "file_formatter",
         },
-        # "features_filehandler": {
-        #     "level": os.environ.get("OPENSTUDIOLANDSCAPES__VERBOSITY"),
-        #     "class": "logging.handlers.TimedRotatingFileHandler",
-        #     "when": "midnight",
-        #     "interval": 1,
-        #     "backupCount": 7,
-        #     "filename": os.path.join(LOG_ROOT, "features.log"),
-        #     "formatter": "file_formatter",
-        # },
     },
     "loggers": {
         "OpenStudioLandscapes.cli": {
@@ -130,11 +121,6 @@ LOGGING_SCHEMA: Dict = {
             "propagate": PROPAGATE,
             # 'level': 'WARNING',
         },
-        # "OpenStudioLandscapes.Features": {
-        #     "handlers": ["console", "features_filehandler"],
-        #     "propagate": False,
-        #     # 'level': 'WARNING',
-        # },
         # 'urllib3': {
         #     'handlers': ['console', 'file'],
         #     # 'propagate': True,
