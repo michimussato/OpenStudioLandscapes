@@ -11,10 +11,7 @@ __all__ = [
 
 from typing import Union
 
-from dagster import get_dagster_logger
 from dagster._core.definitions.utils import DEFAULT_OUTPUT as DAGSTER_DEFAULT_OUTPUT
-
-LOGGER = get_dagster_logger(__name__)
 
 from OpenStudioLandscapes.engine.config.models import FeatureBaseModel
 
@@ -68,6 +65,7 @@ KEY_LANDSCAPE_MAP = [GROUP_LANDSCAPE_MAP]
 ASSET_HEADER_LANDSCAPE_MAP = {
     "group_name": GROUP_LANDSCAPE_MAP,
     "key_prefix": KEY_LANDSCAPE_MAP,
+    "compute_kind": "python",
 }
 
 

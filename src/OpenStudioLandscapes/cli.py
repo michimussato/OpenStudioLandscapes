@@ -15,7 +15,7 @@ __copyright__ = "Michael Mussato"
 __url__ = "https://github.com/michimussato/OpenStudioLandscapes"
 __license__ = "GNU Affero General Public License v3.0"
 
-LOGGER = logging.getLogger(__name__)
+from OpenStudioLandscapes.engine.logging.loggers import CLI_LOGGER as LOGGER
 
 
 class CLIException(Exception):
@@ -27,7 +27,7 @@ class CLIException(Exception):
 
 def run_openstudiolandscapes_postgres(args):
     LOGGER.info("Welcome!")
-    LOGGER.info("OpenStudioLandscapes args: %s", args)
+    LOGGER.debug("OpenStudioLandscapes args: %s", args)
 
     if bool(int(args.attach_grafana_alloy_to_compose_scope)):
         os.environ["OPENSTUDIOLANDSCAPES__ATTACH_GRAFANA_ALLOY_TO_COMPOSE_SCOPE"] = "1"
@@ -36,11 +36,14 @@ def run_openstudiolandscapes_postgres(args):
     if args.domain_wan is not None:
         os.environ["OPENSTUDIOLANDSCAPES__DOMAIN_WAN"] = args.domain_wan
 
-    os.environ["OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT"] = args.config_store
-    os.environ["OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS"] = args.config_store_vcs
+    os.environ["OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT"] = args.config_store.as_posix()
+    os.environ["OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS"] = (
+        args.config_store_vcs.as_posix()
+    )
 
-    if args.landscapes_root is not None:
-        os.environ["OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT"] = args.landscapes_root
+    os.environ["OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT"] = (
+        args.landscapes_root.as_posix()
+    )
 
     if args.landscapes_id is not None:
         os.environ["OPENSTUDIOLANDSCAPES__LANDSCAPE_ID"] = args.landscapes_id
@@ -103,20 +106,21 @@ def parse_args(args):
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
+        "--verbosity",
         "-v",
-        "--verbose",
-        dest="loglevel",
-        help="set loglevel to INFO",
-        action="store_const",
-        const=logging.INFO,
-    )
-    parser.add_argument(
-        "-vv",
-        "--very-verbose",
-        dest="loglevel",
-        help="set loglevel to DEBUG",
-        action="store_const",
-        const=logging.DEBUG,
+        dest="verbosity",
+        type=str,
+        metavar="OPENSTUDIOLANDSCAPES__VERBOSITY",
+        default=logging.getLevelName(logging.WARNING),
+        choices=[
+            logging.getLevelName(logging.ERROR),
+            logging.getLevelName(logging.CRITICAL),
+            logging.getLevelName(logging.WARNING),
+            logging.getLevelName(logging.INFO),
+            logging.getLevelName(logging.DEBUG),
+        ],
+        required=False,
+        help="Verbosity level.",
     )
 
     parser.add_argument(
@@ -150,7 +154,6 @@ def parse_args(args):
         type=str,
         metavar="OPENSTUDIOLANDSCAPES__DOMAIN_WAN",
         default=os.environ.get("OPENSTUDIOLANDSCAPES__DOMAIN_WAN", None),
-        # action="store_true",
         required=False,
         help="Set the WAN domain name (i.e. openstudiolandscapes.com).",
     )
@@ -158,13 +161,9 @@ def parse_args(args):
     parser.add_argument(
         "--config-store",
         dest="config_store",
-        type=str,
+        type=pathlib.Path,
         metavar="OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT",
-        default=os.environ.get(
-            "OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT",
-            "~/.config/OpenStudioLandscapes/config-store",
-        ),
-        # action="store_true",
+        default=pathlib.Path("~/.config/OpenStudioLandscapes/config-store"),
         required=False,
         help="Set the configuration store path.",
     )
@@ -172,13 +171,9 @@ def parse_args(args):
     parser.add_argument(
         "--config-store-vcs",
         dest="config_store_vcs",
-        type=str,
+        type=pathlib.Path,
         metavar="OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS",
-        default=os.environ.get(
-            "OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS",
-            "~/.config/OpenStudioLandscapes/config-store",
-        ),
-        # action="store_true",
+        default=pathlib.Path("~/.config/OpenStudioLandscapes/config-store"),
         required=False,
         help="If the config store is part of a Git repository already, "
         "you can specify the path to the repo here. Defaults to the same "
@@ -188,13 +183,9 @@ def parse_args(args):
     parser.add_argument(
         "--landscapes-root",
         dest="landscapes_root",
-        type=str,
+        type=pathlib.Path,
         metavar="OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT",
-        default=os.environ.get(
-            "OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT",
-            None,
-        ),
-        # action="store_true",
+        default=pathlib.Path("~/.local/share/OpenStudioLandscapes"),
         required=False,
         help="Set the Landscape root path. A `.landscapes` "
         "subdirectory will be created and used.",
@@ -205,11 +196,7 @@ def parse_args(args):
         dest="landscapes_id",
         type=str,
         metavar="OPENSTUDIOLANDSCAPES__LANDSCAPE_ID",
-        default=os.environ.get(
-            "OPENSTUDIOLANDSCAPES__LANDSCAPE_ID",
-            None,
-        ),
-        # action="store_true",
+        default=None,
         required=False,
         help="Lock the landscape_id to this value.",
     )
@@ -219,8 +206,6 @@ def parse_args(args):
     update_group.add_argument(
         "--skip-update-check",
         dest="skip_update_check",
-        # type=str,
-        # metavar="OPENSTUDIOLANDSCAPES__LANDSCAPE_ID",
         default=False,
         action="store_true",
         required=False,
@@ -230,8 +215,6 @@ def parse_args(args):
     update_group.add_argument(
         "--auto-update",
         dest="auto_update",
-        # type=str,
-        # metavar="OPENSTUDIOLANDSCAPES__LANDSCAPE_ID",
         default=False,
         action="store_true",
         required=False,
@@ -300,6 +283,12 @@ def parse_args(args):
         required=True,
     )
 
+    # Todo
+    #  - [ ] update config.yml files after model has changed
+    #        - subparser_update = subparsers.add_parser(
+    #              "migrate",
+    #          )
+
     return parser.parse_args(args)
 
 
@@ -309,20 +298,59 @@ def setup_logging(loglevel):
     Args:
       loglevel (int): minimum loglevel for emitting messages
     """
-    logformat = "[%(asctime)s] %(levelname)s:%(name)s:%(message)s"
-    loglevel = loglevel or logging.INFO
-    logging.basicConfig(
-        level=loglevel,
-        stream=sys.stdout,
-        format=logformat,
-        datefmt="%Y-%m-%d %H:%M:%S",
+
+    LOGGER.setLevel(loglevel)
+
+    LOGGER.critical("Setting CLI logging to: level %s...", loglevel)
+    LOGGER.critical(
+        "CLI logging configured: level (%i) %s"
+        % (LOGGER.level, logging.getLevelName(LOGGER.level))
+    )
+    LOGGER.critical(
+        "CLI logging configured: effective level %s", LOGGER.getEffectiveLevel()
+    )
+    os.environ["OPENSTUDIOLANDSCAPES__VERBOSITY"] = logging.getLevelName(
+        LOGGER.getEffectiveLevel()
     )
 
 
 def checks(args):
-    LOGGER.info("Checking OpenStudioLandscapes dependencies...")
+    LOGGER.info("Running OpenStudioLandscapes pre-flight checks...")
+
+    def check_illegal_args(args):
+
+        LOGGER.info("Checking for illegal CLI values...")
+
+        args.landscapes_root: pathlib.Path
+
+        try:
+            assert ".landscapes" not in args.landscapes_root.parts, (
+                "`--landscapes-root` contains `.landscapes` path element ('%s'). "
+                "Can't continue." % args.landscapes_root.as_posix()
+            )
+
+        except AssertionError as e:
+            msg = textwrap.dedent("""
+                #########################################################
+                `--landscapes-root` path must not contain `.landscapes`. 
+                A `.landscapes` subdirectory will be created 
+                automatically.
+                #########################################################
+                Initialization terminated.
+                #########################################################
+                """)
+            LOGGER.error(msg)
+            raise AssertionError(msg) from e
+
+        LOGGER.info("Done checking for illegal CLI values.")
+        return 0
+
+    check_illegal_args(args)
 
     def check_sys_deps():
+
+        LOGGER.info("Checking OpenStudioLandscapes dependencies...")
+
         sys_deps = {
             "Docker": {
                 "executable": "docker",
@@ -346,10 +374,6 @@ def checks(args):
                 "executable": "nox",
                 "version": "--version",
             },
-            # "Foo": {
-            #     "executable": "foo",
-            #     "version": "-V",
-            # },
         }
 
         LOGGER.info(
@@ -393,6 +417,7 @@ def checks(args):
             LOGGER.info("%s version is: `%s`" % (dep, result.stdout.decode().strip()))
 
         LOGGER.info("Done checking dependencies.")
+        return 0
 
     check_sys_deps()
 
@@ -400,6 +425,8 @@ def checks(args):
         # https://knowledge.buka.sh/how-to-check-for-remote-git-changes-without-pulling/
 
         # if any(sc == args.sub_command for sc in ["update"]):
+
+        LOGGER.info("Checking for OpenStudioLandscapes updates...")
 
         repos = {
             "engine": None,
@@ -409,6 +436,7 @@ def checks(args):
         LOGGER.info("Checking for OpenStudioLandscapes Engine and Features updates...")
         repo = git.Repo(".")
         LOGGER.debug(f"{repo = }")
+        LOGGER.info(f"{repo.active_branch = }")
         LOGGER.debug(f"{repo.working_dir = }")
         LOGGER.info(
             f"Checking for {pathlib.Path(repo.working_dir).name} (Engine) updates..."
@@ -438,6 +466,7 @@ def checks(args):
             LOGGER.debug(f"{d = }")
             repo_feature = git.Repo(d)
             LOGGER.debug(f"{repo_feature = }")
+            LOGGER.info(f"{repo.active_branch = }")
             LOGGER.debug(f"{repo_feature.working_dir = }")
             LOGGER.info(
                 f"Checking for {pathlib.Path(repo_feature.working_dir).name} updates..."
@@ -463,7 +492,9 @@ def checks(args):
                     result_pull_feature = git_cmd_feature.pull()
                     LOGGER.info(f"Changes: {result_pull_feature}")
         # repo.git.pull()
-        return
+
+        LOGGER.info("Done checking for OpenStudioLandscapes updates.")
+        return 0
 
     if not args.skip_update_check:
         check_updates_available()
@@ -471,7 +502,7 @@ def checks(args):
 
 def main(args):
     args = parse_args(args)
-    setup_logging(args.loglevel)
+    setup_logging(args.verbosity)
     LOGGER.info(f"Launching OpenStudioLandscapes...")
 
     checks(args)

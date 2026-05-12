@@ -9,6 +9,15 @@
 # ISSUE="https://github.com/michimussato/OpenStudioLandscapes/issues/34" bash ./utils/create_batch_pr.sh
 
 
+# Known Issues:
+#
+# repo = /home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Watchtower
+# pull request create failed: GraphQL: Head sha can't be blank, Base sha can't be blank, No commits between main and 66-migrate-to-multi-code-location, Head ref must be a branch (createPullRequest)
+# result =
+#
+# -> Branch does not exist on remote. Push branch and re-run.
+
+
 if [ -z ${ISSUE+x} ];
   then
     echo "Var ISSUE is not set"

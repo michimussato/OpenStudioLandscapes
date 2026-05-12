@@ -4,6 +4,7 @@ import os
 import pathlib
 import re
 from importlib.metadata import Distribution
+from types import ModuleType
 from typing import ClassVar, Dict, List
 
 import pydantic
@@ -11,17 +12,15 @@ import yaml
 from dagster import (
     AssetIn,
     AssetKey,
-    get_dagster_logger,
 )
 from pydantic import (
     BaseModel,
     ConfigDict,
     Field,
-    PositiveInt,
     field_validator,
 )
 
-LOG = get_dagster_logger(__name__)
+from OpenStudioLandscapes.engine.logging.loggers import ENGINE_LOGGER as LOGGER
 
 """
 Resources:
@@ -92,7 +91,7 @@ class BaseConfig(BaseModel):
         # docs += "# \n\n"
         # fields = []
 
-        LOG.info(f"{cls.model_fields = }")
+        LOGGER.debug(f"{cls.model_fields = }")
 
         doc_str = str()
 
@@ -101,11 +100,8 @@ class BaseConfig(BaseModel):
 
         for field_k, field_v in cls.model_fields.items():
             try:
-                LOG.info(f"{field_k = }")
-                LOG.info(f"{field_v.is_required() = }")
-                # LOGGER.debug(f"Field name: {field_k}")
-
-                # LOGGER.debug(f"\tValues specified in Config:")
+                # LOG.debug(f"{field_k = }")
+                # LOG.debug(f"{field_v.is_required() = }")
 
                 sub_class_required = field_v.is_required()
                 sub_class_value = field_v.default
@@ -163,7 +159,7 @@ class BaseConfig(BaseModel):
                         continue
 
                 except UnboundLocalError as e:
-                    LOG.warning(f"{e}")
+                    LOGGER.warning(f"{e}")
 
                 # if isinstance(sub_class_value, PydanticUndefinedType):
                 #     kv = {field_k: "<NOT SET> (CHANGE_ME)"}
@@ -179,7 +175,7 @@ class BaseConfig(BaseModel):
                 doc_str += f"{yaml.safe_dump(json.loads(json.dumps(kv, indent=2, default=str)))}\n\n"
 
             except Exception as e:
-                LOG.error(f"{e}")
+                LOGGER.error(f"{e}")
                 raise Exception from e
 
         return doc_str.rstrip()  # strip trailing newlines
@@ -210,11 +206,11 @@ class ComposeScopeBaseModel(BaseConfig):
         ),
         description="Do you want the ComposeScope to to populate Alloy metrics?",
     )
-    grafana_alloy_listen_port_host: PositiveInt = Field(
+    grafana_alloy_listen_port_host: int = Field(
         default=12345,
         description="Do you want the ComposeScope to to populate Alloy metrics?",
     )
-    grafana_alloy_listen_port_container: PositiveInt = Field(
+    grafana_alloy_listen_port_container: int = Field(
         default=12345,
         description="Do you want the ComposeScope to to populate Alloy metrics?",
     )
@@ -288,7 +284,7 @@ class DockerRegistryConfig(BaseConfig):
         default="registry.openstudiolandscapes.lan",
         description="The fully qualified domain name of the Docker Registry server.",
     )
-    docker_registry_port: PositiveInt = Field(
+    docker_registry_port: int = Field(
         default=5000,
         description="The port the Docker Registry server is listening on.",
     )
@@ -361,12 +357,16 @@ class RezConfigModel(BaseConfig):
         "https://rez.readthedocs.io/en/stable/configuring_rez.html#packages_path",
     )
 
-    # @computed_field
     @property
     def REZ_PACKAGES_PATH(self) -> List[pathlib.Path]:
         # Resources (@computed_field):
         # - https://stackoverflow.com/a/76301965
         # - https://docs.pydantic.dev/2.7/concepts/fields/#the-computed_field-decorator
+        # -> just property without computed_field is fine here.
+        #    no need to serialize this member when dumping the model
+        #    An example of a successful computed_field implementation
+        #    can be found here:
+        #    - [OpenStudioLandscapes-DagsterCodeLocation-JobProcessor](https://github.com/michimussato/OpenStudioLandscapes-DagsterCodeLocation-JobProcessor/blob/main/src/OpenStudioLandscapes/DagsterCodeLocation/JobProcessor/deadline_templates/plugins/houdini/__init__.py)
         paths_ = [
             self.REZ_LOCAL_PACKAGES_PATH,
             self.REZ_RELEASE_PACKAGES_PATH,
@@ -374,12 +374,10 @@ class RezConfigModel(BaseConfig):
         ]
         return paths_
 
-    # @computed_field
     @property
     def REZ_PACKAGES_PATH_ENV(self) -> str:
         return ":".join(i.expanduser().as_posix() for i in self.REZ_PACKAGES_PATH)
 
-    # @computed_field
     @property
     def REZ_PACKAGES_PATH_VOL(self) -> List[str]:
         return [
@@ -387,7 +385,6 @@ class RezConfigModel(BaseConfig):
             for i in self.REZ_PACKAGES_PATH
         ]
 
-    # @computed_field
     @property
     def REZ_ENVIRONMENT(self) -> Dict[str, str]:
         env = {
@@ -476,11 +473,17 @@ class ConfigEngine(BaseConfig):
         default=RezConfigModel(
             **{
                 "deploy_rez": True,
-                "REZ_PACKAGES_PATH": [
-                    pathlib.Path("~/rez/packages/local"),
-                    pathlib.Path("~/rez/packages/deployed/internal"),
-                    pathlib.Path("/data/share/rez-packages/packages"),
-                ],
+                # The following has no effect here:
+                # REZ_PACKAGES_PATH refers to a property, not a Field
+                # Hence, model gets created using defaults for:
+                # - REZ_LOCAL_PACKAGES_PATH
+                # - REZ_RELEASE_PACKAGES_PATH
+                # - REZ_EXTERNAL_PACKAGES_PATH
+                # "REZ_PACKAGES_PATH": [
+                #     pathlib.Path("~/rez/packages/local"),
+                #     pathlib.Path("~/rez/packages/deployed/internal"),
+                #     pathlib.Path("/data/share/rez-packages/packages"),
+                # ],
             },
         ),
     )
@@ -808,6 +811,36 @@ class FeatureBaseModel(BaseConfig):
             )
         )
         return ret
+
+
+class OpenStudioLandscapesDiscoveredFeature(BaseModel):
+    # ModuleType Fields:
+    # pydantic.errors.PydanticSchemaGenerationError:
+    #   Unable to generate pydantic-core schema for <class 'module'>.
+    #   Set `arbitrary_types_allowed=True` in the model_config to
+    #   ignore this error or implement `__get_pydantic_core_schema__`
+    #   on your type to fully support it.
+    model_config = ConfigDict(
+        # This disables model checks for all fields.
+        # More info here:
+        # - https://stackoverflow.com/a/78379656/2207196
+        arbitrary_types_allowed=True,
+    )
+
+    definitions: str = Field()
+    definitions_object: ModuleType = Field(
+        default=None,
+    )
+
+    models: str = Field()
+    models_object: ModuleType = Field(
+        default=None,
+    )
+
+    config: FeatureBaseModel = Field(
+        default=None,
+        # default_factory=FeatureBaseModel,
+    )
 
 
 # Todo:

@@ -75,7 +75,8 @@ nox.options.sessions = [
     "lint",
     "readme",
     # "release",  # Todo
-    # "testing",  # Todo
+    "testing_engine",  # Todo
+    # "testing_features",  # Todo
 ]
 
 SESSION_PIP_UPGRADE = [
@@ -119,6 +120,10 @@ engine_dir: pathlib.Path = pathlib.Path(__file__).parent
 features_dir: pathlib.Path = engine_dir / ".features"
 landscapes_dir: pathlib.Path = engine_dir / ".landscapes"
 FEATURES_PARAMETERIZED: list[pathlib.Path] = []
+ENGINE_COMPONENTS_PARAMETERIZED: list[pathlib.Path] = [
+    engine_dir.joinpath("tests"),
+    engine_dir.joinpath("src", "OpenStudioLandscapes", "engine", "env", "tests"),
+]
 
 for dir_ in features_dir.iterdir():
     # dir_ is always the full path
@@ -131,11 +136,9 @@ for dir_ in features_dir.iterdir():
 
 
 #######################################################################################################################
-# Feature Template
 # Todo:
 #  - [ ] Maybe create a Feature from Template via `nox`?
-
-
+#  - [ ] Switch branch in all repos?
 #######################################################################################################################
 
 
@@ -722,7 +725,7 @@ def create_venv_features(session):
 @nox.session(python=None, tags=["install_features_into_engine"])
 def install_features_into_engine(session):
     """
-    Installs the Features after `nox --session clone_features` into the engine `.venv`.
+    Installs all Features found in `.features` after `nox --session clone_features` into the engine `.venv`.
 
     Scope:
     - [x] Engine
@@ -736,6 +739,20 @@ def install_features_into_engine(session):
     #  - [ ] option to install local package instead of
     #        being limited to install from Github
     #        `for i in .features/*; do pip install --editable "$(pwd)/${i}[dev]"; done; pip install --editable ".[dev]"`
+
+    # Todo:
+    #  - [ ] `--editable` requires to install in specific order, otherwise
+    #        the code is being fetched from the repo directly:
+    #        Example:
+    #        1. pip install --editable OpenStudioLandscapes-Flamenco-Worker[dev]
+    #        2. pip install --editable OpenStudioLandscapes-Flamenco[dev]
+    #        3. Always last: pip install --editable OpenStudioLandscapes[dev]
+    #        Implement logic accordingly
+    #        Packages where this matters:
+    #        - OpenStudioLandscapes-OpenCue
+    #        - OpenStudioLandscapes-Deadline
+    #        - OpenStudioLandscapes-Flamenco
+    #        - OpenStudioLandscapes-Watchtower/OpenStudioLandscapes-Kitsu
 
     sudo = False
 
@@ -815,6 +832,9 @@ LINKED_FILES = [
     ".pre-commit-config.yaml",
     "noxfile.py",
     "LICENSE.txt",
+    # "src/OpenStudioLandscapes/*/__init__.py", ?
+    # "src/OpenStudioLandscapes/*/constants.py", ?
+    # ".pylintrc" ?
 ]
 
 # # fix_hardlinks_in_features
@@ -1517,7 +1537,7 @@ def sbom(session, working_directory):
 
         session.install(
             "--no-cache-dir",
-            "-e",
+            "--editable",
             ".[sbom]",
             silent=SESSION_INSTALL_SILENT,
         )
@@ -1599,7 +1619,7 @@ def sbom(session, working_directory):
 #
 #         session.install(
 #             "--no-cache-dir",
-#             "-e",
+#             "--editable",
 #             ".[coverage]",
 #             silent=SESSION_INSTALL_SILENT,
 #         )
@@ -1671,7 +1691,7 @@ def lint(session, working_directory):
 
         session.install(
             "--no-cache-dir",
-            "-e",
+            "--editable",
             ".[lint]",
             silent=SESSION_INSTALL_SILENT,
         )
@@ -1686,6 +1706,15 @@ def lint(session, working_directory):
         #     # "--extend-exclude '^.ext'",
         #     "--extend-exclude", "'^.svg'",
         # ]
+
+        """
+        [...]
+        nox > black src
+        Warning: Python 3.11 cannot parse code formatted for Python 3.14. To fix this: run Black with Python 3.14, set --target-version to py311, or use --fast to skip the safety check. Black's safety check verifies equivalence by parsing the AST, which fails when the running Python is older than the target version.                                               
+        All done! ✨ 🍰 ✨
+        9 files left unchanged.
+        [...]
+        """
 
         session.run(
             "black",
@@ -1715,6 +1744,8 @@ def lint(session, working_directory):
         #         # external=True,
         #         silent=SESSION_RUN_SILENT,
         #     )
+
+        # https://pytest-with-eric.com/pytest-best-practices/pytest-code-coverage-reports/
 
         # # nox > Command pylint src failed with exit code 30
         # # nox > Session lint-3.12 failed.
@@ -1764,56 +1795,69 @@ def lint(session, working_directory):
 #######################################################################################################################
 
 
-# #######################################################################################################################
-# # Testing
-# @nox.session(python=PYTHON_TEST_VERSIONS, tags=["testing"])
-# @nox.parametrize(
-#     "working_directory",
-#     # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
-#     [
-#         nox.param(engine_dir.name, id=engine_dir.name),
-#         *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED],
-#     ],
-# )
-# def testing(session, working_directory):
-#     """
-#     Runs pytests (not implemented).
-#
-#     Scope:
-#     - [x] Engine
-#     - [x] Features
-#     """
-#     # Ex:
-#     # nox --session testing
-#     # nox --tags testing
-#
-#     session.skip("Not implemented")
-#
-#     sudo = False
-#
-#     with session.chdir(engine_dir.parent / working_directory):
-#
-#         session.log(
-#             f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
-#         )
-#
-#         session.install(
-#             "--no-cache-dir",
-#             "-e",
-#             ".[testing]",
-#             silent=SESSION_INSTALL_SILENT,
-#         )
-#
-#         session.run(
-#             "pytest",
-#             *session.posargs,
-#             env=ENV,
-#             # external=True,
-#             silent=SESSION_RUN_SILENT,
-#         )
-#
-#
-# #######################################################################################################################
+#######################################################################################################################
+# Testing
+@nox.session(python=PYTHON_TEST_VERSIONS, tags=["testing_engine"])
+@nox.parametrize(
+    "working_directory",
+    # https://nox.thea.codes/en/stable/config.html#giving-friendly-names-to-parametrized-sessions
+    [
+        # nox.param(engine_dir.name, id=engine_dir.name),
+        *[nox.param(i, id="-".join(i.relative_to(engine_dir).parts)) for i in ENGINE_COMPONENTS_PARAMETERIZED],
+        # *[nox.param(i, id=i.name) for i in FEATURES_PARAMETERIZED],
+    ],
+)
+def testing_engine(session, working_directory):
+    """
+    Runs engine core and components pytests.
+
+    Scope:
+    - [x] Engine
+    - [ ] Features
+    """
+    # Ex:
+    # nox --session testing_engine
+    # nox --tags testing_engine
+
+    # session.skip("Not implemented")
+
+    sudo = False
+
+    # with session.chdir(engine_dir.parent / working_directory):
+    #
+    #     session.log(
+    #         f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
+    #     )
+
+    session.install(
+        "--no-cache-dir",
+        "--editable",
+        ".[testing]",
+        silent=SESSION_INSTALL_SILENT,
+    )
+
+    with session.chdir(engine_dir.parent / working_directory):
+
+        session.log(
+            f"Current Session Working Directory:\n\t{pathlib.Path.cwd().as_posix()}"
+        )
+
+        # ENV.update(
+        #     {
+        #         "OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT": pathlib.Path(pathlib.Path.cwd() / "fixtures" / "config-store").as_posix()
+        #     }
+        # )
+
+        session.run(
+            "pytest",
+            *session.posargs,
+            env=ENV,
+            # external=True,
+            silent=SESSION_RUN_SILENT,
+        )
+
+
+#######################################################################################################################
 
 
 #######################################################################################################################
@@ -1841,6 +1885,13 @@ def readme(session, working_directory):
 
     sudo = False
 
+    pythonpath = [
+        pathlib.Path.cwd().joinpath("src").as_posix(),
+        *[i.absolute().joinpath("src").as_posix() for i in FEATURES_PARAMETERIZED]
+    ]
+
+    logging.warning(f"{pythonpath = }")
+
     with session.chdir(engine_dir.parent / working_directory):
 
         session.log(
@@ -1849,7 +1900,7 @@ def readme(session, working_directory):
 
         session.install(
             "--no-cache-dir",
-            "-e",
+            "--editable",
             ".[readme]",
             silent=SESSION_INSTALL_SILENT,
         )
@@ -1865,6 +1916,19 @@ def readme(session, working_directory):
             *PYTHON_TEST_VERSIONS,
             # external=True,
             silent=SESSION_RUN_SILENT,
+            env={
+                **ENV,
+                # "PATH": f"{os.environ['PATH']}:{pathlib.Path.cwd().parent.parent.joinpath('src').as_posix()}:",
+                # "PATH": f"{pathlib.Path.cwd().parent.parent.joinpath('src').as_posix()}:",
+                # "PYTHONPATH": ":".join(
+                #     [
+                #         pathlib.Path.cwd().joinpath("src").as_posix(),
+                #         pathlib.Path.cwd().parent.parent.joinpath("src").as_posix(),
+                #     ]
+                # ),
+                "PYTHONPATH": ":".join(pythonpath),
+                "OPENSTUDIOLANDSCAPES__VERBOSITY": logging.getLevelName(logging.WARNING),
+            },
         )
 
 
@@ -1899,7 +1963,7 @@ def pyproject_engine(session):
 
     session.install(
         "--no-cache-dir",
-        "-e",
+        "--editable",
         ".[pyproject]",
         silent=SESSION_INSTALL_SILENT,
     )
@@ -1948,7 +2012,7 @@ def pyproject_features(session, working_directory):
 
     session.install(
         "--no-cache-dir",
-        "-e",
+        "--editable",
         ".[pyproject]",
         silent=SESSION_INSTALL_SILENT,
     )
@@ -2017,7 +2081,7 @@ def pyproject_features(session, working_directory):
 #
 #         session.install(
 #             "--no-cache-dir",
-#             "-e",
+#             "--editable",
 #             ".[release]",
 #             silent=SESSION_INSTALL_SILENT,
 #         )
@@ -2696,13 +2760,6 @@ def menu_from_choices(
 #         session.skip(msg)
 
 
-#######################################################################################################################
-
-
-#######################################################################################################################
-# stow (switch .env)
-
-# Todo
 #######################################################################################################################
 
 

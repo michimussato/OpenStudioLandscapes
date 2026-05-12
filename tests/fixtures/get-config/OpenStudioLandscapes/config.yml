@@ -1,0 +1,61 @@
+openstudiolandscapes__docker_config:
+  use_registry: false
+  no_cache: false
+  docker_registry_config:
+    docker_push: true
+    docker_pull: true
+    docker_repository_name: openstudiolandscapes
+    docker_registry_access: public
+    docker_registry_protocol: https
+    docker_registry_fqdn: registry.openstudiolandscapes.lan
+    docker_registry_port: 5000
+    docker_registry_username: registry-user
+    docker_registry_password: registry-password
+  docker_pull_policy: always
+openstudiolandscapes__rez_config:
+  rez_version: 3.3.0
+  REZ_LOCAL_PACKAGES_PATH: ~/packages
+  REZ_RELEASE_PACKAGES_PATH: ~/.rez/packages/int
+  REZ_EXTERNAL_PACKAGES_PATH: ~/.rez/packages/ext
+  apt_packages_rez:
+  - binutils
+apt_packages_base:
+- git
+- ca-certificates
+- htop
+- file
+- tzdata
+- curl
+- wget
+- ffmpeg
+- libegl1
+- libsm6
+- libglu1-mesa
+- libxss1
+- sudo
+- neovim
+- xz-utils
+- xvfb
+- xauth
+- my_additional_package
+apt_packages_build_python311:
+- build-essential
+- pkg-config
+- zlib1g-dev
+- libncurses5-dev
+- libgdbm-dev
+- libnss3-dev
+- libssl-dev
+- libreadline-dev
+- libffi-dev
+- libsqlite3-dev
+- libbz2-dev
+- iproute2
+- liblzma-dev
+pip_packages: []
+openstudiolandscapes__domain_lan: openstudiolandscapes.lan
+openstudiolandscapes__human_readable_ids: true
+sudo_method: pkexec
+global_bind_volumes: []
+global_environment_variables: {}
+tz: Europe/UTC

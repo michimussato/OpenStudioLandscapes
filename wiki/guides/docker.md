@@ -36,9 +36,9 @@ EOF'
 ### Prune All
 
 ```shell
-docker system prune --volumes
-docker image prune -a
-docker container prune
+docker system prune --volumes --force
+docker image prune --all --force
+docker container prune --force
 ```
 
 ### `hosts` file in Container

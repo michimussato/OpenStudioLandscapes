@@ -66,6 +66,8 @@ The way YOU want it!
 > **OpenStudioLandscapes** is here to help you build a structured 
 > foundation for any Pipeline Tool you might decide to use 
 > at some point in your studio.
+> 
+> The **OpenStudioLandscapes** doctrine: **On-Prem First**
 
 An open source toolkit - a declarative build system - to
 easily create reproducible production environments based
@@ -251,23 +253,19 @@ The following commandline options are available:
 # source .venv/bin/activate
 
 $ openstudiolandscapes --help
-usage: openstudiolandscapes [-h] [-v] [-vv] [--attach-grafana-alloy-to-compose-scope]
-                            [--domain-wan OPENSTUDIOLANDSCAPES__DOMAIN_WAN]
-                            [--config-store OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT]
-                            [--config-store-vcs OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS]
-                            [--landscapes-root OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT]
-                            [--landscapes-id OPENSTUDIOLANDSCAPES__LANDSCAPE_ID]
-                            [--skip-update-check | --auto-update]
-                            {update,clone-feature} ...
+usage: openstudiolandscapes [-h] [--verbosity OPENSTUDIOLANDSCAPES__VERBOSITY] [--attach-grafana-alloy-to-compose-scope] [--attach-pangolin-site-to-compose-scope] [--domain-wan OPENSTUDIOLANDSCAPES__DOMAIN_WAN] [--config-store OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT]
+                            [--config-store-vcs OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS] [--landscapes-root OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT] [--landscapes-id OPENSTUDIOLANDSCAPES__LANDSCAPE_ID] [--skip-update-check | --auto-update]
+                            {update,clone-feature,switch-branch} ...
 
 positional arguments:
-  {update,clone-feature}
+  {update,clone-feature,switch-branch}
     clone-feature       Clone a feature from a given repository and print installation instructions.
+    switch-branch       Switch branch across the Engine and all Features.
 
 options:
   -h, --help            show this help message and exit
-  -v, --verbose         set loglevel to INFO
-  -vv, --very-verbose   set loglevel to DEBUG
+  --verbosity OPENSTUDIOLANDSCAPES__VERBOSITY, -v OPENSTUDIOLANDSCAPES__VERBOSITY
+                        Verbosity level.
   --attach-grafana-alloy-to-compose-scope
                         Attach Alloy container to Compose Scope.
   --attach-pangolin-site-to-compose-scope
@@ -276,13 +274,10 @@ options:
                         Set the WAN domain name (i.e. openstudiolandscapes.com).
   --config-store OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT
                         Set the configuration store path.
-  --landscapes-root OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT
-                        Set the Landscape root path. A `.landscapes` subdirectory will be created and
-                        used.
   --config-store-vcs OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS
-                        If the config store is part of a Git repository already, you can specify the 
-                        path to the repo here. Defaults to the same value like 
-                        `OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT`.
+                        If the config store is part of a Git repository already, you can specify the path to the repo here. Defaults to the same value like `OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT`.
+  --landscapes-root OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT
+                        Set the Landscape root path. A `.landscapes` subdirectory will be created and used.
   --landscapes-id OPENSTUDIOLANDSCAPES__LANDSCAPE_ID
                         Lock the landscape_id to this value.
   --skip-update-check   Skip checking for codebase updates.
@@ -702,7 +697,7 @@ simply because you _**have**_ to.
 
 The reputation of _pipeline_ can be ambiguous. On one hand, 
 it's here to increase efficiency. On the other hand, it does
-so limiting options - by forcing us to work within specific guidelines. 
+so by limiting options - by forcing us to work within specific guidelines. 
 
 Again, **OpenStudioLandscapes** will not (and cannot) tell you how you work and which 
 workflow the hole grail is. This is up to you and your team. With **OpenStudioLandscapes**

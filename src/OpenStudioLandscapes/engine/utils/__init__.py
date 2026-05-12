@@ -16,13 +16,13 @@ __all__ = [
     "get_relative_path_via_common_root",
     "get_bool_env",
     "get_str_env",
-    "get_dynamic_ins",
     "get_image_metadata",
     "create_image",
     "get_networks_dict",
     "get_docker_compose_names",
     "download_file",
     "get_docker_run_cmd",
+    "get_asset_header",
 ]
 
 import copy
@@ -32,6 +32,7 @@ import os
 import pathlib
 import shlex
 import time
+from distutils.dist import Distribution
 from typing import Any, Dict, List, MutableMapping, Tuple, Union
 
 import git
@@ -41,19 +42,27 @@ from dagster import (
     AssetExecutionContext,
     MetadataValue,
     OpExecutionContext,
-    get_dagster_logger,
 )
 
-import OpenStudioLandscapes.engine.discovery.discovery as discovery
-from OpenStudioLandscapes.engine.config.models import DockerConfigModel
-from OpenStudioLandscapes.engine.enums import *
+from OpenStudioLandscapes.engine.config.models import (
+    DockerConfigModel,
+)
+from OpenStudioLandscapes.engine.discovery.discovery import (
+    OpenStudioLandscapesDiscoveredFeature,
+)
+from OpenStudioLandscapes.engine.enums import (
+    OpenStudioLandscapesConfig,
+)
 from OpenStudioLandscapes.engine.exceptions import (
     ComposeScopeException,
     OpenStudioLandscapesException,
 )
-from OpenStudioLandscapes.engine.utils.docker import *
-
-LOGGER = get_dagster_logger(__name__)
+from OpenStudioLandscapes.engine.logging.loggers import ENGINE_LOGGER as LOGGER
+from OpenStudioLandscapes.engine.utils.docker import (
+    docker_build_cmd,
+    docker_do,
+    docker_push_cmd,
+)
 
 
 def cmd_list_to_str(
@@ -67,6 +76,8 @@ def get_pip_install_str(
     pip_install_packages: List[str],
     python_str: str = "python{PYTHON_MAJ}.{PYTHON_MIN}",
     single_run_layer: bool = True,
+    # Todo
+    #  - [ ] enable `bust_cache` by default?
     bust_cache: bool = False,  # https://medium.com/@aleksej.gudkov/how-to-disable-cache-in-docker-build-a-complete-guide-372e20507ed9
 ) -> str:
     if bool(pip_install_packages):
@@ -592,62 +603,16 @@ def get_str_env(
 
 
 def get_all_compose_scopes(
-    usable_features: Dict[str, discovery.OpenStudioLandscapesDiscoveredFeature],
+    usable_features: Dict[str, OpenStudioLandscapesDiscoveredFeature],
 ) -> set:
     compose_scopes = []
 
     package: str
-    feature: discovery.OpenStudioLandscapesDiscoveredFeature
+    feature: OpenStudioLandscapesDiscoveredFeature
     for package, feature in usable_features.items():
         LOGGER.info(f"Usable {feature = }")
         compose_scopes.append(feature.config.compose_scope)
     return set(compose_scopes)
-
-
-# Edited func for testing
-def get_dynamic_ins(
-    imported_features: Dict,
-):
-    """
-    Dynamic inputs based on the imported
-    third party code locations
-
-    Args:
-        imported_features:
-
-    Returns:
-
-    """
-
-    feature_ins = {}
-
-    package: str
-    feature: discovery.OpenStudioLandscapesDiscoveredFeature
-    for package, feature in imported_features.items():
-        LOGGER.info(f"{feature = }")
-        # feature = OpenStudioLandscapesDiscoveredFeature(definitions='OpenStudioLandscapes.Watchtower.definitions', definitions_object=<module 'OpenStudioLandscapes.Watchtower.definitions' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Watchtower/src/OpenStudioLandscapes/Watchtower/definitions.py'>, models='OpenStudioLandscapes.Watchtower.config.models', models_object=<module 'OpenStudioLandscapes.Watchtower.config.models' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Watchtower/src/OpenStudioLandscapes/Watchtower/config/models.py'>, config=Feature(['env=None', "config_engine=openstudiolandscapes__docker_config=DockerConfigModel(use_registry=True, no_cache=False, docker_registry_config=DockerRegistryConfig(docker_push=True, docker_pull=True, docker_repository_name='openstudiolandscapes', docker_registry_access='public', docker_registry_protocol='https', docker_registry_fqdn='registry.openstudiolandscapes.lan', docker_registry_port=5000, docker_registry_username='registry-user', docker_registry_password='registry-password')) openstudiolandscapes__repository_root=PosixPath('{REPOSITORY_ROOT}') openstudiolandscapes__domain_lan='openstudiolandscapes.lan'", 'config_parent=None', 'distribution=<importlib.metadata.PathDistribution object at 0x7fe9b764ad10>', 'enabled=True', 'compose_scope=default', 'feature_name=OpenStudioLandscapes-Watchtower', 'group_name=watchtower', "key_prefixes=['Watchtower']", 'docker_compose={DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml', 'definitions=OpenStudioLandscapes.Watchtower.definitions', 'watchtower_port_host=4000', 'watchtower_port_container=80']))
-
-        feature_enabled: bool = feature.config.enabled
-
-        # Skip Feature if disabled in `config.yml`
-        if not feature_enabled:
-            continue
-
-        compose_scope = feature.config.compose_scope
-        group_name = feature.config.group_name
-        key_prefixes = feature.config.key_prefixes
-
-        asset_in = feature.config.dagster_compose_scope_in
-
-        if compose_scope not in feature_ins:
-            feature_ins[compose_scope]: Dict = {}
-
-        feature_ins[compose_scope][group_name] = asset_in
-
-        LOGGER.info(f"{feature_ins[compose_scope][group_name] = }")
-
-    # feature_ins = {'default': {'OpenStudioLandscapes_Kitsu': AssetIn(key=AssetKey(['Kitsu', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>), 'OpenStudioLandscapes_Watchtower': AssetIn(key=AssetKey(['Watchtower', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>)}, 'test': {'OpenStudioLandscapes_VERT': AssetIn(key=AssetKey(['VERT', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>)}}
-    return feature_ins
 
 
 def get_image_metadata(
@@ -899,3 +864,20 @@ def get_docker_run_cmd(
     context.log.debug(f"{ret = }")
 
     return ret
+
+
+def get_asset_header(
+    dist: Distribution,
+) -> Dict[str, Union[str, List[str]]]:
+
+    # Todo
+    #  - [ ] fix this naive replacement logic
+    GROUP: str = dist.name.replace("-", "_")
+    KEY: List[str] = [GROUP]
+
+    ASSET_HEADER = {
+        "group_name": GROUP,
+        "key_prefix": KEY,
+    }
+
+    return ASSET_HEADER

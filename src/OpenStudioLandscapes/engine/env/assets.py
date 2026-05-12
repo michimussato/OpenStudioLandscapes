@@ -9,7 +9,6 @@ import textwrap
 import uuid
 from typing import Generator, MutableMapping
 
-import pytz
 import yaml
 from dagster import (
     AssetExecutionContext,
@@ -17,6 +16,7 @@ from dagster import (
     AssetKey,
     AssetMaterialization,
     AssetOut,
+    AssetSpec,
     MetadataValue,
     Output,
     asset,
@@ -119,15 +119,18 @@ def dot_landscapes(
     git_root: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
 
-    _dot_landscapes = pathlib.Path(
-        get_str_env(
-            env="OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT",
-            default=git_root.as_posix(),
-        ),
-        ".landscapes",
+    _dot_landscapes: pathlib.Path = (
+        pathlib.Path(
+            get_str_env(
+                env="OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT",
+                default=pathlib.Path("~/.local/share/OpenStudioLandscapes"),
+            ),
+        )
+        .joinpath(".landscapes")
+        .expanduser()
     )
 
-    if not _dot_landscapes.expanduser().exists():
+    if not _dot_landscapes.exists():
         try:
             _dot_landscapes.mkdir(
                 mode=0o775,
@@ -225,22 +228,47 @@ def dot_features(
     )
 
 
+# CONFIG_spec = AssetSpec(
+#     key=AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"]),
+#     group_name=ASSET_HEADER_BASE_ENV["group_name"],
+#     description=textwrap.dedent(f"""
+#         Reads options from a custom `config.yml`.
+#         If the custom `config.yml` does not exist, it
+#         will be created locally containing default options.
+#
+#         ---
+#
+#         For reference, the default `config.yml` looks as follows:
+#
+#         ```yaml
+#         {textwrap.indent(CONFIG_STR, prefix='        ')}
+#         ```
+#         """),
+# )
+#
+#
+# @multi_asset(
+#     outs={
+#         "CONFIG": AssetOut.from_spec(CONFIG_spec),
+#     },
+#     ins={},
+# )
 @asset(
     **ASSET_HEADER_BASE_ENV,
     ins={},
     description=textwrap.dedent(f"""
-Reads options from a custom `config.yml`.
-If the custom `config.yml` does not exist, it 
-will be created locally containing default options.
-
----
-
-For reference, the default `config.yml` looks as follows:
+        Reads options from a custom `config.yml`.
+        If the custom `config.yml` does not exist, it 
+        will be created locally containing default options.
         
-```yaml
-{CONFIG_STR}
-```
-"""),
+        ---
+        
+        For reference, the default `config.yml` looks as follows:
+        
+        ```yaml
+        {textwrap.indent(CONFIG_STR, prefix='        ')}
+        ```
+        """),
 )
 def CONFIG(
     context: AssetExecutionContext,
@@ -256,11 +284,17 @@ def CONFIG(
 
     config_validated = discovery.get_config_engine()
 
-    yield Output(config_validated)
+    # output_name = "CONFIG"
+    yield Output(
+        # output_name=output_name,
+        value=config_validated,
+    )
 
     yield AssetMaterialization(
+        # asset_key=context.asset_key_for_output(output_name),
         asset_key=context.asset_key,
         metadata={
+            # "__".join(context.asset_key_for_output(output_name).path): MetadataValue.md(
             "__".join(context.asset_key.path): MetadataValue.md(
                 f"```yaml\n{yaml.safe_dump(json.loads(config_validated.model_dump_json(fallback=str, indent=2)))}\n```"
             ),
@@ -268,14 +302,28 @@ def CONFIG(
     )
 
 
+env_spec = AssetSpec(
+    key=AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"]),
+    group_name=ASSET_HEADER_BASE_ENV["group_name"],
+    description="Todo",
+)
+
+
 @multi_asset(
     outs={
-        "env": AssetOut(
-            **ASSET_HEADER_BASE_ENV,
-            dagster_type=dict,
-            description="",
-        ),
+        "env": AssetOut.from_spec(env_spec),
+        # "env": AssetOut(
+        #     **ASSET_HEADER_BASE_ENV,
+        #     dagster_type=dict,
+        #     description="",
+        # ),
     },
+    # Would have to create AssetSpecs for all deps=[] as well, otherwise,
+    # the deps are visualized as group "default" (cosmetics) and we don't need
+    # info provided more than one level upstream.
+    # specs=[
+    #     env_spec,
+    # ],
     ins={
         "git_root": AssetIn(
             AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "git_root"])
@@ -310,19 +358,19 @@ def env(
     # if tz not in pytz.all_timezones:
     #     raise Exception(f"Unknown container timezone: {tz}")
 
-    landscape_root_dir = pathlib.Path(dot_landscapes, landscape_id["LANDSCAPE"])
+    landscapes_id_dir = pathlib.Path(dot_landscapes, landscape_id["LANDSCAPE"])
 
     try:
-        landscape_root_dir.expanduser().mkdir(
+        landscapes_id_dir.expanduser().mkdir(
             exist_ok=True,
             parents=True,
         )
 
-        context.log.debug(f"{landscape_root_dir.as_posix()} created successfully.")
+        context.log.debug(f"{landscapes_id_dir.as_posix()} created successfully.")
 
     except Exception as e:
         raise exceptions.OpenStudioLandscapesException(
-            f"OpenStudioLandscapes could not create landscape root directory: {landscape_root_dir.as_posix()}."
+            f"OpenStudioLandscapes could not create landscape root directory: {landscapes_id_dir.as_posix()}."
         ) from e
 
     ENVIRONMENT_BASE: dict = {
@@ -332,7 +380,6 @@ def env(
         #  - [ ] move DOT_SHARED_VOLUMES to config.yml
         "DOT_SHARED_VOLUMES": ".shared_volumes",
         "DOT_FEATURES": dot_features.as_posix(),
-        "DOT_OVERRIDES": pathlib.Path(landscape_root_dir, ".overrides").as_posix(),
         "AUTHOR": "michimussato@gmail.com",
         "CREATED_BY": str(getpass.getuser()),
         "CREATED_ON": str(socket.gethostname()),
@@ -350,16 +397,18 @@ def env(
     ENVIRONMENT_BASE.update(landscape_id)
     # @formatter:on
 
+    output_name = "env"
+
     yield Output(
-        output_name="env",
+        output_name=output_name,
         value=ENVIRONMENT_BASE,
     )
 
     yield AssetMaterialization(
-        asset_key=context.asset_key_for_output("env"),
+        asset_key=context.asset_key_for_output(output_name),
         metadata={
-            "__".join(context.asset_key_for_output("env").path): MetadataValue.json(
-                ENVIRONMENT_BASE
-            ),
+            "__".join(
+                context.asset_key_for_output(output_name).path
+            ): MetadataValue.json(ENVIRONMENT_BASE),
         },
     )

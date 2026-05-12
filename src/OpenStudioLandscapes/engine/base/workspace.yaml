@@ -1,0 +1,6 @@
+# https://docs.dagster.io/guides/build/projects/workspaces/workspace-yaml
+
+load_from:
+  - python_module:
+      module_name: "OpenStudioLandscapes.engine.base._definitions_with_upstream_specs"
+      location_name: "OpenStudioLandscapes Engine (Base)"

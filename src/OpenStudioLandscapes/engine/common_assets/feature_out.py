@@ -65,9 +65,16 @@ def get_feature_out_v2(
 
     feature_out: AssetsDefinition = AssetsDefinition.from_op(
         feature_out_op,
-        can_subset=False,
+        # Experimental Feature:
+        # key_prefix=ASSET_HEADER["key_prefix"],
         group_name=ASSET_HEADER["group_name"],
-        keys_by_input_name={},
+        can_subset=False,
+        keys_by_input_name={
+            "compose": AssetKey([*ASSET_HEADER["key_prefix"], "compose"]),
+            "CONFIG": AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
+            "cmd_extend": AssetKey([*ASSET_HEADER["key_prefix"], "cmd_extend"]),
+            "cmd_append": AssetKey([*ASSET_HEADER["key_prefix"], "cmd_append"]),
+        },
         keys_by_output_name={
             "feature_out_v2": AssetKey([*ASSET_HEADER["key_prefix"], "feature_out_v2"]),
         },

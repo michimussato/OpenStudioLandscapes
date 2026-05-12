@@ -22,6 +22,7 @@ project:
   # - deprecation  # https://deprecation.readthedocs.io/en/latest/
   - gitpython  # https://gitpython.readthedocs.io/en/latest/
   - PyYAML  # https://pyyaml.org/wiki/PyYAMLDocumentation
+  - ruamel.yaml  # https://pypi.org/project/ruamel.yaml/
   - snakemd  # https://www.snakemd.io/en/latest/docs/
   - email-validator
   # docker-compose-graph is needed because of yaml_tags.overrides
@@ -86,11 +87,12 @@ project:
     - OpenStudioLandscapesUtil-ReadmeGenerator @ git+https://github.com/michimussato/OpenStudioLandscapesUtil-ReadmeGenerator.git
     sbom:
     - cyclonedx-bom  # https://cyclonedx-bom-tool.readthedocs.io/en/latest/
-    # Not Implemented
-    # testing:
-    # - setuptools
-    # - pytest  # https://docs.pytest.org/en/stable/
-    # - pytest-cov  # https://pytest-cov.readthedocs.io/en/latest/
+    # Todo:
+    #  - [ ] Can be implemented now
+    testing:
+    - setuptools
+    - pytest  # https://docs.pytest.org/en/stable/
+    - pytest-cov  # https://pytest-cov.readthedocs.io/en/latest/
   readme:
     # Change if running only on Windows, Mac or Linux (comma-separated)
     # Add here all kinds of additional classifiers as defined under

@@ -1,3 +1,4 @@
+from types import ModuleType
 from typing import Dict, List, Type, Union
 
 from dagster import (
@@ -8,13 +9,15 @@ from dagster import (
 from OpenStudioLandscapes.engine.discovery import discovery
 
 
+# Todo
+#  - [ ] use `context`, make optional or remove
 def get_feature_base_model(
     context: Union[OpExecutionContext, AssetExecutionContext],
-    discovered_models: Dict[str, discovery.OpenStudioLandscapesDiscoveredFeature],
+    discovered_models: Dict[str, ModuleType],
     search_instance_type: Type[discovery.FeatureBaseModel],
 ) -> discovery.FeatureBaseModel:
     """
-    We are not create a new Config object for this Feature. It
+    We are not creating a new Config object for this Feature. It
     was pre-made during the bootstrapping process.
     We just need to find it in the `discovery.DISCOVERED_MODELS` dict.
 
