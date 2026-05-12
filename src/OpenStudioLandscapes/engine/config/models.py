@@ -845,4 +845,14 @@ class OpenStudioLandscapesDiscoveredFeature(BaseModel):
 
 # Todo:
 #  - [ ] add to README.md
+#  - [ ]  if __name__ == "__main__":
+#             CONFIG_STR: str = Config.get_docs()
+#         else:
+#             import yaml
+#
+#             schema: Dict = Config.model_json_schema(mode="serialization")
+#             properties: Dict = schema.get("properties", {})
+#
+#             CONFIG_STR: str = yaml.dump(properties)
+
 CONFIG_STR = ConfigEngine.get_docs()
