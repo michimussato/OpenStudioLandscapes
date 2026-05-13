@@ -158,7 +158,7 @@
       "version": "0.0.0"
     },
     {
-      "bom-ref": "BomRef.1206935157126835.5256213049719888",
+      "bom-ref": "BomRef.2194921354366952.031128000621683416",
       "description": "A Toolkit to create dynamic Animation and VFX studio environments for robust automation and pipelines.",
       "externalReferences": [
         {
@@ -1955,7 +1955,7 @@
       "version": "4.15.0"
     },
     {
-      "bom-ref": "idna==3.14",
+      "bom-ref": "idna==3.15",
       "description": "Internationalized Domain Names in Applications (IDNA)",
       "externalReferences": [
         {
@@ -1971,7 +1971,7 @@
         {
           "comment": "from packaging metadata Project-URL: Changelog",
           "type": "release-notes",
-          "url": "https://github.com/kjd/idna/blob/master/HISTORY.rst"
+          "url": "https://github.com/kjd/idna/blob/master/HISTORY.md"
         }
       ],
       "licenses": [
@@ -1983,9 +1983,9 @@
         }
       ],
       "name": "idna",
-      "purl": "pkg:pypi/idna@3.14",
+      "purl": "pkg:pypi/idna@3.15",
       "type": "library",
-      "version": "3.14"
+      "version": "3.15"
     },
     {
       "bom-ref": "isoduration==20.11.0",
@@ -2964,7 +2964,7 @@
       "version": "2.9.0.post0"
     },
     {
-      "bom-ref": "python-discovery==1.3.0",
+      "bom-ref": "python-discovery==1.3.1",
       "description": "Python interpreter discovery",
       "externalReferences": [
         {
@@ -3002,9 +3002,9 @@
         }
       ],
       "name": "python-discovery",
-      "purl": "pkg:pypi/python-discovery@1.3.0",
+      "purl": "pkg:pypi/python-discovery@1.3.1",
       "type": "library",
-      "version": "1.3.0"
+      "version": "1.3.1"
     },
     {
       "bom-ref": "python-dotenv==1.2.2",
@@ -3990,7 +3990,7 @@
       "version": "0.22.1"
     },
     {
-      "bom-ref": "virtualenv==21.3.1",
+      "bom-ref": "virtualenv==21.3.2",
       "description": "Virtual Python Environment builder",
       "externalReferences": [
         {
@@ -4023,9 +4023,9 @@
         }
       ],
       "name": "virtualenv",
-      "purl": "pkg:pypi/virtualenv@21.3.1",
+      "purl": "pkg:pypi/virtualenv@21.3.2",
       "type": "library",
-      "version": "21.3.1"
+      "version": "21.3.2"
     },
     {
       "bom-ref": "watchdog==5.0.3",
@@ -4387,7 +4387,7 @@
     },
     {
       "dependsOn": [
-        "idna==3.14",
+        "idna==3.15",
         "typing_extensions==4.15.0"
       ],
       "ref": "anyio==4.13.0"
@@ -4541,7 +4541,7 @@
     },
     {
       "dependsOn": [
-        "idna==3.14",
+        "idna==3.15",
         "wheel==0.47.0"
       ],
       "ref": "dnspython==2.8.0"
@@ -4563,7 +4563,7 @@
     {
       "dependsOn": [
         "dnspython==2.8.0",
-        "idna==3.14"
+        "idna==3.15"
       ],
       "ref": "email-validator==2.3.0"
     },
@@ -4664,7 +4664,7 @@
       "ref": "humanize==4.15.0"
     },
     {
-      "ref": "idna==3.14"
+      "ref": "idna==3.15"
     },
     {
       "dependsOn": [
@@ -4685,7 +4685,7 @@
       "dependsOn": [
         "attrs==26.1.0",
         "fqdn==1.5.1",
-        "idna==3.14",
+        "idna==3.15",
         "isoduration==20.11.0",
         "jsonpointer==3.1.1",
         "jsonschema-specifications==2025.9.1",
@@ -4738,7 +4738,7 @@
         "humanize==4.15.0",
         "packaging==26.2",
         "tomli==2.4.1",
-        "virtualenv==21.3.1"
+        "virtualenv==21.3.2"
       ],
       "ref": "nox==2026.4.10"
     },
@@ -4771,7 +4771,7 @@
         "graphviz==0.21",
         "packaging==26.2",
         "rich==15.0.0",
-        "virtualenv==21.3.1"
+        "virtualenv==21.3.2"
       ],
       "ref": "pipdeptree==2.35.2"
     },
@@ -4835,7 +4835,7 @@
         "platformdirs==4.9.6",
         "setuptools==82.0.1"
       ],
-      "ref": "python-discovery==1.3.0"
+      "ref": "python-discovery==1.3.1"
     },
     {
       "dependsOn": [
@@ -4865,7 +4865,7 @@
         "certifi==2026.4.22",
         "chardet==5.2.0",
         "charset-normalizer==3.4.7",
-        "idna==3.14",
+        "idna==3.15",
         "urllib3==2.7.0"
       ],
       "ref": "requests==2.34.0"
@@ -4904,7 +4904,7 @@
         "packaging==26.2",
         "pip==26.1.1",
         "tomli==2.4.1",
-        "virtualenv==21.3.1",
+        "virtualenv==21.3.2",
         "wheel==0.47.0"
       ],
       "ref": "setuptools==82.0.1"
@@ -5001,10 +5001,10 @@
         "distlib==0.4.0",
         "filelock==3.29.0",
         "platformdirs==4.9.6",
-        "python-discovery==1.3.0",
+        "python-discovery==1.3.1",
         "typing_extensions==4.15.0"
       ],
-      "ref": "virtualenv==21.3.1"
+      "ref": "virtualenv==21.3.2"
     },
     {
       "dependsOn": [
@@ -5032,7 +5032,7 @@
     },
     {
       "dependsOn": [
-        "idna==3.14",
+        "idna==3.15",
         "multidict==6.7.1",
         "propcache==0.5.2"
       ],
@@ -5040,7 +5040,7 @@
     }
   ],
   "metadata": {
-    "timestamp": "2026-05-12T11:13:50.260115+00:00",
+    "timestamp": "2026-05-13T12:45:55.530590+00:00",
     "tools": {
       "components": [
         {
@@ -5144,7 +5144,7 @@
       ]
     }
   },
-  "serialNumber": "urn:uuid:ffbf5698-b694-4c8c-8d17-dd7dfc3c8834",
+  "serialNumber": "urn:uuid:915998f5-232d-4998-90e0-0c4190d29464",
   "version": 1,
   "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
   "bomFormat": "CycloneDX",

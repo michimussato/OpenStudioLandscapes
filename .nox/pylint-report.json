@@ -11410,7 +11410,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/tests/test_env.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[66:92]\n==OpenStudioLandscapes.engine.base.ops.factories:[1040:1066]\n        dcg = DockerComposeGraph(\n            label_root_service=compose_project_name,\n        )\n        trees = dcg.parse_docker_compose(pathlib.Path(group_out))\n\n        context.log.info(trees)\n\n        dcg.iterate_trees(trees)\n\n        docker_compose_dir = group_out.parent / \"__\".join(\n            context.asset_key_for_output(\"docker_compose_graph\").path\n        )\n\n        docker_compose_dir.mkdir(parents=True, exist_ok=True)\n\n        # SVG\n        svg = (\n            docker_compose_dir\n            / f\"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.svg\"\n        )\n        try:\n            dcg.graph.write(\n                path=svg,\n                format=\"svg\",\n            )\n        except FileNotFoundError as e:",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[66:92]\n==OpenStudioLandscapes.engine.base.ops.factories:[1040:1066]\n    dcg = DockerComposeGraph(\n        label_root_service=compose_project_name,\n    )\n    trees = dcg.parse_docker_compose(pathlib.Path(group_out))\n\n    context.log.info(trees)\n\n    dcg.iterate_trees(trees)\n\n    docker_compose_dir = group_out.parent / \"__\".join(\n        context.asset_key_for_output(\"docker_compose_graph\").path\n    )\n\n    docker_compose_dir.mkdir(parents=True, exist_ok=True)\n\n    # SVG\n    svg = (\n        docker_compose_dir\n        / f\"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.svg\"\n    )\n    try:\n        dcg.graph.write(\n            path=svg,\n            format=\"svg\",\n        )\n    except FileNotFoundError as e:",
         "message-id": "R0801"
     },
     {
@@ -11436,7 +11436,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/tests/test_env.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.compose_scopes.definitions:[103:125]\n==OpenStudioLandscapes.engine.landscape_map.definitions:[92:114]\ngroup_out_base = AssetSpec(\n    key=AssetKey(\n        [\n            *ASSET_HEADER_BASE[\"key_prefix\"],\n            \"group_out_base\",\n        ]\n    ),\n    group_name=ASSET_HEADER_BASE[\"group_name\"],\n    description=\"`AssetSpec` for `AssetDefinition` specified in \"\n    \"`OpenStudioLandscapes.engine.base.assets.group_out_base`.\",\n)\n\n# assets_external is meant for the Definitions object in\n# _definitions_with_upstream_specs.py for now.\nassets_external.append(group_out_base)\n\n\ndefs = Definitions(\n    assets=[\n        *assets_base,\n    ],\n)",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.compose_scopes.definitions:[103:125]\n==OpenStudioLandscapes.engine.landscape_map.definitions:[92:114]\ngroup_out_base = AssetSpec(\n    key=AssetKey(\n        [\n            *ASSET_HEADER_BASE[\"key_prefix\"],\n            \"group_out_base\",\n        ]\n    ),\n    group_name=ASSET_HEADER_BASE[\"group_name\"],\n    description=\"`AssetSpec` for `AssetDefinition` specified in \"\n    \"`OpenStudioLandscapes.engine.base.assets.group_out_base`.\",\n)\n\nassets_external.append(group_out_base)\n\n\ndefs = Definitions(\n    assets=[\n        *assets_base,\n        # *constants,\n        # *assets_external,\n    ],\n)",
         "message-id": "R0801"
     },
     {
@@ -11449,7 +11449,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/tests/test_env.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[93:112]\n==OpenStudioLandscapes.engine.base.ops.factories:[1067:1086]\n        raise FileNotFoundError(\"Is Graphviz installed?\") from e\n\n    with open(svg, \"rb\") as fr:\n        svg_bytes = fr.read()\n\n    svg_base64 = base64.b64encode(svg_bytes).decode(\"utf-8\")\n    svg_md = f\"![Image](data:image/svg+xml;base64,{svg_base64})\"\n\n    # PNG\n    png = (\n        docker_compose_dir\n        / f\"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.png\"\n    )\n    try:\n        dcg.graph.write(\n            path=png,\n            format=\"png\",\n        )\n    except FileNotFoundError as e:",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[93:112]\n==OpenStudioLandscapes.engine.base.ops.factories:[1067:1086]\n            raise FileNotFoundError(\"Is Graphviz installed?\") from e\n\n        with open(svg, \"rb\") as fr:\n            svg_bytes = fr.read()\n\n        svg_base64 = base64.b64encode(svg_bytes).decode(\"utf-8\")\n        svg_md = f\"![Image](data:image/svg+xml;base64,{svg_base64})\"\n\n        # PNG\n        png = (\n            docker_compose_dir\n            / f\"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.png\"\n        )\n        try:\n            dcg.graph.write(\n                path=png,\n                format=\"png\",\n            )\n        except FileNotFoundError as e:",
         "message-id": "R0801"
     },
     {
@@ -11488,7 +11488,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/tests/test_env.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.assets:[131:147]\n==OpenStudioLandscapes.engine.vfx_reference.assets:[135:162]\n    docker_file = pathlib.Path(\n        env[\"DOT_LANDSCAPES\"],\n        env.get(\"LANDSCAPE\", \"default\"),\n        f\"{dist.name}\",\n        \"__\".join(context.asset_key.path),\n        \"Dockerfiles\",\n        \"Dockerfile\",\n    )\n\n    shutil.rmtree(docker_file.parent, ignore_errors=True)\n\n    docker_file.parent.mkdir(parents=True, exist_ok=True)\n\n    image_name = get_image_name(context=context)\n    context.log.debug(f\"{image_name = }\")\n\n    # apt_install_str_base: str = get_apt_install_str(\n    #     apt_install_packages=[\n    #         *CONFIG.apt_packages_base,\n    #         *CONFIG.openstudiolandscapes__rez_config.apt_packages_rez,\n    #     ],\n    # )\n\n    # apt_install_str_build_python311: str = get_apt_install_str(\n    #     apt_install_packages=CONFIG.apt_packages_build_python311,\n    # )\n",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.assets:[131:147]\n==OpenStudioLandscapes.engine.vfx_reference.assets:[135:162]\n    docker_file = pathlib.Path(\n        env[\"DOT_LANDSCAPES\"],\n        env.get(\"LANDSCAPE\", \"default\"),\n        f\"{dist.name}\",\n        \"__\".join(context.asset_key.path),\n        \"Dockerfiles\",\n        \"Dockerfile\",\n    )\n\n    shutil.rmtree(docker_file.parent, ignore_errors=True)\n\n    docker_file.parent.mkdir(parents=True, exist_ok=True)\n\n    image_name = get_image_name(context=context)\n    context.log.debug(f\"{image_name = }\")\n",
         "message-id": "R0801"
     },
     {
@@ -11514,7 +11514,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/tests/test_env.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[113:133]\n==OpenStudioLandscapes.engine.base.ops.factories:[1087:1107]\n            raise FileNotFoundError(\"Is Graphviz installed?\") from e\n\n        # SLOW\n        # with open(png, \"rb\") as fr:\n        #     png_bytes = fr.read()\n        #\n        # png_base64 = base64.b64encode(png_bytes).decode(\"utf-8\")\n        # png_md = f\"![Image](data:image/png;base64,{png_base64})\"\n\n        # DOT\n        dot = (\n            docker_compose_dir\n            / f\"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.dot\"\n        )\n        try:\n            dcg.graph.write(\n                path=dot,\n                format=\"dot\",\n            )\n        except FileNotFoundError as e:",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[113:133]\n==OpenStudioLandscapes.engine.base.ops.factories:[1087:1107]\n        raise FileNotFoundError(\"Is Graphviz installed?\") from e\n\n    # SLOW\n    # with open(png, \"rb\") as fr:\n    #     png_bytes = fr.read()\n    #\n    # png_base64 = base64.b64encode(png_bytes).decode(\"utf-8\")\n    # png_md = f\"![Image](data:image/png;base64,{png_base64})\"\n\n    # DOT\n    dot = (\n        docker_compose_dir\n        / f\"{'__'.join(context.asset_key_for_output('docker_compose_graph').path)}.dot\"\n    )\n    try:\n        dcg.graph.write(\n            path=dot,\n            format=\"dot\",\n        )\n    except FileNotFoundError as e:",
         "message-id": "R0801"
     },
     {
@@ -11527,7 +11527,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/tests/test_env.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[248:264]\n==OpenStudioLandscapes.engine.base.ops.factories:[1354:1370]\n        group_names_by_key_dict = context.assets_def.group_names_by_key\n        # Results in:\n        # Single Output:\n        # {AssetKey(['OpenCue', 'group_out']): 'OpenCue'}\n        # Multiple Outputs:\n        # {AssetKey(['Compose_default', 'group_out']): 'Compose_default', AssetKey(['Compose_default', 'compose_project_name']): 'Compose_default'}\n        context.log.debug(group_names_by_key_dict)\n\n        cmd_docker_compose_logs = [\n            \"$(which docker)\",\n            \"--config\",\n            docker_config_json.as_posix(),\n            \"compose\",\n            \"--progress\",\n            DOCKER_PROGRESS,\n            \"--file\",",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[248:264]\n==OpenStudioLandscapes.engine.base.ops.factories:[1354:1370]\n    group_names_by_key_dict = context.assets_def.group_names_by_key\n    # Results in:\n    # Single Output:\n    # {AssetKey(['OpenCue', 'group_out']): 'OpenCue'}\n    # Multiple Outputs:\n    # {AssetKey(['Compose_default', 'group_out']): 'Compose_default', AssetKey(['Compose_default', 'compose_project_name']): 'Compose_default'}\n    context.log.debug(group_names_by_key_dict)\n\n    cmd_docker_compose_logs = [\n        \"$(which docker)\",\n        \"--config\",\n        docker_config_json.as_posix(),\n        \"compose\",\n        \"--progress\",\n        DOCKER_PROGRESS,\n        \"--file\",",
         "message-id": "R0801"
     },
     {
@@ -11566,7 +11566,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/tests/test_env.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.compose_scopes.assets:[79:89]\n==OpenStudioLandscapes.engine.landscape_map.definitions:[44:53]\n    ASSET_HEADER = {\n        \"group_name\": f\"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}\",\n        \"key_prefix\": [\n            \"ComposeScopes\",\n            f\"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}\",\n        ],\n        \"compute_kind\": \"python\",\n    }\n\n    # features_in",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.compose_scopes.assets:[79:89]\n==OpenStudioLandscapes.engine.landscape_map.definitions:[44:53]\n    ASSET_HEADER = {\n        \"group_name\": f\"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}\",\n        \"key_prefix\": [\n            \"ComposeScopes\",\n            f\"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}\",\n        ],\n        \"compute_kind\": \"python\",\n    }\n",
         "message-id": "R0801"
     },
     {
@@ -11592,7 +11592,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/tests/test_env.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[273:280]\n==OpenStudioLandscapes.engine.base.ops.factories:[1363:1370]\n            \"$(which docker)\",\n            \"--config\",\n            docker_config_json.as_posix(),\n            \"compose\",\n            \"--progress\",\n            DOCKER_PROGRESS,\n            \"--file\",",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[273:280]\n==OpenStudioLandscapes.engine.base.ops.factories:[1363:1370]\n        \"$(which docker)\",\n        \"--config\",\n        docker_config_json.as_posix(),\n        \"compose\",\n        \"--progress\",\n        DOCKER_PROGRESS,\n        \"--file\",",
         "message-id": "R0801"
     },
     {
@@ -11605,7 +11605,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/tests/test_env.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[307:314]\n==OpenStudioLandscapes.engine.base.ops.factories:[1462:1469]\n        \"$(which docker)\",\n        \"--config\",\n        docker_config_json.as_posix(),\n        \"compose\",\n        \"--progress\",\n        DOCKER_PROGRESS,\n        \"--file\",",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[307:314]\n==OpenStudioLandscapes.engine.base.ops.factories:[1462:1469]\n            \"$(which docker)\",\n            \"--config\",\n            docker_config_json.as_posix(),\n            \"compose\",\n            \"--progress\",\n            DOCKER_PROGRESS,\n            \"--file\",",
         "message-id": "R0801"
     },
     {
@@ -11657,7 +11657,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/engine/env/tests/test_env.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[333:343]\n==OpenStudioLandscapes.engine.base.ops.factories:[1459:1469]\n        )\n\n        cmd_docker_compose_down = [\n            \"$(which docker)\",\n            \"--config\",\n            docker_config_json.as_posix(),\n            \"compose\",\n            \"--progress\",\n            DOCKER_PROGRESS,\n            \"--file\",",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.engine.base.ops.__init__:[333:343]\n==OpenStudioLandscapes.engine.base.ops.factories:[1459:1469]\n    )\n\n    cmd_docker_compose_down = [\n        \"$(which docker)\",\n        \"--config\",\n        docker_config_json.as_posix(),\n        \"compose\",\n        \"--progress\",\n        DOCKER_PROGRESS,\n        \"--file\",",
         "message-id": "R0801"
     },
     {
