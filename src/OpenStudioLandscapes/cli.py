@@ -5,6 +5,8 @@ import pathlib
 import shutil
 import signal
 import subprocess
+from typing import Tuple
+
 import sys
 import textwrap
 
@@ -25,7 +27,17 @@ class CLIException(Exception):
 # ---- Python API ----
 
 
+def _get_terminal_size() -> Tuple[int, int]:
+    # Todo
+    #  - [ ] how does this behave in systemd?
+    # https://stackoverflow.com/a/14422538
+    # https://stackoverflow.com/a/18243550
+    cols, rows = shutil.get_terminal_size((80, 20))
+    return cols, rows
+
+
 def run_openstudiolandscapes_postgres(args):
+    print(" STARTING OPENSTUDIOLANDSCAPES ".center(_get_terminal_size()[0], "="))
     LOGGER.info("Welcome!")
     LOGGER.debug("OpenStudioLandscapes args: %s", args)
 
@@ -222,7 +234,9 @@ def parse_args(args):
         default=False,
         action="store_true",
         required=False,
-        help="Skip checking for codebase updates.",
+        help="Skip checking for codebase updates. The update check "
+             "itself does nothing but checking whether there are "
+             "code updates or not.",
     )
 
     update_group.add_argument(
@@ -231,7 +245,27 @@ def parse_args(args):
         default=False,
         action="store_true",
         required=False,
-        help="Automatically pull codebase updates.",
+        help="Automatically pull codebase updates. Specifiying this "
+             "will imply *not* to `--skip-update-check`, hence, these "
+             "are mutually exclusive.",
+    )
+
+    update_group.add_argument(
+        "--keepalive",
+        dest="keepalive",
+        default=1,
+        type=int,
+        required=False,
+        help="Automatically try to restart if CLI fails. "
+             "Helpful for self healing when used in `systemd` for "
+             "example. This is the third option and *will always* imply "
+             "`--auto-update` in order to pull and apply latest codebase updates "
+             "before restarting for a new attempt. "
+             "If the supplied value is exceeded, keepalive will stop and exit for good. "
+             "A supplied value of `1` is usually fine because if things fail even after "
+             "applying code base updates, there is little chance that another "
+             "iteration will fix the problem. However, it might give `systemd` more slack "
+             "before failing and stopping an `openstudiolandscapes.service` unit.",
     )
 
     subparsers = parser.add_subparsers(
@@ -252,11 +286,8 @@ def parse_args(args):
     #     help="git pull.",
     # )
 
-    # Todo
-    #  - [x] "install-feature" should actually be "clone-feature" (it's not actually installing)
     subparser_install_feature = subparsers.add_parser(
         "clone-feature",
-        # aliases=["install-feature"],
         help="Clone a feature from a given repository and "
         "print installation instructions.",
     )
@@ -266,7 +297,6 @@ def parse_args(args):
 
     subparser_install_feature.add_argument(
         "--repo",
-        "-r",
         dest="repo",
         metavar="REPO",
         # type=git.Repo,
@@ -274,11 +304,8 @@ def parse_args(args):
         required=True,
     )
 
-    # Todo
-    #  - [x] "install-feature" should actually be "clone-feature" (it's not actually installing)
     subparser_install_feature = subparsers.add_parser(
         "switch-branch",
-        # aliases=["install-feature"],
         help="Switch branch across the Engine and all Features.",
     )
 
@@ -287,7 +314,6 @@ def parse_args(args):
 
     subparser_install_feature.add_argument(
         "--branch",
-        # "-r",
         dest="branch",
         metavar="BRANCH",
         default="main",
@@ -302,25 +328,70 @@ def parse_args(args):
     #              "migrate",
     #          )
 
+    LOGGER.debug(f"{args = }")
+
     try:
         LOGGER.info("Parsing arguments...")
-        LOGGER.debug(f"{args = }")
         parsed = parser.parse_args(args)
     except SystemExit as e:  # argparse raises SystemExit on error
-        if not any(x in ["-h", "--help"] for x in args):
-            # raise SystemExit from e
-            LOGGER.critical("Could not parse arguments: %s", args)
-            LOGGER.error(e)
-            LOGGER.critical("I will try to update the repos...")
-            check_updates_available(args)
-            LOGGER.critical("Update done. Try to launch OpenStudioLandscapes again.")
+        if any(x in ["-h", "--help"] for x in args):
+            # if a help flag is specified, print the help as usual
+            # by re-raising the standard exception (will stop)
+            raise SystemExit from e
+
+        # if any(x in ["--keepalive"] for x in args):
+        #     raise SystemExit from e
+
+        LOGGER.debug(f"{sys.argv = }")
+        LOGGER.critical("Could not parse arguments: %s", args)
 
         # Todo:
         #  - [ ] maybe pip install is needed after changes?
         #  - [ ] pip install --upgrade pip?
-        #  - [ ]
 
-        raise SystemExit from e
+        if "--keepalive" not in sys.argv:
+            LOGGER.info("No `--keepalive` supplied. Exiting...")
+            raise SystemExit from e
+
+        else:
+            print(" KEEP ALIVE ROUTINE ".center(_get_terminal_size()[0], "="))
+            keepalive_index = sys.argv.index("--keepalive")
+            keepalive_value = int(sys.argv[keepalive_index + 1])
+            # LOGGER.debug(f"{keepalive_index = }")
+            LOGGER.debug(f"{keepalive_value = }")
+
+            if keepalive_value > 0:
+                print(" TRYING TO KEEPALIVE OPENSTUDIOLANDSCAPES ".center(_get_terminal_size()[0], "-"))
+                print(f" (max. {keepalive_value} more time{'s' if keepalive_value > 1 else ''}) ".center(_get_terminal_size()[0], "-"))
+
+                keepalive_index_sys_argv: int = sys.argv.index("--keepalive")
+                keepalive_value_sys_argv: int = int(sys.argv[keepalive_index_sys_argv + 1])
+                LOGGER.debug(f"{sys.argv = }")
+                # LOGGER.debug(f"{keepalive_index_sys_argv = }")
+                LOGGER.debug(f"{keepalive_value_sys_argv = }")
+
+                LOGGER.debug(f"Before decrement: {sys.argv[keepalive_index_sys_argv + 1] = }")
+                # decrement the keepalive value by 1
+                sys.argv[keepalive_index_sys_argv + 1] = str(keepalive_value_sys_argv - 1)
+                LOGGER.debug(f"After decrement: {sys.argv[keepalive_index_sys_argv + 1] = }")
+
+                LOGGER.critical("Let's try to update the repos before retrying...")
+                check_updates_available(args)
+                LOGGER.critical("Update done. Trying to launch OpenStudioLandscapes again...")
+
+                LOGGER.critical("Initiating new process...")
+                print(" RESTARTING OPENSTUDIOLANDSCAPES ".center(_get_terminal_size()[0], "-"))
+                # Replace the current process with a new one
+                # - https://stackoverflow.com/questions/36018401/how-to-make-a-script-automatically-restart-itself#36018657
+                os.execv(
+                    sys.argv[0],
+                    sys.argv
+                )
+
+            else:
+                LOGGER.critical("`--keepalive` exhausted. Exiting.")
+                sys.stderr.write(" OPENSTUDIOLANDSCAPES KEEPALIVE ROUTINE EXHAUSTED ".center(_get_terminal_size()[0], "="))
+                raise SystemExit from e
 
     return parsed
 
