@@ -202,7 +202,15 @@ def _write_yaml(
 
     with open(config_yml, "w") as f:
         LOGGER.info(f"Writing `config.yml`: {config_yml.as_posix()}...")
-        yaml_.dump(data, f)
+        yaml_.dump(
+            json.loads(
+                json.dumps(
+                    data,
+                    default=str,
+                ),
+            ),
+            f,
+        )
 
     return yaml_
 
