@@ -81,6 +81,34 @@ def get_verified_config(
     return data
 
 
+def add_k_v_to_config_yml(
+    missing_keys: set,
+    config_yml: pathlib.Path,
+    model_reference: Union[ConfigEngine, FeatureBaseModel],
+    model_dump_dict: Dict,
+) -> None:
+
+    keys_to_add: Dict = {}
+
+    for missing_key in missing_keys:
+        keys_to_add[missing_key] = getattr(model_reference, missing_key)
+
+    LOGGER.info(f"Populating `config.yml` with new default values: {keys_to_add}")
+
+    _write_yaml(
+        data={
+            **model_dump_dict,
+            **keys_to_add,
+        },
+        config_yml=config_yml,
+    )
+
+    LOGGER.info(f"config.yml successfully updated: {config_yml.as_posix()}")
+
+    return None
+
+
+
 # Todo
 #  - [ ] more specific return type
 def get_dynamic_ins(
@@ -160,6 +188,25 @@ def load_yaml(
     return data
 
 
+def _write_yaml(
+    data: Dict,
+    config_yml: pathlib.Path,
+) -> ruamel.yaml.YAML:
+
+    yaml_ = ruamel.yaml.YAML(typ="rt")
+    yaml_.indent(
+        mapping=2,
+        sequence=2,
+        offset=0,
+    )  # Match original indentation
+
+    with open(config_yml, "w") as f:
+        LOGGER.info(f"Writing `config.yml`: {config_yml.as_posix()}...")
+        yaml_.dump(data, f)
+
+    return yaml_
+
+
 def dump_yaml(
     model_config: Union[ConfigEngine, FeatureBaseModel],
     file_path: pathlib.Path,
@@ -232,24 +279,54 @@ def dump_yaml(
             # This can have unwanted side effects and takes away control
             # from the user. Just highlight the problem (or raise
             # an exception) here.
+            #
+            # Todo:
+            #  - [x] maybe we can add a commandline flag to allow for
+            #        missing keys to be added automatically
+            #        like `--auto-fix-missing-keys` or something
+
+            auto_fix_missing_keys = bool(
+                int(
+                    os.environ.get(
+                        "OPENSTUDIOLANDSCAPES__AUTO_FIX_MISSING_KEYS", 0
+                    )
+                )
+            )
 
             if bool(missing_keys):
-                # Todo:
-                #  - [ ] This is not very graceful, so, maybe we
-                #        can come up with a better solution when
-                #        keys are missing.
-                msg = (
-                    f"config.yml has missing keys. Please manually "
-                    f"add {missing_keys} to {file_path.as_posix()} "
-                    f"or delete {file_path.as_posix()} to have it "
-                    f"automatically re-generated with default values. "
-                    f"We cannot continue gracefully. You can, however, fix the "
-                    f"problem and `Reload Definitions` without "
-                    f"restarting OpenStudioLandscapes."
-                )
-                LOGGER.critical(msg)
-                # This is currently dealt with by `except PydanticValidationError as e:`
-                raise OpenStudioLandscapesDiscoveryException(msg)
+
+                if auto_fix_missing_keys:
+
+                    LOGGER.info(f"Updating config.yml automatically: {file_path.as_posix()}")
+
+                    add_k_v_to_config_yml(
+                        missing_keys=missing_keys,
+                        config_yml=file_path,
+                        model_reference=model_config,
+                        model_dump_dict=model_dump_dict,
+                    )
+
+                else:
+
+                    LOGGER.info(f"Leaving existing config.yml untouched: {file_path.as_posix()}")
+
+                    # Todo:
+                    #  - [ ] This is not very graceful, so, maybe we
+                    #        can come up with a better solution when
+                    #        keys are missing.
+                    msg = (
+                        f"config.yml has missing keys. Please manually "
+                        f"add {missing_keys} to {file_path.as_posix()}, "
+                        f"delete {file_path.as_posix()} to have it "
+                        f"automatically re-generated with default values or "
+                        f"launch OpenStudioLandscapes with `--auto-fix-missing-keys`. "
+                        f"We cannot continue gracefully. You can, however, fix the "
+                        f"problem and `Reload Definitions` without "
+                        f"restarting OpenStudioLandscapes."
+                    )
+                    LOGGER.critical(msg)
+                    # This is currently dealt with by `except PydanticValidationError as e:`
+                    raise OpenStudioLandscapesDiscoveryException(msg)
 
             if bool(unused_keys):
                 # This is not critical. It's just not
@@ -258,8 +335,6 @@ def dump_yaml(
                     f"Unused keys found in YAML file. Please manually "
                     f"remove {unused_keys} from {file_path.as_posix()}."
                 )
-
-        LOGGER.info(f"Existing config.yml left untouched: {file_path.as_posix()}")
 
     else:
         # If the config.yml file does not exist,
@@ -270,17 +345,10 @@ def dump_yaml(
             exist_ok=True,
         )
 
-        yaml_ = ruamel.yaml.YAML(typ="rt")
-        yaml_.indent(
-            mapping=2,
-            sequence=2,
-            offset=0,
-        )  # Match original indentation
-
-        with open(file_path, "w") as f:
-            yaml_.dump(model_dump_dict, f)
-
-        LOGGER.info(f"config.yml successfully written: {file_path.as_posix()}")
+        _write_yaml(
+            data=model_dump_dict,
+            config_yml=file_path,
+        )
 
     return None
 

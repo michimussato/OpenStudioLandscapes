@@ -258,7 +258,8 @@ usage: openstudiolandscapes [-h] [--verbosity OPENSTUDIOLANDSCAPES__VERBOSITY] [
                             [--attach-pangolin-site-to-compose-scope] [--domain-wan OPENSTUDIOLANDSCAPES__DOMAIN_WAN]
                             [--config-store OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT] [--config-store-vcs OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS]
                             [--landscapes-root OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT] [--logs-root OPENSTUDIOLANDSCAPES__LOGS_ROOT]
-                            [--landscapes-id OPENSTUDIOLANDSCAPES__LANDSCAPE_ID] [--skip-update-check | --auto-update | --keepalive KEEPALIVE]
+                            [--landscapes-id OPENSTUDIOLANDSCAPES__LANDSCAPE_ID] [--auto-fix-missing-keys]
+                            [--skip-update-check | --auto-update | --keepalive KEEPALIVE]
                             {update,clone-feature,switch-branch} ...
 
 positional arguments:
@@ -279,25 +280,26 @@ options:
   --config-store OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT
                         Set the configuration store path.
   --config-store-vcs OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS
-                        If the config store is part of a Git repository already, you can specify the path to the repo here. Defaults to the
-                        same value like `OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT`.
+                        If the config store is part of a Git repository already, you can specify the path to the repo here. Defaults to the same
+                        value like `OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT`.
   --landscapes-root OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT
                         Set the Landscape root path. A `.landscapes` subdirectory will be created and used.
   --logs-root OPENSTUDIOLANDSCAPES__LOGS_ROOT
                         Set the OpenStudioLandscapes logs root path. A `.logs` subdirectory will be created and used.
   --landscapes-id OPENSTUDIOLANDSCAPES__LANDSCAPE_ID
                         Lock the landscape_id to this value.
-  --skip-update-check   Skip checking for codebase updates. The update check itself does nothing but checking whether there are code updates
-                        or not.
-  --auto-update         Automatically pull codebase updates. Specifiying this will imply *not* to `--skip-update-check`, hence, these are
-                        mutually exclusive.
+  --auto-fix-missing-keys
+                        Automatically add missing keys with default model values if key is not found in `config.yml`. This only adds missing keys.
+                        It does not remove unused keys from the `config.yml` file.
+  --skip-update-check   Skip checking for codebase updates. The update check itself does nothing but checking whether there are code updates or not.
+  --auto-update         Automatically pull codebase updates. Specifiying this will imply *not* to `--skip-update-check`, hence, these are mutually
+                        exclusive.
   --keepalive KEEPALIVE
-                        Automatically try to restart if CLI fails. Helpful for self healing when used in `systemd` for example. This is the
-                        third option and *will always* imply `--auto-update` in order to pull and apply latest codebase updates before
-                        restarting for a new attempt. If the supplied value is exceeded, keepalive will stop and exit for good. A supplied
-                        value of `1` is usually fine because if things fail even after applying code base updates, there is little chance that
-                        another iteration will fix the problem. However, it might give `systemd` more slack before failing and stopping an
-                        `openstudiolandscapes.service` unit.
+                        Automatically try to restart if CLI fails. Helpful for self healing when used in `systemd` for example. This is the third
+                        option and *will always* imply `--auto-update` in order to pull and apply latest codebase updates before restarting for a
+                        new attempt. If the supplied value is exceeded, keepalive will stop and exit for good. A supplied value of `1` is usually
+                        fine because if things fail even after applying code base updates, there is little chance that another iteration will fix
+                        the problem. However, it might give `systemd` more slack before failing and stopping an `openstudiolandscapes.service` unit.
 ```
 
 #### Sub-Commands

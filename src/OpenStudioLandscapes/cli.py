@@ -42,6 +42,8 @@ def run_openstudiolandscapes_postgres(args):
 
     if bool(int(args.attach_grafana_alloy_to_compose_scope)):
         os.environ["OPENSTUDIOLANDSCAPES__ATTACH_GRAFANA_ALLOY_TO_COMPOSE_SCOPE"] = "1"
+    if bool(int(args.auto_fix_missing_keys)):
+        os.environ["OPENSTUDIOLANDSCAPES__AUTO_FIX_MISSING_KEYS"] = "1"
     if bool(int(args.attach_pangolin_site_to_compose_scope)):
         os.environ["OPENSTUDIOLANDSCAPES__ATTACH_PANGOLIN_SITE_TO_COMPOSE_SCOPE"] = "1"
     if args.domain_wan is not None:
@@ -223,6 +225,21 @@ def parse_args(args):
         default=None,
         required=False,
         help="Lock the landscape_id to this value.",
+    )
+
+    parser.add_argument(
+        "--auto-fix-missing-keys",
+        dest="auto_fix_missing_keys",
+        metavar="OPENSTUDIOLANDSCAPES__AUTO_FIX_MISSING_KEYS",
+        default=os.environ.get(
+            "OPENSTUDIOLANDSCAPES__AUTO_FIX_MISSING_KEYS", "0"
+        ),
+        action="store_const",
+        const="1",
+        help="Automatically add missing keys with default model "
+             "values if key is not found in `config.yml`. This only "
+             "adds missing keys. It does not remove unused keys from "
+             "the `config.yml` file.",
     )
 
     update_group = parser.add_mutually_exclusive_group(required=False)
