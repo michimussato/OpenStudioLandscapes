@@ -14,6 +14,7 @@
     * [CLI](#cli)
       * [Sub-Commands](#sub-commands)
         * [clone-feature](#clone-feature)
+        * [switch-branch](#switch-branch)
     * [Launch OpenStudioLandscapes](#launch-openstudiolandscapes)
     * [Create Landscape](#create-landscape)
     * [Launch the Landscape](#launch-the-landscape)
@@ -30,7 +31,7 @@
   * [How is OpenStudioLandscapes different from other potential solutions?](#how-is-openstudiolandscapes-different-from-other-potential-solutions)
   * [So, tell me! What exactly does it produce?](#so-tell-me-what-exactly-does-it-produce)
   * [OpenStudioLandscapes long term dependency hell: out of the frying pan into the fire?](#openstudiolandscapes-long-term-dependency-hell-out-of-the-frying-pan-into-the-fire)
-  * [I don't like Pipeline! I'm a free thinker and I don't like boudaries!](#i-dont-like-pipeline-im-a-free-thinker-and-i-dont-like-boudaries)
+  * [I don't like Pipeline! I'm a free thinker and I don't like boundaries!](#i-dont-like-pipeline-im-a-free-thinker-and-i-dont-like-boundaries)
   * [I have zero understanding for bugs! Who can I blame?](#i-have-zero-understanding-for-bugs-who-can-i-blame)
     * [Issues and feature requests](#issues-and-feature-requests)
   * [How can I support this Project?](#how-can-i-support-this-project)
@@ -113,7 +114,7 @@ Other distros do work (**OpenStudioLandscapes** was developed on an
 Arch based Linux distro), however, the installation process **will** be
 different.
 
-> [!IMPORTANT]
+> [!CRITICAL]
 > 
 > Installation and execution of **OpenStudioLandscapes** as `root` is not allowed
 > and **must be performed as normal (unprivileged) user**.
@@ -253,8 +254,11 @@ The following commandline options are available:
 # source .venv/bin/activate
 
 $ openstudiolandscapes --help
-usage: openstudiolandscapes [-h] [--verbosity OPENSTUDIOLANDSCAPES__VERBOSITY] [--attach-grafana-alloy-to-compose-scope] [--attach-pangolin-site-to-compose-scope] [--domain-wan OPENSTUDIOLANDSCAPES__DOMAIN_WAN] [--config-store OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT]
-                            [--config-store-vcs OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS] [--landscapes-root OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT] [--landscapes-id OPENSTUDIOLANDSCAPES__LANDSCAPE_ID] [--skip-update-check | --auto-update]
+usage: openstudiolandscapes [-h] [--verbosity OPENSTUDIOLANDSCAPES__VERBOSITY] [--attach-grafana-alloy-to-compose-scope]
+                            [--attach-pangolin-site-to-compose-scope] [--domain-wan OPENSTUDIOLANDSCAPES__DOMAIN_WAN]
+                            [--config-store OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT] [--config-store-vcs OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS]
+                            [--landscapes-root OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT] [--logs-root OPENSTUDIOLANDSCAPES__LOGS_ROOT]
+                            [--landscapes-id OPENSTUDIOLANDSCAPES__LANDSCAPE_ID] [--skip-update-check | --auto-update | --keepalive KEEPALIVE]
                             {update,clone-feature,switch-branch} ...
 
 positional arguments:
@@ -275,13 +279,25 @@ options:
   --config-store OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT
                         Set the configuration store path.
   --config-store-vcs OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS
-                        If the config store is part of a Git repository already, you can specify the path to the repo here. Defaults to the same value like `OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT`.
+                        If the config store is part of a Git repository already, you can specify the path to the repo here. Defaults to the
+                        same value like `OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT`.
   --landscapes-root OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT
                         Set the Landscape root path. A `.landscapes` subdirectory will be created and used.
+  --logs-root OPENSTUDIOLANDSCAPES__LOGS_ROOT
+                        Set the OpenStudioLandscapes logs root path. A `.logs` subdirectory will be created and used.
   --landscapes-id OPENSTUDIOLANDSCAPES__LANDSCAPE_ID
                         Lock the landscape_id to this value.
-  --skip-update-check   Skip checking for codebase updates.
-  --auto-update         Automatically pull codebase updates.
+  --skip-update-check   Skip checking for codebase updates. The update check itself does nothing but checking whether there are code updates
+                        or not.
+  --auto-update         Automatically pull codebase updates. Specifiying this will imply *not* to `--skip-update-check`, hence, these are
+                        mutually exclusive.
+  --keepalive KEEPALIVE
+                        Automatically try to restart if CLI fails. Helpful for self healing when used in `systemd` for example. This is the
+                        third option and *will always* imply `--auto-update` in order to pull and apply latest codebase updates before
+                        restarting for a new attempt. If the supplied value is exceeded, keepalive will stop and exit for good. A supplied
+                        value of `1` is usually fine because if things fail even after applying code base updates, there is little chance that
+                        another iteration will fix the problem. However, it might give `systemd` more slack before failing and stopping an
+                        `openstudiolandscapes.service` unit.
 ```
 
 #### Sub-Commands
@@ -296,8 +312,23 @@ $ openstudiolandscapes clone-feature --help
 usage: openstudiolandscapes clone-feature [-h] --repo REPO
 
 options:
-  -h, --help            show this help message and exit
-  --repo REPO, -r REP
+  -h, --help   show this help message and exit
+  --repo REPO
+```
+
+##### switch-branch
+
+If you want to run **OpenStudioLandscapes** from a specific branch,
+the `switch-branch` checks out the specified branch for the engine
+an all Features with the `.features/` directory.
+
+```
+$ openstudiolandscapes switch-branch --help
+usage: openstudiolandscapes switch-branch [-h] --branch BRANCH
+
+options:
+  -h, --help       show this help message and exit
+  --branch BRANCH
 ```
 
 ### Launch OpenStudioLandscapes
@@ -335,7 +366,7 @@ And click **Materialize All**.
 > [!TIP]
 > 
 > Every time you **Materialize All**, a new Landscape ID and
-> therefore a new Landscape directory structure will be generated
+> therefore a new Landscape directory structure will be generated.
 > If you want to lock Landscape ID generation or edit a specific
 > Landscape ID, you can specify `--landscapes-id=My-Custom-Landscape`
 
@@ -427,22 +458,6 @@ you can run the following code snippet.
 source .venv/bin/activate
 openstudiolandscapes update
 ```
-
-> [!NOTE]
-> 
-> The following error
-> ```
-> # cd OpenStudioLandscapes
-> $ openstudiolandscapes update
-> usage: openstudiolandscapes [-h] [-v] [-vv]
-> openstudiolandscapes: error: unrecognized arguments: update
-> ```
-> means that your codebase is too old. To fix this, run
-> ```shell
-> # cd OpenStudioLandscapes
-> git pull
-> ```
-> and your codebase should contain the necessary functionality.
 
 # Q&A
 
@@ -676,7 +691,7 @@ you can run and use your Landscapes without **OpenStudioLandscapes**. **OpenStud
 and other third party tools for example. Those tools are _**de facto**_ industry standard.
 
 When we're talking about Features: same thing. For example, Kitsu community is growing 
-and being dependent on it long term is becoming less risky. 
+and being dependent on it long term is becoming increasingly less risky. 
 
 > [!IMPORTANT]
 > 
@@ -693,7 +708,7 @@ simply because you _**have**_ to.
 > A Feature template (work in progress) is provided for developers to integrate new Features:
 > [OpenStudioLandscapes-Template](https://github.com/michimussato/OpenStudioLandscapes-Template?tab=readme-ov-file#create-new-feature-from-this-template).
 
-## I don't like Pipeline! I'm a free thinker and I don't like boudaries!
+## I don't like Pipeline! I'm a free thinker and I don't like boundaries!
 
 The reputation of _pipeline_ can be ambiguous. On one hand, 
 it's here to increase efficiency. On the other hand, it does
