@@ -65,6 +65,22 @@ class OpenStudioLandscapesDiscoveryException(Exception):
     pass
 
 
+def get_verified_config(
+    config_file: pathlib.Path,
+) -> ruamel.yaml.CommentedMap:
+
+    data: ruamel.yaml.CommentedMap = load_yaml(
+        file_path=config_file,
+    )
+
+    msg = f"config.yml contains no data: {config_file.as_posix()}"
+    assert bool(data), msg
+    # This "should not" happen but
+    # due to a previous bug that lead to
+    # exaclty that, this acts as a "safety net".
+    return data
+
+
 # Todo
 #  - [ ] more specific return type
 def get_dynamic_ins(
@@ -134,6 +150,8 @@ def load_yaml(
     with open(file_path, "r") as fr:
         data: ruamel.yaml.CommentedMap = yaml_.load(fr)
 
+    LOGGER.debug(f"Loaded data from config.yml: {data}")
+
     if data is None:
         raise OpenStudioLandscapesDiscoveryException(
             "Could not load YAML file: \n" f"{file_path = }\n" f"{data = }\n"
@@ -145,13 +163,19 @@ def load_yaml(
 def dump_yaml(
     model_config: Union[ConfigEngine, FeatureBaseModel],
     file_path: pathlib.Path,
-):
+) -> None:
     """Save YAML data to a file, preserving comments/order."""
 
     # if file_path.exists() is not necessary - part of get_config()
+    # So, the config.yml file exists at this point (WRONG). However,
+    # it also has to be populated with data. If it is an empty
+    # file or a non-empty file with an empty dict, populate
+    # default data.
+
     current_config_: ruamel.yaml.CommentedMap = get_config(
         file_path_config_yaml=file_path,
     )
+    LOGGER.debug(f"{current_config_ = }")
 
     model_dump_json: str = model_config.model_dump_json(
         indent=2,
@@ -160,18 +184,28 @@ def dump_yaml(
     model_dump_dict: Dict = json.loads(model_dump_json)
 
     if file_path.exists():
-        # Develop some logic so that
-        # the existing file does not just get
-        # overwritten just like that.
-        # Keeping control over file handle
-        # concurrency with Dagster is not straight
-        # forward it seems.
-        # Of course, we need to make sure that
-        # new/changed model fields don't result
-        # in non-functional situations.
-        # - "Migration" logic?
+        # If the file already exists, don't touch
+        # it for the time being.
+        # Just analyze it and find differences
+        # between the keys in the file and
+        # keys in the model.
+        #
+        # Todo:
+        #  - [ ] Develop some logic so that
+        #        the existing file does not get
+        #        overwritten just like that.
+        #        Keeping control over file handle
+        #        concurrency with Dagster is not straight
+        #        forward it seems.
+        #        Of course, we need to make sure that
+        #        new/changed model fields don't result
+        #        in non-functional situations.
+        #        - "Migration" logic?
 
-        data: ruamel.yaml.CommentedMap = load_yaml(file_path)
+        data: ruamel.yaml.CommentedMap = get_verified_config(
+            config_file=file_path,
+        )
+
         LOGGER.debug(f"{data = }")
         # data = {'HKEY_BIN': '{DOT_FEATURES}/{FEATURE}/.payload/bin/hkey-bin', 'HSERVER': '{DOT_FEATURES}/{FEATURE}/.payload/bin/hserver', 'LICENSES': '{DOT_FEATURES}/{FEATURE}/.payload/bin/licenses', 'LICENSES_ACTIVE': '{DOT_FEATURES}/{FEATURE}/.payload/data/licenses', 'LICENSES_DISABLED': '{DOT_FEATURES}/{FEATURE}/.payload/bin/licenses.disabled', 'SESICTRL': '{DOT_FEATURES}/{FEATURE}/.payload/bin/sesictrl', 'SESINETD': '{DOT_FEATURES}/{FEATURE}/.payload/bin/sesinetd', 'SESINETD_PEAK_USAGE_BIN': '{DOT_FEATURES}/{FEATURE}/.payload/bin/sesinetd_peak_usage.bin', 'SESIUSAGE': '{DOT_FEATURES}/{FEATURE}/.payload/bin/sesiusage', 'SESI_PORT_CONTAINER': 1715, 'SESI_PORT_HOST': 1717, 'apt_packages': ['lsb-release'], 'compose_scope': 'license_server', 'docker_compose': '{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml', 'enabled': True, 'env': {}, 'feature_name': 'OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20', 'group_name': 'OpenStudioLandscapes_SESI_gcc_9_3_Houdini_20', 'key_prefixes': ['OpenStudioLandscapes_SESI_gcc_9_3_Houdini_20'], 'local_bind_volumes': [], 'local_environment_variables': {}}
 
@@ -206,7 +240,12 @@ def dump_yaml(
             #         f"{missing_keys = }"
             #     )
 
+        LOGGER.info(f"Existing config.yml left untouched: {file_path.as_posix()}")
+
     else:
+        # If the config.yml file does not exist,
+        # here's where it will get created and
+        # populated with default data
         file_path.parent.mkdir(
             parents=True,
             exist_ok=True,
@@ -218,8 +257,13 @@ def dump_yaml(
             sequence=2,
             offset=0,
         )  # Match original indentation
+
         with open(file_path, "w") as f:
-            yaml_.dump(current_config_, f)
+            yaml_.dump(model_dump_dict, f)
+
+        LOGGER.info(f"config.yml successfully written: {file_path.as_posix()}")
+
+    return None
 
 
 def get_config(
@@ -236,13 +280,21 @@ def get_config(
     """
 
     if file_path_config_yaml.exists():
-        data: ruamel.yaml.CommentedMap = load_yaml(
-            file_path=file_path_config_yaml,
+        LOGGER.debug(f"config.yml found: {file_path_config_yaml.as_posix()}")
+
+        data: ruamel.yaml.CommentedMap = get_verified_config(
+            config_file=file_path_config_yaml,
         )
+
+        LOGGER.debug(f"Returning data from file: {data}")
     else:
+        LOGGER.debug(f"config.yml does not exist: {file_path_config_yaml.as_posix()}")
         # CommentedMap needs an OrderedDict.
         # Standard dict does not work.
+        # Just return an empty CommentedMap to indicate that we're dealing
+        # with non-existing configs.
         data: ruamel.yaml.CommentedMap = ruamel.yaml.CommentedMap(OrderedDict())
+        LOGGER.debug(f"Returning empty data: {data}")
 
     return data
 
