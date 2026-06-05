@@ -81,3 +81,35 @@ sudo groupadd --force --gid 959 docker
 sudo usermod --append --groups docker ${USER}
 sudo reboot
 ```
+
+```
+    ~/gi/r/Farm-Setup/konsole_setups    main ?1  sshpass -p user /usr/bin/ssh -t user@minion03 -o StrictHostKeyChecking=no "echo user | sudo -S -k systemctl enable --now openstudiolandscapes-worker.service;     journalctl --follow --unit openstudiolandscapes-worker.service --output cat;     bash -l" 
+[sudo] password for user:  Image registry.openstudiolandscapes.lan:5000/openstudiolandscapes/openstudiolandscapes_deadline_10_2_build_docker_image_client:2026-01-21_17-22-54__seasoned-jelly-wholesale-mixer Error failed to copy: httpReadSeeker: failed open: failed to do request: Get "https://registry.openstudiolandscapes.lan:5000/v2/openstudiolandscapes/openstudiolandscapes_deadline_10_2_build_docker_image_client/manifests/sha256:3f2175fb94a9d27fcdff3ca62cbcbcad82c6878b396c3fc6a53a9940af599824": dial tcp: lookup registry.openstudiolandscapes.lan on 127.0.0.53:53: no such host
+ Image registry.openstudiolandscapes.lan:5000/openstudiolandscapes/openstudiolandscapes_deadline_10_2_build_docker_image_client:2026-01-21_17-22-54__seasoned-jelly-wholesale-mixer Interrupted
+ Image registry.openstudiolandscapes.lan:5000/openstudiolandscapes/openstudiolandscapes_grafana_build_docker_image_alloy:2026-01-21_17-22-54__seasoned-jelly-wholesale-mixer Interrupted
+Error response from daemon: failed to copy: httpReadSeeker: failed open: failed to do request: Get "https://registry.openstudiolandscapes.lan:5000/v2/openstudiolandscapes/openstudiolandscapes_deadline_10_2_build_docker_image_client/manifests/sha256:3f2175fb94a9d27fcdff3ca62cbcbcad82c6878b396c3fc6a53a9940af599824": dial tcp: lookup registry.openstudiolandscapes.lan on 127.0.0.53:53: no such host
+/
+/data/local/.openstudiolandscapes/.landscapes/2026-01-21_17-22-54__seasoned-jelly-wholesale-mixer/ComposeScope_worker/docker_compose /
+Working Directory: /data/local/.openstudiolandscapes/.landscapes/2026-01-21_17-22-54__seasoned-jelly-wholesale-mixer/ComposeScope_worker/docker_compose
+/
+openstudiolandscapes-worker.seremoved default_username, default_password from config.ymlrvice: Deactivated successfully.
+Started OpenStudioLandscapes Compose Scope "worker" Systemd Unit (openstudiolandscapes-worker.service) - 2026-01-21_17-22-54__seasoned-jelly-wholesale-mixer.
+/data/local/.openstudiolandscapes/.landscapes/2026-01-21_17-22-54__seasoned-jelly-wholesale-mixer/ComposeScope_worker/docker_compose /
+Working Directory: /data/local/.openstudiolandscapes/.landscapes/2026-01-21_17-22-54__seasoned-jelly-wholesale-mixer/ComposeScope_worker/docker_compose
+ Image registry.openstudiolandscapes.lan:5000/openstudiolandscapes/openstudiolandscapes_deadline_10_2_build_docker_image_client:2026-01-21_17-22-54__seasoned-jelly-wholesale-mixer Pulling
+ Image registry.openstudiolandscapes.lan:5000/openstudiolandscapes/openstudiolandscapes_grafana_build_docker_image_alloy:2026-01-21_17-22-54__seasoned-jelly-wholesale-mixer Pulling
+ Image registry.openstudiolandscapes.lan:5000/openstudiolandscapes/openstudiolandscapes_deadline_10_2_build_docker_image_client:2026-01-21_17-22-54__seasoned-jelly-wholesale-mixer Pulling
+ Image docker.io/fosrl/newt Pulling
+ Image registry.openstudiolandscapes.lan:5000/openstudiolandscapes/openstudiolandscapes_deadline_10_2_build_docker_image_client:2026-01-21_17-22-54__seasoned-jelly-wholesale-mixer Error failed to resolve reference "registry.openstudiolandscapes.lan:5000/openstudiolandscapes/openstudiolandscapes_deadline_10_2_build_docker_image_client:2026-01-21_17-22-54__seasoned-jelly-wholesale-mixer": failed to do request: Head "https://registry.openstudiolandscapes.lan:5000/v2/openstudiolandscapes/openstudiolandscapes_deadline_10_2_build_docker_image_client/manifests/2026-01-21_17-22-54__seasoned-jelly-wholesale-mixer": dial tcp: lookup registry.openstudiolandscapes.lan on 127.0.0.53:53: no such host
+ Image registry.openstudiolandscapes.lan:5000/openstudiolandscapes/openstudiolandscapes_grafana_build_docker_image_alloy:2026-01-21_17-22-54__seasoned-jelly-wholesale-mixer Interrupted
+ Image docker.io/fosrl/newt Interrupted
+ Image registry.openstudiolandscapes.lan:5000/openstudiolandscapes/openstudiolandscapes_deadline_10_2_build_docker_image_client:2026-01-21_17-22-54__seasoned-jelly-wholesale-mixer Interrupted
+Error response from daemon: failed to resolve reference "registry.openstudiolandscapes.lan:5000/openstudiolandscapes/openstudiolandscapes_deadline_10_2_build_docker_image_client:2026-01-21_17-22-54__seasoned-jelly-wholesale-mixer": failed to do request: Head "https://registry.openstudiolandscapes.lan:5000/v2/openstudiolandscapes/openstudiolandscapes_deadline_10_2_build_docker_image_client/manifests/2026-01-21_17-22-54__seasoned-jelly-wholesale-mixer": dial tcp: lookup registry.openstudiolandscapes.lan on 127.0.0.53:53: no such host
+/
+/data/local/.openstudiolandscapes/.landscapes/2026-01-21_17-22-54__seasoned-jelly-wholesale-mixer/ComposeScope_worker/docker_compose /
+Working Directory: /data/local/.openstudiolandscapes/.landscapes/2026-01-21_17-22-54__seasoned-jelly-wholesale-mixer/ComposeScope_worker/docker_compose
+/
+openstudiolandscapes-worker.service: Deactivated successfully.
+```
+
+Todo: schedule cleanup?
