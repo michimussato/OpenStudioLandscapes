@@ -220,25 +220,44 @@ def dump_yaml(
 
         if keys_expected != keys_actual:
 
-            # LOGGER.critical("Model keys and `config.yml` keys differ.")
+            LOGGER.critical("Model keys and `config.yml` keys differ.")
 
-            # missing_keys = set(keys_expected) - set(keys_actual)
+            missing_keys = set(keys_expected) - set(keys_actual)
             unused_keys = set(keys_actual) - set(keys_expected)
+            LOGGER.debug(f"{missing_keys = }")
+            LOGGER.debug(f"{unused_keys = }")
+
+            # IMPORTANT
+            # We don't want to edit a config.yml file automatically.
+            # This can have unwanted side effects and takes away control
+            # from the user. Just highlight the problem (or raise
+            # an exception) here.
+
+            if bool(missing_keys):
+                # Todo:
+                #  - [ ] This is not very graceful, so, maybe we
+                #        can come up with a better solution when
+                #        keys are missing.
+                msg = (
+                    f"config.yml has missing keys. Please manually "
+                    f"add {missing_keys} to {file_path.as_posix()} "
+                    f"or delete {file_path.as_posix()} to have it "
+                    f"automatically re-generated with default values. "
+                    f"We cannot continue gracefully. You can, however, fix the "
+                    f"problem and `Reload Definitions` without "
+                    f"restarting OpenStudioLandscapes."
+                )
+                LOGGER.critical(msg)
+                # This is currently dealt with by `except PydanticValidationError as e:`
+                raise OpenStudioLandscapesDiscoveryException(msg)
 
             if bool(unused_keys):
-                # We don't want to edit a config.yml file automatically.
-                # This can have unwanted side effects and takes away control
-                # from the user. Just highlight the problem here.
+                # This is not critical. It's just not
+                # clean to have unused keys in the config.yml.
                 LOGGER.warning(
                     f"Unused keys found in YAML file. Please manually "
                     f"remove {unused_keys} from {file_path.as_posix()}."
                 )
-
-            # if bool(missing_keys):
-            #     # This is currently dealt with by `except PydanticValidationError as e:`
-            #     raise OpenStudioLandscapesDiscoveryException(
-            #         f"{missing_keys = }"
-            #     )
 
         LOGGER.info(f"Existing config.yml left untouched: {file_path.as_posix()}")
 
