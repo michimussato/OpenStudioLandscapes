@@ -474,9 +474,6 @@ def simple_factory_alloy(
                     CONFIG.attach_grafana_alloy_to_compose_scope
                 ),
                 "alloy_config": MetadataValue.path(alloy_config),
-                "docker_dict": MetadataValue.md(
-                    f"```json\n{json.dumps(docker_dict, indent=2, default=str)}\n```"
-                ),
                 "compose_yaml": MetadataValue.md(f"```yaml\n{compose_yaml}\n```"),
             },
         )
