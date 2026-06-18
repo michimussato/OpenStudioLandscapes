@@ -102,16 +102,16 @@ install_docker:
 	sudo systemctl status --no-pager --full docker.service
 	sudo systemctl status --no-pager --full containerd.service
 
-edit_hosts_file:
-	for fqdn in \
-		openstudiolandscapes-dagster.${OPENSTUDIOLANDSCAPES__DOMAIN_LAN} \
-		openstudiolandscapes-dagster-postgres.${OPENSTUDIOLANDSCAPES__DOMAIN_LAN} \
-	; do \
-		sudo sed -i -e "\$$a127.0.0.1    $$fqdn" -e "/127.0.0.1    $${fqdn}/d" /etc/hosts; \
-	done
-
-	echo "Your /etc/hosts file looks like:"
-	cat /etc/hosts
+# edit_hosts_file:
+# 	for fqdn in \
+# 		openstudiolandscapes-dagster.${OPENSTUDIOLANDSCAPES__DOMAIN_LAN} \
+# 		openstudiolandscapes-dagster-postgres.${OPENSTUDIOLANDSCAPES__DOMAIN_LAN} \
+# 	; do \
+# 		sudo sed -i -e "\$$a127.0.0.1    $$fqdn" -e "/127.0.0.1    $${fqdn}/d" /etc/hosts; \
+# 	done
+#
+# 	echo "Your /etc/hosts file looks like:"
+# 	cat /etc/hosts
 
 # git clone --tags https://github.com/michimussato/OpenStudioLandscapes.git
 # git checkout -B <branch> origin/<branch>
@@ -124,6 +124,16 @@ openstudiolandscapes_install:
 		&& pip install -e . \
 		&& deactivate
 
+# This would just be a wrapper for Nox
+# openstudiolandscapes_update:
+# 	source .venv/bin/activate \
+# 		&& openstudiolandscapes update \
+# 		&& deactivate
+
+#openstudiolandscapes_install_features:
+#	source .venv/bin/activate;
+#	@for d in $(./.features/*) ; do pip install --force-reinstall --editable $${d} done \
+#	&& deactivate
 ###############################################################################
 
 
@@ -135,32 +145,26 @@ openstudiolandscapes_install:
 
 setup_venv:
 	python3.11 -m venv .venv
-
-openstudiolandscapes_update:
-	source .venv/bin/activate \
-		# && pip install -e .[dev] \
-		&& pip install -e . \
-		&& deactivate
 ###############################################################################
 
 ###############################################################################
 # NOX
 
-nox:
-	source .venv/bin/activate \
-		&& nox
+# nox:
+# 	source .venv/bin/activate \
+# 		&& nox
 
-nox_readme:
-	source .venv/bin/activate \
-		&& nox --sessions readme
+# nox_readme:
+# 	source .venv/bin/activate \
+# 		&& nox --sessions readme
 
-nox_tag:
-	source .venv/bin/activate \
-		&& nox --sessions tag
+# nox_tag:
+# 	source .venv/bin/activate \
+# 		&& nox --sessions tag
 
-nox_checkout:
-	source .venv/bin/activate \
-		&& nox --sessions checkout_branch
+# nox_checkout:
+# 	source .venv/bin/activate \
+# 		&& nox --sessions checkout_branch
 
 ###############################################################################
 
