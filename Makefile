@@ -113,27 +113,15 @@ install_docker:
 # 	echo "Your /etc/hosts file looks like:"
 # 	cat /etc/hosts
 
-# git clone --tags https://github.com/michimussato/OpenStudioLandscapes.git
-# git checkout -B <branch> origin/<branch>
-# or
-# git clone --tags --branch <branch> https://github.com/michimussato/OpenStudioLandscapes.git
+setup_venv:
+	python3.11 -m venv .venv
+
 openstudiolandscapes_install:
 	python3.11 -m venv .venv \
 		&& source .venv/bin/activate \
 		&& pip install --upgrade pip setuptools setuptools_scm wheel \
 		&& pip install -e . \
 		&& deactivate
-
-# This would just be a wrapper for Nox
-# openstudiolandscapes_update:
-# 	source .venv/bin/activate \
-# 		&& openstudiolandscapes update \
-# 		&& deactivate
-
-#openstudiolandscapes_install_features:
-#	source .venv/bin/activate;
-#	@for d in $(./.features/*) ; do pip install --force-reinstall --editable $${d} done \
-#	&& deactivate
 ###############################################################################
 
 
@@ -142,30 +130,6 @@ openstudiolandscapes_install:
 
 #nox_CLEAR_ALL:
 #	rm -r ./.nox/*/
-
-setup_venv:
-	python3.11 -m venv .venv
-###############################################################################
-
-###############################################################################
-# NOX
-
-# nox:
-# 	source .venv/bin/activate \
-# 		&& nox
-
-# nox_readme:
-# 	source .venv/bin/activate \
-# 		&& nox --sessions readme
-
-# nox_tag:
-# 	source .venv/bin/activate \
-# 		&& nox --sessions tag
-
-# nox_checkout:
-# 	source .venv/bin/activate \
-# 		&& nox --sessions checkout_branch
-
 ###############################################################################
 
 help:
