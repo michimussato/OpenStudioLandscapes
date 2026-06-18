@@ -125,6 +125,15 @@ LOGGING_SCHEMA: Dict = {
             "propagate": PROPAGATE,
             # 'level': 'WARNING',
         },
+        "git": {
+            # Affects
+            # - git.util
+            # - git.cmd
+            # - git.repo.bas
+            "handlers": ["console", "engine_filehandler"],
+            "propagate": PROPAGATE,
+            'level': 'INFO',
+        },
         # 'urllib3': {
         #     'handlers': ['console', 'file'],
         #     # 'propagate': True,

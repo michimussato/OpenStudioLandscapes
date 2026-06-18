@@ -27,6 +27,9 @@ except ImportError as e:
     #        - [](https://runebook.dev/en/docs/python/library/logging.config/logging.config.dictConfig)
     raise ImportError(f"Could not import OpenStudioLandscapes Loggers: " f"{e}") from e
 
+# At this stage, we did not load the OpenStudioLandscapes.logging
+# module yet, hence, the LOGGING_SCHEMA has no effect here yet.
+# Once the CLI
 CLI_LOGGER = log.getLogger("OpenStudioLandscapes.cli")
 DISCOVERY_LOGGER = log.getLogger("OpenStudioLandscapes.discovery")
 ENGINE_LOGGER = log.getLogger("OpenStudioLandscapes.engine")

@@ -254,17 +254,15 @@ The following commandline options are available:
 # source .venv/bin/activate
 
 $ openstudiolandscapes --help
-usage: openstudiolandscapes [-h] [--verbosity OPENSTUDIOLANDSCAPES__VERBOSITY] [--attach-grafana-alloy-to-compose-scope]
-                            [--attach-pangolin-site-to-compose-scope] [--domain-wan OPENSTUDIOLANDSCAPES__DOMAIN_WAN]
-                            [--config-store OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT] [--config-store-vcs OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS]
-                            [--landscapes-root OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT] [--logs-root OPENSTUDIOLANDSCAPES__LOGS_ROOT]
-                            [--landscapes-id OPENSTUDIOLANDSCAPES__LANDSCAPE_ID] [--auto-fix-missing-keys]
-                            [--skip-update-check | --auto-update | --keepalive KEEPALIVE]
-                            {update,clone-feature,switch-branch} ...
+usage: openstudiolandscapes [-h] [--verbosity OPENSTUDIOLANDSCAPES__VERBOSITY] [--attach-grafana-alloy-to-compose-scope] [--attach-pangolin-site-to-compose-scope] [--domain-wan OPENSTUDIOLANDSCAPES__DOMAIN_WAN]
+                            [--config-store OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT] [--config-store-vcs OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS] [--landscapes-root OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT]
+                            [--logs-root OPENSTUDIOLANDSCAPES__LOGS_ROOT] [--landscapes-id OPENSTUDIOLANDSCAPES__LANDSCAPE_ID] [--auto-fix-missing-keys] [--skip-update-check | --auto-update | --keepalive KEEPALIVE]
+                            {update,clone-feature,install-features,switch-branch} ...
 
 positional arguments:
-  {update,clone-feature,switch-branch}
+  {update,clone-feature,install-features,switch-branch}
     clone-feature       Clone a feature from a given repository and print installation instructions.
+    install-features    Install all Features cloned to .features.
     switch-branch       Switch branch across the Engine and all Features.
 
 options:
@@ -280,8 +278,7 @@ options:
   --config-store OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT
                         Set the configuration store path.
   --config-store-vcs OPENSTUDIOLANDSCAPES__CONFIGSTORE_VCS
-                        If the config store is part of a Git repository already, you can specify the path to the repo here. Defaults to the same
-                        value like `OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT`.
+                        If the config store is part of a Git repository already, you can specify the path to the repo here. Defaults to the same value like `OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT`.
   --landscapes-root OPENSTUDIOLANDSCAPES__DOT_LANDSCAPES_ROOT
                         Set the Landscape root path. A `.landscapes` subdirectory will be created and used.
   --logs-root OPENSTUDIOLANDSCAPES__LOGS_ROOT
@@ -289,17 +286,14 @@ options:
   --landscapes-id OPENSTUDIOLANDSCAPES__LANDSCAPE_ID
                         Lock the landscape_id to this value.
   --auto-fix-missing-keys
-                        Automatically add missing keys with default model values if key is not found in `config.yml`. This only adds missing keys.
-                        It does not remove unused keys from the `config.yml` file.
+                        Automatically add missing keys with default model values if key is not found in `config.yml`. This only adds missing keys. It does not remove unused keys from the `config.yml` file.
   --skip-update-check   Skip checking for codebase updates. The update check itself does nothing but checking whether there are code updates or not.
-  --auto-update         Automatically pull codebase updates. Specifiying this will imply *not* to `--skip-update-check`, hence, these are mutually
-                        exclusive.
+  --auto-update         Automatically pull codebase updates. Specifiying this will imply *not* to `--skip-update-check`, hence, these are mutually exclusive.
   --keepalive KEEPALIVE
-                        Automatically try to restart if CLI fails. Helpful for self healing when used in `systemd` for example. This is the third
-                        option and *will always* imply `--auto-update` in order to pull and apply latest codebase updates before restarting for a
-                        new attempt. If the supplied value is exceeded, keepalive will stop and exit for good. A supplied value of `1` is usually
-                        fine because if things fail even after applying code base updates, there is little chance that another iteration will fix
-                        the problem. However, it might give `systemd` more slack before failing and stopping an `openstudiolandscapes.service` unit.
+                        Automatically try to restart if CLI fails. Helpful for self healing when used in `systemd` for example. This is the third option and *will always* imply `--auto-update` in order to pull and apply
+                        latest codebase updates before restarting for a new attempt. If the supplied value is exceeded, keepalive will stop and exit for good. A supplied value of `1` is usually fine because if things fail
+                        even after applying code base updates, there is little chance that another iteration will fix the problem. However, it might give `systemd` more slack before failing and stopping an
+                        `openstudiolandscapes.service` unit.
 ```
 
 #### Sub-Commands
@@ -311,11 +305,23 @@ options:
 # source .venv/bin/activate
 
 $ openstudiolandscapes clone-feature --help
-usage: openstudiolandscapes clone-feature [-h] --repo REPO
+usage: openstudiolandscapes clone-feature [-h] --repo REPO [--install]
 
 options:
   -h, --help   show this help message and exit
-  --repo REPO
+  --repo REPO  Specify the repository URL.
+  --install    Also install the cloned feature.
+```
+
+##### install-features
+
+```
+# openstudiolandscapes install-features --help
+usage: openstudiolandscapes install-features [-h] [--force-reinstall]
+
+options:
+  -h, --help         show this help message and exit
+  --force-reinstall  Force (re-)install all cloned Features.
 ```
 
 ##### switch-branch
@@ -493,6 +499,14 @@ for example.
 > [OpenStudioLandscapesHub](https://github.com/michimussato/openStudioLandscapesHub) 
 > is an attempt (WIP) to give you a basic infrastructure to minimize the barrier down
 > to a minimum.
+
+> [!TIP]
+> 
+> Enterprise Edition is free for personal use and organizations with less 
+> than $100,000 USD gross annual revenue. You still need a valid license 
+> key to activate it.
+> References:
+> - [Enterprise Edition](https://docs.pangolin.net/self-host/enterprise-edition#business-use)
 
 ### OK, now I'm hooked...
 

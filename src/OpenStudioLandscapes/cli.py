@@ -88,11 +88,6 @@ def run_openstudiolandscapes_postgres(args):
             "root. Cannot proceed."
         )
 
-    # LOGGER.info(result.stderr)
-    # LOGGER.info(result.returncode)
-
-    # return result.returncode
-
 
 def run_openstudiolandscapes_mysql(args):
     LOGGER.info("Welcome!")
@@ -242,6 +237,19 @@ def parse_args(args):
              "the `config.yml` file.",
     )
 
+    # parser.add_argument(
+    #     "--pip-auto-upgrade",
+    #     dest="pip_auto_upgrade",
+    #     default=False,
+    #     action="store_true",
+    #     required=False,
+    #     help="Skip checking for codebase updates. The update check "
+    #     "itself does nothing but checking whether there are "
+    #     "code updates or not.",
+    # )
+    # # pip install --upgrade --editable .
+
+
     update_group = parser.add_mutually_exclusive_group(required=False)
 
     update_group.add_argument(
@@ -302,7 +310,7 @@ def parse_args(args):
     #     help="git pull.",
     # )
 
-    subparser_install_feature = subparsers.add_parser(
+    subparser_clone_feature = subparsers.add_parser(
         "clone-feature",
         help="Clone a feature from a given repository and "
         "print installation instructions.",
@@ -311,16 +319,64 @@ def parse_args(args):
     # Todo
     #  - [ ] set branch, default=main `--branch`
 
-    subparser_install_feature.add_argument(
+    subparser_clone_feature.add_argument(
         "--repo",
         dest="repo",
         metavar="REPO",
         # type=git.Repo,
         type=str,
         required=True,
+        help="Specify the repository URL.",
     )
 
-    subparser_install_feature = subparsers.add_parser(
+    subparser_clone_feature.add_argument(
+        "--install",
+        dest="install",
+        default=False,
+        action="store_true",
+        required=False,
+        help="Also install the cloned feature.",
+    )
+
+    install_feature = subparsers.add_parser(
+        "install-features",
+        help="Install all Features cloned to .features.",
+    )
+
+    # Todo
+    #  - [ ] set branch, default=main `--branch`
+
+    # subparser_clone_feature.add_argument(
+    #     "--repo",
+    #     dest="repo",
+    #     metavar="REPO",
+    #     # type=git.Repo,
+    #     type=str,
+    #     required=True,
+    #     help="Specify the repository URL.",
+    # )
+
+    install_feature.add_argument(
+        "--force-reinstall",
+        dest="force_reinstall",
+        default=False,
+        action="store_true",
+        required=False,
+        help="Force (re-)install all cloned Features.",
+    )
+
+    # Doing this, `pip install -e .`
+    # will be necessary
+    # subparser_clone_feature.add_argument(
+    #     "--force-reinstall",
+    #     dest="force_reinstall",
+    #     default=False,
+    #     action="store_true",
+    #     required=False,
+    #     help="Force re-install.",
+    # )
+
+    subparser_switch_branch = subparsers.add_parser(
         "switch-branch",
         help="Switch branch across the Engine and all Features.",
     )
@@ -328,7 +384,7 @@ def parse_args(args):
     # Todo
     #  - [ ] set branch, default=main `--branch`
 
-    subparser_install_feature.add_argument(
+    subparser_switch_branch.add_argument(
         "--branch",
         dest="branch",
         metavar="BRANCH",
@@ -462,30 +518,31 @@ def check_updates_available(autoupdate: bool = False):
 
     # if any(sc == args.sub_command for sc in ["update"]):
 
-    LOGGER.info("Checking for OpenStudioLandscapes updates...")
+    # Todo
+    #  - [ ] Consolidate code with `if any(sc == args.sub_command for sc in ["update"]):` block
 
     repos = {
         "engine": None,
         "features": {},
     }
 
-    LOGGER.info("Checking for OpenStudioLandscapes Engine and Features updates...")
     repo = git.Repo(".")
     LOGGER.debug(f"{repo = }")
     LOGGER.info(f"{repo.active_branch = }")
     LOGGER.debug(f"{repo.working_dir = }")
-    LOGGER.info(
+    LOGGER.critical(
         f"Checking for {pathlib.Path(repo.working_dir).name} (Engine) updates..."
     )
     repos["engine"] = repo
     git_cmd = repo.git
     dirty = repo.is_dirty()
     if dirty:
-        LOGGER.critical("Local repo has uncommitted changes.")
+        LOGGER.critical(f"Local repo {repo.working_dir} has uncommitted changes.")
         # status = git_cmd.status()
         # LOGGER.info(status)
     # else:
     fetch = git_cmd.fetch()
+    LOGGER.critical(f"Updates available: {bool(fetch)}")
     LOGGER.info(f"Fetch: {fetch}")
     status = git_cmd.status()
     LOGGER.info(f"Status: {status}")
@@ -504,18 +561,19 @@ def check_updates_available(autoupdate: bool = False):
         LOGGER.debug(f"{repo_feature = }")
         LOGGER.info(f"{repo.active_branch = }")
         LOGGER.debug(f"{repo_feature.working_dir = }")
-        LOGGER.info(
+        LOGGER.critical(
             f"Checking for {pathlib.Path(repo_feature.working_dir).name} updates..."
         )
         repos["features"][pathlib.Path(repo_feature.working_dir).name] = repo_feature
         git_cmd_feature = repo_feature.git
         feature_dirty = repo_feature.is_dirty()
         if feature_dirty:
-            LOGGER.critical("Can't update: repo has uncommitted changes.")
+            LOGGER.critical(f"Local repo {repo_feature.working_dir} has uncommitted changes.")
             # status_feature = git_cmd_feature.status()
             # LOGGER.info(status_feature)
         # else:
         fetch_feature = git_cmd_feature.fetch()
+        LOGGER.critical(f"Updates available: {bool(fetch_feature)}")
         LOGGER.info(f"Fetch: {fetch_feature}")
         status_feature = git_cmd_feature.status()
         LOGGER.info(f"Status: {status_feature}")
@@ -639,6 +697,8 @@ def checks(args):
     check_sys_deps()
 
     if not args.skip_update_check:
+        LOGGER.critical("Checking for OpenStudioLandscapes Engine and Features updates...")
+        LOGGER.critical(f"autoupdate (pull) is set to {args.auto_update}.")
         check_updates_available(autoupdate=args.auto_update)
 
 
@@ -646,6 +706,17 @@ def main(args):
     args = parse_args(args)
     setup_logging(args.verbosity)
     LOGGER.info(f"Launching OpenStudioLandscapes...")
+
+    if any(sc == args.sub_command for sc in [
+        "clone-feature",
+        "install-features",
+    ]):
+        # Set skip_update_check to True for these sub-commands.
+        # Saves us some time.
+        # Todo
+        #  - [ ] Maybe we can skip more checks here.
+        args.skip_update_check = True
+        LOGGER.debug(f"`args.skip_update_check` overridden: {args.skip_update_check = }")
 
     checks(args)
 
@@ -666,9 +737,9 @@ def main(args):
         repos["engine"] = repo
         git_cmd = repo.git
         if repo.is_dirty():
-            LOGGER.critical("Can't update: repo has uncommitted changes.")
+            LOGGER.critical(f"Can't pull Engine: repo {repo.working_dir} has uncommitted changes.")
             status = git_cmd.status()
-            LOGGER.info(status)
+            LOGGER.critical(status)
         else:
             result = git_cmd.pull()
             LOGGER.info(f"Changes: {result}")
@@ -688,13 +759,43 @@ def main(args):
             ] = repo_feature
             git_cmd_feature = repo_feature.git
             if repo_feature.is_dirty():
-                LOGGER.critical("Can't update: repo has uncommitted changes.")
+                LOGGER.critical(f"Can't pull Feature: repo {repo_feature.working_dir} has uncommitted changes.")
                 status_feature = git_cmd_feature.status()
-                LOGGER.info(status_feature)
+                LOGGER.critical(status_feature)
             else:
                 result_feature = git_cmd_feature.pull()
                 LOGGER.info(f"Changes: {result_feature}")
         # repo.git.pull()
+        return
+
+    elif any(sc == args.sub_command for sc in ["install-features"]):
+
+        LOGGER.critical("Installing OpenStudioLandscapes Features...")
+        LOGGER.critical(f"Force re-install: {args.force_reinstall}")
+        repo = git.Repo(".")
+        LOGGER.debug(f"{repo = }")
+        LOGGER.debug(f"{repo.working_dir = }")
+
+        for d in pathlib.Path(repo.working_tree_dir).joinpath(".features").iterdir():
+            if d.is_file():
+                continue
+            LOGGER.debug(f"{d = }")
+            repo_feature = git.Repo(d)
+            LOGGER.debug(f"{repo_feature = }")
+            LOGGER.debug(f"{repo_feature.working_dir = }")
+            LOGGER.critical(
+                f"Installing {pathlib.Path(repo_feature.working_dir).name}..."
+            )
+
+            cmd_install = f"pip install --editable {d.as_posix()}"
+
+            if args.force_reinstall:
+                cmd_install += " --force-reinstall"
+
+            result = subprocess.call(cmd_install, shell=True)
+
+            LOGGER.critical(f"{pathlib.Path(repo_feature.working_dir).name} installation successful: {not bool(result)}")
+
         return
 
     elif any(sc == args.sub_command for sc in ["switch-branch"]):
@@ -708,15 +809,12 @@ def main(args):
         repo = git.Repo(".")
         LOGGER.debug(f"{repo = }")
         LOGGER.debug(f"{repo.working_dir = }")
-        # LOGGER.info(
-        #     f"Checking for {pathlib.Path(repo.working_dir).name} (Engine) updates..."
-        # )
         repos["engine"] = repo
         git_cmd = repo.git
         if repo.is_dirty():
-            LOGGER.critical("Can't switch: repo has uncommitted changes.")
+            LOGGER.critical(f"Can't switch: repo {repo.working_dir} has uncommitted changes.")
             status = git_cmd.status()
-            LOGGER.info(status)
+            LOGGER.critical(status)
         else:
             result = git_cmd.checkout(args.branch)
             LOGGER.info(f"Checkout: {result}")
@@ -736,9 +834,9 @@ def main(args):
             ] = repo_feature
             git_cmd_feature = repo_feature.git
             if repo_feature.is_dirty():
-                LOGGER.critical("Can't switch: repo has uncommitted changes.")
+                LOGGER.critical(f"Can't switch: repo {repo_feature.working_dir} has uncommitted changes.")
                 status_feature = git_cmd_feature.status()
-                LOGGER.info(status_feature)
+                LOGGER.critical(status_feature)
             else:
                 result_feature = git_cmd_feature.checkout(args.branch)
                 LOGGER.info(f"Changes: {result_feature}")
@@ -763,14 +861,14 @@ def main(args):
             git_cmd = repo.git
             dirty = repo.is_dirty()
             if dirty:
-                LOGGER.critical("Local repo has uncommitted changes.")
+                LOGGER.critical(f"Local repo {repo} has uncommitted changes.")
                 # status = git_cmd.status()
                 # LOGGER.info(status)
             # else:
             fetch = git_cmd.fetch()
-            LOGGER.info(f"Fetch: {fetch}")
+            LOGGER.debug(f"Fetch: {fetch}")
             status = git_cmd.status()
-            LOGGER.info(f"Status: {status}")
+            LOGGER.debug(f"Status: {status}")
             # if args.auto_update:
             if dirty:
                 LOGGER.critical("Repo is dirty, auto-update skipped.")
@@ -795,16 +893,45 @@ def main(args):
             except git.exc.GitCommandError as git_command_error:
                 LOGGER.error(f"Failed to clone repo {repo}: {git_command_error}")
                 raise CLIException from git_command_error
-        install_cmd = f"source {pathlib.Path(repo_engine.working_dir).joinpath('.venv', 'bin', 'activate')} && pip install --editable {repo.working_dir}"
 
-        LOGGER.info(
+        pip_cmd = f"pip install --editable {repo.working_dir}"
+
+        install_cmd = f"source {pathlib.Path(repo_engine.working_dir).joinpath('.venv', 'bin', 'activate')} && {pip_cmd}"
+
+        msg = (
             f"\n\nInstall Feature with:\n"
             f"\t`{install_cmd}`\n"
             f"\tIn Dagster: 'Reload definitions`.\n"
-            f"\tthis will create:\n"
-            f"\t- '<CONFIG_STORE>/{repo_name}/config.yml'\n"
-            f"\tEdit this file according to your needs.\n\n"
+            f"\tThis will create:\n"
+            f"\t- '{args.config_store.joinpath(repo_name)}/config.yml'\n"
+            f"\tEdit this file according to your needs and\n"
+            f"\tsee https://github.com/michimussato/{repo_name}#default-configuration for more information.\n"
         )
+
+        if args.install:
+
+            # if args.force_reinstall:
+            #     pip_cmd += " --force-reinstall"
+
+            LOGGER.critical(f"Installing Feature...")
+            result = subprocess.call(pip_cmd, shell=True)
+
+            if result != 0:
+                LOGGER.critical(f"Installation failed. Install manually as described here:")
+                LOGGER.critical(msg)
+
+            # python -c 'try: import OpenStudioLandscapes.Grafana; except ModuleNotFoundError: as e: LOGGER.exception()'
+            # Test-import newly installed Feature
+            result_test = subprocess.call(
+                "python -c 'import %s'" % str(repo_name).replace("-", "."),
+                shell=True,
+            )
+
+            LOGGER.debug(f"Import test result return code: {result_test}")
+
+        else:
+
+            LOGGER.critical(msg)
 
         return
 
