@@ -14,6 +14,7 @@
     * [CLI](#cli)
       * [Sub-Commands](#sub-commands)
         * [clone-feature](#clone-feature)
+        * [install-features](#install-features)
         * [switch-branch](#switch-branch)
     * [Launch OpenStudioLandscapes](#launch-openstudiolandscapes)
     * [Create Landscape](#create-landscape)
