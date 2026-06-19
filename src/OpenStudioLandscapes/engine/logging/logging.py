@@ -132,7 +132,7 @@ LOGGING_SCHEMA: Dict = {
             # - git.repo.bas
             "handlers": ["console", "engine_filehandler"],
             "propagate": PROPAGATE,
-            'level': 'INFO',
+            "level": "INFO",
         },
         # 'urllib3': {
         #     'handlers': ['console', 'file'],

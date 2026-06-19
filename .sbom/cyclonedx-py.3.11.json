@@ -158,7 +158,7 @@
       "version": "0.0.0"
     },
     {
-      "bom-ref": "BomRef.36420384223113134.38576849903695776",
+      "bom-ref": "BomRef.24447853967960242.8021309142131734",
       "description": "A Toolkit to create dynamic Animation and VFX studio environments for robust automation and pipelines.",
       "externalReferences": [
         {
@@ -299,7 +299,7 @@
       "version": "2.20.0"
     },
     {
-      "bom-ref": "SQLAlchemy==2.0.50",
+      "bom-ref": "SQLAlchemy==2.0.51",
       "description": "Database Abstraction Library",
       "externalReferences": [
         {
@@ -327,9 +327,9 @@
         }
       ],
       "name": "SQLAlchemy",
-      "purl": "pkg:pypi/sqlalchemy@2.0.50",
+      "purl": "pkg:pypi/sqlalchemy@2.0.51",
       "type": "library",
-      "version": "2.0.50"
+      "version": "2.0.51"
     },
     {
       "bom-ref": "SnakeMD==2.4.1",
@@ -461,7 +461,7 @@
       "version": "4.13.2"
     },
     {
-      "bom-ref": "anyio==4.13.0",
+      "bom-ref": "anyio==4.14.0",
       "description": "High-level concurrency and networking framework on top of asyncio or Trio",
       "externalReferences": [
         {
@@ -494,9 +494,9 @@
         }
       ],
       "name": "anyio",
-      "purl": "pkg:pypi/anyio@4.13.0",
+      "purl": "pkg:pypi/anyio@4.14.0",
       "type": "library",
-      "version": "4.13.0"
+      "version": "4.14.0"
     },
     {
       "bom-ref": "argcomplete==3.6.3",
@@ -669,7 +669,7 @@
       "version": "5.0"
     },
     {
-      "bom-ref": "certifi==2026.5.20",
+      "bom-ref": "certifi==2026.6.17",
       "description": "Python package for providing Mozilla's CA Bundle.",
       "externalReferences": [
         {
@@ -698,9 +698,9 @@
         }
       ],
       "name": "certifi",
-      "purl": "pkg:pypi/certifi@2026.5.20",
+      "purl": "pkg:pypi/certifi@2026.6.17",
       "type": "library",
-      "version": "2026.5.20"
+      "version": "2026.6.17"
     },
     {
       "bom-ref": "chardet==5.2.0",
@@ -922,7 +922,7 @@
       "version": "7.3.0"
     },
     {
-      "bom-ref": "cyclonedx-python-lib==11.8.0",
+      "bom-ref": "cyclonedx-python-lib==11.11.0",
       "description": "Python library for CycloneDX",
       "externalReferences": [
         {
@@ -977,9 +977,9 @@
           "value": "validation"
         }
       ],
-      "purl": "pkg:pypi/cyclonedx-python-lib@11.8.0",
+      "purl": "pkg:pypi/cyclonedx-python-lib@11.11.0",
       "type": "library",
-      "version": "11.8.0"
+      "version": "11.11.0"
     },
     {
       "bom-ref": "dagster==1.9.11",
@@ -1233,7 +1233,7 @@
       "version": "1.3.1"
     },
     {
-      "bom-ref": "distlib==0.4.1",
+      "bom-ref": "distlib==0.4.3",
       "description": "Distribution utilities",
       "externalReferences": [
         {
@@ -1272,9 +1272,9 @@
         }
       ],
       "name": "distlib",
-      "purl": "pkg:pypi/distlib@0.4.1",
+      "purl": "pkg:pypi/distlib@0.4.3",
       "type": "library",
-      "version": "0.4.1"
+      "version": "0.4.3"
     },
     {
       "bom-ref": "dnspython==2.8.0",
@@ -1410,7 +1410,7 @@
       "version": "2.3.0"
     },
     {
-      "bom-ref": "filelock==3.29.1",
+      "bom-ref": "filelock==3.29.4",
       "description": "A platform independent file lock.",
       "externalReferences": [
         {
@@ -1443,9 +1443,9 @@
         }
       ],
       "name": "filelock",
-      "purl": "pkg:pypi/filelock@3.29.1",
+      "purl": "pkg:pypi/filelock@3.29.4",
       "type": "library",
-      "version": "3.29.1"
+      "version": "3.29.4"
     },
     {
       "bom-ref": "fqdn==1.5.1",
@@ -1471,7 +1471,7 @@
       "version": "1.5.1"
     },
     {
-      "bom-ref": "fsspec==2026.4.0",
+      "bom-ref": "fsspec==2026.6.0",
       "description": "File-system specification",
       "externalReferences": [
         {
@@ -1529,9 +1529,9 @@
           "value": "ssh"
         }
       ],
-      "purl": "pkg:pypi/fsspec@2026.4.0",
+      "purl": "pkg:pypi/fsspec@2026.6.0",
       "type": "library",
-      "version": "2026.4.0"
+      "version": "2026.6.0"
     },
     {
       "bom-ref": "gitdb==4.0.12",
@@ -1703,7 +1703,7 @@
       "version": "0.21"
     },
     {
-      "bom-ref": "greenlet==3.5.1",
+      "bom-ref": "greenlet==3.5.2",
       "description": "Lightweight in-process concurrent programming",
       "externalReferences": [
         {
@@ -1739,12 +1739,12 @@
         }
       ],
       "name": "greenlet",
-      "purl": "pkg:pypi/greenlet@3.5.1",
+      "purl": "pkg:pypi/greenlet@3.5.2",
       "type": "library",
-      "version": "3.5.1"
+      "version": "3.5.2"
     },
     {
-      "bom-ref": "grpcio==1.81.0",
+      "bom-ref": "grpcio==1.81.1",
       "description": "HTTP/2-based RPC framework",
       "externalReferences": [
         {
@@ -1777,9 +1777,9 @@
         }
       ],
       "name": "grpcio",
-      "purl": "pkg:pypi/grpcio@1.81.0",
+      "purl": "pkg:pypi/grpcio@1.81.1",
       "type": "library",
-      "version": "1.81.0"
+      "version": "1.81.1"
     },
     {
       "bom-ref": "grpcio-health-checking==1.71.2",
@@ -2964,7 +2964,7 @@
       "version": "2.9.0.post0"
     },
     {
-      "bom-ref": "python-discovery==1.4.0",
+      "bom-ref": "python-discovery==1.4.2",
       "description": "Python interpreter discovery",
       "externalReferences": [
         {
@@ -3002,9 +3002,9 @@
         }
       ],
       "name": "python-discovery",
-      "purl": "pkg:pypi/python-discovery@1.4.0",
+      "purl": "pkg:pypi/python-discovery@1.4.2",
       "type": "library",
-      "version": "1.4.0"
+      "version": "1.4.2"
     },
     {
       "bom-ref": "python-dotenv==1.2.2",
@@ -3489,7 +3489,7 @@
       "version": "2.4.0"
     },
     {
-      "bom-ref": "starlette==1.2.1",
+      "bom-ref": "starlette==1.3.1",
       "description": "The little ASGI library that shines.",
       "externalReferences": [
         {
@@ -3533,12 +3533,12 @@
           "value": "full"
         }
       ],
-      "purl": "pkg:pypi/starlette@1.2.1",
+      "purl": "pkg:pypi/starlette@1.3.1",
       "type": "library",
-      "version": "1.2.1"
+      "version": "1.3.1"
     },
     {
-      "bom-ref": "structlog==25.5.0",
+      "bom-ref": "structlog==26.1.0",
       "description": "Structured Logging for Python",
       "externalReferences": [
         {
@@ -3589,9 +3589,9 @@
         }
       ],
       "name": "structlog",
-      "purl": "pkg:pypi/structlog@25.5.0",
+      "purl": "pkg:pypi/structlog@26.1.0",
       "type": "library",
-      "version": "25.5.0"
+      "version": "26.1.0"
     },
     {
       "bom-ref": "tabulate==0.10.0",
@@ -3668,7 +3668,7 @@
       "version": "1.10"
     },
     {
-      "bom-ref": "tqdm==4.68.0",
+      "bom-ref": "tqdm==4.68.3",
       "description": "Fast, Extensible Progress Meter",
       "externalReferences": [
         {
@@ -3699,9 +3699,9 @@
         }
       ],
       "name": "tqdm",
-      "purl": "pkg:pypi/tqdm@4.68.0",
+      "purl": "pkg:pypi/tqdm@4.68.3",
       "type": "library",
-      "version": "4.68.0"
+      "version": "4.68.3"
     },
     {
       "bom-ref": "typing-inspection==0.4.2",
@@ -3990,7 +3990,7 @@
       "version": "0.22.1"
     },
     {
-      "bom-ref": "virtualenv==21.4.2",
+      "bom-ref": "virtualenv==21.5.1",
       "description": "Virtual Python Environment builder",
       "externalReferences": [
         {
@@ -4023,9 +4023,9 @@
         }
       ],
       "name": "virtualenv",
-      "purl": "pkg:pypi/virtualenv@21.4.2",
+      "purl": "pkg:pypi/virtualenv@21.5.1",
       "type": "library",
-      "version": "21.4.2"
+      "version": "21.5.1"
     },
     {
       "bom-ref": "watchdog==5.0.3",
@@ -4357,11 +4357,11 @@
     },
     {
       "dependsOn": [
-        "greenlet==3.5.1",
+        "greenlet==3.5.2",
         "psycopg2-binary==2.9.12",
         "typing_extensions==4.15.0"
       ],
-      "ref": "SQLAlchemy==2.0.50"
+      "ref": "SQLAlchemy==2.0.51"
     },
     {
       "ref": "SnakeMD==2.4.1"
@@ -4369,7 +4369,7 @@
     {
       "dependsOn": [
         "Mako==1.3.12",
-        "SQLAlchemy==2.0.50",
+        "SQLAlchemy==2.0.51",
         "tomli==2.4.1",
         "typing_extensions==4.15.0",
         "tzdata==2026.2"
@@ -4390,7 +4390,7 @@
         "idna==3.18",
         "typing_extensions==4.15.0"
       ],
-      "ref": "anyio==4.13.0"
+      "ref": "anyio==4.14.0"
     },
     {
       "dependsOn": [
@@ -4416,7 +4416,7 @@
       "ref": "boolean.py==5.0"
     },
     {
-      "ref": "certifi==2026.5.20"
+      "ref": "certifi==2026.6.17"
     },
     {
       "ref": "chardet==5.2.0"
@@ -4439,7 +4439,7 @@
     {
       "dependsOn": [
         "chardet==5.2.0",
-        "cyclonedx-python-lib==11.8.0",
+        "cyclonedx-python-lib==11.11.0",
         "packageurl-python==0.17.6",
         "packaging==26.2",
         "pip-requirements-parser==32.0.1",
@@ -4458,7 +4458,7 @@
         "sortedcontainers==2.4.0",
         "typing_extensions==4.15.0"
       ],
-      "ref": "cyclonedx-python-lib==11.8.0"
+      "ref": "cyclonedx-python-lib==11.11.0"
     },
     {
       "dependsOn": [
@@ -4466,7 +4466,7 @@
         "gql==3.5.3",
         "graphene==3.4.3",
         "requests==2.34.2",
-        "starlette==1.2.1"
+        "starlette==1.3.1"
       ],
       "ref": "dagster-graphql==1.9.11"
     },
@@ -4485,7 +4485,7 @@
         "click==8.4.1",
         "dagster-graphql==1.9.11",
         "dagster==1.9.11",
-        "starlette==1.2.1",
+        "starlette==1.3.1",
         "uvicorn==0.49.0"
       ],
       "ref": "dagster-webserver==1.9.11"
@@ -4494,17 +4494,17 @@
       "dependsOn": [
         "Jinja2==3.1.6",
         "PyYAML==6.0.3",
-        "SQLAlchemy==2.0.50",
+        "SQLAlchemy==2.0.51",
         "alembic==1.18.4",
         "antlr4-python3-runtime==4.13.2",
         "click==8.4.1",
         "coloredlogs==14.0",
         "dagster-pipes==1.9.11",
         "docstring_parser==0.18.0",
-        "filelock==3.29.1",
-        "fsspec==2026.4.0",
+        "filelock==3.29.4",
+        "fsspec==2026.6.0",
         "grpcio-health-checking==1.71.2",
-        "grpcio==1.81.0",
+        "grpcio==1.81.1",
         "packaging==26.2",
         "protobuf==5.29.6",
         "pydantic==2.13.4",
@@ -4514,11 +4514,11 @@
         "rich==15.0.0",
         "setuptools==82.0.1",
         "six==1.17.0",
-        "structlog==25.5.0",
+        "structlog==26.1.0",
         "tabulate==0.10.0",
         "tomli==2.4.1",
         "toposort==1.10",
-        "tqdm==4.68.0",
+        "tqdm==4.68.3",
         "typing_extensions==4.15.0",
         "tzdata==2026.2",
         "universal_pathlib==0.3.10",
@@ -4537,7 +4537,7 @@
       "ref": "dependency-groups==1.3.1"
     },
     {
-      "ref": "distlib==0.4.1"
+      "ref": "distlib==0.4.3"
     },
     {
       "dependsOn": [
@@ -4568,7 +4568,7 @@
       "ref": "email-validator==2.3.0"
     },
     {
-      "ref": "filelock==3.29.1"
+      "ref": "filelock==3.29.4"
     },
     {
       "ref": "fqdn==1.5.1"
@@ -4577,11 +4577,11 @@
       "dependsOn": [
         "Jinja2==3.1.6",
         "requests==2.34.2",
-        "tqdm==4.68.0",
+        "tqdm==4.68.3",
         "urllib3==2.7.0",
         "yarl==1.24.2"
       ],
-      "ref": "fsspec==2026.4.0"
+      "ref": "fsspec==2026.6.0"
     },
     {
       "dependsOn": [
@@ -4591,7 +4591,7 @@
     },
     {
       "dependsOn": [
-        "anyio==4.13.0",
+        "anyio==4.14.0",
         "backoff==2.2.1",
         "graphql-core==3.2.6",
         "requests-toolbelt==1.0.0",
@@ -4633,11 +4633,11 @@
       "dependsOn": [
         "setuptools==82.0.1"
       ],
-      "ref": "greenlet==3.5.1"
+      "ref": "greenlet==3.5.2"
     },
     {
       "dependsOn": [
-        "grpcio==1.81.0",
+        "grpcio==1.81.1",
         "protobuf==5.29.6"
       ],
       "ref": "grpcio-health-checking==1.71.2"
@@ -4646,7 +4646,7 @@
       "dependsOn": [
         "typing_extensions==4.15.0"
       ],
-      "ref": "grpcio==1.81.0"
+      "ref": "grpcio==1.81.1"
     },
     {
       "ref": "h11==0.16.0"
@@ -4738,13 +4738,13 @@
         "humanize==4.15.0",
         "packaging==26.2",
         "tomli==2.4.1",
-        "virtualenv==21.4.2"
+        "virtualenv==21.5.1"
       ],
       "ref": "nox==2026.4.10"
     },
     {
       "dependsOn": [
-        "SQLAlchemy==2.0.50",
+        "SQLAlchemy==2.0.51",
         "setuptools==82.0.1",
         "wheel==0.47.0"
       ],
@@ -4773,7 +4773,7 @@
         "pip-requirements-parser==32.0.1",
         "rich==15.0.0",
         "tomli==2.4.1",
-        "virtualenv==21.4.2"
+        "virtualenv==21.5.1"
       ],
       "ref": "pipdeptree==3.1.0"
     },
@@ -4833,11 +4833,11 @@
     },
     {
       "dependsOn": [
-        "filelock==3.29.1",
+        "filelock==3.29.4",
         "platformdirs==4.10.0",
         "setuptools==82.0.1"
       ],
-      "ref": "python-discovery==1.4.0"
+      "ref": "python-discovery==1.4.2"
     },
     {
       "dependsOn": [
@@ -4864,7 +4864,7 @@
     },
     {
       "dependsOn": [
-        "certifi==2026.5.20",
+        "certifi==2026.6.17",
         "chardet==5.2.0",
         "charset-normalizer==3.4.7",
         "idna==3.18",
@@ -4902,11 +4902,11 @@
     },
     {
       "dependsOn": [
-        "filelock==3.29.1",
+        "filelock==3.29.4",
         "packaging==26.2",
         "pip==26.1.2",
         "tomli==2.4.1",
-        "virtualenv==21.4.2",
+        "virtualenv==21.5.1",
         "wheel==0.47.0"
       ],
       "ref": "setuptools==82.0.1"
@@ -4924,16 +4924,16 @@
       "dependsOn": [
         "Jinja2==3.1.6",
         "PyYAML==6.0.3",
-        "anyio==4.13.0",
+        "anyio==4.14.0",
         "typing_extensions==4.15.0"
       ],
-      "ref": "starlette==1.2.1"
+      "ref": "starlette==1.3.1"
     },
     {
       "dependsOn": [
         "typing_extensions==4.15.0"
       ],
-      "ref": "structlog==25.5.0"
+      "ref": "structlog==26.1.0"
     },
     {
       "ref": "tabulate==0.10.0"
@@ -4948,7 +4948,7 @@
       "dependsOn": [
         "requests==2.34.2"
       ],
-      "ref": "tqdm==4.68.0"
+      "ref": "tqdm==4.68.3"
     },
     {
       "dependsOn": [
@@ -4964,7 +4964,7 @@
     },
     {
       "dependsOn": [
-        "fsspec==2026.4.0",
+        "fsspec==2026.6.0",
         "packaging==26.2",
         "pathlib_abc==0.5.2",
         "pydantic==2.13.4",
@@ -5000,13 +5000,13 @@
     },
     {
       "dependsOn": [
-        "distlib==0.4.1",
-        "filelock==3.29.1",
+        "distlib==0.4.3",
+        "filelock==3.29.4",
         "platformdirs==4.10.0",
-        "python-discovery==1.4.0",
+        "python-discovery==1.4.2",
         "typing_extensions==4.15.0"
       ],
-      "ref": "virtualenv==21.4.2"
+      "ref": "virtualenv==21.5.1"
     },
     {
       "dependsOn": [
@@ -5016,7 +5016,7 @@
     },
     {
       "dependsOn": [
-        "anyio==4.13.0"
+        "anyio==4.14.0"
       ],
       "ref": "watchfiles==1.2.0"
     },
@@ -5042,7 +5042,7 @@
     }
   ],
   "metadata": {
-    "timestamp": "2026-06-05T13:54:24.900009+00:00",
+    "timestamp": "2026-06-18T21:14:12.920258+00:00",
     "tools": {
       "components": [
         {
@@ -5141,12 +5141,12 @@
           ],
           "name": "cyclonedx-python-lib",
           "type": "library",
-          "version": "11.8.0"
+          "version": "11.11.0"
         }
       ]
     }
   },
-  "serialNumber": "urn:uuid:c48cf598-6133-426f-be81-e31e3e5652db",
+  "serialNumber": "urn:uuid:bff59b4b-6756-4ea5-817a-6c23c88f808b",
   "version": 1,
   "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
   "bomFormat": "CycloneDX",

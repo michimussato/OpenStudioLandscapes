@@ -226,15 +226,13 @@ def parse_args(args):
         "--auto-fix-missing-keys",
         dest="auto_fix_missing_keys",
         metavar="OPENSTUDIOLANDSCAPES__AUTO_FIX_MISSING_KEYS",
-        default=os.environ.get(
-            "OPENSTUDIOLANDSCAPES__AUTO_FIX_MISSING_KEYS", "0"
-        ),
+        default=os.environ.get("OPENSTUDIOLANDSCAPES__AUTO_FIX_MISSING_KEYS", "0"),
         action="store_const",
         const="1",
         help="Automatically add missing keys with default model "
-             "values if key is not found in `config.yml`. This only "
-             "adds missing keys. It does not remove unused keys from "
-             "the `config.yml` file.",
+        "values if key is not found in `config.yml`. This only "
+        "adds missing keys. It does not remove unused keys from "
+        "the `config.yml` file.",
     )
 
     # parser.add_argument(
@@ -248,7 +246,6 @@ def parse_args(args):
     #     "code updates or not.",
     # )
     # # pip install --upgrade --editable .
-
 
     update_group = parser.add_mutually_exclusive_group(required=False)
 
@@ -568,7 +565,9 @@ def check_updates_available(autoupdate: bool = False):
         git_cmd_feature = repo_feature.git
         feature_dirty = repo_feature.is_dirty()
         if feature_dirty:
-            LOGGER.critical(f"Local repo {repo_feature.working_dir} has uncommitted changes.")
+            LOGGER.critical(
+                f"Local repo {repo_feature.working_dir} has uncommitted changes."
+            )
             # status_feature = git_cmd_feature.status()
             # LOGGER.info(status_feature)
         # else:
@@ -697,7 +696,9 @@ def checks(args):
     check_sys_deps()
 
     if not args.skip_update_check:
-        LOGGER.critical("Checking for OpenStudioLandscapes Engine and Features updates...")
+        LOGGER.critical(
+            "Checking for OpenStudioLandscapes Engine and Features updates..."
+        )
         LOGGER.critical(f"autoupdate (pull) is set to {args.auto_update}.")
         check_updates_available(autoupdate=args.auto_update)
 
@@ -707,16 +708,21 @@ def main(args):
     setup_logging(args.verbosity)
     LOGGER.info(f"Launching OpenStudioLandscapes...")
 
-    if any(sc == args.sub_command for sc in [
-        "clone-feature",
-        "install-features",
-    ]):
+    if any(
+        sc == args.sub_command
+        for sc in [
+            "clone-feature",
+            "install-features",
+        ]
+    ):
         # Set skip_update_check to True for these sub-commands.
         # Saves us some time.
         # Todo
         #  - [ ] Maybe we can skip more checks here.
         args.skip_update_check = True
-        LOGGER.debug(f"`args.skip_update_check` overridden: {args.skip_update_check = }")
+        LOGGER.debug(
+            f"`args.skip_update_check` overridden: {args.skip_update_check = }"
+        )
 
     checks(args)
 
@@ -737,7 +743,9 @@ def main(args):
         repos["engine"] = repo
         git_cmd = repo.git
         if repo.is_dirty():
-            LOGGER.critical(f"Can't pull Engine: repo {repo.working_dir} has uncommitted changes.")
+            LOGGER.critical(
+                f"Can't pull Engine: repo {repo.working_dir} has uncommitted changes."
+            )
             status = git_cmd.status()
             LOGGER.critical(status)
         else:
@@ -759,7 +767,9 @@ def main(args):
             ] = repo_feature
             git_cmd_feature = repo_feature.git
             if repo_feature.is_dirty():
-                LOGGER.critical(f"Can't pull Feature: repo {repo_feature.working_dir} has uncommitted changes.")
+                LOGGER.critical(
+                    f"Can't pull Feature: repo {repo_feature.working_dir} has uncommitted changes."
+                )
                 status_feature = git_cmd_feature.status()
                 LOGGER.critical(status_feature)
             else:
@@ -794,7 +804,9 @@ def main(args):
 
             result = subprocess.call(cmd_install, shell=True)
 
-            LOGGER.critical(f"{pathlib.Path(repo_feature.working_dir).name} installation successful: {not bool(result)}")
+            LOGGER.critical(
+                f"{pathlib.Path(repo_feature.working_dir).name} installation successful: {not bool(result)}"
+            )
 
         return
 
@@ -812,7 +824,9 @@ def main(args):
         repos["engine"] = repo
         git_cmd = repo.git
         if repo.is_dirty():
-            LOGGER.critical(f"Can't switch: repo {repo.working_dir} has uncommitted changes.")
+            LOGGER.critical(
+                f"Can't switch: repo {repo.working_dir} has uncommitted changes."
+            )
             status = git_cmd.status()
             LOGGER.critical(status)
         else:
@@ -834,7 +848,9 @@ def main(args):
             ] = repo_feature
             git_cmd_feature = repo_feature.git
             if repo_feature.is_dirty():
-                LOGGER.critical(f"Can't switch: repo {repo_feature.working_dir} has uncommitted changes.")
+                LOGGER.critical(
+                    f"Can't switch: repo {repo_feature.working_dir} has uncommitted changes."
+                )
                 status_feature = git_cmd_feature.status()
                 LOGGER.critical(status_feature)
             else:
@@ -917,7 +933,9 @@ def main(args):
             result = subprocess.call(pip_cmd, shell=True)
 
             if result != 0:
-                LOGGER.critical(f"Installation failed. Install manually as described here:")
+                LOGGER.critical(
+                    f"Installation failed. Install manually as described here:"
+                )
                 LOGGER.critical(msg)
 
             # python -c 'try: import OpenStudioLandscapes.Grafana; except ModuleNotFoundError: as e: LOGGER.exception()'

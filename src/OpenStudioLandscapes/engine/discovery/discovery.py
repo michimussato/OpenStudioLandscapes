@@ -108,7 +108,6 @@ def add_k_v_to_config_yml(
     return None
 
 
-
 # Todo
 #  - [ ] more specific return type
 def get_dynamic_ins(
@@ -294,18 +293,16 @@ def dump_yaml(
             #        like `--auto-fix-missing-keys` or something
 
             auto_fix_missing_keys = bool(
-                int(
-                    os.environ.get(
-                        "OPENSTUDIOLANDSCAPES__AUTO_FIX_MISSING_KEYS", 0
-                    )
-                )
+                int(os.environ.get("OPENSTUDIOLANDSCAPES__AUTO_FIX_MISSING_KEYS", 0))
             )
 
             if bool(missing_keys):
 
                 if auto_fix_missing_keys:
 
-                    LOGGER.info(f"Updating config.yml automatically: {file_path.as_posix()}")
+                    LOGGER.info(
+                        f"Updating config.yml automatically: {file_path.as_posix()}"
+                    )
 
                     add_k_v_to_config_yml(
                         missing_keys=missing_keys,
@@ -316,7 +313,9 @@ def dump_yaml(
 
                 else:
 
-                    LOGGER.info(f"Leaving existing config.yml untouched: {file_path.as_posix()}")
+                    LOGGER.info(
+                        f"Leaving existing config.yml untouched: {file_path.as_posix()}"
+                    )
 
                     # Todo:
                     #  - [ ] This is not very graceful, so, maybe we
