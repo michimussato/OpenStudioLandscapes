@@ -271,7 +271,7 @@ def parse_args(args):
         "are mutually exclusive.",
     )
 
-    update_group.add_argument(
+    parser.add_argument(
         "--keepalive",
         dest="keepalive",
         default=1,
@@ -279,7 +279,7 @@ def parse_args(args):
         required=False,
         help="Automatically try to restart if CLI fails. "
         "Helpful for self healing when used in `systemd` for "
-        "example. This is the third option and *will always* imply "
+        "example. This option *should* be used together with "
         "`--auto-update` in order to pull and apply latest codebase updates "
         "before restarting for a new attempt. "
         "If the supplied value is exceeded, keepalive will stop and exit for good. "
@@ -402,12 +402,12 @@ def parse_args(args):
     try:
         LOGGER.info("Parsing arguments...")
 
-        if "--keepalive" in sys.argv:
-            LOGGER.debug(f"{sys.argv = }")
-            sys.argv.append("--auto-update")
-            LOGGER.info("`--auto-update` flag appended to `sys.argv` "
-                        "because `--keepalive` was supplied.")
-            LOGGER.debug(f"Effective {sys.argv = }")
+        # if "--keepalive" in sys.argv:
+        #     LOGGER.debug(f"{sys.argv = }")
+        #     sys.argv.append("--auto-update")
+        #     LOGGER.info("`--auto-update` flag appended to `sys.argv` "
+        #                 "because `--keepalive` was supplied.")
+        #     LOGGER.debug(f"Effective {sys.argv = }")
 
         parsed = parser.parse_args(args)
         LOGGER.debug(f"Args {parsed = }")
