@@ -403,11 +403,14 @@ def parse_args(args):
         LOGGER.info("Parsing arguments...")
 
         if "--keepalive" in sys.argv:
-            sys.argv.append("auto_update")
+            LOGGER.debug(f"{sys.argv = }")
+            sys.argv.append("--auto-update")
             LOGGER.info("`--auto-update` flag appended to `sys.argv` "
                         "because `--keepalive` was supplied.")
+            LOGGER.debug(f"Effective {sys.argv = }")
 
         parsed = parser.parse_args(args)
+        LOGGER.debug(f"Args {parsed = }")
     except SystemExit as e:  # argparse raises SystemExit on error
         if any(x in ["-h", "--help"] for x in args):
             # if a help flag is specified, print the help as usual
