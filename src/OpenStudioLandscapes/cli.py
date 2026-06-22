@@ -266,7 +266,7 @@ def parse_args(args):
         default=False,
         action="store_true",
         required=False,
-        help="Automatically pull codebase updates. Specifiying this "
+        help="Automatically pull codebase updates. Specifying this "
         "will imply *not* to `--skip-update-check`, hence, these "
         "are mutually exclusive.",
     )
@@ -401,6 +401,12 @@ def parse_args(args):
 
     try:
         LOGGER.info("Parsing arguments...")
+
+        if "--keepalive" in sys.argv:
+            sys.argv.append("auto_update")
+            LOGGER.info("`--auto-update` flag appended to `sys.argv` "
+                        "because `--keepalive` was supplied.")
+
         parsed = parser.parse_args(args)
     except SystemExit as e:  # argparse raises SystemExit on error
         if any(x in ["-h", "--help"] for x in args):
@@ -424,6 +430,7 @@ def parse_args(args):
 
         else:
             print(" KEEP ALIVE ROUTINE ".center(_get_terminal_size()[0], "="))
+
             keepalive_index = sys.argv.index("--keepalive")
             keepalive_value = int(sys.argv[keepalive_index + 1])
             # LOGGER.debug(f"{keepalive_index = }")
