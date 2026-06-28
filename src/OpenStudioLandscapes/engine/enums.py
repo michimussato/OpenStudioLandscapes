@@ -45,6 +45,23 @@ class ComposeCmdExclusion(enum.Enum):
 
 
 ##################################################################
+# Docker Enums
+
+
+class DockerProgress(enum.StrEnum):
+    AUTO = "auto"
+    NONE = "none"
+    PLAIN = "plain"
+    QUIET = "quiet"
+    RAWJSON = "rawjson"
+    TTY = "tty"
+
+
+# Docker Enums
+##################################################################
+
+
+##################################################################
 # Docker Compose Enums
 
 
