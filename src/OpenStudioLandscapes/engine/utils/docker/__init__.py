@@ -36,6 +36,7 @@ def docker_build_cmd(
     no_cache: bool = False,
     build_context: Union[None, pathlib.Path] = None,
     env: Union[None, Dict] = None,
+    *args,
 ) -> Dict[str, List | Dict | Dict[Any, Any]]:
     """
     Returns single a dictionary with the command as a list
@@ -78,6 +79,7 @@ def docker_build_cmd(
         f"--progress={DockerProgress.PLAIN}",
         f"--pull={bool(pull)}",
         f"--file={docker_file.as_posix()}",
+        *args,
         f"--no-cache={bool(no_cache)}",
         # https://stackoverflow.com/a/11869360
         *[i(tag) for tag in tags for i in (lambda x: "--tag", lambda x: tag)],
