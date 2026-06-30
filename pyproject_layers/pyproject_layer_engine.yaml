@@ -5,6 +5,7 @@ project:
   - dagster-postgres==0.25.11
   - nox
   - human-readable-id
+  # - OpenStudioLandscapes-OpenRV-Builder @ git+https://github.com/michimussato/OpenStudioLandscapes-OpenRV-Builder.git
   description: A Toolkit to create dynamic Animation and VFX studio environments for
     robust automation and pipelines.
   name: OpenStudioLandscapes
