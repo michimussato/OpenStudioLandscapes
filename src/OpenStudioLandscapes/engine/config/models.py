@@ -589,6 +589,24 @@ class ConfigEngine(BaseConfig):
         default="Europe/UTC",
     )
 
+    author: str = Field(
+        # Todo:
+        #  - [ ] move to Env(BaseConfig)
+        default="michimussato@etik.com",
+    )
+
+    # openstudiolandscapes__openrv_build_pipeline_enabled: bool = Field(
+    #     default=False,
+    # )
+
+    # openstudiolandscapes__openrv_build_pipeline: OpenRVConfigModel = Field(
+    #     default=OpenRVConfigModel(
+    #         **{
+    #             "enable_openrv_build_pipeline": False,
+    #         },
+    #     ),
+    # )
+
 
 # This is the Feature Base Model
 # DO NOT INSTANCE THIS DIRECTLY

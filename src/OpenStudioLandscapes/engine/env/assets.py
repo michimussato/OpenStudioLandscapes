@@ -337,6 +337,9 @@ env_spec = AssetSpec(
         "dot_features": AssetIn(
             AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "dot_features"])
         ),
+        "CONFIG": AssetIn(
+            AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"])
+        ),
     },
 )
 def env(
@@ -345,6 +348,7 @@ def env(
     landscape_id: dict,  # pylint: disable=redefined-outer-name
     dot_landscapes: pathlib.Path,  # pylint: disable=redefined-outer-name
     dot_features: pathlib.Path,  # pylint: disable=redefined-outer-name
+    CONFIG: ConfigEngine,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
 
     # @formatter:off
@@ -380,7 +384,7 @@ def env(
         #  - [ ] move DOT_SHARED_VOLUMES to config.yml
         "DOT_SHARED_VOLUMES": ".shared_volumes",
         "DOT_FEATURES": dot_features.as_posix(),
-        "AUTHOR": "michimussato@gmail.com",
+        "AUTHOR": CONFIG.author,
         "CREATED_BY": str(getpass.getuser()),
         "CREATED_ON": str(socket.gethostname()),
         "CREATED_AT": str(

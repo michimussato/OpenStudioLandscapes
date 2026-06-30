@@ -66,28 +66,29 @@ from OpenStudioLandscapes.engine.utils.docker import (
 
 
 def cmd_list_to_str(
-    cmd_list: List[str],
+        cmd_list: List[str],
 ) -> str:
     cmd_str = " ".join(shlex.quote(s) for s in cmd_list)
     return cmd_str
 
 
 def get_pip_install_str(
-    pip_install_packages: List[str],
-    python_str: str = "python{PYTHON_MAJ}.{PYTHON_MIN}",
-    single_run_layer: bool = True,
-    # Todo
-    #  - [ ] enable `bust_cache` by default?
-    bust_cache: bool = False,  # https://medium.com/@aleksej.gudkov/how-to-disable-cache-in-docker-build-a-complete-guide-372e20507ed9
+        pip_install_packages: List[str],
+        python_str: str = "python{PYTHON_MAJ}.{PYTHON_MIN}",
+        single_run_layer: bool = True,
+        # Todo
+        #  - [ ] enable `bust_cache` by default?
+        bust_cache: bool = False,
+        # https://medium.com/@aleksej.gudkov/how-to-disable-cache-in-docker-build-a-complete-guide-372e20507ed9
 ) -> str:
     if bool(pip_install_packages):
         if single_run_layer:
             pip_install_str: str = (
-                "RUN %s -m pip install --root-user-action=ignore %s"
-                % (
-                    python_str,
-                    shlex.join(pip_install_packages),
-                )
+                    "RUN %s -m pip install --root-user-action=ignore %s"
+                    % (
+                        python_str,
+                        shlex.join(pip_install_packages),
+                    )
             )
             pip_install_str += " && %s -m pip cache purge" % (python_str)
             if bust_cache:
@@ -99,11 +100,11 @@ def get_pip_install_str(
             pip_install_str: str = str()
             for pip_package in pip_install_packages:
                 pip_install_str += (
-                    "RUN %s -m pip install --root-user-action=ignore '%s'\n"
-                    % (
-                        python_str,
-                        pip_package,
-                    )
+                        "RUN %s -m pip install --root-user-action=ignore '%s'\n"
+                        % (
+                            python_str,
+                            pip_package,
+                        )
                 )
             if bust_cache:
                 # Resources:
@@ -121,8 +122,8 @@ def get_pip_install_str(
 
 
 def get_apt_install_str(
-    apt_install_packages: List[str],
-    single_run_layer: bool = True,
+        apt_install_packages: List[str],
+        single_run_layer: bool = True,
 ) -> str:
     if bool(apt_install_packages):
         if single_run_layer:
@@ -148,9 +149,9 @@ def get_apt_install_str(
 
 
 def get_copy_str(
-    temp_dir: pathlib.Path,
-    copy_packages: Dict[str, pathlib.Path],
-    mode: Union[int | None] = None,
+        temp_dir: pathlib.Path,
+        copy_packages: Dict[str, pathlib.Path],
+        mode: Union[int | None] = None,
 ) -> str:
     """
     Copies the files required for the build to
@@ -182,8 +183,8 @@ def get_copy_str(
 
 
 def get_wget_str(
-    wget_packages: MutableMapping[str, str],
-    chmod_plus_x: bool = True,
+        wget_packages: MutableMapping[str, str],
+        chmod_plus_x: bool = True,
 ) -> str:
     wget_str: str = str()
     for wget_package, wget_url in wget_packages.items():
@@ -199,7 +200,7 @@ def get_wget_str(
 # Todo:
 #  - [ ] deprecate?
 def get_git_root(
-    path: pathlib.Path = pathlib.Path(__file__),
+        path: pathlib.Path = pathlib.Path(__file__),
 ) -> pathlib.Path:
     """Get the Git base path of a file which lives inside a repository."""
     git_repo = git.Repo(path, search_parent_directories=True)
@@ -210,7 +211,7 @@ def get_git_root(
 # Todo:
 #  - [ ] deprecate
 def get_configs_root(
-    path: pathlib.Path = pathlib.Path(__file__),
+        path: pathlib.Path = pathlib.Path(__file__),
 ) -> pathlib.Path:
     git_root: pathlib.Path = get_git_root(path)
     configs_root: pathlib.Path = git_root / ".payload" / "config"
@@ -221,7 +222,7 @@ def get_configs_root(
 # Todo:
 #  - [ ] deprecate
 def get_data_root(
-    path: pathlib.Path = pathlib.Path(__file__),
+        path: pathlib.Path = pathlib.Path(__file__),
 ) -> pathlib.Path:
     git_root: pathlib.Path = get_git_root(path)
     data_root: pathlib.Path = git_root / ".payload" / "data"
@@ -232,7 +233,7 @@ def get_data_root(
 # Todo:
 #  - [ ] deprecate
 def get_bin_root(
-    path: pathlib.Path = pathlib.Path(__file__),
+        path: pathlib.Path = pathlib.Path(__file__),
 ) -> pathlib.Path:
     git_root: pathlib.Path = get_git_root(path)
     bin_root: pathlib.Path = git_root / ".payload" / "bin"
@@ -241,17 +242,16 @@ def get_bin_root(
 
 
 def get_image_name(
-    context: AssetExecutionContext,
+        context: AssetExecutionContext,
 ) -> str:
     return "_".join(context.asset_key.path).lower()
 
 
 def parse_docker_image_path(
-    *,
-    context: AssetExecutionContext,
-    docker_config: DockerConfigModel,
+        *,
+        context: AssetExecutionContext,
+        docker_config: DockerConfigModel,
 ) -> str:
-
     image_path = []
     context.log.debug(f"{docker_config = }")
     context.log.debug(f"{type(docker_config) = }")
@@ -308,13 +308,12 @@ def parse_docker_image_path(
 
 
 def get_compose_scope(
-    context: Union[
-        OpExecutionContext, AssetExecutionContext
-    ],  # Todo: necessary? -> Yes: `OpenStudioLandscapes.engine.base.ops.op_constants`
-    features: MutableMapping,
-    name: str,
+        context: Union[
+            OpExecutionContext, AssetExecutionContext
+        ],  # Todo: necessary? -> Yes: `OpenStudioLandscapes.engine.base.ops.op_constants`
+        features: MutableMapping,
+        name: str,
 ) -> str:
-
     feature_keys = features.keys()
 
     LOGGER.info(f"{features = }")
@@ -340,11 +339,10 @@ def get_compose_scope(
 
 
 def get_feature_config(
-    context: AssetExecutionContext,
-    features: MutableMapping,
-    name: str,
+        context: AssetExecutionContext,
+        features: MutableMapping,
+        name: str,
 ) -> Any | None:
-
     feature_keys = features.keys()
 
     _module = name
@@ -366,8 +364,8 @@ def get_feature_config(
 
 
 def expand_dict_vars(
-    dict_to_expand: MutableMapping,
-    kv: MutableMapping,
+        dict_to_expand: MutableMapping,
+        kv: MutableMapping,
 ) -> MutableMapping:
     """
     This helper expands key-value pairs into the
@@ -457,10 +455,9 @@ def expand_dict_vars(
 # Todo
 #  - [ ] write a decent serializer
 def metadatavalues_from_dict(
-    context: Union[AssetExecutionContext, OpExecutionContext],
-    d: Dict,
+        context: Union[AssetExecutionContext, OpExecutionContext],
+        d: Dict,
 ) -> Dict:
-
     d_serialized = json.loads(
         json.dumps(
             d,
@@ -485,10 +482,10 @@ def metadatavalues_from_dict(
 
 
 def get_relative_path_via_common_root(
-    context: Union[AssetExecutionContext, OpExecutionContext],
-    path_src: pathlib.Path,
-    path_dst: pathlib.Path,
-    path_common_root: pathlib.Path,
+        context: Union[AssetExecutionContext, OpExecutionContext],
+        path_src: pathlib.Path,
+        path_dst: pathlib.Path,
+        path_common_root: pathlib.Path,
 ) -> pathlib.Path:
     """
     Returns a relative path from `path_src` to `path_dst` where `path_common_root`
@@ -554,8 +551,8 @@ def get_relative_path_via_common_root(
 
 
 def get_bool_env(
-    env: str,
-    default: bool = False,
+        env: str,
+        default: bool = False,
 ):
     # os.getenv("VAR") always returns a string if VAR is set
 
@@ -579,10 +576,9 @@ def get_bool_env(
 
 
 def get_str_env(
-    env: str,
-    default: str,
+        env: str,
+        default: str,
 ):
-
     # EMPTY_VAR=
     # os.getenv("EMPTY_VAR", "some_value") returns value of EMPTY_VAR
     # whereas we want:
@@ -603,7 +599,7 @@ def get_str_env(
 
 
 def get_all_compose_scopes(
-    usable_features: Dict[str, OpenStudioLandscapesDiscoveredFeature],
+        usable_features: Dict[str, OpenStudioLandscapesDiscoveredFeature],
 ) -> set:
     compose_scopes = []
 
@@ -616,12 +612,11 @@ def get_all_compose_scopes(
 
 
 def get_image_metadata(
-    context: AssetExecutionContext,
-    docker_image: dict,
-    docker_config: DockerConfigModel,
-    env,
+        context: AssetExecutionContext,
+        docker_image: dict,
+        docker_config: DockerConfigModel,
+        env,
 ):
-
     build_base_image_data: dict = docker_image
     context.log.debug(f"{build_base_image_data = }")
     # build_base_image_data = {'image_name': 'openstudiolandscapes_base_build_docker_image', 'image_prefixes': '', 'image_tags': ['2025-11-17-01-26-31-05a9b85aa33b47ffa7dfb21a28ca24ab'], 'image_parent': {}}
@@ -671,17 +666,16 @@ def get_image_metadata(
 
 
 def create_image(
-    context: AssetExecutionContext,
-    image_name,
-    image_prefixes,
-    tags,
-    docker_image: Dict,
-    docker_config: DockerConfigModel,
-    docker_config_json: pathlib.Path,
-    docker_file: pathlib.Path,
-    build_context: Union[None, pathlib.Path] = None,
+        context: AssetExecutionContext,
+        image_name,
+        image_prefixes,
+        tags,
+        docker_image: Dict,
+        docker_config: DockerConfigModel,
+        docker_config_json: pathlib.Path,
+        docker_file: pathlib.Path,
+        build_context: Union[None, pathlib.Path] = None,
 ):
-
     image_data = {
         "image_name": image_name,
         "image_prefixes": image_prefixes,
@@ -749,8 +743,8 @@ def create_image(
 
 
 def get_networks_dict(
-    context: Union[AssetExecutionContext, OpExecutionContext],
-    compose_file: pathlib.Path,
+        context: Union[AssetExecutionContext, OpExecutionContext],
+        compose_file: pathlib.Path,
 ) -> Dict:
     """
     Analyze compose_file for `networks` and return a nested dict of networks
@@ -773,10 +767,10 @@ def get_networks_dict(
 
 
 def get_docker_compose_names(
-    context: Union[AssetExecutionContext, OpExecutionContext],
-    service_name: str,
-    landscape_id: str,
-    domain_lan: str,
+        context: Union[AssetExecutionContext, OpExecutionContext],
+        service_name: str,
+        landscape_id: str,
+        domain_lan: str,
 ) -> Tuple[str, str]:
     """
     Takes the service name and returns container_name and
@@ -805,8 +799,8 @@ def get_docker_compose_names(
 
 
 def download_file(
-    url: str,
-    dest_folder: pathlib.Path,
+        url: str,
+        dest_folder: pathlib.Path,
 ) -> pathlib.Path:
     if not dest_folder.exists():
         dest_folder.mkdir(
@@ -833,10 +827,9 @@ def download_file(
 
 
 def get_docker_run_cmd(
-    image_data: Dict,
-    context: Union[AssetExecutionContext, OpExecutionContext],
+        image_data: Dict,
+        context: Union[AssetExecutionContext, OpExecutionContext],
 ) -> str:
-
     context.log.debug(f"{image_data = }")
 
     def _get_cmd() -> List[str]:
@@ -867,9 +860,8 @@ def get_docker_run_cmd(
 
 
 def get_asset_header(
-    dist: Distribution,
+        dist: Distribution,
 ) -> Dict[str, Union[str, List[str]]]:
-
     # Todo
     #  - [ ] fix this naive replacement logic
     GROUP: str = dist.name.replace("-", "_")

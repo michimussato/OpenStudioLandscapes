@@ -213,6 +213,8 @@ def parse_args(args):
     )
 
     parser.add_argument(
+        # Todo:
+        #  - [ ] rename to --landscape-id
         "--landscapes-id",
         dest="landscapes_id",
         type=str,
@@ -229,7 +231,8 @@ def parse_args(args):
         default=os.environ.get("OPENSTUDIOLANDSCAPES__AUTO_FIX_MISSING_KEYS", "0"),
         action="store_const",
         const="1",
-        help="Automatically add missing keys with default model "
+        help="BUGGY FOR NESTED MODELS! "
+        "Automatically add missing keys with default model "
         "values if key is not found in `config.yml`. This only "
         "adds missing keys. It does not remove unused keys from "
         "the `config.yml` file.",

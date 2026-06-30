@@ -87,6 +87,22 @@ def add_k_v_to_config_yml(
     model_reference: Union[ConfigEngine, FeatureBaseModel],
     model_dump_dict: Dict,
 ) -> None:
+    # Todo
+    #  - [ ] Bug:
+    #        Should be:
+    #        openstudiolandscapes__rez_config:
+    #          rez_version: 3.3.0
+    #          REZ_LOCAL_PACKAGES_PATH: ~/packages
+    #          REZ_RELEASE_PACKAGES_PATH: ~/.rez/packages/int
+    #          REZ_EXTERNAL_PACKAGES_PATH: /data/share/rez-packages/packages
+    #          apt_packages_rez:
+    #          - binutils
+    #        Effectively is (nested models are not dumped):
+    #        openstudiolandscapes__rez_config: rez_version='3.3.0'
+    #          REZ_LOCAL_PACKAGES_PATH=PosixPath('~/packages')
+    #          REZ_RELEASE_PACKAGES_PATH=PosixPath('~/.rez/packages/int')
+    #          REZ_EXTERNAL_PACKAGES_PATH=PosixPath('~/.rez/packages/ext')
+    #          apt_packages_rez=['binutils']
 
     keys_to_add: Dict = {}
 

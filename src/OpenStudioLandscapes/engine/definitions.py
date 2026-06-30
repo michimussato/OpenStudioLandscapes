@@ -38,6 +38,14 @@ code_locations.extend(
     ]
 )
 
+enable_openrv_build_pipeline = False
+if enable_openrv_build_pipeline:
+    code_locations.extend(
+        [
+            "OpenStudioLandscapes.OpenRV_Builder.definitions",
+        ]
+    )
+
 modules = []
 
 
