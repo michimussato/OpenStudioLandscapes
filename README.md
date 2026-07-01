@@ -97,7 +97,10 @@ any production environment with ease:
   - ✅ and share it (scripts, packages etc.) across Landscapes
 - ✅ Do you like project based studio services?
   - ✅ No problem with **OpenStudioLandscapes**
-- ✅ Landscapes can run on a single host as well as on multiple hosts
+- ✅ Landscapes can run on a 
+  - ✅ single (Linux) host (bare metal or virtual machine)
+  - ✅ multiple (Linux) hosts in a single LAN
+  - ✅ across globally distributed LANs over secure SSH tunnels (powered by [Pangolin](#can-openstudiolandscapes-provide-a-solution-for-distributed-teams))
 
 > [!IMPORTANT]
 > 
