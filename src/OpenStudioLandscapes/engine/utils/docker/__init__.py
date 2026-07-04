@@ -36,6 +36,7 @@ def docker_build_cmd(
     no_cache: bool = False,
     build_context: Union[None, pathlib.Path] = None,
     env: Union[None, Dict] = None,
+    build_args: Union[None, Dict[str, str]] = None,
     *args,
 ) -> Dict[str, List | Dict | Dict[Any, Any]]:
     """
@@ -43,6 +44,7 @@ def docker_build_cmd(
     and the desired environment.
 
     Args:
+        build_args: https://docs.docker.com/reference/cli/docker/buildx/build/#build-arg
         context:
         docker_config_json:
         docker_file:
@@ -60,6 +62,13 @@ def docker_build_cmd(
     if env is None:
         env = {}
 
+    if build_args is None:
+        build_args = {}
+
+    _build_args: List[str] = []
+    for key, value in build_args.items():
+        _build_args.append(f"--build-arg={key}={value}")
+
     # with buildx, the target command could look like:
     # /usr/bin/docker buildx build \
     #     --progress plain \
@@ -75,6 +84,7 @@ def docker_build_cmd(
         "--debug",
         f"--config={docker_config_json.as_posix()}",
         "build",
+        *_build_args,
         f"--target={target}" if target else None,
         f"--progress={DockerProgress.PLAIN}",
         f"--pull={bool(pull)}",
@@ -82,7 +92,8 @@ def docker_build_cmd(
         *args,
         f"--no-cache={bool(no_cache)}",
         # https://stackoverflow.com/a/11869360
-        *[i(tag) for tag in tags for i in (lambda x: "--tag", lambda x: tag)],
+        #*[i(tag) for tag in tags for i in (lambda x: "--tag", lambda x: tag)],
+        *[f"--tag={tag}" for tag in tags],
         build_context.as_posix() if build_context else docker_file.parent.as_posix(),
     ]
 
