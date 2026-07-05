@@ -2,6 +2,7 @@
 * [Docker](#docker)
   * [Create Docker `config.json`](#create-docker-configjson)
   * [Cleanup](#cleanup)
+    * [List all with `Tag`](#list-all-with-tag)
     * [Prune All](#prune-all)
     * [`hosts` file in Container](#hosts-file-in-container)
   * [Issues](#issues)
@@ -14,12 +15,12 @@
 ## Create Docker `config.json`
 
 ```shell
-export OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME=
-export OPENSTUDIOLANDSCAPES__HARBOR_PORT=
+export VAR1=
+export VAR2=
 ```
 
 ```shell
-sudo --preserve-env=OPENSTUDIOLANDSCAPES__HARBOR_HOSTNAME,OPENSTUDIOLANDSCAPES__HARBOR_PORT bash -c 'cat << EOF > /etc/docker/daemon.json
+sudo --preserve-env=VAR1,VAR2 bash -c 'cat << EOF > /etc/docker/daemon.json
 {
   "features": {
     "buildkit": true
@@ -33,15 +34,63 @@ EOF'
 
 - [Pruning](https://docs.docker.com/engine/manage-resources/pruning/)
 
+### List all with `Tag`
+
+```shell
+TAG=<TAG>
+docker images --filter=reference="*:${TAG}" --format "{{.ID}}"
+```
+
+Delete all by `Tag`
+
+```shell
+TAG=<TAG>
+docker image rm --force $(docker images --filter=reference="*:${TAG}" --format "{{.ID}}")
+```
+
 ### Prune All
 
 ```shell
-docker system prune --volumes --force
+docker system prune --all --volumes --force
 docker image prune --all --force
 docker container prune --force
 ```
 
-### `hosts` file in Container
+### `/var/lib/docker` and `/var/lib/containerd`
+
+```shell
+sudo du -sh /*
+```
+
+#### docker
+
+```shell
+sudo du -sh /var/lib/docker/*
+```
+
+```shell
+sudo systemctl disable --now docker.service docker.socket
+sudo mv /var/lib/docker /var/lib/docker.bak
+sudo systemctl enable --now  docker.service docker.socket
+
+sudo rm -rf /var/lib/docker.bak
+```
+
+#### containerd
+
+```shell
+sudo du -sh /var/lib/containerd/*
+```
+
+```shell
+sudo systemctl disable --now docker.service docker.socket containerd
+sudo mv /var/lib/containerd /var/lib/containerd.bak
+sudo systemctl enable --now docker.service docker.socket containerd
+
+sudo rm -rf /var/lib/containerd.bak
+```
+
+## `hosts` file in Container
 
 If the `hosts` file in the container needs
 extra entries, the `extra_hosts` key in `docker-compose.yaml`
