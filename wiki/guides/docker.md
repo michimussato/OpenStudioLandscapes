@@ -4,7 +4,10 @@
   * [Cleanup](#cleanup)
     * [List all with `Tag`](#list-all-with-tag)
     * [Prune All](#prune-all)
-    * [`hosts` file in Container](#hosts-file-in-container)
+    * [`/var/lib/docker` and `/var/lib/containerd`](#varlibdocker-and-varlibcontainerd)
+      * [docker](#docker-1)
+      * [containerd](#containerd)
+  * [`hosts` file in Container](#hosts-file-in-container)
   * [Issues](#issues)
 <!-- TOC -->
 
