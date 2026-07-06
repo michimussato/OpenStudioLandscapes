@@ -44,7 +44,9 @@ def docker_build_cmd(
     and the desired environment.
 
     Args:
-        build_args: https://docs.docker.com/reference/cli/docker/buildx/build/#build-arg
+        build_args:
+            - https://docs.docker.com/reference/cli/docker/buildx/build/#build-arg
+            - https://docs.docker.com/reference/dockerfile/#arg
         context:
         docker_config_json:
         docker_file:

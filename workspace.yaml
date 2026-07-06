@@ -19,6 +19,10 @@ load_from:
   - python_module:
       module_name: "OpenStudioLandscapes.engine.definitions"
       location_name: "OpenStudioLandscapes Engine"
+#  - grpc_server:
+#      host: localhost  # when running on localhost
+#      port: 4000
+#      location_name: 'OpenStudioLandscapes-OpenRV-Builder (gRPC)'
 #  - python_module:
 #      module_name: "OpenStudioLandscapes.engine.definitions"
 #      location_name: "OpenStudioLandscapes Engine (Features)"
