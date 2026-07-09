@@ -223,15 +223,11 @@ For example here: [OpenStudioLandscapes-Kitsu](https://github.com/michimussato/O
 
 A full list of available Features is available [here](#current-feature-statuses)
 
-> [!TIP]
-> 
-> To install all cloned Features, you can run the following code snippet:
-> 
-> ```shell
-> for d in ./.features/* ; do
->   pip install --editable ${d}
-> done;
-> ```
+To clone and install a Feature:
+
+```shell
+openstudiolandscapes clone-feature --repo=<Repository URL> --install
+```
 
 ## Run OpenStudioLandscapes
 

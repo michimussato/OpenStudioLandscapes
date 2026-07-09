@@ -41,6 +41,13 @@ class ComposeCmdExclusion(enum.Enum):
     CMD_APPEND_ALWAYS_EXCLUDE_FROM_QUOTATION = [
         "&&",
         ";",
+        # Todo
+        #  - [ ] can we add these exclusions globally?
+        # "&",
+        # "|",
+        # "||",
+        # ">",
+        # ">>",
     ]
 
 
