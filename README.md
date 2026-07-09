@@ -118,7 +118,7 @@ Other distros do work (**OpenStudioLandscapes** was developed on an
 Arch based Linux distro), however, the installation process **will** be
 different.
 
-> [!CRITICAL]
+> [!IMPORTANT]
 > 
 > Installation and execution of **OpenStudioLandscapes** as `root` is not allowed
 > and **must be performed as normal (unprivileged) user**.
