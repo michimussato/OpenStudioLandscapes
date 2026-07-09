@@ -138,7 +138,7 @@ different.
 > You might have to install `git` and `make` first.
 > On Ubuntu: 
 > ```shell
-> sudo apt update && sudo apt install -y git make
+> sudo apt update -y && sudo apt install -y git make
 > ```
 
 ## Clone Repository
