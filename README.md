@@ -352,9 +352,8 @@ openstudiolandscapes
 
 > [!TIP]
 > 
-> The default location for all Landscapes is
-> within the local Git checkout:
-> `OpenStudioLandscapes/.landscapes`.
+> The default location for all Landscapes is set to:
+> `~/.local/share/OpenStudioLandscapes/.landscapes`.
 > You can change this behavior by specifying a custom
 > Landscapes root with `--landscapes-root=~/MyOpenStudioLandscapes`
 > (please note: a `.landscapes` directory will be created 
