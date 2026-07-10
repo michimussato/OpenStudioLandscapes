@@ -337,9 +337,7 @@ env_spec = AssetSpec(
         "dot_features": AssetIn(
             AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "dot_features"])
         ),
-        "CONFIG": AssetIn(
-            AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"])
-        ),
+        "CONFIG": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"])),
     },
 )
 def env(

@@ -6,16 +6,15 @@ __all__ = [
 
 import pathlib
 import shutil
-from typing import List, Union, Dict, Any
+from typing import Any, Dict, List, Union
 
 from dagster import (
     AssetExecutionContext,
     OpExecutionContext,
 )
 
-from OpenStudioLandscapes.engine.enums import DockerProgress
-
 from OpenStudioLandscapes.DagsterCodeLocation.StreamingProcess import submit_cmds
+from OpenStudioLandscapes.engine.enums import DockerProgress
 
 
 class OpenStudioLandscapesDockerException(Exception):
@@ -94,7 +93,7 @@ def docker_build_cmd(
         *args,
         f"--no-cache={bool(no_cache)}",
         # https://stackoverflow.com/a/11869360
-        #*[i(tag) for tag in tags for i in (lambda x: "--tag", lambda x: tag)],
+        # *[i(tag) for tag in tags for i in (lambda x: "--tag", lambda x: tag)],
         *[f"--tag={tag}" for tag in tags],
         build_context.as_posix() if build_context else docker_file.parent.as_posix(),
     ]
