@@ -141,6 +141,28 @@ different.
 > sudo apt update -y && sudo apt install -y git make
 > ```
 
+### Topology Examples
+
+Here are a few examples of what types of topology structures 
+**OpenStudioLandscapes** can create by grouping
+services into different [Compose Scopes](./wiki/terminology.md).
+
+#### Single Host - Single ComposeScope (Single Site)
+
+![topo_single_host_single_cs.png](media/images/topo_single_host_single_cs.png)
+
+#### Single Host - Multi ComposeScope (Single Site)
+
+![topo_single_host_multi_cs.png](media/images/topo_single_host_multi_cs.png)
+
+#### Multi Host - Single Site
+
+![topo_multi_host_single_site.png](media/images/topo_multi_host_single_site.png)
+
+#### Multi Host - Multi Site
+
+![topo_multi_host_multi_site.png](media/images/topo_multi_host_multi_site.png)
+
 ## Clone Repository
 
 ```shell
