@@ -7,5 +7,6 @@
   "defaultViewMode": "preview",
   "userIgnoreFilters": [
     "__pycache__/"
-  ]
+  ],
+  "openBehavior": "daily"
 }
