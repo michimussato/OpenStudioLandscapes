@@ -328,6 +328,16 @@ class DockerConfigModel(BaseConfig):
         examples=[i.name for i in DockerPullPolicy],
         description="Run `docker` commands with the `--pull=<POLICY>` option.",
     )
+    docker_compose_always_build: bool = Field(
+        default=False,
+        # examples=[i.name for i in DockerPullPolicy],
+        description="Run `docker` commands with the `--build=<value>` option.",
+    )
+    docker_compose_force_recreate: bool = Field(
+        default=False,
+        # examples=[i.name for i in DockerPullPolicy],
+        description="Run `docker` commands with the `--force-recreate=<value>` option.",
+    )
 
 
 class RezConfigModel(BaseConfig):
@@ -533,6 +543,8 @@ class ConfigEngine(BaseConfig):
     )
 
     openstudiolandscapes__domain_lan: str = Field(
+        # Todo
+        #  - [ ] use either env var or config. not both.
         default=os.environ.get(
             "OPENSTUDIOLANDSCAPES__DOMAIN_LAN",
             default="openstudiolandscapes.lan",
