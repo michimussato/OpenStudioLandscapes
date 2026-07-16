@@ -287,6 +287,8 @@ def op_group_out(
         #        References:
         #        - [Method 1: Using the --pull=always Flag](https://www.codegenes.net/blog/can-i-make-docker-do-always-a-pull-when-performing-a-run/#method-1-using-the-pull-always-flag)
         f"--pull={CONFIG_ENGINE.openstudiolandscapes__docker_config.docker_pull_policy}",
+        # f"--build={CONFIG_ENGINE.openstudiolandscapes__docker_config.docker_compose_always_build}",
+        # f"--force-recreate={CONFIG_ENGINE.openstudiolandscapes__docker_config.docker_compose_force_recreate}",
         "--remove-orphans",
         # Todo
         #  - [ ] would `--rm    Automatically remove the container when it exits` be useful here?

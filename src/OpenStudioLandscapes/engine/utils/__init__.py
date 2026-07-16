@@ -675,7 +675,16 @@ def create_image(
     docker_config_json: pathlib.Path,
     docker_file: pathlib.Path,
     build_context: Union[None, pathlib.Path] = None,
+    additional_build_contexts: Union[None, Dict[str, pathlib.Path]] = None,
+    build_args: Union[None, Dict[str, str]] = None,
 ):
+
+    if additional_build_contexts is None:
+        additional_build_contexts = {}
+
+    if build_args is None:
+        build_args = {}
+
     image_data = {
         "image_name": image_name,
         "image_prefixes": image_prefixes,
@@ -714,6 +723,8 @@ def create_image(
         pull=pull,
         no_cache=docker_config.no_cache,
         build_context=build_context,
+        additional_build_contexts=additional_build_contexts,
+        build_args=build_args,
     )
 
     cmds.append(cmd_build)

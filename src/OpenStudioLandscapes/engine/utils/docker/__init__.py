@@ -34,6 +34,7 @@ def docker_build_cmd(
     target: Union[str, None] = None,
     no_cache: bool = False,
     build_context: Union[None, pathlib.Path] = None,
+    additional_build_contexts: Union[None, Dict[str, pathlib.Path]] = None,
     env: Union[None, Dict] = None,
     build_args: Union[None, Dict[str, str]] = None,
     *args,
@@ -63,12 +64,17 @@ def docker_build_cmd(
     if env is None:
         env = {}
 
+    _build_args: List[str] = []
     if build_args is None:
         build_args = {}
-
-    _build_args: List[str] = []
     for key, value in build_args.items():
         _build_args.append(f"--build-arg={key}={value}")
+
+    _additional_build_contexts: List[str] = []
+    if additional_build_contexts is None:
+        additional_build_contexts = {}
+    for key, value in additional_build_contexts.items():
+        _additional_build_contexts.append(f"--build-context={key}={value.as_posix()}")
 
     # with buildx, the target command could look like:
     # /usr/bin/docker buildx build \
@@ -86,6 +92,7 @@ def docker_build_cmd(
         f"--config={docker_config_json.as_posix()}",
         "build",
         *_build_args,
+        *_additional_build_contexts,
         f"--target={target}" if target else None,
         f"--progress={DockerProgress.PLAIN}",
         f"--pull={bool(pull)}",
