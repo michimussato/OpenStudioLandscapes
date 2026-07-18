@@ -889,9 +889,12 @@ def get_asset_header(
 
 
 def get_base64_auth_str(
-    username: str,
-    password: str,
+    username: str | None,
+    password: str | None,
 ) -> str:
+
+    if not all([bool(username), bool(password)]):
+        raise Exception("username and/or password cannot be empty.")
 
     credentials_str = f"{username}:{password}"
     credentials_bytes = credentials_str.encode("utf-8")
