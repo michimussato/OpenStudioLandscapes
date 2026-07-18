@@ -19,6 +19,34 @@ __license__ = "GNU Affero General Public License v3.0"
 from OpenStudioLandscapes.engine.logging.loggers import CLI_LOGGER as LOGGER
 
 
+# Todo
+#  - [ ] Make sure that pyproject deps get re-installed when self healing!
+# Maybe something like
+# [project]
+# dependencies = [
+#     # "OpenStudioLandscapes-DagsterCodeLocation-StreamingProcess @ git+https://github.com/michimussato/OpenStudioLandscapes-DagsterCodeLocation-StreamingProcess.git",
+#     # "OpenStudioLandscapes-OpenRV-Builder @ git+https://github.com/michimussato/OpenStudioLandscapes-OpenRV-Builder.git",
+#     "PyYAML",
+#     "dagster-postgres==0.25.11",
+#     "dagster-webserver==1.9.11",
+#     "dagster==1.9.11",
+#     "docker-compose-graph @ git+https://github.com/michimussato/docker-compose-graph.git",
+#     "email-validator",
+#     "gitpython",
+#     "human-readable-id",
+#     "nox",
+#     "pydot",
+#     "ruamel.yaml",
+#     "snakemd",
+# ]
+# [project.optional-dependencies]
+# openstudiolandscapes_base_deps = [
+#     "OpenStudioLandscapes-DagsterCodeLocation-StreamingProcess @ git+https://github.com/michimussato/OpenStudioLandscapes-DagsterCodeLocation-StreamingProcess.git",
+# ]
+#
+# pip install --editable --force-reinstall .[openstudiolandscapes_base_deps]
+
+
 class CLIException(Exception):
     pass
 
