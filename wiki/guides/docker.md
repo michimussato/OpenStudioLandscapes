@@ -114,6 +114,8 @@ Solution:
 docker network prune
 ```
 
+---
+
 ```
 [...]
 unable to get image 'docker.io/postgres:17': permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get "http://%2Fvar%2Frun%2Fdocker.sock/v1.51/images/docker.io/postgres:17/json": dial unix /var/run/docker.sock: connect: permission denied
@@ -133,6 +135,8 @@ sudo groupadd --force --gid 959 docker
 sudo usermod --append --groups docker ${USER}
 sudo reboot
 ```
+
+---
 
 ```
     ~/gi/r/Farm-Setup/konsole_setups    main ?1  sshpass -p user /usr/bin/ssh -t user@minion03 -o StrictHostKeyChecking=no "echo user | sudo -S -k systemctl enable --now openstudiolandscapes-worker.service;     journalctl --follow --unit openstudiolandscapes-worker.service --output cat;     bash -l" 
@@ -165,3 +169,36 @@ openstudiolandscapes-worker.service: Deactivated successfully.
 ```
 
 Todo: schedule cleanup?
+
+---
+
+```
+[...]
+stderr: failed to do request: Head "https://registry.meemoo.lan:5000/v2/openstudiolandscapes/openstudiolandscapes_base_build_docker_image/blobs/sha256:0c3d2abe4e169e60bdd91a0bc3c74050033f3ff8622d718968a2fdb89be7d37b": tls: failed to verify certificate: x509: certificate is valid for registry.openstudiolandscapes.lan, not registry.meemoo.lan
+[...]
+```
+
+Solution:
+
+renew x509 certificate as described [her](https://github.com/michimussato/server/blob/main/registry/README.md#create-certificates).
+
+---
+
+```
+[...]
+cmds = [{'cmd': ['/usr/bin/docker', '--debug', '--config=/data/local/.openstudiolandscapes/.landscapes/2026-01-21_17-22-54__seasoned-jelly-wholesale-mixer/OpenStudioLandscapes/OpenStudioLandscapes_Base__docker_config_json', 'build', '--progress=plain', '--pull=True', '--file=/data/local/.openstudiolandscapes/.landscapes/2026-01-21_17-22-54__seasoned-jelly-wholesale-mixer/OpenStudioLandscapes/OpenStudioLandscapes_Base__write_dockerfile/Dockerfiles/Dockerfile', '--no-cache=False', '--tag=registry.meemoo.lan:5000/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2026-01-21_17-22-54__seasoned-jelly-wholesale-mixer', '/data/local/.openstudiolandscapes/.landscapes/2026-01-21_17-22-54__seasoned-jelly-wholesale-mixer/OpenStudioLandscapes/OpenStudioLandscapes_Base__write_dockerfile/Dockerfiles'], 'env': {}}, {'cmd': ['/usr/bin/docker', '--config', '/data/local/.openstudiolandscapes/.landscapes/2026-01-21_17-22-54__seasoned-jelly-wholesale-mixer/OpenStudioLandscapes/OpenStudioLandscapes_Base__docker_config_json', 'push', 'registry.meemoo.lan:5000/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2026-01-21_17-22-54__seasoned-jelly-wholesale-mixer'], 'env': {}}]
+Processing command: "cmd env"
+stderr: /bin/sh: 1: cmd: not found
+[...]
+```
+
+Solution:
+
+```shell
+cd /data/local/git/repos/OpenStudioLandscapes
+source .venv/bin/activate
+pip uninstall OpenStudioLandscapes-DagsterCodeLocation-StreamingProcess
+pip install "OpenStudioLandscapes-DagsterCodeLocation-StreamingProcess @ git+https://github.com/michimussato/OpenStudioLandscapes-DagsterCodeLocation-StreamingProcess.git"
+```
+
+---
