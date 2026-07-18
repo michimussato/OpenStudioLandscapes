@@ -23,11 +23,13 @@ __all__ = [
     "download_file",
     "get_docker_run_cmd",
     "get_asset_header",
+    "get_base64_auth_str",
 ]
 
 import copy
 import datetime
 import json
+import base64
 import os
 import pathlib
 import shlex
@@ -884,3 +886,15 @@ def get_asset_header(
     }
 
     return ASSET_HEADER
+
+
+def get_base64_auth_str(
+    username: str,
+    password: str,
+) -> str:
+
+    credentials_str = f"{username}:{password}"
+    credentials_bytes = credentials_str.encode("utf-8")
+    credentials_encoded = base64.b64encode(credentials_bytes).decode("ascii")
+
+    return credentials_encoded

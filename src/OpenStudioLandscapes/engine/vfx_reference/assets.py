@@ -646,9 +646,10 @@ def build_docker_image_CY2026(
 #     port: int = docker_config.docker_registry_config.docker_registry_port
 #     url_: str = f"{protocol}://{fqdn}"
 #
-#     credentials_str = f"{username}:{password}"
-#     credentials_bytes = credentials_str.encode("utf-8")
-#     credentials_encoded = base64.b64encode(credentials_bytes).decode("ascii")
+#     credentials_encoded = get_base64_auth_str(
+#         username=username,
+#         password=password,
+#     )
 #
 #     auths[f"{url_}:{port}"] = {"auth": credentials_encoded}
 #

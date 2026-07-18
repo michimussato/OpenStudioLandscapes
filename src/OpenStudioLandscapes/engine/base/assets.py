@@ -31,6 +31,7 @@ from OpenStudioLandscapes.engine.utils import (
     get_image_name,
     get_pip_install_str,
     parse_docker_image_path,
+    get_base64_auth_str,
 )
 from OpenStudioLandscapes.engine.utils.docker import (
     docker_build_cmd,
@@ -555,9 +556,10 @@ def docker_config_json(
     port: int = docker_config.docker_registry_config.docker_registry_port
     url_: str = f"{protocol}://{fqdn}"
 
-    credentials_str = f"{username}:{password}"
-    credentials_bytes = credentials_str.encode("utf-8")
-    credentials_encoded = base64.b64encode(credentials_bytes).decode("ascii")
+    credentials_encoded = get_base64_auth_str(
+        username=username,
+        password=password,
+    )
 
     auths[f"{url_}:{port}"] = {"auth": credentials_encoded}
 
