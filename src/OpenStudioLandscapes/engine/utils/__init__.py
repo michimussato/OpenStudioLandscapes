@@ -900,4 +900,4 @@ def get_base64_auth_str(
     credentials_bytes = credentials_str.encode("utf-8")
     credentials_encoded = base64.b64encode(credentials_bytes).decode("ascii")
 
-    return credentials_encoded
+    return f"Basic {credentials_encoded}"
