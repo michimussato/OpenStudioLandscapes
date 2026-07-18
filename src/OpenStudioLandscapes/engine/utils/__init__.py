@@ -253,7 +253,6 @@ def parse_docker_image_path(
     *,
     context: AssetExecutionContext,
     docker_config: DockerConfigModel,
-    image_on_localhost_only: bool = False,
 ) -> str:
     image_path = []
     context.log.debug(f"{docker_config = }")
@@ -264,8 +263,7 @@ def parse_docker_image_path(
             "`docker_config` must be a DockerConfigModel. " f"{type(docker_config) = }"
         )
 
-    # a stupid mechanism to avoid registry prepending when tagging
-    image_on_localhost_only = image_on_localhost_only or not docker_config.use_registry
+    image_on_localhost_only = not docker_config.use_registry
 
     # The idea is: explicit is better than implicit
     # In reality, we have to deal with 3 cases IF
