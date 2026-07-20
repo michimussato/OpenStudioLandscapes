@@ -26,10 +26,10 @@ __all__ = [
     "get_base64_auth_str",
 ]
 
+import base64
 import copy
 import datetime
 import json
-import base64
 import os
 import pathlib
 import shlex
