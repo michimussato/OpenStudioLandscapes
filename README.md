@@ -44,6 +44,7 @@
     * [Call for Help](#call-for-help-)
       * [Package Release Strategy](#package-release-strategy)
       * [Automated OpenRV Deployment for multiple Platforms](#automated-openrv-deployment-for-multiple-platforms)
+* [Studios powered by OpenStudioLandscapes](#studios-powered-by-openstudiolandscapes)
 * [Documentation](#documentation)
 * [Community](#community)
 * [Publications](#publications)
@@ -824,7 +825,21 @@ difficulties? Please, share your thoughts and experiences!
 
 #### Automated OpenRV Deployment for multiple Platforms
 
-Todo
+> [!TIP]
+> 
+> An automated build pipeline is in development.
+> The repository will be published once a stable status
+> has been reached.
+> 
+> The source code will be available at
+> [OpenStudioLandscapes-OpenRV-Builder](https://github.com/michimussato/OpenStudioLandscapes-OpenRV-Builder)
+
+# Studios powered by OpenStudioLandscapes
+
+- [**Studio Junoon**](https://www.studio-junoon.com/)<br>
+  [![Studio Junoon](https://www.studio-junoon.com/wp-content/uploads/2025/09/studio_junoon_logo_s.png)](https://www.studio-junoon.com/)
+- [**Memoria Works**](https://www.memoriaworks.com/)<br>
+  [![Memoria Works](https://avatars.githubusercontent.com/u/286479285?s=200)](https://www.memoriaworks.com/)
 
 # Documentation
 
