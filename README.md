@@ -837,7 +837,7 @@ difficulties? Please, share your thoughts and experiences!
 # Studios powered by OpenStudioLandscapes
 
 - [**Studio Junoon**](https://www.studio-junoon.com/)<br>
-  [![Studio Junoon](https://www.studio-junoon.com/wp-content/uploads/2025/09/studio_junoon_logo_s.png)](https://www.studio-junoon.com/)
+  [![Studio Junoon](media/images/studio_junoon_logo_invert.png)](https://www.studio-junoon.com/)
 - [**Memoria Works**](https://www.memoriaworks.com/)<br>
   [![Memoria Works](https://avatars.githubusercontent.com/u/286479285?s=200)](https://www.memoriaworks.com/)
 
