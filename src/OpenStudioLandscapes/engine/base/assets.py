@@ -27,11 +27,11 @@ from OpenStudioLandscapes.engine.link.models import OpenStudioLandscapesBaseOut
 from OpenStudioLandscapes.engine.policies.retry import build_docker_image_retry_policy
 from OpenStudioLandscapes.engine.utils import (
     get_apt_install_str,
+    get_base64_auth_str,
     get_docker_run_cmd,
     get_image_name,
     get_pip_install_str,
     parse_docker_image_path,
-    get_base64_auth_str,
 )
 from OpenStudioLandscapes.engine.utils.docker import (
     docker_build_cmd,
