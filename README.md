@@ -166,6 +166,10 @@ services into different [Compose Scopes](./wiki/terminology.md).
 
 #### Multi Host - Multi Site
 
+> [!TIP]
+>
+> A full example of such a setup is described in the [Q&A](https://github.com/michimussato/OpenStudioLandscapes#can-openstudiolandscapes-provide-a-solution-for-distributed-teams) section.
+
 ![topo_multi_host_multi_site.png](media/images/topo_multi_host_multi_site.png)
 
 ## Clone Repository
