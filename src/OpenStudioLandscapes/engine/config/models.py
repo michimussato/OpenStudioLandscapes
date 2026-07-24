@@ -3,6 +3,7 @@ import json
 import os
 import pathlib
 import re
+import textwrap
 from importlib.metadata import Distribution
 from types import ModuleType
 from typing import ClassVar, Dict, List
@@ -315,10 +316,120 @@ class DockerRegistryConfig(BaseConfig):
 
 
 # Todo
-#  - [ ] There must be a better way to do this:
-# This is a dummy for compatibility with
+#  - [ ] There must be a better way to do this
+#  - [ ] It's probably long term way to implement
+#        custom model configuration for Dagster
+#        anyway
+# For now, this is a for compatibility with
 # OpenStudioLandscapes-OpenRV-Builder
-class DockerConfigResource(ConfigurableResource): pass
+class DockerConfigResource(ConfigurableResource):
+
+    use_registry: bool = Field(
+        default=False,
+        description="Enable use of local or remote registry: push/pull images to registry like hub.docker.io.",
+    )
+    no_cache: bool = Field(
+        default=True,
+        description="Run `docker` commands with the `--no-cache` flag.",
+    )
+    # docker_registry_config: ResourceDependency[DockerRegistryConfig] = Field()
+    docker_pull_policy: DockerPullPolicy = Field(
+        default=DockerPullPolicy.missing,
+        examples=[i.name for i in DockerPullPolicy],
+        description="Run `docker` commands with the `--pull=<POLICY>` option.",
+    )
+    docker_compose_always_build: bool = Field(
+        default=False,
+        # examples=[i.name for i in DockerPullPolicy],
+        description="Run `docker` commands with the `--build=<value>` option.",
+    )
+    docker_compose_force_recreate: bool = Field(
+        default=False,
+        # examples=[i.name for i in DockerPullPolicy],
+        description="Run `docker` commands with the `--force-recreate=<value>` option.",
+    )
+
+    docker_config_json: str = Field(
+        default="~/.docker/config.json",
+        description=textwrap.dedent(
+            """\
+            The full path to the Docker config.json file.
+            """
+        )
+    )
+
+    @field_validator("docker_config_json", mode="before")
+    @classmethod
+    def docker_config_json_is_file(cls, value: str) -> str:
+        path_ = pathlib.Path(value)
+        assert path_.expanduser().exists(), f"Given `docker_config_json` value does not exist: {value}"
+        assert path_.expanduser().is_file(), f"Given `docker_config_json` value is not a file: {value}"
+        return value
+
+    @property
+    def docker_config_json_as_path(self) -> pathlib.Path:
+        docker_config_json = pathlib.Path(self.docker_config_json).expanduser()
+        return docker_config_json
+
+    @property
+    def docker_config_json_root(self) -> pathlib.Path:
+        return self.docker_config_json_as_path.parent
+
+    # Registry Settings
+
+    docker_push: bool = Field(
+        default=False,
+        description="Run `docker` commands with the `--push` flag."
+    )
+    docker_pull: bool = Field(
+        default=False,
+        description="Run `docker` commands with the `--pull` flag."
+    )
+    docker_repository_name: str = Field(
+        default="openstudiolandscapes",
+        description="The registry repository name."
+    )
+    docker_registry_access: DockerRegistryAccess = Field(
+        default=DockerRegistryAccess.public,
+        examples=[i.name for i in DockerRegistryAccess],
+    )
+    docker_registry_protocol: DockerRegistryProtocol = Field(
+        default=DockerRegistryProtocol.https,
+        examples=[i.name for i in DockerRegistryProtocol],
+    )
+    docker_registry_fqdn: str = Field(
+        default="registry.openstudiolandscapes.lan",
+        description="The fully qualified domain name of the Docker Registry server.",
+    )
+    docker_registry_port: int = Field(
+        default=5000,
+        description="The port the Docker Registry server is listening on.",
+    )
+    docker_registry_username: str = Field(
+        default="registry-user",
+        description="The username of the Docker registry."
+    )
+    # Todo: docker_registry_password: SecretStr = Field(description="The password of the Docker registry.")
+    #  Error:
+    #  $ /usr/local/bin/docker --config /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-12-06-12-17-15-0a7941b92f824ef49f91c51870d89728/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json push registry.openstudiolandscapes.lan:5000/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-12-06-12-17-15-0a7941b92f824ef49f91c51870d89728
+    #  The push refers to repository [registry.openstudiolandscapes.lan:5000/openstudiolandscapes/openstudiolandscapes_base_build_docker_image]
+    #  f63ce67a7c61: Preparing
+    #  f570bf7dffd1: Waiting
+    #  [...]
+    #  470b66ea5123: Waiting
+    #  unauthorized: authentication required
+    docker_registry_password: str = Field(
+        default="registry-password",
+        description="The password of the Docker registry."
+    )
+
+    @field_validator("docker_repository_name")
+    @classmethod
+    def lowercase_docker_repository_name(cls, value):
+        # Do not:
+        # - repeat special characters multiple times (like "__")
+        # - use capitals in repository names
+        return value.lower()
 
 
 class DockerConfigModel(BaseConfig):
