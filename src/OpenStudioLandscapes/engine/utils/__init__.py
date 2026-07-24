@@ -891,6 +891,7 @@ def get_asset_header(
 def get_base64_auth_str(
     username: str | None,
     password: str | None,
+    prefix: str | None = None,
 ) -> str:
 
     if not all([bool(username), bool(password)]):
@@ -900,4 +901,4 @@ def get_base64_auth_str(
     credentials_bytes = credentials_str.encode("utf-8")
     credentials_encoded = base64.b64encode(credentials_bytes).decode("ascii")
 
-    return f"Basic {credentials_encoded}"
+    return f"{prefix + ' ' if prefix else ''}{credentials_encoded}"
