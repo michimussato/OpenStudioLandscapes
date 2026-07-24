@@ -897,6 +897,8 @@ def get_base64_auth_str(
     if not all([bool(username), bool(password)]):
         raise Exception("username and/or password cannot be empty.")
 
+    username: str
+    password: str
     credentials_str = f"{username}:{password}"
     credentials_bytes = credentials_str.encode("utf-8")
     credentials_encoded = base64.b64encode(credentials_bytes).decode("ascii")
