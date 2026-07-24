@@ -12,6 +12,7 @@ import yaml
 from dagster import (
     AssetIn,
     AssetKey,
+    ConfigurableResource,
 )
 from pydantic import (
     BaseModel,
@@ -311,6 +312,13 @@ class DockerRegistryConfig(BaseConfig):
         # - repeat special characters multiple times (like "__")
         # - use capitals in repository names
         return value.lower()
+
+
+# Todo
+#  - [ ] There must be a better way to do this:
+# This is a dummy for compatibility with
+# OpenStudioLandscapes-OpenRV-Builder
+class DockerConfigResource(ConfigurableResource): pass
 
 
 class DockerConfigModel(BaseConfig):

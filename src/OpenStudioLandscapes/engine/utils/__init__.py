@@ -47,7 +47,7 @@ from dagster import (
 )
 
 from OpenStudioLandscapes.engine.config.models import (
-    DockerConfigModel,
+    DockerConfigModel, DockerConfigResource,
 )
 from OpenStudioLandscapes.engine.discovery.discovery import (
     OpenStudioLandscapesDiscoveredFeature,
@@ -252,13 +252,13 @@ def get_image_name(
 def parse_docker_image_path(
     *,
     context: AssetExecutionContext,
-    docker_config: DockerConfigModel,
+    docker_config: Union[DockerConfigModel, DockerConfigResource],
 ) -> str:
     image_path = []
     context.log.debug(f"{docker_config = }")
     context.log.debug(f"{type(docker_config) = }")
 
-    if not isinstance(docker_config, DockerConfigModel):
+    if not isinstance(docker_config, Union[DockerConfigModel, DockerConfigResource]):
         raise TypeError(
             "`docker_config` must be a DockerConfigModel. " f"{type(docker_config) = }"
         )
