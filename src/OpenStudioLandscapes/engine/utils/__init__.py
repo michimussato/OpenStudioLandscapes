@@ -616,14 +616,14 @@ def get_all_compose_scopes(
 def get_image_metadata(
     context: AssetExecutionContext,
     docker_image: dict,
-    docker_config: DockerConfigModel,
+    docker_config: Union[DockerConfigModel, DockerConfigResource],
     env,
 ):
     build_base_image_data: dict = docker_image
     context.log.debug(f"{build_base_image_data = }")
     # build_base_image_data = {'image_name': 'openstudiolandscapes_base_build_docker_image', 'image_prefixes': '', 'image_tags': ['2025-11-17-01-26-31-05a9b85aa33b47ffa7dfb21a28ca24ab'], 'image_parent': {}}
 
-    build_base_docker_config: DockerConfigModel = docker_config
+    build_base_docker_config: Union[DockerConfigModel, DockerConfigResource] = docker_config
     context.log.debug(f"{build_base_docker_config = }")
     # build_base_docker_config = build_base_docker_config = <DockerConfig.LOCALHOST: {'docker_registry_url': <DockerRegistry.LOCAL_LOCALHOST: 'localhost'>, 'docker_registry_port': None, 'docker_registry_username': None, 'docker_registry_password': None, 'docker_repository_type': <DockerRepositoryType.PUBLIC: 'public'>}>
 
