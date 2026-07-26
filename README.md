@@ -44,7 +44,7 @@
     * [Call for Help](#call-for-help-)
       * [Package Release Strategy](#package-release-strategy)
       * [Automated OpenRV Deployment for multiple Platforms](#automated-openrv-deployment-for-multiple-platforms)
-* [Studios powered by OpenStudioLandscapes](#studios-powered-by-openstudiolandscapes)
+* [Studios deploying with OpenStudioLandscapes](#studios-deploying-with-openstudiolandscapes)
 * [Documentation](#documentation)
 * [Community](#community)
 * [Publications](#publications)
@@ -834,10 +834,10 @@ difficulties? Please, share your thoughts and experiences!
 > The source code will be available at
 > [OpenStudioLandscapes-OpenRV-Builder](https://github.com/michimussato/OpenStudioLandscapes-OpenRV-Builder)
 
-# Studios powered by OpenStudioLandscapes
+# Studios deploying with OpenStudioLandscapes
 
 - [**Studio Junoon**](https://www.studio-junoon.com/)<br>
-  [![Studio Junoon](media/images/studio_junoon_logo_invert.png)](https://www.studio-junoon.com/)
+  [![Studio Junoon](media/images/studio_junoon_logo.png)](https://www.studio-junoon.com/)
 - [**Memoria Works**](https://www.memoriaworks.com/)<br>
   [![Memoria Works](https://avatars.githubusercontent.com/u/286479285?s=200)](https://www.memoriaworks.com/)
 
