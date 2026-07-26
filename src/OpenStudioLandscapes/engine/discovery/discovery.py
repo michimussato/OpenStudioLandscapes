@@ -48,6 +48,11 @@ import ruamel.yaml
 from pydantic_core._pydantic_core import ValidationError as PydanticValidationError
 from setuptools import find_namespace_packages
 
+from dagster import (
+    Config,
+    ConfigurableResource,
+)
+
 from OpenStudioLandscapes.engine import dist as dist_engine
 from OpenStudioLandscapes.engine.config.models import (
     ConfigEngine,
@@ -73,7 +78,7 @@ def get_verified_config(
         file_path=config_file,
     )
 
-    msg = f"config.yml contains no data: {config_file.as_posix()}"
+    msg = f"YAML contains no data: {config_file.as_posix()}"
     assert bool(data), msg
     # This "should not" happen but
     # due to a previous bug that lead to
@@ -186,14 +191,15 @@ LOGGER.info("Start bootstrapping...")
 # https://www.w3reference.com/blog/python-yaml-update-preserving-order-and-comments/#why-preserving-order-and-comments-matters
 def load_yaml(
     file_path: pathlib.Path,
+    typ: str = "rt",
 ) -> ruamel.yaml.CommentedMap:
     """Load a YAML file and return its data (preserving comments/order)."""
-    yaml_ = ruamel.yaml.YAML(typ="rt")  # 'rt' = round-trip mode
+    yaml_ = ruamel.yaml.YAML(typ=typ)  # 'rt' = round-trip mode
     yaml_.preserve_quotes = True  # Keep string quotes (e.g., "MyApp" vs MyApp)
     with open(file_path, "r") as fr:
         data: ruamel.yaml.CommentedMap = yaml_.load(fr)
 
-    LOGGER.debug(f"Loaded data from config.yml: {data}")
+    LOGGER.debug(f"Loaded data from YAML: {data}")
 
     if data is None:
         raise OpenStudioLandscapesDiscoveryException(
@@ -216,7 +222,7 @@ def _write_yaml(
     )  # Match original indentation
 
     with open(config_yml, "w") as f:
-        LOGGER.info(f"Writing `config.yml`: {config_yml.as_posix()}...")
+        LOGGER.info(f"Writing YAML: {config_yml.as_posix()}...")
         yaml_.dump(
             json.loads(
                 json.dumps(
@@ -231,7 +237,7 @@ def _write_yaml(
 
 
 def dump_yaml(
-    model_config: Union[ConfigEngine, FeatureBaseModel],
+    model_config: Union[ConfigEngine, FeatureBaseModel, Config, ConfigurableResource],
     file_path: pathlib.Path,
 ) -> None:
     """Save YAML data to a file, preserving comments/order."""
@@ -290,7 +296,7 @@ def dump_yaml(
 
         if keys_expected != keys_actual:
 
-            LOGGER.critical("Model keys and `config.yml` keys differ.")
+            LOGGER.critical("Model keys and YAML keys differ.")
 
             missing_keys = set(keys_expected) - set(keys_actual)
             unused_keys = set(keys_actual) - set(keys_expected)
@@ -317,7 +323,7 @@ def dump_yaml(
                 if auto_fix_missing_keys:
 
                     LOGGER.info(
-                        f"Updating config.yml automatically: {file_path.as_posix()}"
+                        f"Updating YAML automatically: {file_path.as_posix()}"
                     )
 
                     add_k_v_to_config_yml(
@@ -330,7 +336,7 @@ def dump_yaml(
                 else:
 
                     LOGGER.info(
-                        f"Leaving existing config.yml untouched: {file_path.as_posix()}"
+                        f"Leaving existing YAML untouched: {file_path.as_posix()}"
                     )
 
                     # Todo:
