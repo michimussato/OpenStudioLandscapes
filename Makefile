@@ -71,6 +71,9 @@ prepare_install_docker:
 	sudo groupadd --force --gid 959 docker
 	sudo usermod --append --groups docker $${USER}
 
+# Todo:
+#  - [ ] Check for OS Version here!
+#        - https://github.com/michimussato/OpenStudioLandscapes/issues/71
 install_docker:
 	# https://docs.docker.com/engine/install/ubuntu/
 	for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do \
