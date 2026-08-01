@@ -1,4 +1,3 @@
-import base64
 import json
 import pathlib
 import shutil
@@ -38,82 +37,6 @@ from OpenStudioLandscapes.engine.utils.docker import (
     docker_do,
     docker_push_cmd,
 )
-
-# @asset(
-#     **ASSET_HEADER_BASE,
-# )
-# def pip_packages(
-#     context: AssetExecutionContext,
-# ) -> Generator[Output[List] | AssetMaterialization, None, None]:
-#     """ """
-#
-#     _pip_packages: list = [
-#         # Content moved to OpenStudioLandscapes.Dagster.assets.pip_packages
-#         # Todo:
-#         #  - [ ] enable OpenStudioLandscapes after making it public
-#         #  - [x] maybe move dagster stuff to dagster image?
-#     ]
-#
-#     yield Output(_pip_packages)
-#
-#     yield AssetMaterialization(
-#         asset_key=context.asset_key,
-#         metadata={
-#             "__".join(context.asset_key.path): MetadataValue.json(_pip_packages),
-#         },
-#     )
-
-
-# @asset(
-#     **ASSET_HEADER_BASE,
-# )
-# def apt_packages(
-#     context: AssetExecutionContext,
-# ) -> Generator[Output[MutableMapping] | AssetMaterialization, None, None]:
-#     """ """
-#
-#     _apt_packages = {}
-#
-#     _apt_packages["base"] = [
-#         "git",
-#         "ca-certificates",
-#         "htop",
-#         "file",
-#         "tzdata",
-#         "curl",
-#         "wget",
-#         "ffmpeg",
-#         "xvfb",
-#         "libegl1",
-#         "libsm6",
-#         "libglu1-mesa",
-#         "libxss1",
-#     ]
-#
-#     _apt_packages["build_python311"] = [
-#         "build-essential",
-#         "pkg-config",
-#         "zlib1g-dev",
-#         "libncurses5-dev",
-#         "libgdbm-dev",
-#         "libnss3-dev",
-#         "libssl-dev",
-#         "libreadline-dev",
-#         "libffi-dev",
-#         "libsqlite3-dev",
-#         "libbz2-dev",
-#         "iproute2",
-#         "liblzma-dev",
-#     ]
-#
-#     yield Output(_apt_packages)
-#
-#     yield AssetMaterialization(
-#         asset_key=context.asset_key,
-#         metadata={
-#             "__".join(context.asset_key.path): MetadataValue.json(_apt_packages),
-#         },
-#     )
 
 
 @asset(
