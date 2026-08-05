@@ -108,17 +108,6 @@ def test_CONFIG(
         "global_environment_variables": {},
         "openstudiolandscapes__docker_config": {
             "docker_pull_policy": DockerPullPolicy.always,
-            "docker_registry_config": {
-                "docker_pull": True,
-                "docker_push": True,
-                "docker_registry_access": DockerRegistryAccess.public,
-                "docker_registry_fqdn": "registry.openstudiolandscapes.lan",
-                "docker_registry_password": "registry-password",
-                "docker_registry_port": 5000,
-                "docker_registry_protocol": DockerRegistryProtocol.https,
-                "docker_registry_username": "registry-user",
-                "docker_repository_name": "openstudiolandscapes",
-            },
             "no_cache": False,
             "use_registry": False,
         },

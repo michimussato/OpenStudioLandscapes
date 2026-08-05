@@ -250,71 +250,6 @@ class ComposeScopeBaseModel(BaseConfig):
         return ret
 
 
-class DockerRegistryConfig(BaseConfig):
-    """
-    A current, valid DockerConfig:
-    {
-      "docker_push": true,
-      "docker_registry_password": "registry-password",
-      "docker_registry_port": "5000",
-      "docker_registry_url": "registry.openstudiolandscapes.lan",
-      "docker_registry_username": "registry-user",
-      "docker_repository": "openstudiolandscapes",
-      "docker_repository_type": "private",
-      "docker_use_local": false
-    }
-    """
-
-    docker_push: bool = Field(
-        default=True, description="Run `docker` commands with the `--push` flag."
-    )
-    docker_pull: bool = Field(
-        default=True, description="Run `docker` commands with the `--pull` flag."
-    )
-    docker_repository_name: str = Field(
-        default="openstudiolandscapes", description="The registry repository name."
-    )
-    docker_registry_access: DockerRegistryAccess = Field(
-        default=DockerRegistryAccess.public,
-        examples=[i.name for i in DockerRegistryAccess],
-    )
-    docker_registry_protocol: DockerRegistryProtocol = Field(
-        default=DockerRegistryProtocol.https,
-        examples=[i.name for i in DockerRegistryProtocol],
-    )
-    docker_registry_fqdn: str = Field(
-        default="registry.openstudiolandscapes.lan",
-        description="The fully qualified domain name of the Docker Registry server.",
-    )
-    docker_registry_port: int = Field(
-        default=5000,
-        description="The port the Docker Registry server is listening on.",
-    )
-    docker_registry_username: str = Field(
-        default="registry-user", description="The username of the Docker registry."
-    )
-    # Todo: docker_registry_password: SecretStr = Field(description="The password of the Docker registry.")
-    #  Error:
-    #  $ /usr/local/bin/docker --config /home/michael/git/repos/OpenStudioLandscapes/.landscapes/2025-12-06-12-17-15-0a7941b92f824ef49f91c51870d89728/OpenStudioLandscapes_Base__OpenStudioLandscapes_Base/OpenStudioLandscapes_Base__docker_config_json push registry.openstudiolandscapes.lan:5000/openstudiolandscapes/openstudiolandscapes_base_build_docker_image:2025-12-06-12-17-15-0a7941b92f824ef49f91c51870d89728
-    #  The push refers to repository [registry.openstudiolandscapes.lan:5000/openstudiolandscapes/openstudiolandscapes_base_build_docker_image]
-    #  f63ce67a7c61: Preparing
-    #  f570bf7dffd1: Waiting
-    #  [...]
-    #  470b66ea5123: Waiting
-    #  unauthorized: authentication required
-    docker_registry_password: str = Field(
-        default="registry-password", description="The password of the Docker registry."
-    )
-
-    @field_validator("docker_repository_name")
-    @classmethod
-    def lowercase_docker_repository_name(cls, value):
-        # Do not:
-        # - repeat special characters multiple times (like "__")
-        # - use capitals in repository names
-        return value.lower()
-
-
 # Todo
 #  - [ ] There must be a better way to do this
 #  - [ ] It's probably long term way to implement
@@ -441,7 +376,6 @@ class DockerConfigModel(BaseConfig):
         default=False,
         description="Run `docker` commands with the `--no-cache` flag.",
     )
-    docker_registry_config: DockerRegistryConfig = Field()
     docker_pull_policy: DockerPullPolicy = Field(
         default=DockerPullPolicy.always,
         examples=[i.name for i in DockerPullPolicy],
@@ -488,37 +422,6 @@ class ConfigEngine(BaseConfig):
             **{
                 "use_registry": DockerConfigModel.model_fields["use_registry"].default,
                 "no_cache": DockerConfigModel.model_fields["no_cache"].default,
-                "docker_registry_config": DockerRegistryConfig(
-                    **{
-                        "docker_push": DockerRegistryConfig.model_fields[
-                            "docker_push"
-                        ].default,
-                        "docker_pull": DockerRegistryConfig.model_fields[
-                            "docker_pull"
-                        ].default,
-                        "docker_repository_name": DockerRegistryConfig.model_fields[
-                            "docker_repository_name"
-                        ].default,
-                        "docker_registry_access": DockerRegistryConfig.model_fields[
-                            "docker_registry_access"
-                        ].default,
-                        "docker_registry_protocol": DockerRegistryConfig.model_fields[
-                            "docker_registry_protocol"
-                        ].default,
-                        "docker_registry_fqdn": DockerRegistryConfig.model_fields[
-                            "docker_registry_fqdn"
-                        ].default,
-                        "docker_registry_port": DockerRegistryConfig.model_fields[
-                            "docker_registry_port"
-                        ].default,
-                        "docker_registry_username": DockerRegistryConfig.model_fields[
-                            "docker_registry_username"
-                        ].default,
-                        "docker_registry_password": DockerRegistryConfig.model_fields[
-                            "docker_registry_password"
-                        ].default,
-                    },
-                ),
             }
         ),
     )

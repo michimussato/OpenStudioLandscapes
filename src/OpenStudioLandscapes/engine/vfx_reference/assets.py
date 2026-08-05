@@ -5,7 +5,7 @@ import shutil
 import textwrap
 import time
 import urllib.parse
-from typing import Dict, Generator
+from typing import Generator
 
 from dagster import (
     AssetExecutionContext,
@@ -16,14 +16,15 @@ from dagster import (
     Output,
     asset,
 )
-from dagster._core.definitions.utils import DEFAULT_OUTPUT
+# from dagster._core.definitions.utils import DEFAULT_OUTPUT
 
 from OpenStudioLandscapes.engine.config import dist
 from OpenStudioLandscapes.engine.config.models import ConfigEngine, DockerConfigModel
 from OpenStudioLandscapes.engine.base.configurable_resources.rez_resource import RezConfigurableResource
+from OpenStudioLandscapes.engine.base.configurable_resources.docker_registry_resource import DockerRegistryConfigurableResource
 from OpenStudioLandscapes.engine.constants import *
-from OpenStudioLandscapes.engine.link.models import OpenStudioLandscapesBaseOut
-from OpenStudioLandscapes.engine.policies.retry import build_docker_image_retry_policy
+# from OpenStudioLandscapes.engine.link.models import OpenStudioLandscapesBaseOut
+# from OpenStudioLandscapes.engine.policies.retry import build_docker_image_retry_policy
 from OpenStudioLandscapes.engine.utils import *
 from OpenStudioLandscapes.engine.utils.docker import *
 
@@ -454,6 +455,7 @@ def write_dockerfile_CY2026(
 )
 def build_docker_image_CY2026(
     context: AssetExecutionContext,
+    config_DockerRegistryConfigurableResource: DockerRegistryConfigurableResource,
     env: dict,  # pylint: disable=redefined-outer-name
     CONFIG: ConfigEngine,  # pylint: disable=redefined-outer-name
     docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name
@@ -469,6 +471,7 @@ def build_docker_image_CY2026(
     image_prefixes = parse_docker_image_path(
         docker_config=docker_config,
         context=context,
+        config_DockerRegistryConfigurableResource=config_DockerRegistryConfigurableResource,
     )
     context.log.debug(f"{image_prefixes = }")
 
@@ -505,14 +508,14 @@ def build_docker_image_CY2026(
         docker_file=write_dockerfile_CY2026,
         tags=tags_full_str,
         pull=docker_config.use_registry
-        and docker_config.docker_registry_config.docker_pull,
+        and config_DockerRegistryConfigurableResource.docker_pull,
         no_cache=docker_config.no_cache,
     )
 
     cmds.append(cmd_build)
 
     if (
-        docker_config.use_registry and docker_config.docker_registry_config.docker_push
+        docker_config.use_registry and config_DockerRegistryConfigurableResource.docker_push
     ):  # or not_push
         cmds_push = docker_push_cmd(
             context=context,

@@ -1,16 +1,6 @@
 openstudiolandscapes__docker_config:
   use_registry: false
   no_cache: false
-  docker_registry_config:
-    docker_push: true
-    docker_pull: true
-    docker_repository_name: openstudiolandscapes
-    docker_registry_access: public
-    docker_registry_protocol: https
-    docker_registry_fqdn: registry.openstudiolandscapes.lan
-    docker_registry_port: 5000
-    docker_registry_username: registry-user
-    docker_registry_password: registry-password
   docker_pull_policy: always
 apt_packages_base:
 - git

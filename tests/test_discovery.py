@@ -60,19 +60,6 @@ def fixtures_config_engine_dict() -> Generator[Dict, None, None]:
             **{
                 "use_registry": False,
                 "no_cache": False,
-                "docker_registry_config": DockerRegistryConfig(
-                    **{
-                        "docker_push": True,
-                        "docker_pull": True,
-                        "docker_repository_name": "openstudiolandscapes",
-                        "docker_registry_access": DockerRegistryAccess.public,
-                        "docker_registry_protocol": DockerRegistryProtocol.https,
-                        "docker_registry_fqdn": "registry.openstudiolandscapes.lan",
-                        "docker_registry_port": 5000,
-                        "docker_registry_username": "registry-user",
-                        "docker_registry_password": "registry-password",
-                    },
-                ),
                 "docker_pull_policy": DockerPullPolicy.always,
             },
         ),

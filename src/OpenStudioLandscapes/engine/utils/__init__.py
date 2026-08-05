@@ -60,6 +60,7 @@ from OpenStudioLandscapes.engine.exceptions import (
     OpenStudioLandscapesException,
 )
 from OpenStudioLandscapes.engine.logging.loggers import ENGINE_LOGGER as LOGGER
+from OpenStudioLandscapes.engine.base.configurable_resources.docker_registry_resource import DockerRegistryConfigurableResource
 from OpenStudioLandscapes.engine.utils.docker import (
     docker_build_cmd,
     docker_do,
@@ -253,6 +254,7 @@ def parse_docker_image_path(
     *,
     context: AssetExecutionContext,
     docker_config: Union[DockerConfigModel, DockerConfigResource],
+    config_DockerRegistryConfigurableResource: DockerRegistryConfigurableResource,
 ) -> str:
     image_path = []
     context.log.debug(f"{docker_config = }")
@@ -288,9 +290,9 @@ def parse_docker_image_path(
 
         prepend_registry = docker_config.use_registry
 
-        _repository_name = docker_config.docker_registry_config.docker_repository_name
-        _docker_registry_url = docker_config.docker_registry_config.docker_registry_fqdn
-        _repository_port = docker_config.docker_registry_config.docker_registry_port
+        _repository_name = config_DockerRegistryConfigurableResource.docker_repository_name
+        _docker_registry_url = config_DockerRegistryConfigurableResource.docker_registry_fqdn
+        _repository_port = config_DockerRegistryConfigurableResource.docker_registry_port
 
         if bool(prepend_registry):
             if bool(_docker_registry_url):
@@ -617,6 +619,7 @@ def get_image_metadata(
     context: AssetExecutionContext,
     docker_image: dict,
     docker_config: Union[DockerConfigModel, DockerConfigResource],
+    config_DockerRegistryConfigurableResource: DockerRegistryConfigurableResource,
     env,
 ):
     build_base_image_data: dict = docker_image
@@ -638,6 +641,7 @@ def get_image_metadata(
     image_prefixes = parse_docker_image_path(
         context=context,
         docker_config=build_base_docker_config,  # DockerRegistryConfig
+        config_DockerRegistryConfigurableResource=config_DockerRegistryConfigurableResource,
     )
 
     tags = [
@@ -674,6 +678,7 @@ def create_image(
     tags,
     docker_image: Dict,
     docker_config: DockerConfigModel,
+    config_DockerRegistryConfigurableResource: DockerRegistryConfigurableResource,
     docker_config_json: pathlib.Path,
     docker_file: pathlib.Path,
     build_context: Union[None, pathlib.Path] = None,
@@ -712,8 +717,8 @@ def create_image(
         pull = False
         push = False
     else:
-        pull = docker_config.docker_registry_config.docker_pull
-        push = docker_config.docker_registry_config.docker_push
+        pull = config_DockerRegistryConfigurableResource.docker_pull
+        push = config_DockerRegistryConfigurableResource.docker_push
 
     context.log.debug(f"{localhost_only = }")
 

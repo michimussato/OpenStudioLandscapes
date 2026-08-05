@@ -19,6 +19,7 @@ from dagster import (
 from OpenStudioLandscapes.engine.config import dist
 from OpenStudioLandscapes.engine.config.models import ConfigEngine, DockerConfigModel
 from OpenStudioLandscapes.engine.base.configurable_resources.rez_resource import RezConfigurableResource
+from OpenStudioLandscapes.engine.base.configurable_resources.docker_registry_resource import DockerRegistryConfigurableResource
 from OpenStudioLandscapes.engine.constants import (
     ASSET_HEADER_BASE,
     ASSET_HEADER_BASE_ENV,
@@ -49,6 +50,7 @@ from OpenStudioLandscapes.engine.utils.docker import (
 )
 def write_dockerfile(
     context: AssetExecutionContext,
+    config_DockerRegistryConfigurableResource: DockerRegistryConfigurableResource,
     config_RezConfigurableResource: RezConfigurableResource,
     env: dict,  # pylint: disable=redefined-outer-name
     CONFIG: ConfigEngine,  # pylint: disable=redefined-outer-name
@@ -76,6 +78,7 @@ def write_dockerfile(
     image_prefixes = parse_docker_image_path(
         docker_config=docker_config,
         context=context,
+        config_DockerRegistryConfigurableResource=config_DockerRegistryConfigurableResource,
     )
     context.log.debug(f"{image_prefixes = }")
 
@@ -261,6 +264,7 @@ def write_dockerfile(
 )
 def build_docker_image(
     context: AssetExecutionContext,
+    config_DockerRegistryConfigurableResource: DockerRegistryConfigurableResource,
     env: dict,  # pylint: disable=redefined-outer-name
     CONFIG: ConfigEngine,  # pylint: disable=redefined-outer-name
     docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name
@@ -276,6 +280,7 @@ def build_docker_image(
     image_prefixes = parse_docker_image_path(
         docker_config=docker_config,
         context=context,
+        config_DockerRegistryConfigurableResource=config_DockerRegistryConfigurableResource,
     )
     context.log.debug(f"{image_prefixes = }")
 
@@ -312,14 +317,14 @@ def build_docker_image(
         docker_file=write_dockerfile,
         tags=tags_full_str,
         pull=docker_config.use_registry
-        and docker_config.docker_registry_config.docker_pull,
+        and config_DockerRegistryConfigurableResource.docker_pull,
         no_cache=docker_config.no_cache,
     )
 
     cmds.append(cmd_build)
 
     if (
-        docker_config.use_registry and docker_config.docker_registry_config.docker_push
+        docker_config.use_registry and config_DockerRegistryConfigurableResource.docker_push
     ):  # or not_push
         cmds_push = docker_push_cmd(
             context=context,
@@ -453,6 +458,7 @@ def group_out_base(
 )
 def docker_config_json(
     context: AssetExecutionContext,
+    config_DockerRegistryConfigurableResource: DockerRegistryConfigurableResource,
     env: dict,  # pylint: disable=redefined-outer-name
     CONFIG: ConfigEngine,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
@@ -474,11 +480,11 @@ def docker_config_json(
 
     # process from docker/api/config.py:create_config
     # (https://docker-py.readthedocs.io/en/stable/api.html#docker.api.config.ConfigApiMixin.create_config)
-    username: str = docker_config.docker_registry_config.docker_registry_username
-    password: str = docker_config.docker_registry_config.docker_registry_password
-    fqdn: str = docker_config.docker_registry_config.docker_registry_fqdn
-    protocol: str = docker_config.docker_registry_config.docker_registry_protocol
-    port: int = docker_config.docker_registry_config.docker_registry_port
+    username: str = config_DockerRegistryConfigurableResource.docker_registry_username
+    password: str = config_DockerRegistryConfigurableResource.docker_registry_password
+    fqdn: str = config_DockerRegistryConfigurableResource.docker_registry_fqdn
+    protocol: str = config_DockerRegistryConfigurableResource.docker_registry_protocol
+    port: int = config_DockerRegistryConfigurableResource.docker_registry_port
     url_: str = f"{protocol}://{fqdn}"
 
     credentials_encoded = get_base64_auth_str(
