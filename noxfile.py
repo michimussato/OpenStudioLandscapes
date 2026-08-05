@@ -76,6 +76,8 @@ nox.options.sessions = [
     "readme",
     # "release",  # Todo
     "testing_engine",  # Todo
+    # nox > * testing_engine-3.11(tests): failed, took 28 seconds
+    # nox > * testing_engine-3.11(src-OpenStudioLandscapes-engine-env-tests): failed, took 32 seconds
     # "testing_features",  # Todo
 ]
 
@@ -836,6 +838,10 @@ LINKED_FILES = [
     # "src/OpenStudioLandscapes/*/constants.py", ?
     # ".pylintrc" ?
 ]
+
+# Todo:
+#  - [ ] session to cleanup backup (~) files
+#        `rm *~`
 
 # # fix_hardlinks_in_features
 @nox.session(python=None, tags=["fix_hardlinks_in_features"])
