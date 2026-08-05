@@ -133,7 +133,7 @@ def get_absolute_config_path(
     return config_yml_expanded
 
 
-config_RezConfigurableResource_yaml: pathlib.Path = get_absolute_config_path(dist_engine).joinpath("config_rez_resource.yaml")
+config_RezConfigurableResource_yaml: pathlib.Path = get_absolute_config_path(dist_engine).joinpath("config_rez_resource.yml")
 
 
 config_RezConfigurableResource_yaml.parent.mkdir(parents=True, exist_ok=True)
