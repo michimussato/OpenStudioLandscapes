@@ -12,13 +12,6 @@ openstudiolandscapes__docker_config:
     docker_registry_username: registry-user
     docker_registry_password: registry-password
   docker_pull_policy: always
-openstudiolandscapes__rez_config:
-  rez_version: 3.3.0
-  REZ_LOCAL_PACKAGES_PATH: ~/packages
-  REZ_RELEASE_PACKAGES_PATH: ~/.rez/packages/int
-  REZ_EXTERNAL_PACKAGES_PATH: ~/.rez/packages/ext
-  apt_packages_rez:
-  - binutils
 apt_packages_base:
 - git
 - ca-certificates

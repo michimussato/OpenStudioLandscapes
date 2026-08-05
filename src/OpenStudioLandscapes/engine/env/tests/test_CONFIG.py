@@ -124,13 +124,6 @@ def test_CONFIG(
         },
         "openstudiolandscapes__domain_lan": "openstudiolandscapes.lan",
         "openstudiolandscapes__human_readable_ids": True,
-        "openstudiolandscapes__rez_config": {
-            "REZ_EXTERNAL_PACKAGES_PATH": pathlib.Path("~/.rez/packages/ext"),
-            "REZ_LOCAL_PACKAGES_PATH": pathlib.Path("~/packages"),
-            "REZ_RELEASE_PACKAGES_PATH": pathlib.Path("~/.rez/packages/int"),
-            "apt_packages_rez": ["binutils"],
-            "rez_version": "3.3.0",
-        },
         "pip_packages": [],
         "sudo_method": SudoMethod.PKEXEC,
         "tz": "Europe/UTC",

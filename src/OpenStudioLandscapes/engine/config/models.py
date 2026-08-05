@@ -459,81 +459,6 @@ class DockerConfigModel(BaseConfig):
     )
 
 
-class RezConfigModel(BaseConfig):
-
-    rez_version: str = Field(
-        default="3.3.0",
-    )
-
-    # Where to PUT packages TO
-    REZ_LOCAL_PACKAGES_PATH: pathlib.Path = Field(
-        # locally installed pkgs, not yet deployed
-        default=pathlib.Path("~/packages"),
-        description="https://rez.readthedocs.io/en/stable/configuring_rez.html#local_packages_path",
-    )
-
-    REZ_RELEASE_PACKAGES_PATH: pathlib.Path = Field(
-        # internally developed pkgs, deployed
-        default=pathlib.Path("~/.rez/packages/int"),
-        description="https://rez.readthedocs.io/en/stable/configuring_rez.html#release_packages_path",
-    )
-
-    REZ_EXTERNAL_PACKAGES_PATH: pathlib.Path = Field(
-        # external (3rd party) pkgs, such as houdini, boost
-        default=pathlib.Path("~/.rez/packages/ext"),
-        description="This variable can't be specified directly. We use `REZ_PACKAGES_PATH` "
-        "to add this to the lookup paths. For more info, see: "
-        "https://rez.readthedocs.io/en/stable/configuring_rez.html#packages_path",
-    )
-
-    @property
-    def REZ_PACKAGES_PATH(self) -> List[pathlib.Path]:
-        # Resources (@computed_field):
-        # - https://stackoverflow.com/a/76301965
-        # - https://docs.pydantic.dev/2.7/concepts/fields/#the-computed_field-decorator
-        # -> just property without computed_field is fine here.
-        #    no need to serialize this member when dumping the model
-        #    An example of a successful computed_field implementation
-        #    can be found here:
-        #    - [OpenStudioLandscapes-DagsterCodeLocation-JobProcessor](https://github.com/michimussato/OpenStudioLandscapes-DagsterCodeLocation-JobProcessor/blob/main/src/OpenStudioLandscapes/DagsterCodeLocation/JobProcessor/deadline_templates/plugins/houdini/__init__.py)
-        paths_ = [
-            self.REZ_LOCAL_PACKAGES_PATH,
-            self.REZ_RELEASE_PACKAGES_PATH,
-            self.REZ_EXTERNAL_PACKAGES_PATH,
-        ]
-        return paths_
-
-    @property
-    def REZ_PACKAGES_PATH_ENV(self) -> str:
-        return ":".join(i.expanduser().as_posix() for i in self.REZ_PACKAGES_PATH)
-
-    @property
-    def REZ_PACKAGES_PATH_VOL(self) -> List[str]:
-        return [
-            f"{i.expanduser().as_posix()}:{i.expanduser().as_posix()}"
-            for i in self.REZ_PACKAGES_PATH
-        ]
-
-    @property
-    def REZ_ENVIRONMENT(self) -> Dict[str, str]:
-        env = {
-            "REZ_PACKAGES_PATH": self.REZ_PACKAGES_PATH_ENV,
-            "REZ_LOCAL_PACKAGES_PATH": self.REZ_LOCAL_PACKAGES_PATH.expanduser().as_posix(),
-            "REZ_RELEASE_PACKAGES_PATH": self.REZ_RELEASE_PACKAGES_PATH.expanduser().as_posix(),
-        }
-        return env
-
-    apt_packages_rez: List = Field(
-        default=[
-            # $ rez bundle bakes/my_bake.rxt bundles/bundle_from_my_bake
-            # 11:34:58 INFO     Bundling /rez/bakes/my_bake.rxt into /rez/bundles/bundle_from_my_bake...
-            # 11:34:58 WARNING  Could not patch 127 files: cannot find 'readelf' utility.
-            "binutils",
-        ],
-        frozen=True,
-    )
-
-
 class SudoMethod(enum.StrEnum):
     # Todo
     #  - [ ] implement `su`
@@ -595,14 +520,6 @@ class ConfigEngine(BaseConfig):
                     },
                 ),
             }
-        ),
-    )
-
-    openstudiolandscapes__rez_config: RezConfigModel = Field(
-        default=RezConfigModel(
-            # Just use defaults for now
-            # Todo
-            #  - [ ] evaluate removal of this
         ),
     )
 

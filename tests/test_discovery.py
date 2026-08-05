@@ -76,15 +76,6 @@ def fixtures_config_engine_dict() -> Generator[Dict, None, None]:
                 "docker_pull_policy": DockerPullPolicy.always,
             },
         ),
-        "openstudiolandscapes__rez_config": RezConfigModel(
-            **{
-                "rez_version": "3.3.0",
-                "REZ_LOCAL_PACKAGES_PATH": pathlib.Path("~/packages"),
-                "REZ_RELEASE_PACKAGES_PATH": pathlib.Path("~/.rez/packages/int"),
-                "REZ_EXTERNAL_PACKAGES_PATH": pathlib.Path("~/.rez/packages/ext"),
-                "apt_packages_rez": ["binutils"],
-            }
-        ),
         "apt_packages_base": [
             "git",
             "ca-certificates", "htop", "file", "tzdata", "curl", "wget", "ffmpeg", "libegl1", "libsm6",
