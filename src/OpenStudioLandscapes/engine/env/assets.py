@@ -1,15 +1,12 @@
 import datetime
 import getpass
-import json
 import os
 import pathlib
 import socket
 import tempfile
-import textwrap
 import uuid
 from typing import Generator, MutableMapping
 
-import yaml
 from dagster import (
     AssetExecutionContext,
     AssetIn,
@@ -24,9 +21,8 @@ from dagster import (
 )
 from human_readable_id import generate_hrid
 
-import OpenStudioLandscapes.engine.discovery.discovery as discovery
 from OpenStudioLandscapes.engine import exceptions
-from OpenStudioLandscapes.engine.config.models import CONFIG_STR, ConfigEngine
+from OpenStudioLandscapes.engine.env.configurable_resources.config_engine import ConfigEngineConfigurableResource
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.utils import *
 
@@ -56,13 +52,10 @@ def git_root(
 #  - [ ] Move this to ConfigEngine?
 @asset(
     **ASSET_HEADER_BASE_ENV,
-    ins={
-        "CONFIG": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"])),
-    },
 )
 def landscape_id(
     context: AssetExecutionContext,
-    CONFIG: ConfigEngine,  # pylint: disable=redefined-outer-name
+    config_ConfigEngineConfigurableResource: ConfigEngineConfigurableResource,
 ) -> Generator[Output[MutableMapping[str, str]] | AssetMaterialization, None, None]:
 
     landscape_id = os.environ.get("OPENSTUDIOLANDSCAPES__LANDSCAPE_ID", None)
@@ -73,7 +66,7 @@ def landscape_id(
 
         now_prefix = datetime.datetime.strftime(now, "%Y-%m-%d_%H-%M-%S")
 
-        if CONFIG.openstudiolandscapes__human_readable_ids:
+        if config_ConfigEngineConfigurableResource.openstudiolandscapes__human_readable_ids:
             id_ = generate_hrid(
                 words=4,
                 separator="-",
@@ -109,14 +102,14 @@ def landscape_id(
 @asset(
     **ASSET_HEADER_BASE_ENV,
     ins={
-        "git_root": AssetIn(
-            AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "git_root"]),
-        ),
+        # "git_root": AssetIn(
+        #     AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "git_root"]),
+        # ),
     },
 )
 def dot_landscapes(
     context: AssetExecutionContext,
-    git_root: pathlib.Path,  # pylint: disable=redefined-outer-name
+    # git_root: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
 
     _dot_landscapes: pathlib.Path = (
@@ -228,80 +221,6 @@ def dot_features(
     )
 
 
-# CONFIG_spec = AssetSpec(
-#     key=AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"]),
-#     group_name=ASSET_HEADER_BASE_ENV["group_name"],
-#     description=textwrap.dedent(f"""
-#         Reads options from a custom `config.yml`.
-#         If the custom `config.yml` does not exist, it
-#         will be created locally containing default options.
-#
-#         ---
-#
-#         For reference, the default `config.yml` looks as follows:
-#
-#         ```yaml
-#         {textwrap.indent(CONFIG_STR, prefix='        ')}
-#         ```
-#         """),
-# )
-#
-#
-# @multi_asset(
-#     outs={
-#         "CONFIG": AssetOut.from_spec(CONFIG_spec),
-#     },
-#     ins={},
-# )
-@asset(
-    **ASSET_HEADER_BASE_ENV,
-    ins={},
-    description=textwrap.dedent(f"""
-        Reads options from a custom `config.yml`.
-        If the custom `config.yml` does not exist, it 
-        will be created locally containing default options.
-        
-        ---
-        
-        For reference, the default `config.yml` looks as follows:
-        
-        ```yaml
-        {textwrap.indent(CONFIG_STR, prefix='        ')}
-        ```
-        """),
-)
-def CONFIG(
-    context: AssetExecutionContext,
-    # env: dict,  # pylint: disable=redefined-outer-name
-) -> Generator[
-    Output[ConfigEngine] | AssetMaterialization,
-    None,
-    None,
-]:
-
-    # Todo:
-    #  - [ ] bind mount /etc/localtime:/etc/localtime:ro?
-
-    config_validated = discovery.get_config_engine()
-
-    # output_name = "CONFIG"
-    yield Output(
-        # output_name=output_name,
-        value=config_validated,
-    )
-
-    yield AssetMaterialization(
-        # asset_key=context.asset_key_for_output(output_name),
-        asset_key=context.asset_key,
-        metadata={
-            # "__".join(context.asset_key_for_output(output_name).path): MetadataValue.md(
-            "__".join(context.asset_key.path): MetadataValue.md(
-                f"```yaml\n{yaml.safe_dump(json.loads(config_validated.model_dump_json(fallback=str, indent=2)))}\n```"
-            ),
-        },
-    )
-
-
 env_spec = AssetSpec(
     key=AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"]),
     group_name=ASSET_HEADER_BASE_ENV["group_name"],
@@ -337,16 +256,15 @@ env_spec = AssetSpec(
         "dot_features": AssetIn(
             AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "dot_features"])
         ),
-        "CONFIG": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"])),
     },
 )
 def env(
     context: AssetExecutionContext,
+    config_ConfigEngineConfigurableResource: ConfigEngineConfigurableResource,
     git_root: pathlib.Path,  # pylint: disable=redefined-outer-name
     landscape_id: dict,  # pylint: disable=redefined-outer-name
     dot_landscapes: pathlib.Path,  # pylint: disable=redefined-outer-name
     dot_features: pathlib.Path,  # pylint: disable=redefined-outer-name
-    CONFIG: ConfigEngine,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
 
     # @formatter:off
@@ -382,7 +300,7 @@ def env(
         #  - [ ] move DOT_SHARED_VOLUMES to config.yml
         "DOT_SHARED_VOLUMES": ".shared_volumes",
         "DOT_FEATURES": dot_features.as_posix(),
-        "AUTHOR": CONFIG.author,
+        "AUTHOR": config_ConfigEngineConfigurableResource.author,
         "CREATED_BY": str(getpass.getuser()),
         "CREATED_ON": str(socket.gethostname()),
         "CREATED_AT": str(
