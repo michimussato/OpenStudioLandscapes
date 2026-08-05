@@ -225,7 +225,6 @@ def op_group_out(
     docker_config_json: pathlib.Path = (
         feature_in.openstudiolandscapes_base.docker_config_json
     )
-    CONFIG_ENGINE: ConfigEngine = feature_in.openstudiolandscapes_base.config_engine
 
     config_DockerConfigurableResource: DockerConfigurableResource = config_DockerConfigurableResource
 
