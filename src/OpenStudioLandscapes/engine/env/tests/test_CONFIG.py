@@ -106,11 +106,6 @@ def test_CONFIG(
         ],
         "global_bind_volumes": [],
         "global_environment_variables": {},
-        "openstudiolandscapes__docker_config": {
-            "docker_pull_policy": DockerPullPolicy.always,
-            "no_cache": False,
-            "use_registry": False,
-        },
         "openstudiolandscapes__domain_lan": "openstudiolandscapes.lan",
         "openstudiolandscapes__human_readable_ids": True,
         "pip_packages": [],

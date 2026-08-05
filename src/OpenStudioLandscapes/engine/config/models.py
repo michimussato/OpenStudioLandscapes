@@ -367,32 +367,6 @@ class DockerConfigResource(ConfigurableResource):
         return value.lower()
 
 
-class DockerConfigModel(BaseConfig):
-    use_registry: bool = Field(
-        default=False,
-        description="Enable use of local or remote registry: push/pull images to registry like hub.docker.io.",
-    )
-    no_cache: bool = Field(
-        default=False,
-        description="Run `docker` commands with the `--no-cache` flag.",
-    )
-    docker_pull_policy: DockerPullPolicy = Field(
-        default=DockerPullPolicy.always,
-        examples=[i.name for i in DockerPullPolicy],
-        description="Run `docker` commands with the `--pull=<POLICY>` option.",
-    )
-    docker_compose_always_build: bool = Field(
-        default=False,
-        # examples=[i.name for i in DockerPullPolicy],
-        description="Run `docker` commands with the `--build=<value>` option.",
-    )
-    docker_compose_force_recreate: bool = Field(
-        default=False,
-        # examples=[i.name for i in DockerPullPolicy],
-        description="Run `docker` commands with the `--force-recreate=<value>` option.",
-    )
-
-
 class SudoMethod(enum.StrEnum):
     # Todo
     #  - [ ] implement `su`
@@ -415,16 +389,6 @@ class ConfigEngine(BaseConfig):
         if not hasattr(cls, "instance"):
             cls.instance = super(ConfigEngine, cls).__new__(cls)
         return cls.instance
-
-    openstudiolandscapes__docker_config: DockerConfigModel = Field(
-        description="The Docker Configuration for OpenStudioLandscapes.",
-        default=DockerConfigModel(
-            **{
-                "use_registry": DockerConfigModel.model_fields["use_registry"].default,
-                "no_cache": DockerConfigModel.model_fields["no_cache"].default,
-            }
-        ),
-    )
 
     apt_packages_base: List = Field(
         default=[

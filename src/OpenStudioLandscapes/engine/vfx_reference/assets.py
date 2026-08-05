@@ -19,9 +19,10 @@ from dagster import (
 # from dagster._core.definitions.utils import DEFAULT_OUTPUT
 
 from OpenStudioLandscapes.engine.config import dist
-from OpenStudioLandscapes.engine.config.models import ConfigEngine, DockerConfigModel
+from OpenStudioLandscapes.engine.config.models import ConfigEngine
 from OpenStudioLandscapes.engine.base.configurable_resources.rez_resource import RezConfigurableResource
 from OpenStudioLandscapes.engine.base.configurable_resources.docker_registry_resource import DockerRegistryConfigurableResource
+from OpenStudioLandscapes.engine.base.configurable_resources.docker_resource import DockerConfigurableResource
 from OpenStudioLandscapes.engine.constants import *
 # from OpenStudioLandscapes.engine.link.models import OpenStudioLandscapesBaseOut
 # from OpenStudioLandscapes.engine.policies.retry import build_docker_image_retry_policy
@@ -456,6 +457,7 @@ def write_dockerfile_CY2026(
 def build_docker_image_CY2026(
     context: AssetExecutionContext,
     config_DockerRegistryConfigurableResource: DockerRegistryConfigurableResource,
+    config_DockerConfigurableResource: DockerConfigurableResource,
     env: dict,  # pylint: disable=redefined-outer-name
     CONFIG: ConfigEngine,  # pylint: disable=redefined-outer-name
     docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name
@@ -466,7 +468,7 @@ def build_docker_image_CY2026(
     image_name = get_image_name(context=context)
     context.log.debug(f"{image_name = }")
 
-    docker_config: DockerConfigModel = CONFIG.openstudiolandscapes__docker_config
+    docker_config: DockerConfigurableResource = config_DockerConfigurableResource
 
     image_prefixes = parse_docker_image_path(
         docker_config=docker_config,

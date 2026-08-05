@@ -17,9 +17,10 @@ from dagster import (
 )
 
 from OpenStudioLandscapes.engine.config import dist
-from OpenStudioLandscapes.engine.config.models import ConfigEngine, DockerConfigModel
+from OpenStudioLandscapes.engine.config.models import ConfigEngine
 from OpenStudioLandscapes.engine.base.configurable_resources.rez_resource import RezConfigurableResource
 from OpenStudioLandscapes.engine.base.configurable_resources.docker_registry_resource import DockerRegistryConfigurableResource
+from OpenStudioLandscapes.engine.base.configurable_resources.docker_resource import DockerConfigurableResource
 from OpenStudioLandscapes.engine.constants import (
     ASSET_HEADER_BASE,
     ASSET_HEADER_BASE_ENV,
@@ -51,6 +52,7 @@ from OpenStudioLandscapes.engine.utils.docker import (
 def write_dockerfile(
     context: AssetExecutionContext,
     config_DockerRegistryConfigurableResource: DockerRegistryConfigurableResource,
+    config_DockerConfigurableResource: DockerConfigurableResource,
     config_RezConfigurableResource: RezConfigurableResource,
     env: dict,  # pylint: disable=redefined-outer-name
     CONFIG: ConfigEngine,  # pylint: disable=redefined-outer-name
@@ -73,7 +75,7 @@ def write_dockerfile(
     image_name = get_image_name(context=context)
     context.log.debug(f"{image_name = }")
 
-    docker_config: DockerConfigModel = CONFIG.openstudiolandscapes__docker_config
+    docker_config: DockerConfigurableResource = config_DockerConfigurableResource
 
     image_prefixes = parse_docker_image_path(
         docker_config=docker_config,
@@ -265,6 +267,7 @@ def write_dockerfile(
 def build_docker_image(
     context: AssetExecutionContext,
     config_DockerRegistryConfigurableResource: DockerRegistryConfigurableResource,
+    config_DockerConfigurableResource: DockerConfigurableResource,
     env: dict,  # pylint: disable=redefined-outer-name
     CONFIG: ConfigEngine,  # pylint: disable=redefined-outer-name
     docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name
@@ -275,7 +278,7 @@ def build_docker_image(
     image_name = get_image_name(context=context)
     context.log.debug(f"{image_name = }")
 
-    docker_config: DockerConfigModel = CONFIG.openstudiolandscapes__docker_config
+    docker_config: DockerConfigurableResource = config_DockerConfigurableResource
 
     image_prefixes = parse_docker_image_path(
         docker_config=docker_config,
@@ -459,6 +462,7 @@ def group_out_base(
 def docker_config_json(
     context: AssetExecutionContext,
     config_DockerRegistryConfigurableResource: DockerRegistryConfigurableResource,
+    config_DockerConfigurableResource: DockerConfigurableResource,
     env: dict,  # pylint: disable=redefined-outer-name
     CONFIG: ConfigEngine,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
@@ -476,7 +480,7 @@ def docker_config_json(
     docker_auth = {}
     docker_auth["auths"] = auths = {}
 
-    docker_config: DockerConfigModel = CONFIG.openstudiolandscapes__docker_config
+    docker_config: DockerConfigurableResource = config_DockerConfigurableResource
 
     # process from docker/api/config.py:create_config
     # (https://docker-py.readthedocs.io/en/stable/api.html#docker.api.config.ConfigApiMixin.create_config)

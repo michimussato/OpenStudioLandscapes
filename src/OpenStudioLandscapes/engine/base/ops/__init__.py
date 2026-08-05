@@ -28,6 +28,7 @@ from OpenStudioLandscapes.engine.config.models import (
     ConfigEngine,
     FeatureBaseModel,
 )
+from OpenStudioLandscapes.engine.base.configurable_resources.docker_resource import DockerConfigurableResource
 from OpenStudioLandscapes.engine.constants import (
     DOCKER_PROGRESS,
 )
@@ -195,6 +196,7 @@ def op_docker_compose_graph(
 )
 def op_group_out(
     context: OpExecutionContext,
+    config_DockerConfigurableResource: DockerConfigurableResource,
     # Todo:
     #  - [ ] DUPLICATE?? use `OpenStudioLandscapes.engine.base.ops.factories.factory_compose_scope__cmd`
     #        instead
@@ -224,6 +226,8 @@ def op_group_out(
         feature_in.openstudiolandscapes_base.docker_config_json
     )
     CONFIG_ENGINE: ConfigEngine = feature_in.openstudiolandscapes_base.config_engine
+
+    config_DockerConfigurableResource: DockerConfigurableResource = config_DockerConfigurableResource
 
     context.log.debug(f"{docker_config_json = }")
 
@@ -286,7 +290,7 @@ def op_group_out(
         #  - [x] implement `--pull always` policy here:
         #        References:
         #        - [Method 1: Using the --pull=always Flag](https://www.codegenes.net/blog/can-i-make-docker-do-always-a-pull-when-performing-a-run/#method-1-using-the-pull-always-flag)
-        f"--pull={CONFIG_ENGINE.openstudiolandscapes__docker_config.docker_pull_policy}",
+        f"--pull={config_DockerConfigurableResource.docker_pull_policy}",
         # f"--build={CONFIG_ENGINE.openstudiolandscapes__docker_config.docker_compose_always_build}",
         # f"--force-recreate={CONFIG_ENGINE.openstudiolandscapes__docker_config.docker_compose_force_recreate}",
         "--remove-orphans",

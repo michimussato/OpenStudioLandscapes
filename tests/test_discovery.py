@@ -56,13 +56,6 @@ def fixtures_config_engine_dict() -> Generator[Dict, None, None]:
     # - [Pytest - How to use fixtures](https://docs.pytest.org/en/7.1.x/how-to/fixtures.html)
     # before test - create resource
     config_engine_dict = {
-        "openstudiolandscapes__docker_config": DockerConfigModel(
-            **{
-                "use_registry": False,
-                "no_cache": False,
-                "docker_pull_policy": DockerPullPolicy.always,
-            },
-        ),
         "apt_packages_base": [
             "git",
             "ca-certificates", "htop", "file", "tzdata", "curl", "wget", "ffmpeg", "libegl1", "libsm6",

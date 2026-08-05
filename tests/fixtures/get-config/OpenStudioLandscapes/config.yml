@@ -1,7 +1,3 @@
-openstudiolandscapes__docker_config:
-  use_registry: false
-  no_cache: false
-  docker_pull_policy: always
 apt_packages_base:
 - git
 - ca-certificates
