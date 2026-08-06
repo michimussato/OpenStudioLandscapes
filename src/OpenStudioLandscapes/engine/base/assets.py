@@ -74,10 +74,8 @@ def write_dockerfile(
     image_name = get_image_name(context=context)
     context.log.debug(f"{image_name = }")
 
-    docker_config: DockerConfigurableResource = config_DockerConfigurableResource
-
     image_prefixes = parse_docker_image_path(
-        docker_config=docker_config,
+        docker_config=config_DockerConfigurableResource,
         context=context,
         config_DockerRegistryConfigurableResource=config_DockerRegistryConfigurableResource,
     )
@@ -276,10 +274,8 @@ def build_docker_image(
     image_name = get_image_name(context=context)
     context.log.debug(f"{image_name = }")
 
-    docker_config: DockerConfigurableResource = config_DockerConfigurableResource
-
     image_prefixes = parse_docker_image_path(
-        docker_config=docker_config,
+        docker_config=config_DockerConfigurableResource,
         context=context,
         config_DockerRegistryConfigurableResource=config_DockerRegistryConfigurableResource,
     )
@@ -317,15 +313,15 @@ def build_docker_image(
         docker_config_json=docker_config_json,
         docker_file=write_dockerfile,
         tags=tags_full_str,
-        pull=docker_config.use_registry
+        pull=config_DockerConfigurableResource.use_registry
         and config_DockerRegistryConfigurableResource.docker_pull,
-        no_cache=docker_config.no_cache,
+        no_cache=config_DockerConfigurableResource.no_cache,
     )
 
     cmds.append(cmd_build)
 
     if (
-        docker_config.use_registry and config_DockerRegistryConfigurableResource.docker_push
+        config_DockerConfigurableResource.use_registry and config_DockerRegistryConfigurableResource.docker_push
     ):  # or not_push
         cmds_push = docker_push_cmd(
             context=context,

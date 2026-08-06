@@ -442,7 +442,7 @@ def write_dockerfile_CY2026(
     **ASSET_HEADER_VFX_PLATFORM,
     ins={
         "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
-        "CONFIG": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"])),
+        # "CONFIG": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "CONFIG"])),
         "docker_config_json": AssetIn(
             AssetKey([*ASSET_HEADER_BASE["key_prefix"], "docker_config_json"])
         ),
@@ -459,7 +459,7 @@ def build_docker_image_CY2026(
     config_DockerRegistryConfigurableResource: DockerRegistryConfigurableResource,
     config_DockerConfigurableResource: DockerConfigurableResource,
     env: dict,  # pylint: disable=redefined-outer-name
-    CONFIG: ConfigEngine,  # pylint: disable=redefined-outer-name
+    # CONFIG: ConfigEngine,  # pylint: disable=redefined-outer-name
     docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name
     write_dockerfile_CY2026: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict[str, str | list[str]]] | AssetMaterialization, None, None]:
@@ -468,10 +468,8 @@ def build_docker_image_CY2026(
     image_name = get_image_name(context=context)
     context.log.debug(f"{image_name = }")
 
-    docker_config: DockerConfigurableResource = config_DockerConfigurableResource
-
     image_prefixes = parse_docker_image_path(
-        docker_config=docker_config,
+        docker_config=config_DockerConfigurableResource,
         context=context,
         config_DockerRegistryConfigurableResource=config_DockerRegistryConfigurableResource,
     )
@@ -509,15 +507,15 @@ def build_docker_image_CY2026(
         docker_config_json=docker_config_json,
         docker_file=write_dockerfile_CY2026,
         tags=tags_full_str,
-        pull=docker_config.use_registry
+        pull=config_DockerConfigurableResource.use_registry
         and config_DockerRegistryConfigurableResource.docker_pull,
-        no_cache=docker_config.no_cache,
+        no_cache=config_DockerConfigurableResource.no_cache,
     )
 
     cmds.append(cmd_build)
 
     if (
-        docker_config.use_registry and config_DockerRegistryConfigurableResource.docker_push
+        config_DockerConfigurableResource.use_registry and config_DockerRegistryConfigurableResource.docker_push
     ):  # or not_push
         cmds_push = docker_push_cmd(
             context=context,

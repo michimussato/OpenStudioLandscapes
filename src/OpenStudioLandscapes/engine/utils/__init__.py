@@ -678,7 +678,7 @@ def create_image(
     image_prefixes,
     tags,
     docker_image: Dict,
-    docker_config: DockerConfigurableResource,
+    config_DockerConfigurableResource: DockerConfigurableResource,
     config_DockerRegistryConfigurableResource: DockerRegistryConfigurableResource,
     docker_config_json: pathlib.Path,
     docker_file: pathlib.Path,
@@ -705,7 +705,7 @@ def create_image(
     tags_full_str = [f"{image_prefixes}{image_name}:{tag}" for tag in tags]
     context.log.debug(f"{tags_full_str = }")
 
-    localhost_only = not docker_config.use_registry
+    localhost_only = not config_DockerConfigurableResource.use_registry
     # Todo:
     #  - [ ] if localhost_only is True, the images will
     #        get tagged with docker.io/library/ automatically
@@ -729,7 +729,7 @@ def create_image(
         docker_file=docker_file,
         tags=tags_full_str,
         pull=pull,
-        no_cache=docker_config.no_cache,
+        no_cache=config_DockerConfigurableResource.no_cache,
         build_context=build_context,
         additional_build_contexts=additional_build_contexts,
         build_args=build_args,
