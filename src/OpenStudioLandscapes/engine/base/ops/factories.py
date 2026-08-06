@@ -46,7 +46,6 @@ from docker_compose_graph.utils import *
 
 from OpenStudioLandscapes.engine.config.models import (
     ComposeScopeBaseModel,
-    ConfigEngine,
     FeatureBaseModel,
 )
 from OpenStudioLandscapes.engine.base.configurable_resources.docker_resource import DockerConfigurableResource
@@ -716,8 +715,6 @@ def factory_compose_scope__CONFIG(
         group_out_base: OpenStudioLandscapesBaseOut = kwargs.pop("group_out_base")
         context.log.debug(f"{group_out_base = }")
 
-        config_engine: ConfigEngine = group_out_base.config_engine
-
         env: Dict = group_out_base.env
 
         config = ComposeScopeBaseModel(
@@ -731,7 +728,6 @@ def factory_compose_scope__CONFIG(
                     "docker_compose",
                     "docker-compose.yml",
                 ),
-                "config_engine": config_engine,
             },
         )
 
@@ -1337,10 +1333,6 @@ def factory_compose_scope__group_out(
         del compose
         del features_in
 
-        CONFIG_ENGINE: ConfigEngine = group_out_base.config_engine
-        # Todo:
-        #  - [ ] this is probably not necessary like this
-        # config_DockerConfigurableResource: DockerConfigurableResource = group_out_base.config_DockerConfigurableResource
         docker_config_json: pathlib.Path = group_out_base.docker_config_json
 
         cmd_append["exclude_from_quote"].extend(
