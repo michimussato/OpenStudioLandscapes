@@ -5,7 +5,7 @@ import pathlib
 import socket
 import tempfile
 import uuid
-from typing import Generator, MutableMapping
+from typing import Generator, MutableMapping, Dict
 
 from dagster import (
     AssetExecutionContext,
@@ -27,8 +27,6 @@ from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.utils import *
 
 
-# Todo
-#  - [ ] Move this to ConfigEngine?
 @asset(
     **ASSET_HEADER_BASE_ENV,
 )
@@ -48,8 +46,6 @@ def git_root(
     )
 
 
-# Todo
-#  - [ ] Move this to ConfigEngine?
 @asset(
     **ASSET_HEADER_BASE_ENV,
 )
@@ -97,19 +93,11 @@ def landscape_id(
     )
 
 
-# Todo
-#  - [ ] Move this to ConfigEngine?
 @asset(
     **ASSET_HEADER_BASE_ENV,
-    ins={
-        # "git_root": AssetIn(
-        #     AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "git_root"]),
-        # ),
-    },
 )
 def dot_landscapes(
     context: AssetExecutionContext,
-    # git_root: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
 
     _dot_landscapes: pathlib.Path = (
@@ -188,8 +176,6 @@ def dot_landscapes(
     )
 
 
-# Todo
-#  - [ ] Move this to ConfigEngine?
 @asset(
     **ASSET_HEADER_BASE_ENV,
     ins={
@@ -262,10 +248,10 @@ def env(
     context: AssetExecutionContext,
     config_ConfigEngineConfigurableResource: ConfigEngineConfigurableResource,
     git_root: pathlib.Path,  # pylint: disable=redefined-outer-name
-    landscape_id: dict,  # pylint: disable=redefined-outer-name
+    landscape_id: Dict,  # pylint: disable=redefined-outer-name
     dot_landscapes: pathlib.Path,  # pylint: disable=redefined-outer-name
     dot_features: pathlib.Path,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[dict] | AssetMaterialization, None, None]:
+) -> Generator[Output[Dict] | AssetMaterialization, None, None]:
 
     # @formatter:off
     # # Todo

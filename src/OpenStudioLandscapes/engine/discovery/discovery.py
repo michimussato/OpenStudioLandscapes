@@ -888,7 +888,9 @@ def init(
 
 
 if __name__ == "__main__":
-    pass
+    raise OpenStudioLandscapesDiscoveryException(
+        "discovery must not be executed directly."
+    )
 
 else:
     DISCOVERED_MODELS: Dict[str, OpenStudioLandscapesDiscoveredFeature] = {}
