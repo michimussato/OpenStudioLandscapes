@@ -47,7 +47,7 @@ from dagster import (
 )
 
 from OpenStudioLandscapes.engine.config.models import (
-    DockerConfigModel, DockerConfigResource,
+    DockerConfigResource,
 )
 from OpenStudioLandscapes.engine.discovery.discovery import (
     OpenStudioLandscapesDiscoveredFeature,
@@ -60,6 +60,8 @@ from OpenStudioLandscapes.engine.exceptions import (
     OpenStudioLandscapesException,
 )
 from OpenStudioLandscapes.engine.logging.loggers import ENGINE_LOGGER as LOGGER
+from OpenStudioLandscapes.engine.base.configurable_resources.docker_registry_resource import DockerRegistryConfigurableResource
+from OpenStudioLandscapes.engine.base.configurable_resources.docker_resource import DockerConfigurableResource
 from OpenStudioLandscapes.engine.utils.docker import (
     docker_build_cmd,
     docker_do,
@@ -252,13 +254,14 @@ def get_image_name(
 def parse_docker_image_path(
     *,
     context: AssetExecutionContext,
-    docker_config: Union[DockerConfigModel, DockerConfigResource],
+    docker_config: Union[DockerConfigurableResource, DockerConfigResource],
+    config_DockerRegistryConfigurableResource: DockerRegistryConfigurableResource,
 ) -> str:
     image_path = []
     context.log.debug(f"{docker_config = }")
     context.log.debug(f"{type(docker_config) = }")
 
-    if not isinstance(docker_config, Union[DockerConfigModel, DockerConfigResource]):
+    if not isinstance(docker_config, Union[DockerConfigurableResource, DockerConfigResource]):
         raise TypeError(
             "`docker_config` must be a DockerConfigModel. " f"{type(docker_config) = }"
         )
@@ -288,9 +291,9 @@ def parse_docker_image_path(
 
         prepend_registry = docker_config.use_registry
 
-        _repository_name = docker_config.docker_registry_config.docker_repository_name
-        _docker_registry_url = docker_config.docker_registry_config.docker_registry_fqdn
-        _repository_port = docker_config.docker_registry_config.docker_registry_port
+        _repository_name = config_DockerRegistryConfigurableResource.docker_repository_name
+        _docker_registry_url = config_DockerRegistryConfigurableResource.docker_registry_fqdn
+        _repository_port = config_DockerRegistryConfigurableResource.docker_registry_port
 
         if bool(prepend_registry):
             if bool(_docker_registry_url):
@@ -616,14 +619,15 @@ def get_all_compose_scopes(
 def get_image_metadata(
     context: AssetExecutionContext,
     docker_image: dict,
-    docker_config: Union[DockerConfigModel, DockerConfigResource],
+    docker_config: Union[DockerConfigurableResource, DockerConfigResource],
+    config_DockerRegistryConfigurableResource: DockerRegistryConfigurableResource,
     env,
 ):
     build_base_image_data: dict = docker_image
     context.log.debug(f"{build_base_image_data = }")
     # build_base_image_data = {'image_name': 'openstudiolandscapes_base_build_docker_image', 'image_prefixes': '', 'image_tags': ['2025-11-17-01-26-31-05a9b85aa33b47ffa7dfb21a28ca24ab'], 'image_parent': {}}
 
-    build_base_docker_config: Union[DockerConfigModel, DockerConfigResource] = docker_config
+    build_base_docker_config: Union[DockerConfigurableResource, DockerConfigResource] = docker_config
     context.log.debug(f"{build_base_docker_config = }")
     # build_base_docker_config = build_base_docker_config = <DockerConfig.LOCALHOST: {'docker_registry_url': <DockerRegistry.LOCAL_LOCALHOST: 'localhost'>, 'docker_registry_port': None, 'docker_registry_username': None, 'docker_registry_password': None, 'docker_repository_type': <DockerRepositoryType.PUBLIC: 'public'>}>
 
@@ -638,6 +642,7 @@ def get_image_metadata(
     image_prefixes = parse_docker_image_path(
         context=context,
         docker_config=build_base_docker_config,  # DockerRegistryConfig
+        config_DockerRegistryConfigurableResource=config_DockerRegistryConfigurableResource,
     )
 
     tags = [
@@ -673,7 +678,8 @@ def create_image(
     image_prefixes,
     tags,
     docker_image: Dict,
-    docker_config: DockerConfigModel,
+    config_DockerConfigurableResource: DockerConfigurableResource,
+    config_DockerRegistryConfigurableResource: DockerRegistryConfigurableResource,
     docker_config_json: pathlib.Path,
     docker_file: pathlib.Path,
     build_context: Union[None, pathlib.Path] = None,
@@ -699,7 +705,7 @@ def create_image(
     tags_full_str = [f"{image_prefixes}{image_name}:{tag}" for tag in tags]
     context.log.debug(f"{tags_full_str = }")
 
-    localhost_only = not docker_config.use_registry
+    localhost_only = not config_DockerConfigurableResource.use_registry
     # Todo:
     #  - [ ] if localhost_only is True, the images will
     #        get tagged with docker.io/library/ automatically
@@ -712,8 +718,8 @@ def create_image(
         pull = False
         push = False
     else:
-        pull = docker_config.docker_registry_config.docker_pull
-        push = docker_config.docker_registry_config.docker_push
+        pull = config_DockerRegistryConfigurableResource.docker_pull
+        push = config_DockerRegistryConfigurableResource.docker_push
 
     context.log.debug(f"{localhost_only = }")
 
@@ -723,7 +729,7 @@ def create_image(
         docker_file=docker_file,
         tags=tags_full_str,
         pull=pull,
-        no_cache=docker_config.no_cache,
+        no_cache=config_DockerConfigurableResource.no_cache,
         build_context=build_context,
         additional_build_contexts=additional_build_contexts,
         build_args=build_args,

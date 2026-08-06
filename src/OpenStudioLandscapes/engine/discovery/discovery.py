@@ -108,6 +108,8 @@ def add_k_v_to_config_yml(
     #          REZ_RELEASE_PACKAGES_PATH=PosixPath('~/.rez/packages/int')
     #          REZ_EXTERNAL_PACKAGES_PATH=PosixPath('~/.rez/packages/ext')
     #          apt_packages_rez=['binutils']
+    #        Potentially solved with:
+    #        - https://github.com/michimussato/OpenStudioLandscapes/issues/73
 
     keys_to_add: Dict = {}
 
@@ -886,7 +888,9 @@ def init(
 
 
 if __name__ == "__main__":
-    pass
+    raise OpenStudioLandscapesDiscoveryException(
+        "discovery must not be executed directly."
+    )
 
 else:
     DISCOVERED_MODELS: Dict[str, OpenStudioLandscapesDiscoveredFeature] = {}

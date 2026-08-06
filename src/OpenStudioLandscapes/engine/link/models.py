@@ -4,6 +4,7 @@ from typing import Any, Dict, List, Union
 from pydantic import BaseModel, Field
 
 from OpenStudioLandscapes.engine.config.models import ConfigEngine, FeatureBaseModel
+from OpenStudioLandscapes.engine.env.configurable_resources.config_engine import ConfigEngineConfigurableResource
 
 
 class OpenStudioLandscapesBaseOut(BaseModel):
@@ -26,7 +27,7 @@ class OpenStudioLandscapesBaseOut(BaseModel):
     #     "PYTHON_PAT": "11",
     #     "LANDSCAPE": "2025-12-14-19-18-32-49ccd914b2a94c3480c99baed42570af"
     #   },
-    config_engine: ConfigEngine
+    # config_engine: Union[ConfigEngine, ConfigEngineConfigurableResource]
     #   "config_engine": "openstudiolandscapes__docker_config=DockerConfigModel(use_registry=True, no_cache=False, docker_registry_config=DockerRegistryConfig(docker_push=True, docker_pull=True, docker_repository_name='openstudiolandscapes', docker_registry_access='public', docker_registry_protocol='https', docker_registry_fqdn='registry.openstudiolandscapes.lan', docker_registry_port=5000, docker_registry_username='registry-user', docker_registry_password='registry-password')) openstudiolandscapes__repository_root=PosixPath('{REPOSITORY_ROOT}') openstudiolandscapes__domain_lan='openstudiolandscapes.lan'",
     # This is part of ConfigEngine
     # docker_config: DockerConfigModel
