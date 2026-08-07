@@ -13,6 +13,8 @@
       * [Multi Host - Multi Site](#multi-host---multi-site)
   * [Clone Repository](#clone-repository)
   * [Install Dependencies](#install-dependencies)
+    * [Makefile](#makefile)
+    * [Manual](#manual)
   * [Install OpenStudioLandscapes](#install-openstudiolandscapes)
   * [Add Features](#add-features)
   * [Run OpenStudioLandscapes](#run-openstudiolandscapes)
@@ -187,6 +189,15 @@ git clone https://github.com/michimussato/OpenStudioLandscapes.git \
 
 ## Install Dependencies
 
+### Makefile
+
+> [!IMPORTANT]
+>
+> This approach is currently limited to Ubuntu 22.04
+> exclusively. If you are running a **OpenStudioLandscapes
+> on a different distro, continue with the
+> [manual](#manual) guide.
+
 ```shell
 make sys_deps_install
 ```
@@ -238,6 +249,12 @@ sudo reboot
 > 
 > Background: adding a user to a group (namely `docker`) takes effect
 > only _**after**_ the next successful login.
+
+### Manual
+
+```shell
+
+```
 
 ## Install OpenStudioLandscapes
 
