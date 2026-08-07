@@ -1,3 +1,7 @@
+project:
+  optional-dependencies:
+    dev:
+    - dagster-webserver==1.9.11
 tool:
   setuptools:
     include-package-data: true
