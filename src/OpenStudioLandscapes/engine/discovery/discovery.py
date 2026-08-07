@@ -51,6 +51,7 @@ from setuptools import find_namespace_packages
 from dagster import (
     Config,
     ConfigurableResource,
+    DagsterInvalidDefinitionError,
 )
 
 from OpenStudioLandscapes.engine import dist as dist_engine
@@ -543,6 +544,7 @@ def get_namespace_packages(
         exclude=[
             "*.config",  # exclude src.OpenStudioLandscapes.<Feature>.config from module discovery (Todo: although I'm not yet sure if this must be excluded. Test!)
             "*.doc",  # exclude src.OpenStudioLandscapes.<Feature>.doc from module discovery
+            "*.configurable_resources",  # Feature models import not successful: 'No module named 'OpenStudioLandscapes.configurable_resources''
         ],
     )
     LOGGER.debug(f"{namespace_packages_ = }")
@@ -609,6 +611,7 @@ def try_import_discovered(
         AttributeError,
         # TypeError,
     ) as e:
+        LOGGER.error("Feature models import not successful: '%s'" % e)
         raise ImportError(e) from e
     try:
         _definitions = discovered_model.definitions
@@ -618,8 +621,10 @@ def try_import_discovered(
     except (
         ModuleNotFoundError,
         AttributeError,
+        DagsterInvalidDefinitionError,
         # TypeError,
     ) as e:
+        LOGGER.error("Feature definitions import not successful: '%s'" % e)
         raise ImportError(e) from e
 
     return models_object, definitions_object
@@ -793,15 +798,6 @@ def init(
             msg = f"`config.yml` needs to be updated with the following missing fields: {e}"
             LOGGER.error(msg)
             raise OpenStudioLandscapesDiscoveryException(msg)
-
-        # Also inject the ConfigEngine object
-        config_feature.config_engine = config_engine
-        LOGGER.debug(f"{config_feature.config_engine = }")
-        # config_feature.config_engine = ConfigEngine(openstudiolandscapes__docker_config=DockerConfigModel(use_registry=True, no_cache=False, docker_registry_config=DockerRegistryConfig(docker_push=True, docker_pull=True, docker_repository_name='openstudiolandscapes', docker_registry_access=<DockerRegistryAccess.public: 'public'>, docker_registry_protocol=<DockerRegistryProtocol.https: 'https'>, docker_registry_fqdn='registry.openstudiolandscapes.lan', docker_registry_port=5000, docker_registry_username='registry-user', docker_registry_password='registry-password'), docker_pull_policy=<DockerPullPolicy.always: 'always'>), openstudiolandscapes__rez_config=RezConfigModel(rez_version='3.3.0', REZ_LOCAL_PACKAGES_PATH=PosixPath('~/packages'), REZ_RELEASE_PACKAGES_PATH=PosixPath('~/.rez/packages/int'), REZ_EXTERNAL_PACKAGES_PATH=PosixPath('/data/share/rez-packages/packages'), apt_packages_rez=['binutils']), apt_packages_base=['git', 'ca-certificates', 'htop', 'file', 'tzdata', 'curl', 'wget', 'ffmpeg', 'libegl1', 'libsm6', 'libglu1-mesa', 'libxss1', 'sudo', 'xz-utils', 'xvfb', 'xauth'], apt_packages_build_python311=['build-essential', 'pkg-config', 'zlib1g-dev', 'libncurses5-dev', 'libgdbm-dev', 'libnss3-dev', 'libssl-dev', 'libreadline-dev', 'libffi-dev', 'libsqlite3-dev', 'libbz2-dev', 'iproute2', 'liblzma-dev'], pip_packages=[], openstudiolandscapes__domain_lan='openstudiolandscapes.lan', openstudiolandscapes__human_readable_ids=True, sudo_method=<SudoMethod.PKEXEC: 'pkexec'>, global_bind_volumes=['/data/share:/data/share:rw'], global_environment_variables={'OPENSTUDIOLANDSCAPES__DAGSTER_JOBS_IN': '/data/share/in'}, tz='Europe/UTC')
-
-        config_feature.distribution = feature_dist
-        LOGGER.debug(f"{config_feature.distribution = }")
-        # config_feature.distribution = <importlib.metadata.PathDistribution object at 0x7fe647853dd0>
 
         feature.config = config_feature
         LOGGER.debug(f"{feature.config = }")

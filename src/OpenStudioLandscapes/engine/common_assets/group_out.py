@@ -22,7 +22,6 @@ def get_group_out(
             "feature_in": AssetKey([*ASSET_HEADER["key_prefix"], "feature_in"]),
             "cmd_extend": AssetKey([*ASSET_HEADER["key_prefix"], "cmd_extend"]),
             "cmd_append": AssetKey([*ASSET_HEADER["key_prefix"], "cmd_append"]),
-            "CONFIG": AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
             # This is merely a dependency than an actual input so that the
             # compose file is created before compose-graph
             # is initiated.

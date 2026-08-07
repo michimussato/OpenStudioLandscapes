@@ -6,7 +6,6 @@ from dagster import (
 )
 
 from OpenStudioLandscapes.engine.base.ops.factories import factory_compose
-from OpenStudioLandscapes.engine.config.models import FeatureBaseModel
 
 # Todo:
 #  - compose_map factory
@@ -21,8 +20,6 @@ def get_compose(
         ins={
             "compose_networks": In(dict),
             "compose_maps": In(list),
-            "CONFIG": In(FeatureBaseModel),
-            # "group_in": In(dict)
         },
         out={
             "compose": Out(dict),
@@ -45,8 +42,6 @@ def get_compose(
                 [*ASSET_HEADER["key_prefix"], "compose_networks"]
             ),
             "compose_maps": AssetKey([*ASSET_HEADER["key_prefix"], "compose_maps"]),
-            "CONFIG": AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
-            # "group_in": AssetKey([*ASSET_HEADER["key_prefix"], "group_in"]),
         },
     )
 

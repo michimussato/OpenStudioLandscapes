@@ -515,6 +515,7 @@ class ConfigEngine(BaseConfig):
 # This is the Feature Base Model
 # DO NOT INSTANCE THIS DIRECTLY
 # use Config Subclass instead
+# class FeatureBaseModel(ConfigurableResource):
 class FeatureBaseModel(BaseConfig):
     """
     Base class for the Feature Config.
@@ -582,7 +583,7 @@ class FeatureBaseModel(BaseConfig):
     def __str__(self):
         return f"{self.feature_name}"
 
-    env: Dict = Field(
+    env: Dict[str, str] = Field(
         default_factory=dict,
     )
 
@@ -596,18 +597,6 @@ class FeatureBaseModel(BaseConfig):
     local_environment_variables: Dict[str, str] = Field(
         default_factory=dict,
         description="Here you can define Feature specific, arbitrary environment variables.",
-    )
-
-    config_engine: ConfigEngine = Field(
-        default=None,
-        # Exclude Field from Model Serialization
-        exclude=True,
-    )
-
-    distribution: Distribution = Field(
-        default=None,
-        # Exclude Field from Model Serialization
-        exclude=True,
     )
 
     # tz: str = Field(
@@ -713,26 +702,26 @@ class FeatureBaseModel(BaseConfig):
         frozen=True,
     )
 
-    docker_compose: pathlib.Path = Field(
-        default=pathlib.Path(
-            "{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml"
-        ),
-        description="The path to the `docker-compose.yml` file.",
-    )
+    # docker_compose: str = Field(
+    #     default=pathlib.Path(
+    #         "{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml"
+    #     ).as_posix(),
+    #     description="The path to the `docker-compose.yml` file.",
+    # )
 
-    @property
-    def docker_compose_expanded(self) -> pathlib.Path:
-        ret = pathlib.Path(
-            self.docker_compose.expanduser()  # pylint: disable=E1101
-            .as_posix()
-            .format(
-                **{
-                    "FEATURE": self.feature_name,
-                    **self.env,
-                }
-            )
-        )
-        return ret
+    # @property
+    # def docker_compose_expanded(self) -> pathlib.Path:
+    #     ret = pathlib.Path(
+    #         pathlib.Path(self.docker_compose).expanduser()  # pylint: disable=E1101
+    #         .as_posix()
+    #         .format(
+    #             **{
+    #                 "FEATURE": self.feature_name,
+    #                 **self.env,
+    #             }
+    #         )
+    #     )
+    #     return ret
 
 
 class OpenStudioLandscapesDiscoveredFeature(BaseModel):
