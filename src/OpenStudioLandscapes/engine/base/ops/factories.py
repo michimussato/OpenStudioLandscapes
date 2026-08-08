@@ -40,20 +40,22 @@ from dagster import (
     OpExecutionContext,
     Output,
     op,
+    ConfigurableResource,
 )
 from docker_compose_graph.docker_compose_graph import DockerComposeGraph
 from docker_compose_graph.utils import *
 
 from OpenStudioLandscapes.engine.config.models import (
     ComposeScopeBaseModel,
-    FeatureBaseModel,
+    # FeatureBaseModel,
 )
 from OpenStudioLandscapes.engine.base.configurable_resources.docker_resource import DockerConfigurableResource
+from OpenStudioLandscapes.engine.base.configurable_resources.env_resource import EnvConfigurableResource
 from OpenStudioLandscapes.engine.constants import *
-from OpenStudioLandscapes.engine.discovery import discovery
-from OpenStudioLandscapes.engine.discovery.get_feature_base_model import (
-    get_feature_base_model,
-)
+# from OpenStudioLandscapes.engine.discovery import discovery
+# from OpenStudioLandscapes.engine.discovery.get_feature_base_model import (
+#     get_feature_base_model,
+# )
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.link.models import (
     OpenStudioLandscapesBaseOut,
@@ -145,6 +147,7 @@ yaml.SafeDumper.add_multi_representer(
 def factory_feature_out_v2(
     name="op_feature_out_v2_from_factory",
     ins=None,
+    # config_feature: Type[FeatureBaseResource] = None,
     **kwargs,
 ) -> OpDefinition:
     """
@@ -171,13 +174,12 @@ def factory_feature_out_v2(
 
         # group_out_base: OpenStudioLandscapesBaseOut = kwargs.pop("group_out_base")
         compose: Dict = kwargs.pop("compose")
-        CONFIG: discovery.FeatureBaseModel = kwargs.pop("CONFIG")
         cmd_extend: List = kwargs.pop("cmd_extend")
         cmd_append: Dict = kwargs.pop("cmd_append")
 
         feature_out: OpenStudioLandscapesFeatureOut = OpenStudioLandscapesFeatureOut(
             compose=compose,
-            config_feature=CONFIG,
+            # config_feature=config_feature.model_dump(),
             cmd_extend=cmd_extend,
             cmd_append=cmd_append,
         )
@@ -315,16 +317,24 @@ def factory_compose(
     )
     def _op_compose(
         context: OpExecutionContext,
+        # config_feature: ConfigurableResource,  # Todo: specify ConfigFeature
+        # config_DockerConfigurableResource: DockerConfigurableResource,
+        config_EnvConfigurableResource: EnvConfigurableResource,
         **kwargs,
     ):
         """ """
 
+        context.log.error(f"{kwargs = }")
+
         compose_networks = kwargs.pop("compose_networks")
         compose_maps = kwargs.pop("compose_maps")
-        CONFIG: FeatureBaseModel = kwargs.pop("CONFIG")
+        # CONFIG: FeatureBaseModel = kwargs.pop("CONFIG")
 
-        DOCKER_COMPOSE: pathlib.Path = CONFIG.docker_compose_expanded
-        DOCKER_COMPOSE.parent.mkdir(parents=True, exist_ok=True)
+        # DOCKER_COMPOSE: pathlib.Path = config_feature.docker_compose_expanded(
+        #     env=config_EnvConfigurableResource,
+        # )
+
+        # DOCKER_COMPOSE.parent.mkdir(parents=True, exist_ok=True)
 
         if "networks" in compose_networks:
             network_dict = copy.deepcopy(compose_networks)
@@ -340,9 +350,9 @@ def factory_compose(
 
         docker_yaml = yaml.dump(docker_dict)
 
-        # Write docker-compose.yaml
-        with open(DOCKER_COMPOSE, mode="w", encoding="utf-8") as fw:
-            fw.write(docker_yaml)
+        # # Write docker-compose.yaml
+        # with open(DOCKER_COMPOSE, mode="w", encoding="utf-8") as fw:
+        #     fw.write(docker_yaml)
 
         yield Output(
             output_name="compose",
@@ -356,7 +366,7 @@ def factory_compose(
             metadata={
                 "docker_json": MetadataValue.md(f"```json\n{docker_dict_dump}\n```"),
                 "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
-                "docker_compose_yaml": MetadataValue.path(DOCKER_COMPOSE),
+                # "docker_compose_yaml": MetadataValue.path(DOCKER_COMPOSE),
                 # Todo: "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)),
             },
         )
@@ -506,7 +516,7 @@ def factory_feature_in(
 
 
 def factory_feature_in_parent(
-    CONFIG_PARENT: Type[FeatureBaseModel],
+    CONFIG_PARENT: None,
     name="op_feature_in_parent_factory",
     ins=None,
     **kwargs,
@@ -538,7 +548,7 @@ def factory_feature_in_parent(
             "feature_in"
         ].feature_in_parent
 
-        config_parent: Union[None, CONFIG_PARENT] = feature_in_parent.config_feature
+        # config_parent: None = feature_in_parent.config_feature
 
         #####################
         # feature_in_parent #
@@ -562,27 +572,27 @@ def factory_feature_in_parent(
             },
         )
 
-        #################
-        # CONFIG_PARENT #
-        #################
-
-        output_name = "CONFIG_PARENT"
-
-        yield Output(
-            output_name=output_name,
-            value=config_parent,
-        )
-
-        yield AssetMaterialization(
-            asset_key=context.asset_key_for_output(output_name),
-            metadata={
-                "__".join(
-                    context.asset_key_for_output(output_name).path
-                ): MetadataValue.md(
-                    f"```json\n{config_parent.model_dump_json(indent=2, fallback=str)}\n```"
-                ),
-            },
-        )
+        # #################
+        # # CONFIG_PARENT #
+        # #################
+        #
+        # output_name = "CONFIG_PARENT"
+        #
+        # yield Output(
+        #     output_name=output_name,
+        #     value=config_parent,
+        # )
+        #
+        # yield AssetMaterialization(
+        #     asset_key=context.asset_key_for_output(output_name),
+        #     metadata={
+        #         "__".join(
+        #             context.asset_key_for_output(output_name).path
+        #         ): MetadataValue.md(
+        #             f"```json\n{config_parent.model_dump_json(indent=2, fallback=str)}\n```"
+        #         ),
+        #     },
+        # )
 
     return _op_feature_in_parent
 
@@ -829,19 +839,23 @@ def factory_compose_scope__scrape_networks(
 
         networks_dict: Dict = {}
 
-        # feature: str
-        # data: OpenStudioLandscapesFeatureOut
+        feature: str
+        data: OpenStudioLandscapesFeatureOut
         for feature, data in features_in.items():
             context.log.info(f"{features_in[feature] = }")
-            CONFIG: FeatureBaseModel = data.config_feature
-            compose_file: pathlib.Path = CONFIG.docker_compose_expanded
+            context.log.info(f"{data = }")
 
-            network_dict = get_networks_dict(
-                context=context,
-                compose_file=compose_file,
-            )
+            # CONFIG: FeatureBaseModel = data.config_feature
+            # compose_file: pathlib.Path = CONFIG.docker_compose
 
-            networks_dict.update(network_dict)
+            # compose_file_expanded
+
+            # network_dict = get_networks_dict(
+            #     context=context,
+            #     compose_file=compose_file,
+            # )
+
+            # networks_dict.update(network_dict)
 
         networks_dict_yaml = yaml.safe_dump(networks_dict)
 
@@ -920,11 +934,11 @@ def factory_compose_scope__compose(
         compose_files = []
         _compose_networks = set()
 
-        for feature, data in features_in.items():
-            CONFIG_FEATURE: FeatureBaseModel = data.config_feature
-            context.log.info(f"{CONFIG_FEATURE.feature_name = }")
-            compose_file = CONFIG_FEATURE.docker_compose_expanded
-            compose_files.append(compose_file)
+        # for feature, data in features_in.items():
+            # CONFIG_FEATURE: FeatureBaseModel = data.config_feature
+            # context.log.info(f"{CONFIG_FEATURE.feature_name = }")
+            # compose_file = CONFIG_FEATURE.docker_compose_expanded
+            # compose_files.append(compose_file)
 
         includes = []
         dot_landscapes = pathlib.Path(env["DOT_LANDSCAPES"])
@@ -1890,7 +1904,7 @@ def factory_compose_scope__group_out(
 
 def factory__CONFIG(
     CONFIG_STR: str,
-    search_model_of_type: Type[discovery.FeatureBaseModel],
+    # search_model_of_type: Type[discovery.FeatureBaseModel],
     name="op_factory__CONFIG",
     ins=None,
     **kwargs,
@@ -1942,35 +1956,35 @@ For reference, the default `Config` values are as follows:
 
         env: Dict = feature_in.openstudiolandscapes_base.env
 
-        config_validated: discovery.FeatureBaseModel = get_feature_base_model(
-            context=context,
-            discovered_models=discovery.DISCOVERED_MODELS,
-            search_instance_type=search_model_of_type,
-        )
+        # config_validated: discovery.FeatureBaseModel = get_feature_base_model(
+        #     context=context,
+        #     discovered_models=discovery.DISCOVERED_MODELS,
+        #     search_instance_type=search_model_of_type,
+        # )
 
-        config_validated.env = env
+        # config_validated.env = env
 
-        ##########
-        # CONFIG #
-        ##########
-
-        output_name = "CONFIG"
-
-        yield Output(
-            output_name=output_name,
-            value=config_validated,
-        )
-
-        yield AssetMaterialization(
-            asset_key=context.asset_key_for_output(output_name),
-            metadata={
-                "__".join(
-                    context.asset_key_for_output(output_name).path
-                ): MetadataValue.md(
-                    f"```yaml\n{yaml.safe_dump(json.loads(config_validated.model_dump_json(fallback=str, indent=2)))}\n```"
-                ),
-            },
-        )
+        # ##########
+        # # CONFIG #
+        # ##########
+        #
+        # output_name = "CONFIG"
+        #
+        # yield Output(
+        #     output_name=output_name,
+        #     value=config_validated,
+        # )
+        #
+        # yield AssetMaterialization(
+        #     asset_key=context.asset_key_for_output(output_name),
+        #     metadata={
+        #         "__".join(
+        #             context.asset_key_for_output(output_name).path
+        #         ): MetadataValue.md(
+        #             f"```yaml\n{yaml.safe_dump(json.loads(config_validated.model_dump_json(fallback=str, indent=2)))}\n```"
+        #         ),
+        #     },
+        # )
 
     return _op__CONFIG
 

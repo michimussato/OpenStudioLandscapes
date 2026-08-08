@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Type, Any, Union
 
 from dagster import (
     AssetKey,
@@ -12,6 +12,7 @@ from OpenStudioLandscapes.engine.base.ops.factories import (
     factory_feature_out_v2,
 )
 from OpenStudioLandscapes.engine.link.models import OpenStudioLandscapesFeatureOut
+from OpenStudioLandscapes.engine.config.models import FeatureBaseResource
 
 # def get_feature_out(
 #     ASSET_HEADER: dict,
@@ -47,6 +48,7 @@ from OpenStudioLandscapes.engine.link.models import OpenStudioLandscapesFeatureO
 
 def get_feature_out_v2(
     ASSET_HEADER: Dict,
+    # config_feature: Type[FeatureBaseResource],
 ) -> AssetsDefinition:
 
     feature_out_op: OpDefinition = factory_feature_out_v2(
@@ -56,6 +58,7 @@ def get_feature_out_v2(
             "cmd_extend": In(List),
             "cmd_append": In(Dict),
         },
+        # config_feature=config_feature,
         out={
             "feature_out_v2": Out(OpenStudioLandscapesFeatureOut),
         },

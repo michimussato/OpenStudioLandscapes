@@ -26,6 +26,7 @@ from docker_compose_graph.docker_compose_graph import (
 )
 
 from OpenStudioLandscapes.engine.base.configurable_resources.docker_resource import DockerConfigurableResource
+from OpenStudioLandscapes.engine.base.configurable_resources.env_resource import EnvConfigurableResource
 from OpenStudioLandscapes.engine.constants import (
     DOCKER_PROGRESS,
 )
@@ -194,6 +195,7 @@ def op_group_out(
     context: OpExecutionContext,
     config_feature: ConfigurableResource,  # Todo: specify ConfigFeature
     config_DockerConfigurableResource: DockerConfigurableResource,
+    config_EnvConfigurableResource: EnvConfigurableResource,
     # Todo:
     #  - [ ] DUPLICATE?? use `OpenStudioLandscapes.engine.base.ops.factories.factory_compose_scope__cmd`
     #        instead
@@ -230,7 +232,9 @@ def op_group_out(
         ComposeCmdExclusion.CMD_APPEND_ALWAYS_EXCLUDE_FROM_QUOTATION.value
     )
 
-    DOCKER_COMPOSE: pathlib.Path = config_feature.docker_compose_expanded
+    DOCKER_COMPOSE: pathlib.Path = config_feature.docker_compose_expanded(
+        env=config_EnvConfigurableResource,
+    )
     # Todo:
     #  - [ ] Is this necessary here?
     DOCKER_COMPOSE.parent.mkdir(parents=True, exist_ok=True)

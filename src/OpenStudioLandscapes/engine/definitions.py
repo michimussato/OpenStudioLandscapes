@@ -4,14 +4,12 @@ from dagster import Definitions
 
 import OpenStudioLandscapes.engine.discovery.discovery as discovery
 from OpenStudioLandscapes.engine.config.models import (
-    FeatureBaseModel,
     OpenStudioLandscapesDiscoveredFeature,
 )
 from OpenStudioLandscapes.engine.logging.loggers import ENGINE_LOGGER as LOGGER
 
 # Base Definitions
 code_locations = [
-    "OpenStudioLandscapes.engine.env.definitions",
     # default definitions file is for Single Code Location where AssetSpec clash with AssetDefinitions
     # "OpenStudioLandscapes.engine.base.definitions",
     # _with_upstream_specs definitions file is for Multi Code Location or isolated testing/development
@@ -32,8 +30,8 @@ code_locations = [
 # -> This should not be strictly necessary anymore ()
 code_locations.extend(
     [
-        "OpenStudioLandscapes.engine.compose_scopes.definitions",
-        "OpenStudioLandscapes.engine.landscape_map.definitions",
+        # "OpenStudioLandscapes.engine.compose_scopes.definitions",
+        # "OpenStudioLandscapes.engine.landscape_map.definitions",
         # "OpenStudioLandscapes.engine.distributable.definitions",
     ]
 )
@@ -60,12 +58,12 @@ for core in code_locations:
 package: str
 feature: OpenStudioLandscapesDiscoveredFeature
 for package, feature in discovery.DISCOVERED_MODELS.items():
-    config: FeatureBaseModel = feature.config
-    enabled: bool = config.enabled
-    if enabled:
-        modules.append(feature.definitions_object)
-    else:
-        continue
+    # config: FeatureBaseModel = feature.config
+    # enabled: bool = config.enabled
+    # if enabled:
+    modules.append(feature.definitions_object)
+    # else:
+    #     continue
 
 
 # This loads the definitions from all the available (and

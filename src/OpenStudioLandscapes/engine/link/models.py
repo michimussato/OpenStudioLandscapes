@@ -3,8 +3,10 @@ from typing import Any, Dict, List, Union
 
 from pydantic import BaseModel, Field
 
-from OpenStudioLandscapes.engine.config.models import ConfigEngine, FeatureBaseModel
-from OpenStudioLandscapes.engine.env.configurable_resources.config_engine import ConfigEngineConfigurableResource
+from dagster import ConfigurableResource
+
+# from OpenStudioLandscapes.engine.config.models import FeatureBaseModel
+# from OpenStudioLandscapes.engine.base.configurable_resources.config_engine import ConfigEngineConfigurableResource
 
 
 class OpenStudioLandscapesBaseOut(BaseModel):
@@ -78,7 +80,7 @@ class OpenStudioLandscapesFeatureIn(OpenStudioLandscapesFeatureBasePort):
 
 
 class OpenStudioLandscapesFeatureOut(OpenStudioLandscapesFeatureBasePort):
-    config_feature: FeatureBaseModel
+    # config_feature: Dict
 
     cmd_extend: Union[None, List] = Field(
         default=None,

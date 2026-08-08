@@ -132,23 +132,14 @@ class ConfigEngineConfigurableResource(ConfigurableResource):
         default="Europe/UTC",
     )
 
+    # Duplicated in EnvConfigurableResource
+    # Todo:
+    #  - [ ] remove (used in compose scope?)
     author: str = Field(
         # Todo:
         #  - [ ] move to Env(BaseConfig)
         default="michimussato@etik.com",
     )
-
-    # openstudiolandscapes__openrv_build_pipeline_enabled: bool = Field(
-    #     default=False,
-    # )
-
-    # openstudiolandscapes__openrv_build_pipeline: OpenRVConfigModel = Field(
-    #     default=OpenRVConfigModel(
-    #         **{
-    #             "enable_openrv_build_pipeline": False,
-    #         },
-    #     ),
-    # )
 
 
 OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT: pathlib.Path = pathlib.Path(

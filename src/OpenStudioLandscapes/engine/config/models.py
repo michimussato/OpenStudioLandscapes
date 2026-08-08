@@ -6,7 +6,7 @@ import re
 import textwrap
 from importlib.metadata import Distribution
 from types import ModuleType
-from typing import ClassVar, Dict, List
+from typing import ClassVar, Dict, List, Type, Any
 
 import pydantic
 import yaml
@@ -40,6 +40,23 @@ Resources:
 
 # config_default = pathlib.Path(__file__).parent.joinpath("config_default.yml")
 # CONFIG_STR = config_default.read_text()
+
+
+def interpolate(
+    path: str,
+    env: Dict[str, Any],
+) -> pathlib.Path:
+    """
+    Expands environment variables into a path.
+
+    :param path: str
+    :param env: dict
+    :return: pathlib.Path
+    """
+    ret = pathlib.Path(
+        path.format(**env)
+    ).expanduser()  # pylint: disable=E1101
+    return ret
 
 
 class DockerRegistryProtocol(enum.StrEnum):
@@ -512,70 +529,36 @@ class ConfigEngine(BaseConfig):
     # )
 
 
-# This is the Feature Base Model
-# DO NOT INSTANCE THIS DIRECTLY
-# use Config Subclass instead
-# class FeatureBaseModel(ConfigurableResource):
-class FeatureBaseModel(BaseConfig):
-    """
-    Base class for the Feature Config.
+class FeatureBaseResource(ConfigurableResource):
 
-    All features inherit from this class.
-
-    Concept is described here:
-    - https://stackoverflow.com/a/50099920/2207196
-    - https://labex.io/tutorials/python-how-to-implement-automatic-registration-437881
-
-    ---
-
-    An instance of this model has to be a singleton class.
-    There can only be one ConfigEngine instance.
-
-    References:
-        - https://www.geeksforgeeks.org/python/singleton-pattern-in-python-a-complete-guide/
-    """
-
-    # ModuleType Fields:
-    # pydantic.errors.PydanticSchemaGenerationError:
-    #   Unable to generate pydantic-core schema for <class 'module'>.
-    #   Set `arbitrary_types_allowed=True` in the model_config to
-    #   ignore this error or implement `__get_pydantic_core_schema__`
-    #   on your type to fully support it.
-    model_config = ConfigDict(
-        # This disables model checks for all fields.
-        # More info here:
-        # - https://stackoverflow.com/a/78379656/2207196
-        arbitrary_types_allowed=True,
-    )
-
-    def __new__(cls, *args, **kwargs):
-        if cls is FeatureBaseModel:
-            # Prevent direct instantiation
-            # References:
-            # - https://stackoverflow.com/a/7990308/2207196
-            raise TypeError(
-                f"Do not instance this class directly. "
-                f"Only children of '{cls.__name__}' may be instantiated"
-            )
-        if not hasattr(cls, "instance"):
-            cls.instance = super(FeatureBaseModel, cls).__new__(cls)
-        return cls.instance
-
-    subclasses: ClassVar[Dict] = {}
-
-    def __init_subclass__(cls, **kwargs):
-        """
-
-        This method is called when a subclass is instantiated.
-        The instance will then be added to the base class subclasses list.
-
-        Args:
-            **kwargs:
-        """
-        super().__init_subclass__(**kwargs)
-        # NOT UNIQUE: cls.__name__ = 'Config'
-        # HENCE, USING: cls.feature_name = 'OpenStudioLandscapes-VERT'
-        cls.subclasses[cls.feature_name] = cls
+    # def __new__(cls, *args, **kwargs):
+    #     if cls is FeatureBaseModel:
+    #         # Prevent direct instantiation
+    #         # References:
+    #         # - https://stackoverflow.com/a/7990308/2207196
+    #         raise TypeError(
+    #             f"Do not instance this class directly. "
+    #             f"Only children of '{cls.__name__}' may be instantiated"
+    #         )
+    #     if not hasattr(cls, "instance"):
+    #         cls.instance = super(FeatureBaseResource, cls).__new__(cls)
+    #     return cls.instance
+    #
+    # subclasses: ClassVar[Dict] = {}
+    #
+    # def __init_subclass__(cls, **kwargs):
+    #     """
+    #
+    #     This method is called when a subclass is instantiated.
+    #     The instance will then be added to the base class subclasses list.
+    #
+    #     Args:
+    #         **kwargs:
+    #     """
+    #     super().__init_subclass__(**kwargs)
+    #     # NOT UNIQUE: cls.__name__ = 'Config'
+    #     # HENCE, USING: cls.feature_name = 'OpenStudioLandscapes-VERT'
+    #     cls.subclasses[cls.feature_name] = cls
 
     def __repr__(self):
         return f"Feature({[f'{k}={v}' for k, v in self.__dict__.items()]})"
@@ -583,9 +566,9 @@ class FeatureBaseModel(BaseConfig):
     def __str__(self):
         return f"{self.feature_name}"
 
-    env: Dict[str, str] = Field(
-        default_factory=dict,
-    )
+    # env: Dict[str, str] = Field(
+    #     default_factory=dict,
+    # )
 
     # This does not raise errors because each Feature subclasses this class.
     local_bind_volumes: List[str] = Field(
@@ -598,10 +581,25 @@ class FeatureBaseModel(BaseConfig):
         default_factory=dict,
         description="Here you can define Feature specific, arbitrary environment variables.",
     )
+    # Todo
+    #  - [ ] Maybe switch to disabled by default
+    enabled: bool = Field(
+        default=True,
+        description="Whether the Feature is enabled or not.",
+    )
+    compose_scope: str = Field(
+        default="default",
+        examples=["default", "license_server", "worker"],
+    )
 
-    # tz: str = Field(
-    #     default="Europe/UTC",
-    # )
+    # Todo
+    #  - [ ] combine with key_prefixes/group_name?
+    feature_name: str = Field(
+        description="The name of the feature. It is derived from the "
+        "`OpenStudioLandscapes.<Feature>.dist` attribute.",
+        examples=["OpenStudioLandscapes-Kitsu", "OpenStudioLandscapes-VERT"],
+        frozen=True,
+    )
 
     # Dagster Attributes
     # Todo:
@@ -628,100 +626,203 @@ class FeatureBaseModel(BaseConfig):
         "more information",
     )
 
-    @property
-    def dagster_compose_scope_in(self) -> AssetIn:
-        default_name_feature_out = "feature_out_v2"
-        ret = AssetIn(AssetKey([*self.key_prefixes, default_name_feature_out]))
-        return ret
-
-    # EXPANDABLE PATHS
-    @property
-    def config_file_path(self) -> pathlib.Path:
-        OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT = pathlib.Path(
-            os.environ.get(
-                "OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT",
-                default="~/.config/OpenStudioLandscapes/config-store",
-            )
-        )
-        ret = pathlib.Path(
-            OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.expanduser().joinpath(
-                self.feature_name,
-                "config.yml",
-            )
-        )
-        ret.parent.mkdir(parents=True, exist_ok=True)
-        return ret
-
-    # Todo
-    #  - [ ] Maybe switch to disabled by default
-    enabled: bool = Field(
-        default=True,
-        description="Whether the Feature is enabled or not.",
-    )
-    compose_scope: str = Field(
-        default="default",
-        examples=["default", "license_server", "worker"],
+    docker_compose: str = Field(
+        default=pathlib.Path(
+            "{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml"
+        ).as_posix(),
+        description="The path to the `docker-compose.yml` file.",
     )
 
-    @field_validator("compose_scope")
-    @classmethod
-    def validate__compose_scope(cls, value: str) -> str:
-        """
-        ComposeScope names must be:
-        - lowercase
-        and may not contain
-        - spaces
-        - periods
-        - commas
-        - hyphens
 
-        All illegal characters are replaced with underscores.
-
-        Args:
-            value: str
-
-        Returns:
-            str
-
-        """
-        # Methods:
-        # - https://blog.finxter.com/5-best-ways-to-replace-a-list-of-characters-in-a-string-with-python/
-        chars_to_replace = " .,-"
-        replace_with = "_"
-
-        regex_pattern = f"[{chars_to_replace}]"
-        transformed_value = re.sub(regex_pattern, replace_with, value)
-        return transformed_value.lower()
-
-    # Todo
-    #  - [ ] combine with key_prefixes/group_name?
-    feature_name: str = Field(
-        description="The name of the feature. It is derived from the "
-        "`OpenStudioLandscapes.<Feature>.dist` attribute.",
-        examples=["OpenStudioLandscapes-Kitsu", "OpenStudioLandscapes-VERT"],
-        frozen=True,
-    )
-
-    # docker_compose: str = Field(
-    #     default=pathlib.Path(
-    #         "{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml"
-    #     ).as_posix(),
-    #     description="The path to the `docker-compose.yml` file.",
-    # )
-
-    # @property
-    # def docker_compose_expanded(self) -> pathlib.Path:
-    #     ret = pathlib.Path(
-    #         pathlib.Path(self.docker_compose).expanduser()  # pylint: disable=E1101
-    #         .as_posix()
-    #         .format(
-    #             **{
-    #                 "FEATURE": self.feature_name,
-    #                 **self.env,
-    #             }
-    #         )
-    #     )
-    #     return ret
+# # This is the Feature Base Model
+# # DO NOT INSTANCE THIS DIRECTLY
+# # use Config Subclass instead
+# # class FeatureBaseModel(ConfigurableResource):
+# class FeatureBaseModel(BaseConfig):
+#     """
+#     Base class for the Feature Config.
+#
+#     All features inherit from this class.
+#
+#     Concept is described here:
+#     - https://stackoverflow.com/a/50099920/2207196
+#     - https://labex.io/tutorials/python-how-to-implement-automatic-registration-437881
+#
+#     ---
+#
+#     An instance of this model has to be a singleton class.
+#     There can only be one ConfigEngine instance.
+#
+#     References:
+#         - https://www.geeksforgeeks.org/python/singleton-pattern-in-python-a-complete-guide/
+#     """
+#
+#     # ModuleType Fields:
+#     # pydantic.errors.PydanticSchemaGenerationError:
+#     #   Unable to generate pydantic-core schema for <class 'module'>.
+#     #   Set `arbitrary_types_allowed=True` in the model_config to
+#     #   ignore this error or implement `__get_pydantic_core_schema__`
+#     #   on your type to fully support it.
+#     model_config = ConfigDict(
+#         # This disables model checks for all fields.
+#         # More info here:
+#         # - https://stackoverflow.com/a/78379656/2207196
+#         arbitrary_types_allowed=True,
+#     )
+#
+#     def __new__(cls, *args, **kwargs):
+#         if cls is FeatureBaseModel:
+#             # Prevent direct instantiation
+#             # References:
+#             # - https://stackoverflow.com/a/7990308/2207196
+#             raise TypeError(
+#                 f"Do not instance this class directly. "
+#                 f"Only children of '{cls.__name__}' may be instantiated"
+#             )
+#         if not hasattr(cls, "instance"):
+#             cls.instance = super(FeatureBaseModel, cls).__new__(cls)
+#         return cls.instance
+#
+#     subclasses: ClassVar[Dict] = {}
+#
+#     def __init_subclass__(cls, **kwargs):
+#         """
+#
+#         This method is called when a subclass is instantiated.
+#         The instance will then be added to the base class subclasses list.
+#
+#         Args:
+#             **kwargs:
+#         """
+#         super().__init_subclass__(**kwargs)
+#         # NOT UNIQUE: cls.__name__ = 'Config'
+#         # HENCE, USING: cls.feature_name = 'OpenStudioLandscapes-VERT'
+#         cls.subclasses[cls.feature_name] = cls
+#
+#     def __repr__(self):
+#         return f"Feature({[f'{k}={v}' for k, v in self.__dict__.items()]})"
+#
+#     def __str__(self):
+#         return f"{self.feature_name}"
+#
+#     env: Dict[str, str] = Field(
+#         default_factory=dict,
+#     )
+#
+#     # This does not raise errors because each Feature subclasses this class.
+#     local_bind_volumes: List[str] = Field(
+#         default_factory=list,
+#         description="Here you can define Feature specific, arbitrary, absolute bind volume mappings.",
+#     )
+#
+#     # This does not raise errors because each Feature subclasses this class.
+#     local_environment_variables: Dict[str, str] = Field(
+#         default_factory=dict,
+#         description="Here you can define Feature specific, arbitrary environment variables.",
+#     )
+#
+#     # tz: str = Field(
+#     #     default="Europe/UTC",
+#     # )
+#
+#     # Dagster Attributes
+#     # Todo:
+#     #  - [ ] set group_name (if not defined) to feature_name
+#     #  - [ ] set key_prefixes (if not defined) to [feature_name]
+#     #  - [ ] validate using
+#     #        - `dagster._core.definitions.utils.VALID_NAME_REGEX`
+#     #        - `dagster._core.definitions.utils.VALID_NAME_REGEX_STR`
+#     #  - [ ] Replace Chars Methods:
+#     #        # - https://blog.finxter.com/5-best-ways-to-replace-a-list-of-characters-in-a-string-with-python/
+#     #        chars_to_replace = " .,-"
+#     #        replace_with = "_"
+#     #        regex_pattern = f"[{chars_to_replace}]"
+#     #        transformed_value = re.sub(regex_pattern, replace_with, value)
+#     group_name: str = Field(
+#         description="Dagster Group name. This will represent the group node name. "
+#         "See https://docs.dagster.io/api/dagster/assets for "
+#         "more information",
+#     )
+#     key_prefixes: List[str] = Field(
+#         description="Dagster Asset key prefixes. This will be reflected in the nesting "
+#         "(directory structure) of the Asset. "
+#         "See https://docs.dagster.io/api/dagster/assets for "
+#         "more information",
+#     )
+#
+#     @property
+#     def dagster_compose_scope_in(self) -> AssetIn:
+#         default_name_feature_out = "feature_out_v2"
+#         ret = AssetIn(AssetKey([*self.key_prefixes, default_name_feature_out]))
+#         return ret
+#
+#     # # EXPANDABLE PATHS
+#     # @property
+#     # def config_file_path(self) -> pathlib.Path:
+#     #     OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT = pathlib.Path(
+#     #         os.environ.get(
+#     #             "OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT",
+#     #             default="~/.config/OpenStudioLandscapes/config-store",
+#     #         )
+#     #     )
+#     #     ret = pathlib.Path(
+#     #         OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT.expanduser().joinpath(
+#     #             self.feature_name,
+#     #             "config.yml",
+#     #         )
+#     #     )
+#     #     ret.parent.mkdir(parents=True, exist_ok=True)
+#     #     return ret
+#
+#     # Todo
+#     #  - [ ] Maybe switch to disabled by default
+#     enabled: bool = Field(
+#         default=True,
+#         description="Whether the Feature is enabled or not.",
+#     )
+#     compose_scope: str = Field(
+#         default="default",
+#         examples=["default", "license_server", "worker"],
+#     )
+#
+#     @field_validator("compose_scope")
+#     @classmethod
+#     def validate__compose_scope(cls, value: str) -> str:
+#         """
+#         ComposeScope names must be:
+#         - lowercase
+#         and may not contain
+#         - spaces
+#         - periods
+#         - commas
+#         - hyphens
+#
+#         All illegal characters are replaced with underscores.
+#
+#         Args:
+#             value: str
+#
+#         Returns:
+#             str
+#
+#         """
+#         # Methods:
+#         # - https://blog.finxter.com/5-best-ways-to-replace-a-list-of-characters-in-a-string-with-python/
+#         chars_to_replace = " .,-"
+#         replace_with = "_"
+#
+#         regex_pattern = f"[{chars_to_replace}]"
+#         transformed_value = re.sub(regex_pattern, replace_with, value)
+#         return transformed_value.lower()
+#
+#     # Todo
+#     #  - [ ] combine with key_prefixes/group_name?
+#     feature_name: str = Field(
+#         description="The name of the feature. It is derived from the "
+#         "`OpenStudioLandscapes.<Feature>.dist` attribute.",
+#         examples=["OpenStudioLandscapes-Kitsu", "OpenStudioLandscapes-VERT"],
+#         frozen=True,
+#     )
 
 
 class OpenStudioLandscapesDiscoveredFeature(BaseModel):
@@ -748,10 +849,10 @@ class OpenStudioLandscapesDiscoveredFeature(BaseModel):
         default=None,
     )
 
-    config: FeatureBaseModel = Field(
-        default=None,
-        # default_factory=FeatureBaseModel,
-    )
+    # config: FeatureBaseModel = Field(
+    #     default=None,
+    #     # default_factory=FeatureBaseModel,
+    # )
 
 
 # Todo:

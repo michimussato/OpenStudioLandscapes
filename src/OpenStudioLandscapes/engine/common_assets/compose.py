@@ -1,3 +1,5 @@
+import pathlib
+
 from dagster import (
     AssetKey,
     AssetsDefinition,
@@ -20,6 +22,7 @@ def get_compose(
         ins={
             "compose_networks": In(dict),
             "compose_maps": In(list),
+            # "docker_compose": In(pathlib.Path),
         },
         out={
             "compose": Out(dict),
@@ -42,6 +45,7 @@ def get_compose(
                 [*ASSET_HEADER["key_prefix"], "compose_networks"]
             ),
             "compose_maps": AssetKey([*ASSET_HEADER["key_prefix"], "compose_maps"]),
+            # "docker_compose": AssetKey([*ASSET_HEADER["key_prefix"], "docker_compose"]),
         },
     )
 

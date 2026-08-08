@@ -17,7 +17,8 @@ from dagster import (
 )
 
 from OpenStudioLandscapes.engine.config import dist
-from OpenStudioLandscapes.engine.env.configurable_resources.config_engine import ConfigEngineConfigurableResource
+from OpenStudioLandscapes.engine.base.configurable_resources.env_resource import EnvConfigurableResource
+from OpenStudioLandscapes.engine.base.configurable_resources.config_engine import ConfigEngineConfigurableResource
 from OpenStudioLandscapes.engine.base.configurable_resources.rez_resource import RezConfigurableResource
 from OpenStudioLandscapes.engine.base.configurable_resources.docker_registry_resource import DockerRegistryConfigurableResource
 from OpenStudioLandscapes.engine.base.configurable_resources.docker_resource import DockerConfigurableResource
@@ -44,23 +45,20 @@ from OpenStudioLandscapes.engine.utils.docker import (
 
 @asset(
     **ASSET_HEADER_BASE,
-    ins={
-        "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
-    },
 )
 def write_dockerfile(
     context: AssetExecutionContext,
+    config_EnvConfigurableResource: EnvConfigurableResource,
     config_ConfigEngineConfigurableResource: ConfigEngineConfigurableResource,
     config_DockerRegistryConfigurableResource: DockerRegistryConfigurableResource,
     config_DockerConfigurableResource: DockerConfigurableResource,
     config_RezConfigurableResource: RezConfigurableResource,
-    env: dict,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
     """ """
 
     docker_file = pathlib.Path(
-        env["DOT_LANDSCAPES"],
-        env.get("LANDSCAPE", "default"),
+        config_EnvConfigurableResource.DOT_LANDSCAPES,
+        config_EnvConfigurableResource.LANDSCAPE,
         f"{dist.name}",
         "__".join(context.asset_key.path),
         "Dockerfiles",
@@ -82,7 +80,7 @@ def write_dockerfile(
     context.log.debug(f"{image_prefixes = }")
 
     tags = [
-        env.get("LANDSCAPE", str(time.time())),
+        config_EnvConfigurableResource.LANDSCAPE,
     ]
     context.log.debug(f"{tags = }")
 
@@ -102,6 +100,8 @@ def write_dockerfile(
     # Ubuntu -> minimal deb
     # - https://askubuntu.com/a/445496
     # - https://hub.docker.com/_/debian
+
+    context.log.debug(f"{config_EnvConfigurableResource.model_dump() = }")
 
     # @formatter:off
     docker_file_str = textwrap.dedent("""\
@@ -215,7 +215,7 @@ def write_dockerfile(
         apt_install_str_base=apt_install_str_base,
         apt_install_str_build_python311=apt_install_str_build_python311,
         pip_install_str=pip_install_str.format(
-            **env,
+            **config_EnvConfigurableResource.model_dump(),
         ),
         rez_version=config_RezConfigurableResource.rez_version,
         timezone=config_ConfigEngineConfigurableResource.tz,
@@ -225,7 +225,7 @@ def write_dockerfile(
             safe=":/%",
         ),
         image_name=image_name,
-        **env,
+        **config_EnvConfigurableResource.model_dump(),
     )
     # @formatter:on
 
@@ -242,7 +242,7 @@ def write_dockerfile(
         metadata={
             "__".join(context.asset_key.path): MetadataValue.path(docker_file),
             docker_file.name: MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
-            "env": MetadataValue.json(env),
+            "env": MetadataValue.json(config_EnvConfigurableResource.model_dump()),
         },
     )
 
@@ -250,7 +250,6 @@ def write_dockerfile(
 @asset(
     **ASSET_HEADER_BASE,
     ins={
-        "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
         "docker_config_json": AssetIn(
             AssetKey([*ASSET_HEADER_BASE["key_prefix"], "docker_config_json"])
         ),
@@ -262,10 +261,10 @@ def write_dockerfile(
 )
 def build_docker_image(
     context: AssetExecutionContext,
+    config_EnvConfigurableResource: EnvConfigurableResource,
     # config_ConfigEngineConfigurableResource: ConfigEngineConfigurableResource,
     config_DockerRegistryConfigurableResource: DockerRegistryConfigurableResource,
     config_DockerConfigurableResource: DockerConfigurableResource,
-    env: dict,  # pylint: disable=redefined-outer-name
     docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name
     write_dockerfile: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict[str, str | list[str]]] | AssetMaterialization, None, None]:
@@ -282,7 +281,7 @@ def build_docker_image(
     context.log.debug(f"{image_prefixes = }")
 
     tags = [
-        env.get("LANDSCAPE", str(time.time())),
+        config_EnvConfigurableResource.LANDSCAPE,
     ]
     context.log.debug(f"{tags = }")
 
@@ -347,7 +346,7 @@ def build_docker_image(
         asset_key=context.asset_key,
         metadata={
             "__".join(context.asset_key.path): MetadataValue.json(image_data),
-            "env": MetadataValue.json(env),
+            "env": MetadataValue.json(config_EnvConfigurableResource.model_dump()),
             "docker_image": MetadataValue.path(
                 f"{image_data['image_prefixes']}{image_data['image_name']}:{image_data['image_tags'][0]}"
             ),
@@ -397,7 +396,7 @@ def build_docker_image(
 @asset(
     **ASSET_HEADER_BASE,
     ins={
-        "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
+        # "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
         "docker_config_json": AssetIn(
             AssetKey([*ASSET_HEADER_BASE["key_prefix"], "docker_config_json"])
         ),
@@ -413,13 +412,14 @@ def build_docker_image(
 )
 def group_out_base(
     context: AssetExecutionContext,
-    env: Dict,  # pylint: disable=redefined-outer-name
+    config_EnvConfigurableResource: EnvConfigurableResource,
+    # env: Dict,  # pylint: disable=redefined-outer-name
     docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name
     build_docker_image: Dict,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[OpenStudioLandscapesBaseOut] | AssetMaterialization, None, None]:
 
     group_out_base: OpenStudioLandscapesBaseOut = OpenStudioLandscapesBaseOut(
-        env=env,
+        env=config_EnvConfigurableResource.model_dump(),
         docker_config_json=docker_config_json,
         docker_image_base=build_docker_image,
     )
@@ -445,21 +445,18 @@ def group_out_base(
 
 @asset(
     **ASSET_HEADER_BASE,
-    ins={
-        "env": AssetIn(AssetKey([*ASSET_HEADER_BASE_ENV["key_prefix"], "env"])),
-    },
 )
 def docker_config_json(
     context: AssetExecutionContext,
+    config_EnvConfigurableResource: EnvConfigurableResource,
     # config_ConfigEngineConfigurableResource: ConfigEngineConfigurableResource,
     config_DockerRegistryConfigurableResource: DockerRegistryConfigurableResource,
     # config_DockerConfigurableResource: DockerConfigurableResource,
-    env: dict,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
 
     dockercfg_path = pathlib.Path(
-        env["DOT_LANDSCAPES"],
-        env.get("LANDSCAPE", "default"),
+        config_EnvConfigurableResource.DOT_LANDSCAPES,
+        config_EnvConfigurableResource.LANDSCAPE,
         f"{dist.name}",
         "__".join(context.asset_key.path),
         "config.json",

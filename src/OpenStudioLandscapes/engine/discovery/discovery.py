@@ -57,7 +57,7 @@ from dagster import (
 from OpenStudioLandscapes.engine import dist as dist_engine
 from OpenStudioLandscapes.engine.config.models import (
     ConfigEngine,
-    FeatureBaseModel,
+    # FeatureBaseModel,
     OpenStudioLandscapesDiscoveredFeature,
 )
 from OpenStudioLandscapes.engine.discovery.init_config_store import (
@@ -90,7 +90,7 @@ def get_verified_config(
 def add_k_v_to_config_yml(
     missing_keys: set,
     config_yml: pathlib.Path,
-    model_reference: Union[ConfigEngine, FeatureBaseModel],
+    model_reference: Union[ConfigEngine],
     model_dump_dict: Dict,
 ) -> None:
     # Todo
@@ -153,36 +153,36 @@ def get_dynamic_ins(
     package: str
     feature: OpenStudioLandscapesDiscoveredFeature
     feature_names: List[str] = []
-    for feature in imported_features.values():
-        if not feature.config.enabled:
-            feature_names.append(feature.config.feature_name)
+    # for feature in imported_features.values():
+    #     if not feature.config.enabled:
+    #         feature_names.append(feature.config.feature_name)
     for package, feature in imported_features.items():
         LOGGER.debug(f"{feature = }")
         # feature = OpenStudioLandscapesDiscoveredFeature(definitions='OpenStudioLandscapes.Watchtower.definitions', definitions_object=<module 'OpenStudioLandscapes.Watchtower.definitions' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Watchtower/src/OpenStudioLandscapes/Watchtower/definitions.py'>, models='OpenStudioLandscapes.Watchtower.config.models', models_object=<module 'OpenStudioLandscapes.Watchtower.config.models' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Watchtower/src/OpenStudioLandscapes/Watchtower/config/models.py'>, config=Feature(['env=None', "config_engine=openstudiolandscapes__docker_config=DockerConfigModel(use_registry=True, no_cache=False, docker_registry_config=DockerRegistryConfig(docker_push=True, docker_pull=True, docker_repository_name='openstudiolandscapes', docker_registry_access='public', docker_registry_protocol='https', docker_registry_fqdn='registry.openstudiolandscapes.lan', docker_registry_port=5000, docker_registry_username='registry-user', docker_registry_password='registry-password')) openstudiolandscapes__repository_root=PosixPath('{REPOSITORY_ROOT}') openstudiolandscapes__domain_lan='openstudiolandscapes.lan'", 'config_parent=None', 'distribution=<importlib.metadata.PathDistribution object at 0x7fe9b764ad10>', 'enabled=True', 'compose_scope=default', 'feature_name=OpenStudioLandscapes-Watchtower', 'group_name=watchtower', "key_prefixes=['Watchtower']", 'docker_compose={DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml', 'definitions=OpenStudioLandscapes.Watchtower.definitions', 'watchtower_port_host=4000', 'watchtower_port_container=80']))
 
-        feature_enabled: bool = feature.config.enabled
+        # feature_enabled: bool = feature.config.enabled
 
-        feature_name = feature.config.feature_name
-        compose_scope = feature.config.compose_scope
-        group_name = feature.config.group_name
-        key_prefixes = feature.config.key_prefixes
+        # feature_name = feature.config.feature_name
+        # compose_scope = feature.config.compose_scope
+        # group_name = feature.config.group_name
+        # key_prefixes = feature.config.key_prefixes
 
-        # Skip Feature if disabled in `config.yml`
-        if not feature_enabled:
-            LOGGER.info(
-                f"Feature [{feature_name.ljust(max([len(i) for i in feature_names]))}] "
-                f"is installed but DISABLED in {feature.config.config_file_path.as_posix()}"
-            )
-            continue
+        # # Skip Feature if disabled in `config.yml`
+        # if not feature_enabled:
+        #     LOGGER.info(
+        #         f"Feature [{feature_name.ljust(max([len(i) for i in feature_names]))}] "
+        #         f"is installed but DISABLED in {feature.config.config_file_path.as_posix()}"
+        #     )
+        #     continue
 
-        asset_in = feature.config.dagster_compose_scope_in
+        # asset_in = feature.config.dagster_compose_scope_in
 
-        if compose_scope not in feature_ins:
-            feature_ins[compose_scope]: Dict = {}
-
-        feature_ins[compose_scope][group_name] = asset_in
-
-        LOGGER.debug(f"{feature_ins[compose_scope][group_name] = }")
+        # if compose_scope not in feature_ins:
+        #     feature_ins[compose_scope]: Dict = {}
+        #
+        # feature_ins[compose_scope][group_name] = asset_in
+        #
+        # LOGGER.debug(f"{feature_ins[compose_scope][group_name] = }")
 
     # feature_ins = {'default': {'OpenStudioLandscapes_Kitsu': AssetIn(key=AssetKey(['Kitsu', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>), 'OpenStudioLandscapes_Watchtower': AssetIn(key=AssetKey(['Watchtower', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>)}, 'test': {'OpenStudioLandscapes_VERT': AssetIn(key=AssetKey(['VERT', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>)}}
     return feature_ins
@@ -240,7 +240,7 @@ def _write_yaml(
 
 
 def dump_yaml(
-    model_config: Union[ConfigEngine, FeatureBaseModel, Config, ConfigurableResource],
+    model_config: Union[ConfigEngine, Config, ConfigurableResource],
     file_path: pathlib.Path,
 ) -> None:
     """Save YAML data to a file, preserving comments/order."""
@@ -601,31 +601,31 @@ def try_import_discovered(
 
     LOGGER.info(f"{package = }")
     LOGGER.debug(f"{discovered_model = }")
-    try:
-        _models = discovered_model.models
-        LOGGER.debug(f"{_models = }")
-        models_object: ModuleType = importlib.import_module(_models)
-        LOGGER.info("Feature models import successful: '%s'" % models_object)
-    except (
-        ModuleNotFoundError,
-        AttributeError,
-        # TypeError,
-    ) as e:
-        LOGGER.error("Feature models import not successful: '%s'" % e)
-        raise ImportError(e) from e
-    try:
-        _definitions = discovered_model.definitions
-        LOGGER.debug(f"{_definitions = }")
-        definitions_object: ModuleType = importlib.import_module(_definitions)
-        LOGGER.info("Feature definitions import successful: '%s'" % definitions_object)
-    except (
-        ModuleNotFoundError,
-        AttributeError,
-        DagsterInvalidDefinitionError,
-        # TypeError,
-    ) as e:
-        LOGGER.error("Feature definitions import not successful: '%s'" % e)
-        raise ImportError(e) from e
+    # try:
+    _models = discovered_model.models
+    LOGGER.debug(f"{_models = }")
+    models_object: ModuleType = importlib.import_module(_models)
+    LOGGER.info("Feature models import successful: '%s'" % models_object)
+    # except (
+    #     ModuleNotFoundError,
+    #     AttributeError,
+    #     # TypeError,
+    # ) as e:
+    #     LOGGER.error("Feature models import not successful: '%s'" % e)
+    #     raise ImportError(e) from e
+    # try:
+    _definitions = discovered_model.definitions
+    LOGGER.debug(f"{_definitions = }")
+    definitions_object: ModuleType = importlib.import_module(_definitions)
+    LOGGER.info("Feature definitions import successful: '%s'" % definitions_object)
+    # except (
+    #     ModuleNotFoundError,
+    #     AttributeError,
+    #     DagsterInvalidDefinitionError,
+    #     # TypeError,
+    # ) as e:
+    #     LOGGER.error("Feature definitions import not successful: '%s'" % e)
+    #     raise ImportError(e) from e
 
     return models_object, definitions_object
 
@@ -759,48 +759,48 @@ def init(
         #     'local_bind_volumes': [],
         #     'local_environment_variables': {}
         # }
-        try:
-            config_feature: FeatureBaseModel = feature.models_object.Config(
-                **feature_config_dict,
-            )
-            LOGGER.debug(f"{config_feature = }")
-            #  config_feature = Feature(
-            #      [
-            #          'env={}',
-            #          'local_bind_volumes=[]',
-            #          'local_environment_variables={}',
-            #          'config_engine=None',
-            #          'distribution=None',
-            #          'group_name=OpenStudioLandscapes_SESI_gcc_9_3_Houdini_20',
-            #          "key_prefixes=['OpenStudioLandscapes_SESI_gcc_9_3_Houdini_20']",
-            #          'enabled=True',
-            #          'compose_scope=license_server',
-            #          'feature_name=OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20',
-            #          'docker_compose={DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml',
-            #          'LICENSES_ACTIVE={DOT_FEATURES}/{FEATURE}/.payload/data/licenses',
-            #          'HKEY_BIN={DOT_FEATURES}/{FEATURE}/.payload/bin/hkey-bin',
-            #          'HSERVER={DOT_FEATURES}/{FEATURE}/.payload/bin/hserver',
-            #          'LICENSES={DOT_FEATURES}/{FEATURE}/.payload/bin/licenses',
-            #          'LICENSES_DISABLED={DOT_FEATURES}/{FEATURE}/.payload/bin/licenses.disabled',
-            #          'SESICTRL={DOT_FEATURES}/{FEATURE}/.payload/bin/sesictrl',
-            #          'SESINETD={DOT_FEATURES}/{FEATURE}/.payload/bin/sesinetd',
-            #          'SESINETD_PEAK_USAGE_BIN={DOT_FEATURES}/{FEATURE}/.payload/bin/sesinetd_peak_usage.bin',
-            #          'SESIUSAGE={DOT_FEATURES}/{FEATURE}/.payload/bin/sesiusage',
-            #          'SESI_PORT_HOST=1717',
-            #          'SESI_PORT_CONTAINER=1715',
-            #          "apt_packages=['lsb-release']"
-            #      ]
-            #  )
-        except PydanticValidationError as e:
-            # We don't want to edit a config.yml file automatically.
-            # This can have unwanted side effects and takes away control
-            # from the user. Just raise an Exception and highlight the problem here.
-            msg = f"`config.yml` needs to be updated with the following missing fields: {e}"
-            LOGGER.error(msg)
-            raise OpenStudioLandscapesDiscoveryException(msg)
-
-        feature.config = config_feature
-        LOGGER.debug(f"{feature.config = }")
+        # try:
+        #     config_feature: FeatureBaseModel = feature.models_object.Config(
+        #         **feature_config_dict,
+        #     )
+        #     LOGGER.debug(f"{config_feature = }")
+        #     #  config_feature = Feature(
+        #     #      [
+        #     #          'env={}',
+        #     #          'local_bind_volumes=[]',
+        #     #          'local_environment_variables={}',
+        #     #          'config_engine=None',
+        #     #          'distribution=None',
+        #     #          'group_name=OpenStudioLandscapes_SESI_gcc_9_3_Houdini_20',
+        #     #          "key_prefixes=['OpenStudioLandscapes_SESI_gcc_9_3_Houdini_20']",
+        #     #          'enabled=True',
+        #     #          'compose_scope=license_server',
+        #     #          'feature_name=OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20',
+        #     #          'docker_compose={DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml',
+        #     #          'LICENSES_ACTIVE={DOT_FEATURES}/{FEATURE}/.payload/data/licenses',
+        #     #          'HKEY_BIN={DOT_FEATURES}/{FEATURE}/.payload/bin/hkey-bin',
+        #     #          'HSERVER={DOT_FEATURES}/{FEATURE}/.payload/bin/hserver',
+        #     #          'LICENSES={DOT_FEATURES}/{FEATURE}/.payload/bin/licenses',
+        #     #          'LICENSES_DISABLED={DOT_FEATURES}/{FEATURE}/.payload/bin/licenses.disabled',
+        #     #          'SESICTRL={DOT_FEATURES}/{FEATURE}/.payload/bin/sesictrl',
+        #     #          'SESINETD={DOT_FEATURES}/{FEATURE}/.payload/bin/sesinetd',
+        #     #          'SESINETD_PEAK_USAGE_BIN={DOT_FEATURES}/{FEATURE}/.payload/bin/sesinetd_peak_usage.bin',
+        #     #          'SESIUSAGE={DOT_FEATURES}/{FEATURE}/.payload/bin/sesiusage',
+        #     #          'SESI_PORT_HOST=1717',
+        #     #          'SESI_PORT_CONTAINER=1715',
+        #     #          "apt_packages=['lsb-release']"
+        #     #      ]
+        #     #  )
+        # except PydanticValidationError as e:
+        #     # We don't want to edit a config.yml file automatically.
+        #     # This can have unwanted side effects and takes away control
+        #     # from the user. Just raise an Exception and highlight the problem here.
+        #     msg = f"`config.yml` needs to be updated with the following missing fields: {e}"
+        #     LOGGER.error(msg)
+        #     raise OpenStudioLandscapesDiscoveryException(msg)
+        #
+        # feature.config = config_feature
+        # LOGGER.debug(f"{feature.config = }")
         # feature.config = Feature(
         #     [
         #         'env={}',
@@ -861,12 +861,12 @@ def init(
         #     ]
         # )
 
-        dump_yaml(
-            model_config=config_feature,
-            file_path=config_yml_feature_expanded,
-        )
+        # dump_yaml(
+        #     model_config=config_feature,
+        #     file_path=config_yml_feature_expanded,
+        # )
 
-    LOGGER.debug(f"{FeatureBaseModel.subclasses = }")
+    # LOGGER.debug(f"{FeatureBaseModel.subclasses = }")
     # FeatureBaseModel.subclasses = {
     #     [...]
     #     'OpenStudioLandscapes-SESI-gcc-9-3-Houdini-20': <class 'OpenStudioLandscapes.SESI_gcc_9_3_Houdini_20.config.models.Config'>,

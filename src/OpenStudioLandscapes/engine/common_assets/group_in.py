@@ -1,4 +1,4 @@
-from typing import Dict, Type, Union
+from typing import Dict
 
 from dagster import (
     AssetKey,
@@ -9,10 +9,10 @@ from dagster import (
 
 from OpenStudioLandscapes.engine.base.ops.factories import (
     factory_feature_in,
-    factory_feature_in_parent,
+    # factory_feature_in_parent,
     factory_group_in,
 )
-from OpenStudioLandscapes.engine.config.models import FeatureBaseModel
+# from OpenStudioLandscapes.engine.config.models import FeatureBaseModel
 from OpenStudioLandscapes.engine.link.models import (
     OpenStudioLandscapesBaseOut,
     OpenStudioLandscapesFeatureIn,
@@ -106,41 +106,41 @@ def get_feature_in(
     return feature_in
 
 
-def get_feature_in_parent(
-    ASSET_HEADER: Dict,
-    config_parent: Union[None, Type[FeatureBaseModel]],
-) -> Union[AssetsDefinition, None]:
-
-    # Do not produce the assets
-    # if there is no parent config
-    if config_parent is None:
-        return None
-
-    feature_in_parent_op = factory_feature_in_parent(
-        name=f"op_feature_in_parent_{ASSET_HEADER['group_name']}",
-        CONFIG_PARENT=config_parent,
-        ins={
-            "feature_in": In(OpenStudioLandscapesFeatureIn),
-        },
-        out={
-            "feature_in_parent": Out(OpenStudioLandscapesFeatureOut),
-            "CONFIG_PARENT": Out(FeatureBaseModel),
-        },
-    )
-
-    feature_in_parent = AssetsDefinition.from_op(
-        feature_in_parent_op,
-        can_subset=False,
-        group_name=ASSET_HEADER["group_name"],
-        keys_by_input_name={
-            "feature_in": AssetKey([*ASSET_HEADER["key_prefix"], "feature_in"]),
-        },
-        keys_by_output_name={
-            "feature_in_parent": AssetKey(
-                [*ASSET_HEADER["key_prefix"], "feature_in_parent"]
-            ),
-            "CONFIG_PARENT": AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG_PARENT"]),
-        },
-    )
-
-    return feature_in_parent
+# def get_feature_in_parent(
+#     ASSET_HEADER: Dict,
+#     config_parent: Union[None, Type[FeatureBaseModel]],
+# ) -> Union[AssetsDefinition, None]:
+#
+#     # Do not produce the assets
+#     # if there is no parent config
+#     if config_parent is None:
+#         return None
+#
+#     feature_in_parent_op = factory_feature_in_parent(
+#         name=f"op_feature_in_parent_{ASSET_HEADER['group_name']}",
+#         CONFIG_PARENT=config_parent,
+#         ins={
+#             "feature_in": In(OpenStudioLandscapesFeatureIn),
+#         },
+#         out={
+#             "feature_in_parent": Out(OpenStudioLandscapesFeatureOut),
+#             "CONFIG_PARENT": Out(FeatureBaseModel),
+#         },
+#     )
+#
+#     feature_in_parent = AssetsDefinition.from_op(
+#         feature_in_parent_op,
+#         can_subset=False,
+#         group_name=ASSET_HEADER["group_name"],
+#         keys_by_input_name={
+#             "feature_in": AssetKey([*ASSET_HEADER["key_prefix"], "feature_in"]),
+#         },
+#         keys_by_output_name={
+#             "feature_in_parent": AssetKey(
+#                 [*ASSET_HEADER["key_prefix"], "feature_in_parent"]
+#             ),
+#             "CONFIG_PARENT": AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG_PARENT"]),
+#         },
+#     )
+#
+#     return feature_in_parent
