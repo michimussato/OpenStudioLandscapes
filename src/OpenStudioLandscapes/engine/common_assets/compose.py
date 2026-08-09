@@ -1,3 +1,5 @@
+from typing import Dict, Type
+
 from dagster import (
     AssetKey,
     AssetsDefinition,
@@ -6,7 +8,9 @@ from dagster import (
 )
 
 from OpenStudioLandscapes.engine.base.ops.factories import factory_compose
-from OpenStudioLandscapes.engine.config.models import FeatureBaseModel
+from OpenStudioLandscapes.engine.config.models import FeatureBaseResource
+from OpenStudioLandscapes.engine.config.models import FeatureBaseResource
+# from OpenStudioLandscapes.engine.config.models import FeatureBaseModel
 
 # Todo:
 #  - compose_map factory
@@ -14,14 +18,16 @@ from OpenStudioLandscapes.engine.config.models import FeatureBaseModel
 
 def get_compose(
     ASSET_HEADER: dict,
+    resource: Type[FeatureBaseResource],
 ) -> AssetsDefinition:
 
     compose_op = factory_compose(
         name=f"op_compose_{ASSET_HEADER['group_name']}",
+        resource=resource,
         ins={
             "compose_networks": In(dict),
             "compose_maps": In(list),
-            "CONFIG": In(FeatureBaseModel),
+            # "CONFIG": In(FeatureBaseResource),
             # "group_in": In(dict)
         },
         out={
@@ -45,7 +51,7 @@ def get_compose(
                 [*ASSET_HEADER["key_prefix"], "compose_networks"]
             ),
             "compose_maps": AssetKey([*ASSET_HEADER["key_prefix"], "compose_maps"]),
-            "CONFIG": AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
+            # "CONFIG": AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
             # "group_in": AssetKey([*ASSET_HEADER["key_prefix"], "group_in"]),
         },
     )

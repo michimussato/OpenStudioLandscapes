@@ -47,11 +47,12 @@ from docker_compose_graph.utils import *
 from OpenStudioLandscapes.engine.config.models import (
     ComposeScopeBaseModel,
     FeatureBaseModel,
-    FeatureBaseResource,
+    FeatureBaseResource, interpolate,
 )
 from OpenStudioLandscapes.engine.base.configurable_resources.docker_resource import DockerConfigurableResource
+from OpenStudioLandscapes.engine.base.configurable_resources.env_resource import EnvConfigurableResource
 from OpenStudioLandscapes.engine.constants import *
-from OpenStudioLandscapes.engine.discovery import discovery
+# from OpenStudioLandscapes.engine.discovery import discovery
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.link.models import (
     OpenStudioLandscapesBaseOut,
@@ -68,6 +69,7 @@ yaml.SafeDumper.add_multi_representer(
 
 
 def factory_feature_out_v2(
+    resource: Type[FeatureBaseResource],
     name="op_feature_out_v2_from_factory",
     ins=None,
     **kwargs,
@@ -91,18 +93,19 @@ def factory_feature_out_v2(
     )
     def _op_feature_out(
         context: OpExecutionContext,
+        # config_EnvConfigurableResource: EnvConfigurableResource,
         **kwargs,
     ):
 
         # group_out_base: OpenStudioLandscapesBaseOut = kwargs.pop("group_out_base")
         compose: Dict = kwargs.pop("compose")
-        CONFIG: discovery.FeatureBaseModel = kwargs.pop("CONFIG")
+        # CONFIG: discovery.FeatureBaseModel = kwargs.pop("CONFIG")
         cmd_extend: List = kwargs.pop("cmd_extend")
         cmd_append: Dict = kwargs.pop("cmd_append")
 
         feature_out: OpenStudioLandscapesFeatureOut = OpenStudioLandscapesFeatureOut(
             compose=compose,
-            config_feature=CONFIG,
+            config_feature=resource.model_dump(),
             cmd_extend=cmd_extend,
             cmd_append=cmd_append,
         )
@@ -218,6 +221,7 @@ def factory_cmd(
 
 
 def factory_compose(
+    resource: Type[FeatureBaseResource],
     name="op_compose_from_factory",
     ins=None,
     **kwargs,
@@ -240,15 +244,21 @@ def factory_compose(
     )
     def _op_compose(
         context: OpExecutionContext,
+        config_EnvConfigurableResource: EnvConfigurableResource,
         **kwargs,
     ):
         """ """
 
         compose_networks = kwargs.pop("compose_networks")
         compose_maps = kwargs.pop("compose_maps")
-        CONFIG: FeatureBaseModel = kwargs.pop("CONFIG")
 
-        DOCKER_COMPOSE: pathlib.Path = CONFIG.docker_compose_expanded
+        DOCKER_COMPOSE: pathlib.Path = interpolate(
+            path=resource.docker_compose,
+            env={
+                "FEATURE": resource.feature_name,
+                **config_EnvConfigurableResource.model_dump(),
+            },
+        )
         DOCKER_COMPOSE.parent.mkdir(parents=True, exist_ok=True)
 
         if "networks" in compose_networks:

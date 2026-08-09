@@ -80,7 +80,7 @@ class OpenStudioLandscapesFeatureIn(OpenStudioLandscapesFeatureBasePort):
 
 
 class OpenStudioLandscapesFeatureOut(OpenStudioLandscapesFeatureBasePort):
-    # config_feature: Dict
+    config_feature: Dict
 
     cmd_extend: Union[None, List] = Field(
         default=None,

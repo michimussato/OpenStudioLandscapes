@@ -25,10 +25,12 @@ from docker_compose_graph.docker_compose_graph import (
 )
 
 from OpenStudioLandscapes.engine.config.models import (
-    ConfigEngine,
-    FeatureBaseModel,
+    # ConfigEngine,
+    # FeatureBaseModel,
+    FeatureBaseResource, interpolate,
 )
 from OpenStudioLandscapes.engine.base.configurable_resources.docker_resource import DockerConfigurableResource
+from OpenStudioLandscapes.engine.base.configurable_resources.env_resource import EnvConfigurableResource
 from OpenStudioLandscapes.engine.constants import (
     DOCKER_PROGRESS,
 )
@@ -185,7 +187,7 @@ def op_docker_compose_graph(
         "feature_in": In(OpenStudioLandscapesFeatureIn),
         "cmd_extend": In(List),
         "cmd_append": In(Dict[str, List]),
-        "CONFIG": In(FeatureBaseModel),
+        # "CONFIG": In(FeatureBaseResource),  # Convert to factory like `get_feature__CONFIG` so that we can give resource: Type[FeatureBaseResource] as argument
         "compose": In(Dict),
     },
     out={
@@ -196,6 +198,8 @@ def op_docker_compose_graph(
 )
 def op_group_out(
     context: OpExecutionContext,
+    config_feature: FeatureBaseResource,
+    config_EnvConfigurableResource: EnvConfigurableResource,
     config_DockerConfigurableResource: DockerConfigurableResource,
     # Todo:
     #  - [ ] DUPLICATE?? use `OpenStudioLandscapes.engine.base.ops.factories.factory_compose_scope__cmd`
@@ -203,7 +207,7 @@ def op_group_out(
     feature_in: OpenStudioLandscapesFeatureIn,  # pylint: disable=redefined-outer-name
     cmd_extend: List,  # pylint: disable=redefined-outer-name
     cmd_append: Dict[str, List],  # pylint: disable=redefined-outer-name
-    CONFIG: FeatureBaseModel,  # pylint: disable=redefined-outer-name
+    # CONFIG: FeatureBaseResource,  # pylint: disable=redefined-outer-name
     # Compose:
     # This is merely a dependency so that the
     # compose file is created before compose-graph
@@ -234,7 +238,13 @@ def op_group_out(
         ComposeCmdExclusion.CMD_APPEND_ALWAYS_EXCLUDE_FROM_QUOTATION.value
     )
 
-    DOCKER_COMPOSE: pathlib.Path = CONFIG.docker_compose_expanded
+    DOCKER_COMPOSE: pathlib.Path = interpolate(
+        path=config_feature.docker_compose,
+        env={
+            "FEATURE": config_feature.feature_name,
+            **config_EnvConfigurableResource.model_dump(),
+        },
+    )
     # Todo:
     #  - [ ] Is this necessary here?
     DOCKER_COMPOSE.parent.mkdir(parents=True, exist_ok=True)
@@ -246,7 +256,7 @@ def op_group_out(
     context.log.debug(context.selected_output_names)
 
     compose_project_name = (
-        f"{env.get('LANDSCAPE', 'default').replace('.', '-')}-{CONFIG.compose_scope}"
+        f"{env.get('LANDSCAPE', 'default').replace('.', '-')}-{config_feature.compose_scope}"
     )
 
     group_names_by_key_dict = context.assets_def.group_names_by_key

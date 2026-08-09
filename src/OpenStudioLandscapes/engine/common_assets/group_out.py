@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Type
 
 from dagster import (
     AssetKey,
@@ -6,10 +6,12 @@ from dagster import (
 )
 
 from OpenStudioLandscapes.engine.base.ops import op_group_out
+# from OpenStudioLandscapes.engine.config.models import FeatureBaseResource
 
 
 def get_group_out(
     ASSET_HEADER: Dict,
+    # resource: Type[FeatureBaseResource],
 ) -> AssetsDefinition:
 
     group_out = AssetsDefinition.from_op(
@@ -22,7 +24,7 @@ def get_group_out(
             "feature_in": AssetKey([*ASSET_HEADER["key_prefix"], "feature_in"]),
             "cmd_extend": AssetKey([*ASSET_HEADER["key_prefix"], "cmd_extend"]),
             "cmd_append": AssetKey([*ASSET_HEADER["key_prefix"], "cmd_append"]),
-            "CONFIG": AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
+            # "CONFIG": AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
             # This is merely a dependency than an actual input so that the
             # compose file is created before compose-graph
             # is initiated.

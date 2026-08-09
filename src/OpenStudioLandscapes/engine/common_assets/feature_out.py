@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Type
 
 from dagster import (
     AssetKey,
@@ -12,6 +12,7 @@ from OpenStudioLandscapes.engine.base.ops.factories import (  # factory_feature_
     factory_feature_out_v2,
 )
 from OpenStudioLandscapes.engine.discovery import discovery
+from OpenStudioLandscapes.engine.config.models import FeatureBaseResource
 from OpenStudioLandscapes.engine.link.models import OpenStudioLandscapesFeatureOut
 
 # def get_feature_out(
@@ -48,13 +49,15 @@ from OpenStudioLandscapes.engine.link.models import OpenStudioLandscapesFeatureO
 
 def get_feature_out_v2(
     ASSET_HEADER: Dict,
+    resource: Type[FeatureBaseResource],
 ) -> AssetsDefinition:
 
     feature_out_op: OpDefinition = factory_feature_out_v2(
         name=f"op_feature_out_v2_{ASSET_HEADER['group_name']}",
+        resource=resource,
         ins={
             "compose": In(Dict),
-            "CONFIG": In(discovery.FeatureBaseModel),
+            # "CONFIG": In(discovery.FeatureBaseModel),
             "cmd_extend": In(List),
             "cmd_append": In(Dict),
         },
@@ -71,7 +74,7 @@ def get_feature_out_v2(
         can_subset=False,
         keys_by_input_name={
             "compose": AssetKey([*ASSET_HEADER["key_prefix"], "compose"]),
-            "CONFIG": AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
+            # "CONFIG": AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
             "cmd_extend": AssetKey([*ASSET_HEADER["key_prefix"], "cmd_extend"]),
             "cmd_append": AssetKey([*ASSET_HEADER["key_prefix"], "cmd_append"]),
         },
