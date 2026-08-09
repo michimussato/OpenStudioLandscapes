@@ -3,6 +3,7 @@ __all__ = [
     "OpenStudioLandscapesConfig",
     "FeatureVolumeType",
     "ComposeCmdExclusion",
+    "DockerProgress",
     "DockerComposeRestartPolicy",
     "DockerComposeDependsOnPolicy",
     "DockerComposePolicies",

@@ -6,7 +6,7 @@ import re
 import textwrap
 from importlib.metadata import Distribution
 from types import ModuleType
-from typing import ClassVar, Dict, List
+from typing import ClassVar, Dict, List, Any
 
 import pydantic
 import yaml
@@ -40,6 +40,23 @@ Resources:
 
 # config_default = pathlib.Path(__file__).parent.joinpath("config_default.yml")
 # CONFIG_STR = config_default.read_text()
+
+
+def interpolate(
+    path: str,
+    env: Dict[str, Any],
+) -> pathlib.Path:
+    """
+    Expands environment variables into a path.
+
+    :param path: str
+    :param env: dict
+    :return: pathlib.Path
+    """
+    ret = pathlib.Path(
+        path.format(**env)
+    ).expanduser()  # pylint: disable=E1101
+    return ret
 
 
 class DockerRegistryProtocol(enum.StrEnum):
@@ -733,6 +750,111 @@ class FeatureBaseModel(BaseConfig):
             )
         )
         return ret
+
+
+class FeatureBaseResource(ConfigurableResource):
+
+    # def __new__(cls, *args, **kwargs):
+    #     if cls is FeatureBaseModel:
+    #         # Prevent direct instantiation
+    #         # References:
+    #         # - https://stackoverflow.com/a/7990308/2207196
+    #         raise TypeError(
+    #             f"Do not instance this class directly. "
+    #             f"Only children of '{cls.__name__}' may be instantiated"
+    #         )
+    #     if not hasattr(cls, "instance"):
+    #         cls.instance = super(FeatureBaseResource, cls).__new__(cls)
+    #     return cls.instance
+    #
+    # subclasses: ClassVar[Dict] = {}
+    #
+    # def __init_subclass__(cls, **kwargs):
+    #     """
+    #
+    #     This method is called when a subclass is instantiated.
+    #     The instance will then be added to the base class subclasses list.
+    #
+    #     Args:
+    #         **kwargs:
+    #     """
+    #     super().__init_subclass__(**kwargs)
+    #     # NOT UNIQUE: cls.__name__ = 'Config'
+    #     # HENCE, USING: cls.feature_name = 'OpenStudioLandscapes-VERT'
+    #     cls.subclasses[cls.feature_name] = cls
+
+    def __repr__(self):
+        return f"Feature({[f'{k}={v}' for k, v in self.__dict__.items()]})"
+
+    def __str__(self):
+        return f"{self.feature_name}"
+
+    # env: Dict[str, str] = Field(
+    #     default_factory=dict,
+    # )
+
+    # This does not raise errors because each Feature subclasses this class.
+    local_bind_volumes: List[str] = Field(
+        default_factory=list,
+        description="Here you can define Feature specific, arbitrary, absolute bind volume mappings.",
+    )
+
+    # This does not raise errors because each Feature subclasses this class.
+    local_environment_variables: Dict[str, str] = Field(
+        default_factory=dict,
+        description="Here you can define Feature specific, arbitrary environment variables.",
+    )
+    # Todo
+    #  - [ ] Maybe switch to disabled by default
+    enabled: bool = Field(
+        default=True,
+        description="Whether the Feature is enabled or not.",
+    )
+    compose_scope: str = Field(
+        default="default",
+        examples=["default", "license_server", "worker"],
+    )
+
+    # Todo
+    #  - [ ] combine with key_prefixes/group_name?
+    feature_name: str = Field(
+        description="The name of the feature. It is derived from the "
+        "`OpenStudioLandscapes.<Feature>.dist` attribute.",
+        examples=["OpenStudioLandscapes-Kitsu", "OpenStudioLandscapes-VERT"],
+        frozen=True,
+    )
+
+    # Dagster Attributes
+    # Todo:
+    #  - [ ] set group_name (if not defined) to feature_name
+    #  - [ ] set key_prefixes (if not defined) to [feature_name]
+    #  - [ ] validate using
+    #        - `dagster._core.definitions.utils.VALID_NAME_REGEX`
+    #        - `dagster._core.definitions.utils.VALID_NAME_REGEX_STR`
+    #  - [ ] Replace Chars Methods:
+    #        # - https://blog.finxter.com/5-best-ways-to-replace-a-list-of-characters-in-a-string-with-python/
+    #        chars_to_replace = " .,-"
+    #        replace_with = "_"
+    #        regex_pattern = f"[{chars_to_replace}]"
+    #        transformed_value = re.sub(regex_pattern, replace_with, value)
+    group_name: str = Field(
+        description="Dagster Group name. This will represent the group node name. "
+        "See https://docs.dagster.io/api/dagster/assets for "
+        "more information",
+    )
+    key_prefixes: List[str] = Field(
+        description="Dagster Asset key prefixes. This will be reflected in the nesting "
+        "(directory structure) of the Asset. "
+        "See https://docs.dagster.io/api/dagster/assets for "
+        "more information",
+    )
+
+    docker_compose: str = Field(
+        default=pathlib.Path(
+            "{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml"
+        ).as_posix(),
+        description="The path to the `docker-compose.yml` file.",
+    )
 
 
 class OpenStudioLandscapesDiscoveredFeature(BaseModel):

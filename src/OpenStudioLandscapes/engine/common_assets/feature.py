@@ -9,25 +9,26 @@ from dagster import (
 )
 
 from OpenStudioLandscapes.engine.base.ops.factories import factory__CONFIG
-from OpenStudioLandscapes.engine.discovery import discovery
+from OpenStudioLandscapes.engine.config.models import FeatureBaseResource
+# from OpenStudioLandscapes.engine.discovery import discovery
 from OpenStudioLandscapes.engine.link.models import OpenStudioLandscapesFeatureIn
 
 
 def get_feature__CONFIG(
     ASSET_HEADER: Dict,
-    CONFIG_STR: str,
-    search_model_of_type: Type[discovery.FeatureBaseModel],
+    # CONFIG_STR: str,
+    # search_model_of_type: Type[discovery.FeatureBaseModel],
+    resource: Type[FeatureBaseResource],
 ) -> AssetsDefinition:
 
     feature_in_op__CONFIG: OpDefinition = factory__CONFIG(
         name=f"op__CONFIG__{ASSET_HEADER['group_name']}",
-        CONFIG_STR=CONFIG_STR,
-        search_model_of_type=search_model_of_type,
+        resource=resource,
         ins={
             "feature_in": In(OpenStudioLandscapesFeatureIn),
         },
         out={
-            "CONFIG": Out(discovery.FeatureBaseModel),
+            "CONFIG": Out(FeatureBaseResource),
             # Todo:
             #  - [ ] Can we do this dynamically based on whether there is a parent?
             # "CONFIG_PARENT": Out(discovery.FeatureBaseModel),

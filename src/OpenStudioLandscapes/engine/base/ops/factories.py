@@ -47,13 +47,11 @@ from docker_compose_graph.utils import *
 from OpenStudioLandscapes.engine.config.models import (
     ComposeScopeBaseModel,
     FeatureBaseModel,
+    FeatureBaseResource,
 )
 from OpenStudioLandscapes.engine.base.configurable_resources.docker_resource import DockerConfigurableResource
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.discovery import discovery
-from OpenStudioLandscapes.engine.discovery.get_feature_base_model import (
-    get_feature_base_model,
-)
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.link.models import (
     OpenStudioLandscapesBaseOut,
@@ -67,79 +65,6 @@ yaml.SafeDumper.add_multi_representer(
     data_type=enum.Enum,
     representer=yaml.representer.SafeRepresenter.represent_str,
 )
-
-
-# def factory_feature_out(
-#     name="op_feature_out_from_factory",
-#     ins=None,
-#     **kwargs,
-# ) -> OpDefinition:
-#     """
-#     https://docs.dagster.io/guides/build/ops#op-factory
-#
-#     Args:
-#         name (str): The name of the new op.
-#         ins (Dict[str, In]): Any Ins for the new op. Default: None.
-#
-#     Returns:
-#         function: The new op.
-#     """
-#
-#     @op(
-#         name=name,
-#         ins=ins,
-#         **kwargs,
-#     )
-#     def _op_feature_out(
-#         context: OpExecutionContext,
-#         **kwargs,
-#     ):
-#
-#         context.log.debug(f"{kwargs.keys() = }")
-#         context.log.debug(f"{kwargs['group_in'].keys() = }")
-#
-#         # Todo
-#         #  - [ ] I can't serialize this nested BaseModel yet
-#         config_parent = kwargs["group_in"].pop("config_parent")
-#
-#         # context.log.debug(f"Popping: {kwargs.pop('env') = }")
-#         group_in: Dict = kwargs.pop("group_in")
-#         kwargs["group_in"] = group_in
-#
-#         # I want
-#         # - env_base
-#         # - features
-#         # - docker_config
-#         # - docker_config_json
-#         # to stay in the root level
-#         # of the dict
-#         CONFIG: FeatureBaseModel = kwargs.pop("CONFIG")
-#         kwargs["config"] = CONFIG
-#
-#         # Todo
-#         #  - [ ] replace "group_out" (i.e. with "compose_yaml" or "feature_out")
-#         # kwargs["compose_yaml"] = kwargs["env"]["DOCKER_COMPOSE"]
-#
-#         context.log.debug(f"_op_feature_out {kwargs = }")
-#
-#         output_name = "feature_out"
-#
-#         yield Output(
-#             output_name=output_name,
-#             value=kwargs,
-#         )
-#
-#         yield AssetMaterialization(
-#             asset_key=context.asset_key_for_output(output_name),
-#             metadata={
-#                 **metadatavalues_from_dict(
-#                     context=context,
-#                     d=kwargs,
-#                 ),
-#             },
-#         )
-#
-#     return _op_feature_out
 
 
 def factory_feature_out_v2(
@@ -1889,10 +1814,10 @@ def factory_compose_scope__group_out(
 
 
 def factory__CONFIG(
-    CONFIG_STR: str,
-    search_model_of_type: Type[discovery.FeatureBaseModel],
+    resource: Type[FeatureBaseResource],
     name="op_factory__CONFIG",
     ins=None,
+    # out=None,
     **kwargs,
 ) -> OpDefinition:
     """
@@ -1901,6 +1826,7 @@ def factory__CONFIG(
     Args:
         name (str): The name of the new op.
         ins (Dict[str, In]): Any Ins for the new op. Default: None.
+        out (Dict[str, Out]): Any Outs for the new op. Default: None.
 
     Returns:
         function: The new op.
@@ -1909,46 +1835,20 @@ def factory__CONFIG(
     @op(
         name=name,
         ins=ins,
-        description=textwrap.dedent(f"""
-Reads options from a `config.yml` on your hard drive.
-If the custom `config.yml` does not exist, it 
-will be created locally containing default options.
-
----
-
-For reference, the default `Config` values are as follows:
-
-> __These default `Config` values **do not reflect your
-> actual configuration** specified in the `config.yml` file.__
-        
-```yaml
-{CONFIG_STR}
-```
-"""),
+        # out=out,
+        description=textwrap.dedent(
+            """
+            """
+        ),
         **kwargs,
     )
     def _op__CONFIG(
         context: OpExecutionContext,
+        # feature_in,
         **kwargs,
     ):
-        """ """
 
-        # if config_parent is None:
-        #     pass
-        # else:
-        #     pass
-
-        feature_in: OpenStudioLandscapesFeatureIn = kwargs.get("feature_in")
-
-        env: Dict = feature_in.openstudiolandscapes_base.env
-
-        config_validated: discovery.FeatureBaseModel = get_feature_base_model(
-            context=context,
-            discovered_models=discovery.DISCOVERED_MODELS,
-            search_instance_type=search_model_of_type,
-        )
-
-        config_validated.env = env
+        # context.log.debug(f"{feature_in = }")
 
         ##########
         # CONFIG #
@@ -1958,7 +1858,7 @@ For reference, the default `Config` values are as follows:
 
         yield Output(
             output_name=output_name,
-            value=config_validated,
+            value=resource,
         )
 
         yield AssetMaterialization(
@@ -1967,7 +1867,7 @@ For reference, the default `Config` values are as follows:
                 "__".join(
                     context.asset_key_for_output(output_name).path
                 ): MetadataValue.md(
-                    f"```yaml\n{yaml.safe_dump(json.loads(config_validated.model_dump_json(fallback=str, indent=2)))}\n```"
+                    f"```yaml\n{yaml.safe_dump(json.loads(resource.model_dump_json(fallback=str, indent=2)))}\n```"
                 ),
             },
         )
