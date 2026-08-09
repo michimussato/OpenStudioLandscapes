@@ -31,7 +31,7 @@ code_locations = [
 code_locations.extend(
     [
         "OpenStudioLandscapes.engine.compose_scopes.definitions",
-        # "OpenStudioLandscapes.engine.landscape_map.definitions",
+        "OpenStudioLandscapes.engine.landscape_map.definitions",
         # "OpenStudioLandscapes.engine.distributable.definitions",
     ]
 )
