@@ -865,11 +865,6 @@ def init(
         #     ]
         # )
 
-        # dump_yaml(
-        #     model_config=config_feature,
-        #     file_path=config_yml_feature_expanded,
-        # )
-
     LOGGER.debug(f"{FeatureBaseModel.subclasses = }")
     # FeatureBaseModel.subclasses = {
     #     [...]

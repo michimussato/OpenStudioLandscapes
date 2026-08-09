@@ -52,7 +52,6 @@ from OpenStudioLandscapes.engine.config.models import (
 from OpenStudioLandscapes.engine.base.configurable_resources.docker_resource import DockerConfigurableResource
 from OpenStudioLandscapes.engine.base.configurable_resources.env_resource import EnvConfigurableResource
 from OpenStudioLandscapes.engine.constants import *
-# from OpenStudioLandscapes.engine.discovery import discovery
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.link.models import (
     OpenStudioLandscapesBaseOut,
@@ -99,7 +98,6 @@ def factory_feature_out_v2(
 
         # group_out_base: OpenStudioLandscapesBaseOut = kwargs.pop("group_out_base")
         compose: Dict = kwargs.pop("compose")
-        # CONFIG: discovery.FeatureBaseModel = kwargs.pop("CONFIG")
         cmd_extend: List = kwargs.pop("cmd_extend")
         cmd_append: Dict = kwargs.pop("cmd_append")
 
@@ -732,6 +730,7 @@ def factory_compose_scope__scrape_networks(
     )
     def _op_compose_scope__scrape_networks(
         context: OpExecutionContext,
+        config_EnvConfigurableResource: EnvConfigurableResource,
         **kwargs,
     ) -> Generator[Output | AssetMaterialization | Any, Any, None]:
         """ """
@@ -764,12 +763,18 @@ def factory_compose_scope__scrape_networks(
 
         networks_dict: Dict = {}
 
-        # feature: str
-        # data: OpenStudioLandscapesFeatureOut
+        feature: str
+        data: OpenStudioLandscapesFeatureOut
         for feature, data in features_in.items():
-            context.log.info(f"{features_in[feature] = }")
-            CONFIG: FeatureBaseModel = data.config_feature
-            compose_file: pathlib.Path = CONFIG.docker_compose_expanded
+            context.log.info(f"{feature = }: {features_in[feature] = }")
+            config_feature: Dict = data.config_feature
+            compose_file: pathlib.Path = interpolate(
+                path=config_feature["docker_compose"],
+                env={
+                    "FEATURE": config_feature["feature_name"],
+                    **config_EnvConfigurableResource.model_dump(),
+                },
+            )
 
             network_dict = get_networks_dict(
                 context=context,
@@ -829,6 +834,7 @@ def factory_compose_scope__compose(
     )
     def _op_compose_scope__compose(
         context: OpExecutionContext,
+        config_EnvConfigurableResource: EnvConfigurableResource,
         **kwargs,
     ) -> Generator[Output | AssetMaterialization | Any, Any, None]:
         """ """
@@ -855,10 +861,18 @@ def factory_compose_scope__compose(
         compose_files = []
         _compose_networks = set()
 
+        feature: str
+        data: OpenStudioLandscapesFeatureOut
         for feature, data in features_in.items():
-            CONFIG_FEATURE: FeatureBaseModel = data.config_feature
-            context.log.info(f"{CONFIG_FEATURE.feature_name = }")
-            compose_file = CONFIG_FEATURE.docker_compose_expanded
+            config_feature: Dict = data.config_feature
+            context.log.info(f"{config_feature['feature_name'] = }")
+            compose_file: pathlib.Path = interpolate(
+                path=config_feature["docker_compose"],
+                env={
+                    "FEATURE": config_feature["feature_name"],
+                    **config_EnvConfigurableResource.model_dump(),
+                },
+            )
             compose_files.append(compose_file)
 
         includes = []
