@@ -440,6 +440,7 @@ def factory_feature_in(
 
 
 def factory_feature_in_parent(
+    resource: Type[FeatureBaseResource],
     CONFIG_PARENT: Type[FeatureBaseModel],
     name="op_feature_in_parent_factory",
     ins=None,
@@ -464,6 +465,7 @@ def factory_feature_in_parent(
     )
     def _op_feature_in_parent(
         context: OpExecutionContext,
+        config_EnvConfigurableResource: EnvConfigurableResource,
         **kwargs,
     ):
         """ """

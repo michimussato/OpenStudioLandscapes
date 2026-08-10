@@ -30,8 +30,8 @@ code_locations = [
 # -> This should not be strictly necessary anymore ()
 code_locations.extend(
     [
-        "OpenStudioLandscapes.engine.compose_scopes.definitions",
-        "OpenStudioLandscapes.engine.landscape_map.definitions",
+        # "OpenStudioLandscapes.engine.compose_scopes.definitions",
+        # "OpenStudioLandscapes.engine.landscape_map.definitions",
         # "OpenStudioLandscapes.engine.distributable.definitions",
     ]
 )

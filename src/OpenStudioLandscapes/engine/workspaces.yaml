@@ -1,4 +1,7 @@
 # https://docs.dagster.io/guides/build/projects/workspaces/workspace-yaml
+
+
+# https://docs.dagster.io/guides/build/projects/workspaces/workspace-yaml
 # Assets can only be materialized together if they are defined in the same code location and share a partition space, or form a connected graph in which root assets share the same partitioning.
 # - https://github.com/dagster-io/dagster/discussions/19184
 
@@ -17,8 +20,17 @@
 
 load_from:
   - python_module:
-      module_name: "OpenStudioLandscapes.engine.definitions"
-      location_name: "OpenStudioLandscapes Engine"
+      module_name: "OpenStudioLandscapes.engine.base.definitions"
+      location_name: "OpenStudioLandscapes Engine (Base)"
+  - python_module:
+      module_name: "OpenStudioLandscapes.engine.compose_scopes.definitions"
+      location_name: "OpenStudioLandscapes Engine (Compose Scopes)"
+  - python_module:
+      module_name: "OpenStudioLandscapes.Kitsu.definitions"
+      location_name: "OpenStudioLandscapes-Kitsu"
+
+
+
 #  - grpc_server:
 #      host: localhost  # when running on localhost
 #      port: 4000

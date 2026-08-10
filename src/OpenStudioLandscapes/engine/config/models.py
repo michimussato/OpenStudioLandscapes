@@ -881,10 +881,10 @@ class OpenStudioLandscapesDiscoveredFeature(BaseModel):
         default=None,
     )
 
-    config: FeatureBaseModel = Field(
-        default=None,
-        # default_factory=FeatureBaseModel,
-    )
+    # config: FeatureBaseModel = Field(
+    #     default=None,
+    #     # default_factory=FeatureBaseModel,
+    # )
 
 
 # Todo:

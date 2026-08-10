@@ -8,11 +8,13 @@ from dagster import (
     load_assets_from_modules,
 )
 
+from OpenStudioLandscapes.engine.base.assets import group_out_base
+
 import OpenStudioLandscapes.engine.compose_scopes.assets
 from OpenStudioLandscapes.engine.compose_scopes import GRAFANA_AVAILABLE
-from OpenStudioLandscapes.engine.constants import (
-    ASSET_HEADER_BASE,
-)
+# from OpenStudioLandscapes.engine.constants import (
+#     ASSET_HEADER_BASE,
+# )
 
 assets_base = load_assets_from_modules(
     modules=[OpenStudioLandscapes.engine.compose_scopes.assets]
@@ -33,6 +35,7 @@ LOGGER.debug(f"{DYNAMIC_INS = }")
 # {'default': {'OpenStudioLandscapes_filebrowser': AssetIn(key=AssetKey(['OpenStudioLandscapes_filebrowser', 'feature_out_v2']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>)}}
 
 assets_external = []
+assets_external.extend(group_out_base.specs)
 
 
 if bool(DYNAMIC_INS):
@@ -103,26 +106,26 @@ if not bool(assets_external) and not bool(DYNAMIC_INS):
     assets_external.append(feature_out)
 
 
-group_out_base = AssetSpec(
-    key=AssetKey(
-        [
-            *ASSET_HEADER_BASE["key_prefix"],
-            "group_out_base",
-        ]
-    ),
-    group_name=ASSET_HEADER_BASE["group_name"],
-    description="`AssetSpec` for `AssetDefinition` specified in "
-    "`OpenStudioLandscapes.engine.base.assets.group_out_base`.",
-)
-
-assets_external.append(group_out_base)
+# group_out_base = AssetSpec(
+#     key=AssetKey(
+#         [
+#             *ASSET_HEADER_BASE["key_prefix"],
+#             "group_out_base",
+#         ]
+#     ),
+#     group_name=ASSET_HEADER_BASE["group_name"],
+#     description="`AssetSpec` for `AssetDefinition` specified in "
+#     "`OpenStudioLandscapes.engine.base.assets.group_out_base`.",
+# )
+#
+# assets_external.append(group_out_base)
 
 
 defs = Definitions(
     assets=[
         *assets_base,
         # *constants,
-        # *assets_external,
+        *assets_external,
     ],
     resources={
         **configurable_resources_base,

@@ -7,7 +7,7 @@ from dagster import (
     AssetKey,
 )
 
-import OpenStudioLandscapes.engine.discovery.discovery as discovery
+# import OpenStudioLandscapes.engine.discovery.discovery as discovery
 from OpenStudioLandscapes.engine.common_assets.compose_scope import (
     get_compose_scope_group__cmd,
     get_compose_scope_group__compose,
@@ -23,7 +23,7 @@ from OpenStudioLandscapes.engine.compose_scopes.simple_factories import (
     simple_factory_alloy,
     simple_factory_newt,
 )
-from OpenStudioLandscapes.engine.discovery.discovery import DYNAMIC_INS
+# from OpenStudioLandscapes.engine.discovery.discovery import DYNAMIC_INS
 from OpenStudioLandscapes.engine.logging.loggers import ENGINE_LOGGER as LOGGER
 
 # Todo:
@@ -42,34 +42,34 @@ yaml.SafeDumper.add_multi_representer(
     yaml.representer.SafeRepresenter.represent_str,
 )
 
-LOGGER.debug(f"{DYNAMIC_INS = }")
+# LOGGER.debug(f"{DYNAMIC_INS = }")
 # feature_ins = {'default': {'OpenStudioLandscapes_Kitsu': AssetIn(key=AssetKey(['Kitsu', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>), 'OpenStudioLandscapes_Watchtower': AssetIn(key=AssetKey(['Watchtower', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>), 'OpenStudioLandscapes_VERT': AssetIn(key=AssetKey(['VERT', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>)}}
 
 compose_scope_asset_defs = []
 
-compose_scopes = set(DYNAMIC_INS.keys())
+# compose_scopes = set(DYNAMIC_INS.keys())
 
 
-# for testing:
-# if assets_external is empty at this point,
-# just add a dummy
-if not bool(DYNAMIC_INS):
-    DYNAMIC_INS = {
-        "dummy_compose_scope": {
-            "OpenStudioLandscapes_dummy": AssetIn(
-                key=AssetKey(
-                    [
-                        "OpenStudioLandscapes_dummy",
-                        "feature_out_v2",
-                    ]
-                ),
-            )
-        }
+# # for testing:
+# # if assets_external is empty at this point,
+# # just add a dummy
+# if not bool(DYNAMIC_INS):
+DYNAMIC_INS = {
+    "dummy_compose_scope": {
+        "OpenStudioLandscapes_dummy": AssetIn(
+            key=AssetKey(
+                [
+                    "OpenStudioLandscapes_dummy",
+                    "feature_out_v2",
+                ]
+            ),
+        )
     }
+}
 
 
 compose_scope: str
-feature: Dict[str, discovery.OpenStudioLandscapesDiscoveredFeature]
+# feature: Dict[str, discovery.OpenStudioLandscapesDiscoveredFeature]
 for compose_scope, features in DYNAMIC_INS.items():
     # Todo
     #  - [ ] This most likely needs a factory
@@ -167,31 +167,31 @@ for compose_scope, features in DYNAMIC_INS.items():
     )
     compose_scope_asset_defs.append(wrapper_newt)
 
-    # spec = {}
-    if GRAFANA_AVAILABLE:
-        wrapper_alloy = simple_factory_alloy(
-            ASSET_HEADER=ASSET_HEADER,
-            compose_scope=compose_scope,
-            port_range_pool=compose_scopes,
-            name="wrapper_alloy",
-            ins={
-                "scrape_networks": AssetIn(
-                    AssetKey([*ASSET_HEADER["key_prefix"], "scrape_networks"])
-                ),
-                "alloy_config": AssetIn(
-                    AssetKey(["OpenStudioLandscapes_Grafana", "alloy_config"])
-                ),
-                "build_docker_image_alloy": AssetIn(
-                    AssetKey(
-                        ["OpenStudioLandscapes_Grafana", "build_docker_image_alloy"]
-                    )
-                ),
-            },
-        )
-        compose_scope_asset_defs.append(wrapper_alloy)
-    else:
-        LOGGER.critical(
-            f"Alloy wrapper is not available in Compose Scopes. "
-            f"Install `OpenStudioLandscapes-Grafana` Feature "
-            f"to unlock this functionality."
-        )
+    # # spec = {}
+    # if GRAFANA_AVAILABLE:
+    #     wrapper_alloy = simple_factory_alloy(
+    #         ASSET_HEADER=ASSET_HEADER,
+    #         compose_scope=compose_scope,
+    #         port_range_pool=compose_scopes,
+    #         name="wrapper_alloy",
+    #         ins={
+    #             "scrape_networks": AssetIn(
+    #                 AssetKey([*ASSET_HEADER["key_prefix"], "scrape_networks"])
+    #             ),
+    #             "alloy_config": AssetIn(
+    #                 AssetKey(["OpenStudioLandscapes_Grafana", "alloy_config"])
+    #             ),
+    #             "build_docker_image_alloy": AssetIn(
+    #                 AssetKey(
+    #                     ["OpenStudioLandscapes_Grafana", "build_docker_image_alloy"]
+    #                 )
+    #             ),
+    #         },
+    #     )
+    #     compose_scope_asset_defs.append(wrapper_alloy)
+    # else:
+    #     LOGGER.critical(
+    #         f"Alloy wrapper is not available in Compose Scopes. "
+    #         f"Install `OpenStudioLandscapes-Grafana` Feature "
+    #         f"to unlock this functionality."
+    #     )

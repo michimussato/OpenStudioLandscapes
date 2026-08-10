@@ -13,6 +13,7 @@ from OpenStudioLandscapes.engine.base.ops.factories import (
     factory_group_in,
 )
 from OpenStudioLandscapes.engine.config.models import FeatureBaseModel
+from OpenStudioLandscapes.engine.config.models import FeatureBaseResource
 from OpenStudioLandscapes.engine.link.models import (
     OpenStudioLandscapesBaseOut,
     OpenStudioLandscapesFeatureIn,
@@ -109,6 +110,7 @@ def get_feature_in(
 def get_feature_in_parent(
     ASSET_HEADER: Dict,
     config_parent: Union[None, Type[FeatureBaseModel]],
+    resource: Type[FeatureBaseResource],
 ) -> Union[AssetsDefinition, None]:
 
     # Do not produce the assets
@@ -119,6 +121,7 @@ def get_feature_in_parent(
     feature_in_parent_op = factory_feature_in_parent(
         name=f"op_feature_in_parent_{ASSET_HEADER['group_name']}",
         CONFIG_PARENT=config_parent,
+        resource=resource,
         ins={
             "feature_in": In(OpenStudioLandscapesFeatureIn),
         },

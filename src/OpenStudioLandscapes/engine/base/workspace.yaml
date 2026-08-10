@@ -2,5 +2,5 @@
 
 load_from:
   - python_module:
-      module_name: "OpenStudioLandscapes.engine.base._definitions_with_upstream_specs"
+      module_name: "OpenStudioLandscapes.engine.base.definitions"
       location_name: "OpenStudioLandscapes Engine (Base)"

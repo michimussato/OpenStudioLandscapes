@@ -1,6 +1,5 @@
 __all__ = [
     "DAGSTER_DEFAULT_OUTPUT",
-    "ConfigParent",
     "ASSET_HEADER_BASE_ENV",
     "ASSET_HEADER_VFX_PLATFORM",
     "ASSET_HEADER_BASE",
@@ -9,13 +8,7 @@ __all__ = [
     "DOCKER_PROGRESS",
 ]
 
-from typing import Union
-
 from dagster._core.definitions.utils import DEFAULT_OUTPUT as DAGSTER_DEFAULT_OUTPUT
-
-from OpenStudioLandscapes.engine.config.models import FeatureBaseModel
-
-ConfigParent: Union[None, FeatureBaseModel] = None
 
 DOCKER_PROGRESS = [
     "auto",

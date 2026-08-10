@@ -2,5 +2,5 @@
 
 load_from:
   - python_module:
-      module_name: "OpenStudioLandscapes.engine.compose_scopes._definitions_with_upstream_specs"
+      module_name: "OpenStudioLandscapes.engine.compose_scopes.definitions"
       location_name: "OpenStudioLandscapes Engine (ComposeScopes)"

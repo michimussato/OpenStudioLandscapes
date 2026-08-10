@@ -55,7 +55,7 @@ from dagster import (
 
 from OpenStudioLandscapes.engine import dist as dist_engine
 from OpenStudioLandscapes.engine.config.models import (
-    ConfigEngine,
+    # ConfigEngine,
     FeatureBaseModel,
     OpenStudioLandscapesDiscoveredFeature,
 )
@@ -89,7 +89,7 @@ def get_verified_config(
 def add_k_v_to_config_yml(
     missing_keys: set,
     config_yml: pathlib.Path,
-    model_reference: Union[ConfigEngine, FeatureBaseModel],
+    model_reference: Union[FeatureBaseModel],
     model_dump_dict: Dict,
 ) -> None:
     # Todo
@@ -131,60 +131,60 @@ def add_k_v_to_config_yml(
     return None
 
 
-# Todo
-#  - [ ] more specific return type
-def get_dynamic_ins(
-    imported_features: Dict,
-) -> Dict:
-    """
-    Dynamic inputs based on the imported
-    third party code locations
-
-    Args:
-        imported_features:
-
-    Returns:
-
-    """
-
-    feature_ins = {}
-
-    package: str
-    feature: OpenStudioLandscapesDiscoveredFeature
-    feature_names: List[str] = []
-    for feature in imported_features.values():
-        if not feature.config.enabled:
-            feature_names.append(feature.config.feature_name)
-    for package, feature in imported_features.items():
-        LOGGER.debug(f"{feature = }")
-        # feature = OpenStudioLandscapesDiscoveredFeature(definitions='OpenStudioLandscapes.Watchtower.definitions', definitions_object=<module 'OpenStudioLandscapes.Watchtower.definitions' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Watchtower/src/OpenStudioLandscapes/Watchtower/definitions.py'>, models='OpenStudioLandscapes.Watchtower.config.models', models_object=<module 'OpenStudioLandscapes.Watchtower.config.models' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Watchtower/src/OpenStudioLandscapes/Watchtower/config/models.py'>, config=Feature(['env=None', "config_engine=openstudiolandscapes__docker_config=DockerConfigModel(use_registry=True, no_cache=False, docker_registry_config=DockerRegistryConfig(docker_push=True, docker_pull=True, docker_repository_name='openstudiolandscapes', docker_registry_access='public', docker_registry_protocol='https', docker_registry_fqdn='registry.openstudiolandscapes.lan', docker_registry_port=5000, docker_registry_username='registry-user', docker_registry_password='registry-password')) openstudiolandscapes__repository_root=PosixPath('{REPOSITORY_ROOT}') openstudiolandscapes__domain_lan='openstudiolandscapes.lan'", 'config_parent=None', 'distribution=<importlib.metadata.PathDistribution object at 0x7fe9b764ad10>', 'enabled=True', 'compose_scope=default', 'feature_name=OpenStudioLandscapes-Watchtower', 'group_name=watchtower', "key_prefixes=['Watchtower']", 'docker_compose={DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml', 'definitions=OpenStudioLandscapes.Watchtower.definitions', 'watchtower_port_host=4000', 'watchtower_port_container=80']))
-
-        feature_enabled: bool = feature.config.enabled
-
-        feature_name = feature.config.feature_name
-        compose_scope = feature.config.compose_scope
-        group_name = feature.config.group_name
-        key_prefixes = feature.config.key_prefixes
-
-        # Skip Feature if disabled in `config.yml`
-        if not feature_enabled:
-            LOGGER.info(
-                f"Feature [{feature_name.ljust(max([len(i) for i in feature_names]))}] "
-                f"is installed but DISABLED in {feature.config.config_file_path.as_posix()}"
-            )
-            continue
-
-        asset_in = feature.config.dagster_compose_scope_in
-
-        if compose_scope not in feature_ins:
-            feature_ins[compose_scope]: Dict = {}
-
-        feature_ins[compose_scope][group_name] = asset_in
-
-        LOGGER.debug(f"{feature_ins[compose_scope][group_name] = }")
-
-    # feature_ins = {'default': {'OpenStudioLandscapes_Kitsu': AssetIn(key=AssetKey(['Kitsu', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>), 'OpenStudioLandscapes_Watchtower': AssetIn(key=AssetKey(['Watchtower', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>)}, 'test': {'OpenStudioLandscapes_VERT': AssetIn(key=AssetKey(['VERT', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>)}}
-    return feature_ins
+# # Todo
+# #  - [ ] more specific return type
+# def get_dynamic_ins(
+#     imported_features: Dict,
+# ) -> Dict:
+#     """
+#     Dynamic inputs based on the imported
+#     third party code locations
+#
+#     Args:
+#         imported_features:
+#
+#     Returns:
+#
+#     """
+#
+#     feature_ins = {}
+#
+#     package: str
+#     feature: OpenStudioLandscapesDiscoveredFeature
+#     feature_names: List[str] = []
+#     # for feature in imported_features.values():
+#     #     if not feature.config.enabled:
+#     #         feature_names.append(feature.config.feature_name)
+#     for package, feature in imported_features.items():
+#         LOGGER.debug(f"{feature = }")
+#         # feature = OpenStudioLandscapesDiscoveredFeature(definitions='OpenStudioLandscapes.Watchtower.definitions', definitions_object=<module 'OpenStudioLandscapes.Watchtower.definitions' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Watchtower/src/OpenStudioLandscapes/Watchtower/definitions.py'>, models='OpenStudioLandscapes.Watchtower.config.models', models_object=<module 'OpenStudioLandscapes.Watchtower.config.models' from '/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Watchtower/src/OpenStudioLandscapes/Watchtower/config/models.py'>, config=Feature(['env=None', "config_engine=openstudiolandscapes__docker_config=DockerConfigModel(use_registry=True, no_cache=False, docker_registry_config=DockerRegistryConfig(docker_push=True, docker_pull=True, docker_repository_name='openstudiolandscapes', docker_registry_access='public', docker_registry_protocol='https', docker_registry_fqdn='registry.openstudiolandscapes.lan', docker_registry_port=5000, docker_registry_username='registry-user', docker_registry_password='registry-password')) openstudiolandscapes__repository_root=PosixPath('{REPOSITORY_ROOT}') openstudiolandscapes__domain_lan='openstudiolandscapes.lan'", 'config_parent=None', 'distribution=<importlib.metadata.PathDistribution object at 0x7fe9b764ad10>', 'enabled=True', 'compose_scope=default', 'feature_name=OpenStudioLandscapes-Watchtower', 'group_name=watchtower', "key_prefixes=['Watchtower']", 'docker_compose={DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml', 'definitions=OpenStudioLandscapes.Watchtower.definitions', 'watchtower_port_host=4000', 'watchtower_port_container=80']))
+#
+#         # feature_enabled: bool = feature.config.enabled
+#
+#         # feature_name = feature.config.feature_name
+#         # compose_scope = feature.config.compose_scope
+#         # group_name = feature.config.group_name
+#         # key_prefixes = feature.config.key_prefixes
+#
+#         # # Skip Feature if disabled in `config.yml`
+#         # if not feature_enabled:
+#         #     LOGGER.info(
+#         #         f"Feature [{feature_name.ljust(max([len(i) for i in feature_names]))}] "
+#         #         f"is installed but DISABLED in {feature.config.config_file_path.as_posix()}"
+#         #     )
+#         #     continue
+#
+#         # asset_in = feature.config.dagster_compose_scope_in
+#         #
+#         # if compose_scope not in feature_ins:
+#         #     feature_ins[compose_scope]: Dict = {}
+#         #
+#         # feature_ins[compose_scope][group_name] = asset_in
+#         #
+#         # LOGGER.debug(f"{feature_ins[compose_scope][group_name] = }")
+#
+#     # feature_ins = {'default': {'OpenStudioLandscapes_Kitsu': AssetIn(key=AssetKey(['Kitsu', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>), 'OpenStudioLandscapes_Watchtower': AssetIn(key=AssetKey(['Watchtower', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>)}, 'test': {'OpenStudioLandscapes_VERT': AssetIn(key=AssetKey(['VERT', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>)}}
+#     return feature_ins
 
 
 LOGGER.info("Start bootstrapping...")
@@ -239,7 +239,7 @@ def _write_yaml(
 
 
 def dump_yaml(
-    model_config: Union[ConfigEngine, FeatureBaseModel, Config, ConfigurableResource],
+    model_config: Union[FeatureBaseModel, Config, ConfigurableResource],
     file_path: pathlib.Path,
 ) -> None:
     """Save YAML data to a file, preserving comments/order."""
@@ -499,35 +499,35 @@ config_store_repo, fresh_repo = init_config_store(
 )
 
 
-def get_config_engine() -> ConfigEngine:
-    """
-    Get the Engine Configuration Model Object.
-    This is a Singleton, so re-instantiating basically
-    returns the already existing ConfigEngine object.
-
-    Returns:
-        ConfigEngine
-    """
-
-    engine_config_yml_expanded: pathlib.Path = get_absolute_config_path(
-        dist=dist_engine,
-    )
-
-    engine_config_dict: ruamel.yaml.CommentedMap = get_config(
-        file_path_config_yaml=engine_config_yml_expanded,
-    )
-
-    config_engine: ConfigEngine = ConfigEngine(
-        **engine_config_dict,
-    )
-    LOGGER.debug(f"{config_engine = }")
-
-    dump_yaml(
-        model_config=config_engine,
-        file_path=engine_config_yml_expanded,
-    )
-
-    return config_engine
+# def get_config_engine() -> ConfigEngine:
+#     """
+#     Get the Engine Configuration Model Object.
+#     This is a Singleton, so re-instantiating basically
+#     returns the already existing ConfigEngine object.
+#
+#     Returns:
+#         ConfigEngine
+#     """
+#
+#     engine_config_yml_expanded: pathlib.Path = get_absolute_config_path(
+#         dist=dist_engine,
+#     )
+#
+#     engine_config_dict: ruamel.yaml.CommentedMap = get_config(
+#         file_path_config_yaml=engine_config_yml_expanded,
+#     )
+#
+#     config_engine: ConfigEngine = ConfigEngine(
+#         **engine_config_dict,
+#     )
+#     LOGGER.debug(f"{config_engine = }")
+#
+#     dump_yaml(
+#         model_config=config_engine,
+#         file_path=engine_config_yml_expanded,
+#     )
+#
+#     return config_engine
 
 
 def get_namespace_packages(
@@ -626,7 +626,7 @@ def try_import_discovered(
 
 
 def init(
-    config_engine: ConfigEngine,
+    # config_engine: ConfigEngine,
     discovered_models: Dict[str, OpenStudioLandscapesDiscoveredFeature],
 ) -> None:
     """
@@ -755,10 +755,11 @@ def init(
         #     'local_environment_variables': {}
         # }
         try:
-            config_feature: FeatureBaseModel = feature.models_object.Config(
-                **feature_config_dict,
-            )
-            LOGGER.debug(f"{config_feature = }")
+            pass
+            # config_feature: FeatureBaseModel = feature.models_object.Config(
+            #     **feature_config_dict,
+            # )
+            # LOGGER.debug(f"{config_feature = }")
             #  config_feature = Feature(
             #      [
             #          'env={}',
@@ -795,16 +796,16 @@ def init(
             raise OpenStudioLandscapesDiscoveryException(msg)
 
         # Also inject the ConfigEngine object
-        config_feature.config_engine = config_engine
-        LOGGER.debug(f"{config_feature.config_engine = }")
+        # config_feature.config_engine = config_engine
+        # LOGGER.debug(f"{config_feature.config_engine = }")
         # config_feature.config_engine = ConfigEngine(openstudiolandscapes__docker_config=DockerConfigModel(use_registry=True, no_cache=False, docker_registry_config=DockerRegistryConfig(docker_push=True, docker_pull=True, docker_repository_name='openstudiolandscapes', docker_registry_access=<DockerRegistryAccess.public: 'public'>, docker_registry_protocol=<DockerRegistryProtocol.https: 'https'>, docker_registry_fqdn='registry.openstudiolandscapes.lan', docker_registry_port=5000, docker_registry_username='registry-user', docker_registry_password='registry-password'), docker_pull_policy=<DockerPullPolicy.always: 'always'>), openstudiolandscapes__rez_config=RezConfigModel(rez_version='3.3.0', REZ_LOCAL_PACKAGES_PATH=PosixPath('~/packages'), REZ_RELEASE_PACKAGES_PATH=PosixPath('~/.rez/packages/int'), REZ_EXTERNAL_PACKAGES_PATH=PosixPath('/data/share/rez-packages/packages'), apt_packages_rez=['binutils']), apt_packages_base=['git', 'ca-certificates', 'htop', 'file', 'tzdata', 'curl', 'wget', 'ffmpeg', 'libegl1', 'libsm6', 'libglu1-mesa', 'libxss1', 'sudo', 'xz-utils', 'xvfb', 'xauth'], apt_packages_build_python311=['build-essential', 'pkg-config', 'zlib1g-dev', 'libncurses5-dev', 'libgdbm-dev', 'libnss3-dev', 'libssl-dev', 'libreadline-dev', 'libffi-dev', 'libsqlite3-dev', 'libbz2-dev', 'iproute2', 'liblzma-dev'], pip_packages=[], openstudiolandscapes__domain_lan='openstudiolandscapes.lan', openstudiolandscapes__human_readable_ids=True, sudo_method=<SudoMethod.PKEXEC: 'pkexec'>, global_bind_volumes=['/data/share:/data/share:rw'], global_environment_variables={'OPENSTUDIOLANDSCAPES__DAGSTER_JOBS_IN': '/data/share/in'}, tz='Europe/UTC')
 
-        config_feature.distribution = feature_dist
-        LOGGER.debug(f"{config_feature.distribution = }")
-        # config_feature.distribution = <importlib.metadata.PathDistribution object at 0x7fe647853dd0>
-
-        feature.config = config_feature
-        LOGGER.debug(f"{feature.config = }")
+        # config_feature.distribution = feature_dist
+        # LOGGER.debug(f"{config_feature.distribution = }")
+        # # config_feature.distribution = <importlib.metadata.PathDistribution object at 0x7fe647853dd0>
+        #
+        # feature.config = config_feature
+        # LOGGER.debug(f"{feature.config = }")
         # feature.config = Feature(
         #     [
         #         'env={}',
@@ -890,15 +891,15 @@ if __name__ == "__main__":
 else:
     DISCOVERED_MODELS: Dict[str, OpenStudioLandscapesDiscoveredFeature] = {}
 
-    config_engine: ConfigEngine = get_config_engine()
+    # config_engine: ConfigEngine = get_config_engine()
 
     init(
-        config_engine=config_engine,
+        # config_engine=config_engine,
         discovered_models=DISCOVERED_MODELS,
     )
 
-    # Todo
-    #  - [ ] improve type hint
-    DYNAMIC_INS: Dict = get_dynamic_ins(
-        imported_features=DISCOVERED_MODELS,
-    )
+    # # Todo
+    # #  - [ ] improve type hint
+    # DYNAMIC_INS: Dict = get_dynamic_ins(
+    #     imported_features=DISCOVERED_MODELS,
+    # )
