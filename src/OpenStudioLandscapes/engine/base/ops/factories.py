@@ -59,6 +59,7 @@ from OpenStudioLandscapes.engine.link.models import (
     OpenStudioLandscapesFeatureOut,
 )
 from OpenStudioLandscapes.engine.utils import *
+from OpenStudioLandscapes.engine.compose_scopes.configurable_resources.config_compose_scope import ConfigComposeScopeConfigurableResource
 
 # https://github.com/yaml/pyyaml/issues/722#issuecomment-1969292770
 yaml.SafeDumper.add_multi_representer(
@@ -636,6 +637,7 @@ def factory_compose_scope__CONFIG(
     )
     def _op_compose_scope__CONFIG(
         context: OpExecutionContext,
+        config_EnvConfigurableResource: EnvConfigurableResource,
         **kwargs,
     ) -> Generator[Output | AssetMaterialization | Any, Any, None]:
         """ """
@@ -655,8 +657,8 @@ def factory_compose_scope__CONFIG(
                 "env": env,
                 "compose_scope": compose_scope,
                 "docker_compose": pathlib.Path(
-                    f"{env['DOT_LANDSCAPES']}",
-                    f"{env['LANDSCAPE']}",
+                    config_EnvConfigurableResource.DOT_LANDSCAPES,
+                    config_EnvConfigurableResource.LANDSCAPE,
                     f"{asset_header['group_name']}",
                     "docker_compose",
                     "docker-compose.yml",
@@ -810,7 +812,7 @@ def factory_compose_scope__scrape_networks(
 
 
 def factory_compose_scope__compose(
-    compose_scope: str,
+    # compose_scope: str,
     name="op_compose_scope_factory__compose",
     ins=None,
     **kwargs,
@@ -835,26 +837,24 @@ def factory_compose_scope__compose(
     def _op_compose_scope__compose(
         context: OpExecutionContext,
         config_EnvConfigurableResource: EnvConfigurableResource,
+        # config_ConfigComposeScopeConfigurableResource: ConfigComposeScopeConfigurableResource,
         **kwargs,
     ) -> Generator[Output | AssetMaterialization | Any, Any, None]:
         """ """
-
-        group_out_base: OpenStudioLandscapesBaseOut = kwargs.pop("group_out_base")
 
         context.log.debug(f"{kwargs = }")
         CONFIG: ComposeScopeBaseModel = kwargs.pop("CONFIG")
         features_in: Dict[str, OpenStudioLandscapesFeatureOut] = kwargs.pop(
             "features_in"
         )
-        # scrape_networks: Dict = kwargs.pop("scrape_networks")
-
-        env: Dict = group_out_base.env
 
         # Todo:
         #  - [ ] Duplicated code `OpenStudioLandscapes.engine.base.ops.factories.factory_scrape_networks`
         #  - [ ] Duplicated code `OpenStudioLandscapes.engine.compose_scopes.default.assets.compose`
 
-        DOCKER_COMPOSE: pathlib.Path = CONFIG.docker_compose
+        DOCKER_COMPOSE: pathlib.Path = pathlib.Path(
+            CONFIG.docker_compose
+        )
 
         DOCKER_COMPOSE.parent.mkdir(parents=True, exist_ok=True)
 
@@ -876,7 +876,7 @@ def factory_compose_scope__compose(
             compose_files.append(compose_file)
 
         includes = []
-        dot_landscapes = pathlib.Path(env["DOT_LANDSCAPES"])
+        dot_landscapes = pathlib.Path(config_EnvConfigurableResource.DOT_LANDSCAPES)
 
         # Convert absolute paths in `include` to
         # relative ones

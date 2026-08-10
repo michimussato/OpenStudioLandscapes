@@ -112,7 +112,7 @@ for compose_scope, features in DYNAMIC_INS.items():
     # compose
     compose_scope_group__compose = get_compose_scope_group__compose(
         ASSET_HEADER=ASSET_HEADER,
-        compose_scope=compose_scope,
+        # compose_scope=compose_scope,
     )
 
     compose_scope_asset_defs.append(compose_scope_group__compose)
@@ -160,7 +160,6 @@ for compose_scope, features in DYNAMIC_INS.items():
         compose_scope=compose_scope,
         name="wrapper_newt",
         ins={
-            "CONFIG": AssetIn(AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"])),
             "scrape_networks": AssetIn(
                 AssetKey([*ASSET_HEADER["key_prefix"], "scrape_networks"])
             ),
@@ -176,7 +175,6 @@ for compose_scope, features in DYNAMIC_INS.items():
             port_range_pool=compose_scopes,
             name="wrapper_alloy",
             ins={
-                "CONFIG": AssetIn(AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"])),
                 "scrape_networks": AssetIn(
                     AssetKey([*ASSET_HEADER["key_prefix"], "scrape_networks"])
                 ),

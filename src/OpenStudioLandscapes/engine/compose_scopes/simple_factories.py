@@ -15,7 +15,7 @@ from dagster import (
 )
 
 from OpenStudioLandscapes.engine.config.models import (
-    ComposeScopeBaseModel,
+    ComposeScopeBaseModel, interpolate,
 )
 from OpenStudioLandscapes.engine.enums import (
     DockerComposeNetworkMode,
@@ -25,6 +25,9 @@ from OpenStudioLandscapes.engine.utils import get_relative_path_via_common_root
 from OpenStudioLandscapes.engine.utils.docker.compose_dicts import (
     DockerComposeServiceDefinition,
 )
+from OpenStudioLandscapes.engine.base.configurable_resources.env_resource import EnvConfigurableResource
+from OpenStudioLandscapes.engine.base.configurable_resources.config_engine import ConfigEngineConfigurableResource
+from OpenStudioLandscapes.engine.compose_scopes.configurable_resources.config_compose_scope import ConfigComposeScopeConfigurableResource
 
 
 def simple_factory_newt(
@@ -76,19 +79,15 @@ def simple_factory_newt(
     )
     def _asset(
         context: AssetExecutionContext,
+        config_EnvConfigurableResource: EnvConfigurableResource,
+        config_ConfigComposeScopeConfigurableResource: ConfigComposeScopeConfigurableResource,
+        config_ConfigEngineConfigurableResource: ConfigEngineConfigurableResource,
         **kwargs,
     ) -> Generator[Output[Any] | AssetMaterialization | Any, Any, None]:
 
-        CONFIG: ComposeScopeBaseModel = kwargs.pop("CONFIG")
+        if config_ConfigComposeScopeConfigurableResource.attach_pangolin_site_to_compose_scope:
 
-        # group_out_base: OpenStudioLandscapesBaseOut = kwargs.pop("group_out_base")
-        # # env_base: Dict = group_out_base.env
-        # config_engine: ConfigEngine = group_out_base.config_engine
-
-        if CONFIG.attach_pangolin_site_to_compose_scope:
-
-            env: Dict = CONFIG.env
-            landscape_id: str = env.get("LANDSCAPE", "default")
+            landscape_id: str = config_EnvConfigurableResource.LANDSCAPE
 
             newt_service = f"newt-{compose_scope}"
 
@@ -102,7 +101,7 @@ def simple_factory_newt(
                 "hostname": f"${{HOSTNAME:-undefined}}-{newt_service}",
                 "restart": DockerComposePolicies.RESTART_POLICY.ALWAYS,
                 "environment": {
-                    "TZ": CONFIG.config_engine.tz,
+                    "TZ": config_ConfigEngineConfigurableResource.tz,
                     "PANGOLIN_ENDPOINT": "${OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_%s__PANGOLIN_ENDPOINT}"
                     % compose_scope.upper(),
                     "NEWT_ID": "${OPENSTUDIOLANDSCAPES__PANGOLIN_SITE__COMPOSE_SCOPE_%s__NEWT_ID}"
@@ -113,12 +112,12 @@ def simple_factory_newt(
                     % compose_scope.upper(),
                     # "ACCEPT_CLIENTS": True,
                     "DOCKER_SOCKET": "/var/run/docker.sock",
-                    **CONFIG.config_engine.global_environment_variables,
+                    **config_ConfigEngineConfigurableResource.global_environment_variables,
                 },
                 "volumes": list(
                     {
                         "/var/run/docker.sock:/var/run/docker.sock",
-                        *CONFIG.config_engine.global_bind_volumes,
+                        *config_ConfigEngineConfigurableResource.global_bind_volumes,
                     }
                 ),
                 # "command": [
@@ -175,7 +174,7 @@ def simple_factory_newt(
             asset_key=context.asset_key,
             metadata={
                 "enabled": MetadataValue.bool(
-                    CONFIG.attach_pangolin_site_to_compose_scope
+                    config_ConfigComposeScopeConfigurableResource.attach_pangolin_site_to_compose_scope
                 ),
                 "service": MetadataValue.md(
                     f"```json\n{json.dumps(service, indent=2, default=str)}\n```"
@@ -245,19 +244,19 @@ def simple_factory_alloy(
     )
     def _asset(
         context: AssetExecutionContext,
+        config_EnvConfigurableResource: EnvConfigurableResource,
+        config_ConfigComposeScopeConfigurableResource: ConfigComposeScopeConfigurableResource,
+        config_ConfigEngineConfigurableResource: ConfigEngineConfigurableResource,
         **kwargs,
     ) -> Generator[Output[Any] | AssetMaterialization | Any, Any, None]:
-
-        CONFIG: ComposeScopeBaseModel = kwargs.pop("CONFIG")
 
         alloy_config: pathlib.Path = kwargs.pop("alloy_config")
 
         build_docker_image_alloy: Dict = kwargs.pop("build_docker_image_alloy")
 
-        if CONFIG.attach_grafana_alloy_to_compose_scope:
+        if config_ConfigComposeScopeConfigurableResource.attach_grafana_alloy_to_compose_scope:
 
-            env: Dict = CONFIG.env
-            landscape_id: str = env.get("LANDSCAPE", "default")
+            landscape_id: str = config_EnvConfigurableResource.LANDSCAPE
 
             scrape_networks: Dict = kwargs.pop("scrape_networks")
 
@@ -284,9 +283,16 @@ def simple_factory_alloy(
 
                 volume_dir_host_rel_path = get_relative_path_via_common_root(
                     context=context,
-                    path_src=CONFIG.docker_compose_expanded,
+                    # Todo
+                    path_src=interpolate(
+                        path=config_ConfigComposeScopeConfigurableResource.docker_compose,
+                        env={
+                            "COMPOSE_SCOPE": compose_scope,
+                            **config_EnvConfigurableResource.model_dump(),
+                        },
+                    ),
                     path_dst=pathlib.Path(host),
-                    path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
+                    path_common_root=pathlib.Path(config_EnvConfigurableResource.DOT_LANDSCAPES),
                 )
 
                 _volume_relative.append(
@@ -368,7 +374,7 @@ def simple_factory_alloy(
                         "/run/udev/data:/run/udev/data:ro",
                         # [ ] /dev/disk/:/dev/disk:ro
                         # [ ] /dev/zfs/:/dev/zfs:ro
-                        *CONFIG.config_engine.global_bind_volumes,
+                        *config_ConfigEngineConfigurableResource.global_bind_volumes,
                     }
                 )
             }
@@ -377,9 +383,9 @@ def simple_factory_alloy(
             # - https://christian-schou.com/blog/how-port-mapping-works-in-docker-compose/
             # - https://labex.io/tutorials/docker-how-to-solve-docker-network-port-conflicts-493644
             if len(port_range_pool) <= 1:
-                port_mapping = f"{CONFIG.grafana_alloy_listen_port_host}:{CONFIG.grafana_alloy_listen_port_container}"
+                port_mapping = f"{config_ConfigComposeScopeConfigurableResource.grafana_alloy_listen_port_host}:{config_ConfigComposeScopeConfigurableResource.grafana_alloy_listen_port_container}"
             else:
-                port_mapping = f"{CONFIG.grafana_alloy_listen_port_host}-{CONFIG.grafana_alloy_listen_port_host + len(port_range_pool) - 1}:{CONFIG.grafana_alloy_listen_port_container}"
+                port_mapping = f"{config_ConfigComposeScopeConfigurableResource.grafana_alloy_listen_port_host}-{config_ConfigComposeScopeConfigurableResource.grafana_alloy_listen_port_host + len(port_range_pool) - 1}:{config_ConfigComposeScopeConfigurableResource.grafana_alloy_listen_port_container}"
 
             alloy_service = f"alloy-{compose_scope}"
 
@@ -399,13 +405,13 @@ def simple_factory_alloy(
                 "hostname": f"${{HOSTNAME:-undefined}}-{alloy_service}",
                 "restart": DockerComposePolicies.RESTART_POLICY.ON_FAILURE_3,
                 "environment": {
-                    "TZ": CONFIG.config_engine.tz,
-                    **CONFIG.config_engine.global_environment_variables,
+                    "TZ": config_ConfigEngineConfigurableResource.tz,
+                    **config_ConfigEngineConfigurableResource.global_environment_variables,
                 },
                 "command": [
                     "run",
                     "--disable-reporting",
-                    f"--server.http.listen-addr={CONFIG.grafana_alloy_listen_address}:{CONFIG.grafana_alloy_listen_port_container}",
+                    f"--server.http.listen-addr={config_ConfigComposeScopeConfigurableResource.grafana_alloy_listen_address}:{config_ConfigComposeScopeConfigurableResource.grafana_alloy_listen_port_container}",
                     "--storage.path=/var/lib/alloy/data",
                     # "--clustering.enabled=false",
                     "/etc/alloy/config.alloy",
@@ -471,7 +477,7 @@ def simple_factory_alloy(
             asset_key=context.asset_key,
             metadata={
                 "enabled": MetadataValue.bool(
-                    CONFIG.attach_grafana_alloy_to_compose_scope
+                    config_ConfigComposeScopeConfigurableResource.attach_grafana_alloy_to_compose_scope
                 ),
                 "alloy_config": MetadataValue.path(alloy_config),
                 "compose_yaml": MetadataValue.md(f"```yaml\n{compose_yaml}\n```"),

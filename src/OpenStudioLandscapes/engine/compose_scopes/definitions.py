@@ -18,6 +18,8 @@ assets_base = load_assets_from_modules(
     modules=[OpenStudioLandscapes.engine.compose_scopes.assets]
 )
 
+from OpenStudioLandscapes.engine.compose_scopes.resources import configurable_resources_base
+
 from OpenStudioLandscapes.engine.compose_scopes.assets import DYNAMIC_INS
 from OpenStudioLandscapes.engine.compose_scopes.constants import (
     COMPOSE_SCOPE_GROUP_PREFIX,
@@ -122,4 +124,7 @@ defs = Definitions(
         # *constants,
         # *assets_external,
     ],
+    resources={
+        **configurable_resources_base,
+    },
 )

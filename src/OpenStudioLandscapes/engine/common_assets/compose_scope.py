@@ -145,7 +145,7 @@ def get_compose_scope_group__scrape_networks(
 
 def get_compose_scope_group__compose(
     ASSET_HEADER: Dict,
-    compose_scope: str,
+    # compose_scope: str,
 ) -> AssetsDefinition:
 
     # The wrapper_alloy asset availability depends on whether or not
@@ -160,7 +160,7 @@ def get_compose_scope_group__compose(
         }
 
     compose_scope_op__compose: OpDefinition = factory_compose_scope__compose(
-        compose_scope=compose_scope,
+        # compose_scope=compose_scope,
         name=f"op_compose_scope__compose__{ASSET_HEADER['group_name']}",
         ins={
             "features_in": In(Dict),
