@@ -124,7 +124,6 @@ if not bool(assets_external) and not bool(DYNAMIC_INS):
 defs = Definitions(
     assets=[
         *assets_base,
-        # *constants,
         *assets_external,
     ],
     resources={

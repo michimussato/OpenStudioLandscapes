@@ -7,6 +7,8 @@ from dagster import (
     load_assets_from_modules,
 )
 
+from OpenStudioLandscapes.engine.base.assets import group_out_base
+
 import OpenStudioLandscapes.engine.landscape_map.assets
 from OpenStudioLandscapes.engine.compose_scopes.constants import (
     COMPOSE_SCOPE_GROUP_PREFIX,
@@ -15,7 +17,7 @@ from OpenStudioLandscapes.engine.constants import (
     ASSET_HEADER_BASE,
 )
 from OpenStudioLandscapes.engine.discovery import discovery
-from OpenStudioLandscapes.engine.landscape_map.assets import DYNAMIC_INS
+# from OpenStudioLandscapes.engine.landscape_map.assets import DYNAMIC_INS
 
 assets_base = load_assets_from_modules(
     modules=[OpenStudioLandscapes.engine.landscape_map.assets],
@@ -25,14 +27,17 @@ assets_base = load_assets_from_modules(
 LOGGER = discovery.LOGGER
 
 
-LOGGER.debug(f"{DYNAMIC_INS = }")
+# LOGGER.debug(f"{DYNAMIC_INS = }")
 
 assets_external = []
+assets_external.extend(group_out_base.specs)
 
 
 ins = {}
 _compose_scopes = set()
 
+
+DYNAMIC_INS = {}
 
 compose_scope: str
 feature: Dict[str, AssetSpec]
@@ -110,5 +115,6 @@ assets_external.append(group_out_base)
 defs = Definitions(
     assets=[
         *assets_base,
+        *assets_external,
     ],
 )

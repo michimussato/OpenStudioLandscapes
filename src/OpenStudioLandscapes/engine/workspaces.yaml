@@ -19,12 +19,17 @@
 # connected graph in which root assets share the same partitioning.
 
 load_from:
+# Engine Code Locations
   - python_module:
       module_name: "OpenStudioLandscapes.engine.base.definitions"
       location_name: "OpenStudioLandscapes Engine (Base)"
   - python_module:
       module_name: "OpenStudioLandscapes.engine.compose_scopes.definitions"
       location_name: "OpenStudioLandscapes Engine (Compose Scopes)"
+  - python_module:
+      module_name: "OpenStudioLandscapes.engine.landscape_map.definitions"
+      location_name: "OpenStudioLandscapes LandscapeMap"
+# Features
   - python_module:
       module_name: "OpenStudioLandscapes.Kitsu.definitions"
       location_name: "OpenStudioLandscapes-Kitsu"

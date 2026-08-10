@@ -21,13 +21,17 @@ nox -s "dagster_postgres_down"
     ```shell
     dagster dev --workspace /home/michael/git/repos/OpenStudioLandscapes/src/OpenStudioLandscapes/engine/base/workspace.yaml
     ```
-- [x] `/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Kitsu/src/OpenStudioLandscapes/Kitsu`
-    ```shell
-    dagster dev --workspace /home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Kitsu/workspace.yaml
-    ```
 - [x] `/home/michael/git/repos/OpenStudioLandscapes/src/OpenStudioLandscapes/engine/compose_scopes`
     ```shell
     dagster dev --workspace /home/michael/git/repos/OpenStudioLandscapes/src/OpenStudioLandscapes/engine/compose_scopes/workspace.yaml
+    ```
+- [x] `/home/michael/git/repos/OpenStudioLandscapes/src/OpenStudioLandscapes/engine/landscape_map`
+    ```shell
+    dagster dev --workspace /home/michael/git/repos/OpenStudioLandscapes/src/OpenStudioLandscapes/engine/landscape_map/workspace.yaml
+    ```
+- [x] `/home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Kitsu/src/OpenStudioLandscapes/Kitsu`
+    ```shell
+    dagster dev --workspace /home/michael/git/repos/OpenStudioLandscapes/.features/OpenStudioLandscapes-Kitsu/workspace.yaml
     ```
 
 ## Combined

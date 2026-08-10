@@ -2,7 +2,8 @@ import base64
 import enum
 import shutil
 import subprocess
-from typing import Any, Generator
+import pathlib
+from typing import Any, Generator, Dict
 
 import pydot
 import yaml
@@ -22,17 +23,18 @@ from OpenStudioLandscapes.engine.compose_scopes.assets import (
 )
 from OpenStudioLandscapes.engine.config import dist
 from OpenStudioLandscapes.engine.constants import *
-from OpenStudioLandscapes.engine.discovery.discovery import *
-from OpenStudioLandscapes.engine.discovery.discovery import DYNAMIC_INS
+# from OpenStudioLandscapes.engine.discovery.discovery import *
+# from OpenStudioLandscapes.engine.discovery.discovery import DYNAMIC_INS
 from OpenStudioLandscapes.engine.enums import *
 from OpenStudioLandscapes.engine.link.models import OpenStudioLandscapesBaseOut
 
-LOGGER.debug(f"{DYNAMIC_INS = }")
+# LOGGER.debug(f"{DYNAMIC_INS = }")
 # feature_ins = {'default': {'OpenStudioLandscapes_Kitsu': AssetIn(key=AssetKey(['Kitsu', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>), 'OpenStudioLandscapes_Watchtower': AssetIn(key=AssetKey(['Watchtower', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>), 'OpenStudioLandscapes_VERT': AssetIn(key=AssetKey(['VERT', 'feature_out']), metadata=None, key_prefix=[], input_manager_key=None, partition_mapping=None, dagster_type=<class 'dagster._core.definitions.utils.NoValueSentinel'>)}}
 
 
 ins = {}
 compose_scopes = set()
+DYNAMIC_INS = {}
 
 compose_scope: str
 feature: Dict[str, AssetIn]
@@ -55,18 +57,18 @@ for compose_scope, _ in DYNAMIC_INS.items():
 # for testing:
 # if assets_external is empty at this point,
 # just add a dummy
-if not bool(ins):
-    compose_scope = "dummy_compose_scope"
-    ins[f"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}"] = AssetIn(
-        AssetKey(
-            # ComposeScopes / dummy_compose_scope / docker_compose_graph_dot
-            [
-                "ComposeScopes",
-                f"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}",
-                "docker_compose_graph_dot",
-            ]
-        )
-    )
+# if not bool(ins):
+#     compose_scope = "dummy_compose_scope"
+#     ins[f"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}"] = AssetIn(
+#         AssetKey(
+#             # ComposeScopes / dummy_compose_scope / docker_compose_graph_dot
+#             [
+#                 "ComposeScopes",
+#                 f"{COMPOSE_SCOPE_GROUP_PREFIX}_{compose_scope}",
+#                 "docker_compose_graph_dot",
+#             ]
+#         )
+#     )
 
 
 # https://github.com/yaml/pyyaml/issues/722#issuecomment-1969292770
