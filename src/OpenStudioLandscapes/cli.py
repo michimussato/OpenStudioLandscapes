@@ -969,10 +969,15 @@ def main(args):
             # if args.force_reinstall:
             #     pip_cmd += " --force-reinstall"
 
-            LOGGER.critical(f"Installing Feature...")
+            LOGGER.info(f"Installing Feature...")
+            LOGGER.critical(f"Executing the following command: `{pip_cmd}`")
             result = subprocess.call(pip_cmd, shell=True)
 
-            if result != 0:
+            LOGGER.critical(f"Installation result return code: {result}")
+
+            if result == 0:
+                LOGGER.info(f"Feature installed successfully.")
+            else:
                 LOGGER.critical(
                     f"Installation failed. Install manually as described here:"
                 )
@@ -980,12 +985,13 @@ def main(args):
 
             # python -c 'try: import OpenStudioLandscapes.Grafana; except ModuleNotFoundError: as e: LOGGER.exception()'
             # Test-import newly installed Feature
+            LOGGER.info("Executing the following command: `python -c 'import %s'`" % str(repo_name).replace("-", "."))
             result_test = subprocess.call(
                 "python -c 'import %s'" % str(repo_name).replace("-", "."),
                 shell=True,
             )
 
-            LOGGER.debug(f"Import test result return code: {result_test}")
+            LOGGER.critical(f"Import test result return code: {result_test}")
 
         else:
 
