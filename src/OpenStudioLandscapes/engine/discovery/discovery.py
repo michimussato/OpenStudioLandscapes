@@ -590,12 +590,10 @@ def get_models_path(namespace_package) -> str:
 
 
 def try_import_discovered(
-    package: str,
     discovered_model: OpenStudioLandscapesDiscoveredFeature,
 ) -> Tuple[ModuleType, ModuleType]:
     """Try to import a discovered model from a package."""
 
-    LOGGER.info(f"{package = }")
     LOGGER.debug(f"{discovered_model = }")
     try:
         _models = discovered_model.models
@@ -665,7 +663,6 @@ def init(
 
         try:
             models_object, definitions_object = try_import_discovered(
-                package=package,
                 discovered_model=module,
             )
         except ImportError as e:
