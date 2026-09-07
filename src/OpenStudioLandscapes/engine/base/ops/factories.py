@@ -46,9 +46,9 @@ from docker_compose_graph.utils import *
 
 from OpenStudioLandscapes.engine.config.models import (
     ComposeScopeBaseModel,
-    ConfigEngine,
     FeatureBaseModel,
 )
+from OpenStudioLandscapes.engine.base.configurable_resources.docker_resource import DockerConfigurableResource
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.discovery import discovery
 from OpenStudioLandscapes.engine.discovery.get_feature_base_model import (
@@ -715,8 +715,6 @@ def factory_compose_scope__CONFIG(
         group_out_base: OpenStudioLandscapesBaseOut = kwargs.pop("group_out_base")
         context.log.debug(f"{group_out_base = }")
 
-        config_engine: ConfigEngine = group_out_base.config_engine
-
         env: Dict = group_out_base.env
 
         config = ComposeScopeBaseModel(
@@ -730,7 +728,6 @@ def factory_compose_scope__CONFIG(
                     "docker_compose",
                     "docker-compose.yml",
                 ),
-                "config_engine": config_engine,
             },
         )
 
@@ -1321,6 +1318,7 @@ def factory_compose_scope__group_out(
     )
     def _op_compose_scope__group_out(
         context: OpExecutionContext,
+        config_DockerConfigurableResource: DockerConfigurableResource,
         **kwargs,
     ) -> Generator[Output | AssetMaterialization | Any, Any, None]:
         """ """
@@ -1335,7 +1333,6 @@ def factory_compose_scope__group_out(
         del compose
         del features_in
 
-        CONFIG_ENGINE: ConfigEngine = group_out_base.config_engine
         docker_config_json: pathlib.Path = group_out_base.docker_config_json
 
         cmd_append["exclude_from_quote"].extend(
@@ -1391,7 +1388,7 @@ def factory_compose_scope__group_out(
             "--project-name",
             compose_project_name,
             "up",
-            f"--pull={CONFIG_ENGINE.openstudiolandscapes__docker_config.docker_pull_policy}",
+            f"--pull={config_DockerConfigurableResource.docker_pull_policy}",
             "--remove-orphans",
             # Todo
             #  - [ ] would `--rm    Automatically remove the container when it exits` be useful here?

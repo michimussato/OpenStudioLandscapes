@@ -4,6 +4,7 @@ from dagster import (  # define_asset_job,; AssetSelection,
 )
 
 import OpenStudioLandscapes.engine.base.assets
+from OpenStudioLandscapes.engine.base.resources import configurable_resources_base
 
 # from OpenStudioLandscapes.engine.constants import ASSET_HEADER_BASE
 
@@ -33,4 +34,7 @@ defs = Definitions(
     #     job_base,
     #     # job_env,
     # ],
+    resources={
+        **configurable_resources_base,
+    },
 )

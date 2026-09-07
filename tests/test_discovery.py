@@ -56,35 +56,6 @@ def fixtures_config_engine_dict() -> Generator[Dict, None, None]:
     # - [Pytest - How to use fixtures](https://docs.pytest.org/en/7.1.x/how-to/fixtures.html)
     # before test - create resource
     config_engine_dict = {
-        "openstudiolandscapes__docker_config": DockerConfigModel(
-            **{
-                "use_registry": False,
-                "no_cache": False,
-                "docker_registry_config": DockerRegistryConfig(
-                    **{
-                        "docker_push": True,
-                        "docker_pull": True,
-                        "docker_repository_name": "openstudiolandscapes",
-                        "docker_registry_access": DockerRegistryAccess.public,
-                        "docker_registry_protocol": DockerRegistryProtocol.https,
-                        "docker_registry_fqdn": "registry.openstudiolandscapes.lan",
-                        "docker_registry_port": 5000,
-                        "docker_registry_username": "registry-user",
-                        "docker_registry_password": "registry-password",
-                    },
-                ),
-                "docker_pull_policy": DockerPullPolicy.always,
-            },
-        ),
-        "openstudiolandscapes__rez_config": RezConfigModel(
-            **{
-                "rez_version": "3.3.0",
-                "REZ_LOCAL_PACKAGES_PATH": pathlib.Path("~/packages"),
-                "REZ_RELEASE_PACKAGES_PATH": pathlib.Path("~/.rez/packages/int"),
-                "REZ_EXTERNAL_PACKAGES_PATH": pathlib.Path("~/.rez/packages/ext"),
-                "apt_packages_rez": ["binutils"],
-            }
-        ),
         "apt_packages_base": [
             "git",
             "ca-certificates", "htop", "file", "tzdata", "curl", "wget", "ffmpeg", "libegl1", "libsm6",
