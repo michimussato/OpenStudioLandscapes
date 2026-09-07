@@ -45,13 +45,12 @@ from types import ModuleType
 from typing import Dict, List, Tuple, Union
 
 import ruamel.yaml
-from pydantic_core._pydantic_core import ValidationError as PydanticValidationError
-from setuptools import find_namespace_packages
-
 from dagster import (
     Config,
     ConfigurableResource,
 )
+from pydantic_core._pydantic_core import ValidationError as PydanticValidationError
+from setuptools import find_namespace_packages
 
 from OpenStudioLandscapes.engine import dist as dist_engine
 from OpenStudioLandscapes.engine.config.models import (
@@ -322,9 +321,7 @@ def dump_yaml(
 
                 if auto_fix_missing_keys:
 
-                    LOGGER.info(
-                        f"Updating YAML automatically: {file_path.as_posix()}"
-                    )
+                    LOGGER.info(f"Updating YAML automatically: {file_path.as_posix()}")
 
                     add_k_v_to_config_yml(
                         missing_keys=missing_keys,

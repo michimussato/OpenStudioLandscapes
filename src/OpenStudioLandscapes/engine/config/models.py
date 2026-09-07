@@ -351,19 +351,21 @@ class DockerConfigResource(ConfigurableResource):
 
     docker_config_json: str = Field(
         default="~/.docker/config.json",
-        description=textwrap.dedent(
-            """\
+        description=textwrap.dedent("""\
             The full path to the Docker config.json file.
-            """
-        )
+            """),
     )
 
     @field_validator("docker_config_json", mode="before")
     @classmethod
     def docker_config_json_is_file(cls, value: str) -> str:
         path_ = pathlib.Path(value)
-        assert path_.expanduser().exists(), f"Given `docker_config_json` value does not exist: {value}"
-        assert path_.expanduser().is_file(), f"Given `docker_config_json` value is not a file: {value}"
+        assert (
+            path_.expanduser().exists()
+        ), f"Given `docker_config_json` value does not exist: {value}"
+        assert (
+            path_.expanduser().is_file()
+        ), f"Given `docker_config_json` value is not a file: {value}"
         return value
 
     @property
@@ -378,16 +380,13 @@ class DockerConfigResource(ConfigurableResource):
     # Registry Settings
 
     docker_push: bool = Field(
-        default=False,
-        description="Run `docker` commands with the `--push` flag."
+        default=False, description="Run `docker` commands with the `--push` flag."
     )
     docker_pull: bool = Field(
-        default=False,
-        description="Run `docker` commands with the `--pull` flag."
+        default=False, description="Run `docker` commands with the `--pull` flag."
     )
     docker_repository_name: str = Field(
-        default="openstudiolandscapes",
-        description="The registry repository name."
+        default="openstudiolandscapes", description="The registry repository name."
     )
     docker_registry_access: DockerRegistryAccess = Field(
         default=DockerRegistryAccess.public,
@@ -406,8 +405,7 @@ class DockerConfigResource(ConfigurableResource):
         description="The port the Docker Registry server is listening on.",
     )
     docker_registry_username: str = Field(
-        default="registry-user",
-        description="The username of the Docker registry."
+        default="registry-user", description="The username of the Docker registry."
     )
     # Todo: docker_registry_password: SecretStr = Field(description="The password of the Docker registry.")
     #  Error:
@@ -419,8 +417,7 @@ class DockerConfigResource(ConfigurableResource):
     #  470b66ea5123: Waiting
     #  unauthorized: authentication required
     docker_registry_password: str = Field(
-        default="registry-password",
-        description="The password of the Docker registry."
+        default="registry-password", description="The password of the Docker registry."
     )
 
     @field_validator("docker_repository_name")

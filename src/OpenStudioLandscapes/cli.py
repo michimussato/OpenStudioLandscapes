@@ -985,7 +985,10 @@ def main(args):
 
             # python -c 'try: import OpenStudioLandscapes.Grafana; except ModuleNotFoundError: as e: LOGGER.exception()'
             # Test-import newly installed Feature
-            LOGGER.info("Executing the following command: `python -c 'import %s'`" % str(repo_name).replace("-", "."))
+            LOGGER.info(
+                "Executing the following command: `python -c 'import %s'`"
+                % str(repo_name).replace("-", ".")
+            )
             result_test = subprocess.call(
                 "python -c 'import %s'" % str(repo_name).replace("-", "."),
                 shell=True,
