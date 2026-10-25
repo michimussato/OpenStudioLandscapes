@@ -38,7 +38,7 @@
     venv.enable = true;
     uv = {
       # let's start with false
-      enable = false;
+      enable = true;
       sync = {
         enable = true;
         allGroups = true;             # Install all dependency groups
