@@ -20,6 +20,8 @@ dependencies = [
     "dagster-postgres==0.25.11",
     "dagster-webserver==1.9.11",
     "dagster==1.9.11",
+    "SQLAlchemy==2.0.49",
+    "psycopg2-binary==2.9.11",
     "docker-compose-graph @ git+https://github.com/michimussato/docker-compose-graph.git",
     "email-validator",
     "gitpython",
