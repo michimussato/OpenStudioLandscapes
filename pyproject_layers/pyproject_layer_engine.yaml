@@ -3,6 +3,8 @@ project:
   - pydot
   - dagster-webserver==1.9.11
   - dagster-postgres==0.25.11
+  - SQLAlchemy==2.0.49
+  - psycopg2-binary==2.9.11
   - nox
   - human-readable-id
   # - OpenStudioLandscapes-OpenRV-Builder @ git+https://github.com/michimussato/OpenStudioLandscapes-OpenRV-Builder.git
